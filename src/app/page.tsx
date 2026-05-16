@@ -103,81 +103,55 @@ export default function HomePage() {
       )}
 
       {/* ─────────────────────────────────────────
-         BELONG — Subscribe + auxiliary
+         BELONG — compact subscribe row + inline links
          ───────────────────────────────────────── */}
       <section
         aria-labelledby="belong"
-        className="mx-auto max-w-[1100px] px-6 sm:px-10 py-20 sm:py-28"
+        className="mx-auto max-w-[1100px] px-6 sm:px-10 py-10 sm:py-14"
       >
-        <SectionLabel en="Belong" ja="つながる" />
+        <SectionLabel
+          en="Belong"
+          ja="つながる — 月に一度か二度、ニュースレターで届く記録"
+        />
 
-        <div className="mt-10 sm:mt-14 grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12 lg:gap-16">
-          <div className="lg:border-r border-hair-line lg:pr-12">
-            <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
-              Subscribe
-            </p>
-            <h3
-              id="belong"
-              className="mt-3 font-mincho text-2xl sm:text-3xl font-medium leading-[1.5] text-ink"
-            >
-              月に一度か二度、
-              <br />
-              ニュースレターで届く記録。
-            </h3>
-            <p className="mt-6 text-[0.9375rem] leading-[2] text-ink/75 max-w-[28rem]">
-              新しく書いた記録と、まだ記事にしていない覚え書きを、お送りします。
-              通知も煽りもありません。
-            </p>
-            <a
-              href={site.social.substack}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-gold mt-9"
-            >
-              Substack で購読する
-              <span aria-hidden>→</span>
-            </a>
-          </div>
-
-          <div className="space-y-6">
-            {[
-              {
-                label: "Reflect",
-                title: "いまの自分に近い記録を探す",
-                desc: "5 つの問いに静かに答えると、近い記録が並びます。",
-                href: "/reflect",
-              },
-              {
-                label: "Letters",
-                title: "静かなお便り",
-                desc: "書きたくなったら、ここに。返信は約束しませんが、必ず読みます。",
-                href: "/letters",
-              },
-              {
-                label: "About",
-                title: "このサイトについて",
-                desc: "解決策ではなく、整えている途中の話を残しておく場所。",
-                href: "/about",
-              },
-            ].map((it) => (
-              <Link
-                key={it.label}
-                href={it.href}
-                className="group block border-l-2 border-hair-line hover:border-gold pl-5 transition-colors"
-              >
-                <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
-                  {it.label}
-                </p>
-                <h4 className="mt-2 font-mincho text-lg font-medium leading-[1.5] text-ink group-hover:text-navy transition-colors">
-                  {it.title}
-                </h4>
-                <p className="mt-2 text-[13px] leading-[1.9] text-sub-gray">
-                  {it.desc}
-                </p>
-              </Link>
-            ))}
-          </div>
+        <div className="mt-6 sm:mt-8 bg-paper border border-hair-line p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <p className="text-[13px] sm:text-sm text-ink/80 leading-[1.85] max-w-[34rem]">
+            新しく書いた記録と、まだ記事にしていない覚え書きを、月に数本。
+            通知も煽りもありません。
+          </p>
+          <a
+            href={site.social.substack}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-gold !py-3 !px-6 text-xs shrink-0"
+          >
+            Substack で購読
+            <span aria-hidden>→</span>
+          </a>
         </div>
+
+        <p className="mt-5 text-[12px] text-sub-gray tracking-[0.04em]">
+          <Link
+            href="/reflect"
+            className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
+          >
+            Reflect — いまの自分に近い記録を探す
+          </Link>
+          <span className="mx-3 text-hair-line">/</span>
+          <Link
+            href="/letters"
+            className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
+          >
+            Letters — 静かなお便り
+          </Link>
+          <span className="mx-3 text-hair-line">/</span>
+          <Link
+            href="/about"
+            className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
+          >
+            About — このサイトについて
+          </Link>
+        </p>
       </section>
     </>
   );
