@@ -1,36 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A Manifesto — このメディアについて">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="このサイトについて">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FAFAF7"/>
-      <stop offset="100%" stop-color="#F4EEE2"/>
+      <stop offset="0%" stop-color="#F6EFE0"/>
+      <stop offset="100%" stop-color="#EBDEC1"/>
     </linearGradient>
-    <radialGradient id="warmth" cx="50%" cy="48%" r="55%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#FAFAF7" stop-opacity="0"/>
-    </radialGradient>
   </defs>
 
   <rect width="1600" height="1000" fill="url(#bg)"/>
-  <rect width="1600" height="1000" fill="url(#warmth)"/>
 
-  <!-- A manuscript page: three horizontal text-suggesting rules -->
-  <g stroke="#1A1A1A" stroke-opacity="0.32">
+  <g stroke="#141414" stroke-opacity="0.30">
     <line x1="380" y1="360" x2="1220" y2="360" stroke-width="0.7"/>
     <line x1="380" y1="460" x2="1080" y2="460" stroke-width="0.7"/>
     <line x1="380" y1="560" x2="1140" y2="560" stroke-width="0.7"/>
     <line x1="380" y1="660" x2="980"  y2="660" stroke-width="0.7"/>
   </g>
 
-  <!-- A single accent dot -->
-  <circle cx="380" cy="720" r="3" fill="#8B7355" fill-opacity="0.9"/>
-
-  <!-- Large roman numeral as art -->
-  <text x="120" y="900" font-family="Cormorant Garamond, Times, serif" font-size="170" letter-spacing="6" fill="#8B7355" fill-opacity="0.30">I.</text>
-
-  <!-- Eyebrow -->
-  <text x="80" y="120" font-family="Cormorant Garamond, Times, serif" font-size="22" letter-spacing="6" fill="#6B6B6B">A MANIFESTO</text>
-
-  <!-- Footer marks -->
-  <text x="1520" y="918" font-family="Cormorant Garamond, Times, serif" font-size="22" letter-spacing="4" fill="#8B7355" text-anchor="end">His Recoveries</text>
-  <text x="1520" y="120" font-family="Cormorant Garamond, Times, serif" font-style="italic" font-size="22" fill="#8B7355" text-anchor="end">— Nagi</text>
+  <circle cx="380" cy="720" r="3" fill="#B08755"/>
 </svg>

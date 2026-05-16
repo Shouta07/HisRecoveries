@@ -151,15 +151,12 @@ export default async function EventPage({ params }: { params: Params }) {
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-start">
           {/* Left: copy */}
           <div className="order-2 lg:order-1">
-            <div className="inline-flex items-center bg-navy text-white px-4 py-2 text-[11px] tracking-[0.2em] uppercase mb-6">
-              A Quiet Gathering
-              {isOpen && (
-                <>
-                  <span aria-hidden className="mx-2 text-gold-bright">·</span>
-                  <span className="text-gold-bright">受付中</span>
-                </>
-              )}
-            </div>
+            {isOpen && (
+              <span className="inline-flex items-center gap-1.5 text-xs text-gold mb-5">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold" />
+                受付中
+              </span>
+            )}
 
             <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-[1.5] text-ink">
               {ev.title}
@@ -265,60 +262,44 @@ export default async function EventPage({ params }: { params: Params }) {
 
         <aside className="order-1 lg:order-2">
           <div className="bg-paper border border-hair-line p-6 sm:p-7 lg:sticky lg:top-8">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-5">
-              Event Details
-            </p>
-            <dl className="grid grid-cols-[5rem_1fr] gap-y-4 gap-x-3 text-sm">
-              <dt className="text-[10px] tracking-[0.2em] text-sub-gray uppercase">
-                Date
-              </dt>
+            <h2 className="text-sm font-bold mb-5">開催情報</h2>
+            <dl className="grid grid-cols-[4rem_1fr] gap-y-4 gap-x-3 text-sm">
+              <dt className="text-xs text-sub-gray">日時</dt>
               <dd className="text-ink">
                 <div className="font-bold">{formatEventDate(ev.startsAt)}</div>
                 <div className="text-xs text-sub-gray mt-0.5">
                   {formatEventTimeRange(ev.startsAt, ev.endsAt)}
                 </div>
               </dd>
-              <dt className="text-[10px] tracking-[0.2em] text-sub-gray uppercase">
-                Where
-              </dt>
+              <dt className="text-xs text-sub-gray">場所</dt>
               <dd className="text-ink">{ev.location}</dd>
               {ev.audience && (
                 <>
-                  <dt className="text-[10px] tracking-[0.2em] text-sub-gray uppercase">
-                    For
-                  </dt>
+                  <dt className="text-xs text-sub-gray">対象</dt>
                   <dd className="text-ink">{ev.audience}</dd>
                 </>
               )}
               {ev.format && (
                 <>
-                  <dt className="text-[10px] tracking-[0.2em] text-sub-gray uppercase">
-                    Format
-                  </dt>
+                  <dt className="text-xs text-sub-gray">形式</dt>
                   <dd className="text-ink">{ev.format}</dd>
                 </>
               )}
               {ev.capacity && (
                 <>
-                  <dt className="text-[10px] tracking-[0.2em] text-sub-gray uppercase">
-                    Size
-                  </dt>
+                  <dt className="text-xs text-sub-gray">定員</dt>
                   <dd className="text-ink">{ev.capacity}</dd>
                 </>
               )}
               {ev.fee && (
                 <>
-                  <dt className="text-[10px] tracking-[0.2em] text-sub-gray uppercase">
-                    Fee
-                  </dt>
+                  <dt className="text-xs text-sub-gray">参加費</dt>
                   <dd className="text-ink">{ev.fee}</dd>
                 </>
               )}
               {statusLabel && (
                 <>
-                  <dt className="text-[10px] tracking-[0.2em] text-sub-gray uppercase">
-                    Status
-                  </dt>
+                  <dt className="text-xs text-sub-gray">状況</dt>
                   <dd className="text-ink">{statusLabel}</dd>
                 </>
               )}
@@ -337,7 +318,7 @@ export default async function EventPage({ params }: { params: Params }) {
                 }
                 className="btn-gold mt-7 w-full justify-center"
               >
-                β 参加応募
+                応募する
                 <span aria-hidden>→</span>
               </a>
             )}
@@ -349,16 +330,11 @@ export default async function EventPage({ params }: { params: Params }) {
       {isOpen && ev.applyUrl && (
         <section className="bg-navy text-white">
           <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-14 sm:py-16 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-            <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-gold-bright mb-3">
-                β 版参加者募集中
-              </p>
-              <p className="text-lg sm:text-xl font-bold">
-                少人数で実施しています。
-                <br className="sm:hidden" />
-                応募内容を確認の上、こちらから詳細をご案内します。
-              </p>
-            </div>
+            <p className="text-lg sm:text-xl font-bold leading-[1.6]">
+              少人数で実施しています。
+              <br className="sm:hidden" />
+              応募内容を確認の上、詳細をご案内します。
+            </p>
             <a
               href={ev.applyUrl}
               target={ev.applyUrl.startsWith("http") ? "_blank" : undefined}
@@ -369,7 +345,7 @@ export default async function EventPage({ params }: { params: Params }) {
               }
               className="btn-gold whitespace-nowrap"
             >
-              β 参加応募はこちら
+              応募する
               <span aria-hidden>→</span>
             </a>
           </div>

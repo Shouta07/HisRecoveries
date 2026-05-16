@@ -62,7 +62,6 @@ export default function CoverImage({
     );
   }
 
-  // Typographic poster — uses navy/gold/cream palette
   return (
     <div
       className={`${aspectClass[aspectRatio]} relative overflow-hidden bg-cream-deep ${className}`}
@@ -72,9 +71,7 @@ export default function CoverImage({
         className={`absolute inset-0 ${padding[size]} flex flex-col justify-between`}
       >
         {eyebrow && (
-          <div className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-navy/70">
-            {eyebrow}
-          </div>
+          <div className="text-xs text-navy/60">{eyebrow}</div>
         )}
         <div
           className={`font-mincho ${titleSize[size]} leading-[1.55] text-navy`}
@@ -87,11 +84,8 @@ export default function CoverImage({
         >
           {title}
         </div>
-        {meta && (
-          <div className="text-[11px] tracking-wider text-navy/70">{meta}</div>
-        )}
+        {meta && <div className="text-xs text-navy/60">{meta}</div>}
       </div>
-      <div className="absolute bottom-0 left-6 right-6 sm:left-8 sm:right-8 h-px bg-gold/50" />
     </div>
   );
 }

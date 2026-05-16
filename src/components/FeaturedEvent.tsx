@@ -18,23 +18,15 @@ export default function FeaturedEvent({ event }: Props) {
       aria-labelledby="featured-event"
       className="mx-auto max-w-[1200px] px-6 sm:px-10"
     >
-      {/* Navy tag — like the ad's "美容初心者の男性へ" */}
-      <div className="inline-flex items-center gap-2 bg-navy text-white px-4 py-2 text-[11px] tracking-[0.2em] uppercase mb-6">
-        Featured Gathering
-        {isOpen && (
-          <>
-            <span aria-hidden className="text-gold">·</span>
-            <span className="text-gold-bright">受付中</span>
-          </>
-        )}
-      </div>
+      <h2 className="text-xl sm:text-2xl font-bold mb-8 leading-[1.7]">
+        受付中のイベント
+      </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-8 lg:gap-12 items-start">
-        {/* Left: copy */}
         <div className="order-2 lg:order-1">
-          <h2
+          <h3
             id="featured-event"
-            className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-[1.5] text-ink"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-[1.5] text-ink"
           >
             <Link
               href={`/events/${event.slug}`}
@@ -42,51 +34,43 @@ export default function FeaturedEvent({ event }: Props) {
             >
               {event.title}
             </Link>
-          </h2>
+          </h3>
 
-          <p className="mt-6 font-mincho text-[1.0625rem] leading-[2.1] text-ink max-w-[34rem]">
+          <p className="mt-5 font-mincho text-[1.0625rem] leading-[2.1] text-ink max-w-[34rem]">
             {event.excerpt}
           </p>
 
-          {/* Feature chips like the ad's icon row */}
-          <ul className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-ink">
-            <li className="inline-flex items-center gap-2">
-              <Chip>{dateText}</Chip>
-            </li>
-            <li className="inline-flex items-center gap-2">
-              <Chip>{timeText}</Chip>
-            </li>
-            {event.format && (
-              <li className="inline-flex items-center gap-2">
-                <Chip>{event.format}</Chip>
-              </li>
-            )}
-          </ul>
-
-          <dl className="mt-8 grid grid-cols-[5.5rem_1fr] gap-y-3 gap-x-4 text-sm border-t border-hair-line pt-6">
-            <dt className="text-[10px] tracking-[0.3em] uppercase text-sub-gray">
-              Where
-            </dt>
+          <dl className="mt-8 grid grid-cols-[5rem_1fr] gap-y-3 gap-x-4 text-sm border-t border-hair-line pt-6">
+            <dt className="text-xs text-sub-gray">日時</dt>
+            <dd className="text-ink">
+              {dateText}
+              <span className="block text-xs text-sub-gray mt-0.5">
+                {timeText}
+              </span>
+            </dd>
+            <dt className="text-xs text-sub-gray">場所</dt>
             <dd className="text-ink">{event.location}</dd>
             {event.audience && (
               <>
-                <dt className="text-[10px] tracking-[0.3em] uppercase text-sub-gray">
-                  For
-                </dt>
+                <dt className="text-xs text-sub-gray">対象</dt>
                 <dd className="text-ink">{event.audience}</dd>
+              </>
+            )}
+            {event.format && (
+              <>
+                <dt className="text-xs text-sub-gray">形式</dt>
+                <dd className="text-ink">{event.format}</dd>
               </>
             )}
             {event.fee && (
               <>
-                <dt className="text-[10px] tracking-[0.3em] uppercase text-sub-gray">
-                  Fee
-                </dt>
+                <dt className="text-xs text-sub-gray">参加費</dt>
                 <dd className="text-ink">{event.fee}</dd>
               </>
             )}
           </dl>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             {isOpen && event.applyUrl && (
               <a
                 href={event.applyUrl}
@@ -100,21 +84,19 @@ export default function FeaturedEvent({ event }: Props) {
                 }
                 className="btn-gold"
               >
-                β 参加応募はこちら
+                応募する
                 <span aria-hidden>→</span>
               </a>
             )}
             <Link
               href={`/events/${event.slug}`}
-              className="inline-flex items-center gap-2 text-sm tracking-wider text-navy border-b border-navy/40 pb-1 hover:border-navy transition-colors"
+              className="text-sm text-navy border-b border-navy/40 pb-1 hover:border-navy transition-colors"
             >
-              詳細を読む
-              <span aria-hidden>→</span>
+              くわしく見る
             </Link>
           </div>
         </div>
 
-        {/* Right: cover */}
         <Link
           href={`/events/${event.slug}`}
           className="block order-1 lg:order-2 group"
@@ -124,7 +106,7 @@ export default function FeaturedEvent({ event }: Props) {
           <CoverImage
             src={event.cover}
             alt={event.coverAlt ?? `${event.title}（イベントカバー）`}
-            eyebrow={`A Quiet Gathering · ${dateText}`}
+            eyebrow={dateText}
             title={event.title}
             meta={event.location}
             aspectRatio="4/3"
@@ -134,13 +116,5 @@ export default function FeaturedEvent({ event }: Props) {
         </Link>
       </div>
     </section>
-  );
-}
-
-function Chip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center px-3 py-1 bg-paper border border-hair-line text-xs tracking-wider">
-      {children}
-    </span>
   );
 }
