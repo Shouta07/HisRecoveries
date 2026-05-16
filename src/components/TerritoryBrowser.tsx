@@ -37,7 +37,7 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
       <div className="flex items-baseline justify-between mb-6">
         <h2
           id="territories"
-          className="text-xl sm:text-2xl font-bold leading-[1.7]"
+          className="font-mincho text-2xl sm:text-3xl font-medium leading-[1.5]"
         >
           地形図
         </h2>

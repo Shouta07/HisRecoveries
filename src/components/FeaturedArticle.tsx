@@ -9,7 +9,7 @@ export default function FeaturedArticle({ article }: Props) {
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="group block bg-paper border border-hair-line hover:border-gold transition-colors"
+      className="group block bg-paper hover:bg-paper/95 transition-colors"
       aria-label={article.title}
     >
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-0 lg:gap-10 items-stretch">

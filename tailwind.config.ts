@@ -8,19 +8,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        cream: "#F6EFE0",
-        "cream-deep": "#ECDFC6",
+        cream: "#FAF6EB",
+        "cream-deep": "#F0E8D3",
         paper: "#FFFFFF",
-        ink: "#141414",
-        "sub-gray": "#6B6B6B",
-        "hair-line": "#E3D8C2",
+        ink: "#1A1A1A",
+        "sub-gray": "#757269",
+        "hair-line": "#E9E1CC",
         navy: "#1B2A47",
         "navy-deep": "#131F36",
-        gold: "#B08755",
-        "gold-bright": "#C39A6A",
-        // Legacy aliases kept so existing class names continue to work
-        "off-white": "#F6EFE0",
-        "quiet-brass": "#B08755",
+        gold: "#A17A4A",
+        "gold-bright": "#B88F5D",
+        // Legacy aliases
+        "off-white": "#FAF6EB",
+        "quiet-brass": "#A17A4A",
       },
       fontFamily: {
         sans: [

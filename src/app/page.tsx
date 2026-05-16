@@ -23,20 +23,22 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero — concise, direct */}
-      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-14 sm:pt-20 pb-16 sm:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-16 items-center">
+      {/* Hero — editorial cover */}
+      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-16 sm:pt-24 pb-20 sm:pb-28">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-12 lg:gap-20 items-center">
           <div>
             <p className="font-mincho text-sub-gray text-sm sm:text-base">
               {site.tagline}
             </p>
-            <h1 className="mt-3 logo-type text-5xl sm:text-7xl text-ink leading-none">
+            <h1 className="mt-4 logo-type text-6xl sm:text-8xl text-ink leading-[0.95]">
               {site.name}
             </h1>
-            <p className="mt-8 text-lg sm:text-xl leading-[1.85] text-ink max-w-[34rem]">
-              男性のコンプレックスを、当事者の声で記録するメディアです。
+            <p className="mt-10 font-mincho text-xl sm:text-2xl leading-[1.85] text-ink max-w-[32rem]">
+              男性のコンプレックスを、
+              <br className="hidden sm:inline" />
+              当事者の声で記録するメディア。
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
+            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
               <Link
                 href="/articles"
                 className="text-sm text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
@@ -69,7 +71,10 @@ export default function HomePage() {
           className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24"
         >
           <div className="flex items-baseline justify-between mb-6">
-            <h2 id="events" className="text-xl sm:text-2xl font-bold leading-[1.7]">
+            <h2
+              id="events"
+              className="font-mincho text-2xl sm:text-3xl font-medium leading-[1.5]"
+            >
               静かな集まり
             </h2>
             <Link
@@ -92,7 +97,10 @@ export default function HomePage() {
         className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24"
       >
         <div className="flex items-baseline justify-between mb-8">
-          <h2 id="latest" className="text-xl sm:text-2xl font-bold leading-[1.7]">
+          <h2
+            id="latest"
+            className="font-mincho text-2xl sm:text-3xl font-medium leading-[1.5]"
+          >
             最近の記録
           </h2>
           <Link
@@ -169,7 +177,10 @@ export default function HomePage() {
         className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24"
       >
         <div className="bg-paper border border-hair-line px-6 sm:px-12 lg:px-16 py-12 sm:py-14 max-w-reading">
-          <h2 id="manifesto" className="text-xl sm:text-2xl font-bold leading-[1.7]">
+          <h2
+            id="manifesto"
+            className="font-mincho text-2xl sm:text-3xl font-medium leading-[1.5]"
+          >
             このサイトについて
           </h2>
           <div className="mt-6 text-[1.0625rem] leading-[2.1] text-ink space-y-5">
@@ -193,16 +204,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Subscribe band */}
-      <section className="bg-navy text-white">
-        <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-14 sm:py-20 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 items-center">
+      {/* Subscribe — refined, on cream */}
+      <section
+        aria-labelledby="subscribe-cta"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-24 sm:pb-32"
+      >
+        <div className="border-t border-hair-line pt-14 sm:pt-20 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 items-center">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold leading-[1.5]">
+            <h2
+              id="subscribe-cta"
+              className="font-mincho text-2xl sm:text-4xl font-medium leading-[1.45] text-ink"
+            >
               月に一度か二度、
               <br />
               ニュースレターでお送りします。
             </h2>
-            <p className="mt-5 text-[0.9375rem] leading-[2] text-white/80 max-w-[34rem]">
+            <p className="mt-6 text-[0.9375rem] leading-[2] text-ink/75 max-w-[34rem]">
               新しく書いた記録と、まだ記事にしていない覚え書きを、お送りします。
               通知も煽りもありません。
             </p>
