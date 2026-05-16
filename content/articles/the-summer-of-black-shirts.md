@@ -3,7 +3,7 @@ title: "黒いシャツしか着なかった夏のこと"
 slug: "the-summer-of-black-shirts"
 category: "hyperhidrosis"
 publishedAt: "2026-05-13"
-status: "draft"
+status: "published"
 excerpt: "Tシャツの色を選べなかった頃。夏という季節が、ただ恐怖だった夏の話。"
 related: ["organizing-options-for-hyperhidrosis"]
 keywords:
