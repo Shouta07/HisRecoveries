@@ -120,8 +120,11 @@ export default async function ArticlePage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
-      <header className="mb-14">
-        <div className="text-xs tracking-widest text-sub-gray">
+      <header className="mb-16">
+        <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+          A Record
+        </p>
+        <div className="mt-5 text-xs tracking-widest text-sub-gray">
           <Link
             href={`/articles/category/${article.category}`}
             className="hover:text-ink transition-colors"
@@ -133,13 +136,16 @@ export default async function ArticlePage({ params }: { params: Params }) {
             {formatDate(article.publishedAt)}
           </time>
         </div>
-        <h1 className="mt-5 font-mincho text-3xl sm:text-4xl text-ink leading-[1.6]">
+        <h1 className="mt-5 font-mincho text-3xl sm:text-[2.5rem] text-ink leading-[1.55]">
           {article.title}
         </h1>
-        <div className="mt-8 text-sm text-sub-gray">
-          {site.author}
-          <span className="mx-2">·</span>
-          <span>{article.readingMinutes} 分</span>
+        <div className="mt-10 pt-6 border-t border-hair-line flex items-center justify-between text-sm text-sub-gray">
+          <span className="logo-type tracking-wider text-ink">
+            {site.author}
+          </span>
+          <span className="text-xs tracking-widest">
+            {article.readingMinutes} 分
+          </span>
         </div>
       </header>
 
@@ -174,7 +180,10 @@ export default async function ArticlePage({ params }: { params: Params }) {
       )}
 
       <footer className="mt-24 border-t border-hair-line pt-12 text-sm text-sub-gray">
-        <p>
+        <p className="logo-type text-base text-ink tracking-wider">
+          —— {site.author}
+        </p>
+        <p className="mt-4 font-mincho leading-[2]">
           連絡は{" "}
           <a
             href={`mailto:${site.email}`}

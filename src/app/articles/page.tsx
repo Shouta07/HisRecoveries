@@ -60,10 +60,16 @@ export default function ArticlesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <header className="mb-16">
-        <p className="text-xs tracking-widest text-sub-gray">ARTICLES</p>
-        <h1 className="mt-3 font-mincho text-3xl sm:text-4xl text-ink">
+        <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+          Articles — All Records
+        </p>
+        <h1 className="mt-5 font-mincho text-3xl sm:text-4xl text-ink leading-[1.4]">
           すべての記録
         </h1>
+        <p className="mt-6 font-mincho text-sub-gray text-[0.9375rem] leading-[2] max-w-[32rem]">
+          過去の事実、今の状態、自意識の残り方を、
+          新しいものから順に並べています。
+        </p>
       </header>
 
       <nav aria-label="categories" className="mb-12">
@@ -87,8 +93,10 @@ export default function ArticlesPage() {
       </nav>
 
       {articles.length === 0 ? (
-        <p className="text-sm text-sub-gray">
+        <p className="font-mincho text-sm text-sub-gray leading-[2]">
           記事はまもなく公開されます。
+          <br />
+          最初の数本は、いま静かに書かれているところです。
         </p>
       ) : (
         <div>

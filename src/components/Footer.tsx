@@ -5,10 +5,22 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="mt-32 border-t border-hair-line bg-off-white">
-      <div className="mx-auto max-w-reading px-6 py-16 text-sm text-sub-gray">
-        <div className="logo-type mb-8 text-lg text-ink">{site.name}</div>
+      <div className="mx-auto max-w-reading px-6 py-20 text-sm text-sub-gray">
+        {/* Parting line */}
+        <p className="font-mincho text-sub-gray text-[0.9375rem] leading-[2.1] max-w-[26rem]">
+          後ろから来る人の、
+          <br />
+          半歩先にだけ届けばいい。
+        </p>
 
-        <nav aria-label="footer">
+        <p className="logo-type mt-8 text-2xl text-ink tracking-wider">
+          {site.name}
+        </p>
+        <p className="mt-1 text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+          — {site.tagline} —
+        </p>
+
+        <nav aria-label="footer" className="mt-12">
           <ul className="flex flex-wrap gap-x-6 gap-y-3">
             <li>
               <Link href="/about" className="hover:text-ink transition-colors">
@@ -16,19 +28,36 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/articles" className="hover:text-ink transition-colors">
+              <Link
+                href="/articles"
+                className="hover:text-ink transition-colors"
+              >
                 Articles
               </Link>
             </li>
             <li>
-              <Link href="/subscribe" className="hover:text-ink transition-colors">
+              <Link
+                href="/subscribe"
+                className="hover:text-ink transition-colors"
+              >
                 Subscribe
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="hover:text-ink transition-colors">
+              <Link
+                href="/privacy"
+                className="hover:text-ink transition-colors"
+              >
                 Privacy
               </Link>
+            </li>
+            <li>
+              <a
+                href="/feed.xml"
+                className="hover:text-ink transition-colors"
+              >
+                Feed
+              </a>
             </li>
           </ul>
         </nav>
@@ -76,9 +105,13 @@ export default function Footer() {
           </li>
         </ul>
 
-        <div className="mt-12 flex flex-col gap-2 text-xs text-sub-gray/80">
-          <div>© {year} {site.name}</div>
-          <div className="text-[10px]">
+        <div className="mt-16 pt-8 border-t border-hair-line flex flex-col gap-2 text-xs text-sub-gray/80">
+          <p className="logo-type text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+            Observed — not proclaimed.
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3">
+            <span>© {year} {site.name}</span>
+            <span aria-hidden>·</span>
             <Link href="/legal" className="hover:text-ink transition-colors">
               特定商取引法に基づく表記
             </Link>

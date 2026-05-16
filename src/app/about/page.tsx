@@ -58,14 +58,20 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <header className="mb-16">
-        <p className="text-xs tracking-widest text-sub-gray">ABOUT</p>
-        <h1 className="mt-3 font-mincho text-3xl sm:text-4xl text-ink leading-relaxed">
+
+      <header className="mb-20">
+        <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+          About — A Quiet Record
+        </p>
+        <h1 className="mt-5 font-mincho text-3xl sm:text-4xl text-ink leading-[1.4]">
           このメディアについて
         </h1>
+        <p className="mt-6 font-mincho text-sub-gray text-base">
+          — {site.tagline} —
+        </p>
       </header>
 
-      <div className="font-mincho text-[1.0625rem] leading-[2.1] text-ink space-y-6">
+      <div className="font-mincho text-[1.0625rem] leading-[2.2] text-ink space-y-7">
         <p>
           His Recoveries は、いくつかのコンプレックスを抱えていた頃の経験と、
           それを超えてきた後の観察を、半歩先から記録するメディアです。
@@ -83,59 +89,106 @@ export default function AboutPage() {
           それだけで距離が縮まる、という経験を残したい。
         </p>
 
-        <h2 className="mt-16 font-mincho text-xl text-ink">扱う4つの領域</h2>
-        <ul className="space-y-3 pl-0">
-          <li>
-            <span className="text-sub-gray text-sm tracking-wider">01</span>
-            <span className="ml-3">多汗症</span>
-          </li>
-          <li>
-            <span className="text-sub-gray text-sm tracking-wider">02</span>
-            <span className="ml-3">ニキビ・ニキビ跡</span>
-          </li>
-          <li>
-            <span className="text-sub-gray text-sm tracking-wider">03</span>
-            <span className="ml-3">ワキガ（腋臭症）</span>
-          </li>
-          <li>
-            <span className="text-sub-gray text-sm tracking-wider">04</span>
-            <span className="ml-3">顔の自信のなさ</span>
-          </li>
-        </ul>
-
-        <h2 className="mt-16 font-mincho text-xl text-ink">書き手について</h2>
-        <p>
-          ペンネームは <span className="text-ink">Nagi</span>。
-          顔も実年齢も公開していません。
-          かつて当事者だった、というだけが書き手の資格です。
+        <p className="text-sub-gray pt-4">
+          <em className="not-italic logo-type tracking-wider text-base">
+            Observed — not proclaimed.
+          </em>
         </p>
 
-        <p>
-          半歩先から、後ろから来る人へ。
-          観察を主張に優先し、当事者の沈黙を尊重して書きます。
-        </p>
+        <div className="pt-12 mt-4">
+          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
+            I. Territories — 扱う4つの領域
+          </p>
+          <ol className="space-y-3">
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-8">I.</span>
+              <span>多汗症</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-8">II.</span>
+              <span>ニキビ・ニキビ跡</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-8">III.</span>
+              <span>ワキガ（腋臭症）</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-8">IV.</span>
+              <span>顔の自信のなさ</span>
+            </li>
+          </ol>
+        </div>
 
-        <h2 className="mt-16 font-mincho text-xl text-ink">編集の原則</h2>
-        <ol className="space-y-3 list-none pl-0 text-[1rem]">
-          <li>1. 叫ばない。整える。</li>
-          <li>2. 観察を主張に優先する。</li>
-          <li>3. 当事者の沈黙を尊重する。</li>
-          <li>4. リアクションを煽らない。</li>
-          <li>5. 万人に届くことを期待しない。</li>
-          <li>6. 教える前に、書き残す。</li>
-          <li>7. 半歩だけ先を歩く。</li>
-        </ol>
+        <div className="pt-12 mt-4">
+          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
+            II. The Writer — 書き手について
+          </p>
+          <p>
+            ペンネームは <span className="text-ink">Nagi</span>。
+            顔も実年齢も公開していません。
+            かつて当事者だった、というだけが書き手の資格です。
+          </p>
 
-        <h2 className="mt-16 font-mincho text-xl text-ink">連絡</h2>
-        <p>
-          ご連絡は{" "}
-          <a
-            href={`mailto:${site.email}`}
-            className="border-b border-hair-line hover:border-ink transition-colors"
-          >
-            {site.email}
-          </a>{" "}
-          まで。
+          <p className="mt-6">
+            半歩先から、後ろから来る人へ。
+            観察を主張に優先し、当事者の沈黙を尊重して書きます。
+          </p>
+        </div>
+
+        <div className="pt-12 mt-4">
+          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
+            III. Editorial Principles — 編集の原則
+          </p>
+          <ol className="space-y-4">
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-10">I.</span>
+              <span>叫ばない。整える。</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-10">II.</span>
+              <span>観察を主張に優先する。</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-10">III.</span>
+              <span>当事者の沈黙を尊重する。</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-10">IV.</span>
+              <span>リアクションを煽らない。</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-10">V.</span>
+              <span>万人に届くことを期待しない。</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-10">VI.</span>
+              <span>教える前に、書き残す。</span>
+            </li>
+            <li className="flex items-baseline gap-5">
+              <span className="logo-type text-sub-gray text-sm w-10">VII.</span>
+              <span>半歩だけ先を歩く。</span>
+            </li>
+          </ol>
+        </div>
+
+        <div className="pt-12 mt-4">
+          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
+            IV. Contact — 連絡
+          </p>
+          <p>
+            ご連絡は{" "}
+            <a
+              href={`mailto:${site.email}`}
+              className="border-b border-hair-line hover:border-ink transition-colors"
+            >
+              {site.email}
+            </a>{" "}
+            まで。
+          </p>
+        </div>
+
+        <p className="logo-type text-base text-ink mt-16 tracking-wider">
+          —— Nagi
         </p>
       </div>
     </div>
