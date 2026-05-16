@@ -23,6 +23,8 @@ export type EventFrontmatter = {
   fee?: string;
   applyUrl?: string;
   excerpt: string;
+  cover?: string;
+  coverAlt?: string;
   keywords?: string[];
 };
 
@@ -61,6 +63,8 @@ function parseFile(filename: string) {
     fee: data.fee,
     applyUrl: data.applyUrl,
     excerpt: data.excerpt ?? "",
+    cover: data.cover,
+    coverAlt: data.coverAlt,
     keywords: data.keywords ?? [],
   };
   return { fm, content };

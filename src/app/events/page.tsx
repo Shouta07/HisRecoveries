@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import EventCard from "@/components/EventCard";
 import {
   formatEventDate,
-  formatEventTimeRange,
   getPastEvents,
   getUpcomingEvents,
 } from "@/lib/events";
@@ -63,7 +63,7 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-reading px-6 pb-24 pt-20 sm:pt-28">
+    <div className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-24 pt-20 sm:pt-28">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
@@ -73,98 +73,76 @@ export default function EventsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
-      <header className="mb-16">
+      <header className="mb-20 max-w-reading">
         <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
           Events — Quiet Gatherings
         </p>
-        <h1 className="mt-5 font-mincho text-3xl sm:text-4xl text-ink leading-[1.4]">
+        <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.3]">
           静かな集まり
         </h1>
-        <p className="mt-6 font-mincho text-sub-gray text-[0.9375rem] leading-[2] max-w-[34rem]">
+        <p className="mt-8 font-mincho text-sub-gray text-[0.9375rem] sm:text-base leading-[2] max-w-[34rem]">
           His Recoveries が紹介する、少人数・半公開のイベント。
           叫ばず、競わず、「自然に整える」観点で設計された場だけを並べます。
         </p>
       </header>
 
       {/* Upcoming */}
-      <section aria-labelledby="upcoming" className="mb-24">
-        <h2
-          id="upcoming"
-          className="font-mincho text-sm tracking-widest text-sub-gray border-b border-hair-line pb-4 mb-8"
-        >
-          UPCOMING — これから
-        </h2>
+      <section aria-labelledby="upcoming" className="mb-28">
+        <div className="flex items-baseline justify-between mb-10">
+          <h2
+            id="upcoming"
+            className="text-[10px] tracking-[0.3em] uppercase text-sub-gray"
+          >
+            Upcoming — これから
+          </h2>
+          <span className="text-xs tracking-wider text-sub-gray/70">
+            {upcoming.length} 件
+          </span>
+        </div>
 
         {upcoming.length === 0 ? (
-          <p className="font-mincho text-sm text-sub-gray leading-[2]">
+          <p className="font-mincho text-sm text-sub-gray leading-[2] max-w-reading">
             予定されている集まりはまだありません。
             <br />
             最初の数回は、いま静かに準備されているところです。
           </p>
         ) : (
-          <ul>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-16">
             {upcoming.map((e) => (
-              <li
-                key={e.slug}
-                className="border-b border-hair-line py-10 last:border-b-0"
-              >
-                <Link
-                  href={`/events/${e.slug}`}
-                  className="group block"
-                >
-                  <div className="text-xs tracking-widest text-sub-gray">
-                    <time dateTime={e.startsAt}>
-                      {formatEventDate(e.startsAt)}
-                    </time>
-                    <span className="mx-2">·</span>
-                    <span>{formatEventTimeRange(e.startsAt, e.endsAt)}</span>
-                  </div>
-                  <h3 className="mt-3 font-mincho text-xl sm:text-2xl leading-relaxed text-ink group-hover:text-quiet-brass transition-colors">
-                    {e.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-loose text-sub-gray">
-                    {e.excerpt}
-                  </p>
-                  <p className="mt-3 text-xs text-sub-gray/80 tracking-wider">
-                    {e.location}
-                    {e.format && (
-                      <>
-                        <span className="mx-2">·</span>
-                        {e.format}
-                      </>
-                    )}
-                  </p>
-                </Link>
-              </li>
+              <EventCard key={e.slug} event={e} />
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
       {/* Past */}
       {past.length > 0 && (
-        <section aria-labelledby="past">
+        <section aria-labelledby="past" className="mt-32">
           <h2
             id="past"
-            className="font-mincho text-sm tracking-widest text-sub-gray border-b border-hair-line pb-4 mb-8"
+            className="text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-10"
           >
-            PAST — これまで
+            Past — これまで
           </h2>
-          <ul className="opacity-70">
+          <ul className="opacity-70 max-w-reading">
             {past.map((e) => (
               <li
                 key={e.slug}
                 className="border-b border-hair-line py-8 last:border-b-0"
               >
-                <Link href={`/events/${e.slug}`} className="group block">
-                  <div className="text-xs tracking-widest text-sub-gray">
-                    <time dateTime={e.startsAt}>
-                      {formatEventDate(e.startsAt)}
-                    </time>
-                  </div>
-                  <h3 className="mt-2 font-mincho text-lg leading-relaxed text-sub-gray group-hover:text-ink transition-colors">
+                <Link
+                  href={`/events/${e.slug}`}
+                  className="group block sm:flex sm:items-baseline sm:justify-between sm:gap-6"
+                >
+                  <h3 className="font-mincho text-lg leading-relaxed text-sub-gray group-hover:text-ink transition-colors">
                     {e.title}
                   </h3>
+                  <time
+                    dateTime={e.startsAt}
+                    className="mt-1 sm:mt-0 block text-xs tracking-widest text-sub-gray shrink-0"
+                  >
+                    {formatEventDate(e.startsAt)}
+                  </time>
                 </Link>
               </li>
             ))}

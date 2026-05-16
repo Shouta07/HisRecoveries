@@ -7,6 +7,7 @@ import {
   getRelatedArticles,
   formatDate,
 } from "@/lib/articles";
+import CoverImage from "@/components/CoverImage";
 import { categories, categoryLabel, site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -57,7 +58,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
     "@id": `${articleUrl}#article`,
     headline: article.title,
     description: article.excerpt,
-    image: [articleOgImage],
+    image: [article.cover ?? articleOgImage],
     datePublished: new Date(article.publishedAt).toISOString(),
     dateModified: new Date(
       article.updatedAt ?? article.publishedAt
@@ -174,6 +175,22 @@ export default async function ArticlePage({ params }: { params: Params }) {
         <h1 className="mt-5 font-mincho text-3xl sm:text-[2.5rem] text-ink leading-[1.55]">
           {article.title}
         </h1>
+
+        {article.cover && (
+          <div className="mt-12">
+            <CoverImage
+              src={article.cover}
+              alt={article.coverAlt ?? `${article.title}（記事カバー）`}
+              eyebrow={categoryLabel(article.category)}
+              title={article.title}
+              meta={formatDate(article.publishedAt)}
+              aspectRatio="21/9"
+              size="lg"
+              priority
+            />
+          </div>
+        )}
+
         <div className="mt-10 pt-6 border-t border-hair-line flex items-center justify-between text-sm text-sub-gray">
           <span className="logo-type tracking-wider text-ink">
             {site.author}

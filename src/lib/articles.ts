@@ -19,6 +19,8 @@ export type ArticleFrontmatter = {
   status?: "draft" | "published";
   related?: string[];
   keywords?: string[];
+  cover?: string;
+  coverAlt?: string;
 };
 
 export type Article = ArticleFrontmatter & {
@@ -61,6 +63,8 @@ function parseFile(filename: string) {
     status: data.status ?? "published",
     related: data.related ?? [],
     keywords: data.keywords ?? [],
+    cover: data.cover,
+    coverAlt: data.coverAlt,
   };
   return { frontmatter, content };
 }

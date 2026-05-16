@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
-import {
-  getUpcomingEvents,
-  formatEventDate,
-  formatEventTimeRange,
-} from "@/lib/events";
+import EventCard from "@/components/EventCard";
+import { getUpcomingEvents } from "@/lib/events";
 import { site } from "@/lib/site";
 
 export default function HomePage() {
@@ -152,56 +149,25 @@ export default function HomePage() {
       {/* Upcoming gatherings */}
       {upcomingEvents.length > 0 && (
         <section aria-labelledby="gatherings" className="mb-32">
-          <div className="flex items-baseline justify-between border-b border-hair-line pb-4">
+          <div className="flex items-baseline justify-between mb-10">
             <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
               IV. Quiet Gatherings
             </p>
             <Link
               href="/events"
-              className="text-xs text-sub-gray hover:text-ink transition-colors"
+              className="inline-flex items-center gap-2 text-xs text-sub-gray hover:text-ink transition-colors"
             >
-              すべて見る →
+              すべて見る <span aria-hidden>→</span>
             </Link>
           </div>
           <h2 id="gatherings" className="sr-only">
             静かな集まり
           </h2>
-          <ul>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-16">
             {upcomingEvents.map((e) => (
-              <li
-                key={e.slug}
-                className="border-b border-hair-line py-10 last:border-b-0"
-              >
-                <Link
-                  href={`/events/${e.slug}`}
-                  className="group block"
-                >
-                  <div className="text-xs tracking-widest text-sub-gray">
-                    <time dateTime={e.startsAt}>
-                      {formatEventDate(e.startsAt)}
-                    </time>
-                    <span className="mx-2">·</span>
-                    <span>{formatEventTimeRange(e.startsAt, e.endsAt)}</span>
-                  </div>
-                  <h3 className="mt-3 font-mincho text-xl sm:text-2xl leading-relaxed text-ink group-hover:text-quiet-brass transition-colors">
-                    {e.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-loose text-sub-gray">
-                    {e.excerpt}
-                  </p>
-                  <p className="mt-3 text-xs text-sub-gray/80 tracking-wider">
-                    {e.location}
-                    {e.format && (
-                      <>
-                        <span className="mx-2">·</span>
-                        {e.format}
-                      </>
-                    )}
-                  </p>
-                </Link>
-              </li>
+              <EventCard key={e.slug} event={e} />
             ))}
-          </ul>
+          </div>
         </section>
       )}
 

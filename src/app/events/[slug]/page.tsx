@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import CoverImage from "@/components/CoverImage";
 import {
   formatEventDate,
   formatEventDateTime,
@@ -48,12 +49,7 @@ export default async function EventPage({ params }: { params: Params }) {
   if (!ev) notFound();
 
   const url = `${site.url}/events/${ev.slug}`;
-  const eventStatusMap: Record<string, string> = {
-    open: "https://schema.org/EventScheduled",
-    closed: "https://schema.org/EventScheduled",
-    completed: "https://schema.org/EventScheduled",
-    draft: "https://schema.org/EventScheduled",
-  };
+  const ogImage = `${url}/opengraph-image`;
 
   const eventLd = {
     "@context": "https://schema.org",
@@ -64,7 +60,7 @@ export default async function EventPage({ params }: { params: Params }) {
     startDate: ev.startsAt,
     endDate: ev.endsAt ?? ev.startsAt,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    eventStatus: eventStatusMap[ev.status] ?? "https://schema.org/EventScheduled",
+    eventStatus: "https://schema.org/EventScheduled",
     inLanguage: site.language,
     location: {
       "@type": "Place",
@@ -75,7 +71,7 @@ export default async function EventPage({ params }: { params: Params }) {
         addressCountry: "JP",
       },
     },
-    image: [`${url}/opengraph-image`],
+    image: [ev.cover ?? ogImage],
     organizer: {
       "@type": "Organization",
       "@id": `${site.url}/#publisher`,
@@ -114,7 +110,7 @@ export default async function EventPage({ params }: { params: Params }) {
           : "";
 
   return (
-    <article className="mx-auto max-w-reading px-6 pb-24 pt-12 sm:pt-20">
+    <article className="pb-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventLd) }}
@@ -124,47 +120,64 @@ export default async function EventPage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
-      {/* Breadcrumb */}
-      <nav
-        aria-label="breadcrumb"
-        className="mb-12 text-[11px] tracking-widest text-sub-gray"
-      >
-        <ol className="flex flex-wrap items-center gap-2">
-          <li>
-            <Link href="/" className="hover:text-ink transition-colors uppercase">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden>—</li>
-          <li>
-            <Link
-              href="/events"
-              className="hover:text-ink transition-colors uppercase"
-            >
-              Events
-            </Link>
-          </li>
-        </ol>
-      </nav>
+      {/* Hero cover — Aesop-style, full-width on mobile */}
+      <header className="mx-auto max-w-[1200px] px-0 sm:px-10 pt-6 sm:pt-16">
+        {/* Breadcrumb */}
+        <nav
+          aria-label="breadcrumb"
+          className="px-6 sm:px-0 mb-8 text-[11px] tracking-widest text-sub-gray"
+        >
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link
+                href="/"
+                className="hover:text-ink transition-colors uppercase"
+              >
+                Home
+              </Link>
+            </li>
+            <li aria-hidden>—</li>
+            <li>
+              <Link
+                href="/events"
+                className="hover:text-ink transition-colors uppercase"
+              >
+                Events
+              </Link>
+            </li>
+          </ol>
+        </nav>
 
-      <header className="mb-14">
-        <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
-          A Quiet Gathering
-        </p>
-        <h1 className="mt-5 font-mincho text-3xl sm:text-[2.5rem] text-ink leading-[1.55]">
-          {ev.title}
-        </h1>
-        <p className="mt-6 font-mincho text-sub-gray text-[0.9375rem] leading-[2]">
-          {ev.excerpt}
-        </p>
+        <CoverImage
+          src={ev.cover}
+          alt={ev.coverAlt ?? `${ev.title}（イベントカバー）`}
+          eyebrow={`A Quiet Gathering · ${formatEventDate(ev.startsAt)}`}
+          title={ev.title}
+          meta={ev.location}
+          aspectRatio="21/9"
+          size="lg"
+          priority
+        />
+
+        <div className="mt-12 px-6 sm:px-0 max-w-reading mx-auto sm:mx-0">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-sub-gray">
+            A Quiet Gathering
+          </p>
+          <h1 className="mt-5 font-mincho text-3xl sm:text-[2.75rem] text-ink leading-[1.45]">
+            {ev.title}
+          </h1>
+          <p className="mt-6 font-mincho text-sub-gray text-[1rem] leading-[2.1]">
+            {ev.excerpt}
+          </p>
+        </div>
       </header>
 
       {/* Details panel */}
       <section
         aria-label="event details"
-        className="border-y border-hair-line py-8 mb-14"
+        className="mx-auto max-w-reading px-6 sm:px-10 mt-16 border-y border-hair-line py-8"
       >
-        <dl className="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-y-4 sm:gap-y-3 gap-x-6 text-sm">
+        <dl className="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-y-5 sm:gap-y-4 gap-x-6 text-sm">
           <dt className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
             Date
           </dt>
@@ -227,62 +240,68 @@ export default async function EventPage({ params }: { params: Params }) {
         </dl>
       </section>
 
-      <div
-        className="article-body font-mincho"
-        dangerouslySetInnerHTML={{ __html: ev.contentHtml }}
-      />
+      <div className="mx-auto max-w-reading px-6 sm:px-10 mt-16">
+        <div
+          className="article-body font-mincho"
+          dangerouslySetInnerHTML={{ __html: ev.contentHtml }}
+        />
 
-      {/* Apply CTA */}
-      {ev.status === "open" && ev.applyUrl && (
-        <section
-          aria-label="apply"
-          className="mt-20 border-t border-hair-line pt-12"
-        >
-          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-6">
-            Apply — 応募
-          </p>
-          <p className="font-mincho text-[0.9375rem] leading-[2] text-ink max-w-[32rem] mb-8">
-            まずは簡単な応募フォームから、現在の悩みと参加目的をお知らせください。
-            内容を確認の上、こちらから詳細をご案内します。
-          </p>
-          <a
-            href={ev.applyUrl}
-            target={ev.applyUrl.startsWith("http") ? "_blank" : undefined}
-            rel={ev.applyUrl.startsWith("http") ? "noopener noreferrer" : undefined}
-            className="inline-block border border-ink px-10 py-4 text-sm tracking-[0.2em] uppercase text-ink hover:bg-ink hover:text-off-white transition-colors"
+        {ev.status === "open" && ev.applyUrl && (
+          <section
+            aria-label="apply"
+            className="mt-20 border-t border-hair-line pt-12"
           >
-            β 参加応募はこちら
-          </a>
-        </section>
-      )}
+            <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-6">
+              Apply — 応募
+            </p>
+            <p className="font-mincho text-[0.9375rem] leading-[2] text-ink max-w-[32rem] mb-8">
+              まずは簡単な応募フォームから、現在の悩みと参加目的をお知らせください。
+              内容を確認の上、こちらから詳細をご案内します。
+            </p>
+            <a
+              href={ev.applyUrl}
+              target={ev.applyUrl.startsWith("http") ? "_blank" : undefined}
+              rel={
+                ev.applyUrl.startsWith("http")
+                  ? "noopener noreferrer"
+                  : undefined
+              }
+              className="inline-flex items-center gap-3 text-sm tracking-[0.2em] uppercase text-ink border-b border-ink pb-1 hover:text-quiet-brass hover:border-quiet-brass transition-colors"
+            >
+              β 参加応募はこちら
+              <span aria-hidden>→</span>
+            </a>
+          </section>
+        )}
 
-      <footer className="mt-24 border-t border-hair-line pt-12 text-sm text-sub-gray">
-        <p className="logo-type text-base text-ink tracking-wider">
-          —— {site.author}
-        </p>
-        <p className="mt-4 font-mincho leading-[2]">
-          ご質問は{" "}
-          <a
-            href={`mailto:${site.email}`}
-            className="border-b border-hair-line hover:border-ink transition-colors"
-          >
-            {site.email}
-          </a>
-          、他の集まりは{" "}
-          <Link
-            href="/events"
-            className="border-b border-hair-line hover:border-ink transition-colors"
-          >
-            Events
-          </Link>
-          。
-        </p>
-        <p className="mt-6 text-xs text-sub-gray/70 leading-[1.8]">
-          ※ 本サービスは効果を保証するものではありません。個人差があります。
-          <br />
-          開催日時の最終確定は {formatEventDateTime(ev.startsAt)} です。
-        </p>
-      </footer>
+        <footer className="mt-24 border-t border-hair-line pt-12 text-sm text-sub-gray">
+          <p className="logo-type text-base text-ink tracking-wider">
+            —— {site.author}
+          </p>
+          <p className="mt-4 font-mincho leading-[2]">
+            ご質問は{" "}
+            <a
+              href={`mailto:${site.email}`}
+              className="border-b border-hair-line hover:border-ink transition-colors"
+            >
+              {site.email}
+            </a>
+            、他の集まりは{" "}
+            <Link
+              href="/events"
+              className="border-b border-hair-line hover:border-ink transition-colors"
+            >
+              Events
+            </Link>
+            。
+          </p>
+          <p className="mt-6 text-xs text-sub-gray/70 leading-[1.8]">
+            ※ 本サービスは効果を保証するものではありません。個人差があります。
+            <br />
+            開催日時の確定情報は {formatEventDateTime(ev.startsAt)} です。
+          </p>
+        </footer>
+      </div>
     </article>
   );
 }

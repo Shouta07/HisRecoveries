@@ -3,122 +3,81 @@ import { site } from "@/lib/site";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+
   return (
-    <footer className="mt-32 border-t border-hair-line bg-off-white">
-      <div className="mx-auto max-w-reading px-6 py-20 text-sm text-sub-gray">
+    <footer className="mt-40 border-t border-hair-line bg-off-white">
+      <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-24">
         {/* Parting line */}
-        <p className="font-mincho text-sub-gray text-[0.9375rem] leading-[2.1] max-w-[26rem]">
+        <p className="font-mincho text-ink text-[1.0625rem] sm:text-xl leading-[2] max-w-[28rem]">
           後ろから来る人の、
           <br />
           半歩先にだけ届けばいい。
         </p>
 
-        <p className="logo-type mt-8 text-2xl text-ink tracking-wider">
-          {site.name}
-        </p>
-        <p className="mt-1 text-[10px] tracking-[0.3em] text-sub-gray uppercase">
-          — {site.tagline} —
-        </p>
+        {/* Columns */}
+        <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-y-12 gap-x-8 text-sm">
+          <FooterColumn label="Read">
+            <FooterLink href="/articles">記事</FooterLink>
+            <FooterLink href="/articles/category/philosophy">
+              哲学・思想
+            </FooterLink>
+            <FooterLink href="/articles/category/hyperhidrosis">
+              多汗症
+            </FooterLink>
+            <FooterLink href="/articles/category/acne">ニキビ</FooterLink>
+            <FooterLink href="/articles/category/bromhidrosis">
+              ワキガ
+            </FooterLink>
+            <FooterLink href="/articles/category/face">顔</FooterLink>
+          </FooterColumn>
 
-        <nav aria-label="footer" className="mt-12">
-          <ul className="flex flex-wrap gap-x-6 gap-y-3">
-            <li>
-              <Link href="/about" className="hover:text-ink transition-colors">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/articles"
-                className="hover:text-ink transition-colors"
-              >
-                Articles
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/events"
-                className="hover:text-ink transition-colors"
-              >
-                Events
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/subscribe"
-                className="hover:text-ink transition-colors"
-              >
-                Subscribe
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/privacy"
-                className="hover:text-ink transition-colors"
-              >
-                Privacy
-              </Link>
-            </li>
-            <li>
-              <a
-                href="/feed.xml"
-                className="hover:text-ink transition-colors"
-              >
-                Feed
-              </a>
-            </li>
-          </ul>
-        </nav>
+          <FooterColumn label="Gather">
+            <FooterLink href="/events">Events</FooterLink>
+          </FooterColumn>
 
-        <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs">
-          <li>
-            <a
-              href={site.social.threads}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors"
-            >
+          <FooterColumn label="About">
+            <FooterLink href="/about">このメディアについて</FooterLink>
+            <FooterLink href="/subscribe">Subscribe</FooterLink>
+            <FooterExternalLink href={`mailto:${site.email}`}>
+              連絡
+            </FooterExternalLink>
+            <FooterLink href="/feed.xml">Atom Feed</FooterLink>
+          </FooterColumn>
+
+          <FooterColumn label="Elsewhere">
+            <FooterExternalLink href={site.social.threads}>
               Threads
-            </a>
-          </li>
-          <li>
-            <a
-              href={site.social.x}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors"
-            >
-              X
-            </a>
-          </li>
-          <li>
-            <a
-              href={site.social.note}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors"
-            >
-              note
-            </a>
-          </li>
-          <li>
-            <a
-              href={site.social.substack}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors"
-            >
+            </FooterExternalLink>
+            <FooterExternalLink href={site.social.x}>X</FooterExternalLink>
+            <FooterExternalLink href={site.social.note}>note</FooterExternalLink>
+            <FooterExternalLink href={site.social.substack}>
               Substack
-            </a>
-          </li>
-        </ul>
+            </FooterExternalLink>
+          </FooterColumn>
+        </div>
 
-        <div className="mt-16 pt-8 border-t border-hair-line flex flex-col gap-2 text-xs text-sub-gray/80">
-          <p className="logo-type text-[10px] tracking-[0.3em] text-sub-gray uppercase">
-            Observed — not proclaimed.
-          </p>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3">
+        {/* Brand mark + legal */}
+        <div className="mt-20 pt-10 border-t border-hair-line">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+            <div>
+              <p className="logo-type text-3xl sm:text-4xl text-ink tracking-wider">
+                {site.name}
+              </p>
+              <p className="mt-2 text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+                — {site.tagline} —
+              </p>
+            </div>
+            <p className="logo-type text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+              Observed — not proclaimed.
+            </p>
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-sub-gray/80">
             <span>© {year} {site.name}</span>
+            <span aria-hidden>·</span>
+            <Link href="/privacy" className="hover:text-ink transition-colors">
+              プライバシーポリシー
+            </Link>
             <span aria-hidden>·</span>
             <Link href="/legal" className="hover:text-ink transition-colors">
               特定商取引法に基づく表記
@@ -127,5 +86,59 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-5">
+        {label}
+      </p>
+      <ul className="space-y-3 text-[13px] text-ink/90">{children}</ul>
+    </div>
+  );
+}
+
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li>
+      <Link href={href} className="hover:text-quiet-brass transition-colors">
+        {children}
+      </Link>
+    </li>
+  );
+}
+
+function FooterExternalLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:text-quiet-brass transition-colors"
+      >
+        {children}
+      </a>
+    </li>
   );
 }
