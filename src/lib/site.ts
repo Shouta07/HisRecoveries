@@ -2,7 +2,7 @@ export const site = {
   name: "His Recoveries",
   tagline: "半歩先からの記録",
   description:
-    "多汗症・ニキビ・ワキガ・顔。複数のコンプレックスを超えてきた経験を、半歩先から静かに記録する。叫ばず、整える。",
+    "Quiet Grooming — 叫ばない、整える。言葉にされにくい男性の身体と自意識のための、記録と整理と集まりの場所。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "Nagi",

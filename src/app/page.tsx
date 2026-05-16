@@ -25,8 +25,8 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero — editorial cover */}
-      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-16 sm:pt-24 pb-20 sm:pb-28">
+      {/* Hero — philosophy + brand + three entries */}
+      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-16 sm:pt-24 pb-12 sm:pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-12 lg:gap-20 items-center">
           <div>
             <p className="font-mincho text-sub-gray text-sm sm:text-base">
@@ -35,29 +35,52 @@ export default function HomePage() {
             <h1 className="mt-4 logo-type text-6xl sm:text-8xl text-ink leading-[0.95]">
               {site.name}
             </h1>
-            <p className="mt-10 font-mincho text-xl sm:text-2xl leading-[1.85] text-ink max-w-[32rem]">
-              男性のコンプレックスを、
-              <br className="hidden sm:inline" />
-              当事者の声で記録するメディア。
+            <p className="mt-10 font-mincho text-2xl sm:text-3xl leading-[1.55] text-ink max-w-[32rem]">
+              Quiet Grooming.
+              <br />
+              <span className="text-ink/85">叫ばない、整える。</span>
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
-              <Link
-                href="/articles"
-                className="text-sm text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
-              >
-                記録を読む →
-              </Link>
-              <Link
-                href="/reflect"
-                className="text-sm text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
-              >
-                いまの自分を整理する →
-              </Link>
-            </div>
+            <p className="mt-7 text-base sm:text-lg leading-[2] text-ink/80 max-w-[34rem]">
+              言葉にされにくい男性の身体と自意識のための、
+              <br className="hidden sm:inline" />
+              <span className="text-ink">記録</span> と{" "}
+              <span className="text-ink">整理</span> と{" "}
+              <span className="text-ink">集まり</span> の場所。
+            </p>
           </div>
           <div className="hidden lg:block">
             <HeroMark />
           </div>
+        </div>
+      </section>
+
+      {/* Three entries — philosophy in action */}
+      <section
+        aria-label="3 つのかたち"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-hair-line">
+          <Pillar
+            label="Records"
+            ja="記録"
+            description="月に数本、当事者の声で書かれた記録。読みやすい順に並んでいます。"
+            href="/articles"
+            cta="読む"
+          />
+          <Pillar
+            label="Reflect"
+            ja="整える"
+            description="5 つの問いに静かに答えると、いまの自分に近い記録が並びます。"
+            href="/reflect"
+            cta="整える"
+          />
+          <Pillar
+            label="Gatherings"
+            ja="集まり"
+            description="少人数・半公開で行う、整える時間。Quiet Gatherings として。"
+            href="/events"
+            cta="見る"
+          />
         </div>
       </section>
 
@@ -231,6 +254,41 @@ export default function HomePage() {
         </div>
       </section>
     </>
+  );
+}
+
+function Pillar({
+  label,
+  ja,
+  description,
+  href,
+  cta,
+}: {
+  label: string;
+  ja: string;
+  description: string;
+  href: string;
+  cta: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group block border-b sm:border-b-0 sm:border-r border-hair-line last:border-r-0 p-8 sm:p-10 hover:bg-paper/60 transition-colors"
+    >
+      <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
+        {label}
+      </p>
+      <h2 className="mt-3 font-mincho text-2xl font-medium leading-[1.45] text-ink group-hover:text-navy transition-colors">
+        {ja}
+      </h2>
+      <p className="mt-4 text-sm leading-[1.95] text-sub-gray">
+        {description}
+      </p>
+      <span className="mt-5 inline-flex items-center gap-2 text-sm text-navy border-b border-gold pb-0.5">
+        {cta}
+        <span aria-hidden>→</span>
+      </span>
+    </Link>
   );
 }
 
