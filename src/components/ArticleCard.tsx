@@ -21,10 +21,10 @@ export default function ArticleCard({
     return (
       <Link
         href={`/articles/${article.slug}`}
-        className="group block"
+        className="group block card-lift"
         aria-label={article.title}
       >
-        <div className="overflow-hidden">
+        <div className="cover-zoom">
           <CoverImage
             src={article.cover}
             alt={article.coverAlt ?? `${article.title}`}

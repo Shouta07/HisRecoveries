@@ -58,15 +58,17 @@ function Single({ event }: { event: EventFrontmatter }) {
         aria-hidden
         tabIndex={-1}
       >
-        <CoverImage
-          src={event.cover}
-          alt={event.coverAlt ?? `${event.title}（イベントカバー）`}
-          eyebrow={dateText}
-          title={event.title}
-          meta={event.location}
-          aspectRatio="16/10"
-          size="md"
-        />
+        <div className="cover-zoom">
+          <CoverImage
+            src={event.cover}
+            alt={event.coverAlt ?? `${event.title}（イベントカバー）`}
+            eyebrow={dateText}
+            title={event.title}
+            meta={event.location}
+            aspectRatio="16/10"
+            size="md"
+          />
+        </div>
       </Link>
 
       <div className="min-w-0">
@@ -146,7 +148,7 @@ function CardEvent({ event }: { event: EventFrontmatter }) {
   return (
     <Link
       href={`/events/${event.slug}`}
-      className="group block"
+      className="group block card-lift"
       aria-label={event.title}
     >
       <CoverImage
