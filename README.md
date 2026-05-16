@@ -110,16 +110,52 @@ NEXT_PUBLIC_SITE_URL=https://hisrecoveries.com
 
 ## デプロイ（Vercel）
 
-1. GitHub リポジトリを Vercel に連携する
-2. 環境変数 `NEXT_PUBLIC_SITE_URL` を本番ドメインで設定する
-3. 「Deploy」をクリックする
+**ブランチ運用ポリシー: `main` を唯一の本番ブランチとする。**
+
+- `main` への push が、そのまま本番デプロイになります。
+- フィーチャーブランチ・PR は使いません（必要になれば運用を見直す）。
+- 編集・記事追加・コード変更は、すべて `main` に直接コミットして push。
+
+### 初回セットアップ
+
+1. https://vercel.com/new で本リポジトリ（`Shouta07/HisRecoveries`）を Import
+2. **Framework Preset**: Next.js（自動検出）
+3. **Environment Variables** に以下を追加:
+   - `NEXT_PUBLIC_SITE_URL` = `https://hisrecoveries.com`
+4. 「Deploy」
+
+### 本番ブランチを `main` に固定する設定
+
+Vercel プロジェクト作成後、以下を **必ず確認**:
+
+1. **Settings → Git → Production Branch**: `main`（既定でこうなっているはず）
+2. **Settings → Git → Ignored Build Step**: 空のままで OK
+3. **Settings → Git → Deploy Hooks**: 不要
+4. **Settings → Git → Connected Git Repository**:
+   - **Preview Deployments**: 「Only the Production Branch」を選択
+     （これで `main` 以外への push では Preview Deployment が走らなくなる）
+
+`vercel.json` の `git.deploymentEnabled` でも保険として制御していますが、
+ダッシュボード側の「Only the Production Branch」設定が決定的です。
 
 ### 独自ドメイン
 
 1. Vercel プロジェクトの **Settings → Domains** で `hisrecoveries.com` を追加
 2. ドメインレジストラ側で、表示された DNS レコード（A / CNAME）を設定
 3. Vercel が自動で HTTPS を有効化するのを待つ（数分〜数十分）
-4. `hisrecoveries.jp` も同じプロジェクトに追加し、`hisrecoveries.com` へのリダイレクトとして設定
+4. `hisrecoveries.jp` も同じプロジェクトに追加し、`hisrecoveries.com` への
+   **Redirect** として設定（Vercel の Domains 画面で Redirect 設定可能）
+
+### 日々の運用
+
+```bash
+git checkout main
+# 編集...
+git add .
+git commit -m "Add: ..."
+git push origin main
+# → 数十秒〜1分で本番反映
+```
 
 ---
 
