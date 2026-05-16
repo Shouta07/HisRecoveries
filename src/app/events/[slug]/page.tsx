@@ -121,81 +121,76 @@ export default async function EventPage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
-      {/* Navy hero — LP-style headline + cover */}
-      <section className="bg-navy text-white">
-        <div className="mx-auto max-w-[1200px] grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-0">
-          <div className="px-6 sm:px-10 py-12 sm:py-16 lg:py-20 lg:pr-12 order-2 lg:order-1">
-            {/* Breadcrumb */}
-            <nav
-              aria-label="breadcrumb"
-              className="mb-6 text-[11px] tracking-widest"
-            >
-              <ol className="flex flex-wrap items-center gap-2 text-white/70">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-gold-bright transition-colors uppercase"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden>—</li>
-                <li>
-                  <Link
-                    href="/events"
-                    className="hover:text-gold-bright transition-colors uppercase"
-                  >
-                    Events
-                  </Link>
-                </li>
-              </ol>
-            </nav>
+      {/* Hero on cream — like the LP */}
+      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-10 sm:pt-14 pb-16">
+        <nav
+          aria-label="breadcrumb"
+          className="mb-8 text-[11px] tracking-widest text-sub-gray"
+        >
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link
+                href="/"
+                className="hover:text-navy transition-colors uppercase"
+              >
+                Home
+              </Link>
+            </li>
+            <li aria-hidden>—</li>
+            <li>
+              <Link
+                href="/events"
+                className="hover:text-navy transition-colors uppercase"
+              >
+                Events
+              </Link>
+            </li>
+          </ol>
+        </nav>
 
-            <div className="flex items-center gap-3 flex-wrap mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-start">
+          {/* Left: copy */}
+          <div className="order-2 lg:order-1">
+            <div className="inline-flex items-center bg-navy text-white px-4 py-2 text-[11px] tracking-[0.2em] uppercase mb-6">
+              A Quiet Gathering
               {isOpen && (
-                <span className="inline-flex items-center gap-1.5 border border-gold text-gold px-2.5 py-1 text-[10px] tracking-[0.2em] uppercase">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold" />
-                  受付中
-                </span>
+                <>
+                  <span aria-hidden className="mx-2 text-gold-bright">·</span>
+                  <span className="text-gold-bright">受付中</span>
+                </>
               )}
-              <p className="text-[10px] tracking-[0.3em] uppercase text-white/65">
-                A Quiet Gathering
-              </p>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-[1.4]">
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-[1.5] text-ink">
               {ev.title}
             </h1>
-            <p className="mt-6 font-mincho text-[1.0625rem] leading-[2] text-white/90 max-w-[34rem]">
+
+            <p className="mt-6 font-mincho text-[1.0625rem] leading-[2.1] text-ink max-w-[34rem]">
               {ev.excerpt}
             </p>
 
             {/* Feature chips */}
-            <ul className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm border-t border-white/15 pt-6">
-              <li className="inline-flex items-center gap-2 text-white/85">
-                <Icon name="calendar" />
-                {formatEventDate(ev.startsAt)}
-              </li>
-              <li className="inline-flex items-center gap-2 text-white/85">
-                <Icon name="clock" />
-                {formatEventTimeRange(ev.startsAt, ev.endsAt)}
-              </li>
+            <ul className="mt-8 flex flex-wrap items-center gap-2 text-sm text-ink">
+              <Chip>
+                <Icon name="calendar" /> {formatEventDate(ev.startsAt)}
+              </Chip>
+              <Chip>
+                <Icon name="clock" /> {formatEventTimeRange(ev.startsAt, ev.endsAt)}
+              </Chip>
               {ev.format && (
-                <li className="inline-flex items-center gap-2 text-white/85">
-                  <Icon name="users" />
-                  {ev.format}
-                </li>
+                <Chip>
+                  <Icon name="users" /> {ev.format}
+                </Chip>
               )}
               {ev.audience && (
-                <li className="inline-flex items-center gap-2 text-white/85">
-                  <Icon name="book" />
-                  {ev.audience}
-                </li>
+                <Chip>
+                  <Icon name="book" /> {ev.audience}
+                </Chip>
               )}
             </ul>
 
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
-              {isOpen && ev.applyUrl && (
+            {isOpen && ev.applyUrl && (
+              <div className="mt-10">
                 <a
                   href={ev.applyUrl}
                   target={
@@ -211,10 +206,11 @@ export default async function EventPage({ params }: { params: Params }) {
                   β 参加応募はこちら
                   <span aria-hidden>→</span>
                 </a>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
+          {/* Right: cover */}
           <div className="order-1 lg:order-2">
             <CoverImage
               src={ev.cover}
@@ -225,47 +221,18 @@ export default async function EventPage({ params }: { params: Params }) {
               aspectRatio="4/3"
               size="lg"
               priority
-              className="!border-0"
             />
           </div>
         </div>
       </section>
 
-      {/* Details + body, white cards on cream */}
-      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
+      {/* Body section: white card body + right sticky details */}
+      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
         <div className="bg-paper border border-hair-line p-6 sm:p-10 lg:p-14 order-2 lg:order-1">
           <div
             className="article-body"
             dangerouslySetInnerHTML={{ __html: ev.contentHtml }}
           />
-
-          {isOpen && ev.applyUrl && (
-            <div className="mt-12 pt-10 border-t border-hair-line">
-              <p className="text-[10px] tracking-[0.3em] text-gold uppercase mb-4">
-                Apply — β 版参加者募集中
-              </p>
-              <p className="text-[0.9375rem] leading-[2] text-ink mb-6 max-w-[36rem]">
-                少人数で実施しています。
-                まずは簡単な応募フォームから、現在の悩みと参加目的を
-                教えてください。内容を確認の上、こちらから詳細をご案内します。
-              </p>
-              <a
-                href={ev.applyUrl}
-                target={
-                  ev.applyUrl.startsWith("http") ? "_blank" : undefined
-                }
-                rel={
-                  ev.applyUrl.startsWith("http")
-                    ? "noopener noreferrer"
-                    : undefined
-                }
-                className="btn-gold"
-              >
-                β 参加応募はこちら
-                <span aria-hidden>→</span>
-              </a>
-            </div>
-          )}
 
           <footer className="mt-16 pt-10 border-t border-hair-line text-sm text-sub-gray">
             <p className="logo-type text-base text-navy tracking-wider">
@@ -296,9 +263,8 @@ export default async function EventPage({ params }: { params: Params }) {
           </footer>
         </div>
 
-        {/* Sidebar — details panel sticky */}
         <aside className="order-1 lg:order-2">
-          <div className="bg-paper border border-hair-line p-6 sm:p-8 lg:sticky lg:top-8">
+          <div className="bg-paper border border-hair-line p-6 sm:p-7 lg:sticky lg:top-8">
             <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-5">
               Event Details
             </p>
@@ -378,12 +344,59 @@ export default async function EventPage({ params }: { params: Params }) {
           </div>
         </aside>
       </section>
+
+      {/* Bottom navy band — reinforced CTA */}
+      {isOpen && ev.applyUrl && (
+        <section className="bg-navy text-white">
+          <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-14 sm:py-16 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+            <div>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-gold-bright mb-3">
+                β 版参加者募集中
+              </p>
+              <p className="text-lg sm:text-xl font-bold">
+                少人数で実施しています。
+                <br className="sm:hidden" />
+                応募内容を確認の上、こちらから詳細をご案内します。
+              </p>
+            </div>
+            <a
+              href={ev.applyUrl}
+              target={ev.applyUrl.startsWith("http") ? "_blank" : undefined}
+              rel={
+                ev.applyUrl.startsWith("http")
+                  ? "noopener noreferrer"
+                  : undefined
+              }
+              className="btn-gold whitespace-nowrap"
+            >
+              β 参加応募はこちら
+              <span aria-hidden>→</span>
+            </a>
+          </div>
+        </section>
+      )}
     </article>
   );
 }
 
+function Chip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-paper border border-hair-line text-xs tracking-wider">
+      {children}
+    </span>
+  );
+}
+
 function Icon({ name }: { name: "calendar" | "clock" | "users" | "book" }) {
-  const common = { width: 16, height: 16, fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const common = {
+    width: 14,
+    height: 14,
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
   if (name === "calendar") {
     return (
       <svg viewBox="0 0 24 24" aria-hidden {...common}>

@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --cream: #f4ecde;
-  --cream-deep: #ead9bf;
+  --cream: #f6efe0;
+  --cream-deep: #ecdfc6;
   --paper: #ffffff;
   --ink: #141414;
   --sub-gray: #6b6b6b;
-  --hair-line: #e5dcc9;
+  --hair-line: #e3d8c2;
   --navy: #1b2a47;
   --navy-deep: #131f36;
-  --gold: #b89065;
-  --gold-bright: #c9a875;
+  --gold: #b08755;
+  --gold-bright: #c39a6a;
 }
 
 html,

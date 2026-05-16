@@ -14,66 +14,70 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Brand band — navy ribbon under the header */}
-      <section className="bg-navy text-white">
-        <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-14 sm:py-20">
-          <p className="text-[10px] tracking-[0.3em] text-gold uppercase">
-            For Men, Quietly — 男性の身体と自意識のための記録
-          </p>
-          <h1 className="mt-5 text-3xl sm:text-5xl font-bold leading-[1.4] max-w-[34rem]">
-            ここは、
-            <br />
-            <span className="font-mincho font-normal">
-              「整える」
-            </span>
-            ための場所です。
-          </h1>
-          <p className="mt-6 text-base sm:text-lg text-white/85 leading-[2] max-w-[36rem]">
-            多汗症・ニキビ・ワキガ・顔。
-            <br className="hidden sm:block" />
-            男性の身体と自意識に関わる、言葉にされにくい領域を、
-            半歩先から低い声で記録します。
-          </p>
-          <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
-            <Link
-              href="/articles"
-              className="inline-flex items-center gap-2 text-sm tracking-wider text-white border-b border-white/50 pb-1 hover:text-gold-bright hover:border-gold-bright transition-colors"
-            >
-              記録を読む
-              <span aria-hidden>→</span>
-            </Link>
+      {/* Hero — cream background, dark bold headline (like the LP) */}
+      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-14 sm:pt-20 pb-20 sm:pb-24">
+        <div className="inline-flex items-center bg-navy text-white px-4 py-2 text-[11px] tracking-[0.2em] uppercase mb-8">
+          For Men, Quietly — 男性の身体と自意識の記録
+        </div>
+
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.5] text-ink max-w-[36rem]">
+          解決ではなく、
+          <br />
+          <span className="font-mincho font-normal">記録</span>を残します。
+        </h1>
+
+        <p className="mt-8 text-base sm:text-lg leading-[2] text-ink max-w-[40rem]">
+          多汗症・ニキビ・ワキガ・顔。
+          <br className="hidden sm:block" />
+          男性の身体と自意識に関わる、言葉にされにくい領域を、
+          半歩先から低い声で記録します。
+        </p>
+
+        <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
+          <Link
+            href="/articles"
+            className="inline-flex items-center gap-2 text-sm tracking-wider text-navy border-b border-gold pb-1 hover:text-gold transition-colors"
+          >
+            記録を読む
+            <span aria-hidden>→</span>
+          </Link>
+          {featuredEvent && (
             <Link
               href="/events"
-              className="inline-flex items-center gap-2 text-sm tracking-wider text-white border-b border-white/50 pb-1 hover:text-gold-bright hover:border-gold-bright transition-colors"
+              className="inline-flex items-center gap-2 text-sm tracking-wider text-navy border-b border-gold pb-1 hover:text-gold transition-colors"
             >
               開催中のイベントを見る
               <span aria-hidden>→</span>
             </Link>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Featured event — full-bleed LP-style block */}
-      {featuredEvent && <FeaturedEvent event={featuredEvent} />}
+      {/* Featured event on cream — first concrete thing */}
+      {featuredEvent && (
+        <div className="pb-20 sm:pb-28">
+          <FeaturedEvent event={featuredEvent} />
+        </div>
+      )}
 
       {/* Manifesto — white card on cream */}
       <section
         aria-labelledby="manifesto"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-20 sm:pt-28"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
       >
         <div className="bg-paper border border-hair-line px-6 sm:px-12 lg:px-16 py-12 sm:py-16 max-w-reading">
-          <p className="text-[10px] tracking-[0.3em] text-gold uppercase mb-6">
+          <p className="text-[10px] tracking-[0.3em] text-gold uppercase mb-5">
             I. Manifesto
           </p>
           <h2
             id="manifesto"
-            className="text-2xl sm:text-3xl font-bold leading-[1.5]"
+            className="text-2xl sm:text-3xl font-bold leading-[1.55] text-ink"
           >
             解決策ではなく、
             <span className="font-mincho font-normal">記録</span>
             を残します。
           </h2>
-          <div className="mt-8 text-[1.0625rem] leading-[2.1] text-ink space-y-5">
+          <div className="mt-7 text-[1.0625rem] leading-[2.1] text-ink space-y-5">
             <p>
               治した話ではなく、まだ整えている途中の話。
               完了した過去としてではなく、続いている現在として、
@@ -86,7 +90,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/about"
-            className="mt-10 inline-flex items-center gap-2 text-sm tracking-wider text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+            className="mt-9 inline-flex items-center gap-2 text-sm tracking-wider text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
           >
             このメディアについて
             <span aria-hidden>→</span>
@@ -94,16 +98,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Territories — icon-card grid */}
+      {/* Territories */}
       <section
         aria-labelledby="territories"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-24 sm:pt-32"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
       >
-        <div className="mb-10 flex items-baseline justify-between">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-gold">
-            II. Territories — 扱う領域
-          </p>
-        </div>
+        <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-8">
+          II. Territories — 扱う領域
+        </p>
         <h2 id="territories" className="sr-only">
           扱う領域
         </h2>
@@ -119,7 +121,7 @@ export default function HomePage() {
               <Link
                 key={slug}
                 href={`/articles/category/${slug}`}
-                className="group bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors"
+                className="group bg-paper border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors"
               >
                 <p className="logo-type text-gold text-sm tracking-widest">
                   {numeral}.
@@ -127,10 +129,10 @@ export default function HomePage() {
                 <h3 className="mt-3 text-lg font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
                   {c.label}
                 </h3>
-                <p className="mt-2 text-xs text-sub-gray leading-[1.8] font-mincho">
+                <p className="mt-2 text-[13px] text-sub-gray leading-[1.85] font-mincho">
                   {c.description}
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-[11px] tracking-wider text-navy">
+                <span className="mt-5 inline-flex items-center gap-2 text-[11px] tracking-wider text-navy">
                   読む <span aria-hidden>→</span>
                 </span>
               </Link>
@@ -142,7 +144,7 @@ export default function HomePage() {
       {/* Recent records */}
       <section
         aria-labelledby="latest"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-24 sm:pt-32"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
       >
         <div className="flex items-baseline justify-between mb-10">
           <p className="text-[10px] tracking-[0.3em] uppercase text-gold">
@@ -175,7 +177,7 @@ export default function HomePage() {
       {otherEvents.length > 0 && (
         <section
           aria-labelledby="more-gatherings"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-24 sm:pt-32"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
         >
           <div className="flex items-baseline justify-between mb-10">
             <p className="text-[10px] tracking-[0.3em] uppercase text-gold">
@@ -199,45 +201,36 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Signature & Subscribe band */}
-      <section
-        aria-labelledby="signature"
-        className="mt-24 sm:mt-32 bg-cream-deep"
-      >
-        <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 items-start">
+      {/* Bottom navy band — Subscribe CTA, the only navy block on home */}
+      <section className="bg-navy text-white">
+        <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
           <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-5">
-              From the Writer
-            </p>
-            <h2 id="signature" className="sr-only">
-              書き手より
-            </h2>
-            <p className="font-mincho text-ink text-[1.0625rem] leading-[2.1] max-w-[30rem]">
-              書き手は、かつて当事者でした。今は、半歩だけ先にいます。
-              振り返ると、まだそこに立っている、という程度の距離です。
-            </p>
-            <p className="logo-type text-lg text-navy mt-6 tracking-wider">
-              —— Nagi
-            </p>
-          </div>
-
-          <div className="bg-paper border border-hair-line p-8 sm:p-10">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-5">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-gold-bright mb-4">
               Subscribe — ときどき、静かに届く
             </p>
-            <p className="text-[0.9375rem] leading-[2] text-ink">
-              月に一度か二度。新しく書いた記録と、まだ記事にしていない覚え書きを、
-              ニュースレターに収めて送ります。
+            <h2 className="text-2xl sm:text-3xl font-bold leading-[1.5]">
+              月に一度か二度、
+              <br />
+              静かに届くニュースレター。
+            </h2>
+            <p className="mt-5 text-[0.9375rem] leading-[2] text-white/80 max-w-[34rem]">
+              新しく書いた記録と、まだ記事にしていない覚え書きを、お送りします。
+              通知も、ボタンも、煽りもありません。
             </p>
+          </div>
+          <div className="flex flex-col sm:items-start lg:items-end gap-4">
             <a
               href={site.social.substack}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-gold mt-7"
+              className="btn-gold"
             >
               Substack で購読する
               <span aria-hidden>→</span>
             </a>
+            <p className="logo-type text-xs tracking-[0.3em] text-gold-bright uppercase">
+              —— Nagi
+            </p>
           </div>
         </div>
       </section>

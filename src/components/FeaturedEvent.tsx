@@ -16,67 +16,72 @@ export default function FeaturedEvent({ event }: Props) {
   return (
     <section
       aria-labelledby="featured-event"
-      className="bg-navy text-white overflow-hidden"
+      className="mx-auto max-w-[1200px] px-6 sm:px-10"
     >
-      <div className="mx-auto max-w-[1200px] grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-0">
-        {/* Left: copy */}
-        <div className="px-6 sm:px-10 py-12 sm:py-16 lg:py-20 lg:pr-12 order-2 lg:order-1">
-          <div className="flex items-center gap-3 flex-wrap mb-6">
-            {isOpen && (
-              <span className="inline-flex items-center gap-1.5 border border-gold text-gold px-2.5 py-1 text-[10px] tracking-[0.2em] uppercase">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold" />
-                受付中 — Now Booking
-              </span>
-            )}
-            <p className="text-[10px] tracking-[0.3em] uppercase text-white/65">
-              Featured Gathering
-            </p>
-          </div>
+      {/* Navy tag — like the ad's "美容初心者の男性へ" */}
+      <div className="inline-flex items-center gap-2 bg-navy text-white px-4 py-2 text-[11px] tracking-[0.2em] uppercase mb-6">
+        Featured Gathering
+        {isOpen && (
+          <>
+            <span aria-hidden className="text-gold">·</span>
+            <span className="text-gold-bright">受付中</span>
+          </>
+        )}
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-8 lg:gap-12 items-start">
+        {/* Left: copy */}
+        <div className="order-2 lg:order-1">
           <h2
             id="featured-event"
-            className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-[1.4]"
+            className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-[1.5] text-ink"
           >
             <Link
               href={`/events/${event.slug}`}
-              className="hover:text-gold-bright transition-colors"
+              className="hover:text-navy transition-colors"
             >
               {event.title}
             </Link>
           </h2>
 
-          <p className="mt-6 font-mincho text-[1.0625rem] leading-[2] text-white/90 max-w-[34rem]">
+          <p className="mt-6 font-mincho text-[1.0625rem] leading-[2.1] text-ink max-w-[34rem]">
             {event.excerpt}
           </p>
 
-          <dl className="mt-10 grid grid-cols-[6rem_1fr] gap-y-3 gap-x-4 text-sm border-t border-white/15 pt-6">
-            <dt className="text-[10px] tracking-[0.3em] uppercase text-gold">
-              Date
-            </dt>
-            <dd>
-              {dateText}
-              <span className="block text-xs text-white/65 mt-0.5">
-                {timeText}
-              </span>
-            </dd>
-            <dt className="text-[10px] tracking-[0.3em] uppercase text-gold">
+          {/* Feature chips like the ad's icon row */}
+          <ul className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-ink">
+            <li className="inline-flex items-center gap-2">
+              <Chip>{dateText}</Chip>
+            </li>
+            <li className="inline-flex items-center gap-2">
+              <Chip>{timeText}</Chip>
+            </li>
+            {event.format && (
+              <li className="inline-flex items-center gap-2">
+                <Chip>{event.format}</Chip>
+              </li>
+            )}
+          </ul>
+
+          <dl className="mt-8 grid grid-cols-[5.5rem_1fr] gap-y-3 gap-x-4 text-sm border-t border-hair-line pt-6">
+            <dt className="text-[10px] tracking-[0.3em] uppercase text-sub-gray">
               Where
             </dt>
-            <dd>{event.location}</dd>
+            <dd className="text-ink">{event.location}</dd>
             {event.audience && (
               <>
-                <dt className="text-[10px] tracking-[0.3em] uppercase text-gold">
+                <dt className="text-[10px] tracking-[0.3em] uppercase text-sub-gray">
                   For
                 </dt>
-                <dd>{event.audience}</dd>
+                <dd className="text-ink">{event.audience}</dd>
               </>
             )}
-            {event.format && (
+            {event.fee && (
               <>
-                <dt className="text-[10px] tracking-[0.3em] uppercase text-gold">
-                  Format
+                <dt className="text-[10px] tracking-[0.3em] uppercase text-sub-gray">
+                  Fee
                 </dt>
-                <dd>{event.format}</dd>
+                <dd className="text-ink">{event.fee}</dd>
               </>
             )}
           </dl>
@@ -101,7 +106,7 @@ export default function FeaturedEvent({ event }: Props) {
             )}
             <Link
               href={`/events/${event.slug}`}
-              className="inline-flex items-center gap-2 text-sm tracking-wider text-white border-b border-white/40 pb-1 hover:text-gold-bright hover:border-gold-bright transition-colors"
+              className="inline-flex items-center gap-2 text-sm tracking-wider text-navy border-b border-navy/40 pb-1 hover:border-navy transition-colors"
             >
               詳細を読む
               <span aria-hidden>→</span>
@@ -125,10 +130,17 @@ export default function FeaturedEvent({ event }: Props) {
             aspectRatio="4/3"
             size="lg"
             priority
-            className="!border-0"
           />
         </Link>
       </div>
     </section>
+  );
+}
+
+function Chip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center px-3 py-1 bg-paper border border-hair-line text-xs tracking-wider">
+      {children}
+    </span>
   );
 }
