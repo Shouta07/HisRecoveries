@@ -1,6 +1,6 @@
 import Link from "next/link";
 import CoverImage from "./CoverImage";
-import { ArticleSummary, formatDate } from "@/lib/articles";
+import { ArticleSummary, formatDate } from "@/lib/articleTypes";
 import { categoryLabel } from "@/lib/site";
 
 type Variant = "list" | "card";
@@ -34,13 +34,17 @@ export default function ArticleCard({
         />
         <div className="mt-5">
           <p className="text-xs text-sub-gray">
-            {categoryLabel(article.category)} · {formatDate(article.publishedAt)}
+            {categoryLabel(article.category)}
+            <span className="mx-2">·</span>
+            {formatDate(article.publishedAt)}
+            <span className="mx-2">·</span>
+            {article.readingMinutes} min
           </p>
-          <h3 className="mt-3 text-xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+          <h3 className="mt-3 text-lg sm:text-xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
             {article.title}
           </h3>
           {showExcerpt && article.excerpt && (
-            <p className="mt-3 text-sm leading-loose text-sub-gray line-clamp-2">
+            <p className="mt-3 text-sm leading-[1.85] text-sub-gray line-clamp-2">
               {article.excerpt}
             </p>
           )}

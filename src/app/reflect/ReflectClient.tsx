@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import { ArticleSummary, formatDate } from "@/lib/articleTypes";
+import { categoryLabel } from "@/lib/site";
 
 type Answers = {
   q1: string | null;
@@ -58,6 +60,24 @@ const q4Options = [
   { value: "skip", label: "よく分からない" },
 ];
 
+const territoryToCategories: Record<string, string[]> = {
+  "sweat-odor": ["hyperhidrosis", "bromhidrosis"],
+  "skin-acne": ["acne"],
+  "face-impression": ["face"],
+  "mind-awareness": ["philosophy"],
+  "hair-loss": [],
+  "beard-body-hair": [],
+};
+
+const triedKeywords: Record<string, string[]> = {
+  nothing: [],
+  lifestyle: ["生活", "工夫", "服装", "インナー", "睡眠"],
+  otc: ["市販", "ドラッグストア", "塗り薬", "デオドラント"],
+  clinic: ["皮膚科", "保険", "処方", "受診", "医療機関", "塩化アルミニウム"],
+  aesthetic: ["美容医療", "ボトックス", "ボツリヌス", "ミラドライ", "注射", "施術"],
+  surgery: ["手術", "剪除", "吸引"],
+};
+
 const territoryLabels: Record<string, string> = {
   "sweat-odor": "汗・におい",
   "skin-acne": "肌・ニキビ",
@@ -97,7 +117,54 @@ const q4Labels: Record<string, string> = {
   skip: "迷っている",
 };
 
-export default function ReflectClient() {
+function matchArticles(articles: ArticleSummary[], a: Answers): ArticleSummary[] {
+  let scoped = articles;
+
+  // Q1 territory → category filter
+  if (a.q1 && a.q1 !== "multiple" && a.q1 !== "skip") {
+    const cats = territoryToCategories[a.q1] ?? [];
+    if (cats.length > 0) {
+      const inCategory = scoped.filter((art) => cats.includes(art.category));
+      // If category has zero matches, fall back to all so the user sees something
+      if (inCategory.length > 0) scoped = inCategory;
+    }
+  }
+
+  // Score by Q3 tried-level + Q5 freeform text
+  const triedKws = a.q3 ? triedKeywords[a.q3] ?? [] : [];
+  const freeKws = a.q5
+    .trim()
+    .split(/\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 2);
+
+  const scored = scoped.map((art) => {
+    const haystack = `${art.title} ${art.excerpt} ${(art.keywords ?? []).join(
+      " "
+    )}`;
+    let score = 0;
+    triedKws.forEach((kw) => {
+      if (haystack.includes(kw)) score += 2;
+    });
+    freeKws.forEach((kw) => {
+      if (haystack.includes(kw)) score += 3;
+    });
+    return { art, score };
+  });
+
+  scored.sort((x, y) => {
+    if (y.score !== x.score) return y.score - x.score;
+    return x.art.publishedAt < y.art.publishedAt ? 1 : -1;
+  });
+
+  return scored.map((s) => s.art).slice(0, 8);
+}
+
+export default function ReflectClient({
+  articles,
+}: {
+  articles: ArticleSummary[];
+}) {
   const [answers, setAnswers] = useState<Answers>(initial);
   const [done, setDone] = useState(false);
 
@@ -110,6 +177,11 @@ export default function ReflectClient() {
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   };
 
+  const matched = useMemo(
+    () => (done ? matchArticles(articles, answers) : []),
+    [articles, answers, done]
+  );
+
   const territory = answers.q1;
   const territoryLink =
     territory && territory !== "multiple" && territory !== "skip"
@@ -120,6 +192,7 @@ export default function ReflectClient() {
     return (
       <ResultPanel
         answers={answers}
+        matched={matched}
         territoryLink={territoryLink}
         onReset={reset}
       />
@@ -173,14 +246,14 @@ export default function ReflectClient() {
 
       <Question
         n={5}
-        label="（任意）何か書き残したいことがあれば、自由に。"
-        hint="書かなくても、進めます。送信はされません。"
+        label="（任意）気になっている言葉を、自由に書いてください。"
+        hint="該当する記録の絞り込みに使われます。送信はされません。例: 「夏」「鏡」「手術」"
       >
         <textarea
           value={answers.q5}
           onChange={(e) => set("q5", e.target.value.slice(0, 500))}
           maxLength={500}
-          rows={5}
+          rows={3}
           className="w-full bg-paper border border-hair-line p-4 text-sm leading-[1.9] text-ink focus:outline-none focus:border-gold"
           placeholder="..."
         />
@@ -195,7 +268,7 @@ export default function ReflectClient() {
           }}
           className="btn-gold"
         >
-          観察を見る
+          近い記録を探す
           <span aria-hidden>→</span>
         </button>
         <button
@@ -281,10 +354,12 @@ function Options({
 
 function ResultPanel({
   answers,
+  matched,
   territoryLink,
   onReset,
 }: {
   answers: Answers;
+  matched: ArticleSummary[];
   territoryLink: string;
   onReset: () => void;
 }) {
@@ -294,9 +369,9 @@ function ResultPanel({
   const wish = answers.q4 ? q4Labels[answers.q4] : null;
 
   return (
-    <div className="space-y-10">
-      <div className="bg-paper border border-hair-line p-6 sm:p-10">
-        <p className="text-xs text-sub-gray mb-5">観察</p>
+    <div className="space-y-12">
+      <div className="bg-paper border border-hair-line p-6 sm:p-9">
+        <p className="text-xs text-sub-gray mb-4">観察</p>
         <p className="font-mincho text-[1.0625rem] leading-[2.1] text-ink">
           いま、あなたは
           <span className="font-bold text-navy">{t}</span>
@@ -320,29 +395,61 @@ function ResultPanel({
             </>
           )}
         </p>
-        <p className="mt-6 font-mincho text-sub-gray text-sm leading-[2]">
+        <p className="mt-5 font-mincho text-sub-gray text-sm leading-[2]">
           診断ではありません。
           急がず、必要なら何度でも、ここに戻ってきてください。
         </p>
       </div>
 
-      <div className="space-y-6">
-        <h2 className="text-lg font-bold">あなたに近いかもしれない場所</h2>
-        <ul className="space-y-4 text-sm">
+      <section aria-labelledby="matched">
+        <h2 id="matched" className="text-lg font-bold mb-6">
+          あなたに近い記録 — {matched.length} 件
+        </h2>
+        {matched.length === 0 ? (
+          <div className="bg-paper border border-hair-line p-6 sm:p-8 text-sm text-sub-gray leading-[2]">
+            この条件に近い記録は、まだありません。
+            <br />
+            関連する地形図を読んでみてください。
+          </div>
+        ) : (
+          <ul className="space-y-4">
+            {matched.map((a) => (
+              <li
+                key={a.slug}
+                className="bg-paper border border-hair-line hover:border-gold transition-colors"
+              >
+                <Link href={`/articles/${a.slug}`} className="block p-5 sm:p-6 group">
+                  <p className="text-xs text-sub-gray">
+                    {categoryLabel(a.category)}
+                    <span className="mx-2">·</span>
+                    {formatDate(a.publishedAt)}
+                    <span className="mx-2">·</span>
+                    {a.readingMinutes} min
+                  </p>
+                  <h3 className="mt-2 text-lg font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+                    {a.title}
+                  </h3>
+                  {a.excerpt && (
+                    <p className="mt-2 text-sm leading-[1.85] text-sub-gray line-clamp-2">
+                      {a.excerpt}
+                    </p>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="space-y-3 text-sm">
+        <h2 className="text-base font-bold">ほかの入口</h2>
+        <ul className="space-y-3">
           <li>
             <Link
               href={territoryLink}
               className="text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
             >
               → この領域の地形図を読む
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/articles"
-              className="text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
-            >
-              → 当事者の記録を読む
             </Link>
           </li>
           <li>
@@ -362,7 +469,7 @@ function ResultPanel({
             </Link>
           </li>
         </ul>
-      </div>
+      </section>
 
       <div className="pt-8 border-t border-hair-line">
         <button

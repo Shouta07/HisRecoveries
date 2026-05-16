@@ -6,34 +6,17 @@ import remarkGfm from "remark-gfm";
 import remarkHtml from "remark-html";
 import readingTime from "reading-time";
 import { CategorySlug, categories } from "./site";
+import {
+  Article,
+  ArticleFrontmatter,
+  ArticleSummary,
+  formatDate,
+} from "./articleTypes";
+
+export type { Article, ArticleFrontmatter, ArticleSummary } from "./articleTypes";
+export { formatDate } from "./articleTypes";
 
 const ARTICLES_DIR = path.join(process.cwd(), "content", "articles");
-
-export type ArticleFrontmatter = {
-  title: string;
-  slug: string;
-  category: CategorySlug;
-  publishedAt: string;
-  updatedAt?: string;
-  excerpt: string;
-  status?: "draft" | "published";
-  related?: string[];
-  keywords?: string[];
-  cover?: string;
-  coverAlt?: string;
-};
-
-export type Article = ArticleFrontmatter & {
-  contentHtml: string;
-  contentRaw: string;
-  readingMinutes: number;
-  wordCount: number;
-};
-
-export type ArticleSummary = ArticleFrontmatter & {
-  readingMinutes: number;
-  wordCount: number;
-};
 
 function ensureDir() {
   if (!fs.existsSync(ARTICLES_DIR)) {
@@ -143,12 +126,5 @@ export function getAllCategorySlugs(): string[] {
   return Object.keys(categories);
 }
 
-export function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+// Silence "unused import" for the re-exported formatDate
+void formatDate;
