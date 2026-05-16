@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --off-white: #fafaf7;
+  --ink: #1a1a1a;
+  --sub-gray: #6b6b6b;
+  --hair-line: #e5e5e0;
+  --quiet-brass: #8b7355;
+}
+
+html,
+body {
+  background-color: var(--off-white);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "palt";
+}
+
+body {
+  font-family: "Noto Sans JP", "YuGothic", "Hiragino Sans", system-ui,
+    sans-serif;
+  font-weight: 400;
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+}
+
+::selection {
+  background: rgba(139, 115, 85, 0.18);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Noto Serif JP", "YuMincho", "Hiragino Mincho ProN", serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.logo-type {
+  font-family: "Cormorant Garamond", "Crimson Pro", serif;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.article-body {
+  font-size: 1rem;
+  line-height: 2.0;
+  color: var(--ink);
+}
+
+.article-body p {
+  margin-bottom: 1.75em;
+}
+
+.article-body h2 {
+  font-size: 1.35rem;
+  margin-top: 3em;
+  margin-bottom: 1em;
+  font-family: "Noto Serif JP", serif;
+  font-weight: 500;
+}
+
+.article-body h3 {
+  font-size: 1.1rem;
+  margin-top: 2.5em;
+  margin-bottom: 0.8em;
+  font-family: "Noto Serif JP", serif;
+  font-weight: 500;
+}
+
+.article-body blockquote {
+  border-left: 1px solid var(--hair-line);
+  padding-left: 1.25em;
+  color: var(--sub-gray);
+  margin: 2em 0;
+  font-style: normal;
+}
+
+.article-body ul,
+.article-body ol {
+  margin: 1.5em 0;
+  padding-left: 1.5em;
+}
+
+.article-body li {
+  margin-bottom: 0.5em;
+}
+
+.article-body a {
+  border-bottom: 1px solid var(--hair-line);
+  transition: border-color 0.2s ease;
+}
+
+.article-body a:hover {
+  border-color: var(--ink);
+}
+
+.article-body hr {
+  border: none;
+  border-top: 1px solid var(--hair-line);
+  margin: 3em 0;
+}
+
+.article-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
