@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import TerritoryArt from "./TerritoryArt";
+import TerritoryIcon from "./TerritoryIcon";
 import { ArticleSummary, formatDate } from "@/lib/articleTypes";
 import { categoryLabel } from "@/lib/site";
 
@@ -33,32 +33,12 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
     : [];
 
   return (
-    <section aria-labelledby="territories">
-      <div className="flex items-baseline justify-between mb-6">
-        <h2
-          id="territories"
-          className="font-mincho text-2xl sm:text-3xl font-medium leading-[1.5]"
-        >
-          地形図
-        </h2>
-        {selected && (
-          <button
-            type="button"
-            onClick={() => setSelected(null)}
-            className="text-sm text-sub-gray hover:text-navy transition-colors"
-          >
-            選択を解除
-          </button>
-        )}
-      </div>
-      <p className="text-[0.9375rem] text-sub-gray leading-[1.9] mb-8 max-w-[36rem]">
-        気になる領域を選ぶと、関連する記録が下に並びます。
-      </p>
-
+    <div>
+      {/* Concerns grid — SBC「悩みから探す」style */}
       <div
         role="tablist"
-        aria-label="領域"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6"
+        aria-label="領域から探す"
+        className="grid grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
       >
         {territories.map((t) => {
           const isSelected = selected === t.slug;
@@ -69,28 +49,26 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
               role="tab"
               aria-selected={isSelected}
               aria-controls="territory-panel"
-              onClick={() =>
-                setSelected(isSelected ? null : t.slug)
-              }
-              className={`group block overflow-hidden border text-left transition-colors ${
+              onClick={() => setSelected(isSelected ? null : t.slug)}
+              className={`group flex flex-col items-center justify-start text-center px-2 py-5 sm:py-7 bg-paper border transition-all ${
                 isSelected
-                  ? "border-gold bg-paper shadow-[0_0_0_1px_#B08755]"
-                  : "border-hair-line bg-paper hover:border-gold"
+                  ? "border-gold shadow-[0_0_0_1px_#9C764A] -translate-y-0.5"
+                  : "border-hair-line hover:border-gold hover:-translate-y-0.5"
               }`}
             >
-              <TerritoryArt slug={t.slug} />
-              <div className="p-5 sm:p-6">
-                <h3
-                  className={`text-lg font-bold leading-[1.6] transition-colors ${
-                    isSelected ? "text-navy" : "text-ink group-hover:text-navy"
-                  }`}
-                >
-                  {t.title}
-                </h3>
-                <p className="mt-2 font-mincho text-[13px] text-sub-gray leading-[1.9]">
-                  {t.subtitle}
-                </p>
-              </div>
+              <TerritoryIcon
+                slug={t.slug}
+                className={`mb-3 transition-colors ${
+                  isSelected ? "text-gold" : "text-navy group-hover:text-gold"
+                }`}
+              />
+              <span
+                className={`text-[12px] sm:text-[13px] font-bold leading-[1.45] tracking-[0.04em] transition-colors ${
+                  isSelected ? "text-navy" : "text-ink group-hover:text-navy"
+                }`}
+              >
+                {t.title}
+              </span>
             </button>
           );
         })}
@@ -101,53 +79,58 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
         <div
           id="territory-panel"
           role="tabpanel"
-          aria-labelledby={`territory-${selectedTerritory.slug}`}
-          className="mt-8 bg-paper border border-hair-line p-6 sm:p-10"
+          className="mt-10 sm:mt-12 bg-paper border border-hair-line"
         >
-          <h3 className="text-xl sm:text-2xl font-bold leading-[1.5] text-ink">
-            {selectedTerritory.title}
-          </h3>
-          <p className="mt-3 font-mincho text-sub-gray text-[0.9375rem] leading-[2]">
-            — {selectedTerritory.subtitle} —
-          </p>
-          <p className="mt-6 text-[0.9375rem] leading-[2] text-ink max-w-[36rem]">
-            {selectedTerritory.intro}
-          </p>
+          <div className="px-6 sm:px-10 lg:px-12 pt-9 sm:pt-12 pb-2">
+            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <h3 className="font-mincho text-2xl sm:text-3xl font-medium leading-[1.45] text-ink">
+                {selectedTerritory.title}
+              </h3>
+              <p className="text-xs text-sub-gray tracking-[0.08em]">
+                {selectedTerritory.subtitle}
+              </p>
+            </div>
+            <p className="mt-5 text-[0.9375rem] leading-[2] text-ink/85 max-w-[36rem]">
+              {selectedTerritory.intro}
+            </p>
+            <div className="mt-7 flex items-center justify-between border-b border-hair-line pb-3">
+              <p className="text-xs text-sub-gray tracking-[0.08em]">
+                この領域の記録 — {matched.length} 件
+              </p>
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="text-xs text-sub-gray hover:text-navy transition-colors"
+              >
+                閉じる ×
+              </button>
+            </div>
+          </div>
 
-          <div className="mt-10">
-            <h4 className="text-sm font-bold text-ink mb-5">
-              この領域の記録 — {matched.length} 件
-            </h4>
+          <div className="px-6 sm:px-10 lg:px-12 pb-12">
             {matched.length === 0 ? (
-              <p className="text-sm text-sub-gray leading-[2]">
+              <p className="mt-6 text-sm text-sub-gray leading-[2]">
                 この領域の記事はまもなく公開されます。
               </p>
             ) : (
-              <ul className="space-y-3">
+              <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
                 {matched.map((a) => (
-                  <li
-                    key={a.slug}
-                    className="border border-hair-line hover:border-gold transition-colors"
-                  >
+                  <li key={a.slug}>
                     <Link
                       href={`/articles/${a.slug}`}
-                      className="block p-5 group"
+                      className="group block"
                     >
-                      <p className="text-xs text-sub-gray">
-                        {categoryLabel(a.category)}
-                        <span className="mx-2">·</span>
+                      <h4 className="text-[15px] font-bold leading-[1.65] text-ink group-hover:text-navy transition-colors line-clamp-3">
+                        {a.title}
+                      </h4>
+                      <p className="mt-2 text-[11px] text-sub-gray tracking-[0.06em]">
                         {formatDate(a.publishedAt)}
-                        <span className="mx-2">·</span>
+                        <span className="mx-1.5">·</span>
                         {a.readingMinutes} min
                       </p>
-                      <h5 className="mt-2 text-base sm:text-lg font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
-                        {a.title}
-                      </h5>
-                      {a.excerpt && (
-                        <p className="mt-2 text-sm leading-[1.85] text-sub-gray line-clamp-2">
-                          {a.excerpt}
-                        </p>
-                      )}
+                      <p className="mt-2 text-[11px] text-gold tracking-[0.04em]">
+                        # {categoryLabel(a.category)}
+                      </p>
                     </Link>
                   </li>
                 ))}
@@ -156,6 +139,6 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }

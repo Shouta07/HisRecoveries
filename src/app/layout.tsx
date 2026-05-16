@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import {
   Cormorant_Garamond,
   Noto_Sans_JP,
-  Noto_Serif_JP,
+  Shippori_Mincho_B1,
 } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -18,15 +18,15 @@ const cormorant = Cormorant_Garamond({
 
 const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["300", "400", "500", "700"],
   variable: "--font-noto-sans-jp",
   display: "swap",
 });
 
-const notoSerifJp = Noto_Serif_JP({
+const shipporiMincho = Shippori_Mincho_B1({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-noto-serif-jp",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-shippori",
   display: "swap",
 });
 
@@ -142,7 +142,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${cormorant.variable} ${notoSansJp.variable} ${notoSerifJp.variable}`}
+      className={`${cormorant.variable} ${notoSansJp.variable} ${shipporiMincho.variable}`}
     >
       <body className="min-h-screen flex flex-col">
         <script

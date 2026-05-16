@@ -17,37 +17,36 @@ export default function ArticleCard({
   showExcerpt = true,
 }: Props) {
   if (variant === "card") {
+    // TENTIAL Journal style: 16:10 cover, gothic bold title, date, # tag
     return (
       <Link
         href={`/articles/${article.slug}`}
         className="group block"
         aria-label={article.title}
       >
-        <CoverImage
-          src={article.cover}
-          alt={article.coverAlt ?? `${article.title}`}
-          eyebrow={categoryLabel(article.category)}
-          title={article.title}
-          meta={formatDate(article.publishedAt)}
-          aspectRatio="16/10"
-          size="md"
-        />
+        <div className="overflow-hidden">
+          <CoverImage
+            src={article.cover}
+            alt={article.coverAlt ?? `${article.title}`}
+            eyebrow={categoryLabel(article.category)}
+            title={article.title}
+            meta={formatDate(article.publishedAt)}
+            aspectRatio="16/10"
+            size="md"
+          />
+        </div>
         <div className="mt-5">
-          <p className="text-xs text-sub-gray">
-            {categoryLabel(article.category)}
-            <span className="mx-2">·</span>
-            {formatDate(article.publishedAt)}
-            <span className="mx-2">·</span>
-            {article.readingMinutes} min
-          </p>
-          <h3 className="mt-3 text-lg sm:text-xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+          <h3 className="text-[15px] sm:text-base font-bold leading-[1.65] text-ink group-hover:text-navy transition-colors line-clamp-3">
             {article.title}
           </h3>
-          {showExcerpt && article.excerpt && (
-            <p className="mt-3 text-sm leading-[1.85] text-sub-gray line-clamp-2">
-              {article.excerpt}
-            </p>
-          )}
+          <p className="mt-3 text-[11px] text-sub-gray tracking-[0.06em]">
+            <time dateTime={article.publishedAt}>
+              {formatDate(article.publishedAt)}
+            </time>
+          </p>
+          <p className="mt-2 text-[11px] text-gold tracking-[0.04em]">
+            # {categoryLabel(article.category)}
+          </p>
         </div>
       </Link>
     );
