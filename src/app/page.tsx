@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
-import ArticleCard from "@/components/ArticleCard";
 import WhatsNew from "@/components/WhatsNew";
-import EventsRail from "@/components/EventsRail";
 import TerritoryBrowser from "@/components/TerritoryBrowser";
+import FeaturedGathering from "@/components/FeaturedGathering";
 import SectionLabel from "@/components/SectionLabel";
 import { getUpcomingEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
@@ -13,8 +12,8 @@ export default function HomePage() {
   const articles = getAllArticles();
   const featuredArticle = articles[0];
   const sidebarArticles = articles.slice(1, 4);
-  const moreArticles = articles.slice(4, 7);
   const upcomingEvents = getUpcomingEvents();
+  const featuredEvent = upcomingEvents[0];
   const territories = getAllTerritories().map((t) => ({
     slug: t.slug,
     title: t.title,
@@ -25,28 +24,41 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero — philosophy + brand + three entries */}
-      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-16 sm:pt-24 pb-12 sm:pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-12 lg:gap-20 items-center">
+      {/* ───────────────────────────────────────────────
+         SCENE 1 — Identity
+         Goal: in 5 seconds, the visitor understands what
+         Quiet Grooming and His Recoveries are.
+         ─────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-20 sm:pt-32 pb-24 sm:pb-36">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-14 lg:gap-24 items-center">
           <div>
             <p className="font-mincho text-sub-gray text-sm sm:text-base">
               {site.tagline}
             </p>
-            <h1 className="mt-4 logo-type text-6xl sm:text-8xl text-ink leading-[0.95]">
+            <h1 className="mt-5 logo-type text-6xl sm:text-8xl text-ink leading-[0.95]">
               {site.name}
             </h1>
-            <p className="mt-10 font-mincho text-2xl sm:text-3xl leading-[1.55] text-ink max-w-[32rem]">
+            <p className="mt-12 font-mincho text-2xl sm:text-4xl leading-[1.55] text-ink max-w-[32rem]">
               Quiet Grooming.
               <br />
-              <span className="text-ink/85">叫ばない、整える。</span>
+              <span className="text-ink/80 text-xl sm:text-2xl">
+                叫ばない、整える。
+              </span>
             </p>
-            <p className="mt-7 text-base sm:text-lg leading-[2] text-ink/80 max-w-[34rem]">
-              言葉にされにくい男性の身体と自意識のための、
-              <br className="hidden sm:inline" />
-              <span className="text-ink">記録</span> と{" "}
-              <span className="text-ink">整理</span> と{" "}
-              <span className="text-ink">集まり</span> の場所。
+            <p className="mt-8 text-base sm:text-lg leading-[2] text-ink/75 max-w-[34rem]">
+              男性のコンプレックスのための、夜の図書館。
             </p>
+
+            {/* Single primary CTA — clarity over choice */}
+            {featuredArticle && (
+              <Link
+                href={`/articles/${featuredArticle.slug}`}
+                className="mt-12 inline-flex items-center gap-3 text-base text-navy border-b border-gold pb-1 hover:text-gold transition-colors"
+              >
+                今月の記録から読む
+                <span aria-hidden>→</span>
+              </Link>
+            )}
           </div>
           <div className="hidden lg:block">
             <HeroMark />
@@ -54,66 +66,47 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Three entries — philosophy in action */}
-      <section
-        aria-label="3 つのかたち"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-hair-line">
-          <Pillar
-            label="Records"
-            ja="記録"
-            description="月に数本、当事者の声で書かれた記録。読みやすい順に並んでいます。"
-            href="/articles"
-            cta="読む"
-          />
-          <Pillar
-            label="Reflect"
-            ja="整える"
-            description="5 つの問いに静かに答えると、いまの自分に近い記録が並びます。"
-            href="/reflect"
-            cta="整える"
-          />
-          <Pillar
-            label="Gatherings"
-            ja="集まり"
-            description="少人数・半公開で行う、整える時間。Quiet Gatherings として。"
-            href="/events"
-            cta="見る"
-          />
-        </div>
-      </section>
-
-      {/* WHAT'S NEW — featured + sidebar */}
+      {/* ───────────────────────────────────────────────
+         SCENE 2 — Read
+         Goal: deliver the strongest editorial moment.
+         Latest record as a magazine cover.
+         ─────────────────────────────────────────────── */}
       {featuredArticle && (
         <section
           aria-labelledby="whats-new"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
+          className="bg-paper border-t border-hair-line"
         >
-          <div className="grid grid-cols-[auto_1fr] gap-6 sm:gap-10 mb-10 sm:mb-14">
-            <SectionLabel en="What's New" ja="最近の記録" />
-            <div className="flex items-end justify-end">
-              <Link
-                href="/articles"
-                className="text-sm text-navy hover:text-gold transition-colors"
-              >
-                すべて見る →
-              </Link>
+          <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-28">
+            <div className="grid grid-cols-[auto_1fr] gap-6 sm:gap-10 mb-12 sm:mb-16">
+              <SectionLabel en="Read" ja="最近の記録" />
+              <div className="flex items-end justify-end">
+                <Link
+                  href="/articles"
+                  className="text-sm text-navy hover:text-gold transition-colors"
+                >
+                  すべての記録 →
+                </Link>
+              </div>
             </div>
+            <WhatsNew featured={featuredArticle} rest={sidebarArticles} />
           </div>
-          <WhatsNew featured={featuredArticle} rest={sidebarArticles} />
         </section>
       )}
 
-      {/* FEATURE — territory browser */}
+      {/* ───────────────────────────────────────────────
+         SCENE 3 — Explore
+         Goal: let the visitor find their territory.
+         Interactive browser, in-place expansion.
+         ─────────────────────────────────────────────── */}
       <section
         aria-labelledby="feature"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-28"
       >
-        <div className="mb-10 sm:mb-14">
-          <SectionLabel en="Feature" ja="地形図" />
-          <p className="mt-4 sm:ml-12 text-[0.9375rem] text-sub-gray leading-[1.9] max-w-[36rem]">
+        <div className="mb-12 sm:mb-16">
+          <SectionLabel en="Explore" ja="地形図" />
+          <p className="mt-5 sm:ml-12 text-[0.9375rem] text-sub-gray leading-[2] max-w-[36rem]">
             気になる領域を選ぶと、関連する記録が下に並びます。
+            遷移はしません。同じページの上で広がります。
           </p>
         </div>
         <TerritoryBrowser
@@ -122,173 +115,105 @@ export default function HomePage() {
         />
       </section>
 
-      {/* SCHEDULE — events rail */}
-      {upcomingEvents.length > 0 && (
-        <section
-          aria-labelledby="schedule"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
-        >
-          <div className="grid grid-cols-[auto_1fr] gap-6 sm:gap-10 mb-10 sm:mb-14">
-            <SectionLabel en="Schedule" ja="静かな集まり" />
-            <div className="flex items-end justify-end">
-              <Link
-                href="/events"
-                className="text-sm text-navy hover:text-gold transition-colors"
-              >
-                すべて見る →
-              </Link>
-            </div>
-          </div>
-          <p className="text-[0.9375rem] text-sub-gray leading-[1.9] mb-6 max-w-[36rem]">
-            少人数・半公開で行う、整える時間。
-          </p>
-          <EventsRail events={upcomingEvents} />
-        </section>
-      )}
+      {/* ───────────────────────────────────────────────
+         SCENE 4 — Gather  ✦ Conversion focus
+         Goal: convert the right reader to a Quiet Gathering.
+         Full-bleed cream-deep band, hero treatment.
+         ─────────────────────────────────────────────── */}
+      {featuredEvent && <FeaturedGathering event={featuredEvent} />}
 
-      {/* PICK UP — more records in a 3-card row */}
-      {moreArticles.length > 0 && (
-        <section
-          aria-labelledby="pickup"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
-        >
-          <div className="mb-10 sm:mb-14">
-            <SectionLabel en="Pick Up" ja="ほかの記録" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-            {moreArticles.map((a) => (
-              <ArticleCard key={a.slug} article={a} variant="card" />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* RELATED CONTENTS — reflect + letters + about */}
+      {/* ───────────────────────────────────────────────
+         SCENE 5 — Belong
+         Goal: build relationship through subscription
+         and offer auxiliary tools (Reflect, Letters).
+         ─────────────────────────────────────────────── */}
       <section
-        aria-labelledby="related"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
+        aria-labelledby="belong"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-28"
       >
-        <div className="mb-10 sm:mb-14">
-          <SectionLabel en="Related" ja="ほかの入口" />
+        <div className="mb-12 sm:mb-16">
+          <SectionLabel en="Belong" ja="つながる" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
-          <Link
-            href="/reflect"
-            className="group bg-paper border border-hair-line p-7 hover:border-gold transition-colors"
-          >
-            <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
-              Reflect
-            </p>
-            <h3 className="mt-3 font-mincho text-lg font-medium leading-[1.6] text-ink group-hover:text-navy transition-colors">
-              いまの自分に近い記録を、探す
-            </h3>
-            <p className="mt-3 text-sm text-sub-gray leading-[1.9]">
-              5 つの問いに静かに答えると、近い記録が並びます。
-            </p>
-          </Link>
-          <Link
-            href="/letters"
-            className="group bg-paper border border-hair-line p-7 hover:border-gold transition-colors"
-          >
-            <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
-              Letters
-            </p>
-            <h3 className="mt-3 font-mincho text-lg font-medium leading-[1.6] text-ink group-hover:text-navy transition-colors">
-              静かなお便り
-            </h3>
-            <p className="mt-3 text-sm text-sub-gray leading-[1.9]">
-              書きたくなったら、ここに。返信は約束できませんが、必ず読みます。
-            </p>
-          </Link>
-          <Link
-            href="/about"
-            className="group bg-paper border border-hair-line p-7 hover:border-gold transition-colors"
-          >
-            <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
-              About
-            </p>
-            <h3 className="mt-3 font-mincho text-lg font-medium leading-[1.6] text-ink group-hover:text-navy transition-colors">
-              このサイトについて
-            </h3>
-            <p className="mt-3 text-sm text-sub-gray leading-[1.9]">
-              解決策ではなく、整えている途中の話を残しておく場所。
-            </p>
-          </Link>
-        </div>
-      </section>
 
-      {/* Subscribe — refined */}
-      <section
-        aria-labelledby="subscribe-cta"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-24 sm:pb-32"
-      >
-        <div className="border-t border-hair-line pt-14 sm:pt-20 grid grid-cols-[auto_1fr] gap-6 sm:gap-10">
-          <SectionLabel en="Subscribe" />
-          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 items-center">
-            <div>
-              <h2
-                id="subscribe-cta"
-                className="font-mincho text-2xl sm:text-4xl font-medium leading-[1.45] text-ink"
-              >
-                月に一度か二度、
-                <br />
-                ニュースレターでお送りします。
-              </h2>
-              <p className="mt-6 text-[0.9375rem] leading-[2] text-ink/75 max-w-[34rem]">
-                新しく書いた記録と、まだ記事にしていない覚え書きを、お送りします。
-                通知も煽りもありません。
+        <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12 lg:gap-16">
+          {/* Primary: Subscribe */}
+          <div className="border-r-0 lg:border-r border-hair-line lg:pr-12">
+            <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
+              Subscribe
+            </p>
+            <h3
+              id="belong"
+              className="mt-3 font-mincho text-2xl sm:text-3xl font-medium leading-[1.5] text-ink"
+            >
+              月に一度か二度、
+              <br />
+              ニュースレターで届く記録。
+            </h3>
+            <p className="mt-6 text-[0.9375rem] leading-[2] text-ink/75 max-w-[28rem]">
+              新しく書いた記録と、まだ記事にしていない覚え書きを、お送りします。
+              通知も煽りもありません。
+            </p>
+            <a
+              href={site.social.substack}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold mt-9"
+            >
+              Substack で購読する
+              <span aria-hidden>→</span>
+            </a>
+          </div>
+
+          {/* Secondary: Reflect + Letters as small entries */}
+          <div className="space-y-6">
+            <Link
+              href="/reflect"
+              className="group block border-l-2 border-hair-line hover:border-gold pl-5 transition-colors"
+            >
+              <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
+                Reflect
               </p>
-            </div>
-            <div className="lg:justify-self-end">
-              <a
-                href={site.social.substack}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-gold"
-              >
-                Substack で購読する
-                <span aria-hidden>→</span>
-              </a>
-            </div>
+              <h4 className="mt-2 font-mincho text-lg font-medium leading-[1.5] text-ink group-hover:text-navy transition-colors">
+                いまの自分に近い記録を探す
+              </h4>
+              <p className="mt-2 text-[13px] leading-[1.9] text-sub-gray">
+                5 つの問いに静かに答えると、近い記録が並びます。
+              </p>
+            </Link>
+
+            <Link
+              href="/letters"
+              className="group block border-l-2 border-hair-line hover:border-gold pl-5 transition-colors"
+            >
+              <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
+                Letters
+              </p>
+              <h4 className="mt-2 font-mincho text-lg font-medium leading-[1.5] text-ink group-hover:text-navy transition-colors">
+                静かなお便り
+              </h4>
+              <p className="mt-2 text-[13px] leading-[1.9] text-sub-gray">
+                書きたくなったら、ここに。返信は約束しませんが、必ず読みます。
+              </p>
+            </Link>
+
+            <Link
+              href="/about"
+              className="group block border-l-2 border-hair-line hover:border-gold pl-5 transition-colors"
+            >
+              <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
+                About
+              </p>
+              <h4 className="mt-2 font-mincho text-lg font-medium leading-[1.5] text-ink group-hover:text-navy transition-colors">
+                このサイトについて
+              </h4>
+              <p className="mt-2 text-[13px] leading-[1.9] text-sub-gray">
+                解決策ではなく、整えている途中の話を残しておく場所。
+              </p>
+            </Link>
           </div>
         </div>
       </section>
     </>
-  );
-}
-
-function Pillar({
-  label,
-  ja,
-  description,
-  href,
-  cta,
-}: {
-  label: string;
-  ja: string;
-  description: string;
-  href: string;
-  cta: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group block border-b sm:border-b-0 sm:border-r border-hair-line last:border-r-0 p-8 sm:p-10 hover:bg-paper/60 transition-colors"
-    >
-      <p className="logo-type text-[10px] tracking-[0.4em] uppercase text-gold">
-        {label}
-      </p>
-      <h2 className="mt-3 font-mincho text-2xl font-medium leading-[1.45] text-ink group-hover:text-navy transition-colors">
-        {ja}
-      </h2>
-      <p className="mt-4 text-sm leading-[1.95] text-sub-gray">
-        {description}
-      </p>
-      <span className="mt-5 inline-flex items-center gap-2 text-sm text-navy border-b border-gold pb-0.5">
-        {cta}
-        <span aria-hidden>→</span>
-      </span>
-    </Link>
   );
 }
 
