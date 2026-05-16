@@ -8,26 +8,33 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "off-white": "#FAFAF7",
-        ink: "#1A1A1A",
+        cream: "#F4ECDE",
+        "cream-deep": "#EAD9BF",
+        paper: "#FFFFFF",
+        ink: "#141414",
         "sub-gray": "#6B6B6B",
-        "hair-line": "#E5E5E0",
-        "quiet-brass": "#8B7355",
+        "hair-line": "#E5DCC9",
+        navy: "#1B2A47",
+        "navy-deep": "#131F36",
+        gold: "#B89065",
+        "gold-bright": "#C9A875",
+        // Legacy aliases kept so existing class names continue to work
+        "off-white": "#F4ECDE",
+        "quiet-brass": "#B89065",
       },
       fontFamily: {
-        serif: [
-          "Cormorant Garamond",
-          "Noto Serif JP",
-          "YuMincho",
-          "Hiragino Mincho ProN",
-          "serif",
-        ],
         sans: [
           "Noto Sans JP",
           "YuGothic",
           "Hiragino Sans",
           "system-ui",
           "sans-serif",
+        ],
+        serif: [
+          "Noto Serif JP",
+          "YuMincho",
+          "Hiragino Mincho ProN",
+          "serif",
         ],
         mincho: [
           "Noto Serif JP",

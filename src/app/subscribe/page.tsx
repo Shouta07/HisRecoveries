@@ -42,9 +42,10 @@ export default function SubscribePage() {
             href={site.social.substack}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block border border-ink px-10 py-4 text-sm tracking-[0.2em] uppercase text-ink hover:bg-ink hover:text-off-white transition-colors"
+            className="btn-gold"
           >
             Substack で購読する
+            <span aria-hidden>→</span>
           </a>
         </div>
 

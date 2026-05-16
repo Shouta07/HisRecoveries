@@ -3,26 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --off-white: #fafaf7;
-  --ink: #1a1a1a;
+  --cream: #f4ecde;
+  --cream-deep: #ead9bf;
+  --paper: #ffffff;
+  --ink: #141414;
   --sub-gray: #6b6b6b;
-  --hair-line: #e5e5e0;
-  --quiet-brass: #8b7355;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --off-white: #14130f;
-    --ink: #ece9e1;
-    --sub-gray: #8b8880;
-    --hair-line: #2a2925;
-    --quiet-brass: #a89274;
-  }
+  --hair-line: #e5dcc9;
+  --navy: #1b2a47;
+  --navy-deep: #131f36;
+  --gold: #b89065;
+  --gold-bright: #c9a875;
 }
 
 html,
 body {
-  background-color: var(--off-white);
+  background-color: var(--cream);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -34,7 +29,7 @@ body {
   font-family: "Noto Sans JP", "YuGothic", "Hiragino Sans", system-ui,
     sans-serif;
   font-weight: 400;
-  line-height: 1.9;
+  line-height: 1.85;
   letter-spacing: 0.02em;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -42,18 +37,26 @@ body {
 }
 
 ::selection {
-  background: rgba(139, 115, 85, 0.22);
+  background: rgba(184, 144, 101, 0.28);
   color: var(--ink);
 }
 
+/* Headlines — gothic bold, like the ad */
 h1,
 h2,
 h3,
 h4 {
+  font-family: "Noto Sans JP", "YuGothic", "Hiragino Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+/* Mincho — reserved for emotional phrases ("整える", quoted concepts) */
+.font-mincho {
   font-family: "Noto Serif JP", "YuMincho", "Hiragino Mincho ProN", serif;
   font-weight: 400;
-  letter-spacing: 0.02em;
-  color: var(--ink);
 }
 
 a {
@@ -63,116 +66,133 @@ a {
 
 .logo-type {
   font-family: "Cormorant Garamond", "Crimson Pro", serif;
-  font-weight: 300;
-  letter-spacing: 0.05em;
+  font-weight: 400;
+  letter-spacing: 0.04em;
 }
 
-/* Article body — optimized for long-form Japanese reading */
+/* Article body — long-form reading */
 .article-body {
+  font-family: "Noto Sans JP", system-ui, sans-serif;
   font-size: 1.0625rem;
   line-height: 1.95;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   color: var(--ink);
   word-break: keep-all;
   overflow-wrap: anywhere;
   line-break: strict;
-  hanging-punctuation: allow-end;
 }
 
 @media (min-width: 640px) {
   .article-body {
-    font-size: 1.125rem;
-    line-height: 2.0;
+    font-size: 1.0625rem;
+    line-height: 2;
   }
 }
 
 .article-body > p {
-  margin-bottom: 1.85em;
-  text-align: justify;
-  text-justify: inter-character;
+  margin-bottom: 1.75em;
 }
 
 .article-body h2 {
-  font-size: 1.35rem;
-  margin-top: 3.5em;
+  font-size: 1.4rem;
+  margin-top: 3em;
   margin-bottom: 1em;
-  padding-bottom: 0.3em;
-  font-family: "Noto Serif JP", serif;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  line-height: 1.7;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.55;
 }
 
 .article-body h3 {
-  font-size: 1.1rem;
-  margin-top: 2.6em;
-  margin-bottom: 0.8em;
-  font-family: "Noto Serif JP", serif;
-  font-weight: 500;
-  line-height: 1.7;
+  font-size: 1.15rem;
+  margin-top: 2.4em;
+  margin-bottom: 0.7em;
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 .article-body blockquote {
-  border-left: 1px solid var(--hair-line);
-  padding-left: 1.4em;
-  color: var(--sub-gray);
-  margin: 2.2em 0;
-  font-style: normal;
+  border-left: 2px solid var(--gold);
+  background: var(--paper);
+  padding: 1em 1.4em;
+  color: var(--ink);
+  margin: 2em 0;
+  font-family: "Noto Serif JP", serif;
 }
 
 .article-body ul,
 .article-body ol {
-  margin: 1.6em 0;
+  margin: 1.4em 0;
   padding-left: 1.5em;
 }
 
 .article-body li {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.4em;
 }
 
 .article-body a {
-  border-bottom: 1px solid var(--hair-line);
-  transition: border-color 0.2s ease;
+  color: var(--navy);
+  border-bottom: 1px solid var(--gold);
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .article-body a:hover {
-  border-color: var(--ink);
+  color: var(--gold);
 }
 
 .article-body hr {
   border: none;
   border-top: 1px solid var(--hair-line);
-  margin: 3.5em auto;
+  margin: 3em auto;
   width: 4em;
-  opacity: 0.7;
-}
-
-.article-body code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.9em;
-  background: color-mix(in oklab, var(--ink) 6%, transparent);
-  padding: 0.1em 0.35em;
-  border-radius: 2px;
-}
-
-.article-body em {
-  font-style: normal;
-  color: var(--sub-gray);
 }
 
 .article-body strong {
-  font-weight: 500;
+  font-weight: 700;
   color: var(--ink);
 }
 
-/* Safe-area for mobile bottom (iOS) */
+/* Buttons */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--gold);
+  color: #ffffff;
+  padding: 1rem 2rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.btn-gold:hover {
+  background-color: var(--gold-bright);
+}
+
+.btn-outline-navy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: transparent;
+  color: var(--navy);
+  padding: 0.875rem 1.75rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  border: 1px solid var(--navy);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.btn-outline-navy:hover {
+  background-color: var(--navy);
+  color: #ffffff;
+}
+
+/* Safe-area for iOS */
 @supports (padding: env(safe-area-inset-bottom)) {
   body {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
-/* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -182,8 +202,7 @@ a {
   }
 }
 
-/* Focus visible */
 :focus-visible {
-  outline: 1px solid var(--quiet-brass);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }

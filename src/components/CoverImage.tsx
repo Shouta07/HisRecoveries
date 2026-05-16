@@ -48,7 +48,7 @@ export default function CoverImage({
   if (src) {
     return (
       <div
-        className={`${aspectClass[aspectRatio]} relative overflow-hidden bg-hair-line ${className}`}
+        className={`${aspectClass[aspectRatio]} relative overflow-hidden bg-cream-deep ${className}`}
       >
         <Image
           src={src}
@@ -62,20 +62,22 @@ export default function CoverImage({
     );
   }
 
-  // Typographic placeholder — intentional design, not a fallback
+  // Typographic poster — uses navy/gold/cream palette
   return (
     <div
-      className={`${aspectClass[aspectRatio]} relative overflow-hidden border border-hair-line bg-off-white ${className}`}
+      className={`${aspectClass[aspectRatio]} relative overflow-hidden bg-cream-deep ${className}`}
       aria-label={alt}
     >
-      <div className={`absolute inset-0 ${padding[size]} flex flex-col justify-between`}>
+      <div
+        className={`absolute inset-0 ${padding[size]} flex flex-col justify-between`}
+      >
         {eyebrow && (
-          <div className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-sub-gray">
+          <div className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-navy/70">
             {eyebrow}
           </div>
         )}
         <div
-          className={`font-mincho ${titleSize[size]} leading-[1.55] text-ink`}
+          className={`font-mincho ${titleSize[size]} leading-[1.55] text-navy`}
           style={{
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -86,10 +88,10 @@ export default function CoverImage({
           {title}
         </div>
         {meta && (
-          <div className="text-[11px] tracking-wider text-sub-gray">{meta}</div>
+          <div className="text-[11px] tracking-wider text-navy/70">{meta}</div>
         )}
       </div>
-      <div className="absolute bottom-0 left-6 right-6 sm:left-8 sm:right-8 h-px bg-quiet-brass/30" />
+      <div className="absolute bottom-0 left-6 right-6 sm:left-8 sm:right-8 h-px bg-gold/50" />
     </div>
   );
 }

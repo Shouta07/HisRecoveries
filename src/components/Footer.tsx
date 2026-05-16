@@ -5,16 +5,14 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-40 border-t border-hair-line bg-off-white">
+    <footer className="mt-40 bg-navy text-white">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-24">
-        {/* Parting line */}
-        <p className="font-mincho text-ink text-[1.0625rem] sm:text-xl leading-[2] max-w-[28rem]">
+        <p className="font-mincho text-white text-[1.0625rem] sm:text-xl leading-[2] max-w-[28rem]">
           後ろから来る人の、
           <br />
           半歩先にだけ届けばいい。
         </p>
 
-        {/* Columns */}
         <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-y-12 gap-x-8 text-sm">
           <FooterColumn label="Read">
             <FooterLink href="/articles">記事</FooterLink>
@@ -49,37 +47,44 @@ export default function Footer() {
               Threads
             </FooterExternalLink>
             <FooterExternalLink href={site.social.x}>X</FooterExternalLink>
-            <FooterExternalLink href={site.social.note}>note</FooterExternalLink>
+            <FooterExternalLink href={site.social.note}>
+              note
+            </FooterExternalLink>
             <FooterExternalLink href={site.social.substack}>
               Substack
             </FooterExternalLink>
           </FooterColumn>
         </div>
 
-        {/* Brand mark + legal */}
-        <div className="mt-20 pt-10 border-t border-hair-line">
+        <div className="mt-20 pt-10 border-t border-white/15">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
             <div>
-              <p className="logo-type text-3xl sm:text-4xl text-ink tracking-wider">
+              <p className="logo-type text-3xl sm:text-4xl text-white tracking-wider">
                 {site.name}
               </p>
-              <p className="mt-2 text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+              <p className="mt-2 text-[10px] tracking-[0.3em] text-gold uppercase">
                 — {site.tagline} —
               </p>
             </div>
-            <p className="logo-type text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+            <p className="logo-type text-[10px] tracking-[0.3em] text-gold uppercase">
               Observed — not proclaimed.
             </p>
           </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-sub-gray/80">
+          <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-white/55">
             <span>© {year} {site.name}</span>
             <span aria-hidden>·</span>
-            <Link href="/privacy" className="hover:text-ink transition-colors">
+            <Link
+              href="/privacy"
+              className="hover:text-white transition-colors"
+            >
               プライバシーポリシー
             </Link>
             <span aria-hidden>·</span>
-            <Link href="/legal" className="hover:text-ink transition-colors">
+            <Link
+              href="/legal"
+              className="hover:text-white transition-colors"
+            >
               特定商取引法に基づく表記
             </Link>
           </div>
@@ -98,10 +103,10 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <p className="text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-5">
+      <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-5">
         {label}
       </p>
-      <ul className="space-y-3 text-[13px] text-ink/90">{children}</ul>
+      <ul className="space-y-3 text-[13px] text-white/85">{children}</ul>
     </div>
   );
 }
@@ -115,7 +120,7 @@ function FooterLink({
 }) {
   return (
     <li>
-      <Link href={href} className="hover:text-quiet-brass transition-colors">
+      <Link href={href} className="hover:text-gold-bright transition-colors">
         {children}
       </Link>
     </li>
@@ -135,7 +140,7 @@ function FooterExternalLink({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="hover:text-quiet-brass transition-colors"
+        className="hover:text-gold-bright transition-colors"
       >
         {children}
       </a>
