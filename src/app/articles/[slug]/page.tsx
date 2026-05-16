@@ -110,7 +110,42 @@ export default async function ArticlePage({ params }: { params: Params }) {
   };
 
   return (
-    <article className="mx-auto max-w-reading px-6 pb-24 pt-16 sm:pt-24">
+    <article className="mx-auto max-w-reading px-6 pb-24 pt-12 sm:pt-20">
+      {/* Breadcrumb */}
+      <nav
+        aria-label="breadcrumb"
+        className="mb-12 text-[11px] tracking-widest text-sub-gray"
+      >
+        <ol className="flex flex-wrap items-center gap-2">
+          <li>
+            <Link
+              href="/"
+              className="hover:text-ink transition-colors uppercase"
+            >
+              Home
+            </Link>
+          </li>
+          <li aria-hidden>—</li>
+          <li>
+            <Link
+              href="/articles"
+              className="hover:text-ink transition-colors uppercase"
+            >
+              Articles
+            </Link>
+          </li>
+          <li aria-hidden>—</li>
+          <li>
+            <Link
+              href={`/articles/category/${article.category}`}
+              className="hover:text-ink transition-colors"
+            >
+              {categoryLabel(article.category)}
+            </Link>
+          </li>
+        </ol>
+      </nav>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
@@ -183,23 +218,36 @@ export default async function ArticlePage({ params }: { params: Params }) {
         <p className="logo-type text-base text-ink tracking-wider">
           —— {site.author}
         </p>
-        <p className="mt-4 font-mincho leading-[2]">
-          連絡は{" "}
-          <a
-            href={`mailto:${site.email}`}
-            className="border-b border-hair-line hover:border-ink transition-colors"
-          >
-            {site.email}
-          </a>
-          、購読は{" "}
-          <Link
-            href="/subscribe"
-            className="border-b border-hair-line hover:border-ink transition-colors"
-          >
-            Subscribe
-          </Link>
-          。
-        </p>
+
+        <div className="mt-12 pt-8 border-t border-hair-line/60">
+          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-4">
+            A Quiet Delivery
+          </p>
+          <p className="font-mincho text-[0.9375rem] leading-[2] text-ink max-w-[28rem]">
+            この記録に時間を使ってくれてありがとうございました。
+            次のものが書けたとき、静かに知らせます。
+          </p>
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm">
+            <Link
+              href="/subscribe"
+              className="border-b border-hair-line hover:border-ink transition-colors"
+            >
+              Subscribe
+            </Link>
+            <Link
+              href="/articles"
+              className="border-b border-hair-line hover:border-ink transition-colors"
+            >
+              他の記録を読む
+            </Link>
+            <a
+              href={`mailto:${site.email}`}
+              className="border-b border-hair-line hover:border-ink transition-colors"
+            >
+              連絡する
+            </a>
+          </div>
+        </div>
       </footer>
     </article>
   );
