@@ -4,13 +4,15 @@ import ArticleCard from "@/components/ArticleCard";
 import EventCard from "@/components/EventCard";
 import FeaturedEvent from "@/components/FeaturedEvent";
 import { getUpcomingEvents } from "@/lib/events";
-import { categories, site } from "@/lib/site";
+import { getAllTerritories } from "@/lib/territories";
+import { site } from "@/lib/site";
 
 export default function HomePage() {
   const latest = getAllArticles().slice(0, 4);
   const upcomingEvents = getUpcomingEvents();
   const featuredEvent = upcomingEvents[0];
   const otherEvents = upcomingEvents.slice(1);
+  const territories = getAllTerritories();
 
   return (
     <>
@@ -67,37 +69,82 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Territories — simpler card grid */}
+      {/* Territories — 6 quiet maps */}
       <section
         aria-labelledby="territories"
         className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
       >
-        <h2
-          id="territories"
-          className="text-xl sm:text-2xl font-bold mb-8 leading-[1.7]"
-        >
-          扱う領域
+        <div className="flex items-baseline justify-between mb-8">
+          <h2
+            id="territories"
+            className="text-xl sm:text-2xl font-bold leading-[1.7]"
+          >
+            地形図を読む
+          </h2>
+          <Link
+            href="/territories"
+            className="text-sm text-navy hover:text-gold transition-colors"
+          >
+            すべて見る
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {territories.map((t) => (
+            <Link
+              key={t.slug}
+              href={`/territories/${t.slug}`}
+              className="group bg-paper border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors"
+            >
+              <h3 className="text-lg font-bold leading-[1.6] text-ink group-hover:text-navy transition-colors">
+                {t.title}
+              </h3>
+              <p className="mt-2 font-mincho text-[13px] text-sub-gray leading-[1.9]">
+                {t.subtitle}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Reflect + Letters — twin entry points */}
+      <section
+        aria-labelledby="reflect-letters"
+        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-28"
+      >
+        <h2 id="reflect-letters" className="sr-only">
+          整理する・書く
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {(["hyperhidrosis", "acne", "bromhidrosis", "face"] as const).map(
-            (slug) => {
-              const c = categories[slug];
-              return (
-                <Link
-                  key={slug}
-                  href={`/articles/category/${slug}`}
-                  className="group bg-paper border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors"
-                >
-                  <h3 className="text-lg font-bold leading-[1.6] text-ink group-hover:text-navy transition-colors">
-                    {c.label}
-                  </h3>
-                  <p className="mt-2 text-[13px] text-sub-gray leading-[1.85] font-mincho">
-                    {c.description}
-                  </p>
-                </Link>
-              );
-            }
-          )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          <Link
+            href="/reflect"
+            className="group bg-paper border border-hair-line p-7 sm:p-9 hover:border-gold transition-colors"
+          >
+            <h3 className="text-lg font-bold leading-[1.6] text-ink group-hover:text-navy transition-colors">
+              いまの自分を、整理する
+            </h3>
+            <p className="mt-3 font-mincho text-sm text-sub-gray leading-[1.9]">
+              5 つの問いに静かに答えるだけ。
+              診断ではなく、観察として、自分の場所を言葉にしてみる。
+            </p>
+            <span className="mt-5 inline-flex items-center gap-2 text-[13px] text-navy">
+              はじめる →
+            </span>
+          </Link>
+          <Link
+            href="/letters"
+            className="group bg-paper border border-hair-line p-7 sm:p-9 hover:border-gold transition-colors"
+          >
+            <h3 className="text-lg font-bold leading-[1.6] text-ink group-hover:text-navy transition-colors">
+              静かなお便り
+            </h3>
+            <p className="mt-3 font-mincho text-sm text-sub-gray leading-[1.9]">
+              書きたくなったら、ここに。
+              返信は約束できませんが、必ず読みます。
+            </p>
+            <span className="mt-5 inline-flex items-center gap-2 text-[13px] text-navy">
+              書く →
+            </span>
+          </Link>
         </div>
       </section>
 

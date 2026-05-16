@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
 import { getAllEvents } from "@/lib/events";
+import { getAllTerritories } from "@/lib/territories";
 import { categories, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,6 +12,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about",
     "/articles",
     "/events",
+    "/territories",
+    "/reflect",
+    "/letters",
     "/subscribe",
     "/privacy",
     "/legal",
@@ -44,5 +48,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPaths, ...categoryPaths, ...articlePaths, ...eventPaths];
+  const territoryPaths: MetadataRoute.Sitemap = getAllTerritories().map((t) => ({
+    url: `${site.url}/territories/${t.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticPaths,
+    ...categoryPaths,
+    ...articlePaths,
+    ...eventPaths,
+    ...territoryPaths,
+  ];
 }

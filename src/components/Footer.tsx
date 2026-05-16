@@ -9,6 +9,7 @@ export default function Footer() {
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-10 gap-x-8 text-sm">
           <Column label="読む">
+            <FLink href="/territories">地形図</FLink>
             <FLink href="/articles">記事</FLink>
             <FLink href="/articles/category/philosophy">哲学・思想</FLink>
             <FLink href="/articles/category/hyperhidrosis">多汗症</FLink>
@@ -20,10 +21,12 @@ export default function Footer() {
           <Column label="参加する">
             <FLink href="/events">イベント</FLink>
             <FLink href="/subscribe">ニュースレター</FLink>
+            <FLink href="/letters">Letters</FLink>
           </Column>
 
           <Column label="このサイト">
             <FLink href="/about">概要</FLink>
+            <FLink href="/reflect">整理する</FLink>
             <FExt href={`mailto:${site.email}`}>連絡</FExt>
             <FLink href="/feed.xml">Atom Feed</FLink>
           </Column>

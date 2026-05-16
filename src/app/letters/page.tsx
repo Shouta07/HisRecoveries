@@ -1,0 +1,46 @@
+import type { Metadata } from "next";
+import { site } from "@/lib/site";
+import LettersClient from "./LettersClient";
+
+export const metadata: Metadata = {
+  title: "Letters",
+  description:
+    "His Recoveries への静かなお便り。返信は約束できませんが、必ず読みます。",
+  alternates: { canonical: `${site.url}/letters` },
+  openGraph: {
+    title: `Letters — ${site.name}`,
+    description:
+      "His Recoveries への静かなお便り。返信は約束できませんが、必ず読みます。",
+  },
+};
+
+export default function LettersPage() {
+  const endpoint = process.env.NEXT_PUBLIC_LETTERS_ENDPOINT ?? "";
+
+  return (
+    <div className="mx-auto max-w-[820px] px-6 sm:px-10 pt-16 sm:pt-20 pb-24">
+      <header className="mb-12 max-w-reading">
+        <h1 className="text-3xl sm:text-5xl font-bold leading-[1.4] text-ink">
+          静かなお便り
+        </h1>
+        <p className="mt-6 font-mincho text-sub-gray text-[0.9375rem] leading-[2]">
+          ここは、書きたくなった人のための場所です。
+          急かしません。返信を約束もしません。
+          それでも、書いて伝えたい言葉があれば、ここに。
+        </p>
+      </header>
+
+      <LettersClient
+        endpoint={endpoint}
+        fallbackEmail={site.email}
+      />
+
+      <p className="mt-16 font-mincho text-sub-gray text-sm leading-[2.1] max-w-reading">
+        返信があるとは限りません。
+        それでも、ここに書いた言葉が、書いたあなた自身を少し整える。
+        そんな場所でありたい。
+      </p>
+      <p className="mt-3 logo-type text-sm text-navy">— Nagi</p>
+    </div>
+  );
+}

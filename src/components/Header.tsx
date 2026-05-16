@@ -13,7 +13,15 @@ export default function Header() {
           {site.name}
         </Link>
         <nav aria-label="primary" className="text-sm">
-          <ul className="flex items-center gap-4 sm:gap-7 text-white/85">
+          <ul className="flex items-center gap-3 sm:gap-6 text-white/85">
+            <li>
+              <Link
+                href="/territories"
+                className="inline-block py-2 hover:text-white transition-colors"
+              >
+                地形図
+              </Link>
+            </li>
             <li>
               <Link
                 href="/articles"
@@ -32,18 +40,18 @@ export default function Header() {
             </li>
             <li>
               <Link
-                href="/about"
-                className="inline-block py-2 hover:text-white transition-colors"
+                href="/reflect"
+                className="hidden sm:inline-block py-2 hover:text-white transition-colors"
               >
-                About
+                Reflect
               </Link>
             </li>
             <li>
               <Link
-                href="/subscribe"
-                className="hidden sm:inline-block py-2 hover:text-white transition-colors"
+                href="/about"
+                className="inline-block py-2 hover:text-white transition-colors"
               >
-                Subscribe
+                About
               </Link>
             </li>
           </ul>
