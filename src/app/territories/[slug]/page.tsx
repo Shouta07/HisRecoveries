@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import TerritoryArt from "@/components/TerritoryArt";
 import {
   getAllTerritorySlugs,
   getTerritory,
@@ -108,16 +109,21 @@ export default async function TerritoryPage({
           </ol>
         </nav>
 
-        <div className="max-w-reading">
-          <h1 className="text-3xl sm:text-5xl font-bold leading-[1.4] text-ink">
-            {t.title}の地形図
-          </h1>
-          <p className="mt-6 font-mincho text-sub-gray text-base sm:text-lg leading-[2]">
-            — {t.subtitle} —
-          </p>
-          <p className="mt-8 text-[1rem] leading-[2.1] text-ink max-w-[34rem]">
-            {t.intro}
-          </p>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-start">
+          <div className="order-2 lg:order-1">
+            <h1 className="text-3xl sm:text-5xl font-bold leading-[1.4] text-ink">
+              {t.title}の地形図
+            </h1>
+            <p className="mt-6 font-mincho text-sub-gray text-base sm:text-lg leading-[2]">
+              — {t.subtitle} —
+            </p>
+            <p className="mt-8 text-[1rem] leading-[2.1] text-ink max-w-[34rem]">
+              {t.intro}
+            </p>
+          </div>
+          <div className="order-1 lg:order-2">
+            <TerritoryArt slug={t.slug} aspectClass="aspect-[4/3]" />
+          </div>
         </div>
       </header>
 

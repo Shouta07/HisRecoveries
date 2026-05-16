@@ -1,19 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="このサイトについて">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#F6EFE0"/>
-      <stop offset="100%" stop-color="#EBDEC1"/>
+      <stop offset="0%" stop-color="#F7F0E2"/>
+      <stop offset="100%" stop-color="#E5D2A8"/>
+    </linearGradient>
+    <radialGradient id="warmth" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#F7F0E2" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vignette" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B2A47" stop-opacity="0.08"/>
+      <stop offset="50%" stop-color="#1B2A47" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#1B2A47" stop-opacity="0.12"/>
     </linearGradient>
   </defs>
 
   <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#warmth)"/>
 
-  <g stroke="#141414" stroke-opacity="0.30">
-    <line x1="380" y1="360" x2="1220" y2="360" stroke-width="0.7"/>
-    <line x1="380" y1="460" x2="1080" y2="460" stroke-width="0.7"/>
-    <line x1="380" y1="560" x2="1140" y2="560" stroke-width="0.7"/>
-    <line x1="380" y1="660" x2="980"  y2="660" stroke-width="0.7"/>
+  <!-- A manuscript page block, slightly tilted feel via offsets -->
+  <g stroke="#1B2A47" stroke-opacity="0.35">
+    <line x1="430" y1="280" x2="1300" y2="280" stroke-width="0.7"/>
+    <line x1="430" y1="370" x2="1180" y2="370" stroke-width="0.7"/>
+    <line x1="430" y1="460" x2="1230" y2="460" stroke-width="0.7"/>
+    <line x1="430" y1="550" x2="1140" y2="550" stroke-width="0.7"/>
+    <line x1="430" y1="640" x2="1050" y2="640" stroke-width="0.7"/>
+    <line x1="430" y1="730" x2="970"  y2="730" stroke-width="0.7"/>
   </g>
 
-  <circle cx="380" cy="720" r="3" fill="#B08755"/>
+  <!-- A second column of fragmented lines (suggesting a draft) -->
+  <g stroke="#B08755" stroke-opacity="0.55">
+    <line x1="430" y1="305" x2="900" y2="305" stroke-width="0.6"/>
+    <line x1="430" y1="395" x2="780" y2="395" stroke-width="0.6"/>
+    <line x1="430" y1="485" x2="850" y2="485" stroke-width="0.6"/>
+    <line x1="430" y1="575" x2="720" y2="575" stroke-width="0.6"/>
+  </g>
+
+  <!-- Two accent dots — like the period of a sentence and a footnote mark -->
+  <circle cx="970" cy="730" r="5" fill="#B08755"/>
+  <circle cx="430" cy="800" r="3" fill="#1B2A47" fill-opacity="0.5"/>
+
+  <!-- A large background "I." like an illuminated drop cap -->
+  <text x="120" y="780" font-family="Cormorant Garamond, Times, serif" font-size="280" letter-spacing="6" fill="#B08755" fill-opacity="0.18">I.</text>
+
+  <!-- A page-corner fold motif -->
+  <path d="M1500 880 L1500 940 L1440 940 Z" fill="#1B2A47" fill-opacity="0.10"/>
+  <path d="M1500 880 L1440 940" stroke="#B08755" stroke-width="0.7" stroke-opacity="0.6"/>
+
+  <rect width="1600" height="1000" fill="url(#vignette)"/>
 </svg>

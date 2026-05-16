@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import TerritoryArt from "@/components/TerritoryArt";
 import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
 
@@ -51,25 +52,25 @@ export default function TerritoriesPage() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
-        {territories.map((t, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
+        {territories.map((t) => (
           <Link
             key={t.slug}
             href={`/territories/${t.slug}`}
-            className="group block bg-paper border border-hair-line p-7 sm:p-9 hover:border-gold transition-colors"
+            className="group block bg-paper border border-hair-line hover:border-gold transition-colors overflow-hidden"
           >
-            <p className="logo-type text-sm text-gold tracking-widest">
-              {romanize(i + 1)}.
-            </p>
-            <h2 className="mt-3 text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
-              {t.title}
-            </h2>
-            <p className="mt-3 font-mincho text-sm text-sub-gray leading-[1.9]">
-              {t.subtitle}
-            </p>
-            <p className="mt-4 text-[13px] text-sub-gray leading-[1.9] line-clamp-3">
-              {t.intro}
-            </p>
+            <TerritoryArt slug={t.slug} aspectClass="aspect-[16/10]" />
+            <div className="p-6 sm:p-8">
+              <h2 className="text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+                {t.title}
+              </h2>
+              <p className="mt-3 font-mincho text-sm text-sub-gray leading-[1.9]">
+                {t.subtitle}
+              </p>
+              <p className="mt-4 text-[13px] text-sub-gray leading-[1.9] line-clamp-3">
+                {t.intro}
+              </p>
+            </div>
           </Link>
         ))}
       </div>
@@ -77,6 +78,3 @@ export default function TerritoriesPage() {
   );
 }
 
-function romanize(n: number): string {
-  return ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"][n - 1] ?? `${n}`;
-}

@@ -1,25 +1,59 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="グルーミング体験">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F6EFE0"/>
-      <stop offset="100%" stop-color="#E8DCC0"/>
+      <stop offset="0%" stop-color="#F7F0E2"/>
+      <stop offset="55%" stop-color="#EBDDBA"/>
+      <stop offset="100%" stop-color="#D8C495"/>
     </linearGradient>
     <radialGradient id="warmth" cx="78%" cy="22%" r="65%">
-      <stop offset="0%" stop-color="#EFE0BD" stop-opacity="0.55"/>
-      <stop offset="100%" stop-color="#F6EFE0" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#F0DCB0" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#F7F0E2" stop-opacity="0"/>
     </radialGradient>
+    <radialGradient id="shadow" cx="15%" cy="95%" r="55%">
+      <stop offset="0%" stop-color="#1B2A47" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#1B2A47" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vignette" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B2A47" stop-opacity="0.06"/>
+      <stop offset="50%" stop-color="#1B2A47" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#1B2A47" stop-opacity="0.10"/>
+    </linearGradient>
   </defs>
 
   <rect width="1600" height="1000" fill="url(#bg)"/>
   <rect width="1600" height="1000" fill="url(#warmth)"/>
+  <rect width="1600" height="1000" fill="url(#shadow)"/>
+  <rect width="1600" height="1000" fill="url(#vignette)"/>
 
-  <g transform="translate(1120 440)" fill="none" stroke="#B08755">
-    <circle r="320" stroke-width="0.7" stroke-opacity="0.22"/>
-    <circle r="240" stroke-width="0.6" stroke-opacity="0.30"/>
-    <circle r="160" stroke-width="0.5" stroke-opacity="0.38"/>
-    <circle r="90"  stroke-width="0.4" stroke-opacity="0.45"/>
+  <!-- Concentric rings (a vanity mirror metaphor) -->
+  <g transform="translate(1140 440)" fill="none">
+    <circle r="380" stroke="#B08755" stroke-width="0.8" stroke-opacity="0.18"/>
+    <circle r="300" stroke="#B08755" stroke-width="0.7" stroke-opacity="0.28"/>
+    <circle r="220" stroke="#B08755" stroke-width="0.7" stroke-opacity="0.40"/>
+    <circle r="150" stroke="#B08755" stroke-width="0.6" stroke-opacity="0.55"/>
+    <circle r="80"  stroke="#B08755" stroke-width="0.6" stroke-opacity="0.70"/>
+    <circle r="30"  fill="#B08755" fill-opacity="0.40"/>
   </g>
 
-  <line x1="490" y1="120" x2="490" y2="900" stroke="#B08755" stroke-width="0.6" stroke-opacity="0.35"/>
-  <rect x="780" y="618" width="640" height="1.5" fill="#B08755" fill-opacity="0.55"/>
+  <!-- A second, smaller ring set (suggesting a second mirror, or eye) -->
+  <g transform="translate(360 700)" fill="none">
+    <circle r="110" stroke="#1B2A47" stroke-width="0.6" stroke-opacity="0.25"/>
+    <circle r="62" stroke="#1B2A47" stroke-width="0.6" stroke-opacity="0.40"/>
+    <circle r="24" stroke="#B08755" stroke-width="0.7" stroke-opacity="0.70"/>
+  </g>
+
+  <!-- Long vertical thread -->
+  <line x1="500" y1="60" x2="500" y2="940" stroke="#1B2A47" stroke-width="0.5" stroke-opacity="0.22"/>
+  <line x1="502" y1="60" x2="502" y2="940" stroke="#B08755" stroke-width="0.3" stroke-opacity="0.45"/>
+
+  <!-- Golden ratio horizontal -->
+  <rect x="770" y="618" width="660" height="1.6" fill="#B08755" fill-opacity="0.7"/>
+
+  <!-- Subtle horizon dots, like a faint grid -->
+  <g fill="#1B2A47" fill-opacity="0.18">
+    <circle cx="200" cy="80" r="1.3"/>
+    <circle cx="200" cy="180" r="1.3"/>
+    <circle cx="200" cy="280" r="1.3"/>
+    <circle cx="200" cy="380" r="1.3"/>
+  </g>
 </svg>
