@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
 import TerritoryBrowser from "@/components/TerritoryBrowser";
-import FeaturedGathering from "@/components/FeaturedGathering";
+import QuietGatherings from "@/components/QuietGatherings";
 import SectionLabel from "@/components/SectionLabel";
 import { getUpcomingEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
@@ -12,7 +12,6 @@ export default function HomePage() {
   const articles = getAllArticles();
   const recentArticles = articles.slice(0, 8);
   const upcomingEvents = getUpcomingEvents();
-  const featuredEvent = upcomingEvents[0];
   const territories = getAllTerritories().map((t) => ({
     slug: t.slug,
     title: t.title,
@@ -24,29 +23,32 @@ export default function HomePage() {
   return (
     <>
       {/* ─────────────────────────────────────────
-         Hero — TENTIAL "Journal" style: centered
-         small eyebrow + large mincho title +
-         single line of mission copy
+         Hero — tightened
          ───────────────────────────────────────── */}
-      <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-20 sm:pt-32 pb-16 sm:pb-24 text-center">
+      <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-12 sm:pt-16 pb-8 sm:pb-10 text-center">
         <p className="font-mincho text-sub-gray text-xs sm:text-sm tracking-[0.3em]">
           {site.tagline}
         </p>
-        <h1 className="mt-6 logo-type text-6xl sm:text-8xl text-navy leading-[0.95]">
+        <h1 className="mt-3 logo-type text-5xl sm:text-7xl text-navy leading-[0.95]">
           {site.name}
         </h1>
-        <p className="mt-10 font-mincho text-xl sm:text-3xl leading-[1.55] text-ink">
+        <p className="mt-6 font-mincho text-lg sm:text-2xl leading-[1.55] text-ink">
           Quiet Grooming.
-          <br />
-          <span className="text-ink/80 text-base sm:text-xl">
-            叫ばない、整える。
+          <span className="ml-2 text-ink/80 text-sm sm:text-base">
+            — 叫ばない、整える。
           </span>
         </p>
-        <p className="mt-7 text-sm sm:text-[0.9375rem] leading-[2] text-sub-gray max-w-[34rem] mx-auto">
+        <p className="mt-3 text-[13px] sm:text-sm leading-[1.95] text-sub-gray max-w-[34rem] mx-auto">
           言葉にされにくい男性の身体と自意識のための、
           記録 と 整理 と 集まり の場所。
         </p>
       </section>
+
+      {/* ─────────────────────────────────────────
+         QUIET GATHERINGS — directly under hero
+         体験事業を並べる
+         ───────────────────────────────────────── */}
+      <QuietGatherings events={upcomingEvents} />
 
       {/* ─────────────────────────────────────────
          CONCERNS — SBC「悩みから探す」style
@@ -98,15 +100,6 @@ export default function HomePage() {
             </Link>
           </div>
         </section>
-      )}
-
-      {/* ─────────────────────────────────────────
-         SCHEDULE — Conversion focus
-         ───────────────────────────────────────── */}
-      {featuredEvent && (
-        <div className="border-t border-hair-line">
-          <FeaturedGathering event={featuredEvent} />
-        </div>
       )}
 
       {/* ─────────────────────────────────────────
