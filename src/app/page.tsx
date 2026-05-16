@@ -3,7 +3,7 @@ import { getAllArticles } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
 import FeaturedArticle from "@/components/FeaturedArticle";
 import EventsRail from "@/components/EventsRail";
-import TerritoryArt from "@/components/TerritoryArt";
+import TerritoryBrowser from "@/components/TerritoryBrowser";
 import { getUpcomingEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
@@ -13,11 +13,17 @@ export default function HomePage() {
   const featuredArticle = articles[0];
   const restArticles = articles.slice(1, 5);
   const upcomingEvents = getUpcomingEvents();
-  const territories = getAllTerritories();
+  const territories = getAllTerritories().map((t) => ({
+    slug: t.slug,
+    title: t.title,
+    subtitle: t.subtitle,
+    intro: t.intro,
+    categories: t.categories,
+  }));
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero — concise, direct */}
       <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-14 sm:pt-20 pb-16 sm:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-16 items-center">
           <div>
@@ -27,18 +33,15 @@ export default function HomePage() {
             <h1 className="mt-3 logo-type text-5xl sm:text-7xl text-ink leading-none">
               {site.name}
             </h1>
-            <p className="mt-8 text-base sm:text-lg leading-[2] text-ink max-w-[36rem]">
-              多汗症、ニキビ、ワキガ、顔。
-              <br className="hidden sm:block" />
-              言葉にされにくい男性の身体と自意識について、
-              半歩先を歩いた人間が、低い声で書きます。
+            <p className="mt-8 text-lg sm:text-xl leading-[1.85] text-ink max-w-[34rem]">
+              男性のコンプレックスを、当事者の声で記録するメディアです。
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
               <Link
-                href="/territories"
+                href="/articles"
                 className="text-sm text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
               >
-                地形図から入る →
+                記録を読む →
               </Link>
               <Link
                 href="/reflect"
@@ -54,48 +57,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Territories — moved to top */}
-      <section
-        aria-labelledby="territories"
-        className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24"
-      >
-        <div className="flex items-baseline justify-between mb-8">
-          <h2
-            id="territories"
-            className="text-xl sm:text-2xl font-bold leading-[1.7]"
-          >
-            地形図
-          </h2>
-          <Link
-            href="/territories"
-            className="text-sm text-navy hover:text-gold transition-colors"
-          >
-            すべて見る
-          </Link>
-        </div>
-        <p className="text-[0.9375rem] text-sub-gray leading-[1.9] mb-8 max-w-[36rem]">
-          6 つの領域それぞれを、推奨ではなく「層」として見渡すための地図。
-          急がず、選ばず、まずは地形を眺めるための場所です。
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {territories.map((t) => (
-            <Link
-              key={t.slug}
-              href={`/territories/${t.slug}`}
-              className="group bg-paper border border-hair-line hover:border-gold transition-colors block overflow-hidden"
-            >
-              <TerritoryArt slug={t.slug} />
-              <div className="p-5 sm:p-6">
-                <h3 className="text-lg font-bold leading-[1.6] text-ink group-hover:text-navy transition-colors">
-                  {t.title}
-                </h3>
-                <p className="mt-2 font-mincho text-[13px] text-sub-gray leading-[1.9]">
-                  {t.subtitle}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
+      {/* Territories — interactive browser, no page transition */}
+      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24">
+        <TerritoryBrowser territories={territories} articles={articles} />
       </section>
 
       {/* Events — horizontal scroll rail */}
@@ -104,7 +68,7 @@ export default function HomePage() {
           aria-labelledby="events"
           className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24"
         >
-          <div className="flex items-baseline justify-between mb-8">
+          <div className="flex items-baseline justify-between mb-6">
             <h2 id="events" className="text-xl sm:text-2xl font-bold leading-[1.7]">
               静かな集まり
             </h2>
@@ -116,8 +80,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="text-[0.9375rem] text-sub-gray leading-[1.9] mb-6 max-w-[36rem]">
-            少人数・半公開で行う、整える時間。
-            横にスクロールして眺めてください。
+            少人数・半公開で行う、整える時間。横にスクロールして眺めてください。
           </p>
           <EventsRail events={upcomingEvents} />
         </section>
@@ -158,7 +121,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Reflect (now article search) + Letters */}
+      {/* Reflect + Letters */}
       <section
         aria-labelledby="reflect-letters"
         className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24"
@@ -200,7 +163,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Manifesto — moved down, smaller */}
+      {/* Manifesto */}
       <section
         aria-labelledby="manifesto"
         className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-20 sm:pb-24"
@@ -278,11 +241,8 @@ function HeroMark() {
           <stop offset="100%" stopColor="#F7F0E2" stopOpacity="0" />
         </radialGradient>
       </defs>
-
       <rect width="500" height="500" fill="url(#hero-bg)" />
       <rect width="500" height="500" fill="url(#hero-warm)" />
-
-      {/* Concentric arcs — half a mirror, observed not proclaimed */}
       <g transform="translate(250 250)" fill="none" stroke="#B08755">
         <circle r="200" strokeWidth="0.8" strokeOpacity="0.18" />
         <circle r="160" strokeWidth="0.7" strokeOpacity="0.28" />
@@ -291,13 +251,8 @@ function HeroMark() {
         <circle r="40" strokeWidth="0.6" strokeOpacity="0.75" />
         <circle r="12" fill="#B08755" fillOpacity="0.5" stroke="none" />
       </g>
-
-      {/* Vertical axis */}
       <line x1="250" y1="50" x2="250" y2="450" stroke="#1B2A47" strokeWidth="0.5" strokeOpacity="0.18" />
-      {/* Horizontal at golden ratio */}
       <line x1="0" y1="309" x2="500" y2="309" stroke="#B08755" strokeWidth="0.8" strokeOpacity="0.5" />
-
-      {/* Small accent dots */}
       <circle cx="100" cy="100" r="2" fill="#1B2A47" opacity="0.35" />
       <circle cx="410" cy="120" r="2" fill="#1B2A47" opacity="0.25" />
       <circle cx="90" cy="400" r="2.5" fill="#B08755" />
