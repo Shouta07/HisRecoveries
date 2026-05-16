@@ -13,13 +13,21 @@ export default function Header() {
           {site.name}
         </Link>
         <nav aria-label="primary" className="text-sm text-sub-gray">
-          <ul className="flex items-center gap-4 sm:gap-7">
+          <ul className="flex items-center gap-3 sm:gap-6">
             <li>
               <Link
                 href="/articles"
                 className="inline-block py-2 hover:text-ink transition-colors"
               >
                 記事
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/events"
+                className="inline-block py-2 hover:text-ink transition-colors"
+              >
+                Events
               </Link>
             </li>
             <li>

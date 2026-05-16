@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
+import { getAllEvents } from "@/lib/events";
 import { categories, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -9,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/about",
     "/articles",
+    "/events",
     "/subscribe",
     "/privacy",
     "/legal",
@@ -35,5 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPaths, ...categoryPaths, ...articlePaths];
+  const eventPaths: MetadataRoute.Sitemap = getAllEvents().map((e) => ({
+    url: `${site.url}/events/${e.slug}`,
+    lastModified: new Date(e.startsAt),
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
+  return [...staticPaths, ...categoryPaths, ...articlePaths, ...eventPaths];
 }

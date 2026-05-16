@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
+import {
+  getUpcomingEvents,
+  formatEventDate,
+  formatEventTimeRange,
+} from "@/lib/events";
 import { site } from "@/lib/site";
 
 export default function HomePage() {
   const latest = getAllArticles().slice(0, 5);
+  const upcomingEvents = getUpcomingEvents().slice(0, 2);
 
   return (
     <div className="mx-auto max-w-reading px-6 pb-24 pt-20 sm:pt-28">
@@ -143,6 +149,62 @@ export default function HomePage() {
         )}
       </section>
 
+      {/* Upcoming gatherings */}
+      {upcomingEvents.length > 0 && (
+        <section aria-labelledby="gatherings" className="mb-32">
+          <div className="flex items-baseline justify-between border-b border-hair-line pb-4">
+            <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+              IV. Quiet Gatherings
+            </p>
+            <Link
+              href="/events"
+              className="text-xs text-sub-gray hover:text-ink transition-colors"
+            >
+              すべて見る →
+            </Link>
+          </div>
+          <h2 id="gatherings" className="sr-only">
+            静かな集まり
+          </h2>
+          <ul>
+            {upcomingEvents.map((e) => (
+              <li
+                key={e.slug}
+                className="border-b border-hair-line py-10 last:border-b-0"
+              >
+                <Link
+                  href={`/events/${e.slug}`}
+                  className="group block"
+                >
+                  <div className="text-xs tracking-widest text-sub-gray">
+                    <time dateTime={e.startsAt}>
+                      {formatEventDate(e.startsAt)}
+                    </time>
+                    <span className="mx-2">·</span>
+                    <span>{formatEventTimeRange(e.startsAt, e.endsAt)}</span>
+                  </div>
+                  <h3 className="mt-3 font-mincho text-xl sm:text-2xl leading-relaxed text-ink group-hover:text-quiet-brass transition-colors">
+                    {e.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-loose text-sub-gray">
+                    {e.excerpt}
+                  </p>
+                  <p className="mt-3 text-xs text-sub-gray/80 tracking-wider">
+                    {e.location}
+                    {e.format && (
+                      <>
+                        <span className="mx-2">·</span>
+                        {e.format}
+                      </>
+                    )}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* Signature */}
       <section aria-labelledby="signature" className="mb-32">
         <h2 id="signature" className="sr-only">
@@ -160,7 +222,7 @@ export default function HomePage() {
       {/* Connect */}
       <section aria-labelledby="connect">
         <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase border-b border-hair-line pb-4">
-          IV. Elsewhere
+          V. Elsewhere
         </p>
         <h2 id="connect" className="sr-only">
           別の場所での記録
