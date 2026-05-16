@@ -1,16 +1,63 @@
 import type { Metadata } from "next";
-import { site } from "@/lib/site";
+import { site, socialSameAs } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
   description:
     "His Recoveries は、半歩先から後ろを歩く人に静かに記録を残すメディアです。発信者 Nagi について。",
   alternates: { canonical: `${site.url}/about` },
+  openGraph: {
+    type: "profile",
+    url: `${site.url}/about`,
+    title: `About — ${site.name}`,
+    description: site.authorBio,
+  },
 };
 
 export default function AboutPage() {
+  const profileLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${site.url}/about#profile`,
+    url: `${site.url}/about`,
+    inLanguage: site.language,
+    isPartOf: { "@id": `${site.url}/#website` },
+    mainEntity: {
+      "@type": "Person",
+      "@id": `${site.url}/#author`,
+      name: site.author,
+      alternateName: site.handle,
+      description: site.authorBio,
+      url: `${site.url}/about`,
+      sameAs: socialSameAs,
+      knowsAbout: site.topics,
+    },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "About",
+        item: `${site.url}/about`,
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-reading px-6 pb-24 pt-20 sm:pt-28">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profileLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <header className="mb-16">
         <p className="text-xs tracking-widest text-sub-gray">ABOUT</p>
         <h1 className="mt-3 font-mincho text-3xl sm:text-4xl text-ink leading-relaxed">

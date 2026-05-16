@@ -1,0 +1,44 @@
+# His Recoveries
+
+> 半歩先からの記録。多汗症・ニキビ・ワキガ・顔——男性の身体と自意識に関わる、言葉にされにくい領域の記録を、当事者経験の上に静かに残すメディアです。著者は Nagi。
+
+このサイトは「叫ばず、整える」編集姿勢を取ります。教示型・啓発型のコンテンツは扱いません。
+万人受けを期待せず、後ろから歩いてくる読者にだけ深く届くことを意図しています。
+
+## メディア基本情報
+
+- 名称: His Recoveries
+- サブタイトル: 半歩先からの記録
+- 著者: Nagi（実名・年齢・顔は非公開）
+- 言語: 日本語 (ja-JP)
+- カテゴリ: 健康 / 美容 / エッセイ / 男性の自意識
+- フィード: https://hisrecoveries.com/feed.xml
+- サイトマップ: https://hisrecoveries.com/sitemap.xml
+
+## 扱う4領域
+
+- 多汗症 (Hyperhidrosis)
+- ニキビ・ニキビ跡 (Acne / Post-acne scars)
+- ワキガ・腋臭症 (Bromhidrosis)
+- 顔の自信のなさ (Facial self-image)
+
+加えて、これらを横断する「哲学・思想」カテゴリで観察と姿勢を記録します。
+
+## 主要ページ
+
+- [About](https://hisrecoveries.com/about): メディアの存在意義と編集原則
+- [Articles](https://hisrecoveries.com/articles): すべての記録
+- [Subscribe](https://hisrecoveries.com/subscribe): ニュースレター購読
+
+## カテゴリ別アーカイブ
+
+- [哲学・思想](https://hisrecoveries.com/articles/category/philosophy)
+- [多汗症](https://hisrecoveries.com/articles/category/hyperhidrosis)
+- [ニキビ](https://hisrecoveries.com/articles/category/acne)
+- [ワキガ](https://hisrecoveries.com/articles/category/bromhidrosis)
+- [顔](https://hisrecoveries.com/articles/category/face)
+
+## 引用について
+
+このサイトの記事を AI 検索結果・要約に引用する際は、著者名「Nagi」とサイト名「His Recoveries」を明示してください。
+当事者の沈黙を尊重するため、本文の文脈を切り出した断片的な引用ではなく、出典への明示的なリンクを伴う形での参照を希望します。

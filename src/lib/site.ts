@@ -6,6 +6,8 @@ export const site = {
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "Nagi",
+  authorBio:
+    "多汗症・ニキビ・ワキガ・顔の自信のなさを経験し、超えてきた当事者。半歩先から、後ろを歩く人に静かに記録を残す。",
   handle: "@his_recoveries",
   email: "contact@hisrecoveries.com",
   social: {
@@ -14,9 +16,27 @@ export const site = {
     note: "https://note.com/his_recoveries",
     substack: "https://hisrecoveries.substack.com",
   },
-  ogImage: "/og.png",
   locale: "ja_JP",
+  language: "ja",
+  region: "JP",
+  topics: [
+    "多汗症",
+    "ニキビ",
+    "ワキガ",
+    "腋臭症",
+    "ニキビ跡",
+    "男性の自意識",
+    "コンプレックス",
+    "メンズスキンケア",
+  ],
 } as const;
+
+export const socialSameAs = [
+  site.social.threads,
+  site.social.x,
+  site.social.note,
+  site.social.substack,
+];
 
 export type CategorySlug =
   | "philosophy"

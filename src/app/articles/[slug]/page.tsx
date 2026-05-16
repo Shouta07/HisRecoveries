@@ -7,7 +7,7 @@ import {
   getRelatedArticles,
   formatDate,
 } from "@/lib/articles";
-import { categoryLabel, site } from "@/lib/site";
+import { categories, categoryLabel, site } from "@/lib/site";
 
 type Params = { slug: string };
 
@@ -48,31 +48,76 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
   const related = getRelatedArticles(article);
 
-  const jsonLd = {
+  const articleUrl = `${site.url}/articles/${article.slug}`;
+  const articleOgImage = `${articleUrl}/opengraph-image`;
+
+  const articleLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
+    "@id": `${articleUrl}#article`,
     headline: article.title,
     description: article.excerpt,
-    datePublished: article.publishedAt,
-    author: {
-      "@type": "Person",
-      name: site.author,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: site.name,
-    },
+    image: [articleOgImage],
+    datePublished: new Date(article.publishedAt).toISOString(),
+    dateModified: new Date(
+      article.updatedAt ?? article.publishedAt
+    ).toISOString(),
+    inLanguage: site.language,
+    articleSection: categoryLabel(article.category),
+    keywords: [
+      ...(article.keywords ?? []),
+      categoryLabel(article.category),
+    ].join(", "),
+    wordCount: article.wordCount,
+    author: { "@id": `${site.url}/#author` },
+    publisher: { "@id": `${site.url}/#publisher` },
+    isPartOf: { "@id": `${site.url}/#website` },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${site.url}/articles/${article.slug}`,
+      "@id": articleUrl,
     },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: site.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Articles",
+        item: `${site.url}/articles`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: categories[article.category].label,
+        item: `${site.url}/articles/category/${article.category}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: article.title,
+        item: articleUrl,
+      },
+    ],
   };
 
   return (
     <article className="mx-auto max-w-reading px-6 pb-24 pt-16 sm:pt-24">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <header className="mb-14">

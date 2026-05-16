@@ -13,8 +13,52 @@ export const metadata: Metadata = {
 export default function ArticlesPage() {
   const articles = getAllArticles();
 
+  const collectionLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${site.url}/articles#collection`,
+    name: `Articles — ${site.name}`,
+    description: "His Recoveries のすべての記録。",
+    url: `${site.url}/articles`,
+    inLanguage: "ja",
+    isPartOf: { "@id": `${site.url}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      numberOfItems: articles.length,
+      itemListElement: articles.map((a, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${site.url}/articles/${a.slug}`,
+        name: a.title,
+      })),
+    },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Articles",
+        item: `${site.url}/articles`,
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-reading px-6 pb-24 pt-20 sm:pt-28">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <header className="mb-16">
         <p className="text-xs tracking-widest text-sub-gray">ARTICLES</p>
         <h1 className="mt-3 font-mincho text-3xl sm:text-4xl text-ink">

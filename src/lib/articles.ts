@@ -14,19 +14,23 @@ export type ArticleFrontmatter = {
   slug: string;
   category: CategorySlug;
   publishedAt: string;
+  updatedAt?: string;
   excerpt: string;
   status?: "draft" | "published";
   related?: string[];
+  keywords?: string[];
 };
 
 export type Article = ArticleFrontmatter & {
   contentHtml: string;
   contentRaw: string;
   readingMinutes: number;
+  wordCount: number;
 };
 
 export type ArticleSummary = ArticleFrontmatter & {
   readingMinutes: number;
+  wordCount: number;
 };
 
 function ensureDir() {
@@ -52,11 +56,26 @@ function parseFile(filename: string) {
     slug,
     category: (data.category as CategorySlug) ?? "philosophy",
     publishedAt: data.publishedAt ?? "1970-01-01",
+    updatedAt: data.updatedAt,
     excerpt: data.excerpt ?? "",
     status: data.status ?? "published",
     related: data.related ?? [],
+    keywords: data.keywords ?? [],
   };
   return { frontmatter, content };
+}
+
+function countWords(content: string): number {
+  const stripped = content
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]*`/g, "")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[#>*_~\-]/g, " ");
+  const cjk = (stripped.match(/[぀-ヿ㐀-鿿]/g) ?? []).length;
+  const latin = (stripped.match(/[a-zA-Z0-9]+/g) ?? []).length;
+  return cjk + latin;
 }
 
 export function getAllArticles(): ArticleSummary[] {
@@ -67,6 +86,7 @@ export function getAllArticles(): ArticleSummary[] {
       return {
         ...frontmatter,
         readingMinutes: Math.max(1, Math.round(readingTime(content).minutes)),
+        wordCount: countWords(content),
       };
     })
     .filter((a) => a.status !== "draft")
@@ -94,6 +114,7 @@ export async function getArticle(slug: string): Promise<Article | null> {
     contentHtml: processed.toString(),
     contentRaw: content,
     readingMinutes: Math.max(1, Math.round(readingTime(content).minutes)),
+    wordCount: countWords(content),
   };
 }
 
