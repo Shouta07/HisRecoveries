@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Layers — 多汗症の選択肢を整理する">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FAFAF7"/>
+      <stop offset="100%" stop-color="#F0E8D9"/>
+    </linearGradient>
+    <linearGradient id="band1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"  stop-color="#1A1A1A" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#1A1A1A" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="band2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"  stop-color="#1A1A1A" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#1A1A1A" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="band3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"  stop-color="#1A1A1A" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#1A1A1A" stop-opacity="0.07"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+
+  <!-- Three layered horizontal bands -->
+  <rect x="120" y="280" width="1360" height="130" fill="url(#band1)"/>
+  <rect x="120" y="450" width="1360" height="130" fill="url(#band2)"/>
+  <rect x="120" y="620" width="1360" height="130" fill="url(#band3)"/>
+
+  <!-- Roman numeral markers on the left -->
+  <g font-family="Cormorant Garamond, Times, serif" font-size="34" letter-spacing="3" fill="#8B7355">
+    <text x="80" y="358">I.</text>
+    <text x="80" y="528">II.</text>
+    <text x="80" y="698">III.</text>
+  </g>
+
+  <!-- Inline labels (subtle) -->
+  <g font-family="Cormorant Garamond, Times, serif" font-style="italic" font-size="22" letter-spacing="2" fill="#1A1A1A" fill-opacity="0.55">
+    <text x="1480" y="358" text-anchor="end">Living &amp; tools</text>
+    <text x="1480" y="528" text-anchor="end">Topical</text>
+    <text x="1480" y="698" text-anchor="end">Medical</text>
+  </g>
+
+  <!-- Eyebrow -->
+  <text x="80" y="120" font-family="Cormorant Garamond, Times, serif" font-size="22" letter-spacing="6" fill="#6B6B6B">LAYERS · 整理する</text>
+
+  <!-- Footer signature -->
+  <text x="80" y="918" font-family="Cormorant Garamond, Times, serif" font-style="italic" font-size="22" fill="#8B7355">— A topology, not a prescription</text>
+  <text x="1520" y="918" font-family="Cormorant Garamond, Times, serif" font-size="22" letter-spacing="4" fill="#8B7355" text-anchor="end">His Recoveries</text>
+</svg>

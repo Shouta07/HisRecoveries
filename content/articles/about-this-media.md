@@ -5,6 +5,8 @@ category: "philosophy"
 publishedAt: "2026-05-16"
 status: "published"
 excerpt: "解決策を売る場所ではありません。整えている途中の話を、半歩先から低い声で残しておくための場所です。"
+cover: "/cover/article/about-this-media.svg"
+coverAlt: "マニフェストを示す抽象的なカバービジュアル — 原稿用紙のような横線と大きな I."
 related: ["a-half-step-ahead", "to-treat-or-to-arrange"]
 keywords:
   - 半歩先

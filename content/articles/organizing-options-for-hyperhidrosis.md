@@ -5,6 +5,8 @@ category: "hyperhidrosis"
 publishedAt: "2026-05-14"
 status: "published"
 excerpt: "多汗症に対する選択肢を、順番ではなく層として整理する。生活の工夫から医療の介入まで、地形図のように並べておく。"
+cover: "/cover/article/organizing-options-for-hyperhidrosis.svg"
+coverAlt: "3 層の地形を示す抽象的なカバービジュアル — I. 生活と道具 / II. 外用 / III. 医療"
 related: ["about-this-media"]
 keywords:
   - 多汗症

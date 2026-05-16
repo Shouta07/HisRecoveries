@@ -12,6 +12,8 @@ capacity: "数名（β 版のため小規模）"
 fee: "β 版につき特別価格（応募時にご案内）"
 applyUrl: "mailto:contact@hisrecoveries.com?subject=%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%9F%E3%83%B3%E3%82%B0%E4%BD%93%E9%A8%93%CE%B2%E7%89%88%20%E5%BF%9C%E5%8B%9F"
 excerpt: "「なんか疲れて見える」を、女性視点で、自然に整える。少人数・半公開・初心者向けの 90 分。"
+cover: "/cover/event/quiet-grooming-beta.svg"
+coverAlt: "静かな集まりの抽象的なカバービジュアル — 鏡を思わせる円形と垂直線"
 keywords:
   - メンズ美容
   - メンズグルーミング
