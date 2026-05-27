@@ -5,6 +5,7 @@ import { track } from "@/lib/analytics";
 type Props = {
   href: string;
   product: string;
+  provider?: string;
   className?: string;
   children: React.ReactNode;
 };
@@ -17,6 +18,7 @@ type Props = {
 export default function AffiliateLink({
   href,
   product,
+  provider,
   className,
   children,
 }: Props) {
@@ -26,7 +28,7 @@ export default function AffiliateLink({
       target="_blank"
       rel="sponsored nofollow noopener noreferrer"
       className={className}
-      onClick={() => track("affiliate_click", { product, url: href })}
+      onClick={() => track("affiliate_click", { product, provider, url: href })}
     >
       {children}
     </a>

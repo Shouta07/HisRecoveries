@@ -40,6 +40,14 @@ export default function Header() {
             </li>
             <li>
               <Link
+                href="/shelf"
+                className="hidden sm:inline-block py-2 hover:text-white transition-colors"
+              >
+                道具
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/reflect"
                 className="hidden sm:inline-block py-2 hover:text-white transition-colors"
               >

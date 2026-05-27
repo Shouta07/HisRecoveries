@@ -20,6 +20,7 @@ export default function Footer() {
 
           <Column label="参加する">
             <FLink href="/events">イベント</FLink>
+            <FLink href="/shelf">整える道具</FLink>
             <FLink href="/subscribe">ニュースレター</FLink>
             <FLink href="/letters">Letters</FLink>
           </Column>
@@ -27,6 +28,7 @@ export default function Footer() {
           <Column label="このサイト">
             <FLink href="/about">概要</FLink>
             <FLink href="/reflect">整理する</FLink>
+            <FLink href="/disclosure">広告・アフィリエイト方針</FLink>
             <FExt href={`mailto:${site.email}`}>連絡</FExt>
             <FLink href="/feed.xml">Atom Feed</FLink>
           </Column>
