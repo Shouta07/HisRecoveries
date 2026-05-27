@@ -4,24 +4,32 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import remarkGfm from "remark-gfm";
 import remarkHtml from "remark-html";
+import { getAllTerritories } from "./territories";
 
 const PRODUCTS_DIR = path.join(process.cwd(), "content", "products");
+
+// 物販（コスメ・家電など）か、サービス（クリニック・サロン・定期便など）か
+export type ProductKind = "product" | "service";
 
 // Provider-agnostic affiliate links. Add only the ones registered.
 export type ProductLinks = {
   amazon?: string;
   rakuten?: string;
-  asp?: string; // A8 / もしも / その他 ASP の汎用リンク
+  asp?: string; // A8 / もしも / クリニックの ASP リンクなど汎用
 };
 
 export type ProductFrontmatter = {
   title: string;
   slug: string;
   territory: string; // 関連する地形図 (sweat-odor など)
-  productType: string; // 「デオドラント」「制汗剤」などの種別ラベル
+  kind: ProductKind;
+  productType: string; // 「制汗剤」「医療脱毛」などの種別ラベル
+  provider?: string; // サービスの提供元（クリニック名・ブランド名）
   excerpt: string;
   note?: string; // 正直な一言メモ
-  priceRange?: string;
+  highlights?: string[]; // サービスの特徴（箇条書き）
+  priceLabel?: string; // 「参考価格 ¥1,500」「無料カウンセリングあり」など
+  ctaLabel?: string; // サービス用 CTA 文言（既定は「詳しく見る」）
   links: ProductLinks;
   order: number;
   status?: "draft" | "published";
@@ -58,10 +66,14 @@ function parseFile(filename: string) {
     title: data.title ?? slug,
     slug,
     territory: data.territory ?? "",
+    kind: (data.kind as ProductKind) ?? "product",
     productType: data.productType ?? "",
+    provider: data.provider,
     excerpt: data.excerpt ?? "",
     note: data.note,
-    priceRange: data.priceRange,
+    highlights: data.highlights ?? [],
+    priceLabel: data.priceLabel ?? data.priceRange, // 旧名も許容
+    ctaLabel: data.ctaLabel,
     links,
     order: data.order ?? 99,
     status: data.status ?? "published",
@@ -83,6 +95,20 @@ export function getAllProducts(): ProductFrontmatter[] {
 
 export function getProductsByTerritory(territory: string): ProductFrontmatter[] {
   return getAllProducts().filter((p) => p.territory === territory);
+}
+
+/**
+ * 記事カテゴリ (hyperhidrosis など) から、それを含む地形図を特定し、
+ * その地形図に紐づく商品を返す。記事末の「関連する道具」に使う。
+ */
+export function getProductsForCategory(
+  category: string
+): ProductFrontmatter[] {
+  const territory = getAllTerritories().find((t) =>
+    t.categories.includes(category)
+  );
+  if (!territory) return [];
+  return getProductsByTerritory(territory.slug);
 }
 
 export async function getProduct(slug: string): Promise<ProductDetail | null> {

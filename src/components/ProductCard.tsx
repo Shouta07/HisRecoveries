@@ -3,12 +3,19 @@ import { ProductFrontmatter } from "@/lib/products";
 
 type Props = { product: ProductFrontmatter };
 
+const btn =
+  "inline-flex items-center gap-1.5 text-xs tracking-[0.06em] text-navy border border-navy/30 hover:border-navy hover:bg-navy hover:text-white px-3 py-2 transition-colors";
+
 /**
- * A single product on the shelf. Shows a clear 広告 label (ステマ規制対応),
- * an honest one-line note, and one button per registered ASP.
+ * A single entry on the shelf. Renders differently by kind:
+ *  - product  → reference price + Amazon / 楽天 / その他 buttons
+ *  - service  → provider + highlights + a single prominent CTA
+ * Always shows a 広告 label for ステマ規制対応.
  */
 export default function ProductCard({ product }: Props) {
-  const { links } = product;
+  const { links, kind } = product;
+  const primaryHref = links.asp || links.amazon || links.rakuten;
+
   return (
     <article className="bg-paper border border-hair-line p-6 sm:p-7 flex flex-col">
       <div className="flex items-center justify-between">
@@ -20,13 +27,35 @@ export default function ProductCard({ product }: Props) {
         </span>
       </div>
 
-      <h3 className="mt-3 text-base sm:text-lg font-bold leading-[1.55] text-ink">
+      {product.provider && (
+        <p className="mt-3 text-[11px] text-gold tracking-[0.06em]">
+          {product.provider}
+        </p>
+      )}
+
+      <h3 className="mt-1.5 text-base sm:text-lg font-bold leading-[1.55] text-ink">
         {product.title}
       </h3>
 
       <p className="mt-3 text-sm leading-[1.9] text-ink/80">
         {product.excerpt}
       </p>
+
+      {product.highlights && product.highlights.length > 0 && (
+        <ul className="mt-3 space-y-1.5">
+          {product.highlights.map((h, i) => (
+            <li
+              key={i}
+              className="flex items-start gap-2 text-[13px] leading-[1.7] text-ink/80"
+            >
+              <span aria-hidden className="text-gold mt-0.5">
+                —
+              </span>
+              {h}
+            </li>
+          ))}
+        </ul>
+      )}
 
       {product.note && (
         <p className="mt-3 font-mincho text-[13px] leading-[1.95] text-sub-gray border-l-2 border-hair-line pl-3">
@@ -35,43 +64,58 @@ export default function ProductCard({ product }: Props) {
       )}
 
       <div className="mt-auto pt-5">
-        {product.priceRange && (
+        {product.priceLabel && (
           <p className="text-[11px] text-sub-gray tracking-[0.04em] mb-3">
-            参考価格 {product.priceRange}
+            {product.priceLabel}
           </p>
         )}
-        <div className="flex flex-wrap gap-2">
-          {links.amazon && (
+
+        {kind === "service" ? (
+          primaryHref && (
             <AffiliateLink
-              href={links.amazon}
+              href={primaryHref}
               product={product.slug}
-              provider="amazon"
-              className="inline-flex items-center gap-1.5 text-xs tracking-[0.06em] text-navy border border-navy/30 hover:border-navy hover:bg-navy hover:text-white px-3 py-2 transition-colors"
+              provider={links.asp ? "asp" : links.amazon ? "amazon" : "rakuten"}
+              className="btn-gold !py-3 !px-6 text-xs w-full justify-center"
             >
-              Amazon
+              {product.ctaLabel ?? "詳しく見る"}
+              <span aria-hidden>→</span>
             </AffiliateLink>
-          )}
-          {links.rakuten && (
-            <AffiliateLink
-              href={links.rakuten}
-              product={product.slug}
-              provider="rakuten"
-              className="inline-flex items-center gap-1.5 text-xs tracking-[0.06em] text-navy border border-navy/30 hover:border-navy hover:bg-navy hover:text-white px-3 py-2 transition-colors"
-            >
-              楽天
-            </AffiliateLink>
-          )}
-          {links.asp && (
-            <AffiliateLink
-              href={links.asp}
-              product={product.slug}
-              provider="asp"
-              className="inline-flex items-center gap-1.5 text-xs tracking-[0.06em] text-navy border border-navy/30 hover:border-navy hover:bg-navy hover:text-white px-3 py-2 transition-colors"
-            >
-              公式・その他
-            </AffiliateLink>
-          )}
-        </div>
+          )
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {links.amazon && (
+              <AffiliateLink
+                href={links.amazon}
+                product={product.slug}
+                provider="amazon"
+                className={btn}
+              >
+                Amazon
+              </AffiliateLink>
+            )}
+            {links.rakuten && (
+              <AffiliateLink
+                href={links.rakuten}
+                product={product.slug}
+                provider="rakuten"
+                className={btn}
+              >
+                楽天
+              </AffiliateLink>
+            )}
+            {links.asp && (
+              <AffiliateLink
+                href={links.asp}
+                product={product.slug}
+                provider="asp"
+                className={btn}
+              >
+                公式・その他
+              </AffiliateLink>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );

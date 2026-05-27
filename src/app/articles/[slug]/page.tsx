@@ -9,7 +9,9 @@ import {
 } from "@/lib/articles";
 import CoverImage from "@/components/CoverImage";
 import ArticleConversion from "@/components/ArticleConversion";
+import ProductCard from "@/components/ProductCard";
 import { getUpcomingEvents, formatEventDate } from "@/lib/events";
+import { getProductsForCategory } from "@/lib/products";
 import { categories, categoryLabel, site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -50,6 +52,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
   if (!article) notFound();
 
   const related = getRelatedArticles(article);
+  const relatedProducts = getProductsForCategory(article.category).slice(0, 3);
   const openEvent = getUpcomingEvents().find((e) => e.status === "open");
   const conversionEvent =
     openEvent && openEvent.applyUrl
@@ -240,6 +243,40 @@ export default async function ArticlePage({ params }: { params: Params }) {
               </li>
             ))}
           </ul>
+        </section>
+      )}
+
+      {relatedProducts.length > 0 && (
+        <section className="mt-24 border-t border-hair-line pt-12">
+          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
+            The Shelf
+          </p>
+          <h2 className="mt-2 font-mincho text-lg text-ink leading-[1.6]">
+            この領域で、整えるための道具
+          </h2>
+          <p className="mt-2 text-[11px] text-sub-gray leading-[1.8]">
+            ※ 広告（アフィリエイト）を含みます。詳しくは{" "}
+            <Link
+              href="/disclosure"
+              className="border-b border-gold hover:text-gold transition-colors"
+            >
+              広告・アフィリエイト方針
+            </Link>
+            。
+          </p>
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {relatedProducts.map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+          <div className="mt-6">
+            <Link
+              href="/shelf"
+              className="text-sm text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+            >
+              整える道具をすべて見る →
+            </Link>
+          </div>
         </section>
       )}
 
