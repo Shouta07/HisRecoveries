@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CoverImage from "./CoverImage";
 import SectionLabel from "./SectionLabel";
+import TrackedCTA from "./TrackedCTA";
 import {
   EventFrontmatter,
   formatEventDate,
@@ -104,19 +105,15 @@ function Single({ event }: { event: EventFrontmatter }) {
 
       <div className="lg:justify-self-end">
         {isOpen && event.applyUrl ? (
-          <a
+          <TrackedCTA
             href={event.applyUrl}
-            target={event.applyUrl.startsWith("http") ? "_blank" : undefined}
-            rel={
-              event.applyUrl.startsWith("http")
-                ? "noopener noreferrer"
-                : undefined
-            }
+            event="gathering_apply"
+            eventProps={{ event_slug: event.slug, location: "home" }}
             className="btn-gold !py-3 !px-6 text-xs"
           >
             応募する
             <span aria-hidden>→</span>
-          </a>
+          </TrackedCTA>
         ) : (
           <Link
             href={`/events/${event.slug}`}

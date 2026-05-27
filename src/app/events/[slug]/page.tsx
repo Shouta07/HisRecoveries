@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import CoverImage from "@/components/CoverImage";
+import TrackedCTA from "@/components/TrackedCTA";
 import {
   formatEventDate,
   formatEventDateTime,
@@ -188,21 +189,15 @@ export default async function EventPage({ params }: { params: Params }) {
 
             {isOpen && ev.applyUrl && (
               <div className="mt-10">
-                <a
+                <TrackedCTA
                   href={ev.applyUrl}
-                  target={
-                    ev.applyUrl.startsWith("http") ? "_blank" : undefined
-                  }
-                  rel={
-                    ev.applyUrl.startsWith("http")
-                      ? "noopener noreferrer"
-                      : undefined
-                  }
+                  event="gathering_apply"
+                  eventProps={{ event_slug: ev.slug, location: "hero" }}
                   className="btn-gold"
                 >
                   β 参加応募はこちら
                   <span aria-hidden>→</span>
-                </a>
+                </TrackedCTA>
               </div>
             )}
           </div>
@@ -306,21 +301,15 @@ export default async function EventPage({ params }: { params: Params }) {
             </dl>
 
             {isOpen && ev.applyUrl && (
-              <a
+              <TrackedCTA
                 href={ev.applyUrl}
-                target={
-                  ev.applyUrl.startsWith("http") ? "_blank" : undefined
-                }
-                rel={
-                  ev.applyUrl.startsWith("http")
-                    ? "noopener noreferrer"
-                    : undefined
-                }
+                event="gathering_apply"
+                eventProps={{ event_slug: ev.slug, location: "sidebar" }}
                 className="btn-gold mt-7 w-full justify-center"
               >
                 応募する
                 <span aria-hidden>→</span>
-              </a>
+              </TrackedCTA>
             )}
           </div>
         </aside>
@@ -335,19 +324,15 @@ export default async function EventPage({ params }: { params: Params }) {
               <br className="sm:hidden" />
               応募内容を確認の上、詳細をご案内します。
             </p>
-            <a
+            <TrackedCTA
               href={ev.applyUrl}
-              target={ev.applyUrl.startsWith("http") ? "_blank" : undefined}
-              rel={
-                ev.applyUrl.startsWith("http")
-                  ? "noopener noreferrer"
-                  : undefined
-              }
+              event="gathering_apply"
+              eventProps={{ event_slug: ev.slug, location: "bottom_band" }}
               className="btn-gold whitespace-nowrap"
             >
               応募する
               <span aria-hidden>→</span>
-            </a>
+            </TrackedCTA>
           </div>
         </section>
       )}

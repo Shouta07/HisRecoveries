@@ -6,6 +6,7 @@ import {
 } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Analytics from "@/components/Analytics";
 import { site, socialSameAs } from "@/lib/site";
 import "./globals.css";
 
@@ -168,6 +169,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

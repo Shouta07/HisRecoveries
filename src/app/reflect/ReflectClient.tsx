@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ArticleSummary, formatDate } from "@/lib/articleTypes";
 import { categoryLabel } from "@/lib/site";
+import { track } from "@/lib/analytics";
 
 type Answers = {
   q1: string | null;
@@ -264,6 +265,11 @@ export default function ReflectClient({
           type="button"
           onClick={() => {
             setDone(true);
+            track("reflect_complete", {
+              territory: answers.q1 ?? "skip",
+              tried: answers.q3 ?? "skip",
+              has_keyword: answers.q5.trim().length > 0,
+            });
             if (typeof window !== "undefined") window.scrollTo({ top: 0 });
           }}
           className="btn-gold"

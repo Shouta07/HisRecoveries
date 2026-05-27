@@ -8,6 +8,8 @@ import {
   formatDate,
 } from "@/lib/articles";
 import CoverImage from "@/components/CoverImage";
+import ArticleConversion from "@/components/ArticleConversion";
+import { getUpcomingEvents, formatEventDate } from "@/lib/events";
 import { categories, categoryLabel, site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -48,6 +50,16 @@ export default async function ArticlePage({ params }: { params: Params }) {
   if (!article) notFound();
 
   const related = getRelatedArticles(article);
+  const openEvent = getUpcomingEvents().find((e) => e.status === "open");
+  const conversionEvent =
+    openEvent && openEvent.applyUrl
+      ? {
+          slug: openEvent.slug,
+          title: openEvent.title,
+          dateText: formatEventDate(openEvent.startsAt),
+          applyUrl: openEvent.applyUrl,
+        }
+      : null;
 
   const articleUrl = `${site.url}/articles/${article.slug}`;
   const articleOgImage = `${articleUrl}/opengraph-image`;
@@ -235,37 +247,9 @@ export default async function ArticlePage({ params }: { params: Params }) {
         <p className="logo-type text-base text-ink tracking-wider">
           —— {site.author}
         </p>
-
-        <div className="mt-12 pt-8 border-t border-hair-line/60">
-          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-4">
-            A Quiet Delivery
-          </p>
-          <p className="font-mincho text-[0.9375rem] leading-[2] text-ink max-w-[28rem]">
-            この記録に時間を使ってくれてありがとうございました。
-            次のものが書けたとき、静かに知らせます。
-          </p>
-          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm">
-            <Link
-              href="/subscribe"
-              className="border-b border-hair-line hover:border-ink transition-colors"
-            >
-              Subscribe
-            </Link>
-            <Link
-              href="/articles"
-              className="border-b border-hair-line hover:border-ink transition-colors"
-            >
-              他の記録を読む
-            </Link>
-            <a
-              href={`mailto:${site.email}`}
-              className="border-b border-hair-line hover:border-ink transition-colors"
-            >
-              連絡する
-            </a>
-          </div>
-        </div>
       </footer>
+
+      <ArticleConversion articleSlug={article.slug} event={conversionEvent} />
     </article>
   );
 }

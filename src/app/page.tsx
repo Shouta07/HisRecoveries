@@ -6,6 +6,7 @@ import QuietGatherings from "@/components/QuietGatherings";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TagMarquee from "@/components/TagMarquee";
+import TrackedCTA from "@/components/TrackedCTA";
 import { getUpcomingEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
@@ -154,15 +155,15 @@ export default function HomePage() {
             新しく書いた記録と、まだ記事にしていない覚え書きを、月に数本。
             通知も煽りもありません。
           </p>
-          <a
+          <TrackedCTA
             href={site.social.substack}
-            target="_blank"
-            rel="noopener noreferrer"
+            event="subscribe_click"
+            eventProps={{ location: "home_belong" }}
             className="btn-gold !py-3 !px-6 text-xs shrink-0"
           >
             Substack で購読
             <span aria-hidden>→</span>
-          </a>
+          </TrackedCTA>
           </div>
         </Reveal>
 
