@@ -272,7 +272,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
           <div className="mt-6">
             <Link
               href="/shelf"
-              className="text-sm text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              className="text-sm text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
             >
               整える道具をすべて見る →
             </Link>

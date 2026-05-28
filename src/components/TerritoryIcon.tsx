@@ -8,7 +8,7 @@ export default function TerritoryIcon({ slug, className = "" }: Props) {
   const Icon = icons[slug] ?? Default;
   return (
     <span
-      className={`inline-flex items-center justify-center text-navy ${className}`}
+      className={`inline-flex items-center justify-center text-ink ${className}`}
       aria-hidden
     >
       <Icon />

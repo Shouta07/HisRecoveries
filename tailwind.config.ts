@@ -8,19 +8,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        cream: "#DDCBA8",
-        "cream-deep": "#C8B492",
-        paper: "#EBDDC0",
-        ink: "#2A1F14",
-        "sub-gray": "#6F5F45",
-        "hair-line": "#C5B294",
-        navy: "#3D2E1F",
-        "navy-deep": "#2B1F12",
-        gold: "#9F7944",
-        "gold-bright": "#B89169",
+        cream: "#181410",
+        "cream-deep": "#0E0C09",
+        paper: "#221C14",
+        ink: "#E8DCBF",
+        "sub-gray": "#948669",
+        "hair-line": "#3A2F23",
+        navy: "#110E0A",
+        "navy-deep": "#0A0805",
+        gold: "#B89169",
+        "gold-bright": "#D9B584",
         // Legacy aliases
-        "off-white": "#DDCBA8",
-        "quiet-brass": "#9F7944",
+        "off-white": "#181410",
+        "quiet-brass": "#B89169",
       },
       fontFamily: {
         sans: [

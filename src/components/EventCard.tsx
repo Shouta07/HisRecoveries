@@ -42,7 +42,7 @@ export default function EventCard({ event, size = "md" }: Props) {
           <span>{dateText}</span>
           <span>{timeText}</span>
         </div>
-        <h3 className="mt-3 text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+        <h3 className="mt-3 text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-ink transition-colors">
           {event.title}
         </h3>
         <p className="mt-3 text-sm leading-loose text-sub-gray line-clamp-2">

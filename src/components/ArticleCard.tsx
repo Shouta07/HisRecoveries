@@ -36,7 +36,7 @@ export default function ArticleCard({
           />
         </div>
         <div className="mt-5">
-          <h3 className="text-[15px] sm:text-base font-bold leading-[1.65] text-ink group-hover:text-navy transition-colors line-clamp-3">
+          <h3 className="text-[15px] sm:text-base font-bold leading-[1.65] text-ink group-hover:text-ink transition-colors line-clamp-3">
             {article.title}
           </h3>
           <p className="mt-3 text-[11px] text-sub-gray tracking-[0.06em]">
@@ -66,7 +66,7 @@ export default function ArticleCard({
               {formatDate(article.publishedAt)}
             </time>
           </div>
-          <h2 className="mt-3 text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+          <h2 className="mt-3 text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-ink transition-colors">
             {article.title}
           </h2>
           {showExcerpt && article.excerpt && (

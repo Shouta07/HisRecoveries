@@ -29,7 +29,7 @@ export default function QuietGatherings({ events }: Props) {
         </div>
         <Link
           href="/events"
-          className="text-xs sm:text-sm text-navy hover:text-gold transition-colors"
+          className="text-xs sm:text-sm text-ink hover:text-gold transition-colors"
         >
           すべての集まり →
         </Link>
@@ -87,7 +87,7 @@ function Single({ event }: { event: EventFrontmatter }) {
         <h3 className="mt-2 text-lg sm:text-xl font-bold leading-[1.55] text-ink">
           <Link
             href={`/events/${event.slug}`}
-            className="hover:text-navy transition-colors"
+            className="hover:text-ink transition-colors"
           >
             {event.title}
           </Link>
@@ -117,7 +117,7 @@ function Single({ event }: { event: EventFrontmatter }) {
         ) : (
           <Link
             href={`/events/${event.slug}`}
-            className="text-sm text-navy border-b border-navy/40 pb-1 hover:border-navy transition-colors"
+            className="text-sm text-ink border-b border-navy/40 pb-1 hover:border-navy transition-colors"
           >
             くわしく見る →
           </Link>
@@ -167,7 +167,7 @@ function CardEvent({ event }: { event: EventFrontmatter }) {
             </>
           )}
         </p>
-        <h3 className="mt-2 text-[15px] sm:text-base font-bold leading-[1.65] text-ink group-hover:text-navy transition-colors line-clamp-3">
+        <h3 className="mt-2 text-[15px] sm:text-base font-bold leading-[1.65] text-ink group-hover:text-ink transition-colors line-clamp-3">
           {event.title}
         </h3>
         <p className="mt-2 text-[11px] text-sub-gray tracking-[0.04em]">

@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --cream: #ddcba8;
-  --cream-deep: #c8b492;
-  --paper: #ebddc0;
-  --ink: #2a1f14;
-  --sub-gray: #6f5f45;
-  --hair-line: #c5b294;
-  --navy: #3d2e1f;
-  --navy-deep: #2b1f12;
-  --gold: #9f7944;
-  --gold-bright: #b89169;
+  --cream: #181410;
+  --cream-deep: #0e0c09;
+  --paper: #221c14;
+  --ink: #e8dcbf;
+  --sub-gray: #948669;
+  --hair-line: #3a2f23;
+  --navy: #110e0a;
+  --navy-deep: #0a0805;
+  --gold: #b89169;
+  --gold-bright: #d9b584;
 }
 
 html,
@@ -211,17 +211,17 @@ a {
   align-items: center;
   gap: 0.75rem;
   background-color: transparent;
-  color: var(--navy);
+  color: var(--ink);
   padding: 0.875rem 1.75rem;
   font-size: 0.875rem;
   letter-spacing: 0.12em;
   font-weight: 600;
-  border: 1px solid var(--navy);
+  border: 1px solid var(--ink);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 .btn-outline-navy:hover {
-  background-color: var(--navy);
-  color: #ffffff;
+  background-color: var(--ink);
+  color: var(--cream);
 }
 
 /* Reveal on scroll — set initial state, JS toggles .is-in-view */

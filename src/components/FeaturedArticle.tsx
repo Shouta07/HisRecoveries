@@ -34,7 +34,7 @@ export default function FeaturedArticle({ article }: Props) {
             <span className="mx-2">·</span>
             <span>{article.readingMinutes} min read</span>
           </p>
-          <h3 className="mt-4 text-2xl sm:text-3xl lg:text-[2rem] font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+          <h3 className="mt-4 text-2xl sm:text-3xl lg:text-[2rem] font-bold leading-[1.55] text-ink group-hover:text-ink transition-colors">
             {article.title}
           </h3>
           {article.excerpt && (
@@ -42,7 +42,7 @@ export default function FeaturedArticle({ article }: Props) {
               {article.excerpt}
             </p>
           )}
-          <span className="mt-7 inline-flex items-center gap-2 text-sm tracking-wider text-navy border-b border-gold pb-0.5 self-start group-hover:text-gold transition-colors">
+          <span className="mt-7 inline-flex items-center gap-2 text-sm tracking-wider text-ink border-b border-gold pb-0.5 self-start group-hover:text-gold transition-colors">
             この記録を読む
             <span aria-hidden>→</span>
           </span>

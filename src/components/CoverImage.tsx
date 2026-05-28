@@ -71,10 +71,10 @@ export default function CoverImage({
         className={`absolute inset-0 ${padding[size]} flex flex-col justify-between`}
       >
         {eyebrow && (
-          <div className="text-xs text-navy/60">{eyebrow}</div>
+          <div className="text-xs text-ink/60">{eyebrow}</div>
         )}
         <div
-          className={`font-mincho ${titleSize[size]} leading-[1.55] text-navy`}
+          className={`font-mincho ${titleSize[size]} leading-[1.55] text-ink`}
           style={{
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -84,7 +84,7 @@ export default function CoverImage({
         >
           {title}
         </div>
-        {meta && <div className="text-xs text-navy/60">{meta}</div>}
+        {meta && <div className="text-xs text-ink/60">{meta}</div>}
       </div>
     </div>
   );

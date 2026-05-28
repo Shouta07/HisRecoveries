@@ -32,7 +32,7 @@ export default function HomePage() {
         <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold">
           {site.tagline}
         </p>
-        <h1 className="mt-7 logo-type text-5xl sm:text-7xl lg:text-8xl text-navy leading-[0.95]">
+        <h1 className="mt-7 logo-type text-5xl sm:text-7xl lg:text-8xl text-ink leading-[0.95]">
           {site.name}
         </h1>
         <div className="mt-10 flex justify-center">
@@ -122,7 +122,7 @@ export default function HomePage() {
               />
               <Link
                 href="/articles"
-                className="text-[13px] tracking-[0.1em] text-navy hover:text-gold transition-colors"
+                className="text-[13px] tracking-[0.1em] text-ink hover:text-gold transition-colors"
               >
                 すべての記録 →
               </Link>
@@ -151,7 +151,7 @@ export default function HomePage() {
                 />
                 <Link
                   href="/events"
-                  className="text-[13px] tracking-[0.1em] text-navy hover:text-gold transition-colors"
+                  className="text-[13px] tracking-[0.1em] text-ink hover:text-gold transition-colors"
                 >
                   すべての集まり →
                 </Link>
@@ -176,7 +176,7 @@ export default function HomePage() {
                     記事や集まりとは別に、より個別のご相談には{" "}
                     <Link
                       href="/letters"
-                      className="text-navy border-b border-gold hover:text-gold transition-colors"
+                      className="text-ink border-b border-gold hover:text-gold transition-colors"
                     >
                       Letters
                     </Link>{" "}
@@ -185,7 +185,7 @@ export default function HomePage() {
                 </div>
                 <Link
                   href="/letters"
-                  className="inline-flex items-center gap-3 text-sm tracking-[0.12em] text-navy border-b border-gold pb-1 hover:text-gold transition-colors shrink-0"
+                  className="inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors shrink-0"
                 >
                   Letters を書く
                   <span aria-hidden>→</span>
@@ -225,7 +225,7 @@ export default function HomePage() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div>
-                    <h3 className="font-mincho text-xl sm:text-2xl lg:text-3xl font-medium leading-[1.45] text-ink group-hover:text-navy transition-colors">
+                    <h3 className="font-mincho text-xl sm:text-2xl lg:text-3xl font-medium leading-[1.45] text-ink group-hover:text-ink transition-colors">
                       {t.title}
                     </h3>
                     <p className="mt-2 font-mincho text-[13px] sm:text-sm text-sub-gray leading-[1.85]">
@@ -234,7 +234,7 @@ export default function HomePage() {
                   </div>
                   <span
                     aria-hidden
-                    className="text-sub-gray group-hover:text-navy group-hover:translate-x-1 transition-all duration-300 text-lg sm:text-xl"
+                    className="text-sub-gray group-hover:text-ink group-hover:translate-x-1 transition-all duration-300 text-lg sm:text-xl"
                   >
                     →
                   </span>
@@ -267,7 +267,7 @@ export default function HomePage() {
               </p>
               <Link
                 href="/shelf"
-                className="mt-7 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-navy border-b border-gold pb-1 hover:text-gold transition-colors"
+                className="mt-7 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
               >
                 棚を見る
                 <span aria-hidden>→</span>
@@ -318,7 +318,7 @@ export default function HomePage() {
             <div className="mt-12 pt-10 border-t border-hair-line/60 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] tracking-[0.06em] text-sub-gray">
               <Link
                 href="/reflect"
-                className="hover:text-navy transition-colors"
+                className="hover:text-ink transition-colors"
               >
                 Reflect — 自分を整理する
               </Link>
@@ -327,7 +327,7 @@ export default function HomePage() {
               </span>
               <Link
                 href="/letters"
-                className="hover:text-navy transition-colors"
+                className="hover:text-ink transition-colors"
               >
                 Letters — 静かなお便り
               </Link>
@@ -336,7 +336,7 @@ export default function HomePage() {
               </span>
               <Link
                 href="/about"
-                className="hover:text-navy transition-colors"
+                className="hover:text-ink transition-colors"
               >
                 Philosophy — このサイトについて
               </Link>

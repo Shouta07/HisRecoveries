@@ -38,7 +38,7 @@ export default function FeaturedGathering({ event }: Props) {
           <div className="flex items-start justify-end">
             <Link
               href="/events"
-              className="text-sm text-navy hover:text-gold transition-colors"
+              className="text-sm text-ink hover:text-gold transition-colors"
             >
               すべての集まり →
             </Link>
@@ -79,7 +79,7 @@ export default function FeaturedGathering({ event }: Props) {
             <h3 className="font-mincho text-3xl sm:text-4xl font-medium leading-[1.45] text-ink">
               <Link
                 href={`/events/${event.slug}`}
-                className="hover:text-navy transition-colors"
+                className="hover:text-ink transition-colors"
               >
                 {event.title}
               </Link>
@@ -133,7 +133,7 @@ export default function FeaturedGathering({ event }: Props) {
               )}
               <Link
                 href={`/events/${event.slug}`}
-                className="text-sm text-navy border-b border-navy/40 pb-1 hover:border-navy transition-colors"
+                className="text-sm text-ink border-b border-navy/40 pb-1 hover:border-navy transition-colors"
               >
                 くわしく見る
               </Link>

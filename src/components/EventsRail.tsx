@@ -52,7 +52,7 @@ export default function EventsRail({ events }: Props) {
                       <span>{dateText}</span>
                       <span>{timeText}</span>
                     </div>
-                    <h3 className="mt-3 text-lg sm:text-xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+                    <h3 className="mt-3 text-lg sm:text-xl font-bold leading-[1.55] text-ink group-hover:text-ink transition-colors">
                       {e.title}
                     </h3>
                     <p className="mt-2 text-sm leading-[1.85] text-sub-gray line-clamp-2">

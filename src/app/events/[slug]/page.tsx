@@ -132,7 +132,7 @@ export default async function EventPage({ params }: { params: Params }) {
             <li>
               <Link
                 href="/"
-                className="hover:text-navy transition-colors uppercase"
+                className="hover:text-ink transition-colors uppercase"
               >
                 Home
               </Link>
@@ -141,7 +141,7 @@ export default async function EventPage({ params }: { params: Params }) {
             <li>
               <Link
                 href="/events"
-                className="hover:text-navy transition-colors uppercase"
+                className="hover:text-ink transition-colors uppercase"
               >
                 Events
               </Link>
@@ -227,21 +227,21 @@ export default async function EventPage({ params }: { params: Params }) {
           />
 
           <footer className="mt-16 pt-10 border-t border-hair-line text-sm text-sub-gray">
-            <p className="logo-type text-base text-navy tracking-wider">
+            <p className="logo-type text-base text-ink tracking-wider">
               —— {site.author}
             </p>
             <p className="mt-4 leading-[2]">
               ご質問は{" "}
               <a
                 href={`mailto:${site.email}`}
-                className="text-navy border-b border-gold hover:text-gold transition-colors"
+                className="text-ink border-b border-gold hover:text-gold transition-colors"
               >
                 {site.email}
               </a>
               、他の集まりは{" "}
               <Link
                 href="/events"
-                className="text-navy border-b border-gold hover:text-gold transition-colors"
+                className="text-ink border-b border-gold hover:text-gold transition-colors"
               >
                 Events
               </Link>

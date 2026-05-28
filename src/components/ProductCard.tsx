@@ -4,7 +4,7 @@ import { ProductFrontmatter } from "@/lib/products";
 type Props = { product: ProductFrontmatter };
 
 const btn =
-  "inline-flex items-center gap-1.5 text-xs tracking-[0.06em] text-navy border border-navy/30 hover:border-navy hover:bg-navy hover:text-white px-3 py-2 transition-colors";
+  "inline-flex items-center gap-1.5 text-xs tracking-[0.06em] text-ink border border-navy/30 hover:border-navy hover:bg-navy hover:text-white px-3 py-2 transition-colors";
 
 /**
  * A single entry on the shelf. Renders differently by kind:

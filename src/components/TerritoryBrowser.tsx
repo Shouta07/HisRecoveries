@@ -59,12 +59,12 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
               <TerritoryIcon
                 slug={t.slug}
                 className={`mb-3 transition-colors ${
-                  isSelected ? "text-gold" : "text-navy group-hover:text-gold"
+                  isSelected ? "text-gold" : "text-ink group-hover:text-gold"
                 }`}
               />
               <span
                 className={`text-[12px] sm:text-[13px] font-bold leading-[1.45] tracking-[0.04em] transition-colors ${
-                  isSelected ? "text-navy" : "text-ink group-hover:text-navy"
+                  isSelected ? "text-ink" : "text-ink group-hover:text-ink"
                 }`}
               >
                 {t.title}
@@ -100,7 +100,7 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
               <button
                 type="button"
                 onClick={() => setSelected(null)}
-                className="text-xs text-sub-gray hover:text-navy transition-colors"
+                className="text-xs text-sub-gray hover:text-ink transition-colors"
               >
                 閉じる ×
               </button>
@@ -120,7 +120,7 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
                       href={`/articles/${a.slug}`}
                       className="group block"
                     >
-                      <h4 className="text-[15px] font-bold leading-[1.65] text-ink group-hover:text-navy transition-colors line-clamp-3">
+                      <h4 className="text-[15px] font-bold leading-[1.65] text-ink group-hover:text-ink transition-colors line-clamp-3">
                         {a.title}
                       </h4>
                       <p className="mt-2 text-[11px] text-sub-gray tracking-[0.06em]">

@@ -40,7 +40,7 @@ export default function ShelfPage() {
         <p className="font-mincho text-sub-gray text-xs sm:text-sm tracking-[0.3em]">
           整える道具
         </p>
-        <h1 className="mt-4 logo-type text-4xl sm:text-6xl text-navy leading-[1]">
+        <h1 className="mt-4 logo-type text-4xl sm:text-6xl text-ink leading-[1]">
           The Shelf
         </h1>
         <p className="mt-7 text-sm sm:text-[0.9375rem] leading-[2] text-sub-gray max-w-[34rem] mx-auto">
@@ -52,7 +52,7 @@ export default function ShelfPage() {
           詳しくは{" "}
           <Link
             href="/disclosure"
-            className="text-navy border-b border-gold hover:text-gold transition-colors"
+            className="text-ink border-b border-gold hover:text-gold transition-colors"
           >
             広告・アフィリエイト方針
           </Link>

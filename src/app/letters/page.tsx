@@ -40,7 +40,7 @@ export default function LettersPage() {
         それでも、ここに書いた言葉が、書いたあなた自身を少し整える。
         そんな場所でありたい。
       </p>
-      <p className="mt-3 logo-type text-sm text-navy">— Nagi</p>
+      <p className="mt-3 logo-type text-sm text-ink">— Nagi</p>
     </div>
   );
 }

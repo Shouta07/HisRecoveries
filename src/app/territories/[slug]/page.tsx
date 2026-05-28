@@ -92,7 +92,7 @@ export default async function TerritoryPage({
             <li>
               <Link
                 href="/"
-                className="hover:text-navy transition-colors uppercase"
+                className="hover:text-ink transition-colors uppercase"
               >
                 Home
               </Link>
@@ -101,7 +101,7 @@ export default async function TerritoryPage({
             <li>
               <Link
                 href="/territories"
-                className="hover:text-navy transition-colors"
+                className="hover:text-ink transition-colors"
               >
                 地形図
               </Link>
@@ -142,7 +142,7 @@ export default async function TerritoryPage({
                   <li key={a.slug}>
                     <Link
                       href={`/articles/${a.slug}`}
-                      className="text-sm text-navy border-b border-gold hover:text-gold transition-colors"
+                      className="text-sm text-ink border-b border-gold hover:text-gold transition-colors"
                     >
                       {a.title}
                     </Link>
@@ -155,7 +155,7 @@ export default async function TerritoryPage({
           <div className="mt-10 pt-8 border-t border-hair-line text-sm">
             <Link
               href={exit.href}
-              className="text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
             >
               → {exit.label}
             </Link>

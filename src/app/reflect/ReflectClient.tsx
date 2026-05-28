@@ -280,7 +280,7 @@ export default function ReflectClient({
         <button
           type="button"
           onClick={reset}
-          className="text-sm text-sub-gray hover:text-navy transition-colors"
+          className="text-sm text-sub-gray hover:text-ink transition-colors"
         >
           はじめから
         </button>
@@ -380,7 +380,7 @@ function ResultPanel({
         <p className="text-xs text-sub-gray mb-4">観察</p>
         <p className="font-mincho text-[1.0625rem] leading-[2.1] text-ink">
           いま、あなたは
-          <span className="font-bold text-navy">{t}</span>
+          <span className="font-bold text-ink">{t}</span>
           のあたりにいる、と読みました。
           {time && (
             <>
@@ -432,7 +432,7 @@ function ResultPanel({
                     <span className="mx-2">·</span>
                     {a.readingMinutes} min
                   </p>
-                  <h3 className="mt-2 text-lg font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+                  <h3 className="mt-2 text-lg font-bold leading-[1.55] text-ink group-hover:text-ink transition-colors">
                     {a.title}
                   </h3>
                   {a.excerpt && (
@@ -453,7 +453,7 @@ function ResultPanel({
           <li>
             <Link
               href={territoryLink}
-              className="text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
             >
               → この領域の地形図を読む
             </Link>
@@ -461,7 +461,7 @@ function ResultPanel({
           <li>
             <Link
               href="/letters"
-              className="text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
             >
               → 書きたくなったら、ここに
             </Link>
@@ -469,7 +469,7 @@ function ResultPanel({
           <li>
             <Link
               href="/subscribe"
-              className="text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
             >
               → ときどき、便りを受け取る
             </Link>
@@ -481,7 +481,7 @@ function ResultPanel({
         <button
           type="button"
           onClick={onReset}
-          className="text-sm text-sub-gray hover:text-navy transition-colors"
+          className="text-sm text-sub-gray hover:text-ink transition-colors"
         >
           ← もう一度、整理する
         </button>

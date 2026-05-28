@@ -63,7 +63,7 @@ export default function DisclosurePage() {
       <div className="mt-16 pt-8 border-t border-hair-line text-sm">
         <Link
           href="/shelf"
-          className="text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+          className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
         >
           ← 整える道具（The Shelf）へ
         </Link>

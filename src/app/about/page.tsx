@@ -176,7 +176,7 @@ export default function AboutPage() {
                 <span>
                   <Link
                     href={`/territories/${t.slug}`}
-                    className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
+                    className="hover:text-ink transition-colors border-b border-hair-line hover:border-gold pb-0.5"
                   >
                     {t.title}
                   </Link>

@@ -66,7 +66,7 @@ export default function TerritoriesPage() {
           >
             <TerritoryArt slug={t.slug} aspectClass="aspect-[16/10]" />
             <div className="p-6 sm:p-8">
-              <h2 className="text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-navy transition-colors">
+              <h2 className="text-xl sm:text-2xl font-bold leading-[1.55] text-ink group-hover:text-ink transition-colors">
                 {t.title}
               </h2>
               <p className="mt-3 font-mincho text-sm text-sub-gray leading-[1.9]">
