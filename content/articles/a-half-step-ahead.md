@@ -4,7 +4,7 @@ slug: "a-half-step-ahead"
 category: "philosophy"
 publishedAt: "2026-05-15"
 status: "published"
-excerpt: "教える人にも、励ます人にもならない。後ろから歩いてくる人の、半歩だけ先を歩くこと。"
+excerpt: "「教える」でも「励ます」でもなく、半歩先を歩いた当事者として書く。男性のコンプレックスを記録するこのメディアの編集姿勢について。"
 related: ["about-this-media", "to-treat-or-to-arrange"]
 keywords:
   - 半歩先

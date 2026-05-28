@@ -4,7 +4,7 @@ slug: "about-this-media"
 category: "philosophy"
 publishedAt: "2026-05-16"
 status: "published"
-excerpt: "解決策を売る場所ではありません。整えている途中の話を、半歩先から低い声で残しておくための場所です。"
+excerpt: "Male Conditioning とは何か。多汗症、ワキガ、ニキビ跡、AGA、髭脱毛 — 男性のコンプレックスを、解決策ではなく『整える』記録として残しておく理由について。"
 cover: "/cover/article/about-this-media.svg"
 coverAlt: "マニフェストを示す抽象的なカバービジュアル — 原稿用紙のような横線と大きな I."
 related: ["a-half-step-ahead", "to-treat-or-to-arrange"]

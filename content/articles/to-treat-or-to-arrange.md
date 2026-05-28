@@ -4,7 +4,7 @@ slug: "to-treat-or-to-arrange"
 category: "philosophy"
 publishedAt: "2026-05-14"
 status: "published"
-excerpt: "治しても消えないものがある。整えるという言葉を、なぜこのメディアで選んだのか。"
+excerpt: "「治す」と「整える」の違い。ワキガ手術後にも残った感覚をきっかけに、Male Conditioning の動詞を「整える」に決めた理由について。"
 related: ["a-half-step-ahead", "about-this-media"]
 keywords:
   - 整える

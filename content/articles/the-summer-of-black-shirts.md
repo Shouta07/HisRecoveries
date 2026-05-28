@@ -4,7 +4,7 @@ slug: "the-summer-of-black-shirts"
 category: "hyperhidrosis"
 publishedAt: "2026-05-13"
 status: "published"
-excerpt: "Tシャツの色を選べなかった頃。夏という季節が、ただ恐怖だった夏の話。"
+excerpt: "黒い T シャツしか着られなかった多汗症の夏。汗染み、吸汗インナー、駅のトイレで着替えていた、男性多汗症の当事者の記録。"
 related: ["organizing-options-for-hyperhidrosis"]
 keywords:
   - 多汗症

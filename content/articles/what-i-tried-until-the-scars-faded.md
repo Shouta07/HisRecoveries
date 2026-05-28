@@ -4,7 +4,7 @@ slug: "what-i-tried-until-the-scars-faded"
 category: "acne"
 publishedAt: "2026-05-10"
 status: "published"
-excerpt: "効いたもの、効かなかったもの、そして「効く」という言葉の曖昧さについて。"
+excerpt: "ニキビ跡が薄くなるまでに試したホームケア、美容皮膚科のピーリング・ダーマペン・レーザー。当事者が長い時間をかけた介入の整理。"
 related: ["mornings-hating-the-mirror"]
 keywords:
   - ニキビ

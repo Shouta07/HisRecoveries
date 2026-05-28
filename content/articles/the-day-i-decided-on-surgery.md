@@ -4,7 +4,7 @@ slug: "the-day-i-decided-on-surgery"
 category: "bromhidrosis"
 publishedAt: "2026-04-28"
 status: "published"
-excerpt: "決めるまでに、何度も保留にした。整えると治すのあいだで、長く揺れた話。"
+excerpt: "ワキガ手術を受けると決めた日のこと。剪除法、複数のクリニックでのカウンセリング、保留にし続けた数ヶ月、そして手術後にも残った感覚について。当事者が決断するまでの記録。"
 related: ["the-years-of-keeping-distance"]
 keywords:
   - ワキガ

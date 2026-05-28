@@ -39,32 +39,35 @@ export default function HomePage() {
         <p className="mt-10 font-mincho text-[1.7rem] sm:text-4xl lg:text-[3rem] leading-[1.45] text-ink tracking-[0.03em]">
           {site.promise}
         </p>
-        <p className="mt-8 font-mincho text-base sm:text-lg leading-[2] text-ink/80 max-w-[28rem] mx-auto">
-          言葉にされにくい男性の身体と自意識を、
+        <p className="mt-10 font-mincho text-base sm:text-lg leading-[2.05] text-ink max-w-[34rem] mx-auto">
+          多汗症、ワキガ、ニキビ跡、AGA、髭脱毛、
           <br className="hidden sm:inline" />
-          記録、整理、体験のかたちで残していく、
+          そして男性の自意識について。
+        </p>
+        <p className="mt-4 text-[13px] sm:text-sm leading-[1.95] text-sub-gray max-w-[30rem] mx-auto">
+          言葉にしにくいものを、半歩先を歩いた当事者が、
           <br className="hidden sm:inline" />
-          夜のための場所。
+          静かに記録します。
         </p>
       </section>
 
-      {/* A quiet horizontal current — vocabulary of the brand */}
+      {/* A quiet horizontal current — what readers actually search for */}
       <TagMarquee
         items={[
-          "Male Conditioning",
-          "Quiet Masculinity",
-          "Recover Your Presence",
-          "Social Recovery",
-          "Emotional Grooming",
-          "半歩先",
-          "整える",
-          "多汗症",
-          "ワキガ",
-          "ニキビ",
+          "メンズ多汗症",
+          "ワキガ手術 男",
+          "ボトックス 脇汗",
+          "ミラドライ",
+          "ニキビ跡 男",
+          "美容皮膚科",
+          "AGA オンライン診療",
+          "ヒゲ脱毛",
+          "メンズ医療脱毛",
+          "メンズスキンケア",
+          "メンズメイク",
+          "男性の自意識",
           "顔の印象",
-          "薄毛・AGA",
-          "髭・体毛",
-          "心と自意識",
+          "Male Conditioning",
         ]}
       />
 

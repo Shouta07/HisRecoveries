@@ -4,7 +4,7 @@ slug: "reconciling-with-my-own-face"
 category: "face"
 publishedAt: "2026-05-06"
 status: "published"
-excerpt: "変えた部分と、変えなかった部分。和解という言葉を、慎重に使う。"
+excerpt: "美容医療を受けた部分と、受けなかった部分。男性の顔のコンプレックスと、「和解」という言葉を選ぶまでに必要だった時間について。"
 related: ["afraid-to-be-photographed"]
 keywords:
   - 顔

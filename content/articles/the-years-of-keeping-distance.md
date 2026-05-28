@@ -4,7 +4,7 @@ slug: "the-years-of-keeping-distance"
 category: "bromhidrosis"
 publishedAt: "2026-05-08"
 status: "published"
-excerpt: "近づきすぎないように立っていた頃。一定の半径を、ずっと意識していた話。"
+excerpt: "ワキガ（腋臭症）の自意識と、半径 1 メートル。エレベーター、電車、会議室で人との距離を測り続けた数年と、手術後にも残った習慣について。"
 related: ["organizing-options-for-hyperhidrosis"]
 keywords:
   - ワキガ

@@ -4,7 +4,7 @@ slug: "the-quiet-rituals-of-summer"
 category: "hyperhidrosis"
 publishedAt: "2026-04-10"
 status: "published"
-excerpt: "シャツの色だけではなかった。汗のために重ねていた、いくつかの儀式について。"
+excerpt: "多汗症の夏に重ねていた小さな儀式。吸汗インナー、駅のトイレでのリセット、汗パッド、立ち位置の選び方。ボトックスを受ける前の、男性多汗症の数年間の記録。"
 related: ["the-summer-of-black-shirts", "organizing-options-for-hyperhidrosis"]
 keywords:
   - 多汗症

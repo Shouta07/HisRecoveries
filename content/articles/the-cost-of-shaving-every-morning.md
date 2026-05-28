@@ -4,7 +4,7 @@ slug: "the-cost-of-shaving-every-morning"
 category: "body-hair"
 publishedAt: "2026-04-22"
 status: "published"
-excerpt: "学生時代の朝、社会人になってからの朝。手を動かしていた時間と、それで失っていた時間について。"
+excerpt: "毎朝の髭剃りに使っていた 10〜15 分。学生時代から社会人、そしてヒゲ脱毛（メンズ医療脱毛）を受けるまで。男性の髭と、それに費やしてきた時間についての記録。"
 related: ["between-shaving-and-not"]
 keywords:
   - 髭

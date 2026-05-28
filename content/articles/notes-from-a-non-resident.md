@@ -4,7 +4,7 @@ slug: "notes-from-a-non-resident"
 category: "hair-loss"
 publishedAt: "2026-04-15"
 status: "published"
-excerpt: "僕はこの領域の当事者ではない。それでも書く理由について。"
+excerpt: "薄毛・AGA の領域について、当事者ではない書き手として観察を残す。商業情報の煽りと、当事者の沈黙について。"
 related: ["a-half-step-ahead", "about-this-media"]
 keywords:
   - 薄毛

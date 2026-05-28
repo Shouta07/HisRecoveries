@@ -4,7 +4,7 @@ slug: "between-shaving-and-not"
 category: "body-hair"
 publishedAt: "2026-04-20"
 status: "published"
-excerpt: "髭を伸ばしてみた数ヶ月のこと。「整えないでいる自由」をめぐる小さな実験。"
+excerpt: "髭を伸ばしてみた約 6 週間のこと。剃ること・剃らないこと・メンズ脱毛のあいだで揺れた、男性の体毛をめぐる当事者の体験。"
 related: ["the-cost-of-shaving-every-morning"]
 keywords:
   - 髭

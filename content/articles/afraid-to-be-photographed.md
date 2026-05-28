@@ -4,7 +4,7 @@ slug: "afraid-to-be-photographed"
 category: "face"
 publishedAt: "2026-05-07"
 status: "published"
-excerpt: "集合写真の隅、撮られる前の数秒、後から見返すときの動揺について。"
+excerpt: "集合写真の隅、撮られる前の数秒、SNS で見つけてしまった自分の顔。男性の顔のコンプレックスと、写真を避けていた数年についての当事者の記録。"
 related: ["reconciling-with-my-own-face", "mornings-hating-the-mirror"]
 keywords:
   - 顔

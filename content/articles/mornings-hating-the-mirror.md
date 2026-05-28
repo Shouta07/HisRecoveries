@@ -4,7 +4,7 @@ slug: "mornings-hating-the-mirror"
 category: "acne"
 publishedAt: "2026-05-11"
 status: "published"
-excerpt: "洗面所の照明が明るすぎた頃。鏡の前で過ごした時間の長さについて。"
+excerpt: "ニキビとニキビ跡。洗面所の鏡の前で、朝の 30〜40 分を毎日数えていた当事者の記録。「気にしすぎ」と言われ続けた日々について。"
 related: ["what-i-tried-until-the-scars-faded"]
 keywords:
   - ニキビ
