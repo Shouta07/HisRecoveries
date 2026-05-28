@@ -1,33 +1,41 @@
 type Props = {
   en: string;
   ja?: string;
+  number?: string; // 章番号やインデックス。e.g. "I", "01", "Chapter II"
   className?: string;
 };
 
 /**
- * Editorial section header in the TENTIAL pattern:
- *   **Body Troubles** | 体の不調に関する悩み
+ * Editorial chapter heading used to open each section.
+ *  - small italic Cormorant eyebrow ("Presence Journal")
+ *  - optional chapter index
+ *  - large mincho title in Japanese
+ *  - a thin gold rule below for cinematic separation
  *
- * Bold sans-serif English on the left, thin vertical hair-line
- * separator, small navy Japanese label on the right.
+ * Tone: magazine chapter opening, not navigation label.
  */
-export default function SectionLabel({ en, ja, className = "" }: Props) {
+export default function SectionLabel({ en, ja, number, className = "" }: Props) {
   return (
-    <div className={`flex items-center gap-5 ${className}`}>
-      <h2 className="text-2xl sm:text-[1.75rem] font-bold tracking-[0.04em] text-navy leading-none">
-        {en}
-      </h2>
+    <div className={className}>
+      <div className="flex items-baseline gap-4">
+        {number && (
+          <span className="logo-type italic text-[12px] tracking-[0.2em] text-gold">
+            {number}
+          </span>
+        )}
+        <p className="logo-type italic text-[11px] sm:text-[12px] tracking-[0.4em] uppercase text-gold">
+          {en}
+        </p>
+      </div>
       {ja && (
-        <>
-          <span
-            aria-hidden
-            className="block w-px h-7 bg-hair-line shrink-0"
-          />
-          <p className="text-xs sm:text-sm text-sub-gray tracking-[0.08em]">
-            {ja}
-          </p>
-        </>
+        <h2 className="mt-3 font-mincho text-3xl sm:text-4xl lg:text-[2.75rem] font-medium leading-[1.35] tracking-[0.02em] text-ink">
+          {ja}
+        </h2>
       )}
+      <span
+        aria-hidden
+        className="mt-5 block w-12 h-px bg-gold/60"
+      />
     </div>
   );
 }

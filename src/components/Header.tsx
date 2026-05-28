@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 
+const nav = [
+  { href: "/territories", label: "Chapters", ja: "章" },
+  { href: "/articles", label: "Journal", ja: "記録" },
+  { href: "/events", label: "Experiences", ja: "体験" },
+  { href: "/shelf", label: "Rituals", ja: "道具", desktopOnly: true },
+  { href: "/reflect", label: "Reflect", ja: "整理", desktopOnly: true },
+  { href: "/about", label: "Philosophy", ja: "思想" },
+];
+
 export default function Header() {
   return (
     <header className="w-full bg-navy text-white">
@@ -14,54 +23,20 @@ export default function Header() {
         </Link>
         <nav aria-label="primary" className="text-sm">
           <ul className="flex items-center gap-3 sm:gap-6 text-white/85">
-            <li>
-              <Link
-                href="/territories"
-                className="inline-block py-2 hover:text-white transition-colors"
-              >
-                地形図
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/articles"
-                className="inline-block py-2 hover:text-white transition-colors"
-              >
-                記事
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/events"
-                className="inline-block py-2 hover:text-white transition-colors"
-              >
-                Events
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/shelf"
-                className="hidden sm:inline-block py-2 hover:text-white transition-colors"
-              >
-                道具
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/reflect"
-                className="hidden sm:inline-block py-2 hover:text-white transition-colors"
-              >
-                Reflect
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/about"
-                className="inline-block py-2 hover:text-white transition-colors"
-              >
-                About
-              </Link>
-            </li>
+            {nav.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={`inline-block py-2 hover:text-white transition-colors ${
+                    item.desktopOnly ? "hidden sm:inline-block" : ""
+                  }`}
+                >
+                  <span className="logo-type italic text-[12px] sm:text-[13px] tracking-[0.08em]">
+                    {item.label}
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>

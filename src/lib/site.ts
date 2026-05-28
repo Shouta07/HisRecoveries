@@ -1,8 +1,9 @@
 export const site = {
   name: "His Recoveries",
-  tagline: "半歩先からの記録",
+  tagline: "Male Conditioning",
+  promise: "Recover Your Presence.",
   description:
-    "Quiet Grooming — 叫ばない、整える。言葉にされにくい男性の身体と自意識のための、記録と整理と集まりの場所。",
+    "Male Conditioning — Recover Your Presence. 言葉にされにくい男性の身体と自意識を、記録・整理・体験のかたちで残していく、夜のための場所。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "Nagi",
@@ -20,13 +21,16 @@ export const site = {
   language: "ja",
   region: "JP",
   topics: [
+    "Male Conditioning",
+    "Quiet Masculinity",
+    "Social Recovery",
+    "Emotional Grooming",
     "多汗症",
     "ニキビ",
     "ワキガ",
     "腋臭症",
     "ニキビ跡",
     "男性の自意識",
-    "コンプレックス",
     "メンズスキンケア",
   ],
 } as const;

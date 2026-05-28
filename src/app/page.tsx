@@ -1,195 +1,287 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
-import ArticleCard from "@/components/ArticleCard";
-import TerritoryBrowser from "@/components/TerritoryBrowser";
+import WhatsNew from "@/components/WhatsNew";
 import QuietGatherings from "@/components/QuietGatherings";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
-import TagMarquee from "@/components/TagMarquee";
 import TrackedCTA from "@/components/TrackedCTA";
 import { getUpcomingEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
 
+const chapterRomans = ["I", "II", "III", "IV", "V", "VI", "VII"];
+
 export default function HomePage() {
   const articles = getAllArticles();
-  const recentArticles = articles.slice(0, 8);
+  const featuredArticle = articles[0];
+  const sidebarArticles = articles.slice(1, 4);
   const upcomingEvents = getUpcomingEvents();
-  const territories = getAllTerritories().map((t) => ({
-    slug: t.slug,
-    title: t.title,
-    subtitle: t.subtitle,
-    intro: t.intro,
-    categories: t.categories,
-  }));
+  const territories = getAllTerritories();
 
   return (
     <>
       {/* ─────────────────────────────────────────
-         Hero — tightened, with draw-in gold rule
+         SCENE I — Opening
+         A hotel-at-night opening: small eyebrow,
+         large mincho promise, generous breath.
          ───────────────────────────────────────── */}
-      <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-12 sm:pt-16 pb-8 sm:pb-10 text-center">
-        <p className="font-mincho text-sub-gray text-xs sm:text-sm tracking-[0.3em]">
+      <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-24 sm:pt-40 pb-24 sm:pb-32 text-center">
+        <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold">
           {site.tagline}
         </p>
-        <h1 className="mt-3 logo-type text-5xl sm:text-7xl text-navy leading-[0.95]">
+        <h1 className="mt-7 logo-type text-5xl sm:text-7xl lg:text-8xl text-navy leading-[0.95]">
           {site.name}
         </h1>
-        <div className="mt-5 flex justify-center">
-          <span aria-hidden className="block w-24 h-px bg-gold draw-in" />
+        <div className="mt-10 flex justify-center">
+          <span aria-hidden className="block w-16 h-px bg-gold draw-in" />
         </div>
-        <p className="mt-5 font-mincho text-lg sm:text-2xl leading-[1.55] text-ink">
-          Quiet Grooming.
-          <span className="ml-2 text-ink/80 text-sm sm:text-base">
-            — 叫ばない、整える。
-          </span>
+        <p className="mt-10 font-mincho text-[1.7rem] sm:text-4xl lg:text-[3rem] leading-[1.45] text-ink tracking-[0.03em]">
+          {site.promise}
         </p>
-        <p className="mt-3 text-[13px] sm:text-sm leading-[1.95] text-sub-gray max-w-[34rem] mx-auto">
-          言葉にされにくい男性の身体と自意識のための、
-          記録 と 整理 と 集まり の場所。
+        <p className="mt-8 font-mincho text-base sm:text-lg leading-[2] text-ink/80 max-w-[28rem] mx-auto">
+          言葉にされにくい男性の身体と自意識を、
+          <br className="hidden sm:inline" />
+          記録、整理、体験のかたちで残していく、
+          <br className="hidden sm:inline" />
+          夜のための場所。
         </p>
       </section>
 
-      {/* Marquee of category tags — quiet horizontal motion */}
-      <TagMarquee
-        items={[
-          "多汗症",
-          "ワキガ",
-          "ニキビ",
-          "肌の質感",
-          "顔の印象",
-          "薄毛・AGA",
-          "髭・体毛",
-          "心と自意識",
-          "半歩先",
-          "整える",
-          "Quiet Grooming",
-        ]}
-      />
-
       {/* ─────────────────────────────────────────
-         QUIET GATHERINGS — directly under hero
+         SCENE II — Philosophy fragment
+         A single cinematic line, fully on cream.
+         Slow breathing in the middle of the page.
          ───────────────────────────────────────── */}
       <Reveal>
-        <QuietGatherings events={upcomingEvents} />
+        <section
+          aria-label="Philosophy"
+          className="border-y border-hair-line"
+        >
+          <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-24 sm:py-36 text-center">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+              A Philosophy
+            </p>
+            <p className="mt-10 font-mincho text-2xl sm:text-3xl lg:text-[2.25rem] leading-[1.7] text-ink tracking-[0.05em]">
+              男性は、強くなるのではなく、
+              <br />
+              整うのだ。
+            </p>
+            <p className="mt-10 font-mincho italic text-[13px] sm:text-sm tracking-[0.15em] text-sub-gray">
+              Men are not meant to become stronger.
+              <br />
+              They are meant to become more aligned.
+            </p>
+          </div>
+        </section>
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         CONCERNS — SBC「悩みから探す」style
+         SCENE III — Presence Journal
+         The editorial moment. One cover + 3 small.
          ───────────────────────────────────────── */}
-      <section
-        aria-labelledby="concerns"
-        className="bg-paper border-y border-hair-line"
-      >
-        <div className="mx-auto max-w-[1100px] px-6 sm:px-10 py-16 sm:py-24">
-          <Reveal>
-            <SectionLabel en="Concerns" ja="悩みから探す" />
-            <p className="mt-5 text-[13px] sm:text-sm text-sub-gray leading-[2] max-w-[36rem]">
-              気になる領域を選ぶと、関連する記録が下に並びます。
-              ページ遷移はしません。
-            </p>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="mt-10 sm:mt-14">
-              <TerritoryBrowser
-                territories={territories}
-                articles={articles}
+      {featuredArticle && (
+        <Reveal>
+          <section
+            aria-labelledby="presence-journal"
+            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-28 sm:pt-36 pb-20 sm:pb-28"
+          >
+            <div className="flex items-end justify-between flex-wrap gap-4 mb-14 sm:mb-20">
+              <SectionLabel
+                en="Presence Journal"
+                ja="記録"
+                number={chapterRomans[0]}
               />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────
-         WHAT'S NEW — TENTIAL 4-column grid
-         16:10 cover + gothic bold title + date + # tag
-         ───────────────────────────────────────── */}
-      {recentArticles.length > 0 && (
-        <section
-          aria-labelledby="whats-new"
-          className="mx-auto max-w-[1100px] px-6 sm:px-10 py-20 sm:py-28"
-        >
-          <Reveal>
-            <SectionLabel en="What's New" ja="新着の記録" />
-          </Reveal>
-
-          <div className="mt-10 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 sm:gap-y-14">
-            {recentArticles.map((a, i) => (
-              <Reveal key={a.slug} delay={i * 60}>
-                <ArticleCard article={a} variant="card" />
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal>
-            <div className="mt-12 sm:mt-16 flex justify-end">
               <Link
                 href="/articles"
-                className="inline-flex items-center gap-3 px-7 py-3 text-sm tracking-[0.12em] text-navy border border-navy hover:bg-navy hover:text-white transition-colors"
+                className="text-[13px] tracking-[0.1em] text-navy hover:text-gold transition-colors"
               >
-                もっと見る
-                <span aria-hidden>→</span>
+                すべての記録 →
               </Link>
             </div>
-          </Reveal>
-        </section>
+            <WhatsNew featured={featuredArticle} rest={sidebarArticles} />
+          </section>
+        </Reveal>
       )}
 
       {/* ─────────────────────────────────────────
-         BELONG — compact subscribe row + inline links
+         SCENE IV — Recovery Experiences
+         The conversion-focused experience layer.
          ───────────────────────────────────────── */}
-      <section
-        aria-labelledby="belong"
-        className="mx-auto max-w-[1100px] px-6 sm:px-10 py-10 sm:py-14"
-      >
+      {upcomingEvents.length > 0 && (
         <Reveal>
-          <SectionLabel
-            en="Belong"
-            ja="つながる — 月に一度か二度、ニュースレターで届く記録"
-          />
-        </Reveal>
-
-        <Reveal delay={100}>
-          <div className="mt-6 sm:mt-8 bg-paper border border-hair-line p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-[13px] sm:text-sm text-ink/80 leading-[1.85] max-w-[34rem]">
-            新しく書いた記録と、まだ記事にしていない覚え書きを、月に数本。
-            通知も煽りもありません。
-          </p>
-          <TrackedCTA
-            href={site.social.substack}
-            event="subscribe_click"
-            eventProps={{ location: "home_belong" }}
-            className="btn-gold !py-3 !px-6 text-xs shrink-0"
+          <section
+            aria-labelledby="recovery-experiences"
+            className="border-t border-hair-line bg-paper/40"
           >
-            Substack で購読
-            <span aria-hidden>→</span>
-          </TrackedCTA>
+            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-32">
+              <div className="flex items-end justify-between flex-wrap gap-4 mb-14 sm:mb-20">
+                <SectionLabel
+                  en="Recovery Experiences"
+                  ja="体験"
+                  number={chapterRomans[1]}
+                />
+                <Link
+                  href="/events"
+                  className="text-[13px] tracking-[0.1em] text-navy hover:text-gold transition-colors"
+                >
+                  すべての集まり →
+                </Link>
+              </div>
+              <p className="font-mincho text-[1rem] sm:text-lg leading-[2] text-ink/80 max-w-[34rem] mb-12">
+                Quiet Gatherings は、整える時間そのものを共有する場。
+                <br className="hidden sm:inline" />
+                少人数・半公開で、夜に行います。
+              </p>
+              <QuietGatherings events={upcomingEvents} />
+            </div>
+          </section>
+        </Reveal>
+      )}
+
+      {/* ─────────────────────────────────────────
+         SCENE V — Chapters
+         The territory map presented as editorial
+         table-of-contents. No icons, no cards.
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="chapters"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-28 sm:pt-36 pb-20 sm:pb-28"
+        >
+          <div className="mb-14 sm:mb-20">
+            <SectionLabel
+              en="Chapters"
+              ja="章"
+              number={chapterRomans[2]}
+            />
           </div>
-        </Reveal>
 
-        <p className="mt-5 text-[12px] text-sub-gray tracking-[0.04em]">
-          <Link
-            href="/reflect"
-            className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
-          >
-            Reflect — いまの自分に近い記録を探す
-          </Link>
-          <span className="mx-3 text-hair-line">/</span>
-          <Link
-            href="/letters"
-            className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
-          >
-            Letters — 静かなお便り
-          </Link>
-          <span className="mx-3 text-hair-line">/</span>
-          <Link
-            href="/about"
-            className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
-          >
-            About — このサイトについて
-          </Link>
-        </p>
-      </section>
+          <ol className="border-t border-hair-line">
+            {territories.map((t, i) => (
+              <li key={t.slug} className="border-b border-hair-line">
+                <Link
+                  href={`/territories/${t.slug}`}
+                  className="group grid grid-cols-[4rem_1fr_auto] sm:grid-cols-[5rem_1fr_auto] items-baseline gap-4 sm:gap-8 py-6 sm:py-8 hover:bg-paper/60 transition-colors"
+                >
+                  <span className="logo-type italic text-[12px] sm:text-sm tracking-[0.2em] text-gold">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="font-mincho text-xl sm:text-2xl lg:text-3xl font-medium leading-[1.45] text-ink group-hover:text-navy transition-colors">
+                      {t.title}
+                    </h3>
+                    <p className="mt-2 font-mincho text-[13px] sm:text-sm text-sub-gray leading-[1.85]">
+                      {t.subtitle}
+                    </p>
+                  </div>
+                  <span
+                    aria-hidden
+                    className="text-sub-gray group-hover:text-navy transition-colors text-lg sm:text-xl"
+                  >
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </Reveal>
+
+      {/* ─────────────────────────────────────────
+         SCENE VI — Conditioning Rituals (the shelf)
+         A single quiet pointer, not a product grid.
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="rituals"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-20 sm:pt-28 pb-20 sm:pb-28"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-center">
+            <SectionLabel
+              en="Conditioning Rituals"
+              ja="整える道具"
+              number={chapterRomans[3]}
+            />
+            <div>
+              <p className="font-mincho text-[1rem] sm:text-lg leading-[2] text-ink/85 max-w-[28rem]">
+                使ってきたもの、合わなかったこと、迷ったこと。
+                効くと言わずに、正直に並べる棚です。
+              </p>
+              <Link
+                href="/shelf"
+                className="mt-7 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-navy border-b border-gold pb-1 hover:text-gold transition-colors"
+              >
+                棚を見る
+                <span aria-hidden>→</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ─────────────────────────────────────────
+         SCENE VII — Belonging
+         A whisper-quiet subscription invitation.
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="belonging"
+          className="border-t border-hair-line"
+        >
+          <div className="mx-auto max-w-[1100px] px-6 sm:px-10 py-24 sm:py-32 text-center">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+              Belonging
+            </p>
+            <p className="mt-8 font-mincho text-2xl sm:text-3xl leading-[1.6] text-ink max-w-[28rem] mx-auto">
+              月に一度か二度、
+              <br className="sm:hidden" />
+              便りが届きます。
+            </p>
+            <p className="mt-6 text-[13px] sm:text-sm leading-[2] text-sub-gray max-w-[28rem] mx-auto">
+              新しい記録と、まだ記事にしていない覚え書きを。
+              通知も煽りも、ありません。
+            </p>
+            <div className="mt-10">
+              <TrackedCTA
+                href={site.social.substack}
+                event="subscribe_click"
+                eventProps={{ location: "home_belonging" }}
+                className="btn-gold"
+              >
+                Substack で購読する
+                <span aria-hidden>→</span>
+              </TrackedCTA>
+            </div>
+
+            <div className="mt-16 pt-10 border-t border-hair-line/60 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] tracking-[0.06em] text-sub-gray">
+              <Link
+                href="/reflect"
+                className="hover:text-navy transition-colors"
+              >
+                Reflect — 自分を整理する
+              </Link>
+              <span aria-hidden className="text-hair-line">
+                ·
+              </span>
+              <Link
+                href="/letters"
+                className="hover:text-navy transition-colors"
+              >
+                Letters — 静かなお便り
+              </Link>
+              <span aria-hidden className="text-hair-line">
+                ·
+              </span>
+              <Link
+                href="/about"
+                className="hover:text-navy transition-colors"
+              >
+                Philosophy — このサイトについて
+              </Link>
+            </div>
+          </div>
+        </section>
+      </Reveal>
     </>
   );
 }
