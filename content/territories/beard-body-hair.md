@@ -3,7 +3,7 @@ title: "髭・体毛"
 slug: "beard-body-hair"
 subtitle: "整えるか、整えないか、を選ぶ前に"
 intro: "髭、体毛。剃るか、伸ばすか、脱毛するか。社会の基準と自分の選択のあいだで、どう距離を取るか。永久脱毛のような取り返しのつかない選択を含めて、層として見渡します。"
-categories: []
+categories: ["body-hair"]
 relatedExit: "territory"
 order: 6
 status: "published"

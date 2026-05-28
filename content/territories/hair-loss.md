@@ -3,7 +3,7 @@ title: "薄毛・AGA"
 slug: "hair-loss"
 subtitle: "髪と、髪以外のことの整理"
 intro: "薄毛と AGA の領域。何も対処しないという選択から、内服、外用、自毛植毛まで。「いつ気づき、いつ動くか」のタイミングが、ほかの領域より大きく結果を変える場所です。"
-categories: []
+categories: ["hair-loss"]
 relatedExit: "territory"
 order: 5
 status: "published"

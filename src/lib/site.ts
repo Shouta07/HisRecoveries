@@ -43,7 +43,9 @@ export type CategorySlug =
   | "hyperhidrosis"
   | "acne"
   | "bromhidrosis"
-  | "face";
+  | "face"
+  | "hair-loss"
+  | "body-hair";
 
 export const categories: Record<
   CategorySlug,
@@ -68,6 +70,14 @@ export const categories: Record<
   face: {
     label: "顔",
     description: "顔と自意識についての記録。",
+  },
+  "hair-loss": {
+    label: "薄毛",
+    description: "髪と、髪以外のことについての記録。",
+  },
+  "body-hair": {
+    label: "髭・体毛",
+    description: "整えると整えないのあいだについての記録。",
   },
 };
 
