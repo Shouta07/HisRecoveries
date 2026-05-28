@@ -39,16 +39,6 @@ export default function HomePage() {
         <p className="mt-10 font-mincho text-[1.7rem] sm:text-4xl lg:text-[3rem] leading-[1.45] text-ink tracking-[0.03em]">
           {site.promise}
         </p>
-        <p className="mt-10 font-mincho text-base sm:text-lg leading-[2.05] text-ink max-w-[34rem] mx-auto">
-          多汗症、ワキガ、ニキビ跡、AGA、髭脱毛、
-          <br className="hidden sm:inline" />
-          そして男性の自意識について。
-        </p>
-        <p className="mt-4 text-[13px] sm:text-sm leading-[1.95] text-sub-gray max-w-[30rem] mx-auto">
-          言葉にしにくいものを、半歩先を歩いた当事者が、
-          <br className="hidden sm:inline" />
-          静かに記録します。
-        </p>
       </section>
 
       {/* A quiet horizontal current — what readers actually search for */}
