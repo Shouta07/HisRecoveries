@@ -6,6 +6,7 @@ import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TagMarquee from "@/components/TagMarquee";
 import TrackedCTA from "@/components/TrackedCTA";
+import EditorProfile from "@/components/EditorProfile";
 import { getUpcomingEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
@@ -147,6 +148,35 @@ export default function HomePage() {
                 少人数・半公開で、夜に行います。
               </p>
               <QuietGatherings events={upcomingEvents} />
+
+              {/* Private Conversation — the Otonami "貸切相談" pattern */}
+              <div className="mt-12 sm:mt-16 pt-10 sm:pt-12 border-t border-hair-line grid grid-cols-1 sm:grid-cols-[1fr_auto] items-end gap-6">
+                <div>
+                  <p className="logo-type italic text-[10px] tracking-[0.4em] uppercase text-gold">
+                    Private Conversation
+                  </p>
+                  <h3 className="mt-3 font-mincho text-xl sm:text-2xl font-medium leading-[1.5] text-ink">
+                    個別の相談について
+                  </h3>
+                  <p className="mt-3 text-[13px] sm:text-sm leading-[1.95] text-sub-gray max-w-[36rem]">
+                    記事や集まりとは別に、より個別のご相談には{" "}
+                    <Link
+                      href="/letters"
+                      className="text-navy border-b border-gold hover:text-gold transition-colors"
+                    >
+                      Letters
+                    </Link>{" "}
+                    でお応えします。返信は約束しませんが、必ず読みます。
+                  </p>
+                </div>
+                <Link
+                  href="/letters"
+                  className="inline-flex items-center gap-3 text-sm tracking-[0.12em] text-navy border-b border-gold pb-1 hover:text-gold transition-colors shrink-0"
+                >
+                  Letters を書く
+                  <span aria-hidden>→</span>
+                </Link>
+              </div>
             </div>
           </section>
         </Reveal>
@@ -267,7 +297,11 @@ export default function HomePage() {
               </TrackedCTA>
             </div>
 
-            <div className="mt-16 pt-10 border-t border-hair-line/60 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] tracking-[0.06em] text-sub-gray">
+            <div className="mt-20 max-w-[680px] mx-auto text-left">
+              <EditorProfile />
+            </div>
+
+            <div className="mt-12 pt-10 border-t border-hair-line/60 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] tracking-[0.06em] text-sub-gray">
               <Link
                 href="/reflect"
                 className="hover:text-navy transition-colors"
