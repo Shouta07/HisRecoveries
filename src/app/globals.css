@@ -248,7 +248,7 @@ a {
 }
 .marquee-track {
   display: inline-flex;
-  animation: marquee 48s linear infinite;
+  animation: marquee 64s linear infinite;
   will-change: transform;
 }
 .marquee:hover .marquee-track {

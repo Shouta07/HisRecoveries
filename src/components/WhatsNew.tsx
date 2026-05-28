@@ -14,18 +14,20 @@ export default function WhatsNew({ featured, rest }: Props) {
       {/* Featured (large) */}
       <Link
         href={`/articles/${featured.slug}`}
-        className="group block"
+        className="group block card-lift"
         aria-label={featured.title}
       >
-        <CoverImage
-          src={featured.cover}
-          alt={featured.coverAlt ?? featured.title}
-          eyebrow={categoryLabel(featured.category)}
-          title={featured.title}
-          meta={formatDate(featured.publishedAt)}
-          aspectRatio="4/3"
-          size="lg"
-        />
+        <div className="cover-zoom">
+          <CoverImage
+            src={featured.cover}
+            alt={featured.coverAlt ?? featured.title}
+            eyebrow={categoryLabel(featured.category)}
+            title={featured.title}
+            meta={formatDate(featured.publishedAt)}
+            aspectRatio="4/3"
+            size="lg"
+          />
+        </div>
         <div className="mt-6 sm:mt-8">
           <p className="text-xs text-sub-gray">
             {categoryLabel(featured.category)}
@@ -58,15 +60,17 @@ export default function WhatsNew({ featured, rest }: Props) {
               href={`/articles/${a.slug}`}
               className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 sm:gap-5 items-start"
             >
-              <CoverImage
-                src={a.cover}
-                alt={a.coverAlt ?? a.title}
-                eyebrow={categoryLabel(a.category)}
-                title={a.title}
-                meta={formatDate(a.publishedAt)}
-                aspectRatio="1/1"
-                size="sm"
-              />
+              <div className="cover-zoom">
+                <CoverImage
+                  src={a.cover}
+                  alt={a.coverAlt ?? a.title}
+                  eyebrow={categoryLabel(a.category)}
+                  title={a.title}
+                  meta={formatDate(a.publishedAt)}
+                  aspectRatio="1/1"
+                  size="sm"
+                />
+              </div>
               <div>
                 <p className="text-[11px] text-sub-gray">
                   {categoryLabel(a.category)}

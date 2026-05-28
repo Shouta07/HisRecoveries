@@ -4,6 +4,7 @@ import WhatsNew from "@/components/WhatsNew";
 import QuietGatherings from "@/components/QuietGatherings";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
+import TagMarquee from "@/components/TagMarquee";
 import TrackedCTA from "@/components/TrackedCTA";
 import { getUpcomingEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
@@ -47,6 +48,26 @@ export default function HomePage() {
         </p>
       </section>
 
+      {/* A quiet horizontal current — vocabulary of the brand */}
+      <TagMarquee
+        items={[
+          "Male Conditioning",
+          "Quiet Masculinity",
+          "Recover Your Presence",
+          "Social Recovery",
+          "Emotional Grooming",
+          "半歩先",
+          "整える",
+          "多汗症",
+          "ワキガ",
+          "ニキビ",
+          "顔の印象",
+          "薄毛・AGA",
+          "髭・体毛",
+          "心と自意識",
+        ]}
+      />
+
       {/* ─────────────────────────────────────────
          SCENE II — Philosophy fragment
          A single cinematic line, fully on cream.
@@ -55,7 +76,7 @@ export default function HomePage() {
       <Reveal>
         <section
           aria-label="Philosophy"
-          className="border-y border-hair-line"
+          className="border-b border-hair-line"
         >
           <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-24 sm:py-36 text-center">
             <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
@@ -176,7 +197,7 @@ export default function HomePage() {
                   </div>
                   <span
                     aria-hidden
-                    className="text-sub-gray group-hover:text-navy transition-colors text-lg sm:text-xl"
+                    className="text-sub-gray group-hover:text-navy group-hover:translate-x-1 transition-all duration-300 text-lg sm:text-xl"
                   >
                     →
                   </span>
