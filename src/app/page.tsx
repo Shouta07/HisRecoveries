@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import WhatsNew from "@/components/WhatsNew";
@@ -63,25 +64,38 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE II — Philosophy fragment
-         A single cinematic line, fully on cream.
-         Slow breathing in the middle of the page.
+         SCENE II — Philosophy
+         Cinematic full-bleed image moment. The
+         atmosphere of the brand crystallizes here:
+         a back-view silhouette in a Tokyo high-rise
+         at dusk, the philosophical line overlaid.
          ───────────────────────────────────────── */}
       <Reveal>
-        <section
-          aria-label="Philosophy"
-          className="border-b border-hair-line"
-        >
-          <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-24 sm:py-36 text-center">
-            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+        <section aria-label="Philosophy" className="relative bg-navy">
+          <div className="absolute inset-0">
+            <Image
+              src="/images/atmosphere.jpg"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+          </div>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-b from-navy-deep/35 via-navy-deep/55 to-navy-deep/85"
+          />
+          <div className="relative mx-auto max-w-[1000px] px-6 sm:px-10 py-32 sm:py-48 lg:py-56 text-center text-white">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
               A Philosophy
             </p>
-            <p className="mt-10 font-mincho text-2xl sm:text-3xl lg:text-[2.25rem] leading-[1.7] text-ink tracking-[0.05em]">
+            <p className="mt-10 font-mincho text-[1.75rem] sm:text-3xl lg:text-[2.5rem] leading-[1.65] tracking-[0.05em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]">
               男性は、強くなるのではなく、
               <br />
               整うのだ。
             </p>
-            <p className="mt-10 font-mincho italic text-[13px] sm:text-sm tracking-[0.15em] text-sub-gray">
+            <p className="mt-10 font-mincho italic text-[13px] sm:text-sm tracking-[0.15em] text-white/75">
               Men are not meant to become stronger.
               <br />
               They are meant to become more aligned.

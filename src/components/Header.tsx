@@ -41,7 +41,7 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="w-full bg-navy text-white relative z-50">
+    <header className="w-full bg-navy text-white sticky top-0 z-50 shadow-[0_1px_0_rgba(0,0,0,0.06)]">
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 sm:px-10 py-5 sm:py-6">
         <Link
           href="/"
