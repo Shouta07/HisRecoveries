@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "広告・アフィリエイト方針",
   description:
-    "当メディアにおける広告（アフィリエイト）の扱いと、商品紹介に関する方針について。",
+    "His Recoveries における広告（アフィリエイト）の扱いと、商品・サービス紹介に関する方針。2023 年 10 月施行のステマ規制（景品表示法）に対応し、Amazon アソシエイト、楽天アフィリエイト、A8.net / もしも等の各 ASP リンクに「広告」を明示。紹介基準、医療・効果に関する免責、お問い合わせ先を記載しています。",
   alternates: { canonical: `${site.url}/disclosure` },
 };
 

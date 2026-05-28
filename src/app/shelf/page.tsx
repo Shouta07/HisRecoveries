@@ -7,10 +7,15 @@ import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "整える道具",
+  title: "Conditioning Rituals — 整える道具",
   description:
-    "整えるために使ってきた道具を、領域ごとに並べた棚。効いたものも、合わなかったことも、正直に。",
+    "Conditioning Rituals。整えるために使ってきた道具を、領域ごとに並べた正直な棚。メンズスキンケア、メンズ脱毛、AGA オンライン診療、多汗症ケア、ニキビケアなど、当事者が選択肢として並べる「広告」を含むセレクション。",
   alternates: { canonical: `${site.url}/shelf` },
+  openGraph: {
+    title: `Conditioning Rituals — ${site.name}`,
+    description:
+      "Male Conditioning のための、正直な棚。整える道具の選択肢を、煽らずに並べます。",
+  },
 };
 
 export default function ShelfPage() {

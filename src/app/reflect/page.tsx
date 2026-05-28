@@ -4,14 +4,14 @@ import { getAllArticles } from "@/lib/articles";
 import ReflectClient from "./ReflectClient";
 
 export const metadata: Metadata = {
-  title: "整理する",
+  title: "Reflect — 自分を整理する",
   description:
-    "5 つの問いに静かに答えると、いまの自分に近い記録が並びます。診断ではなく、観察。",
+    "5 つの問いに静かに答えると、いまの自分に近い記録が並びます。多汗症・ワキガ・ニキビ・顔の印象・薄毛・髭体毛・心と自意識のうち、どの領域から読みはじめるかを、診断ではなく観察として手渡す質問フロー。Male Conditioning のための整理ツール。",
   alternates: { canonical: `${site.url}/reflect` },
   openGraph: {
-    title: `整理する — ${site.name}`,
+    title: `Reflect — ${site.name}`,
     description:
-      "5 つの問いに静かに答えると、いまの自分に近い記録が並びます。",
+      "5 つの問いに静かに答えると、いまの自分に近い記録が並びます。診断ではなく、観察。",
   },
 };
 

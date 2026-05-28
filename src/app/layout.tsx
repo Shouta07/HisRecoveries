@@ -126,6 +126,21 @@ export default function RootLayout({
     description: site.authorBio,
     url: `${site.url}/about`,
     sameAs: socialSameAs,
+    knowsAbout: [
+      "Male Conditioning",
+      "Quiet Masculinity",
+      "Social Recovery",
+      "Emotional Grooming",
+      "多汗症",
+      "ワキガ（腋臭症）",
+      "ニキビ・ニキビ跡",
+      "顔の自意識",
+      "男性のコンプレックス",
+    ],
+    knowsLanguage: ["ja", "en"],
+    nationality: { "@type": "Country", name: "Japan" },
+    jobTitle: "Editor, His Recoveries",
+    worksFor: { "@id": `${site.url}/#publisher` },
   };
 
   const publisherLd = {
@@ -133,10 +148,30 @@ export default function RootLayout({
     "@type": "Organization",
     "@id": `${site.url}/#publisher`,
     name: site.name,
+    alternateName: ["His Recoveries", "Male Conditioning"],
     url: site.url,
     logo: {
       "@type": "ImageObject",
       url: `${site.url}/icon`,
+    },
+    sameAs: socialSameAs,
+    description: site.description,
+    slogan: site.promise,
+    foundingDate: "2026",
+    knowsAbout: [
+      "Male Conditioning",
+      "Recover Your Presence",
+      "Quiet Masculinity",
+      "Social Recovery",
+      "Emotional Grooming",
+      "Quiet Gatherings",
+    ],
+    areaServed: { "@type": "Country", name: "Japan" },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "editorial",
+      email: site.email,
+      availableLanguage: ["Japanese", "English"],
     },
   };
 

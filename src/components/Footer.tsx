@@ -8,32 +8,34 @@ export default function Footer() {
     <footer className="mt-32 bg-navy text-white">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-10 gap-x-8 text-sm">
-          <Column label="読む">
-            <FLink href="/territories">地形図</FLink>
-            <FLink href="/articles">記事</FLink>
+          <Column label="Read · 記録">
+            <FLink href="/articles">Presence Journal</FLink>
+            <FLink href="/territories">Chapters — 章</FLink>
             <FLink href="/articles/category/philosophy">哲学・思想</FLink>
             <FLink href="/articles/category/hyperhidrosis">多汗症</FLink>
-            <FLink href="/articles/category/acne">ニキビ</FLink>
             <FLink href="/articles/category/bromhidrosis">ワキガ</FLink>
-            <FLink href="/articles/category/face">顔</FLink>
+            <FLink href="/articles/category/acne">ニキビ・ニキビ跡</FLink>
+            <FLink href="/articles/category/face">顔の印象</FLink>
+            <FLink href="/articles/category/hair-loss">薄毛・AGA</FLink>
+            <FLink href="/articles/category/body-hair">髭・体毛</FLink>
           </Column>
 
-          <Column label="参加する">
-            <FLink href="/events">イベント</FLink>
-            <FLink href="/shelf">整える道具</FLink>
-            <FLink href="/subscribe">ニュースレター</FLink>
+          <Column label="Engage · 整える">
+            <FLink href="/events">Quiet Gatherings — 体験</FLink>
+            <FLink href="/shelf">Conditioning Rituals — 道具</FLink>
+            <FLink href="/reflect">Reflect — 整理する</FLink>
+            <FLink href="/subscribe">Newsletter — 便り</FLink>
             <FLink href="/letters">Letters</FLink>
           </Column>
 
-          <Column label="このサイト">
-            <FLink href="/about">概要</FLink>
-            <FLink href="/reflect">整理する</FLink>
+          <Column label="About · 思想">
+            <FLink href="/about">Philosophy — About</FLink>
             <FLink href="/disclosure">広告・アフィリエイト方針</FLink>
             <FExt href={`mailto:${site.email}`}>連絡</FExt>
             <FLink href="/feed.xml">Atom Feed</FLink>
           </Column>
 
-          <Column label="ほかの場所">
+          <Column label="Elsewhere · ほかの場所">
             <FExt href={site.social.threads}>Threads</FExt>
             <FExt href={site.social.x}>X</FExt>
             <FExt href={site.social.note}>note</FExt>

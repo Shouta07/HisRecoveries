@@ -3,9 +3,9 @@ import { site } from "@/lib/site";
 import LettersClient from "./LettersClient";
 
 export const metadata: Metadata = {
-  title: "Letters",
+  title: "Letters — 静かなお便り",
   description:
-    "His Recoveries への静かなお便り。返信は約束できませんが、必ず読みます。",
+    "His Recoveries への静かなお便り。Male Conditioning の読者が、自分のコンプレックスや整え方について、静かに書き残す場。返信は約束できませんが、必ず読みます。",
   alternates: { canonical: `${site.url}/letters` },
   openGraph: {
     title: `Letters — ${site.name}`,

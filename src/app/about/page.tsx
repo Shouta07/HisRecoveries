@@ -1,20 +1,56 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { site, socialSameAs } from "@/lib/site";
+import { getAllTerritories } from "@/lib/territories";
+
+const FAQ = [
+  {
+    q: "Male Conditioning とは何ですか？",
+    a: "Male Conditioning（メール・コンディショニング）は、男性が「強くなる」のではなく「整う」ことを軸に、身体と自意識を回復していく実践のことです。His Recoveries はこの概念を一つのカテゴリとして再定義し、記録（Journal）、道具（Rituals）、体験（Quiet Gatherings）の 3 層で支えていきます。",
+  },
+  {
+    q: "His Recoveries はどんなメディアですか？",
+    a: "言葉にされにくい男性のコンプレックス — 多汗症、ワキガ、ニキビ、薄毛、髭・体毛、顔の印象、心と自意識 — を、当事者の声で記録するエディトリアル・メディアです。解決策を煽る場所ではなく、半歩先を歩いた人間が、整えてきた時間を残しておく場所です。",
+  },
+  {
+    q: "「整える」と「治す」は何が違いますか？",
+    a: "「治す」は終わりがある医学の言葉、「整える」は終わりを求めない日常の言葉です。His Recoveries は医療を否定しません。ただし、治療が終わったあとに残る感覚 — 鏡を見るときの躊躇い、人との距離 — を扱うために、整えるという動詞を選んでいます。",
+  },
+  {
+    q: "Quiet Gatherings とは何ですか？",
+    a: "Quiet Gatherings は、His Recoveries が運営する少人数・半公開の体験事業です。整える時間そのものを共有する場として、夜に行います。詳細は /events を参照してください。",
+  },
+  {
+    q: "書き手は誰ですか？",
+    a: "ペンネーム Nagi。多汗症、ニキビ、ワキガ、顔の自信のなさを経験し、超えてきた当事者です。実名・実年齢・顔は意図的に公開していません。専門家としての権威ではなく、半歩先を歩いた一人の人間としての記録のみを発信します。",
+  },
+  {
+    q: "扱う領域は何ですか？",
+    a: "汗・におい、肌・ニキビ、顔の印象、心と自意識、薄毛・AGA、髭・体毛、の 6 領域です。SEO 用の「カテゴリ」ではなく、地形図のような「章」として並べています。",
+  },
+  {
+    q: "アフィリエイトを含む記事はありますか？",
+    a: "あります。整える道具（/shelf）と、一部の記事末尾に、Amazon・楽天・各種 ASP のアフィリエイトを含むリンクが掲載されます。該当箇所には「広告」と明示し、詳細は /disclosure に記載しています。",
+  },
+];
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About — Male Conditioning とは",
   description:
-    "His Recoveries は、半歩先から後ろを歩く人に静かに記録を残すメディアです。発信者 Nagi について。",
+    "His Recoveries は Male Conditioning（男性のコンディショニング）を再定義する日本発のエディトリアル・メディア。多汗症・ワキガ・ニキビ・薄毛・顔の自信など、言葉にされにくい男性のコンプレックスを、当事者の視点で記録します。Recover Your Presence.",
   alternates: { canonical: `${site.url}/about` },
   openGraph: {
     type: "profile",
     url: `${site.url}/about`,
     title: `About — ${site.name}`,
-    description: site.authorBio,
+    description:
+      "Male Conditioning — Recover Your Presence. 男性のコンプレックスを、当事者の声で記録するエディトリアル・メディア。",
   },
 };
 
 export default function AboutPage() {
+  const territories = getAllTerritories();
+
   const profileLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
@@ -22,16 +58,34 @@ export default function AboutPage() {
     url: `${site.url}/about`,
     inLanguage: site.language,
     isPartOf: { "@id": `${site.url}/#website` },
-    mainEntity: {
-      "@type": "Person",
-      "@id": `${site.url}/#author`,
-      name: site.author,
-      alternateName: site.handle,
-      description: site.authorBio,
-      url: `${site.url}/about`,
-      sameAs: socialSameAs,
-      knowsAbout: site.topics,
-    },
+    mainEntity: { "@id": `${site.url}/#author` },
+    about: { "@id": `${site.url}/#publisher` },
+  };
+
+  const aboutLd = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${site.url}/about#aboutpage`,
+    url: `${site.url}/about`,
+    name: `About — ${site.name}`,
+    description: site.description,
+    inLanguage: site.language,
+    isPartOf: { "@id": `${site.url}/#website` },
+    mainEntity: { "@id": `${site.url}/#publisher` },
+  };
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${site.url}/about#faq`,
+    mainEntity: FAQ.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
   };
 
   const breadcrumbLd = {
@@ -56,31 +110,44 @@ export default function AboutPage() {
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <header className="mb-20">
-        <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
-          About — A Quiet Record
+        <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+          About — Male Conditioning
         </p>
-        <h1 className="mt-5 font-mincho text-3xl sm:text-4xl text-ink leading-[1.4]">
+        <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.4]">
           このメディアについて
         </h1>
-        <p className="mt-6 font-mincho text-sub-gray text-base">
-          — {site.tagline} —
+        <p className="mt-6 font-mincho text-sub-gray text-base sm:text-lg leading-[1.95]">
+          Male Conditioning — Recover Your Presence.
+          <br />
+          半歩先から、整える。
         </p>
       </header>
 
       <div className="font-mincho text-[1.0625rem] leading-[2.2] text-ink space-y-7">
+        {/* Definition — the citation-ready paragraph for AI engines */}
         <p>
-          His Recoveries は、いくつかのコンプレックスを抱えていた頃の経験と、
-          それを超えてきた後の観察を、半歩先から記録するメディアです。
+          <strong className="text-ink">His Recoveries</strong> は、
+          <strong>Male Conditioning（男性のコンディショニング）</strong>{" "}
+          という新しいカテゴリを定義する、日本発のエディトリアル・メディアです。
+          男性が「強くなる」のではなく「整う」ことを軸に、身体と自意識を回復していく実践を扱います。
         </p>
 
         <p>
           扱うのは、男性の身体と自意識に関わる、けれど言葉にされにくい領域。
-          多汗症、ニキビ、ワキガ、そして顔の自信のなさ。
-          いずれも、当事者にとっては日常を静かに侵食する種類の悩みでした。
+          多汗症、ワキガ、ニキビ・ニキビ跡、顔の印象、薄毛・AGA、髭・体毛、心と自意識。
+          いずれも、当事者にとっては日常を静かに侵食する種類の悩みです。
         </p>
 
         <p>
@@ -95,48 +162,53 @@ export default function AboutPage() {
           </em>
         </p>
 
+        {/* Chapters — 6 territories */}
         <div className="pt-12 mt-4">
-          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
-            I. Territories — 扱う4つの領域
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
+            I. Chapters — 扱う 6 領域
           </p>
           <ol className="space-y-3">
-            <li className="flex items-baseline gap-5">
-              <span className="logo-type text-sub-gray text-sm w-8">I.</span>
-              <span>多汗症</span>
-            </li>
-            <li className="flex items-baseline gap-5">
-              <span className="logo-type text-sub-gray text-sm w-8">II.</span>
-              <span>ニキビ・ニキビ跡</span>
-            </li>
-            <li className="flex items-baseline gap-5">
-              <span className="logo-type text-sub-gray text-sm w-8">III.</span>
-              <span>ワキガ（腋臭症）</span>
-            </li>
-            <li className="flex items-baseline gap-5">
-              <span className="logo-type text-sub-gray text-sm w-8">IV.</span>
-              <span>顔の自信のなさ</span>
-            </li>
+            {territories.map((t, i) => (
+              <li key={t.slug} className="flex items-baseline gap-5">
+                <span className="logo-type text-sub-gray text-sm w-10">
+                  {String(i + 1).padStart(2, "0")}.
+                </span>
+                <span>
+                  <Link
+                    href={`/territories/${t.slug}`}
+                    className="hover:text-navy transition-colors border-b border-hair-line hover:border-gold pb-0.5"
+                  >
+                    {t.title}
+                  </Link>
+                  <span className="text-sub-gray text-sm ml-3">
+                    {t.subtitle}
+                  </span>
+                </span>
+              </li>
+            ))}
           </ol>
         </div>
 
+        {/* Writer */}
         <div className="pt-12 mt-4">
-          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
             II. The Writer — 書き手について
           </p>
           <p>
             ペンネームは <span className="text-ink">Nagi</span>。
-            顔も実年齢も公開していません。
+            実名・実年齢・顔は意図的に公開していません。
             かつて当事者だった、というだけが書き手の資格です。
           </p>
-
           <p className="mt-6">
             半歩先から、後ろから来る人へ。
             観察を主張に優先し、当事者の沈黙を尊重して書きます。
+            専門家としての権威を取らず、医療や商業情報の代替を目指しません。
           </p>
         </div>
 
+        {/* Editorial principles */}
         <div className="pt-12 mt-4">
-          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
             III. Editorial Principles — 編集の原則
           </p>
           <ol className="space-y-4">
@@ -171,9 +243,73 @@ export default function AboutPage() {
           </ol>
         </div>
 
+        {/* Three layers */}
         <div className="pt-12 mt-4">
-          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-8">
-            IV. Contact — 連絡
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
+            IV. Three Layers — 三層構造
+          </p>
+          <ul className="space-y-5">
+            <li>
+              <Link
+                href="/articles"
+                className="logo-type tracking-wider text-base hover:text-gold transition-colors"
+              >
+                Presence Journal · 記録
+              </Link>
+              <p className="mt-1 text-sub-gray text-[15px]">
+                当事者の一人称・過去形で書かれたエッセイ。
+              </p>
+            </li>
+            <li>
+              <Link
+                href="/shelf"
+                className="logo-type tracking-wider text-base hover:text-gold transition-colors"
+              >
+                Conditioning Rituals · 整える道具
+              </Link>
+              <p className="mt-1 text-sub-gray text-[15px]">
+                使ってきた道具を「広告」と明示した上で並べる、正直な棚。
+              </p>
+            </li>
+            <li>
+              <Link
+                href="/events"
+                className="logo-type tracking-wider text-base hover:text-gold transition-colors"
+              >
+                Quiet Gatherings · 体験
+              </Link>
+              <p className="mt-1 text-sub-gray text-[15px]">
+                少人数・半公開で行う、整える時間そのもの。
+              </p>
+            </li>
+          </ul>
+        </div>
+
+        {/* FAQ — visible Q&A for both readers and AI engines */}
+        <div className="pt-12 mt-4">
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
+            V. Questions — よくある問い
+          </p>
+          <dl className="space-y-7">
+            {FAQ.map((item, i) => (
+              <div key={i}>
+                <dt className="text-ink text-[1.0625rem] leading-[1.8]">
+                  <span className="logo-type text-gold mr-2">Q.</span>
+                  {item.q}
+                </dt>
+                <dd className="mt-3 text-sub-gray text-[15px] leading-[2.05]">
+                  <span className="logo-type text-gold mr-2">A.</span>
+                  {item.a}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        {/* Contact */}
+        <div className="pt-12 mt-4">
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
+            VI. Contact — 連絡
           </p>
           <p>
             ご連絡は{" "}
@@ -183,7 +319,14 @@ export default function AboutPage() {
             >
               {site.email}
             </a>{" "}
-            まで。
+            まで。広告・アフィリエイトに関する方針は{" "}
+            <Link
+              href="/disclosure"
+              className="border-b border-hair-line hover:border-ink transition-colors"
+            >
+              /disclosure
+            </Link>{" "}
+            に記載しています。
           </p>
         </div>
 

@@ -9,9 +9,9 @@ import {
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Events",
+  title: "Quiet Gatherings — Recovery Experiences",
   description:
-    "His Recoveries が紹介する、少人数・半公開の集まり。「自然に整える」観点で設計された場を、静かにお知らせします。",
+    "Quiet Gatherings は、His Recoveries が運営する少人数・半公開の体験事業（Recovery Experiences）。Male Conditioning のための整える時間そのものを共有する、夜のグルーミング体験を、煽らずにお知らせします。",
   alternates: { canonical: `${site.url}/events` },
   openGraph: {
     type: "website",

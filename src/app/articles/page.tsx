@@ -5,9 +5,15 @@ import ArticleCard from "@/components/ArticleCard";
 import { categories, site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Articles",
-  description: "His Recoveries のすべての記録。",
+  title: "Presence Journal — すべての記録",
+  description:
+    "His Recoveries に蓄積された、男性のコンプレックスに関する当事者の記録。多汗症、ワキガ、ニキビ・ニキビ跡、顔の印象、薄毛・AGA、髭・体毛、そして自意識についての一人称・過去形のエッセイ。Male Conditioning のための Presence Journal。",
   alternates: { canonical: `${site.url}/articles` },
+  openGraph: {
+    title: `Presence Journal — ${site.name}`,
+    description:
+      "男性のコンプレックスを、当事者の声で記録する Presence Journal。",
+  },
 };
 
 export default function ArticlesPage() {

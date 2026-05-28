@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Subscribe",
+  title: "Subscribe — Belonging",
   description:
-    "His Recoveries の更新を、控えめに、ときどき。Substack で受け取れます。",
+    "His Recoveries の Presence Journal を、月に一度か二度。Male Conditioning の新しい記録と、まだ記事にしていない覚え書きを、Substack でお届けします。通知も煽りもありません。",
   alternates: { canonical: `${site.url}/subscribe` },
 };
 

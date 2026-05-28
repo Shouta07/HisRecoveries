@@ -5,10 +5,15 @@ import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "地形図",
+  title: "Chapters — 地形図",
   description:
-    "6 領域それぞれの地形図。選択肢を、推奨ではなく層として並べておく場所。",
+    "His Recoveries が扱う 6 領域の地形図 — 汗・におい（多汗症・ワキガ）、肌・ニキビ、顔の印象、心と自意識、薄毛・AGA、髭・体毛。Male Conditioning の章として、男性のコンプレックスの選択肢を推奨ではなく「層」として並べておく場所。",
   alternates: { canonical: `${site.url}/territories` },
+  openGraph: {
+    title: `Chapters — ${site.name}`,
+    description:
+      "Male Conditioning の 6 領域。男性のコンプレックスを、地形のように見渡す。",
+  },
 };
 
 export default function TerritoriesPage() {
