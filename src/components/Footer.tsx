@@ -20,7 +20,10 @@ export default function Footer() {
           </Column>
 
           <Column label="Engage">
+            <FLink href="/assessment">Recovery Assessment</FLink>
             <FLink href="/events">Quiet Gatherings</FLink>
+            <FLink href="/concierge">Recovery Concierge</FLink>
+            <FLink href="/stories">Recovery Stories</FLink>
             <FLink href="/shelf">Conditioning Rituals</FLink>
             <FLink href="/letters">Letters</FLink>
             <FLink href="/subscribe">Newsletter</FLink>
@@ -29,6 +32,8 @@ export default function Footer() {
 
           <Column label="About">
             <FLink href="/about">Philosophy</FLink>
+            <FLink href="/manifesto">Manifesto</FLink>
+            <FLink href="/founder">Founder&apos;s Note</FLink>
             <FLink href="/disclosure">Affiliate Policy</FLink>
             <FExt href={`mailto:${site.email}`}>Contact</FExt>
             <FLink href="/feed.xml">Atom Feed</FLink>

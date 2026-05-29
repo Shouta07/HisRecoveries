@@ -14,8 +14,12 @@ const nav = [
 ];
 
 const secondary = [
+  { href: "/manifesto", label: "Manifesto — 男性の回復について" },
+  { href: "/founder", label: "Founder's Note — なぜ始めたか" },
+  { href: "/concierge", label: "Recovery Concierge — 1 対 1 の対話" },
   { href: "/territories", label: "Chapters — 章" },
   { href: "/reflect", label: "Reflect — 整理する" },
+  { href: "/stories", label: "Stories — 回復の記録" },
   { href: "/subscribe", label: "Subscribe — ニュースレター" },
   { href: "/disclosure", label: "広告・アフィリエイト方針" },
 ];

@@ -64,6 +64,14 @@ export default function HomePage() {
             静かに記録します。
           </p>
 
+          <Link
+            href="/founder"
+            className="mt-6 inline-flex items-center gap-2 logo-type italic text-[12px] tracking-[0.2em] uppercase text-gold/85 hover:text-gold-bright transition-colors"
+          >
+            Founder&apos;s Note を読む
+            <span aria-hidden>→</span>
+          </Link>
+
           <div className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
             <TrackedCTA
               href="/assessment"

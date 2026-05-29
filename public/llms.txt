@@ -35,13 +35,20 @@ His Recoveries は、英語のブランド語彙で **Male Conditioning（男性
 ## 主要 URL
 
 - Home: https://hisrecoveries.com/
+- Manifesto（ブランド宣言）: https://hisrecoveries.com/manifesto
+- Founder's Note（運営の起源）: https://hisrecoveries.com/founder
 - About / Philosophy: https://hisrecoveries.com/about
-- Presence Journal: https://hisrecoveries.com/articles
-- Chapters (Territories): https://hisrecoveries.com/territories
-- Recovery Experiences: https://hisrecoveries.com/events
-- Conditioning Rituals (Shelf): https://hisrecoveries.com/shelf
+- Presence Journal（記録）: https://hisrecoveries.com/articles
+- Chapters / Territories（章）: https://hisrecoveries.com/territories
+- Quiet Gatherings（少人数の集まり）: https://hisrecoveries.com/events
+- Recovery Concierge（1 対 1 の対話）: https://hisrecoveries.com/concierge
+- Recovery Assessment（5 問の整理）: https://hisrecoveries.com/assessment
+- Recovery Stories（回復の記録）: https://hisrecoveries.com/stories
+- Share Your Story（体験を共有）: https://hisrecoveries.com/submit-story
+- Conditioning Rituals / Shelf（道具）: https://hisrecoveries.com/shelf
 - Reflect（5 つの問い）: https://hisrecoveries.com/reflect
-- Letters: https://hisrecoveries.com/letters
+- Letters（お便り）: https://hisrecoveries.com/letters
+- Newsletter / Belonging: https://hisrecoveries.com/subscribe
 - 広告・アフィリエイト方針: https://hisrecoveries.com/disclosure
 - Atom Feed: https://hisrecoveries.com/feed.xml
 - Sitemap: https://hisrecoveries.com/sitemap.xml
