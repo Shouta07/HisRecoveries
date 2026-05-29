@@ -63,6 +63,34 @@ export default function ArticleConversion({ articleSlug, event }: Props) {
         </div>
       )}
 
+      {/* MVP validation CTA — Recovery Assessment entry */}
+      <div className="bg-paper border border-hair-line p-6 sm:p-8 mb-10">
+        <p className="logo-type italic text-[10px] tracking-[0.4em] uppercase text-gold">
+          Recovery Assessment
+        </p>
+        <h2 className="mt-3 font-mincho text-xl sm:text-2xl font-medium leading-[1.5] text-ink">
+          あなたも、回復を始めませんか？
+        </h2>
+        <p className="mt-4 text-sm leading-[1.95] text-ink/80 max-w-[34rem]">
+          His Recoveries は、男性が人に言いづらい悩みを記録し、整理し、
+          次の一歩を見つけるための場所です。
+        </p>
+        <div className="mt-6">
+          <TrackedCTA
+            href="/assessment"
+            event="article_cta_click"
+            eventProps={{
+              target: "assessment",
+              from_article: articleSlug,
+            }}
+            className="btn-gold !py-3 !px-6 text-xs"
+          >
+            Recovery Assessment を受ける
+            <span aria-hidden>→</span>
+          </TrackedCTA>
+        </div>
+      </div>
+
       <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase mb-4">
         A Quiet Delivery
       </p>

@@ -7,7 +7,13 @@ export type ConversionEvent =
   | "gathering_apply" // クリック: Quiet Gatherings 応募
   | "affiliate_click" // クリック: アフィリエイト送客
   | "subscribe_click" // クリック: ニュースレター購読
-  | "reflect_complete"; // 完了: 整理フロー(Reflect)
+  | "reflect_complete" // 完了: 整理フロー(Reflect)
+  | "hero_cta_click" // クリック: ヒーロー CTA
+  | "assessment_start" // 開始: Recovery Assessment
+  | "assessment_complete" // 完了: Recovery Assessment
+  | "article_cta_click" // クリック: 記事下 CTA
+  | "story_start" // 開始: Story 投稿フォーム
+  | "story_submitted"; // 完了: Story 投稿
 
 type Props = Record<string, string | number | boolean | undefined>;
 

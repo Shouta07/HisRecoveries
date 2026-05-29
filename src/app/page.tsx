@@ -65,18 +65,23 @@ export default function HomePage() {
           </p>
 
           <div className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
-            <Link
-              href="/reflect"
+            <TrackedCTA
+              href="/assessment"
+              event="hero_cta_click"
+              eventProps={{ target: "assessment" }}
+              className="btn-gold justify-center"
+            >
+              回復を始める
+              <span aria-hidden>→</span>
+            </TrackedCTA>
+            <TrackedCTA
+              href="/stories"
+              event="hero_cta_click"
+              eventProps={{ target: "stories" }}
               className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
             >
-              いまの自分に近い記録を探す
-            </Link>
-            <Link
-              href="/events"
-              className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
-            >
-              Quiet Gatherings を見る
-            </Link>
+              回復体験を読む
+            </TrackedCTA>
           </div>
         </div>
       </section>
