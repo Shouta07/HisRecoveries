@@ -3,7 +3,7 @@ export const site = {
   tagline: "Male Conditioning",
   promise: "Recover Your Presence.",
   description:
-    "Male Conditioning — Recover Your Presence. 言葉にされにくい男性の身体と自意識を、記録・整理・体験のかたちで残していく、夜のための場所。",
+    "Male Conditioning — Recover Your Presence. 清潔感、疲労、余白、男性の自意識について、静かに記録する Male Conditioning Journal / Recovery Culture Brand. 都市で疲れた現代男性が、整った状態を取り戻すための場所。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",

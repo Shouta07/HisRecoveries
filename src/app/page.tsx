@@ -2,33 +2,38 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import WhatsNew from "@/components/WhatsNew";
-import QuietGatherings from "@/components/QuietGatherings";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TagMarquee from "@/components/TagMarquee";
 import TrackedCTA from "@/components/TrackedCTA";
 import EditorProfile from "@/components/EditorProfile";
-import { getUpcomingEvents } from "@/lib/events";
+import {
+  getUpcomingEvents,
+  formatEventDate,
+  formatEventTimeRange,
+} from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
 
-const chapterRomans = ["I", "II", "III", "IV", "V", "VI", "VII"];
+const chapterRomans = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
 export default function HomePage() {
   const articles = getAllArticles();
   const featuredArticle = articles[0];
   const sidebarArticles = articles.slice(1, 4);
   const upcomingEvents = getUpcomingEvents();
+  const featuredEvent = upcomingEvents[0];
   const territories = getAllTerritories();
 
   return (
     <>
       {/* ─────────────────────────────────────────
          SCENE I — Opening
-         A hotel-at-night opening: small eyebrow,
-         large mincho promise, generous breath.
+         Brand identity + manifesto + 2 CTAs.
+         No symptom keywords here; this is the
+         brand cathedral moment.
          ───────────────────────────────────────── */}
-      <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-24 sm:pt-40 pb-24 sm:pb-32 text-center">
+      <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-20 sm:pt-36 pb-20 sm:pb-28 text-center">
         <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold">
           {site.tagline}
         </p>
@@ -42,56 +47,61 @@ export default function HomePage() {
           {site.promise}
         </p>
 
-        {/* 1AM bridge — the persona's actual search vocabulary
-            connected back to the brand, in editorial cadence */}
-        <div className="mt-16 sm:mt-20 max-w-[36rem] mx-auto">
-          <p className="font-mincho text-base sm:text-lg text-ink/85 leading-[2.05]">
-            夜、こんな言葉で検索した記憶があるなら。
-          </p>
-          <p className="mt-4 text-[13px] sm:text-[14px] text-ink/65 leading-[2] tracking-[0.04em]">
-            多汗症、ワキガ手術、ニキビ跡、AGA、ヒゲ脱毛、
+        <div className="mt-14 sm:mt-16 max-w-[32rem] mx-auto">
+          <p className="font-mincho text-lg sm:text-xl text-ink leading-[2]">
+            男性は &quot;強く&quot; から、
             <br />
-            そして自分の顔のこと。
+            &quot;整える&quot; 時代へ。
           </p>
-          <Link
-            href="/reflect"
-            className="mt-10 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-7 py-3"
-          >
-            いまの自分に近い記録を探す
-            <span aria-hidden>→</span>
-          </Link>
-          <p className="mt-3 text-[11px] tracking-[0.06em] text-sub-gray">
-            5 つの問いに、静かに答えてください
+          <p className="mt-7 font-mincho text-base sm:text-lg text-ink/85 leading-[2]">
+            清潔感、疲労、余白、
+            <br className="hidden sm:inline" />
+            そして男性の自意識について。
           </p>
+          <p className="mt-5 font-mincho text-[15px] sm:text-base text-ink/70 leading-[2]">
+            言葉にしにくいものを、
+            <br className="hidden sm:inline" />
+            静かに記録します。
+          </p>
+
+          <div className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
+            <Link
+              href="/reflect"
+              className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
+            >
+              いまの自分に近い記録を探す
+            </Link>
+            <Link
+              href="/events"
+              className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
+            >
+              Quiet Gatherings を見る
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* A quiet horizontal current — what readers actually search for */}
+      {/* Quiet horizontal current — brand vocabulary only,
+          no concrete symptom keywords */}
       <TagMarquee
         items={[
-          "メンズ多汗症",
-          "ワキガ手術 男",
-          "ボトックス 脇汗",
-          "ミラドライ",
-          "ニキビ跡 男",
-          "美容皮膚科",
-          "AGA オンライン診療",
-          "ヒゲ脱毛",
-          "メンズ医療脱毛",
-          "メンズスキンケア",
-          "メンズメイク",
-          "男性の自意識",
-          "顔の印象",
           "Male Conditioning",
+          "Recover Your Presence",
+          "Quiet Grooming",
+          "Social Recovery",
+          "Quiet Masculinity",
+          "汗とにおい",
+          "肌と跡",
+          "顔の印象",
+          "髪と自意識",
+          "髭と体毛",
+          "心と余白",
         ]}
       />
 
       {/* ─────────────────────────────────────────
          SCENE II — Philosophy
-         Cinematic full-bleed image moment. The
-         atmosphere of the brand crystallizes here:
-         a back-view silhouette in a Tokyo high-rise
-         at dusk, the philosophical line overlaid.
+         Cinematic full-bleed image moment.
          ───────────────────────────────────────── */}
       <Reveal>
         <section aria-label="Philosophy" className="relative bg-navy">
@@ -128,92 +138,166 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE III — Presence Journal
-         The editorial moment. One cover + 3 small.
+         SCENE III — Featured Recovery Experience
+         Promoted above Presence Journal as the
+         most important offering. Otonami-register
+         editorial card, not a booking widget.
          ───────────────────────────────────────── */}
-      {featuredArticle && (
+      {featuredEvent && (
         <Reveal>
           <section
-            aria-labelledby="presence-journal"
-            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-28 sm:pt-36 pb-20 sm:pb-28"
+            aria-labelledby="featured-experience"
+            className="bg-paper/40 border-b border-hair-line"
           >
-            <div className="flex items-end justify-between flex-wrap gap-4 mb-14 sm:mb-20">
+            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-32">
               <SectionLabel
-                en="Presence Journal"
-                ja="記録"
+                en="Featured Recovery Experience"
+                ja="体験"
                 number={chapterRomans[0]}
               />
-              <Link
-                href="/articles"
-                className="text-[13px] tracking-[0.1em] text-ink hover:text-gold transition-colors"
-              >
-                すべての記録 →
-              </Link>
+
+              <div className="mt-12 sm:mt-16 grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
+                <Link
+                  href={`/events/${featuredEvent.slug}`}
+                  className="block group card-lift"
+                  aria-hidden
+                  tabIndex={-1}
+                >
+                  <div className="cover-zoom">
+                    <Image
+                      src={featuredEvent.cover ?? "/cover/event/quiet-grooming-beta.svg"}
+                      alt={featuredEvent.coverAlt ?? featuredEvent.title}
+                      width={1200}
+                      height={900}
+                      className="w-full h-auto"
+                    />
+                  </div>
+                </Link>
+
+                <div>
+                  <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+                    {featuredEvent.status === "open" ? "受付中" : "Upcoming"}
+                  </p>
+                  <h3
+                    id="featured-experience"
+                    className="mt-3 font-mincho text-3xl sm:text-4xl lg:text-[2.5rem] font-medium leading-[1.4] text-ink"
+                  >
+                    <Link
+                      href={`/events/${featuredEvent.slug}`}
+                      className="hover:text-gold transition-colors"
+                    >
+                      {featuredEvent.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-5 font-mincho text-lg sm:text-xl text-ink leading-[1.7]">
+                    自然に整える 90 分。
+                  </p>
+                  <p className="mt-6 font-mincho text-[15px] sm:text-base text-ink/80 leading-[2.05] max-w-[34rem]">
+                    疲れて見える印象を、
+                    無理なく整えるための小さな集まり。
+                    1 対 1 ではなく、静かに整える時間。
+                  </p>
+
+                  <dl className="mt-9 grid grid-cols-[4.5rem_1fr] gap-y-2.5 gap-x-4 text-sm border-t border-hair-line pt-6 max-w-[28rem]">
+                    <dt className="text-[11px] text-sub-gray tracking-[0.08em] pt-0.5">
+                      日時
+                    </dt>
+                    <dd className="text-ink">
+                      {formatEventDate(featuredEvent.startsAt)}
+                      <span className="block text-[11px] text-sub-gray mt-0.5">
+                        {formatEventTimeRange(
+                          featuredEvent.startsAt,
+                          featuredEvent.endsAt
+                        )}
+                      </span>
+                    </dd>
+                    <dt className="text-[11px] text-sub-gray tracking-[0.08em] pt-0.5">
+                      場所
+                    </dt>
+                    <dd className="text-ink">{featuredEvent.location}</dd>
+                    {featuredEvent.format && (
+                      <>
+                        <dt className="text-[11px] text-sub-gray tracking-[0.08em] pt-0.5">
+                          形式
+                        </dt>
+                        <dd className="text-ink">{featuredEvent.format}</dd>
+                      </>
+                    )}
+                  </dl>
+
+                  <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3">
+                    {featuredEvent.status === "open" &&
+                      featuredEvent.applyUrl && (
+                        <TrackedCTA
+                          href={featuredEvent.applyUrl}
+                          event="gathering_apply"
+                          eventProps={{
+                            event_slug: featuredEvent.slug,
+                            location: "home_featured",
+                          }}
+                          className="btn-gold"
+                        >
+                          応募する
+                          <span aria-hidden>→</span>
+                        </TrackedCTA>
+                      )}
+                    <Link
+                      href={`/events/${featuredEvent.slug}`}
+                      className="text-sm tracking-[0.1em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+                    >
+                      詳細を見る
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
-            <WhatsNew featured={featuredArticle} rest={sidebarArticles} />
           </section>
         </Reveal>
       )}
 
       {/* ─────────────────────────────────────────
-         SCENE IV — Recovery Experiences
-         The conversion-focused experience layer.
+         SCENE IV — Presence Journal
+         Reframed as "research notes on male state",
+         not a blog. Symptom keywords live in the
+         card excerpts, not the framing.
          ───────────────────────────────────────── */}
-      {upcomingEvents.length > 0 && (
+      {featuredArticle && (
         <Reveal>
           <section
-            aria-labelledby="recovery-experiences"
-            className="border-t border-hair-line bg-paper/40"
+            aria-labelledby="presence-journal"
+            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-24 sm:pt-32 pb-20 sm:pb-28"
           >
-            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-32">
-              <div className="flex items-end justify-between flex-wrap gap-4 mb-14 sm:mb-20">
-                <SectionLabel
-                  en="Recovery Experiences"
-                  ja="体験"
-                  number={chapterRomans[1]}
-                />
-                <Link
-                  href="/events"
-                  className="text-[13px] tracking-[0.1em] text-ink hover:text-gold transition-colors"
-                >
-                  すべての集まり →
-                </Link>
-              </div>
-              <p className="font-mincho text-[1rem] sm:text-lg leading-[2] text-ink/80 max-w-[34rem] mb-12">
-                Quiet Gatherings は、整える時間そのものを共有する場。
-                <br className="hidden sm:inline" />
-                少人数・半公開で、夜に行います。
-              </p>
-              <QuietGatherings events={upcomingEvents} />
-
-              {/* Private Conversation — the Otonami "貸切相談" pattern */}
-              <div className="mt-12 sm:mt-16 pt-10 sm:pt-12 border-t border-hair-line grid grid-cols-1 sm:grid-cols-[1fr_auto] items-end gap-6">
-                <div>
-                  <p className="logo-type italic text-[10px] tracking-[0.4em] uppercase text-gold">
-                    Private Conversation
-                  </p>
-                  <h3 className="mt-3 font-mincho text-xl sm:text-2xl font-medium leading-[1.5] text-ink">
-                    個別の相談について
-                  </h3>
-                  <p className="mt-3 text-[13px] sm:text-sm leading-[1.95] text-sub-gray max-w-[36rem]">
-                    記事や集まりとは別に、より個別のご相談には{" "}
-                    <Link
-                      href="/letters"
-                      className="text-ink border-b border-gold hover:text-gold transition-colors"
-                    >
-                      Letters
-                    </Link>{" "}
-                    でお応えします。返信は約束しませんが、必ず読みます。
-                  </p>
+            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-14 items-end mb-12 sm:mb-16">
+              <SectionLabel
+                en="Presence Journal"
+                ja="記録"
+                number={chapterRomans[1]}
+              />
+              <div className="lg:pb-2">
+                <p className="font-mincho text-[15px] sm:text-base text-ink/80 leading-[2] max-w-[34rem]">
+                  清潔感、疲労、顔の印象、身体の悩み。
+                  <br className="hidden sm:inline" />
+                  解決策ではなく、&quot;整える過程&quot; として記録する。
+                </p>
+                <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-[11px] tracking-[0.08em] text-sub-gray">
+                  <span># Male Conditioning</span>
+                  <span># Presence</span>
+                  <span># Quiet Grooming</span>
+                  <span># Social Recovery</span>
+                  <span># Deep Recovery</span>
+                  <span># Self-consciousness</span>
+                  <span># Grooming Records</span>
                 </div>
-                <Link
-                  href="/letters"
-                  className="inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors shrink-0"
-                >
-                  Letters を書く
-                  <span aria-hidden>→</span>
-                </Link>
               </div>
+            </div>
+            <WhatsNew featured={featuredArticle} rest={sidebarArticles} />
+            <div className="mt-12 sm:mt-16 flex justify-end">
+              <Link
+                href="/articles"
+                className="text-sm tracking-[0.1em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+              >
+                すべての記録を見る →
+              </Link>
             </div>
           </section>
         </Reveal>
@@ -221,20 +305,25 @@ export default function HomePage() {
 
       {/* ─────────────────────────────────────────
          SCENE V — Chapters
-         The territory map presented as editorial
-         table-of-contents. No icons, no cards.
+         Editorial table-of-contents using the
+         abstract chapter language (汗とにおい etc.)
          ───────────────────────────────────────── */}
       <Reveal>
         <section
           aria-labelledby="chapters"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-28 sm:pt-36 pb-20 sm:pb-28"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-24 sm:pt-32 pb-20 sm:pb-28"
         >
-          <div className="mb-14 sm:mb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-14 items-end mb-12 sm:mb-16">
             <SectionLabel
               en="Chapters"
               ja="章"
               number={chapterRomans[2]}
             />
+            <p className="font-mincho text-[15px] sm:text-base text-ink/80 leading-[2] max-w-[34rem] lg:pb-2">
+              男性の状態を、悩みではなく地形として見渡す。
+              <br className="hidden sm:inline" />
+              選択を残したまま、層として並べておく場所。
+            </p>
           </div>
 
           <ol className="border-t border-hair-line">
@@ -269,8 +358,7 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE VI — Conditioning Rituals (the shelf)
-         A single quiet pointer, not a product grid.
+         SCENE VI — Conditioning Rituals
          ───────────────────────────────────────── */}
       <Reveal>
         <section
@@ -302,7 +390,7 @@ export default function HomePage() {
 
       {/* ─────────────────────────────────────────
          SCENE VII — Letters
-         A dedicated invitation for late-night writers.
+         The late-night anonymous letter station.
          ───────────────────────────────────────── */}
       <Reveal>
         <section
@@ -318,14 +406,14 @@ export default function HomePage() {
               />
               <div className="max-w-[34rem]">
                 <p className="font-mincho text-2xl sm:text-3xl lg:text-[2rem] leading-[1.55] text-ink">
-                  夜、書きたくなったとき、
+                  夜、誰にも言えなかったことを、
                   <br />
-                  ここに。
+                  短く残しておく場所。
                 </p>
                 <p className="mt-7 font-mincho text-[15px] sm:text-base leading-[2.05] text-ink/75">
-                  匿名でも、断片でも、構いません。
+                  返信を待つためではなく、
                   <br />
-                  返信は約束しません。ただ、必ず読みます。
+                  自分の状態を少し整理するために。
                 </p>
                 <Link
                   href="/letters"
@@ -334,9 +422,6 @@ export default function HomePage() {
                   手紙を書く
                   <span aria-hidden>→</span>
                 </Link>
-                <p className="mt-4 text-[11px] tracking-[0.06em] text-sub-gray">
-                  返信を待たずに、書き終えることができる場所
-                </p>
               </div>
             </div>
           </div>
@@ -345,7 +430,6 @@ export default function HomePage() {
 
       {/* ─────────────────────────────────────────
          SCENE VIII — Belonging
-         A whisper-quiet subscription invitation.
          ───────────────────────────────────────── */}
       <Reveal>
         <section
@@ -392,10 +476,10 @@ export default function HomePage() {
                 ·
               </span>
               <Link
-                href="/letters"
+                href="/territories"
                 className="hover:text-ink transition-colors"
               >
-                Letters — 静かなお便り
+                Chapters — 章
               </Link>
               <span aria-hidden className="text-hair-line">
                 ·

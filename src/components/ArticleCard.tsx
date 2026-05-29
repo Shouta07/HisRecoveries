@@ -39,14 +39,19 @@ export default function ArticleCard({
           <h3 className="text-[15px] sm:text-base font-bold leading-[1.65] text-ink group-hover:text-ink transition-colors line-clamp-3">
             {article.title}
           </h3>
-          <p className="mt-3 text-[11px] text-sub-gray tracking-[0.06em]">
-            <time dateTime={article.publishedAt}>
+          {showExcerpt && article.excerpt && (
+            <p className="mt-3 text-[12.5px] leading-[1.85] text-sub-gray line-clamp-3">
+              {article.excerpt}
+            </p>
+          )}
+          <div className="mt-4 flex items-center justify-between gap-3 text-[11px] tracking-[0.06em]">
+            <time dateTime={article.publishedAt} className="text-sub-gray">
               {formatDate(article.publishedAt)}
             </time>
-          </p>
-          <p className="mt-2 text-[11px] text-gold tracking-[0.04em]">
-            # {categoryLabel(article.category)}
-          </p>
+            <span className="text-gold">
+              # {categoryLabel(article.category)}
+            </span>
+          </div>
         </div>
       </Link>
     );

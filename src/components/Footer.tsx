@@ -8,34 +8,33 @@ export default function Footer() {
     <footer className="mt-32 bg-navy text-white">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-10 gap-x-8 text-sm">
-          <Column label="Read · 記録">
+          <Column label="Read">
             <FLink href="/articles">Presence Journal</FLink>
-            <FLink href="/territories">Chapters — 章</FLink>
-            <FLink href="/articles/category/philosophy">哲学・思想</FLink>
-            <FLink href="/articles/category/hyperhidrosis">多汗症</FLink>
-            <FLink href="/articles/category/bromhidrosis">ワキガ</FLink>
-            <FLink href="/articles/category/acne">ニキビ・ニキビ跡</FLink>
-            <FLink href="/articles/category/face">顔の印象</FLink>
-            <FLink href="/articles/category/hair-loss">薄毛・AGA</FLink>
-            <FLink href="/articles/category/body-hair">髭・体毛</FLink>
+            <FLink href="/about">Male Conditioning</FLink>
+            <FLink href="/territories/sweat-odor">汗とにおい</FLink>
+            <FLink href="/territories/skin-acne">肌と跡</FLink>
+            <FLink href="/territories/face-impression">顔の印象</FLink>
+            <FLink href="/territories/hair-loss">髪と自意識</FLink>
+            <FLink href="/territories/beard-body-hair">髭と体毛</FLink>
+            <FLink href="/territories/mind-awareness">心と余白</FLink>
           </Column>
 
-          <Column label="Engage · 整える">
-            <FLink href="/events">Quiet Gatherings — 体験</FLink>
-            <FLink href="/shelf">Conditioning Rituals — 道具</FLink>
-            <FLink href="/reflect">Reflect — 整理する</FLink>
-            <FLink href="/subscribe">Newsletter — 便り</FLink>
+          <Column label="Engage">
+            <FLink href="/events">Quiet Gatherings</FLink>
+            <FLink href="/shelf">Conditioning Rituals</FLink>
             <FLink href="/letters">Letters</FLink>
+            <FLink href="/subscribe">Newsletter</FLink>
+            <FLink href="/reflect">Reflect</FLink>
           </Column>
 
-          <Column label="About · 思想">
-            <FLink href="/about">Philosophy — About</FLink>
-            <FLink href="/disclosure">広告・アフィリエイト方針</FLink>
-            <FExt href={`mailto:${site.email}`}>連絡</FExt>
+          <Column label="About">
+            <FLink href="/about">Philosophy</FLink>
+            <FLink href="/disclosure">Affiliate Policy</FLink>
+            <FExt href={`mailto:${site.email}`}>Contact</FExt>
             <FLink href="/feed.xml">Atom Feed</FLink>
           </Column>
 
-          <Column label="Elsewhere · ほかの場所">
+          <Column label="Elsewhere">
             <FExt href={site.social.threads}>Threads</FExt>
             <FExt href={site.social.x}>X</FExt>
             <FExt href={site.social.note}>note</FExt>

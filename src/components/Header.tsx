@@ -6,16 +6,16 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/territories", label: "Chapters", ja: "章" },
   { href: "/articles", label: "Journal", ja: "記録" },
   { href: "/events", label: "Experiences", ja: "体験" },
   { href: "/shelf", label: "Rituals", ja: "道具" },
-  { href: "/reflect", label: "Reflect", ja: "整理" },
+  { href: "/letters", label: "Letters", ja: "便り" },
   { href: "/about", label: "Philosophy", ja: "思想" },
 ];
 
 const secondary = [
-  { href: "/letters", label: "Letters — 静かなお便り" },
+  { href: "/territories", label: "Chapters — 章" },
+  { href: "/reflect", label: "Reflect — 整理する" },
   { href: "/subscribe", label: "Subscribe — ニュースレター" },
   { href: "/disclosure", label: "広告・アフィリエイト方針" },
 ];
@@ -53,7 +53,7 @@ export default function Header() {
 
         {/* Desktop nav (≥ md) */}
         <nav aria-label="primary" className="hidden md:block text-sm">
-          <ul className="flex items-center gap-5 lg:gap-6 text-white/85">
+          <ul className="flex items-center gap-6 lg:gap-8 text-white/85">
             {nav.map((item) => (
               <li key={item.href}>
                 <Link
