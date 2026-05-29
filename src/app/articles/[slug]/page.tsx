@@ -85,7 +85,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
       categoryLabel(article.category),
     ].join(", "),
     wordCount: article.wordCount,
-    author: { "@id": `${site.url}/#author` },
+    author: { "@id": `${site.url}/#publisher` },
     publisher: { "@id": `${site.url}/#publisher` },
     isPartOf: { "@id": `${site.url}/#website` },
     mainEntityOfPage: {
@@ -280,10 +280,13 @@ export default async function ArticlePage({ params }: { params: Params }) {
         </section>
       )}
 
-      <footer className="mt-24 border-t border-hair-line pt-12 text-sm text-sub-gray">
-        <p className="logo-type text-base text-ink tracking-wider">
-          —— {site.author}
-        </p>
+      <footer className="mt-24 border-t border-hair-line pt-12">
+        <div className="flex items-center gap-4">
+          <span aria-hidden className="block w-10 h-px bg-gold" />
+          <span className="logo-type tracking-[0.2em] text-sm text-ink">
+            {site.name}
+          </span>
+        </div>
       </footer>
 
       <ArticleConversion articleSlug={article.slug} event={conversionEvent} />

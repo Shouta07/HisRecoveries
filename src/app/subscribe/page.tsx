@@ -69,9 +69,6 @@ export default function SubscribePage() {
           。
         </p>
 
-        <p className="logo-type text-base text-ink mt-12 tracking-wider">
-          —— Nagi
-        </p>
       </div>
     </div>
   );

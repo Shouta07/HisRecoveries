@@ -227,10 +227,13 @@ export default async function EventPage({ params }: { params: Params }) {
           />
 
           <footer className="mt-16 pt-10 border-t border-hair-line text-sm text-sub-gray">
-            <p className="logo-type text-base text-ink tracking-wider">
-              —— {site.author}
-            </p>
-            <p className="mt-4 leading-[2]">
+            <div className="flex items-center gap-4 mb-6">
+              <span aria-hidden className="block w-10 h-px bg-gold" />
+              <span className="logo-type tracking-[0.2em] text-sm text-ink">
+                {site.name}
+              </span>
+            </div>
+            <p className="leading-[2]">
               ご質問は{" "}
               <a
                 href={`mailto:${site.email}`}

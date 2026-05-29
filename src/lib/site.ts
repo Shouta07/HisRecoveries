@@ -6,9 +6,9 @@ export const site = {
     "Male Conditioning — Recover Your Presence. 言葉にされにくい男性の身体と自意識を、記録・整理・体験のかたちで残していく、夜のための場所。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
-  author: "Nagi",
+  author: "His Recoveries",
   authorBio:
-    "20 代前半から多汗症の外用治療と脇のボトックスを継続。20 代後半にワキガの手術。ニキビ跡の美容皮膚科に 6 年通った。これらを実際に当事者として経験した日本人男性。実名・顔・実年齢は非公開。",
+    "多汗症、ワキガ、ニキビ跡、顔の自意識を、当事者として実際に通過した日本人男性が運営するエディトリアル・メディア。20 代前半から多汗症の外用治療と脇のボトックスを継続、20 代後半にワキガの手術、ニキビ跡の美容皮膚科に 6 年。実名・顔・実年齢は非公開で運営しています。",
   handle: "@his_recoveries",
   email: "contact@hisrecoveries.com",
   social: {

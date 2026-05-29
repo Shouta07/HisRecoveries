@@ -22,7 +22,7 @@ const FAQ = [
   },
   {
     q: "書き手は誰ですか？",
-    a: "ペンネーム Nagi。20 代前半から多汗症の外用治療と脇のボトックスを継続し、20 代後半にワキガの手術を受けた。ニキビ跡の美容皮膚科に 6 年通い、顔の自信のなさと自意識の領域も実際に通過した。日本人男性。実名・実年齢・顔は意図的に公開していません。専門家としての権威ではなく、半歩先を歩いた一人の人間としての記録のみを発信します。",
+    a: "His Recoveries は、これらの領域を当事者として実際に通過した日本人男性が運営するエディトリアル・メディアです。20 代前半から多汗症の外用治療と脇のボトックスを継続、20 代後半にワキガの手術、ニキビ跡の美容皮膚科に 6 年。顔の自信のなさと自意識の領域も長く通過しました。実名・実年齢・顔は意図的に公開せず、ブランドとして書き続けます。専門家としての権威ではなく、半歩先を歩いた当事者としての記録のみを発信します。",
   },
   {
     q: "扱う領域は何ですか？",
@@ -58,7 +58,7 @@ export default function AboutPage() {
     url: `${site.url}/about`,
     inLanguage: site.language,
     isPartOf: { "@id": `${site.url}/#website` },
-    mainEntity: { "@id": `${site.url}/#author` },
+    mainEntity: { "@id": `${site.url}/#publisher` },
     about: { "@id": `${site.url}/#publisher` },
   };
 
@@ -189,19 +189,22 @@ export default function AboutPage() {
           </ol>
         </div>
 
-        {/* Writer */}
+        {/* About His Recoveries */}
         <div className="pt-12 mt-4">
           <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
-            II. The Writer — 書き手について
+            II. The Editorial — 運営について
           </p>
           <p>
-            ペンネームは <span className="text-ink">Nagi</span>。
-            実名・実年齢・顔は意図的に公開していません。
-            日本人男性であること、そして以下の領域を当事者として実際に通過したこと、それだけが書き手の資格です。
+            <span className="text-ink">{site.name}</span>{" "}
+            は、これらの領域を当事者として実際に通過した日本人男性が、ブランドとして運営するエディトリアル・メディアです。
+            実名・実年齢・顔は意図的に非公開とし、個人の名前ではなくブランドとして書き続けます。
           </p>
-          <ul className="mt-6 space-y-2 text-[15px] text-sub-gray leading-[1.95]">
+          <p className="mt-6">
+            運営者が当事者として通過したのは、次の道筋です。
+          </p>
+          <ul className="mt-4 space-y-2 text-[15px] text-sub-gray leading-[1.95]">
             <li>— 20 代前半から、多汗症の外用治療と脇のボトックスを継続</li>
-            <li>— 20 代後半に、ワキガの手術を受ける</li>
+            <li>— 20 代後半に、ワキガの手術を受けた</li>
             <li>— ニキビ跡の美容皮膚科に、6 年通った</li>
             <li>— 顔の自信のなさと、自意識の領域を、長く通過した</li>
           </ul>
@@ -336,9 +339,12 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <p className="logo-type text-base text-ink mt-16 tracking-wider">
-          —— Nagi
-        </p>
+        <div className="mt-20 pt-10 border-t border-hair-line/50 flex items-center gap-4">
+          <span aria-hidden className="block w-12 h-px bg-gold" />
+          <p className="logo-type tracking-[0.2em] text-sm text-ink">
+            {site.name}
+          </p>
+        </div>
       </div>
     </div>
   );

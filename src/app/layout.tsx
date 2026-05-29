@@ -117,32 +117,6 @@ export default function RootLayout({
     publisher: { "@id": `${site.url}/#publisher` },
   };
 
-  const personLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": `${site.url}/#author`,
-    name: site.author,
-    alternateName: site.handle,
-    description: site.authorBio,
-    url: `${site.url}/about`,
-    sameAs: socialSameAs,
-    knowsAbout: [
-      "Male Conditioning",
-      "Quiet Masculinity",
-      "Social Recovery",
-      "Emotional Grooming",
-      "多汗症",
-      "ワキガ（腋臭症）",
-      "ニキビ・ニキビ跡",
-      "顔の自意識",
-      "男性のコンプレックス",
-    ],
-    knowsLanguage: ["ja", "en"],
-    nationality: { "@type": "Country", name: "Japan" },
-    jobTitle: "Editor, His Recoveries",
-    worksFor: { "@id": `${site.url}/#publisher` },
-  };
-
   const publisherLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -165,7 +139,13 @@ export default function RootLayout({
       "Social Recovery",
       "Emotional Grooming",
       "Quiet Gatherings",
+      "多汗症",
+      "ワキガ（腋臭症）",
+      "ニキビ・ニキビ跡",
+      "顔の自意識",
+      "男性のコンプレックス",
     ],
+    knowsLanguage: ["ja", "en"],
     areaServed: { "@type": "Country", name: "Japan" },
     contactPoint: {
       "@type": "ContactPoint",
@@ -184,10 +164,6 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
         />
         <script
           type="application/ld+json"

@@ -110,7 +110,6 @@ export default function LettersClient({
           <br />
           それでも、書いて送ってくれたこと、ありがとうございました。
         </p>
-        <p className="mt-6 logo-type text-sm text-ink">— Nagi</p>
       </div>
     );
   }

@@ -2,9 +2,9 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 /**
- * Editor profile card — the Otonami "ご案内人" pattern adapted for an
- * editorial brand. Names the writer, shows a brief bio, links to /about.
- * The avatar is an abstract SVG monogram (no portrait, by brand rule).
+ * "About His Recoveries" card. The brand itself is the editorial
+ * voice — no personal pen name. Avatar is the abstract brand
+ * monogram (no portrait, by brand rule).
  */
 export default function EditorProfile() {
   return (
@@ -12,10 +12,10 @@ export default function EditorProfile() {
       <Avatar />
       <div>
         <p className="logo-type italic text-[10px] tracking-[0.4em] uppercase text-gold">
-          Edited by
+          About
         </p>
         <h3 className="mt-2 font-mincho text-xl sm:text-2xl font-medium leading-[1.4] text-ink">
-          {site.author}
+          {site.name} について
         </h3>
         <p className="mt-3 text-[13px] sm:text-sm leading-[1.95] text-sub-gray max-w-[34rem]">
           {site.authorBio}
@@ -24,7 +24,7 @@ export default function EditorProfile() {
           href="/about"
           className="mt-5 inline-flex items-center gap-2 text-[12px] sm:text-[13px] tracking-[0.1em] text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
         >
-          About the Writer
+          くわしく
           <span aria-hidden>→</span>
         </Link>
       </div>
