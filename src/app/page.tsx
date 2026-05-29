@@ -6,7 +6,6 @@ import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TagMarquee from "@/components/TagMarquee";
 import TrackedCTA from "@/components/TrackedCTA";
-import EditorProfile from "@/components/EditorProfile";
 import {
   getUpcomingEvents,
   formatEventDate,
@@ -402,47 +401,7 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE VII — Letters
-         The late-night anonymous letter station.
-         ───────────────────────────────────────── */}
-      <Reveal>
-        <section
-          aria-labelledby="letters"
-          className="border-t border-hair-line"
-        >
-          <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-32">
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-10 lg:gap-20 items-start">
-              <SectionLabel
-                en="Letters"
-                ja="静かなお便り"
-                number={chapterRomans[4]}
-              />
-              <div className="max-w-[34rem]">
-                <p className="font-mincho text-2xl sm:text-3xl lg:text-[2rem] leading-[1.55] text-ink">
-                  夜、誰にも言えなかったことを、
-                  <br />
-                  短く残しておく場所。
-                </p>
-                <p className="mt-7 font-mincho text-[15px] sm:text-base leading-[2.05] text-ink/75">
-                  返信を待つためではなく、
-                  <br />
-                  自分の状態を少し整理するために。
-                </p>
-                <Link
-                  href="/letters"
-                  className="mt-9 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border border-gold/60 hover:border-gold-bright hover:text-gold-bright transition-colors px-8 py-4"
-                >
-                  手紙を書く
-                  <span aria-hidden>→</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
-      {/* ─────────────────────────────────────────
-         SCENE VIII — Belonging
+         SCENE VII — Belonging
          ───────────────────────────────────────── */}
       <Reveal>
         <section
@@ -474,11 +433,7 @@ export default function HomePage() {
               </TrackedCTA>
             </div>
 
-            <div className="mt-20 max-w-[680px] mx-auto text-left">
-              <EditorProfile />
-            </div>
-
-            <div className="mt-12 pt-10 border-t border-hair-line/60 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] tracking-[0.06em] text-sub-gray">
+            <div className="mt-16 pt-10 border-t border-hair-line/60 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] tracking-[0.06em] text-sub-gray">
               <Link
                 href="/reflect"
                 className="hover:text-ink transition-colors"
