@@ -35,16 +35,16 @@ function Bg({ id }: { id: string }) {
   return (
     <defs>
       <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#F7F0E2" />
-        <stop offset="100%" stopColor="#E8D9B8" />
+        <stop offset="0%" stopColor="#1B1610" />
+        <stop offset="100%" stopColor="#0E0C09" />
       </linearGradient>
       <radialGradient id={`${id}-warm`} cx="78%" cy="22%" r="65%">
-        <stop offset="0%" stopColor="#EDDDB5" stopOpacity="0.6" />
-        <stop offset="100%" stopColor="#F7F0E2" stopOpacity="0" />
+        <stop offset="0%" stopColor="#3A2D1C" stopOpacity="0.6" />
+        <stop offset="100%" stopColor="#1B1610" stopOpacity="0" />
       </radialGradient>
       <linearGradient id={`${id}-dark`} x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#1B2A47" stopOpacity="0" />
-        <stop offset="100%" stopColor="#1B2A47" stopOpacity="0.06" />
+        <stop offset="0%" stopColor="#E8DCBF" stopOpacity="0" />
+        <stop offset="100%" stopColor="#E8DCBF" stopOpacity="0.06" />
       </linearGradient>
     </defs>
   );
@@ -61,21 +61,21 @@ function SweatOdor() {
       {/* 3 wavy vertical threads */}
       <path
         d="M140 30 Q150 120 130 220 Q120 320 145 420"
-        stroke="#1B2A47"
+        stroke="#E8DCBF"
         strokeOpacity="0.35"
         strokeWidth="0.7"
         fill="none"
       />
       <path
         d="M285 10 Q275 130 295 240 Q310 350 280 440"
-        stroke="#B08755"
+        stroke="#D9B584"
         strokeOpacity="0.65"
         strokeWidth="0.8"
         fill="none"
       />
       <path
         d="M440 40 Q450 140 425 250 Q400 360 445 430"
-        stroke="#1B2A47"
+        stroke="#E8DCBF"
         strokeOpacity="0.25"
         strokeWidth="0.7"
         fill="none"
@@ -87,14 +87,14 @@ function SweatOdor() {
         y1="278"
         x2="600"
         y2="278"
-        stroke="#B08755"
+        stroke="#D9B584"
         strokeOpacity="0.5"
         strokeWidth="1"
       />
 
       {/* A single drop */}
-      <circle cx="295" cy="320" r="3" fill="#B08755" opacity="0.7" />
-      <circle cx="295" cy="320" r="9" fill="none" stroke="#B08755" strokeOpacity="0.3" />
+      <circle cx="295" cy="320" r="3" fill="#D9B584" opacity="0.7" />
+      <circle cx="295" cy="320" r="9" fill="none" stroke="#D9B584" strokeOpacity="0.3" />
 
       {/* Roman numeral */}
       <text
@@ -103,7 +103,7 @@ function SweatOdor() {
         fontFamily="Cormorant Garamond, serif"
         fontSize="20"
         letterSpacing="6"
-        fill="#1B2A47"
+        fill="#E8DCBF"
         fillOpacity="0.5"
       >
         I.
@@ -121,16 +121,16 @@ function SkinAcne() {
 
       {/* Nested rings, off-center */}
       <g transform="translate(360 200)">
-        <circle r="180" fill="none" stroke="#1B2A47" strokeOpacity="0.12" strokeWidth="0.7" />
-        <circle r="135" fill="none" stroke="#1B2A47" strokeOpacity="0.2" strokeWidth="0.7" />
-        <circle r="90" fill="none" stroke="#B08755" strokeOpacity="0.5" strokeWidth="0.8" />
-        <circle r="46" fill="none" stroke="#B08755" strokeOpacity="0.75" strokeWidth="0.9" />
-        <circle r="10" fill="#B08755" fillOpacity="0.85" />
+        <circle r="180" fill="none" stroke="#E8DCBF" strokeOpacity="0.12" strokeWidth="0.7" />
+        <circle r="135" fill="none" stroke="#E8DCBF" strokeOpacity="0.2" strokeWidth="0.7" />
+        <circle r="90" fill="none" stroke="#D9B584" strokeOpacity="0.5" strokeWidth="0.8" />
+        <circle r="46" fill="none" stroke="#D9B584" strokeOpacity="0.75" strokeWidth="0.9" />
+        <circle r="10" fill="#D9B584" fillOpacity="0.85" />
       </g>
 
       {/* A scattered companion dot (suggesting reflection) */}
-      <circle cx="160" cy="320" r="3" fill="#1B2A47" opacity="0.4" />
-      <circle cx="160" cy="320" r="14" fill="none" stroke="#1B2A47" strokeOpacity="0.15" />
+      <circle cx="160" cy="320" r="3" fill="#E8DCBF" opacity="0.4" />
+      <circle cx="160" cy="320" r="14" fill="none" stroke="#E8DCBF" strokeOpacity="0.15" />
 
       <text
         x="40"
@@ -138,7 +138,7 @@ function SkinAcne() {
         fontFamily="Cormorant Garamond, serif"
         fontSize="20"
         letterSpacing="6"
-        fill="#1B2A47"
+        fill="#E8DCBF"
         fillOpacity="0.5"
       >
         II.
@@ -157,24 +157,24 @@ function FaceImpression() {
       {/* Two arcs suggesting brow + jaw without a literal face */}
       <path
         d="M180 150 Q300 105 420 150"
-        stroke="#1B2A47"
+        stroke="#E8DCBF"
         strokeOpacity="0.5"
         strokeWidth="0.9"
         fill="none"
       />
       <path
         d="M180 330 Q300 380 420 330"
-        stroke="#B08755"
+        stroke="#D9B584"
         strokeOpacity="0.75"
         strokeWidth="0.9"
         fill="none"
       />
 
       {/* Vertical axis — symmetry */}
-      <line x1="300" y1="80" x2="300" y2="395" stroke="#B08755" strokeOpacity="0.35" strokeWidth="0.6" />
+      <line x1="300" y1="80" x2="300" y2="395" stroke="#D9B584" strokeOpacity="0.35" strokeWidth="0.6" />
 
       {/* Small accent dot */}
-      <circle cx="300" cy="240" r="2.5" fill="#1B2A47" opacity="0.5" />
+      <circle cx="300" cy="240" r="2.5" fill="#E8DCBF" opacity="0.5" />
 
       <text
         x="40"
@@ -182,7 +182,7 @@ function FaceImpression() {
         fontFamily="Cormorant Garamond, serif"
         fontSize="20"
         letterSpacing="6"
-        fill="#1B2A47"
+        fill="#E8DCBF"
         fillOpacity="0.5"
       >
         III.
@@ -204,7 +204,7 @@ function MindAwareness() {
         y1="278"
         x2="500"
         y2="278"
-        stroke="#1B2A47"
+        stroke="#E8DCBF"
         strokeOpacity="0.45"
         strokeWidth="0.8"
       />
@@ -215,13 +215,13 @@ function MindAwareness() {
         y1="172"
         x2="380"
         y2="172"
-        stroke="#B08755"
+        stroke="#D9B584"
         strokeOpacity="0.65"
         strokeWidth="0.8"
       />
 
       {/* Single dot */}
-      <circle cx="100" cy="278" r="4" fill="#B08755" />
+      <circle cx="100" cy="278" r="4" fill="#D9B584" />
 
       <text
         x="40"
@@ -229,7 +229,7 @@ function MindAwareness() {
         fontFamily="Cormorant Garamond, serif"
         fontSize="20"
         letterSpacing="6"
-        fill="#1B2A47"
+        fill="#E8DCBF"
         fillOpacity="0.5"
       >
         IV.
@@ -263,14 +263,14 @@ function HairLoss() {
           y1={s.top}
           x2={s.x}
           y2="350"
-          stroke="#1B2A47"
+          stroke="#E8DCBF"
           strokeOpacity={s.opacity}
           strokeWidth="0.7"
         />
       ))}
 
       {/* Soil line */}
-      <line x1="80" y1="350" x2="520" y2="350" stroke="#B08755" strokeOpacity="0.6" strokeWidth="0.7" />
+      <line x1="80" y1="350" x2="520" y2="350" stroke="#D9B584" strokeOpacity="0.6" strokeWidth="0.7" />
 
       <text
         x="40"
@@ -278,7 +278,7 @@ function HairLoss() {
         fontFamily="Cormorant Garamond, serif"
         fontSize="20"
         letterSpacing="6"
-        fill="#1B2A47"
+        fill="#E8DCBF"
         fillOpacity="0.5"
       >
         V.
@@ -295,7 +295,7 @@ function BeardBodyHair() {
       <rect width="600" height="450" fill="url(#beard-warm)" />
 
       {/* Cluster of short strokes at various angles */}
-      <g stroke="#1B2A47">
+      <g stroke="#E8DCBF">
         {Array.from({ length: 22 }).map((_, i) => {
           const cx = 180 + ((i * 37) % 260);
           const cy = 130 + ((i * 53) % 220);
@@ -326,7 +326,7 @@ function BeardBodyHair() {
         y1="270"
         x2="345"
         y2="245"
-        stroke="#B08755"
+        stroke="#D9B584"
         strokeOpacity="0.8"
         strokeWidth="1"
       />
@@ -337,7 +337,7 @@ function BeardBodyHair() {
         fontFamily="Cormorant Garamond, serif"
         fontSize="20"
         letterSpacing="6"
-        fill="#1B2A47"
+        fill="#E8DCBF"
         fillOpacity="0.5"
       >
         VI.

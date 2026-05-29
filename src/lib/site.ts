@@ -8,7 +8,7 @@ export const site = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "Nagi",
   authorBio:
-    "多汗症・ニキビ・ワキガ・顔の自信のなさを経験し、超えてきた当事者。半歩先から、後ろを歩く人に静かに記録を残す。",
+    "20 代前半から多汗症の外用治療と脇のボトックスを継続。20 代後半にワキガの手術。ニキビ跡の美容皮膚科に 6 年通った。これらを実際に当事者として経験した日本人男性。実名・顔・実年齢は非公開。",
   handle: "@his_recoveries",
   email: "contact@hisrecoveries.com",
   social: {

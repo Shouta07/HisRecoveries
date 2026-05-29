@@ -1,24 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="多汗症の選択肢">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#F7F0E2"/>
-      <stop offset="100%" stop-color="#E0CB9C"/>
+      <stop offset="0%" stop-color="#1B1610"/>
+      <stop offset="100%" stop-color="#0E0C09"/>
     </linearGradient>
     <linearGradient id="band1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#1B2A47" stop-opacity="0.06"/>
-      <stop offset="100%" stop-color="#1B2A47" stop-opacity="0.02"/>
+      <stop offset="0%" stop-color="#E8DCBF" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#E8DCBF" stop-opacity="0.02"/>
     </linearGradient>
     <linearGradient id="band2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#1B2A47" stop-opacity="0.10"/>
-      <stop offset="100%" stop-color="#1B2A47" stop-opacity="0.04"/>
+      <stop offset="0%" stop-color="#E8DCBF" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#E8DCBF" stop-opacity="0.04"/>
     </linearGradient>
     <linearGradient id="band3" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#1B2A47" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#1B2A47" stop-opacity="0.07"/>
+      <stop offset="0%" stop-color="#E8DCBF" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#E8DCBF" stop-opacity="0.07"/>
     </linearGradient>
     <linearGradient id="vignette" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#1B2A47" stop-opacity="0.05"/>
-      <stop offset="100%" stop-color="#1B2A47" stop-opacity="0.12"/>
+      <stop offset="0%" stop-color="#E8DCBF" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#E8DCBF" stop-opacity="0.12"/>
     </linearGradient>
   </defs>
 
@@ -35,28 +35,28 @@
        M180 500 Q400 480 600 520 T1100 500 T1420 480
        M180 700 Q400 680 600 720 T1100 700 T1420 680"
     fill="none"
-    stroke="#B08755"
+    stroke="#D9B584"
     stroke-width="0.7"
     stroke-opacity="0.5"
     stroke-dasharray="2 6"
   />
 
   <!-- Vertical dotted line linking the layers -->
-  <g fill="#B08755" fill-opacity="0.65">
+  <g fill="#D9B584" fill-opacity="0.65">
     <circle cx="240" cy="300" r="3"/>
     <circle cx="240" cy="500" r="4"/>
     <circle cx="240" cy="700" r="5"/>
   </g>
 
   <!-- Numerals as a small column on the left -->
-  <g font-family="Cormorant Garamond, Times, serif" font-size="22" letter-spacing="4" fill="#B08755">
+  <g font-family="Cormorant Garamond, Times, serif" font-size="22" letter-spacing="4" fill="#D9B584">
     <text x="120" y="305">I.</text>
     <text x="120" y="505">II.</text>
     <text x="120" y="705">III.</text>
   </g>
 
   <!-- A faint horizon at golden ratio -->
-  <line x1="0" y1="618" x2="1600" y2="618" stroke="#1B2A47" stroke-opacity="0.10" stroke-width="0.6"/>
+  <line x1="0" y1="618" x2="1600" y2="618" stroke="#E8DCBF" stroke-opacity="0.10" stroke-width="0.6"/>
 
   <rect width="1600" height="1000" fill="url(#vignette)"/>
 </svg>

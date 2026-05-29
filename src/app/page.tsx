@@ -41,6 +41,29 @@ export default function HomePage() {
         <p className="mt-10 font-mincho text-[1.7rem] sm:text-4xl lg:text-[3rem] leading-[1.45] text-ink tracking-[0.03em]">
           {site.promise}
         </p>
+
+        {/* 1AM bridge — the persona's actual search vocabulary
+            connected back to the brand, in editorial cadence */}
+        <div className="mt-16 sm:mt-20 max-w-[36rem] mx-auto">
+          <p className="font-mincho text-base sm:text-lg text-ink/85 leading-[2.05]">
+            夜、こんな言葉で検索した記憶があるなら。
+          </p>
+          <p className="mt-4 text-[13px] sm:text-[14px] text-ink/65 leading-[2] tracking-[0.04em]">
+            多汗症、ワキガ手術、ニキビ跡、AGA、ヒゲ脱毛、
+            <br />
+            そして自分の顔のこと。
+          </p>
+          <Link
+            href="/reflect"
+            className="mt-10 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-7 py-3"
+          >
+            いまの自分に近い記録を探す
+            <span aria-hidden>→</span>
+          </Link>
+          <p className="mt-3 text-[11px] tracking-[0.06em] text-sub-gray">
+            5 つの問いに、静かに答えてください
+          </p>
+        </div>
       </section>
 
       {/* A quiet horizontal current — what readers actually search for */}
@@ -278,7 +301,50 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE VII — Belonging
+         SCENE VII — Letters
+         A dedicated invitation for late-night writers.
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="letters"
+          className="border-t border-hair-line"
+        >
+          <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-32">
+            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-10 lg:gap-20 items-start">
+              <SectionLabel
+                en="Letters"
+                ja="静かなお便り"
+                number={chapterRomans[4]}
+              />
+              <div className="max-w-[34rem]">
+                <p className="font-mincho text-2xl sm:text-3xl lg:text-[2rem] leading-[1.55] text-ink">
+                  夜、書きたくなったとき、
+                  <br />
+                  ここに。
+                </p>
+                <p className="mt-7 font-mincho text-[15px] sm:text-base leading-[2.05] text-ink/75">
+                  匿名でも、断片でも、構いません。
+                  <br />
+                  返信は約束しません。ただ、必ず読みます。
+                </p>
+                <Link
+                  href="/letters"
+                  className="mt-9 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border border-gold/60 hover:border-gold-bright hover:text-gold-bright transition-colors px-8 py-4"
+                >
+                  手紙を書く
+                  <span aria-hidden>→</span>
+                </Link>
+                <p className="mt-4 text-[11px] tracking-[0.06em] text-sub-gray">
+                  返信を待たずに、書き終えることができる場所
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ─────────────────────────────────────────
+         SCENE VIII — Belonging
          A whisper-quiet subscription invitation.
          ───────────────────────────────────────── */}
       <Reveal>
