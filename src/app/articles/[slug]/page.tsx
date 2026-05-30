@@ -221,8 +221,47 @@ export default async function ArticlePage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: article.contentHtml }}
       />
 
+      {relatedProducts.length > 0 && (
+        <section className="mt-24 border-t border-hair-line pt-12">
+          <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
+            The Shelf
+          </p>
+          <h2 className="mt-3 font-mincho text-xl sm:text-2xl text-ink leading-[1.55]">
+            この領域で、整えるための道具
+          </h2>
+          <p className="mt-3 font-mincho text-[14px] sm:text-[15px] leading-[2] text-ink/80 max-w-[34rem]">
+            記事の続きとして並べる、当事者が実際に選択肢に置いてきたもの。
+            <br className="hidden sm:inline" />
+            効くとは言わず、層として置いています。
+          </p>
+          <p className="mt-2 text-[11px] text-sub-gray leading-[1.8]">
+            ※ 広告（アフィリエイト）を含みます。詳しくは{" "}
+            <Link
+              href="/disclosure"
+              className="border-b border-gold hover:text-gold transition-colors"
+            >
+              広告・アフィリエイト方針
+            </Link>
+            。
+          </p>
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {relatedProducts.map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+          <div className="mt-8">
+            <Link
+              href="/shelf"
+              className="text-sm tracking-[0.1em] text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
+            >
+              整える道具をすべて見る →
+            </Link>
+          </div>
+        </section>
+      )}
+
       {related.length > 0 && (
-        <section className="mt-32 border-t border-hair-line pt-12">
+        <section className="mt-24 border-t border-hair-line pt-12">
           <h2 className="font-mincho text-sm tracking-widest text-sub-gray">
             関連する記録
           </h2>
@@ -243,40 +282,6 @@ export default async function ArticlePage({ params }: { params: Params }) {
               </li>
             ))}
           </ul>
-        </section>
-      )}
-
-      {relatedProducts.length > 0 && (
-        <section className="mt-24 border-t border-hair-line pt-12">
-          <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
-            The Shelf
-          </p>
-          <h2 className="mt-2 font-mincho text-lg text-ink leading-[1.6]">
-            この領域で、整えるための道具
-          </h2>
-          <p className="mt-2 text-[11px] text-sub-gray leading-[1.8]">
-            ※ 広告（アフィリエイト）を含みます。詳しくは{" "}
-            <Link
-              href="/disclosure"
-              className="border-b border-gold hover:text-gold transition-colors"
-            >
-              広告・アフィリエイト方針
-            </Link>
-            。
-          </p>
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {relatedProducts.map((p) => (
-              <ProductCard key={p.slug} product={p} />
-            ))}
-          </div>
-          <div className="mt-6">
-            <Link
-              href="/shelf"
-              className="text-sm text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
-            >
-              整える道具をすべて見る →
-            </Link>
-          </div>
         </section>
       )}
 
