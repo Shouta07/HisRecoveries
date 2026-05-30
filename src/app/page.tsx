@@ -103,7 +103,7 @@ export default function HomePage() {
         <section aria-label="A Philosophy" className="relative bg-navy">
           <div className="absolute inset-0">
             <Image
-              src="/images/atmosphere-dusk.jpg"
+              src="/男性朝の都市風景.png"
               alt=""
               fill
               sizes="100vw"
