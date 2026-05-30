@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
-import WhatsNew from "@/components/WhatsNew";
 import ArticleCard from "@/components/ArticleCard";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
@@ -19,10 +18,6 @@ export default function HomePage() {
     const flagged = articles.filter((a) => a.popular);
     return (flagged.length > 0 ? flagged : articles).slice(0, 3);
   })();
-  const popularSlugs = new Set(popularArticles.map((a) => a.slug));
-  const journalPool = articles.filter((a) => !popularSlugs.has(a.slug));
-  const featuredArticle = journalPool[0] ?? articles[0];
-  const sidebarArticles = journalPool.slice(1, 4);
   const products = getAllProducts();
   const shelfPreview = products.slice(0, 3);
 
@@ -128,38 +123,84 @@ export default function HomePage() {
       )}
 
       {/* ─────────────────────────────────────────
-         SCENE III — Presence Journal (trust)
+         SCENE III — Male Recovery Assessment
+         5-question quick check. Acts as the second
+         conversion lever (assessment_complete →
+         intent capture → newsletter / shelf).
          ───────────────────────────────────────── */}
-      {featuredArticle && (
-        <Reveal>
-          <section
-            aria-labelledby="presence-journal"
-            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-24 sm:pt-32 pb-20 sm:pb-28"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-14 items-end mb-12 sm:mb-16">
+      <Reveal>
+        <section
+          aria-labelledby="assessment"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-24 sm:pt-32 pb-20 sm:pb-28"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-16 items-center">
+            <div>
               <SectionLabel
-                en="Presence Journal"
-                ja="記録（読みもの）"
+                en="Recovery Assessment"
+                ja="男性の回復診断"
                 number={chapterRomans[1]}
               />
-              <p className="font-mincho text-[15px] sm:text-base text-ink/80 leading-[2] max-w-[34rem] lg:pb-2">
-                身体と自意識について、当事者として書いたエッセイ。
-                <br className="hidden sm:inline" />
-                急かしません。ゆっくり読んでください。
-              </p>
-            </div>
-            <WhatsNew featured={featuredArticle} rest={sidebarArticles} />
-            <div className="mt-12 sm:mt-16 flex justify-end">
-              <Link
-                href="/articles"
-                className="text-sm tracking-[0.1em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+              <p
+                id="assessment"
+                className="mt-8 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05] max-w-[32rem]"
               >
-                すべての記録を見る →
-              </Link>
+                いまの自分の状態を、5 つの問いで整理する。
+                <br className="hidden sm:inline" />
+                診断ではなく、あなたの言葉をあなた自身に渡すための時間です。
+              </p>
+              <ul className="mt-7 grid grid-cols-2 gap-x-6 gap-y-2 text-[13px] tracking-[0.06em] text-sub-gray max-w-[28rem]">
+                <li>— 髪／肌／汗</li>
+                <li>— 匂い／ヒゲ</li>
+                <li>— 体型／自信</li>
+                <li>— 所要 約 3 分</li>
+              </ul>
+
+              <div className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <TrackedCTA
+                  href="/assessment"
+                  event="assessment_start"
+                  eventProps={{ location: "home" }}
+                  className="btn-gold justify-center"
+                >
+                  診断を始める
+                  <span aria-hidden>→</span>
+                </TrackedCTA>
+                <p className="text-[12px] tracking-[0.06em] text-sub-gray">
+                  回答はブラウザ内に保存されます
+                </p>
+              </div>
             </div>
-          </section>
-        </Reveal>
-      )}
+
+            <div className="bg-paper border border-hair-line p-8 sm:p-10">
+              <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
+                5 Questions
+              </p>
+              <ol className="mt-6 space-y-4 font-mincho text-[14.5px] sm:text-[15px] text-ink/85 leading-[2]">
+                <li>
+                  <span className="text-gold mr-3">01</span>
+                  いま、いちばん気になっているのは？
+                </li>
+                <li>
+                  <span className="text-gold mr-3">02</span>
+                  日常への影響は、どれくらい？
+                </li>
+                <li>
+                  <span className="text-gold mr-3">03</span>
+                  これまで、何を試してきた？
+                </li>
+                <li>
+                  <span className="text-gold mr-3">04</span>
+                  整えたい先は、どんな状態？
+                </li>
+                <li>
+                  <span className="text-gold mr-3">05</span>
+                  受け取り方を選ぶ（任意）
+                </li>
+              </ol>
+            </div>
+          </div>
+        </section>
+      </Reveal>
 
       {/* ─────────────────────────────────────────
          SCENE IV — Conditioning Rituals (more CVR)
