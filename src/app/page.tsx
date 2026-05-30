@@ -160,6 +160,101 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
+         SCENE II½ — Three Recoveries (the spine)
+         Frames the entire site as three acts.
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="three-recoveries"
+          className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-24 sm:pt-32 pb-12 sm:pb-16"
+        >
+          <div className="text-center mb-14 sm:mb-20">
+            <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold">
+              Three Recoveries
+            </p>
+            <h2
+              id="three-recoveries"
+              className="mt-6 font-mincho text-3xl sm:text-4xl lg:text-5xl text-ink leading-[1.35]"
+            >
+              なぜ、複数形なのか。
+            </h2>
+            <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/80 leading-[2.05] max-w-[32rem] mx-auto">
+              回復は、一回では終わりません。
+              身体の処置で終わる回復、所作で整え続ける回復、他者と並び直す回復。
+              三幕が、入れ子になって続いていきます。
+            </p>
+          </div>
+
+          <ol className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 border-y border-hair-line py-12 sm:py-16">
+            <li className="text-center md:text-left">
+              <p className="logo-type italic text-[12px] tracking-[0.3em] uppercase text-gold">
+                Act I · Body
+              </p>
+              <h3 className="mt-3 font-mincho text-xl sm:text-2xl text-ink leading-[1.45]">
+                身体の回復
+              </h3>
+              <p className="mt-4 font-mincho text-[13.5px] sm:text-[14px] text-ink/75 leading-[2] max-w-[24rem] md:max-w-none mx-auto">
+                医療で終わらせる回復。
+                処置の時代の記録。
+              </p>
+              <Link
+                href="/territories"
+                className="mt-5 inline-flex text-[12px] tracking-[0.12em] text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              >
+                6 つの章を見る →
+              </Link>
+            </li>
+            <li className="text-center md:text-left md:border-l md:border-hair-line md:pl-6 lg:pl-8">
+              <p className="logo-type italic text-[12px] tracking-[0.3em] uppercase text-gold">
+                Act II · Practice
+              </p>
+              <h3 className="mt-3 font-mincho text-xl sm:text-2xl text-ink leading-[1.45]">
+                所作の回復
+              </h3>
+              <p className="mt-4 font-mincho text-[13.5px] sm:text-[14px] text-ink/75 leading-[2] max-w-[24rem] md:max-w-none mx-auto">
+                日々の動作で整え続ける時代。
+                棚と、夜の所作。
+              </p>
+              <Link
+                href="/shelf"
+                className="mt-5 inline-flex text-[12px] tracking-[0.12em] text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              >
+                The Shelf を見る →
+              </Link>
+            </li>
+            <li className="text-center md:text-left md:border-l md:border-hair-line md:pl-6 lg:pl-8">
+              <p className="logo-type italic text-[12px] tracking-[0.3em] uppercase text-gold">
+                Act III · Self
+              </p>
+              <h3 className="mt-3 font-mincho text-xl sm:text-2xl text-ink leading-[1.45]">
+                自己の回復
+              </h3>
+              <p className="mt-4 font-mincho text-[13.5px] sm:text-[14px] text-ink/75 leading-[2] max-w-[24rem] md:max-w-none mx-auto">
+                並び直すこと、書いて返ること。
+                ずっと未完の時代。
+              </p>
+              <Link
+                href="/stories"
+                className="mt-5 inline-flex text-[12px] tracking-[0.12em] text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
+              >
+                Recovery Stories を読む →
+              </Link>
+            </li>
+          </ol>
+
+          <div className="mt-10 text-center">
+            <Link
+              href="/recoveries"
+              className="inline-flex items-center gap-2 logo-type italic text-[12px] tracking-[0.2em] uppercase text-gold/85 hover:text-gold-bright transition-colors"
+            >
+              Three Recoveries を読む
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ─────────────────────────────────────────
          SCENE III — Featured Rituals
          Affiliate exit, promoted above Presence
          Journal. Editorial cards, not product tiles.
