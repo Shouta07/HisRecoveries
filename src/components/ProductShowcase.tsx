@@ -129,46 +129,46 @@ function ShowcaseCard({ product }: { product: ProductFrontmatter }) {
         ? "楽天で見る"
         : "Amazon で見る";
 
-  // First glyph of the title becomes the editorial hero on the staging panel.
-  const initial = Array.from(product.title)[0] ?? "·";
-
   return (
     <article className="group flex flex-col h-full">
-      {/* Staging panel — Aesop-style typographic hero */}
-      <div className="relative aspect-[4/5] bg-cream-deep overflow-hidden card-lift">
+      {/* Staging panel — editorial composition, no placeholder initial */}
+      <div className="relative aspect-[4/5] bg-cream-deep border border-hair-line overflow-hidden card-lift flex flex-col">
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-br from-paper/70 via-cream-deep to-cream-deep transition-opacity duration-700 group-hover:opacity-90"
+          className="absolute inset-0 bg-gradient-to-br from-paper via-cream-deep to-cream-deep transition-opacity duration-700 group-hover:opacity-90"
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span
-            aria-hidden
-            className="font-mincho text-[12rem] sm:text-[14rem] leading-none text-gold/15 select-none transition-transform duration-[1200ms] group-hover:scale-105"
-          >
-            {initial}
-          </span>
-        </div>
-        <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
-          <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold">
+
+        {/* Top row: type + 広告 chip */}
+        <div className="relative p-5 sm:p-6 flex items-start justify-between">
+          <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold max-w-[70%] leading-[1.5]">
             {product.productType}
           </p>
-          <span className="text-[10px] tracking-[0.1em] text-sub-gray border border-hair-line bg-cream/70 backdrop-blur px-1.5 py-0.5">
+          <span className="text-[10px] tracking-[0.1em] text-sub-gray border border-hair-line bg-paper/80 backdrop-blur px-1.5 py-0.5 shrink-0">
             広告
           </span>
         </div>
-        {product.provider && (
-          <p className="absolute bottom-5 left-5 right-5 logo-type italic text-[12px] tracking-[0.15em] text-ink/80">
-            {product.provider}
-          </p>
-        )}
+
+        {/* Center: provider + product title typeset */}
+        <div className="relative px-6 sm:px-7 my-auto pb-2">
+          {product.provider && (
+            <p className="logo-type italic text-[12px] tracking-[0.2em] uppercase text-gold mb-4">
+              {product.provider}
+            </p>
+          )}
+          <h3 className="font-mincho text-[1.35rem] sm:text-2xl leading-[1.45] text-ink">
+            {product.title}
+          </h3>
+        </div>
+
+        {/* Bottom: thin gold rule */}
+        <div className="relative px-6 sm:px-7 pb-6">
+          <span aria-hidden className="block w-10 h-px bg-gold/60" />
+        </div>
       </div>
 
-      {/* Info block */}
+      {/* Info block under the panel */}
       <div className="mt-6 flex flex-col grow">
-        <h3 className="font-mincho text-lg sm:text-xl leading-[1.5] text-ink">
-          {product.title}
-        </h3>
-        <p className="mt-3 font-mincho text-[13.5px] sm:text-[14px] leading-[2] text-ink/75">
+        <p className="font-mincho text-[13.5px] sm:text-[14px] leading-[2] text-ink/75">
           {product.excerpt}
         </p>
 
