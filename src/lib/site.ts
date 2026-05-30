@@ -12,7 +12,7 @@ export const site = {
   handle: "@his_recoveries",
   email: "contact@hisrecoveries.com",
   social: {
-    threads: "https://www.threads.net/@his_recoveries",
+    threads: "https://www.threads.com/@hisrecoveries_jp",
     x: "https://x.com/his_recoveries",
     note: "https://note.com/his_recoveries",
     substack: "https://hisrecoveries.substack.com",

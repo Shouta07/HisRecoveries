@@ -20,10 +20,8 @@ export default function Footer() {
           </Column>
 
           <Column label="つながる">
-            <FLink href="/subscribe">ニュースレターを購読</FLink>
             <FExt href={site.social.threads}>Threads</FExt>
             <FExt href={site.social.substack}>Substack</FExt>
-            <FExt href={`mailto:${site.email}`}>お問い合わせ</FExt>
           </Column>
         </div>
 
