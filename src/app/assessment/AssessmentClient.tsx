@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { track } from "@/lib/analytics";
+import { track, getAttribution } from "@/lib/analytics";
 
 type Answers = {
   concern: string | null;
@@ -66,6 +66,22 @@ export default function AssessmentClient() {
           STORAGE_KEY,
           JSON.stringify({ ...answers, submittedAt: new Date().toISOString() })
         );
+      } catch {
+        /* ignore */
+      }
+      // POST to our DB. Fire-and-forget; UX never blocks on this.
+      try {
+        fetch("/api/assessment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Attribution": JSON.stringify(getAttribution()),
+          },
+          body: JSON.stringify(answers),
+          keepalive: true,
+        }).catch(() => {
+          /* ignore */
+        });
       } catch {
         /* ignore */
       }

@@ -76,6 +76,7 @@ export default function ProductCard({ product }: Props) {
               href={primaryHref}
               product={product.slug}
               provider={links.asp ? "asp" : links.amazon ? "amazon" : "rakuten"}
+              territory={product.territory}
               className="btn-gold !py-3 !px-6 text-xs w-full justify-center"
             >
               {product.ctaLabel ?? "詳しく見る"}
@@ -89,6 +90,7 @@ export default function ProductCard({ product }: Props) {
                 href={links.amazon}
                 product={product.slug}
                 provider="amazon"
+                territory={product.territory}
                 className={btn}
               >
                 Amazon
@@ -99,6 +101,7 @@ export default function ProductCard({ product }: Props) {
                 href={links.rakuten}
                 product={product.slug}
                 provider="rakuten"
+                territory={product.territory}
                 className={btn}
               >
                 楽天
@@ -109,6 +112,7 @@ export default function ProductCard({ product }: Props) {
                 href={links.asp}
                 product={product.slug}
                 provider="asp"
+                territory={product.territory}
                 className={btn}
               >
                 公式・その他

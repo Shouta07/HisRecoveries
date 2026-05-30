@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { track } from "@/lib/analytics";
+import { track, getAttribution } from "@/lib/analytics";
 
 type Answers = {
   category: string | null;
@@ -59,6 +59,21 @@ export default function SubmitStoryClient() {
           STORAGE_KEY,
           JSON.stringify({ ...answers, submittedAt: new Date().toISOString() })
         );
+      } catch {
+        /* ignore */
+      }
+      try {
+        fetch("/api/story", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Attribution": JSON.stringify(getAttribution()),
+          },
+          body: JSON.stringify(answers),
+          keepalive: true,
+        }).catch(() => {
+          /* ignore */
+        });
       } catch {
         /* ignore */
       }

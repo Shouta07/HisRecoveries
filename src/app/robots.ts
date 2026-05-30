@@ -27,11 +27,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/", "/admin/"],
       },
       ...llmCrawlers.map((ua) => ({
         userAgent: ua,
         allow: "/",
+        disallow: ["/api/", "/admin/"],
       })),
     ],
     sitemap: `${site.url}/sitemap.xml`,

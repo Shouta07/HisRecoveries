@@ -83,12 +83,14 @@ export function getAttribution(): Record<string, string> {
 /**
  * Fire a conversion event to every analytics provider that is present.
  * Attribution (first-touch UTM) is merged in automatically.
+ * Also forwards a stripped copy to /api/event so it lands in our own DB
+ * for the /admin/insights dashboard.
  */
 export function track(event: ConversionEvent, props: Props = {}): void {
   if (typeof window === "undefined") return;
 
-  const payload: Props = { ...getAttribution(), ...props };
-  // strip undefined for cleaner payloads
+  const attribution = getAttribution();
+  const payload: Props = { ...attribution, ...props };
   Object.keys(payload).forEach(
     (k) => payload[k] === undefined && delete payload[k]
   );
@@ -107,5 +109,26 @@ export function track(event: ConversionEvent, props: Props = {}): void {
   }
   if (Array.isArray(w.dataLayer)) {
     w.dataLayer.push({ event, ...payload });
+  }
+
+  // Best-effort post to our own DB. Fire-and-forget.
+  try {
+    fetch("/api/event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Attribution": JSON.stringify(attribution),
+      },
+      body: JSON.stringify({
+        event,
+        props: { ...props }, // attribution is sent via header
+        path: window.location.pathname,
+      }),
+      keepalive: true,
+    }).catch(() => {
+      /* ignore */
+    });
+  } catch {
+    /* ignore */
   }
 }
