@@ -4,16 +4,16 @@
 
 :root {
   /* Chic dark sophisticated palette — high-end men register */
-  --cream: #1a130d;
-  --cream-deep: #0e0a07;
-  --paper: #352819;
-  --ink: #f2e7cb;
-  --sub-gray: #b5a380;
-  --hair-line: #6b5739;
-  --navy: #221810;
-  --navy-deep: #150f0a;
-  --gold: #c9a37c;
-  --gold-bright: #e2c49a;
+  --cream: #f2ead9;
+  --cream-deep: #e6dbc4;
+  --paper: #fbf6ea;
+  --ink: #221a11;
+  --sub-gray: #7a6b57;
+  --hair-line: #d9cdb6;
+  --navy: #1f1813;
+  --navy-deep: #15100b;
+  --gold: #8e6a36;
+  --gold-bright: #a6824a;
 }
 
 html,
@@ -175,7 +175,7 @@ a {
 }
 
 .article-body a:hover {
-  color: var(--gold-bright);
+  color: var(--gold);
 }
 
 .article-body hr {

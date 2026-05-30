@@ -8,22 +8,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Chic dark sophisticated palette — high-end men register
-        // paper is the bright lift used for chrome (header / footer /
-        // cards) so it stands clearly off the deep warm body.
-        cream: "#1A130D",
-        "cream-deep": "#0E0A07",
-        paper: "#352819",
-        ink: "#F2E7CB",
-        "sub-gray": "#B5A380",
-        "hair-line": "#6B5739",
-        navy: "#221810",
-        "navy-deep": "#150F0A",
-        gold: "#C9A37C",
-        "gold-bright": "#E2C49A",
+        // Bright warm cream body + reserved dark for cinematic
+        // sections. Aesop register on the page; chrome reads as
+        // sand. Three places stay dark (Philosophy, Belonging,
+        // /recoveries Act II) and earn their cinema by contrast.
+        cream: "#F2EAD9",
+        "cream-deep": "#E6DBC4",
+        paper: "#FBF6EA",
+        ink: "#221A11",
+        "sub-gray": "#7A6B57",
+        "hair-line": "#D9CDB6",
+        navy: "#1F1813",
+        "navy-deep": "#15100B",
+        gold: "#8E6A36",
+        "gold-bright": "#A6824A",
         // Legacy aliases
-        "off-white": "#1A130D",
-        "quiet-brass": "#C9A37C",
+        "off-white": "#F2EAD9",
+        "quiet-brass": "#8E6A36",
       },
       fontFamily: {
         sans: [
