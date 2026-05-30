@@ -7,42 +7,23 @@ export default function Footer() {
   return (
     <footer className="mt-32 bg-navy text-white">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-10 gap-x-8 text-sm">
-          <Column label="Read">
-            <FLink href="/articles">Presence Journal</FLink>
-            <FLink href="/about">Male Conditioning</FLink>
-            <FLink href="/territories/sweat-odor">汗とにおい</FLink>
-            <FLink href="/territories/skin-acne">肌と跡</FLink>
-            <FLink href="/territories/face-impression">顔の印象</FLink>
-            <FLink href="/territories/hair-loss">髪と自意識</FLink>
-            <FLink href="/territories/beard-body-hair">髭と体毛</FLink>
-            <FLink href="/territories/mind-awareness">心と余白</FLink>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-10 gap-x-8 text-sm">
+          <Column label="読みもの">
+            <FLink href="/articles">記録</FLink>
+            <FLink href="/territories">悩みの章</FLink>
+            <FLink href="/recoveries">回復の物語</FLink>
           </Column>
 
-          <Column label="Engage">
-            <FLink href="/assessment">Recovery Assessment</FLink>
-            <FLink href="/events">Quiet Gatherings</FLink>
-            <FLink href="/concierge">Recovery Concierge</FLink>
-            <FLink href="/stories">Recovery Stories</FLink>
-            <FLink href="/shelf">Conditioning Rituals</FLink>
-            <FLink href="/subscribe">Newsletter</FLink>
-            <FLink href="/reflect">Reflect</FLink>
+          <Column label="道具">
+            <FLink href="/shelf">整える道具の棚</FLink>
+            <FLink href="/disclosure">広告・アフィリエイト方針</FLink>
           </Column>
 
-          <Column label="About">
-            <FLink href="/about">Philosophy</FLink>
-            <FLink href="/manifesto">Manifesto</FLink>
-            <FLink href="/founder">Founder&apos;s Note</FLink>
-            <FLink href="/disclosure">Affiliate Policy</FLink>
-            <FExt href={`mailto:${site.email}`}>Contact</FExt>
-            <FLink href="/feed.xml">Atom Feed</FLink>
-          </Column>
-
-          <Column label="Elsewhere">
+          <Column label="つながる">
+            <FLink href="/subscribe">ニュースレターを購読</FLink>
             <FExt href={site.social.threads}>Threads</FExt>
-            <FExt href={site.social.x}>X</FExt>
-            <FExt href={site.social.note}>note</FExt>
             <FExt href={site.social.substack}>Substack</FExt>
+            <FExt href={`mailto:${site.email}`}>お問い合わせ</FExt>
           </Column>
         </div>
 
