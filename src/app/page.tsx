@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import WhatsNew from "@/components/WhatsNew";
+import ArticleCard from "@/components/ArticleCard";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
-import FeaturedRituals from "@/components/FeaturedRituals";
 import ProductCard from "@/components/ProductCard";
 import { getAllProducts } from "@/lib/products";
 import { site } from "@/lib/site";
@@ -13,10 +13,17 @@ const chapterRomans = ["I", "II", "III", "IV"];
 
 export default function HomePage() {
   const articles = getAllArticles();
-  const featuredArticle = articles[0];
-  const sidebarArticles = articles.slice(1, 4);
+  // Most-read picks: filter by frontmatter `popular: true` first, fall back to
+  // recency-ordered head when no curation has happened yet.
+  const popularArticles = (() => {
+    const flagged = articles.filter((a) => a.popular);
+    return (flagged.length > 0 ? flagged : articles).slice(0, 3);
+  })();
+  const popularSlugs = new Set(popularArticles.map((a) => a.slug));
+  const journalPool = articles.filter((a) => !popularSlugs.has(a.slug));
+  const featuredArticle = journalPool[0] ?? articles[0];
+  const sidebarArticles = journalPool.slice(1, 4);
   const products = getAllProducts();
-  const featuredProducts = products.slice(0, 2);
   const shelfPreview = products.slice(0, 3);
 
   return (
@@ -41,11 +48,11 @@ export default function HomePage() {
 
         <div className="mt-14 sm:mt-16 max-w-[34rem] mx-auto">
           <p className="font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-            汗・におい・肌・髪・髭・自意識 ──
+            汗・におい・肌・髪・髭・自意識。
             <br className="hidden sm:inline" />
             男性が言葉にしにくいことを、
             <br className="hidden sm:inline" />
-            当事者として整理するエディトリアル・メディア。
+            当事者の視点で書く読みものです。
           </p>
 
           <div className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
@@ -71,14 +78,52 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────────────────────────────────
-         SCENE II — Featured Rituals (CVR)
+         SCENE II — Most Read (SEO/GEO traffic surface)
+         The journal entry point on home. Reading these
+         is where affiliate conversions originate.
          ───────────────────────────────────────── */}
-      {featuredProducts.length > 0 && (
+      {popularArticles.length > 0 && (
         <Reveal>
-          <FeaturedRituals
-            products={featuredProducts}
-            numberLabel={chapterRomans[0]}
-          />
+          <section
+            aria-labelledby="most-read"
+            className="bg-paper/40 border-y border-hair-line"
+          >
+            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-32">
+              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-14 items-end mb-12 sm:mb-16">
+                <SectionLabel
+                  en="Most Read"
+                  ja="よく読まれている記事"
+                  number={chapterRomans[0]}
+                />
+                <p
+                  id="most-read"
+                  className="font-mincho text-[15px] sm:text-base text-ink/80 leading-[2] max-w-[34rem] lg:pb-2"
+                >
+                  はじめての方は、ここから。
+                  <br className="hidden sm:inline" />
+                  検索から辿り着いた読者がよく読んでいる記録です。
+                </p>
+              </div>
+
+              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+                {popularArticles.map((a) => (
+                  <li key={a.slug}>
+                    <ArticleCard article={a} variant="card" />
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-12 flex justify-end">
+                <Link
+                  href="/articles"
+                  className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+                >
+                  すべての記録を見る
+                  <span aria-hidden> →</span>
+                </Link>
+              </div>
+            </div>
+          </section>
         </Reveal>
       )}
 

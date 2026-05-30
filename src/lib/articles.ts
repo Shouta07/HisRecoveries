@@ -48,6 +48,7 @@ function parseFile(filename: string) {
     keywords: data.keywords ?? [],
     cover: data.cover,
     coverAlt: data.coverAlt,
+    popular: data.popular === true,
   };
   return { frontmatter, content };
 }

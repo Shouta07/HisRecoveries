@@ -12,6 +12,9 @@ export type ArticleFrontmatter = {
   keywords?: string[];
   cover?: string;
   coverAlt?: string;
+  // Curation flag for home "よく読まれている記事". When no article is
+  // flagged true, the home falls back to the most recent 3.
+  popular?: boolean;
 };
 
 export type Article = ArticleFrontmatter & {
