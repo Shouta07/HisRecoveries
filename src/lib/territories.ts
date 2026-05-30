@@ -13,7 +13,7 @@ export type TerritoryFrontmatter = {
   subtitle: string;
   intro: string;
   categories: string[];
-  relatedExit: "events" | "letters" | "subscribe" | "territory";
+  relatedExit: "events" | "subscribe" | "territory";
   order: number;
   status?: "draft" | "published";
 };

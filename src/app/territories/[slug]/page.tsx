@@ -73,7 +73,6 @@ export default async function TerritoryPage({
   const exitMap: Record<typeof t.relatedExit, { href: string; label: string }> =
     {
       events: { href: "/events", label: "次の静かな集まり" },
-      letters: { href: "/letters", label: "書きたくなったら、ここに" },
       subscribe: { href: "/subscribe", label: "ときどきの便り" },
       territory: { href: "/territories", label: "ほかの地形図を見る" },
     };

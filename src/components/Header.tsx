@@ -8,7 +8,6 @@ import { site } from "@/lib/site";
 const nav = [
   { href: "/shelf", label: "Shelf", ja: "整える道具" },
   { href: "/articles", label: "Journal", ja: "記録" },
-  { href: "/letters", label: "Letters", ja: "便り" },
   { href: "/subscribe", label: "Subscribe", ja: "購読する" },
 ];
 
