@@ -9,16 +9,16 @@ const config: Config = {
     extend: {
       colors: {
         // Chic dark sophisticated palette — high-end men register
-        // Contrast-tuned so text and borders stay readable on the
-        // deep warm body.
+        // paper is the bright lift used for chrome (header / footer /
+        // cards) so it stands clearly off the deep warm body.
         cream: "#1A130D",
         "cream-deep": "#0E0A07",
-        paper: "#2A2018",
+        paper: "#352819",
         ink: "#F2E7CB",
         "sub-gray": "#B5A380",
-        "hair-line": "#5A4A36",
-        navy: "#0E0805",
-        "navy-deep": "#070402",
+        "hair-line": "#6B5739",
+        navy: "#221810",
+        "navy-deep": "#150F0A",
         gold: "#C9A37C",
         "gold-bright": "#E2C49A",
         // Legacy aliases
