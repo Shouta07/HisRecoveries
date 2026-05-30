@@ -3,16 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --cream: #181410;
-  --cream-deep: #0e0c09;
-  --paper: #221c14;
-  --ink: #e8dcbf;
-  --sub-gray: #948669;
-  --hair-line: #3a2f23;
-  --navy: #110e0a;
-  --navy-deep: #0a0805;
-  --gold: #b89169;
-  --gold-bright: #d9b584;
+  /* Aesop-style warm bright palette */
+  --cream: #f2ead9;
+  --cream-deep: #e6dbc4;
+  --paper: #fbf6ea;
+  --ink: #221a11;
+  --sub-gray: #7a6b57;
+  --hair-line: #d9cdb6;
+  --navy: #1f1813;
+  --navy-deep: #15100b;
+  --gold: #8e6a36;
+  --gold-bright: #a6824a;
 }
 
 html,

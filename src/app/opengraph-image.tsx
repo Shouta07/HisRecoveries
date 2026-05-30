@@ -13,7 +13,7 @@ export default async function Image() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#FAFAF7",
+          background: "#F2EAD9",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -77,7 +77,7 @@ export default async function Image() {
         >
           <div style={{ display: "flex" }}>HISRECOVERIES.COM</div>
           <div style={{ display: "flex" }}>—</div>
-          <div style={{ display: "flex" }}>NAGI</div>
+          <div style={{ display: "flex" }}>RECOVER YOUR PRESENCE</div>
         </div>
       </div>
     ),

@@ -45,24 +45,24 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="w-full bg-navy text-white sticky top-0 z-50 shadow-[0_1px_0_rgba(0,0,0,0.06)]">
+    <header className="w-full bg-cream/95 backdrop-blur text-ink sticky top-0 z-50 border-b border-hair-line">
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 sm:px-10 py-5 sm:py-6">
         <Link
           href="/"
           aria-label={`${site.name} ホーム`}
-          className="logo-type text-lg sm:text-xl text-white hover:text-gold-bright transition-colors"
+          className="logo-type text-lg sm:text-xl text-ink hover:text-gold transition-colors"
         >
           {site.name}
         </Link>
 
         {/* Desktop nav (≥ md) */}
         <nav aria-label="primary" className="hidden md:block text-sm">
-          <ul className="flex items-center gap-6 lg:gap-8 text-white/85">
+          <ul className="flex items-center gap-6 lg:gap-8 text-ink/85">
             {nav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="inline-block py-2 hover:text-white transition-colors"
+                  className="inline-block py-2 hover:text-gold transition-colors"
                 >
                   <span className="font-mincho text-[14px] tracking-[0.12em] whitespace-nowrap">
                     {item.label}
@@ -80,7 +80,7 @@ export default function Header() {
           aria-label={open ? "メニューを閉じる" : "メニューを開く"}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="md:hidden p-2 -mr-2 text-white hover:text-gold-bright transition-colors"
+          className="md:hidden p-2 -mr-2 text-ink hover:text-gold transition-colors"
         >
           {open ? <CloseIcon /> : <MenuIcon />}
         </button>
@@ -90,7 +90,7 @@ export default function Header() {
       {open && (
         <div
           id="mobile-nav"
-          className="md:hidden fixed inset-x-0 top-[68px] bottom-0 bg-navy text-white z-40 overflow-y-auto"
+          className="md:hidden fixed inset-x-0 top-[68px] bottom-0 bg-cream text-ink z-40 overflow-y-auto"
         >
           <nav
             aria-label="mobile primary"
@@ -106,19 +106,19 @@ export default function Header() {
                   >
                     <div className="flex items-baseline justify-between gap-4">
                       <div>
-                        <span className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold-bright">
+                        <span className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        <h2 className="mt-2 font-mincho text-[2rem] font-medium leading-[1.35] text-white group-hover:text-gold-bright transition-colors">
+                        <h2 className="mt-2 font-mincho text-[2rem] font-medium leading-[1.35] text-ink group-hover:text-gold transition-colors">
                           {item.label}
                         </h2>
-                        <p className="mt-1 text-[13px] tracking-[0.08em] text-white/65">
+                        <p className="mt-1 text-[13px] tracking-[0.08em] text-sub-gray">
                           {item.ja}
                         </p>
                       </div>
                       <span
                         aria-hidden
-                        className="text-white/55 group-hover:text-gold-bright transition-colors text-xl shrink-0"
+                        className="text-sub-gray group-hover:text-gold transition-colors text-xl shrink-0"
                       >
                         →
                       </span>
@@ -128,20 +128,20 @@ export default function Header() {
               ))}
             </ul>
 
-            <div className="mt-14 pt-10 border-t border-white/15 space-y-4 text-[13px] text-white/70">
+            <div className="mt-14 pt-10 border-t border-hair-line space-y-4 text-[13px] text-sub-gray">
               {secondary.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block hover:text-gold-bright transition-colors"
+                  className="block hover:text-gold transition-colors"
                 >
                   {item.label}
                 </Link>
               ))}
               <a
                 href={`mailto:${site.email}`}
-                className="block hover:text-gold-bright transition-colors"
+                className="block hover:text-gold transition-colors"
               >
                 Contact — {site.email}
               </a>

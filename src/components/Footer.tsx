@@ -5,7 +5,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-32 bg-navy text-white">
+    <footer className="mt-32 bg-cream-deep text-ink border-t border-hair-line">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-10 gap-x-8 text-sm">
           <Column label="読みもの">
@@ -27,21 +27,21 @@ export default function Footer() {
           </Column>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/15 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div className="mt-16 pt-8 border-t border-hair-line flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <p className="logo-type text-2xl text-white">{site.name}</p>
-            <p className="mt-1 font-mincho text-xs text-white/60">
+            <p className="logo-type text-2xl text-ink">{site.name}</p>
+            <p className="mt-1 font-mincho text-xs text-sub-gray">
               {site.tagline}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-white/55">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-sub-gray">
             <span>© {year} {site.name}</span>
             <span aria-hidden>·</span>
-            <Link href="/privacy" className="hover:text-white transition-colors">
+            <Link href="/privacy" className="hover:text-ink transition-colors">
               プライバシーポリシー
             </Link>
             <span aria-hidden>·</span>
-            <Link href="/legal" className="hover:text-white transition-colors">
+            <Link href="/legal" className="hover:text-ink transition-colors">
               特定商取引法に基づく表記
             </Link>
           </div>
@@ -60,8 +60,10 @@ function Column({
 }) {
   return (
     <div>
-      <p className="text-xs text-white/55 mb-4">{label}</p>
-      <ul className="space-y-2.5 text-[13px] text-white/85">{children}</ul>
+      <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold mb-4">
+        {label}
+      </p>
+      <ul className="space-y-2.5 text-[13px] text-ink/80">{children}</ul>
     </div>
   );
 }
@@ -69,7 +71,7 @@ function Column({
 function FLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link href={href} className="hover:text-gold-bright transition-colors">
+      <Link href={href} className="hover:text-gold transition-colors">
         {children}
       </Link>
     </li>
@@ -83,7 +85,7 @@ function FExt({ href, children }: { href: string; children: React.ReactNode }) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="hover:text-gold-bright transition-colors"
+        className="hover:text-gold transition-colors"
       >
         {children}
       </a>
