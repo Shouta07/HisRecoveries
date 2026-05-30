@@ -15,7 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default function LettersPage() {
-  const endpoint = process.env.NEXT_PUBLIC_LETTERS_ENDPOINT ?? "";
+  // Default to our own /api/letter endpoint (stores to Supabase if configured,
+  // falls through to mailto on the client when empty).
+  const endpoint = process.env.NEXT_PUBLIC_LETTERS_ENDPOINT ?? "/api/letter";
 
   return (
     <div className="mx-auto max-w-[820px] px-6 sm:px-10 pt-16 sm:pt-20 pb-24">
