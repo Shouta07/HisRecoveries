@@ -45,7 +45,7 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="w-full bg-navy/95 backdrop-blur text-cream sticky top-0 z-50 border-b border-hair-line">
+    <header className="w-full bg-paper/95 backdrop-blur text-cream sticky top-0 z-50 border-b border-gold/25 shadow-[0_1px_0_rgba(184,145,105,0.08)]">
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 sm:px-10 py-5 sm:py-6">
         <Link
           href="/"
@@ -57,7 +57,7 @@ export default function Header() {
 
         {/* Desktop nav (≥ md) */}
         <nav aria-label="primary" className="hidden md:block text-sm">
-          <ul className="flex items-center gap-6 lg:gap-8 text-cream/85">
+          <ul className="flex items-center gap-6 lg:gap-8 text-cream">
             {nav.map((item) => (
               <li key={item.href}>
                 <Link

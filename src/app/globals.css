@@ -6,14 +6,14 @@
   /* Chic dark sophisticated palette — high-end men register */
   --cream: #1a130d;
   --cream-deep: #0e0a07;
-  --paper: #241b12;
-  --ink: #e8dcbf;
-  --sub-gray: #9b8b6e;
-  --hair-line: #3d3225;
-  --navy: #100a06;
-  --navy-deep: #080503;
-  --gold: #b89169;
-  --gold-bright: #d9b584;
+  --paper: #2a2018;
+  --ink: #f2e7cb;
+  --sub-gray: #b5a380;
+  --hair-line: #5a4a36;
+  --navy: #0e0805;
+  --navy-deep: #070402;
+  --gold: #c9a37c;
+  --gold-bright: #e2c49a;
 }
 
 html,
@@ -169,13 +169,13 @@ a {
 }
 
 .article-body a {
-  color: var(--navy);
+  color: var(--ink);
   border-bottom: 1px solid var(--gold);
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .article-body a:hover {
-  color: var(--gold);
+  color: var(--gold-bright);
 }
 
 .article-body hr {
@@ -221,8 +221,9 @@ a {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 .btn-outline-navy:hover {
-  background-color: var(--ink);
+  background-color: var(--gold);
   color: var(--cream);
+  border-color: var(--gold);
 }
 
 /* Reveal on scroll — set initial state, JS toggles .is-in-view */
