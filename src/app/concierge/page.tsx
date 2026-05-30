@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -107,7 +106,7 @@ export default function ConciergePage() {
           <SessionStep
             num="01"
             title="お問い合わせ"
-            body="Letters から、お名前（匿名可）と概要をお送りください。返信に 24–72 時間いただきます。"
+            body="メール（contact@hisrecoveries.com）から、お名前（匿名可）と概要をお送りください。返信に 24–72 時間いただきます。"
           />
           <SessionStep
             num="02"
@@ -121,8 +120,8 @@ export default function ConciergePage() {
           />
           <SessionStep
             num="04"
-            title="アフター Letters"
-            body="セッション後 1 週間以内に、その日の整理を Letters の形でお届けします。"
+            title="アフター・サマリー"
+            body="セッション後 1 週間以内に、その日の整理を文章でお届けします。"
           />
         </ol>
       </section>
@@ -141,19 +140,13 @@ export default function ConciergePage() {
           ※ 対面の場合、都内交通費を含みます
         </p>
 
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-          <Link
-            href="/letters"
-            className="btn-gold"
-          >
-            Letters で問い合わせる
-            <span aria-hidden>→</span>
-          </Link>
+        <div className="mt-12 flex justify-center">
           <a
             href={`mailto:${site.email}?subject=Recovery%20Concierge%20%E3%81%AE%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B`}
-            className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
+            className="btn-gold"
           >
             メールで問い合わせる
+            <span aria-hidden>→</span>
           </a>
         </div>
       </section>

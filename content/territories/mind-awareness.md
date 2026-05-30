@@ -4,7 +4,7 @@ slug: "mind-awareness"
 subtitle: "身体と意識の、あいだの景色"
 intro: "他の領域を横断する、観察そのものの場所。身体の問題が解決したあとも残るもの。自意識、自己否定、距離感、回復という言葉の意味を、押し付けずに並べます。"
 categories: ["philosophy"]
-relatedExit: "letters"
+relatedExit: "subscribe"
 order: 4
 status: "published"
 ---

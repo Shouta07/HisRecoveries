@@ -347,12 +347,6 @@ export default function RecoveriesPage() {
                 Recovery Stories を読む →
               </Link>
               <Link
-                href="/letters"
-                className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
-              >
-                静かなお便りを書く →
-              </Link>
-              <Link
                 href="/subscribe"
                 className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
               >

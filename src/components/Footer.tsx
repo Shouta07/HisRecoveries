@@ -25,7 +25,6 @@ export default function Footer() {
             <FLink href="/concierge">Recovery Concierge</FLink>
             <FLink href="/stories">Recovery Stories</FLink>
             <FLink href="/shelf">Conditioning Rituals</FLink>
-            <FLink href="/letters">Letters</FLink>
             <FLink href="/subscribe">Newsletter</FLink>
             <FLink href="/reflect">Reflect</FLink>
           </Column>

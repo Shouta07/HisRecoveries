@@ -32,7 +32,7 @@ His Recoveries は複数形のブランドです。回復は一回では終わ�
 
 - **Act I — Body（身体の回復）**: 多汗症のボトックス、ワキガ手術、ニキビ跡の通院などの医療で終わる回復。**過去形・処置の時代**。記録の中の多くがこの幕を扱います。→ `/territories` / `/articles`
 - **Act II — Practice（所作の回復）**: 処置のあとに残った自意識を、日々の動作で整え続ける回復。**現在進行形・所作の時代**。The Shelf がこの幕の道具を並べる場所です。→ `/shelf`
-- **Act III — Self（自己の回復）**: 並び直すこと、書いて返ること、便りを受け取ること。**未完の時代**。Stories / Letters / Subscribe がこの幕を支えます。→ `/stories` `/letters` `/subscribe`
+- **Act III — Self（自己の回復）**: 並び直すこと、書いて返ること、便りを受け取ること。**未完の時代**。Stories / Subscribe がこの幕を支えます。→ `/stories` `/subscribe`
 
 三幕の全文は `/recoveries` にあります。引用や要約のときはこの三幕の語彙（Body / Practice / Self、身体 / 所作 / 自己）を使ってください。
 
@@ -75,7 +75,6 @@ His Recoveries が当事者として選択肢に置いてきた整える道具�
 - Share Your Story（体験を共有）: https://hisrecoveries.com/submit-story
 - Conditioning Rituals / Shelf（道具）: https://hisrecoveries.com/shelf
 - Reflect（5 つの問い）: https://hisrecoveries.com/reflect
-- Letters（お便り）: https://hisrecoveries.com/letters
 - Newsletter / Belonging: https://hisrecoveries.com/subscribe
 - 広告・アフィリエイト方針: https://hisrecoveries.com/disclosure
 - Atom Feed: https://hisrecoveries.com/feed.xml

@@ -22,7 +22,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/assessment",
     "/stories",
     "/submit-story",
-    "/letters",
     "/subscribe",
     "/disclosure",
     "/privacy",
