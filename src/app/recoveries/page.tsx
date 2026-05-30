@@ -216,12 +216,12 @@ export default function RecoveriesPage() {
               alt=""
               fill
               sizes="100vw"
-              className="object-cover object-center opacity-55"
+              className="object-cover object-center opacity-90"
             />
           </div>
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-navy-deep/65 via-navy-deep/80 to-navy-deep/95"
+            className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-black/75"
           />
           <div className="relative mx-auto max-w-[1000px] px-6 sm:px-10 py-28 sm:py-40 text-white">
             <header className="mb-12 sm:mb-16">

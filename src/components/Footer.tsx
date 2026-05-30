@@ -5,7 +5,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-32 bg-navy text-cream">
+    <footer className="mt-32 bg-paper text-cream border-t border-gold/25">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-10 gap-x-8 text-sm">
           <Column label="読みもの">

@@ -108,12 +108,12 @@ export default function HomePage() {
               fill
               sizes="100vw"
               priority
-              className="object-cover object-center opacity-65"
+              className="object-cover object-center opacity-90"
             />
           </div>
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-navy/45 via-navy/65 to-navy/90"
+            className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70"
           />
           <div className="relative mx-auto max-w-[1000px] px-6 sm:px-10 py-28 sm:py-44 lg:py-52 text-center text-cream">
             <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
@@ -329,12 +329,12 @@ export default function HomePage() {
               alt=""
               fill
               sizes="100vw"
-              className="object-cover object-center opacity-55"
+              className="object-cover object-center opacity-85"
             />
           </div>
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-navy/55 via-navy/75 to-navy/95"
+            className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80"
           />
           <div className="relative mx-auto max-w-[1100px] px-6 sm:px-10 py-28 sm:py-40 text-center text-cream">
             <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
