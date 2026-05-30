@@ -6,22 +6,22 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/recoveries", label: "Recoveries", ja: "回復の物語" },
-  { href: "/articles", label: "Journal", ja: "記録" },
   { href: "/shelf", label: "Shelf", ja: "整える道具" },
-  { href: "/territories", label: "Chapters", ja: "悩みの章" },
+  { href: "/articles", label: "Journal", ja: "記録" },
   { href: "/letters", label: "Letters", ja: "便り" },
+  { href: "/subscribe", label: "Subscribe", ja: "購読する" },
 ];
 
 const secondary = [
+  { href: "/recoveries", label: "Three Recoveries — 回復の物語" },
+  { href: "/territories", label: "Chapters — 悩みの章" },
+  { href: "/stories", label: "Stories — 回復の記録" },
   { href: "/about", label: "Philosophy — このサイトについて" },
   { href: "/manifesto", label: "Manifesto — 男性の回復について" },
   { href: "/founder", label: "Founder's Note — なぜ始めたか" },
   { href: "/concierge", label: "Recovery Concierge — 1 対 1 の対話" },
   { href: "/events", label: "Experiences — 静かな集まり" },
   { href: "/reflect", label: "Reflect — 整理する" },
-  { href: "/stories", label: "Stories — 回復の記録" },
-  { href: "/subscribe", label: "Subscribe — ニュースレター" },
   { href: "/disclosure", label: "広告・アフィリエイト方針" },
 ];
 
