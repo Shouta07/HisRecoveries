@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  /* Aesop-style warm bright palette */
-  --cream: #f2ead9;
-  --cream-deep: #e6dbc4;
-  --paper: #fbf6ea;
-  --ink: #221a11;
-  --sub-gray: #7a6b57;
-  --hair-line: #d9cdb6;
-  --navy: #1f1813;
-  --navy-deep: #15100b;
-  --gold: #8e6a36;
-  --gold-bright: #a6824a;
+  /* Chic dark sophisticated palette — high-end men register */
+  --cream: #1a130d;
+  --cream-deep: #0e0a07;
+  --paper: #241b12;
+  --ink: #e8dcbf;
+  --sub-gray: #9b8b6e;
+  --hair-line: #3d3225;
+  --navy: #100a06;
+  --navy-deep: #080503;
+  --gold: #b89169;
+  --gold-bright: #d9b584;
 }
 
 html,

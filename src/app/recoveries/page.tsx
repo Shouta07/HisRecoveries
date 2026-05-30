@@ -212,11 +212,11 @@ export default function RecoveriesPage() {
         <section aria-labelledby="act-practice" className="relative bg-navy">
           <div className="absolute inset-0">
             <Image
-              src="/男性朝の都市風景.png"
+              src="/cityscape-dawn.png"
               alt=""
               fill
               sizes="100vw"
-              className="object-cover object-center opacity-50"
+              className="object-cover object-center opacity-55"
             />
           </div>
           <div
