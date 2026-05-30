@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import FounderTimeline from "@/components/FounderTimeline";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -108,6 +109,26 @@ export default function FounderPage() {
             記録、整える道具、静かな集まり、Letters。
             そのすべては、男性が「強く」ではなく「整って」生きるための、
             地形図と、道具と、場所です。
+          </p>
+        </div>
+
+        <div className="pt-12 mt-6 border-t border-hair-line/60">
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-6">
+            V. 通過した時間
+          </p>
+          <p className="mb-10 text-[14px] text-ink/80 leading-[2]">
+            ブランドを始める前に通過した、十数年の輪郭です。
+          </p>
+          <FounderTimeline />
+          <p className="mt-10 text-[12px] tracking-[0.06em] text-sub-gray leading-[1.95]">
+            この三幕の全体像は{" "}
+            <Link
+              href="/recoveries"
+              className="border-b border-gold hover:text-gold transition-colors"
+            >
+              Three Recoveries
+            </Link>
+            に。
           </p>
         </div>
 
