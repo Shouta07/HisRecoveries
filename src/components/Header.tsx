@@ -6,9 +6,9 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/shelf", label: "Shelf", ja: "整える道具" },
-  { href: "/articles", label: "Journal", ja: "記録" },
-  { href: "/subscribe", label: "Subscribe", ja: "購読する" },
+  { href: "/shelf", label: "整える道具", ja: "Shelf" },
+  { href: "/articles", label: "記録", ja: "Journal" },
+  { href: "/subscribe", label: "購読する", ja: "Subscribe" },
 ];
 
 const secondary = [
@@ -64,7 +64,7 @@ export default function Header() {
                   href={item.href}
                   className="inline-block py-2 hover:text-white transition-colors"
                 >
-                  <span className="logo-type italic text-[13px] tracking-[0.08em] whitespace-nowrap">
+                  <span className="font-mincho text-[14px] tracking-[0.12em] whitespace-nowrap">
                     {item.label}
                   </span>
                 </Link>
