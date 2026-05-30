@@ -5,9 +5,9 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-32 bg-cream-deep text-ink border-t border-hair-line">
-      <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-10 gap-x-8 text-sm">
+    <footer className="mt-20 sm:mt-32 bg-cream-deep text-ink border-t border-hair-line">
+      <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-12 sm:py-20">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-7 gap-x-8 text-sm">
           <Column label="読みもの">
             <FLink href="/articles">記録</FLink>
             <FLink href="/territories">悩みの章</FLink>
@@ -25,7 +25,7 @@ export default function Footer() {
           </Column>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-hair-line flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div className="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-hair-line flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <p className="logo-type text-2xl text-ink">{site.name}</p>
             <p className="mt-1 font-mincho text-xs text-sub-gray">
