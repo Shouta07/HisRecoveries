@@ -103,12 +103,12 @@ export default function HomePage() {
         <section aria-label="A Philosophy" className="relative bg-navy">
           <div className="absolute inset-0">
             <Image
-              src="/男性朝の都市風景.png"
+              src="/cityscape-dawn.png"
               alt=""
               fill
               sizes="100vw"
               priority
-              className="object-cover object-center opacity-60"
+              className="object-cover object-center opacity-65"
             />
           </div>
           <div
@@ -315,29 +315,40 @@ export default function HomePage() {
       )}
 
       {/* ─────────────────────────────────────────
-         SCENE V — Belonging (fan capture)
+         SCENE V — Belonging (fan capture, cinematic)
+         Closing dark moment with the morning-room image.
          ───────────────────────────────────────── */}
       <Reveal>
         <section
           aria-labelledby="belonging"
-          className="border-t border-hair-line bg-paper/40"
+          className="relative bg-navy"
         >
-          <div className="mx-auto max-w-[1100px] px-6 sm:px-10 py-24 sm:py-32 text-center">
-            <SectionLabel
-              en="Belonging"
-              ja="ニュースレターを受け取る"
-              number={chapterRomans[3]}
-              className="!text-center [&>div]:!justify-center [&>span]:!mx-auto"
+          <div className="absolute inset-0">
+            <Image
+              src="/room-morning.png"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-center opacity-55"
             />
+          </div>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-b from-navy/55 via-navy/75 to-navy/95"
+          />
+          <div className="relative mx-auto max-w-[1100px] px-6 sm:px-10 py-28 sm:py-40 text-center text-cream">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
+              Belonging · ニュースレターを受け取る
+            </p>
             <p
               id="belonging"
-              className="mt-10 font-mincho text-xl sm:text-2xl lg:text-3xl leading-[1.7] text-ink max-w-[32rem] mx-auto"
+              className="mt-10 font-mincho text-xl sm:text-2xl lg:text-3xl leading-[1.7] max-w-[32rem] mx-auto drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]"
             >
               月に一度か二度、
               <br className="sm:hidden" />
               新しい記録と覚え書きが届きます。
             </p>
-            <p className="mt-6 text-[13px] sm:text-sm leading-[2] text-sub-gray max-w-[30rem] mx-auto">
+            <p className="mt-6 text-[13px] sm:text-sm leading-[2] text-cream/70 max-w-[30rem] mx-auto">
               通知も煽りもありません。読まない月は読まないでください。
             </p>
 
@@ -355,7 +366,7 @@ export default function HomePage() {
                 href={site.social.threads}
                 event="subscribe_click"
                 eventProps={{ location: "home_belonging", channel: "threads" }}
-                className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
+                className="text-sm tracking-[0.12em] text-cream border border-cream/40 hover:border-gold-bright hover:text-gold-bright transition-colors px-6 py-3.5"
               >
                 Threads でフォロー
               </TrackedCTA>
