@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getAllArticles } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
 import SectionLabel from "@/components/SectionLabel";
@@ -92,6 +93,45 @@ export default function HomePage() {
           "心と余白",
         ]}
       />
+
+      {/* ─────────────────────────────────────────
+         SCENE I½ — Philosophy moment (cinematic)
+         A single quiet dark break: the one dark
+         section on a bright site (Aesop pattern).
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section aria-label="A Philosophy" className="relative bg-navy">
+          <div className="absolute inset-0">
+            <Image
+              src="/images/atmosphere-dusk.jpg"
+              alt=""
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover object-center opacity-60"
+            />
+          </div>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-b from-navy/45 via-navy/65 to-navy/90"
+          />
+          <div className="relative mx-auto max-w-[1000px] px-6 sm:px-10 py-28 sm:py-44 lg:py-52 text-center text-cream">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
+              A Philosophy
+            </p>
+            <p className="mt-10 font-mincho text-[1.65rem] sm:text-3xl lg:text-[2.4rem] leading-[1.65] tracking-[0.05em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+              男性は、強くなるのではなく、
+              <br />
+              整うのだ。
+            </p>
+            <p className="mt-10 font-mincho italic text-[13px] sm:text-sm tracking-[0.15em] text-cream/75">
+              Men are not meant to become stronger.
+              <br />
+              They are meant to become more aligned.
+            </p>
+          </div>
+        </section>
+      </Reveal>
 
       {/* ─────────────────────────────────────────
          SCENE II — Most Read (SEO/GEO traffic surface)
