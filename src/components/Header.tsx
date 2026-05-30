@@ -6,10 +6,10 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/recoveries", label: "Recoveries", ja: "三幕" },
+  { href: "/recoveries", label: "Recoveries", ja: "回復の物語" },
   { href: "/articles", label: "Journal", ja: "記録" },
   { href: "/shelf", label: "Shelf", ja: "整える道具" },
-  { href: "/territories", label: "Chapters", ja: "章" },
+  { href: "/territories", label: "Chapters", ja: "悩みの章" },
   { href: "/letters", label: "Letters", ja: "便り" },
 ];
 
