@@ -29,8 +29,25 @@ His Recoveries は、英語のブランド語彙で **Male Conditioning（男性
 ## 三層構造（読み手に提供するもの）
 
 - **Records / Presence Journal** (`/articles`) — 当事者の一人称・過去形のエッセイ
-- **Rituals / The Shelf** (`/shelf`) — 「広告」と明示したアフィリエイトの正直な棚
-- **Experiences / Quiet Gatherings** (`/events`) — 少人数・半公開の対面セッション
+- **Rituals / The Shelf** (`/shelf`) — 「広告」と明示したアフィリエイトの正直な棚（収益の中心）
+- **Experiences / Quiet Gatherings** (`/events`) — 少人数・半公開の対面セッション（補助）
+
+## 棚（The Shelf）にあるもの
+
+His Recoveries が当事者として選択肢に置いてきた整える道具。
+領域ごとに並べ、効くとは言わず、層として記載しています。
+
+### 心と余白（Mind / Awareness）— 夜の所作のための道具
+
+- **TENTIAL BAKUNE Dry — リカバリーパジャマ（上下セット）**
+  - 一般医療機器・リカバリーウェア、参考価格 ¥12,430〜（楽天）
+  - 提供：TENTIAL（テンシャル）
+  - 文脈：湯から上がって袖を通すまでの夜の儀礼を引き受ける一着
+- **Recoverypro Lab. リカバリーウェア（上下セット）**
+  - 一般医療機器・リカバリーウェア、参考価格 ¥9,522（楽天）
+  - 文脈：リカバリーウェアを入口として試す価格帯
+
+棚は領域ごとに増えていきます（汗とにおい、肌と跡、顔の印象、髪と自意識、髭と体毛、心と余白）。
 
 ## 主要 URL
 

@@ -6,12 +6,10 @@ import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TagMarquee from "@/components/TagMarquee";
 import TrackedCTA from "@/components/TrackedCTA";
-import {
-  getUpcomingEvents,
-  formatEventDate,
-  formatEventTimeRange,
-} from "@/lib/events";
+import FeaturedRituals from "@/components/FeaturedRituals";
+import ProductCard from "@/components/ProductCard";
 import { getAllTerritories } from "@/lib/territories";
+import { getAllProducts } from "@/lib/products";
 import { site } from "@/lib/site";
 
 const chapterRomans = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
@@ -20,9 +18,10 @@ export default function HomePage() {
   const articles = getAllArticles();
   const featuredArticle = articles[0];
   const sidebarArticles = articles.slice(1, 4);
-  const upcomingEvents = getUpcomingEvents();
-  const featuredEvent = upcomingEvents[0];
   const territories = getAllTerritories();
+  const products = getAllProducts();
+  const featuredProducts = products.slice(0, 2);
+  const shelfPreview = products.slice(0, 3);
 
   return (
     <>
@@ -82,12 +81,23 @@ export default function HomePage() {
               <span aria-hidden>→</span>
             </TrackedCTA>
             <TrackedCTA
+              href="/shelf"
+              event="hero_cta_click"
+              eventProps={{ target: "shelf" }}
+              className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
+            >
+              整える道具を見る
+            </TrackedCTA>
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <TrackedCTA
               href="/stories"
               event="hero_cta_click"
               eventProps={{ target: "stories" }}
-              className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
+              className="text-[12px] tracking-[0.12em] text-sub-gray hover:text-ink transition-colors underline-offset-4 hover:underline"
             >
-              回復体験を読む
+              回復体験を読む →
             </TrackedCTA>
           </div>
         </div>
@@ -150,120 +160,18 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE III — Featured Recovery Experience
-         Promoted above Presence Journal as the
-         most important offering. Otonami-register
-         editorial card, not a booking widget.
+         SCENE III — Featured Rituals
+         Affiliate exit, promoted above Presence
+         Journal. Editorial cards, not product tiles.
+         Replaces the old Featured Recovery
+         Experience slot per ops decision.
          ───────────────────────────────────────── */}
-      {featuredEvent && (
+      {featuredProducts.length > 0 && (
         <Reveal>
-          <section
-            aria-labelledby="featured-experience"
-            className="bg-paper/40 border-b border-hair-line"
-          >
-            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-32">
-              <SectionLabel
-                en="Featured Recovery Experience"
-                ja="体験"
-                number={chapterRomans[0]}
-              />
-
-              <div className="mt-12 sm:mt-16 grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
-                <Link
-                  href={`/events/${featuredEvent.slug}`}
-                  className="block group card-lift"
-                  aria-hidden
-                  tabIndex={-1}
-                >
-                  <div className="cover-zoom">
-                    <Image
-                      src={featuredEvent.cover ?? "/cover/event/quiet-grooming-beta.svg"}
-                      alt={featuredEvent.coverAlt ?? featuredEvent.title}
-                      width={1200}
-                      height={900}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                </Link>
-
-                <div>
-                  <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-                    {featuredEvent.status === "open" ? "受付中" : "Upcoming"}
-                  </p>
-                  <h3
-                    id="featured-experience"
-                    className="mt-3 font-mincho text-3xl sm:text-4xl lg:text-[2.5rem] font-medium leading-[1.4] text-ink"
-                  >
-                    <Link
-                      href={`/events/${featuredEvent.slug}`}
-                      className="hover:text-gold transition-colors"
-                    >
-                      {featuredEvent.title}
-                    </Link>
-                  </h3>
-                  <p className="mt-5 font-mincho text-lg sm:text-xl text-ink leading-[1.7]">
-                    自然に整える 90 分。
-                  </p>
-                  <p className="mt-6 font-mincho text-[15px] sm:text-base text-ink/80 leading-[2.05] max-w-[34rem]">
-                    疲れて見える印象を、
-                    無理なく整えるための小さな集まり。
-                    1 対 1 ではなく、静かに整える時間。
-                  </p>
-
-                  <dl className="mt-9 grid grid-cols-[4.5rem_1fr] gap-y-2.5 gap-x-4 text-sm border-t border-hair-line pt-6 max-w-[28rem]">
-                    <dt className="text-[11px] text-sub-gray tracking-[0.08em] pt-0.5">
-                      日時
-                    </dt>
-                    <dd className="text-ink">
-                      {formatEventDate(featuredEvent.startsAt)}
-                      <span className="block text-[11px] text-sub-gray mt-0.5">
-                        {formatEventTimeRange(
-                          featuredEvent.startsAt,
-                          featuredEvent.endsAt
-                        )}
-                      </span>
-                    </dd>
-                    <dt className="text-[11px] text-sub-gray tracking-[0.08em] pt-0.5">
-                      場所
-                    </dt>
-                    <dd className="text-ink">{featuredEvent.location}</dd>
-                    {featuredEvent.format && (
-                      <>
-                        <dt className="text-[11px] text-sub-gray tracking-[0.08em] pt-0.5">
-                          形式
-                        </dt>
-                        <dd className="text-ink">{featuredEvent.format}</dd>
-                      </>
-                    )}
-                  </dl>
-
-                  <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3">
-                    {featuredEvent.status === "open" &&
-                      featuredEvent.applyUrl && (
-                        <TrackedCTA
-                          href={featuredEvent.applyUrl}
-                          event="gathering_apply"
-                          eventProps={{
-                            event_slug: featuredEvent.slug,
-                            location: "home_featured",
-                          }}
-                          className="btn-gold"
-                        >
-                          応募する
-                          <span aria-hidden>→</span>
-                        </TrackedCTA>
-                      )}
-                    <Link
-                      href={`/events/${featuredEvent.slug}`}
-                      className="text-sm tracking-[0.1em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
-                    >
-                      詳細を見る
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          <FeaturedRituals
+            products={featuredProducts}
+            numberLabel={chapterRomans[0]}
+          />
         </Reveal>
       )}
 
@@ -370,35 +278,59 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE VI — Conditioning Rituals
+         SCENE VI — Conditioning Rituals (Shelf preview)
+         Inline 3-up product preview, not just text.
+         Discoverability of the affiliate exit.
          ───────────────────────────────────────── */}
-      <Reveal>
-        <section
-          aria-labelledby="rituals"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-20 sm:pt-28 pb-20 sm:pb-28"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-center">
-            <SectionLabel
-              en="Conditioning Rituals"
-              ja="整える道具"
-              number={chapterRomans[3]}
-            />
-            <div>
-              <p className="font-mincho text-[1rem] sm:text-lg leading-[2] text-ink/85 max-w-[28rem]">
+      {shelfPreview.length > 0 && (
+        <Reveal>
+          <section
+            aria-labelledby="rituals"
+            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-20 sm:pt-28 pb-20 sm:pb-28"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-14 items-end mb-12 sm:mb-16">
+              <SectionLabel
+                en="Conditioning Rituals"
+                ja="整える道具"
+                number={chapterRomans[3]}
+              />
+              <p
+                id="rituals"
+                className="font-mincho text-[15px] sm:text-base leading-[2] text-ink/80 max-w-[34rem] lg:pb-2"
+              >
                 使ってきたもの、合わなかったこと、迷ったこと。
+                <br className="hidden sm:inline" />
                 効くと言わずに、正直に並べる棚です。
+                <span className="block mt-3 text-[12px] text-sub-gray">
+                  ※ 広告（アフィリエイト）を含みます。
+                </span>
               </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {shelfPreview.map((p) => (
+                <ProductCard key={p.slug} product={p} />
+              ))}
+            </div>
+
+            <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 justify-end">
+              <Link
+                href="/disclosure"
+                className="text-[11px] tracking-[0.06em] text-sub-gray hover:text-ink transition-colors"
+              >
+                広告・アフィリエイト方針
+              </Link>
               <Link
                 href="/shelf"
-                className="mt-7 inline-flex items-center gap-3 text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
               >
-                棚を見る
-                <span aria-hidden>→</span>
+                棚をすべて見る
+                <span aria-hidden> →</span>
               </Link>
             </div>
-          </div>
-        </section>
-      </Reveal>
+          </section>
+        </Reveal>
+      )}
 
       {/* ─────────────────────────────────────────
          SCENE VII — Belonging

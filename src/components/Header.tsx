@@ -7,8 +7,8 @@ import { site } from "@/lib/site";
 
 const nav = [
   { href: "/articles", label: "Journal", ja: "記録" },
-  { href: "/events", label: "Experiences", ja: "体験" },
-  { href: "/shelf", label: "Rituals", ja: "道具" },
+  { href: "/shelf", label: "Shelf", ja: "整える道具" },
+  { href: "/territories", label: "Chapters", ja: "章" },
   { href: "/letters", label: "Letters", ja: "便り" },
   { href: "/about", label: "Philosophy", ja: "思想" },
 ];
@@ -17,7 +17,7 @@ const secondary = [
   { href: "/manifesto", label: "Manifesto — 男性の回復について" },
   { href: "/founder", label: "Founder's Note — なぜ始めたか" },
   { href: "/concierge", label: "Recovery Concierge — 1 対 1 の対話" },
-  { href: "/territories", label: "Chapters — 章" },
+  { href: "/events", label: "Experiences — 静かな集まり" },
   { href: "/reflect", label: "Reflect — 整理する" },
   { href: "/stories", label: "Stories — 回復の記録" },
   { href: "/subscribe", label: "Subscribe — ニュースレター" },
