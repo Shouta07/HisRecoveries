@@ -48,27 +48,6 @@ export default function SubscribePage() {
             <span aria-hidden>→</span>
           </a>
         </div>
-
-        <p className="mt-16 text-sm text-sub-gray leading-[2]">
-          メールでの直接の連絡は{" "}
-          <a
-            href={`mailto:${site.email}`}
-            className="border-b border-hair-line hover:border-ink transition-colors"
-          >
-            {site.email}
-          </a>{" "}
-          まで。
-          <br />
-          Atom フィードは{" "}
-          <a
-            href="/feed.xml"
-            className="border-b border-hair-line hover:border-ink transition-colors"
-          >
-            /feed.xml
-          </a>
-          。
-        </p>
-
       </div>
     </div>
   );
