@@ -9,19 +9,21 @@ const config: Config = {
     extend: {
       colors: {
         // Chic dark sophisticated palette — high-end men register
+        // Contrast-tuned so text and borders stay readable on the
+        // deep warm body.
         cream: "#1A130D",
         "cream-deep": "#0E0A07",
-        paper: "#241B12",
-        ink: "#E8DCBF",
-        "sub-gray": "#9B8B6E",
-        "hair-line": "#3D3225",
-        navy: "#100A06",
-        "navy-deep": "#080503",
-        gold: "#B89169",
-        "gold-bright": "#D9B584",
+        paper: "#2A2018",
+        ink: "#F2E7CB",
+        "sub-gray": "#B5A380",
+        "hair-line": "#5A4A36",
+        navy: "#0E0805",
+        "navy-deep": "#070402",
+        gold: "#C9A37C",
+        "gold-bright": "#E2C49A",
         // Legacy aliases
         "off-white": "#1A130D",
-        "quiet-brass": "#B89169",
+        "quiet-brass": "#C9A37C",
       },
       fontFamily: {
         sans: [
