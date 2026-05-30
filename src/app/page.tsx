@@ -4,6 +4,7 @@ import ArticleCard from "@/components/ArticleCard";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
+import TagMarquee from "@/components/TagMarquee";
 import ProductShowcase from "@/components/ProductShowcase";
 import { getAllProducts } from "@/lib/products";
 import { site } from "@/lib/site";
@@ -73,6 +74,24 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Quiet horizontal current — brand vocabulary
+          + the 6 chapters drifting slowly */}
+      <TagMarquee
+        items={[
+          "Male Conditioning",
+          "Recover Your Presence",
+          "Quiet Grooming",
+          "Social Recovery",
+          "Quiet Masculinity",
+          "汗とにおい",
+          "肌と跡",
+          "顔の印象",
+          "髪と自意識",
+          "髭と体毛",
+          "心と余白",
+        ]}
+      />
 
       {/* ─────────────────────────────────────────
          SCENE II — Most Read (SEO/GEO traffic surface)
