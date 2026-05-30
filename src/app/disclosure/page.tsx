@@ -51,13 +51,6 @@ export default function DisclosurePage() {
           当メディアは医療機関ではありません。掲載する内容は、特定の効果・効能を保証するものではなく、診断や治療の代わりになるものでもありません。
           身体に関する判断は、必要に応じて医師など専門家に相談してください。効果には個人差があります。
         </p>
-
-        <h2>お問い合わせ</h2>
-        <p>
-          広告・アフィリエイトに関するご質問は、{" "}
-          <a href={`mailto:${site.email}`}>{site.email}</a>{" "}
-          までお願いします。
-        </p>
       </div>
 
       <div className="mt-16 pt-8 border-t border-hair-line text-sm">
