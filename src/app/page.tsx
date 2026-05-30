@@ -4,7 +4,7 @@ import ArticleCard from "@/components/ArticleCard";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
-import ProductCard from "@/components/ProductCard";
+import ProductShowcase from "@/components/ProductShowcase";
 import { getAllProducts } from "@/lib/products";
 import { site } from "@/lib/site";
 
@@ -19,7 +19,9 @@ export default function HomePage() {
     return (flagged.length > 0 ? flagged : articles).slice(0, 3);
   })();
   const products = getAllProducts();
-  const shelfPreview = products.slice(0, 3);
+  // Showcase carousel — scroll-snap horizontal. Up to 6 to keep
+  // pagination meaningful as the catalog grows.
+  const shelfPreview = products.slice(0, 6);
 
   return (
     <>
@@ -203,7 +205,9 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE IV — Conditioning Rituals (more CVR)
+         SCENE IV — Conditioning Rituals Showcase
+         Aesop-style horizontal carousel: large
+         editorial cards with snap scroll.
          ───────────────────────────────────────── */}
       {shelfPreview.length > 0 && (
         <Reveal>
@@ -230,11 +234,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {shelfPreview.map((p) => (
-                <ProductCard key={p.slug} product={p} />
-              ))}
-            </div>
+            <ProductShowcase products={shelfPreview} />
 
             <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 justify-end">
               <Link
