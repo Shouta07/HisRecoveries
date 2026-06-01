@@ -20,7 +20,10 @@ export default function MediaClient({ articles }: Props) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [info, setInfo] = useState<string>("");
   const [dragging, setDragging] = useState(false);
+  // Default ON: an upload also gets stitched into the article body and saved.
+  const [autoInsert, setAutoInsert] = useState(true);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const articleTitle = useMemo(
@@ -64,19 +67,52 @@ export default function MediaClient({ articles }: Props) {
     return data as StoredFile & { path: string };
   }
 
+  async function insertIntoArticle(
+    url: string,
+    action: "append" | "cover"
+  ): Promise<string | null> {
+    const res = await fetch(
+      `/api/admin/articles/${encodeURIComponent(slug)}/insert`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url, action }),
+      }
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error ?? "insert failed");
+    }
+    return data.commit ?? null;
+  }
+
   async function handleFiles(list: FileList | File[]) {
     const incoming = Array.from(list);
     if (!incoming.length) return;
     setUploading(true);
     setError("");
+    setInfo("");
     let done = 0;
+    let lastCommit: string | null = null;
     for (const f of incoming) {
       setProgress(`${done + 1} / ${incoming.length} — ${f.name}`);
       try {
-        await uploadOne(f);
+        const uploaded = await uploadOne(f);
+        if (autoInsert) {
+          try {
+            lastCommit = await insertIntoArticle(uploaded.url, "append");
+          } catch (e) {
+            setError(
+              `${f.name}：アップロードは成功しましたが本文追加に失敗：${
+                e instanceof Error ? e.message : "insert failed"
+              }`
+            );
+            break;
+          }
+        }
       } catch (e) {
         setError(
-          `${f.name}: ${e instanceof Error ? e.message : "upload failed"}`
+          `${f.name}：${e instanceof Error ? e.message : "upload failed"}`
         );
         break;
       }
@@ -84,7 +120,36 @@ export default function MediaClient({ articles }: Props) {
     }
     setUploading(false);
     setProgress("");
+    if (done > 0 && autoInsert && lastCommit) {
+      setInfo(
+        `${done} ファイルを本文に追加しました（${lastCommit.slice(
+          0,
+          7
+        )}） · Vercel が 1〜2 分で再デプロイ`
+      );
+    } else if (done > 0) {
+      setInfo(`${done} ファイルをアップロードしました`);
+    }
     refresh();
+  }
+
+  async function handleInsert(
+    file: StoredFile,
+    action: "append" | "cover"
+  ) {
+    setError("");
+    setInfo("");
+    try {
+      const commit = await insertIntoArticle(file.url, action);
+      setInfo(
+        `${action === "cover" ? "カバーに設定" : "本文に追加"}しました（${commit?.slice(
+          0,
+          7
+        ) ?? "ok"}） · Vercel が 1〜2 分で再デプロイ`
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "insert failed");
+    }
   }
 
   async function handleDelete(path: string) {
@@ -127,9 +192,7 @@ export default function MediaClient({ articles }: Props) {
   }
 
   function markdownSnippet(file: StoredFile) {
-    if (isImage(file)) {
-      return `![](${file.url})`;
-    }
+    if (isImage(file)) return `![](${file.url})`;
     if (isVideo(file)) {
       return `<video src="${file.url}" controls preload="metadata"></video>`;
     }
@@ -139,7 +202,7 @@ export default function MediaClient({ articles }: Props) {
   return (
     <>
       {/* Article picker */}
-      <div className="mb-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 sm:gap-4 items-end">
+      <div className="mb-6 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 sm:gap-4 items-end">
         <label className="block">
           <span className="text-[12px] tracking-[0.1em] text-sub-gray uppercase">
             Article
@@ -170,6 +233,19 @@ export default function MediaClient({ articles }: Props) {
         </button>
       </div>
 
+      {/* Auto-insert toggle */}
+      <div className="mb-4 flex items-center justify-end">
+        <label className="inline-flex items-center gap-2 text-[12px] text-ink cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={autoInsert}
+            onChange={(e) => setAutoInsert(e.target.checked)}
+            className="accent-gold"
+          />
+          アップロード時に自動で本文末尾に追加（保存も同時に実行）
+        </label>
+      </div>
+
       {/* Drop zone */}
       <div
         onDragOver={(e) => {
@@ -183,9 +259,7 @@ export default function MediaClient({ articles }: Props) {
           if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
         }}
         className={`border-2 border-dashed p-10 sm:p-14 text-center transition-colors ${
-          dragging
-            ? "border-gold bg-paper"
-            : "border-hair-line bg-paper/50"
+          dragging ? "border-gold bg-paper" : "border-hair-line bg-paper/50"
         }`}
       >
         <p className="font-mincho text-lg text-ink">
@@ -202,6 +276,11 @@ export default function MediaClient({ articles }: Props) {
           </button>
           （画像 / 動画、1 ファイル 4MB まで）
         </p>
+        {autoInsert && (
+          <p className="mt-3 text-[11px] tracking-[0.06em] text-gold">
+            ※ アップロード後、自動で「{articleTitle}」の本文末尾に追加されます
+          </p>
+        )}
         <input
           ref={fileInput}
           type="file"
@@ -216,15 +295,20 @@ export default function MediaClient({ articles }: Props) {
 
         {uploading && (
           <p className="mt-6 text-[12px] text-gold tracking-[0.06em]">
-            アップロード中… {progress}
-          </p>
-        )}
-        {error && (
-          <p className="mt-6 text-[12px] text-red-600 tracking-[0.06em]">
-            {error}
+            処理中… {progress}
           </p>
         )}
       </div>
+
+      {/* Inline status */}
+      {info && (
+        <p className="mt-5 text-[12px] text-gold tracking-[0.06em]">{info}</p>
+      )}
+      {error && (
+        <p className="mt-5 text-[12px] text-red-600 tracking-[0.06em]">
+          {error}
+        </p>
+      )}
 
       {/* File list */}
       <section className="mt-12">
@@ -232,9 +316,7 @@ export default function MediaClient({ articles }: Props) {
           <h2 className="font-mincho text-xl text-ink">
             「{articleTitle}」のメディア
           </h2>
-          <p className="text-[11px] text-sub-gray">
-            {files.length} ファイル
-          </p>
+          <p className="text-[11px] text-sub-gray">{files.length} ファイル</p>
         </header>
 
         {files.length === 0 && !loading && (
@@ -278,24 +360,47 @@ export default function MediaClient({ articles }: Props) {
                 <p className="mt-1 text-[11px] text-sub-gray">
                   {f.size ? `${(f.size / 1024).toFixed(0)} KB` : ""}
                   {isCoverName(f.name) && (
-                    <span className="ml-2 text-gold">· この画像が記事カバーになります</span>
+                    <span className="ml-2 text-gold">
+                      · 規約ファイル名（cover）
+                    </span>
                   )}
                 </p>
 
+                {/* Insert actions — the new primary path */}
                 <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => handleInsert(f, "append")}
+                    className="text-[11px] tracking-[0.06em] bg-ink text-cream hover:bg-gold px-3 py-1.5 transition-colors"
+                  >
+                    本文末尾に追加
+                  </button>
+                  {isImage(f) && (
+                    <button
+                      type="button"
+                      onClick={() => handleInsert(f, "cover")}
+                      className="text-[11px] tracking-[0.06em] border border-hair-line hover:border-gold hover:text-gold px-3 py-1.5 transition-colors"
+                    >
+                      カバーに設定
+                    </button>
+                  )}
+                </div>
+
+                {/* Secondary actions */}
+                <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
                   <button
                     type="button"
                     onClick={() => copyText(f.url)}
                     className="border border-hair-line hover:border-gold hover:text-gold px-2 py-1 transition-colors"
                   >
-                    URL コピー
+                    URL
                   </button>
                   <button
                     type="button"
                     onClick={() => copyText(markdownSnippet(f))}
                     className="border border-hair-line hover:border-gold hover:text-gold px-2 py-1 transition-colors"
                   >
-                    Markdown コピー
+                    Markdown
                   </button>
                   <a
                     href={f.url}
@@ -328,19 +433,18 @@ export default function MediaClient({ articles }: Props) {
         </h2>
         <ol className="font-mincho text-[14px] leading-[2] text-ink/85 list-decimal pl-5 space-y-2 max-w-[40rem]">
           <li>
-            上の Article で対象の記事を選ぶ。
+            Article で対象記事を選ぶ。
           </li>
           <li>
-            画像をドロップ。ファイル名を{" "}
-            <code>cover.png</code> / <code>cover.jpg</code> / <code>cover.webp</code> にすると、
-            自動的にその記事のカバー画像になります（frontmatter 編集不要）。
+            画像・動画をドロップ →
+            自動で記事本文末尾に追加 + GitHub に保存 + Vercel 自動デプロイ。
           </li>
           <li>
-            本文に挿入したい場合は、各カードの「Markdown コピー」を押して、
-            記事の markdown 本文に貼ってください。
+            すでに上がっている画像は各カードの
+            「本文末尾に追加」または「カバーに設定」で挿入できます。
           </li>
           <li>
-            長尺動画は YouTube にアップロード → 記事に URL を貼る だけで自動埋め込みになります。
+            長尺動画は YouTube にアップ → 記事編集画面で URL を貼ると自動埋め込み。
           </li>
         </ol>
       </section>
