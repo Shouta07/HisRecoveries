@@ -29,10 +29,7 @@ export default function ArticlesAdminPage() {
             選択して編集 · 保存すると GitHub にコミット → 1〜2 分で本番に反映
           </p>
         </div>
-        <Link
-          href="/admin/articles/new"
-          className="btn-gold whitespace-nowrap"
-        >
+        <Link href="/admin/edit/new" className="btn-gold whitespace-nowrap">
           新規作成
         </Link>
       </header>
@@ -43,7 +40,7 @@ export default function ArticlesAdminPage() {
         {articles.map((a) => (
           <li key={a.slug} className="border-b border-hair-line">
             <Link
-              href={`/admin/articles/${a.slug}/edit`}
+              href={`/admin/edit/${a.slug}`}
               className="group grid grid-cols-[1fr_auto] gap-4 sm:gap-6 items-baseline py-5 sm:py-6 hover:bg-paper/60 transition-colors px-2 sm:px-3"
             >
               <div>
