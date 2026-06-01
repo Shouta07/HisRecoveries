@@ -7,7 +7,8 @@ import type { NextRequest } from "next/server";
  * Password: env ADMIN_PASSWORD
  */
 export function middleware(req: NextRequest) {
-  if (!req.nextUrl.pathname.startsWith("/admin")) {
+  const p = req.nextUrl.pathname;
+  if (!p.startsWith("/admin") && !p.startsWith("/api/admin")) {
     return NextResponse.next();
   }
 
@@ -42,5 +43,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: "/admin/:path*",
+  matcher: ["/admin/:path*", "/api/admin/:path*"],
 };

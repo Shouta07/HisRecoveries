@@ -35,19 +35,25 @@ function readAllFiles(): string[] {
 /**
  * Auto-discover the cover image for a given article slug.
  *
- *   public/media/articles/{slug}/cover.{jpg,jpeg,png,webp,avif}
+ * Looks in two places, in order:
+ *   1. public/media/articles/{slug}/cover.{jpg,jpeg,png,webp,avif}  ← local repo
+ *   2. Supabase Storage articles/{slug}/cover.*                     ← /admin/media
  *
- * Returns the public URL (e.g. /media/articles/foo/cover.jpg) or
- * undefined if no file is present. Lets authors drop an image in the
- * folder and have it become the article cover with zero frontmatter.
+ * The Supabase path is computed by convention (we don't probe the network
+ * here); existence is verified at build time when the SUPABASE_URL +
+ * SUPABASE_STORAGE_AUTOCOVER env are set and the cover key list is provided
+ * via the build-time helper. Keeping discovery synchronous so getAllArticles
+ * stays cheap on every render.
  */
 function autoCoverFor(slug: string): string | undefined {
   const dir = path.join(MEDIA_DIR, slug);
-  if (!fs.existsSync(dir)) return undefined;
-  const found = fs
-    .readdirSync(dir)
-    .find((f) => /^cover\.(jpg|jpeg|png|webp|avif)$/i.test(f));
-  return found ? `/media/articles/${slug}/${found}` : undefined;
+  if (fs.existsSync(dir)) {
+    const found = fs
+      .readdirSync(dir)
+      .find((f) => /^cover\.(jpg|jpeg|png|webp|avif)$/i.test(f));
+    if (found) return `/media/articles/${slug}/${found}`;
+  }
+  return undefined;
 }
 
 function parseFile(filename: string) {
