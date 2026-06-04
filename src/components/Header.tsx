@@ -6,8 +6,9 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/shelf", label: "整える道具", ja: "Shelf" },
+  { href: "/concerns", label: "悩み票", ja: "Concerns" },
   { href: "/articles", label: "記録", ja: "Journal" },
+  { href: "/shelf", label: "整える道具", ja: "Shelf" },
   { href: "/subscribe", label: "購読する", ja: "Subscribe" },
 ];
 
