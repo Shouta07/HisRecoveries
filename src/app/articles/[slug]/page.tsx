@@ -12,6 +12,7 @@ import ArticleConversion from "@/components/ArticleConversion";
 import ProductCard from "@/components/ProductCard";
 import { getUpcomingEvents, formatEventDate } from "@/lib/events";
 import { getProductsForCategory } from "@/lib/products";
+import { getConcernsForArticle } from "@/lib/concerns";
 import { categories, categoryLabel, site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -53,6 +54,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
   const related = getRelatedArticles(article);
   const relatedProducts = getProductsForCategory(article.category).slice(0, 3);
+  const parentConcerns = getConcernsForArticle(article.slug);
   const openEvent = getUpcomingEvents().find((e) => e.status === "open");
   const conversionEvent =
     openEvent && openEvent.applyUrl
@@ -220,6 +222,34 @@ export default async function ArticlePage({ params }: { params: Params }) {
         className="article-body font-mincho"
         dangerouslySetInnerHTML={{ __html: article.contentHtml }}
       />
+
+      {parentConcerns.length > 0 && (
+        <section className="mt-24 border-t border-hair-line pt-10">
+          <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
+            Appears in
+          </p>
+          <h2 className="mt-3 font-mincho text-lg sm:text-xl text-ink leading-[1.55]">
+            この記録が紐づく悩み票
+          </h2>
+          <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {parentConcerns.map((c) => (
+              <li key={c.slug}>
+                <Link
+                  href={`/concerns/${c.slug}`}
+                  className="group block border border-hair-line bg-paper/40 p-4 hover:border-gold transition-colors"
+                >
+                  <p className="text-[11px] tracking-[0.1em] text-gold">
+                    #{c.ticketId}
+                  </p>
+                  <p className="mt-1.5 font-mincho text-[14px] text-ink leading-[1.55] group-hover:text-gold transition-colors">
+                    {c.title}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {relatedProducts.length > 0 && (
         <section className="mt-24 border-t border-hair-line pt-12">

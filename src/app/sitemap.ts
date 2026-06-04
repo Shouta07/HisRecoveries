@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
 import { getAllEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
+import { getAllConcerns } from "@/lib/concerns";
 import { categories, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -17,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/events",
     "/concierge",
     "/territories",
+    "/concerns",
     "/shelf",
     "/reflect",
     "/assessment",
@@ -63,11 +65,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const concernPaths: MetadataRoute.Sitemap = getAllConcerns().map((c) => ({
+    url: `${site.url}/concerns/${c.slug}`,
+    lastModified: new Date(c.opened),
+    changeFrequency: "weekly",
+    priority: 0.9,
+  }));
+
   return [
     ...staticPaths,
     ...categoryPaths,
     ...articlePaths,
     ...eventPaths,
     ...territoryPaths,
+    ...concernPaths,
   ];
 }

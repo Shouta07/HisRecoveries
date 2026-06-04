@@ -7,6 +7,7 @@ import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
 import TagMarquee from "@/components/TagMarquee";
 import ProductShowcase from "@/components/ProductShowcase";
+import { getAllConcerns } from "@/lib/concerns";
 import { getAllProducts } from "@/lib/products";
 import { site } from "@/lib/site";
 
@@ -20,6 +21,9 @@ export default function HomePage() {
     const flagged = articles.filter((a) => a.popular);
     return (flagged.length > 0 ? flagged : articles).slice(0, 3);
   })();
+  // Concerns on the home — 6 most-recently-opened tickets as the
+  // primary entry surface (the "ticket-style" pivot per ops brief).
+  const homeConcerns = getAllConcerns().slice(0, 6);
   const products = getAllProducts();
   // Showcase carousel — scroll-snap horizontal. Up to 6 to keep
   // pagination meaningful as the catalog grows.
@@ -132,6 +136,84 @@ export default function HomePage() {
           </div>
         </section>
       </Reveal>
+
+      {/* ─────────────────────────────────────────
+         SCENE Iƒ — Concerns（悩み票）
+         The new primary entry surface. Each card is a
+         felt-language concern that aggregates voices,
+         records, options and shelf items in one place.
+         ───────────────────────────────────────── */}
+      {homeConcerns.length > 0 && (
+        <Reveal>
+          <section
+            aria-labelledby="home-concerns"
+            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-14 sm:pt-32 pb-14 sm:pb-20"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-14">
+              <div>
+                <p className="logo-type italic text-[11px] sm:text-[12px] tracking-[0.4em] uppercase text-gold">
+                  Concerns
+                </p>
+                <h2
+                  id="home-concerns"
+                  className="mt-4 font-mincho text-2xl sm:text-4xl text-ink leading-[1.4]"
+                >
+                  悩み票
+                </h2>
+              </div>
+              <p className="font-mincho text-[14px] sm:text-[15px] text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2">
+                His Recoveries は、悩みごとに「場所」を持っています。
+                <br className="hidden sm:inline" />
+                そこには、当事者の声と、記録と、選択肢の地形図があります。
+              </p>
+            </div>
+
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {homeConcerns.map((c) => (
+                <li key={c.slug}>
+                  <Link
+                    href={`/concerns/${c.slug}`}
+                    className="group block h-full bg-paper border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors card-lift"
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="logo-type italic text-[12px] tracking-[0.25em] text-gold">
+                        #{c.ticketId}
+                      </span>
+                      <span className="text-[10px] tracking-[0.1em] text-sub-gray uppercase">
+                        {c.status}
+                      </span>
+                    </div>
+                    <h3 className="mt-5 font-mincho text-base sm:text-lg text-ink leading-[1.55] group-hover:text-gold transition-colors">
+                      {c.title}
+                    </h3>
+                    {c.excerpt && (
+                      <p className="mt-4 font-mincho text-[13px] sm:text-[13.5px] text-ink/75 leading-[2] line-clamp-3">
+                        {c.excerpt}
+                      </p>
+                    )}
+                    <p className="mt-5 text-[11px] tracking-[0.06em] text-sub-gray">
+                      {c.articles.length} 件の記録
+                      {c.voices.length > 0 && (
+                        <span> · {c.voices.length} の声</span>
+                      )}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-10 sm:mt-12 flex justify-end">
+              <Link
+                href="/concerns"
+                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+              >
+                すべての悩み票を見る
+                <span aria-hidden> →</span>
+              </Link>
+            </div>
+          </section>
+        </Reveal>
+      )}
 
       {/* ─────────────────────────────────────────
          SCENE II — Most Read (SEO/GEO traffic surface)
