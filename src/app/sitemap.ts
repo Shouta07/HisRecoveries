@@ -19,13 +19,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/concierge",
     "/territories",
     "/concerns",
-    "/shelf",
     "/reflect",
     "/assessment",
     "/stories",
     "/submit-story",
     "/subscribe",
-    "/disclosure",
     "/privacy",
     "/legal",
   ].map((p) => ({

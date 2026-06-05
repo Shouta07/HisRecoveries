@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import TerritoryArt from "@/components/TerritoryArt";
-import ProductCard from "@/components/ProductCard";
 import {
   getAllTerritorySlugs,
   getTerritory,
 } from "@/lib/territories";
 import { getAllArticles } from "@/lib/articles";
-import { getProductsByTerritory } from "@/lib/products";
 import { site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -53,7 +51,6 @@ export default async function TerritoryPage({
   const relatedArticles = allArticles.filter((a) =>
     t.categories.includes(a.category)
   );
-  const relatedProducts = getProductsByTerritory(t.slug);
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -136,40 +133,7 @@ export default async function TerritoryPage({
             dangerouslySetInnerHTML={{ __html: t.contentHtml }}
           />
 
-          {relatedProducts.length > 0 && (
-            <div className="mt-12 pt-10 border-t border-hair-line">
-              <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
-                The Shelf
-              </p>
-              <h2 className="mt-3 font-mincho text-xl text-ink leading-[1.55]">
-                この領域で、整えるための道具
-              </h2>
-              <p className="mt-2 text-[11px] text-sub-gray leading-[1.8]">
-                ※ 広告（アフィリエイト）を含みます。{" "}
-                <Link
-                  href="/disclosure"
-                  className="border-b border-gold hover:text-gold transition-colors"
-                >
-                  方針
-                </Link>
-              </p>
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {relatedProducts.slice(0, 4).map((p) => (
-                  <ProductCard key={p.slug} product={p} />
-                ))}
-              </div>
-              {relatedProducts.length > 4 && (
-                <div className="mt-5">
-                  <Link
-                    href="/shelf"
-                    className="text-sm text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
-                  >
-                    棚をすべて見る →
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
+
 
           {relatedArticles.length > 0 && (
             <div className="mt-12 pt-10 border-t border-hair-line">

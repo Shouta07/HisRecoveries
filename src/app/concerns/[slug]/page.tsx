@@ -7,9 +7,7 @@ import {
   getAllConcerns,
 } from "@/lib/concerns";
 import { getAllArticles } from "@/lib/articles";
-import { getAllProducts } from "@/lib/products";
 import { getAllTerritories } from "@/lib/territories";
-import ProductCard from "@/components/ProductCard";
 import { site, categoryLabel } from "@/lib/site";
 
 type Params = { slug: string };
@@ -45,7 +43,6 @@ export default async function ConcernPage({ params }: { params: Params }) {
   if (!concern) notFound();
 
   const allArticles = getAllArticles();
-  const allProducts = getAllProducts();
   const territory = getAllTerritories().find(
     (t) => t.slug === concern.territory
   );
@@ -53,10 +50,6 @@ export default async function ConcernPage({ params }: { params: Params }) {
   const relatedArticles = concern.articles
     .map((slug) => allArticles.find((a) => a.slug === slug))
     .filter((a): a is NonNullable<typeof a> => Boolean(a));
-
-  const relatedShelf = concern.shelfRefs
-    .map((slug) => allProducts.find((p) => p.slug === slug))
-    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   // Sibling concerns in the same territory for the bottom nav
   const siblings = getAllConcerns()
@@ -290,28 +283,6 @@ export default async function ConcernPage({ params }: { params: Params }) {
               </li>
             ))}
           </ul>
-        </section>
-      )}
-
-      {/* Shelf */}
-      {relatedShelf.length > 0 && (
-        <section className="mb-16 sm:mb-20">
-          <header className="mb-6 border-b border-hair-line pb-3 flex items-baseline justify-between gap-4">
-            <h2 className="font-mincho text-lg sm:text-xl text-ink">
-              関連する道具
-            </h2>
-            <Link
-              href="/disclosure"
-              className="text-[11px] tracking-[0.06em] text-sub-gray hover:text-ink transition-colors"
-            >
-              広告・アフィリエイト方針 →
-            </Link>
-          </header>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {relatedShelf.map((p) => (
-              <ProductCard key={p.slug} product={p} />
-            ))}
-          </div>
         </section>
       )}
 
