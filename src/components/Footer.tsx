@@ -7,16 +7,12 @@ export default function Footer() {
   return (
     <footer className="mt-20 sm:mt-32 bg-cream-deep text-ink border-t border-hair-line">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-12 sm:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-7 gap-x-8 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-7 gap-x-8 text-sm">
           <Column label="読みもの">
+            <FLink href="/concerns">悩み票</FLink>
             <FLink href="/articles">記録</FLink>
             <FLink href="/territories">悩みの章</FLink>
             <FLink href="/recoveries">回復の物語</FLink>
-          </Column>
-
-          <Column label="道具">
-            <FLink href="/shelf">整える道具の棚</FLink>
-            <FLink href="/disclosure">広告・アフィリエイト方針</FLink>
           </Column>
 
           <Column label="つながる">

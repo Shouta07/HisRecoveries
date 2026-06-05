@@ -8,7 +8,6 @@ import { site } from "@/lib/site";
 const nav = [
   { href: "/concerns", label: "悩み票", ja: "Concerns" },
   { href: "/articles", label: "記録", ja: "Journal" },
-  { href: "/shelf", label: "整える道具", ja: "Shelf" },
   { href: "/subscribe", label: "購読する", ja: "Subscribe" },
 ];
 
@@ -22,7 +21,6 @@ const secondary = [
   { href: "/concierge", label: "Recovery Concierge — 1 対 1 の対話" },
   { href: "/events", label: "Experiences — 静かな集まり" },
   { href: "/reflect", label: "Reflect — 整理する" },
-  { href: "/disclosure", label: "広告・アフィリエイト方針" },
 ];
 
 export default function Header() {

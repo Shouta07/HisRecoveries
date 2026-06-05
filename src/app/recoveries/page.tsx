@@ -270,10 +270,10 @@ export default function RecoveriesPage() {
 
             <div className="mt-12 sm:mt-14 flex flex-wrap gap-x-6 gap-y-3 text-sm">
               <Link
-                href="/shelf"
+                href="/concerns"
                 className="text-white border-b border-gold-bright pb-0.5 hover:text-gold-bright transition-colors"
               >
-                The Shelf を見る →
+                悩み票を見る →
               </Link>
               <Link
                 href="/articles/the-architecture-of-night"
@@ -387,10 +387,10 @@ export default function RecoveriesPage() {
               回復を始める <span aria-hidden>→</span>
             </Link>
             <Link
-              href="/shelf"
+              href="/concerns"
               className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
             >
-              整える道具を見る
+              悩み票を見る
             </Link>
           </div>
 

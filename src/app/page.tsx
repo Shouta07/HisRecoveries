@@ -6,9 +6,7 @@ import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
 import TagMarquee from "@/components/TagMarquee";
-import ProductShowcase from "@/components/ProductShowcase";
 import { getAllConcerns } from "@/lib/concerns";
-import { getAllProducts } from "@/lib/products";
 import { site } from "@/lib/site";
 
 const chapterRomans = ["I", "II", "III", "IV"];
@@ -24,16 +22,11 @@ export default function HomePage() {
   // Concerns on the home — 6 most-recently-opened tickets as the
   // primary entry surface (the "ticket-style" pivot per ops brief).
   const homeConcerns = getAllConcerns().slice(0, 6);
-  const products = getAllProducts();
-  // Showcase carousel — scroll-snap horizontal. Up to 6 to keep
-  // pagination meaningful as the catalog grows.
-  const shelfPreview = products.slice(0, 6);
 
   return (
     <>
       {/* ─────────────────────────────────────────
          SCENE I — Hero
-         Two CTAs only: Subscribe (fans) and Shelf (CVR).
          ───────────────────────────────────────── */}
       <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-14 sm:pt-36 pb-14 sm:pb-28 text-center">
         <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold">
@@ -69,12 +62,12 @@ export default function HomePage() {
               <span aria-hidden>→</span>
             </TrackedCTA>
             <TrackedCTA
-              href="/shelf"
+              href="/concerns"
               event="hero_cta_click"
-              eventProps={{ target: "shelf" }}
+              eventProps={{ target: "concerns" }}
               className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
             >
-              整える道具を見る
+              悩み票を見る
             </TrackedCTA>
           </div>
         </div>
@@ -344,57 +337,6 @@ export default function HomePage() {
           </div>
         </section>
       </Reveal>
-
-      {/* ─────────────────────────────────────────
-         SCENE IV — Conditioning Rituals Showcase
-         Aesop-style horizontal carousel: large
-         editorial cards with snap scroll.
-         ───────────────────────────────────────── */}
-      {shelfPreview.length > 0 && (
-        <Reveal>
-          <section
-            aria-labelledby="rituals"
-            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-14 sm:pt-28 pb-14 sm:pb-28"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-16">
-              <SectionLabel
-                en="Conditioning Rituals"
-                ja="整える道具の棚"
-                number={chapterRomans[2]}
-              />
-              <p
-                id="rituals"
-                className="font-mincho text-[14px] sm:text-base leading-[1.95] text-ink/80 max-w-[34rem] lg:pb-2"
-              >
-                当事者として実際に選択肢に置いてきた整える道具。
-                <br className="hidden sm:inline" />
-                効くとは言わず、層として並べます。
-                <span className="block mt-2 text-[12px] text-sub-gray">
-                  ※ 広告（アフィリエイト）を含みます。
-                </span>
-              </p>
-            </div>
-
-            <ProductShowcase products={shelfPreview} />
-
-            <div className="mt-8 sm:mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 justify-end">
-              <Link
-                href="/disclosure"
-                className="text-[11px] tracking-[0.06em] text-sub-gray hover:text-ink transition-colors"
-              >
-                広告・アフィリエイト方針
-              </Link>
-              <Link
-                href="/shelf"
-                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
-              >
-                棚をすべて見る
-                <span aria-hidden> →</span>
-              </Link>
-            </div>
-          </section>
-        </Reveal>
-      )}
 
       {/* ─────────────────────────────────────────
          SCENE V — Belonging (fan capture, cinematic)

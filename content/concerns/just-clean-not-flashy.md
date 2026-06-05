@@ -31,9 +31,7 @@ options:
     note: "清潔感は、朝より、前夜の整えで作られる"
   - label: "現状維持"
     note: "焦って試さない時間も、整え方"
-shelfRefs:
-  - "tential-bakune-dry"
-  - "recoverypro-lab"
+shelfRefs: []
 voices: []
 ---
 

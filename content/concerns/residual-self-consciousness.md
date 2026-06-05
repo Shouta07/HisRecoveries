@@ -26,9 +26,7 @@ options:
     note: "カウンセリングを含む"
   - label: "時間に任せる"
     note: "急いで完成させない"
-shelfRefs:
-  - "tential-bakune-dry"
-  - "recoverypro-lab"
+shelfRefs: []
 voices: []
 ---
 

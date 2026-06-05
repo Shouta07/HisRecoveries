@@ -26,9 +26,7 @@ options:
     note: "夜の輪郭を、目で整える"
   - label: "通知を切る"
     note: "夜の三十分を、自分のために空ける"
-shelfRefs:
-  - "tential-bakune-dry"
-  - "recoverypro-lab"
+shelfRefs: []
 voices: []
 ---
 

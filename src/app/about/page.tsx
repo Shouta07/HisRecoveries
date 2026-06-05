@@ -29,8 +29,8 @@ const FAQ = [
     a: "汗・におい、肌・ニキビ、顔の印象、心と自意識、薄毛・AGA、髭・体毛、の 6 領域です。SEO 用の「カテゴリ」ではなく、地形図のような「章」として並べています。",
   },
   {
-    q: "アフィリエイトを含む記事はありますか？",
-    a: "あります。整える道具（/shelf）と、一部の記事末尾に、Amazon・楽天・各種 ASP のアフィリエイトを含むリンクが掲載されます。該当箇所には「広告」と明示し、詳細は /disclosure に記載しています。",
+    q: "商品やサービスを売っていますか？",
+    a: "売っていません。His Recoveries は商品を売るためのサイトではなく、男性が自分を取り戻していく過程を記録するメディアです。広告・アフィリエイトリンクも掲載していません。",
   },
 ];
 
@@ -271,13 +271,13 @@ export default function AboutPage() {
             </li>
             <li>
               <Link
-                href="/shelf"
+                href="/concerns"
                 className="logo-type tracking-wider text-base hover:text-gold transition-colors"
               >
-                Conditioning Rituals · 整える道具
+                Concerns · 悩み票
               </Link>
               <p className="mt-1 text-sub-gray text-[15px]">
-                使ってきた道具を「広告」と明示した上で並べる、正直な棚。
+                悩みごとに「場所」を持ち、声・記録・選択肢を集めるアーカイブ。
               </p>
             </li>
             <li>
@@ -328,14 +328,7 @@ export default function AboutPage() {
             >
               {site.email}
             </a>{" "}
-            まで。広告・アフィリエイトに関する方針は{" "}
-            <Link
-              href="/disclosure"
-              className="border-b border-hair-line hover:border-ink transition-colors"
-            >
-              /disclosure
-            </Link>{" "}
-            に記載しています。
+            まで。
           </p>
         </div>
 
