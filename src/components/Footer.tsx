@@ -34,10 +34,6 @@ export default function Footer() {
             <Link href="/privacy" className="hover:text-ink transition-colors">
               プライバシーポリシー
             </Link>
-            <span aria-hidden>·</span>
-            <Link href="/legal" className="hover:text-ink transition-colors">
-              特定商取引法に基づく表記
-            </Link>
           </div>
         </div>
       </div>
