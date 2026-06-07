@@ -25,7 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/submit-story",
     "/subscribe",
     "/privacy",
-    "/legal",
   ].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: now,
