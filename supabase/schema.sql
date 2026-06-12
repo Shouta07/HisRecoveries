@@ -70,6 +70,23 @@ create table if not exists events (
   created_at timestamptz default now()
 );
 
+-- Recovery Check submissions (Layer 2 product). Editor reads `email`
+-- and the structured `responses` to write a personal report. Long-term,
+-- `responses` feeds the anonymized Recovery Data layer.
+create table if not exists checks (
+  id uuid primary key default gen_random_uuid(),
+  email text,                    -- short-lived contact (purge after reply)
+  name text,
+  email_hash text,               -- permanent anonymized identifier
+  responses jsonb not null,
+  status text default 'submitted', -- submitted / reviewing / replied / archived
+  notes text,                    -- editor notes
+  utm_source text,
+  referrer_host text,
+  landing_path text,
+  created_at timestamptz default now()
+);
+
 -- ─────────────────────────────────────────────
 -- Indexes
 -- ─────────────────────────────────────────────
@@ -80,6 +97,8 @@ create index if not exists assessments_concern_idx on assessments(concern);
 create index if not exists assessments_created_at_idx on assessments(created_at desc);
 create index if not exists stories_category_idx on stories(category);
 create index if not exists stories_created_at_idx on stories(created_at desc);
+create index if not exists checks_status_idx on checks(status);
+create index if not exists checks_created_at_idx on checks(created_at desc);
 
 -- ─────────────────────────────────────────────
 -- Row Level Security
@@ -91,6 +110,7 @@ alter table assessments enable row level security;
 alter table stories enable row level security;
 alter table letters enable row level security;
 alter table events enable row level security;
+alter table checks enable row level security;
 
 drop policy if exists "anon insert assessments" on assessments;
 create policy "anon insert assessments" on assessments
@@ -106,6 +126,10 @@ create policy "anon insert letters" on letters
 
 drop policy if exists "anon insert events" on events;
 create policy "anon insert events" on events
+  for insert to anon with check (true);
+
+drop policy if exists "anon insert checks" on checks;
+create policy "anon insert checks" on checks
   for insert to anon with check (true);
 
 -- ─────────────────────────────────────────────
