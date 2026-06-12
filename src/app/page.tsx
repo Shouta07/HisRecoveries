@@ -259,80 +259,89 @@ export default function HomePage() {
       )}
 
       {/* ─────────────────────────────────────────
-         SCENE III — Male Recovery Assessment
-         5-question quick check. Acts as the second
-         conversion lever (assessment_complete →
-         intent capture → newsletter / shelf).
+         SCENE III — Recovery Check
+         The flagship Layer 2 product. 30 questions, a
+         24h reply from a human editor. Sets the brand
+         apart from quiz-style "AI diagnostics".
          ───────────────────────────────────────── */}
       <Reveal>
         <section
-          aria-labelledby="assessment"
+          aria-labelledby="recovery-check"
           className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-16 sm:pt-32 pb-16 sm:pb-28"
         >
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 lg:gap-16 items-center">
             <div>
               <SectionLabel
-                en="Recovery Assessment"
-                ja="男性の回復診断"
+                en="Recovery Check"
+                ja="自分の状態を、編集者と整理する"
                 number={chapterRomans[1]}
               />
               <p
-                id="assessment"
-                className="mt-6 sm:mt-8 font-mincho text-[14px] sm:text-base text-ink/85 leading-[1.95] max-w-[32rem]"
+                id="recovery-check"
+                className="mt-6 sm:mt-8 font-mincho text-[14px] sm:text-base text-ink/85 leading-[2] max-w-[32rem]"
               >
-                いまの自分の状態を、5 つの問いで整理する。
+                30 問の自己観察に静かに答えると、編集者が読んで、
                 <br className="hidden sm:inline" />
-                診断ではなく、あなたの言葉をあなた自身に渡すための時間です。
+                24 時間以内に「あなたの状態の地形図」を返します。
+              </p>
+              <p className="mt-5 font-mincho text-[13.5px] text-sub-gray leading-[2] max-w-[32rem]">
+                診断ではなく、治療を売ることもせず、
+                <br className="hidden sm:inline" />
+                ただ、自分の言葉を、もう一度、自分自身に渡すための時間です。
               </p>
               <ul className="mt-5 sm:mt-7 grid grid-cols-2 gap-x-6 gap-y-2 text-[13px] tracking-[0.06em] text-sub-gray max-w-[28rem]">
-                <li>— 髪／肌／汗</li>
-                <li>— 匂い／ヒゲ</li>
-                <li>— 体型／自信</li>
-                <li>— 所要 約 3 分</li>
+                <li>— 30 問・所要 15〜25 分</li>
+                <li>— 編集者が人で返信</li>
+                <li>— β 期間中 無料</li>
+                <li>— 商品の販売なし</li>
               </ul>
 
               <div className="mt-7 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <TrackedCTA
-                  href="/assessment"
-                  event="assessment_start"
-                  eventProps={{ location: "home" }}
+                  href="/check"
+                  event="hero_cta_click"
+                  eventProps={{ target: "check", location: "home" }}
                   className="btn-gold justify-center"
                 >
-                  診断を始める
+                  Recovery Check を始める
                   <span aria-hidden>→</span>
                 </TrackedCTA>
-                <p className="text-[12px] tracking-[0.06em] text-sub-gray">
-                  回答はブラウザ内に保存されます
-                </p>
+                <TrackedCTA
+                  href="/assessment"
+                  event="assessment_start"
+                  eventProps={{ location: "home_secondary" }}
+                  className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3 text-center"
+                >
+                  まず 5 問の Mirror で
+                </TrackedCTA>
               </div>
             </div>
 
             <div className="bg-paper border border-hair-line p-6 sm:p-10">
               <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
-                5 Questions
+                4 Sections · 30 Questions
               </p>
               <ol className="mt-6 space-y-4 font-mincho text-[14.5px] sm:text-[15px] text-ink/85 leading-[2]">
                 <li>
-                  <span className="text-gold mr-3">01</span>
-                  いま、いちばん気になっているのは？
+                  <span className="text-gold mr-3">I.</span>
+                  いまの自分の温度を観察する
                 </li>
                 <li>
-                  <span className="text-gold mr-3">02</span>
-                  日常への影響は、どれくらい？
+                  <span className="text-gold mr-3">II.</span>
+                  悩みが、日常のどこに触れているか
                 </li>
                 <li>
-                  <span className="text-gold mr-3">03</span>
-                  これまで、何を試してきた？
+                  <span className="text-gold mr-3">III.</span>
+                  通過してきたこと・試してきたこと
                 </li>
                 <li>
-                  <span className="text-gold mr-3">04</span>
-                  整えたい先は、どんな状態？
-                </li>
-                <li>
-                  <span className="text-gold mr-3">05</span>
-                  受け取り方を選ぶ（任意）
+                  <span className="text-gold mr-3">IV.</span>
+                  半年先の輪郭を、置いてみる
                 </li>
               </ol>
+              <p className="mt-7 text-[11px] text-sub-gray tracking-[0.06em] leading-[1.9]">
+                編集者が読み、24 時間以内に PDF レポートを返します。
+              </p>
             </div>
           </div>
         </section>

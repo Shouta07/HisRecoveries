@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/concierge",
     "/territories",
     "/concerns",
+    "/check",
     "/reflect",
     "/assessment",
     "/stories",
