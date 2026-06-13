@@ -278,42 +278,6 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE VIII — The Company (quiet band → /about)
-         ───────────────────────────────────────── */}
-      <Reveal>
-        <section
-          aria-label="The Company"
-          className="border-t border-hair-line"
-        >
-          <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-20 sm:py-28 text-center">
-            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-              The Company
-            </p>
-            <p className="mt-7 font-mincho text-[1.2rem] sm:text-2xl text-ink leading-[1.7] max-w-[32rem] mx-auto">
-              His Recoveries は、
-              <br className="sm:hidden" />
-              {site.company.name}が運営する、
-              <br className="hidden sm:inline" />
-              独立したエディトリアル・ブランドです。
-            </p>
-            <p className="mt-5 font-mincho text-[13.5px] text-sub-gray leading-[2] max-w-[30rem] mx-auto">
-              「{site.company.statement}」を掲げる、
-              {site.company.definition}。
-            </p>
-            <div className="mt-8">
-              <Link
-                href="/about"
-                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
-              >
-                ブランドと会社について
-                <span aria-hidden> →</span>
-              </Link>
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
-      {/* ─────────────────────────────────────────
          SCENE IX — Belonging (cinematic close)
          ───────────────────────────────────────── */}
       <Reveal>
