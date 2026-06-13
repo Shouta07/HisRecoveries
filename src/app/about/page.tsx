@@ -95,7 +95,7 @@ export default function AboutPage() {
         <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
           {site.company.nameEn}
         </p>
-        <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.35]">
+        <h1 className="mt-5 font-mincho text-[1.75rem] sm:text-[2.5rem] lg:text-[3rem] text-ink leading-[1.35] tracking-[0.02em] whitespace-nowrap">
           {site.company.name}
         </h1>
         <p className="mt-6 logo-type tracking-[0.1em] text-lg sm:text-xl text-ink">
