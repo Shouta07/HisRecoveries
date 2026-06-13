@@ -9,8 +9,8 @@ import {
 } from "@/lib/articles";
 import CoverImage from "@/components/CoverImage";
 import ArticleConversion from "@/components/ArticleConversion";
-import { getUpcomingEvents, formatEventDate } from "@/lib/events";
 import { getConcernsForArticle } from "@/lib/concerns";
+import { territoryForCategory, TERRITORY_LABEL } from "@/lib/feelings";
 import { categories, categoryLabel, site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -52,16 +52,10 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
   const related = getRelatedArticles(article);
   const parentConcerns = getConcernsForArticle(article.slug);
-  const openEvent = getUpcomingEvents().find((e) => e.status === "open");
-  const conversionEvent =
-    openEvent && openEvent.applyUrl
-      ? {
-          slug: openEvent.slug,
-          title: openEvent.title,
-          dateText: formatEventDate(openEvent.startsAt),
-          applyUrl: openEvent.applyUrl,
-        }
-      : null;
+  const territorySlug = territoryForCategory(article.category);
+  const territory = territorySlug
+    ? { slug: territorySlug, label: TERRITORY_LABEL[territorySlug] ?? "この悩み" }
+    : null;
 
   const articleUrl = `${site.url}/articles/${article.slug}`;
   const articleOgImage = `${articleUrl}/opengraph-image`;
@@ -220,6 +214,9 @@ export default async function ArticlePage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: article.contentHtml }}
       />
 
+      {/* Conversion immediately after the body — the moment of highest intent. */}
+      <ArticleConversion articleSlug={article.slug} territory={territory} />
+
       {parentConcerns.length > 0 && (
         <section className="mt-24 border-t border-hair-line pt-10">
           <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
@@ -281,8 +278,6 @@ export default async function ArticlePage({ params }: { params: Params }) {
           </span>
         </div>
       </footer>
-
-      <ArticleConversion articleSlug={article.slug} event={conversionEvent} />
     </article>
   );
 }

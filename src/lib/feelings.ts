@@ -159,3 +159,27 @@ export function getFeeling(slug: string): Feeling | undefined {
 export function getAllFeelingSlugs(): string[] {
   return FEELINGS.map((f) => f.slug);
 }
+
+// Reverse lookup: which feelings point at a given territory (cause)?
+// Used to cross-link cause-analysis pages back into the emotional entry.
+export function getFeelingsForTerritory(territory: string): Feeling[] {
+  return FEELINGS.filter((f) =>
+    f.causes.some((c) => c.territory === territory)
+  );
+}
+
+// Map a content category → its cause-analysis territory, so an article
+// can offer a contextual "なぜ起こるのか" link + a tailored Recovery Check.
+const CATEGORY_TO_TERRITORY: Record<string, string> = {
+  hyperhidrosis: "sweat-odor",
+  bromhidrosis: "sweat-odor",
+  acne: "skin-acne",
+  face: "face-impression",
+  "hair-loss": "hair-loss",
+  "body-hair": "beard-body-hair",
+  philosophy: "mind-awareness",
+};
+
+export function territoryForCategory(category: string): string | null {
+  return CATEGORY_TO_TERRITORY[category] ?? null;
+}

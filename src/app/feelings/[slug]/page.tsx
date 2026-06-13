@@ -28,6 +28,11 @@ export async function generateMetadata({
     description: f.why.slice(0, 120),
     alternates: { canonical: url },
     openGraph: { type: "article", title, description: f.why.slice(0, 120), url },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: f.why.slice(0, 120),
+    },
   };
 }
 

@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import TerritoryArt from "@/components/TerritoryArt";
 import {
+  getAllTerritories,
   getAllTerritorySlugs,
   getTerritory,
 } from "@/lib/territories";
+import { getFeelingsForTerritory } from "@/lib/feelings";
 import { site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -33,6 +35,11 @@ export async function generateMetadata({
       description: t.intro,
       url,
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: t.intro,
+    },
   };
 }
 
@@ -45,6 +52,10 @@ export default async function TerritoryPage({
   if (!t) notFound();
 
   const url = `${site.url}/territories/${t.slug}`;
+  const relatedFeelings = getFeelingsForTerritory(t.slug);
+  const otherTerritories = getAllTerritories().filter(
+    (o) => o.slug !== t.slug
+  );
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -188,6 +199,47 @@ export default async function TerritoryPage({
           </dl>
         </section>
       )}
+
+      {/* Internal links — related feelings (entry) + other causes */}
+      <section className="mx-auto max-w-reading px-6 sm:px-10 py-12 border-t border-hair-line">
+        {relatedFeelings.length > 0 && (
+          <div className="mb-10">
+            <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+              この感覚から、来た方へ
+            </p>
+            <ul className="flex flex-wrap gap-2.5">
+              {relatedFeelings.map((f) => (
+                <li key={f.slug}>
+                  <Link
+                    href={`/feelings/${f.slug}`}
+                    className="inline-flex border border-hair-line bg-paper px-4 py-2 text-[13px] text-ink hover:border-gold hover:text-gold transition-colors"
+                  >
+                    {f.statement}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div>
+          <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+            ほかの原因も読む
+          </p>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[13.5px]">
+            {otherTerritories.map((o) => (
+              <li key={o.slug}>
+                <Link
+                  href={`/territories/${o.slug}`}
+                  className="text-ink border-b border-hair-line hover:border-gold hover:text-gold transition-colors pb-0.5"
+                >
+                  {o.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {/* 次の半歩 — connects 悩み選択 → 診断 / 行動 */}
       <section
