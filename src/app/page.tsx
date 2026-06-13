@@ -57,10 +57,36 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ─────────────────────────────────────────
+         SCENE II — Concept (cinematic scroll reveal)
+         Continues the Hero's dark mood. Sentences fade in
+         one at a time as the user scrolls down from the Hero.
+         ───────────────────────────────────────── */}
+      <section aria-label="Concept" className="bg-navy text-cream">
+        <div className="mx-auto max-w-[920px] px-6 sm:px-10 py-32 sm:py-56">
+          <div className="space-y-14 sm:space-y-24 font-mincho">
+            <Reveal>
+              <p className="text-[1.55rem] sm:text-[2.4rem] lg:text-[2.85rem] leading-[1.7] tracking-[0.04em] text-cream drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]">
+                誰にも言えない悩みを抱える男性は、
+                <br className="hidden sm:inline" />
+                今日もひとりで検索している。
+              </p>
+            </Reveal>
+            <Reveal delay={220}>
+              <p className="text-[1.55rem] sm:text-[2.4rem] lg:text-[2.85rem] leading-[1.7] tracking-[0.04em] text-cream/85 drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]">
+                His Recoveries は、その検索の終着点ではなく、
+                <br className="hidden sm:inline" />
+                回復の記録でありたい。
+              </p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       {/* Concern vocabulary — SEO/GEO-grabbable words the persona searches,
          mixed with the emotional phrases that say "you are seen here."
-         Sits between Hero and Concept so the persona feels recognized
-         before reading the statement. */}
+         Sits between the Concept statement and the Recovery Check so the
+         visitor lands their own search terms before being offered the tool. */}
       <TagMarquee
         items={[
           "多汗症",
@@ -79,32 +105,6 @@ export default function HomePage() {
           "美容皮膚科に行けない",
         ]}
       />
-
-      {/* ─────────────────────────────────────────
-         SCENE II — Concept (scroll-revealed statement)
-         Sentence by sentence, staggered fade-in.
-         ───────────────────────────────────────── */}
-      <section
-        aria-label="Concept"
-        className="mx-auto max-w-[860px] px-6 sm:px-10 py-28 sm:py-48"
-      >
-        <div className="space-y-10 sm:space-y-14 font-mincho text-ink">
-          <Reveal>
-            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em]">
-              誰にも言えない悩みを抱える男性は、
-              <br className="hidden sm:inline" />
-              今日もひとりで検索している。
-            </p>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em] text-ink/85">
-              His Recoveries は、その検索の終着点ではなく、
-              <br className="hidden sm:inline" />
-              回復の記録でありたい。
-            </p>
-          </Reveal>
-        </div>
-      </section>
 
       {/* ─────────────────────────────────────────
          SCENE VII — Recovery Check
