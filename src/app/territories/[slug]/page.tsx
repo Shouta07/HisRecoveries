@@ -6,7 +6,6 @@ import {
   getAllTerritorySlugs,
   getTerritory,
 } from "@/lib/territories";
-import { getAllArticles } from "@/lib/articles";
 import { site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -23,13 +22,14 @@ export async function generateMetadata({
   const t = await getTerritory(params.slug);
   if (!t) return {};
   const url = `${site.url}/territories/${t.slug}`;
+  const title = `${t.title}は、なぜ起こるのか — 原因と選択肢`;
   return {
-    title: `${t.title} — 地形図`,
+    title,
     description: t.intro,
     alternates: { canonical: url },
     openGraph: {
       type: "article",
-      title: `${t.title} — 地形図`,
+      title,
       description: t.intro,
       url,
     },
@@ -46,12 +46,6 @@ export default async function TerritoryPage({
 
   const url = `${site.url}/territories/${t.slug}`;
 
-  // Related records: articles whose category is in this territory's categories
-  const allArticles = getAllArticles();
-  const relatedArticles = allArticles.filter((a) =>
-    t.categories.includes(a.category)
-  );
-
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -60,20 +54,38 @@ export default async function TerritoryPage({
       {
         "@type": "ListItem",
         position: 2,
-        name: "地形図",
+        name: "原因を読む",
         item: `${site.url}/territories`,
       },
       { "@type": "ListItem", position: 3, name: t.title, item: url },
     ],
   };
 
-  const exitMap: Record<typeof t.relatedExit, { href: string; label: string }> =
-    {
-      events: { href: "/events", label: "次の静かな集まり" },
-      subscribe: { href: "/subscribe", label: "ときどきの便り" },
-      territory: { href: "/territories", label: "ほかの地形図を見る" },
-    };
-  const exit = exitMap[t.relatedExit];
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: `${t.title}は、なぜ起こるのか`,
+    description: t.intro,
+    inLanguage: "ja",
+    isPartOf: { "@id": `${site.url}/#website` },
+    publisher: { "@id": `${site.url}/#publisher` },
+    mainEntityOfPage: url,
+  };
+
+  const faqLd =
+    t.faq.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "@id": `${url}#faq`,
+          mainEntity: t.faq.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        }
+      : null;
 
   return (
     <article>
@@ -81,8 +93,18 @@ export default async function TerritoryPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
+      {faqLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+        />
+      )}
 
-      <header className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-12 sm:pt-16 pb-12 sm:pb-16">
+      <header className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-12 sm:pt-16 pb-12 sm:pb-16">
         <nav
           aria-label="breadcrumb"
           className="mb-8 text-[11px] tracking-widest text-sub-gray"
@@ -102,7 +124,7 @@ export default async function TerritoryPage({
                 href="/territories"
                 className="hover:text-ink transition-colors"
               >
-                地形図
+                原因を読む
               </Link>
             </li>
           </ol>
@@ -111,7 +133,7 @@ export default async function TerritoryPage({
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-start">
           <div className="order-2 lg:order-1">
             <h1 className="text-3xl sm:text-5xl font-bold leading-[1.4] text-ink">
-              {t.title}の地形図
+              {t.title}は、なぜ起こるのか
             </h1>
             <p className="mt-6 font-mincho text-sub-gray text-base sm:text-lg leading-[2]">
               — {t.subtitle} —
@@ -126,63 +148,106 @@ export default async function TerritoryPage({
         </div>
       </header>
 
-      <section className="mx-auto max-w-[1200px] px-6 sm:px-10 pb-16 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10">
-        <div className="bg-paper border border-hair-line p-6 sm:p-10 lg:p-14 order-2 lg:order-1">
-          <div
-            className="article-body"
-            dangerouslySetInnerHTML={{ __html: t.contentHtml }}
-          />
+      {/* Cause analysis — the in-site content. SEO/GEO oriented. */}
+      <div className="mx-auto max-w-reading px-6 sm:px-10 pb-8">
+        <div
+          className="article-body"
+          dangerouslySetInnerHTML={{ __html: t.contentHtml }}
+        />
+        <p className="mt-12 text-[12px] text-sub-gray leading-[2] border-t border-hair-line pt-6">
+          ※ 本ページは一般的な情報を整理したものであり、診断・治療を目的としたものではありません。
+          症状や治療の判断は、医療機関にご相談ください。
+        </p>
+      </div>
 
+      {/* FAQ — also emitted as FAQPage structured data above. */}
+      {t.faq.length > 0 && (
+        <section
+          aria-labelledby="faq"
+          className="mx-auto max-w-reading px-6 sm:px-10 py-12"
+        >
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
+            Questions — よくある問い
+          </p>
+          <h2 id="faq" className="sr-only">
+            {t.title}についてよくある質問
+          </h2>
+          <dl className="space-y-7">
+            {t.faq.map((item, i) => (
+              <div key={i}>
+                <dt className="text-ink font-mincho text-[1.0625rem] leading-[1.8]">
+                  <span className="logo-type text-gold mr-2">Q.</span>
+                  {item.q}
+                </dt>
+                <dd className="mt-3 font-mincho text-sub-gray text-[15px] leading-[2.05]">
+                  <span className="logo-type text-gold mr-2">A.</span>
+                  {item.a}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
 
-
-          {relatedArticles.length > 0 && (
-            <div className="mt-12 pt-10 border-t border-hair-line">
-              <h2 className="text-base font-bold mb-4">この領域の記録</h2>
-              <ul className="space-y-3">
-                {relatedArticles.map((a) => (
-                  <li key={a.slug}>
-                    <Link
-                      href={`/articles/${a.slug}`}
-                      className="text-sm text-ink border-b border-gold hover:text-gold transition-colors"
-                    >
-                      {a.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <div className="mt-10 pt-8 border-t border-hair-line text-sm">
-            <Link
-              href={exit.href}
-              className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
+      {/* 次の半歩 — connects 悩み選択 → 診断 / 行動 */}
+      <section
+        aria-labelledby="next-step"
+        className="border-t border-hair-line bg-cream-deep"
+      >
+        <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-16 sm:py-24">
+          <div className="text-center mb-10 sm:mb-12">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+              A Next Half-Step
+            </p>
+            <h2
+              id="next-step"
+              className="mt-5 font-mincho text-2xl sm:text-[2rem] text-ink leading-[1.45]"
             >
-              → {exit.label}
+              読んだあとの、次の半歩
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            <Link
+              href="/check"
+              className="group block bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors card-lift"
+            >
+              <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold">
+                Recovery Check
+              </p>
+              <h3 className="mt-3 font-mincho text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
+                自分の状態を、編集者と整理する
+              </h3>
+              <p className="mt-3 font-mincho text-[13px] text-sub-gray leading-[2]">
+                30 問の自己観察に答えると、編集者が読んで「あなたの状態の地形図」を返します。β 期間中は無料。
+              </p>
+              <span className="mt-5 inline-flex text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
+                Recovery Check を始める
+                <span aria-hidden> →</span>
+              </span>
+            </Link>
+
+            <Link
+              href="/membership"
+              className="group block bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors card-lift"
+            >
+              <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold">
+                Recoveries Letter
+              </p>
+              <h3 className="mt-3 font-mincho text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
+                毎週日曜日、続きを受け取る
+              </h3>
+              <p className="mt-3 font-mincho text-[13px] text-sub-gray leading-[2]">
+                公開記事には書けない、半歩先からの覚え書きと当事者の記録を、週に一度 Substack で。
+              </p>
+              <span className="mt-5 inline-flex text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
+                日曜日の手紙を受け取る
+                <span aria-hidden> →</span>
+              </span>
             </Link>
           </div>
         </div>
-
-        <aside className="order-1 lg:order-2">
-          <div className="bg-paper border border-hair-line p-5 sm:p-6 lg:sticky lg:top-8">
-            <p className="text-xs text-sub-gray mb-3">このページの目次</p>
-            <ol className="space-y-2 text-sm">
-              <TocItem>I. The Landscape</TocItem>
-              <TocItem>II. Variations</TocItem>
-              <TocItem>III. The Map of Options</TocItem>
-              <TocItem>IV. Before Choosing</TocItem>
-              <TocItem>V. Quiet Observations</TocItem>
-              <TocItem>VI. Quiet Gatherings</TocItem>
-              <TocItem>VII. The Shelf</TocItem>
-              <TocItem>VIII. Related Records</TocItem>
-            </ol>
-          </div>
-        </aside>
       </section>
     </article>
   );
-}
-
-function TocItem({ children }: { children: React.ReactNode }) {
-  return <li className="text-ink/80">{children}</li>;
 }

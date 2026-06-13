@@ -5,14 +5,14 @@ import { getAllTerritories } from "@/lib/territories";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Chapters — 地形図",
+  title: "原因を読む — なぜ起こるのか",
   description:
-    "His Recoveries が扱う 6 領域の地形図 — 汗・におい（多汗症・ワキガ）、肌・ニキビ、顔の印象、心と自意識、薄毛・AGA、髭・体毛。Male Conditioning の章として、男性のコンプレックスの選択肢を推奨ではなく「層」として並べておく場所。",
+    "男性のコンプレックスは、なぜ起こるのか。多汗症・ワキガ、ニキビとニキビ跡、薄毛・AGA、髭と体毛、顔の印象（老け見え）、睡眠・疲労と自意識。6 つの領域それぞれのメカニズムを、原因から整理して解説します。",
   alternates: { canonical: `${site.url}/territories` },
   openGraph: {
-    title: `Chapters — ${site.name}`,
+    title: `原因を読む — ${site.name}`,
     description:
-      "Male Conditioning の 6 領域。男性のコンプレックスを、地形のように見渡す。",
+      "男性のコンプレックスは、なぜ起こるのか。6 領域のメカニズムを、原因から整理する。",
   },
 };
 
@@ -23,8 +23,8 @@ export default function TerritoriesPage() {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "@id": `${site.url}/territories#collection`,
-    name: `地形図 — ${site.name}`,
-    description: "6 領域の地形図。",
+    name: `原因を読む — ${site.name}`,
+    description: "男性のコンプレックス 6 領域の原因とメカニズム。",
     url: `${site.url}/territories`,
     inLanguage: site.language,
     isPartOf: { "@id": `${site.url}/#website` },
@@ -49,11 +49,11 @@ export default function TerritoriesPage() {
 
       <header className="mb-16 max-w-reading">
         <h1 className="text-3xl sm:text-5xl font-bold leading-[1.4] text-ink">
-          地形図
+          原因を読む
         </h1>
         <p className="mt-6 font-mincho text-sub-gray text-[0.9375rem] leading-[2] max-w-[34rem]">
-          6 つの領域それぞれを、推奨ではなく「層」として見渡すための地図。
-          急がず、選ばず、まずは地形を眺めるための場所です。
+          その悩みは、なぜ起こるのか。6 つの領域それぞれのメカニズムを、
+          原因から整理しました。対処を急ぐ前に、まず仕組みを知るための場所です。
         </p>
       </header>
 
