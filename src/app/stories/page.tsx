@@ -59,19 +59,19 @@ export default function StoriesPage() {
 
       <div className="mt-16 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[12px] tracking-[0.06em] text-sub-gray">
         <Link
-          href="/assessment"
+          href="/check"
           className="hover:text-ink transition-colors border-b border-hair-line hover:border-gold pb-0.5"
         >
-          Recovery Assessment を受ける
+          Recovery Check を受ける
         </Link>
         <span aria-hidden className="text-hair-line">
           ·
         </span>
         <Link
-          href="/articles"
+          href="/membership"
           className="hover:text-ink transition-colors border-b border-hair-line hover:border-gold pb-0.5"
         >
-          Presence Journal を読む
+          Recoveries Letter を読む
         </Link>
       </div>
     </div>

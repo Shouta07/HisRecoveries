@@ -6,18 +6,14 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/concerns", label: "悩み票", ja: "Concerns" },
-  { href: "/articles", label: "記録", ja: "Journal" },
-  { href: "/subscribe", label: "購読する", ja: "Subscribe" },
+  { href: "/check", label: "Recovery Check", ja: "今の状態を理解する" },
+  { href: "/stories", label: "Recovery Stories", ja: "回復の記録を読む" },
+  { href: "/membership", label: "Recoveries Letter", ja: "週に一度の手紙" },
 ];
 
 const secondary = [
-  { href: "/check", label: "Recovery Check — 30 問の自己観察" },
-  { href: "/membership", label: "Recovery Letters — 月に二度の手紙" },
-  { href: "/recoveries", label: "Three Recoveries — 回復の物語" },
-  { href: "/territories", label: "Chapters — 悩みの章" },
-  { href: "/stories", label: "Stories — 回復の記録" },
-  { href: "/reflect", label: "Reflect — 整理する" },
+  { href: "/territories", label: "原因を読む — なぜ起こるのか" },
+  { href: "/articles", label: "記録 — Journal" },
 ];
 
 export default function Header() {

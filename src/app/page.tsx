@@ -166,87 +166,112 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE VII — Recovery Check
+         SCENE VII — お品書き (the three things)
+         The entire toC offering, stated plainly. Recovery Check is the
+         primary free action — it is how we collect the first-party data
+         on what men actually worry about.
          ───────────────────────────────────────── */}
       <Reveal>
         <section
-          aria-labelledby="recovery-check"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-32"
+          aria-labelledby="menu"
+          className="mx-auto max-w-[1100px] px-6 sm:px-10 py-20 sm:py-32"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 lg:gap-16 items-center">
-            <div>
-              <SectionLabel
-                en="Recovery Check"
-                ja="自分の状態を、編集者と整理する"
-                number={chapterRomans[0]}
-              />
-              <p
-                id="recovery-check"
-                className="mt-6 sm:mt-8 font-mincho text-[14px] sm:text-base text-ink/85 leading-[2] max-w-[32rem]"
-              >
-                30 問の自己観察に静かに答えると、編集者が読んで、
-                <br className="hidden sm:inline" />
-                24 時間以内に「あなたの状態の地形図」を返します。
-              </p>
-              <p className="mt-5 font-mincho text-[13.5px] text-sub-gray leading-[2] max-w-[32rem]">
-                診断ではなく、治療を売ることもせず、
-                <br className="hidden sm:inline" />
-                ただ、自分の言葉を、もう一度、自分自身に渡すための時間です。
-              </p>
-              <ul className="mt-5 sm:mt-7 grid grid-cols-2 gap-x-6 gap-y-2 text-[13px] tracking-[0.06em] text-sub-gray max-w-[28rem]">
-                <li>— 30 問・所要 15〜25 分</li>
-                <li>— 編集者が人で返信</li>
-                <li>— β 期間中 無料</li>
-                <li>— 商品の販売なし</li>
-              </ul>
+          <div className="mb-12 sm:mb-16">
+            <SectionLabel
+              en="What We Offer"
+              ja="His Recoveries にあるもの"
+              number={chapterRomans[0]}
+            />
+            <p
+              id="menu"
+              className="mt-6 font-mincho text-[14px] sm:text-[15px] text-sub-gray leading-[2] max-w-[34rem]"
+            >
+              多くを並べません。いまのあなたに必要なのは、たぶん、この三つだけです。
+            </p>
+          </div>
 
-              <div className="mt-7 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+          {/* Primary — Recovery Check */}
+          <div className="bg-paper border border-hair-line p-7 sm:p-12">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 items-center">
+              <div>
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <h3 className="font-mincho text-2xl sm:text-3xl text-ink leading-[1.4]">
+                    Recovery Check
+                  </h3>
+                  <span className="logo-type italic text-[12px] tracking-[0.2em] uppercase text-gold">
+                    無料
+                  </span>
+                </div>
+                <p className="mt-2 font-mincho text-[15px] text-ink/85 leading-[1.9]">
+                  今の状態を、理解する。
+                </p>
+                <p className="mt-5 font-mincho text-[13.5px] text-sub-gray leading-[2.05] max-w-[34rem]">
+                  30 問の自己観察に静かに答えると、編集者が読んで、24 時間以内に
+                  「あなたの状態の地形図」を手紙で返します。診断ではなく、
+                  自分の言葉を、もう一度、自分自身に渡すための時間です。
+                </p>
+                <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2 text-[12.5px] tracking-[0.05em] text-sub-gray max-w-[26rem]">
+                  <li>— 30 問・15〜25 分</li>
+                  <li>— 編集者が人で返信</li>
+                  <li>— 完全無料</li>
+                  <li>— 商品の販売なし</li>
+                </ul>
+              </div>
+              <div className="lg:text-right">
                 <TrackedCTA
                   href="/check"
                   event="hero_cta_click"
-                  eventProps={{ target: "check", location: "home" }}
-                  className="btn-gold justify-center"
+                  eventProps={{ target: "check", location: "home_menu" }}
+                  className="btn-gold justify-center w-full lg:w-auto"
                 >
                   Recovery Check を始める
                   <span aria-hidden>→</span>
                 </TrackedCTA>
-                <TrackedCTA
-                  href="/assessment"
-                  event="assessment_start"
-                  eventProps={{ location: "home_secondary" }}
-                  className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3 text-center"
-                >
-                  まず 5 問の Mirror で
-                </TrackedCTA>
               </div>
             </div>
+          </div>
 
-            <div className="bg-paper border border-hair-line p-6 sm:p-10">
-              <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
-                4 Sections · 30 Questions
+          {/* Secondary — Stories (free) + Letter (paid) */}
+          <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            <Link
+              href="/stories"
+              className="group block bg-paper border border-hair-line p-7 sm:p-8 hover:border-gold transition-colors card-lift"
+            >
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <h3 className="font-mincho text-xl text-ink leading-[1.4] group-hover:text-gold transition-colors">
+                  Recovery Stories
+                </h3>
+                <span className="logo-type italic text-[11px] tracking-[0.2em] uppercase text-gold">
+                  無料
+                </span>
+              </div>
+              <p className="mt-3 font-mincho text-[13.5px] text-sub-gray leading-[2.05]">
+                同じ悩みを持つ人の、回復の記録を読む。匿名の一通が、次に悩む誰かの助けになります。
               </p>
-              <ol className="mt-6 space-y-4 font-mincho text-[14.5px] sm:text-[15px] text-ink/85 leading-[2]">
-                <li>
-                  <span className="text-gold mr-3">I.</span>
-                  いまの自分の温度を観察する
-                </li>
-                <li>
-                  <span className="text-gold mr-3">II.</span>
-                  悩みが、日常のどこに触れているか
-                </li>
-                <li>
-                  <span className="text-gold mr-3">III.</span>
-                  通過してきたこと・試してきたこと
-                </li>
-                <li>
-                  <span className="text-gold mr-3">IV.</span>
-                  半年先の輪郭を、置いてみる
-                </li>
-              </ol>
-              <p className="mt-7 text-[11px] text-sub-gray tracking-[0.06em] leading-[1.9]">
-                編集者が読み、24 時間以内に PDF レポートを返します。
+              <span className="mt-5 inline-flex text-[13px] tracking-[0.1em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
+                記録を読む <span aria-hidden> →</span>
+              </span>
+            </Link>
+
+            <Link
+              href="/membership"
+              className="group block bg-paper border border-hair-line p-7 sm:p-8 hover:border-gold transition-colors card-lift"
+            >
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <h3 className="font-mincho text-xl text-ink leading-[1.4] group-hover:text-gold transition-colors">
+                  Recoveries Letter
+                </h3>
+                <span className="logo-type italic text-[11px] tracking-[0.2em] uppercase text-gold">
+                  月 500 円
+                </span>
+              </div>
+              <p className="mt-3 font-mincho text-[13.5px] text-sub-gray leading-[2.05]">
+                週に一度、日曜日に届く手紙。男性の身体と自意識について、広告のない場所で。
               </p>
-            </div>
+              <span className="mt-5 inline-flex text-[13px] tracking-[0.1em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
+                手紙について <span aria-hidden> →</span>
+              </span>
+            </Link>
           </div>
         </section>
       </Reveal>
