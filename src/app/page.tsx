@@ -1,7 +1,4 @@
-import Link from "next/link";
 import Image from "next/image";
-import { getAllArticles } from "@/lib/articles";
-import ArticleCard from "@/components/ArticleCard";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
@@ -11,12 +8,6 @@ import { site } from "@/lib/site";
 const chapterRomans = ["I", "II", "III", "IV"];
 
 export default function HomePage() {
-  const articles = getAllArticles();
-  const popularArticles = (() => {
-    const flagged = articles.filter((a) => a.popular);
-    return (flagged.length > 0 ? flagged : articles).slice(0, 3);
-  })();
-
   return (
     <>
       {/* ─────────────────────────────────────────
@@ -110,52 +101,6 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE V — Most Read
-         ───────────────────────────────────────── */}
-      {popularArticles.length > 0 && (
-        <Reveal>
-          <section
-            aria-labelledby="most-read"
-            className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-32"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-16">
-              <SectionLabel
-                en="Most Read"
-                ja="よく読まれている記事"
-                number={chapterRomans[0]}
-              />
-              <p
-                id="most-read"
-                className="font-mincho text-[14px] sm:text-base text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
-              >
-                はじめての方は、ここから。
-                <br className="hidden sm:inline" />
-                検索から辿り着いた読者が、よく読んでいる記録です。
-              </p>
-            </div>
-
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-10">
-              {popularArticles.map((a) => (
-                <li key={a.slug}>
-                  <ArticleCard article={a} variant="card" />
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 sm:mt-12 flex justify-end">
-              <Link
-                href="/articles"
-                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
-              >
-                すべての記録を見る
-                <span aria-hidden> →</span>
-              </Link>
-            </div>
-          </section>
-        </Reveal>
-      )}
-
-      {/* ─────────────────────────────────────────
          SCENE VI — Philosophy moment (cinematic)
          ───────────────────────────────────────── */}
       <Reveal>
@@ -204,7 +149,7 @@ export default function HomePage() {
               <SectionLabel
                 en="Recovery Check"
                 ja="自分の状態を、編集者と整理する"
-                number={chapterRomans[1]}
+                number={chapterRomans[0]}
               />
               <p
                 id="recovery-check"
