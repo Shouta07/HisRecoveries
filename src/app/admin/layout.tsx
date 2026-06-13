@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 
 const tabs = [
   { href: "/admin/insights", label: "Insights" },
+  { href: "/admin/data", label: "Data" },
   { href: "/admin/checks", label: "Checks" },
   { href: "/admin/guides", label: "Guides" },
   { href: "/admin/network", label: "Certified" },
