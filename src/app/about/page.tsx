@@ -32,6 +32,10 @@ const FAQ = [
     q: "商品やサービスを売っていますか？",
     a: "売っていません。His Recoveries は商品を売るためのサイトではなく、男性が自分を取り戻していく過程を記録するメディアです。広告・アフィリエイトリンクも掲載していません。",
   },
+  {
+    q: "運営会社はどこですか？",
+    a: "His Recoveries は、バイタリティデザイン合同会社（Vitality Design LLC）が運営する独立したエディトリアル・ブランドです。バイタリティデザインは「人と事業の活力を設計する会社」であり、His Recoveries はそのなかの男性ウェルネス事業として運営されています。ブランドの編集姿勢（中立・非商業）は、会社の事業判断から独立して保たれます。",
+  },
 ];
 
 export const metadata: Metadata = {
@@ -88,6 +92,18 @@ export default function AboutPage() {
     })),
   };
 
+  const companyLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${site.url}/#company`,
+    name: site.company.name,
+    alternateName: site.company.nameEn,
+    slogan: site.company.statement,
+    description: site.company.definition,
+    subOrganization: { "@id": `${site.url}/#publisher` },
+    areaServed: { "@type": "Country", name: "Japan" },
+  };
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -115,6 +131,10 @@ export default function AboutPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(companyLd) }}
       />
       <script
         type="application/ld+json"
@@ -315,10 +335,44 @@ export default function AboutPage() {
           </dl>
         </div>
 
+        {/* The Company — operating entity */}
+        <div className="pt-12 mt-4">
+          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
+            VI. The Company — 運営会社
+          </p>
+          <p>
+            His Recoveries は、
+            <strong className="text-ink">{site.company.name}</strong>
+            （{site.company.nameEn}）が運営する、独立したエディトリアル・ブランドです。
+          </p>
+          <p className="mt-6">
+            バイタリティデザインは、
+            <span className="logo-type tracking-wider">
+              「{site.company.statement}」
+            </span>{" "}
+            を掲げる、
+            <strong>{site.company.definition}</strong>です。
+            建設・人材・ウェルネス・美容・AI 活用・現場 DX といった領域で、
+            人と事業の状態変化を設計しています。
+          </p>
+          <p className="mt-6">
+            His Recoveries は、そのなかの男性ウェルネス事業として運営されています。
+            ただし、ブランドの編集姿勢 — 中立であること、商品を売らないこと、
+            当事者の沈黙を尊重すること — は、会社の事業判断から独立して保たれます。
+            私たちが事業として収益を作る場所と、ブランドとして信頼を預かる場所を、
+            意図的に分けています。
+          </p>
+          <p className="text-sub-gray pt-4">
+            <em className="not-italic logo-type tracking-wider text-base">
+              The company earns. The brand is trusted.
+            </em>
+          </p>
+        </div>
+
         {/* Contact */}
         <div className="pt-12 mt-4">
           <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
-            VI. Contact — 連絡
+            VII. Contact — 連絡
           </p>
           <p>
             ご連絡は{" "}
