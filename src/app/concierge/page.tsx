@@ -106,7 +106,7 @@ export default function ConciergePage() {
           <SessionStep
             num="01"
             title="お問い合わせ"
-            body="メール（contact@hisrecoveries.com）から、お名前（匿名可）と概要をお送りください。返信に 24–72 時間いただきます。"
+            body="メール（shota@vitality-design.jp）から、お名前（匿名可）と概要をお送りください。返信に 24–72 時間いただきます。"
           />
           <SessionStep
             num="02"
