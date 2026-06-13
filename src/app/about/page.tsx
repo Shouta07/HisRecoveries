@@ -361,11 +361,36 @@ export default function AboutPage() {
             </span>{" "}
             を掲げる、
             <strong>{site.company.definition}</strong>です。
-            現場の AX・DX システム開発と、ウェルネス・美容領域の事業開発を通じて、
-            人と事業の状態変化を設計しています。
+            テクノロジー × 現場理解で、顧客との関係性を「資産」に変える —
+            それを、現場（toB）の AI・DX システム開発、顧客体験の設計、
+            そしてウェルネス・美容領域の事業開発という三つの軸で進めています。
+          </p>
+
+          {/* 事業領域 — capability cards (company-HP register) */}
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {site.company.capabilities.map((cap) => (
+              <div
+                key={cap.title}
+                className="border border-hair-line bg-paper p-5"
+              >
+                <h3 className="font-mincho text-[15px] text-ink leading-[1.55]">
+                  {cap.title}
+                </h3>
+                <p className="mt-3 text-[13px] text-sub-gray leading-[1.95]">
+                  {cap.body}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-10">
+            His Recoveries は、そのなかの男性ウェルネス事業 ——
+            自社ブランドで「実践・検証」する場として運営されています。
+            ここで集まった当事者の声と改善の記録は、匿名のまま、
+            現場の関係性ビジネス（サロン・クリニック・ジム・教育・接客など）
+            へ還元される知見になります。
           </p>
           <p className="mt-6">
-            His Recoveries は、そのなかの男性ウェルネス事業として運営されています。
             ただし、ブランドの編集姿勢 — 中立であること、商品を売らないこと、
             当事者の沈黙を尊重すること — は、会社の事業判断から独立して保たれます。
             私たちが事業として収益を作る場所と、ブランドとして信頼を預かる場所を、
