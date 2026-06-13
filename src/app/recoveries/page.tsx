@@ -358,6 +358,90 @@ export default function RecoveriesPage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
+         The Larger Loop — Vitality Design
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="larger-loop"
+          className="bg-paper/40 border-y border-hair-line"
+        >
+          <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-24 sm:py-32">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+              The Larger Loop
+            </p>
+            <h2
+              id="larger-loop"
+              className="mt-5 font-mincho text-2xl sm:text-4xl text-ink leading-[1.4]"
+            >
+              ひとりの回復が、
+              <br className="hidden sm:inline" />
+              次の誰かの参考になる。
+            </h2>
+            <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/80 leading-[2.05] max-w-[36rem]">
+              His Recoveries は、{site.company.name}が運営する、
+              男性ウェルネスの実証ブランドです。
+              ここで集まった当事者の声と、改善の記録は、匿名のまま、
+              「人とサービスの関係性を設計する」ための知見になります。
+            </p>
+
+            {/* The loop */}
+            <ol className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {[
+                {
+                  n: "01",
+                  t: "実践する",
+                  d: "男性の沈黙を、記録・診断・対話として扱う。",
+                },
+                {
+                  n: "02",
+                  t: "集まる",
+                  d: "声・行動・改善のデータが、匿名で蓄積される。",
+                },
+                {
+                  n: "03",
+                  t: "学ぶ",
+                  d: "何が回復を助けたかを、知見として取り出す。",
+                },
+                {
+                  n: "04",
+                  t: "還元する",
+                  d: "あらゆる関係性ビジネスの現場へ、戻していく。",
+                },
+              ].map((s) => (
+                <li
+                  key={s.n}
+                  className="bg-cream border border-hair-line p-5"
+                >
+                  <p className="logo-type italic text-[12px] tracking-[0.25em] text-gold">
+                    {s.n}
+                  </p>
+                  <p className="mt-3 font-mincho text-lg text-ink">{s.t}</p>
+                  <p className="mt-2 font-mincho text-[13px] text-ink/75 leading-[1.95]">
+                    {s.d}
+                  </p>
+                </li>
+              ))}
+            </ol>
+
+            <p className="mt-10 font-mincho text-[13.5px] text-sub-gray leading-[2.05] max-w-[36rem]">
+              ただし、この循環のなかでも、His Recoveries の編集姿勢
+              — 中立であること、商品を売らないこと、当事者の沈黙を尊重すること —
+              は、事業判断から独立して保たれます。
+            </p>
+            <div className="mt-7">
+              <Link
+                href="/about"
+                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+              >
+                ブランドと会社について
+                <span aria-hidden> →</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ─────────────────────────────────────────
          Coda
          ───────────────────────────────────────── */}
       <Reveal>

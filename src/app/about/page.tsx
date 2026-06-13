@@ -361,7 +361,7 @@ export default function AboutPage() {
             </span>{" "}
             を掲げる、
             <strong>{site.company.definition}</strong>です。
-            建設・人材・ウェルネス・美容・AI 活用・現場 DX といった領域で、
+            現場の AX・DX システム開発と、ウェルネス・美容領域の事業開発を通じて、
             人と事業の状態変化を設計しています。
           </p>
           <p className="mt-6">
