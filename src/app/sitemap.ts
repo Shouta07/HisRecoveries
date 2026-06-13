@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/concerns",
     "/check",
     "/guide",
+    "/network",
     "/reflect",
     "/assessment",
     "/stories",
