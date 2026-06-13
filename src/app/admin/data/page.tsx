@@ -73,28 +73,54 @@ export default async function DataPage() {
           Admin · Recovery Data
         </p>
         <h1 className="mt-3 font-mincho text-3xl sm:text-4xl text-ink leading-[1.4]">
-          知見の集積
+          男性の悩みの、一次情報
         </h1>
         <p className="mt-4 text-[13px] text-sub-gray leading-[1.95] max-w-[40rem]">
-          Recovery Check {checks.length} 件・Guide {guides.length} 件・Certified{" "}
-          {certs.length} 件から集計した匿名インサイト。
-          将来、Recovery Data Quarterly として B2B に提供する素地です。
+          いま最も価値があるのは商品ではなく、「誰が何に悩んでいるか」の一次データです。
+          Recovery Check を匿名で集計しています。
           個人を特定する情報（メール・氏名・自由記述）はここには表示されません。
         </p>
+
+        {/* Progress toward the first 100 checks — the current phase goal. */}
+        <div className="mt-6 bg-paper border border-hair-line p-5 max-w-[40rem]">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="font-mincho text-2xl text-ink tabular-nums">
+              {checks.length}
+              <span className="text-[13px] text-sub-gray ml-2">/ 100 件</span>
+            </span>
+            <span className="text-[11px] tracking-[0.06em] text-sub-gray text-right">
+              {checks.length >= 100
+                ? "目標達成 — 改善事例の収集フェーズへ"
+                : `最初の 100 件まで あと ${100 - checks.length} 件`}
+            </span>
+          </div>
+          <div className="mt-3 h-1.5 bg-cream-deep">
+            <div
+              className="h-1.5 bg-gold"
+              style={{
+                width: `${Math.min(100, Math.round((checks.length / 100) * 100))}%`,
+              }}
+            />
+          </div>
+        </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <BarPanel title="悩みの領域（Check）" subtitle="複数選択・出現回数" data={concernFreq} />
-        <BarPanel title="意識し始めてからの期間" subtitle="Check single" data={durationDist} />
-        <BarPanel title="次の半歩として選ぶもの" subtitle="Check single" data={firstStep} />
-        <BarPanel title="半年の予算感" subtitle="Check single" data={budget6m} />
-        <BarPanel title="Recovery Guide への関心" subtitle="Check single" data={guideInterest} />
-        <BarPanel title="月別の Check 受付数" subtitle="time series" data={monthly} />
-      </div>
-
-      <section className="mt-10">
+      {/* First-party concern intelligence — the reason this phase exists. */}
+      <section className="mb-12">
         <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
-          抵抗・ストレスの平均（1–5）
+          誰が、何に悩んでいるか
+        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BarPanel title="悩みの領域" subtitle="複数選択・出現回数" data={concernFreq} />
+          <BarPanel title="意識し始めてからの期間" subtitle="single" data={durationDist} />
+          <BarPanel title="次の半歩として選ぶもの" subtitle="single" data={firstStep} />
+          <BarPanel title="半年の予算感" subtitle="single" data={budget6m} />
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          自意識の強さ（1–5 平均）
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <ScoreCard label="ストレスの自覚" {...stress} />
@@ -103,9 +129,25 @@ export default async function DataPage() {
         </div>
       </section>
 
-      <section className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <BarPanel title="Recovery Guide ステータス" subtitle="運用" data={guideStatus} />
-        <BarPanel title="Certified ステータス" subtitle="運用" data={certStatus} />
+      <section className="mb-12">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          流入と関心
+        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BarPanel title="月別の Check 受付数" subtitle="time series" data={monthly} />
+          <BarPanel title="Recoveries Letter への関心" subtitle="single" data={guideInterest} />
+        </div>
+      </section>
+
+      {/* Legacy operational queues (Guide / Certified) — kept for history. */}
+      <section className="mt-14 pt-10 border-t border-hair-line">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-4">
+          Legacy — 旧オペレーション（参考）
+        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BarPanel title="Guide ステータス" subtitle="legacy" data={guideStatus} />
+          <BarPanel title="Certified ステータス" subtitle="legacy" data={certStatus} />
+        </div>
       </section>
     </div>
   );
