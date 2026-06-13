@@ -32,7 +32,7 @@ export default function Footer() {
             <span>© {year} {site.name}</span>
             <span aria-hidden>·</span>
             <Link href="/privacy" className="hover:text-ink transition-colors">
-              プライバシーポリシー
+              プライバシー・免責事項
             </Link>
             <span aria-hidden>·</span>
             <Link href="/about" className="hover:text-ink transition-colors">
