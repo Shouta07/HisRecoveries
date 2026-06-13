@@ -14,6 +14,7 @@ const nav = [
 const secondary = [
   { href: "/check", label: "Recovery Check — 30 問の自己観察" },
   { href: "/guide", label: "Recovery Guide — 編集者と 90 分" },
+  { href: "/network", label: "Certified Network — 信頼の連合" },
   { href: "/recoveries", label: "Three Recoveries — 回復の物語" },
   { href: "/territories", label: "Chapters — 悩みの章" },
   { href: "/stories", label: "Stories — 回復の記録" },

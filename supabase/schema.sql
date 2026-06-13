@@ -108,6 +108,37 @@ create table if not exists guide_requests (
   created_at timestamptz default now()
 );
 
+-- Recovery Certified applications (Layer 4 — the network moat).
+-- Clinics / salons / gyms / specialists apply for the editorial
+-- certification. Approved rows surface on /network publicly.
+create table if not exists certified_applications (
+  id uuid primary key default gen_random_uuid(),
+  org_name text not null,
+  org_type text not null,               -- clinic / salon / gym / specialist
+  rep_name text,
+  email text,
+  phone text,
+  website_url text,
+  location text,                        -- 東京 / 京都 / 大阪 / その他
+  services_description text,            -- どんな施術 / サービスか
+  philosophy text,                      -- 顧客理解についての立場
+  principles_checked jsonb default '{}'::jsonb,
+  -- {understanding,no_hard_sell,improvement_data,education,long_term:bool}
+  has_nps_data text default 'no',       -- yes / no / maybe
+  has_education text default 'no',      -- yes / no
+  has_longterm_plan text default 'no',  -- yes / no
+  notes text,                           -- editor + committee notes
+  status text default 'submitted',
+  -- submitted / reviewing / audit / committee / certified / declined / revoked
+  certified_at date,
+  certified_year int,
+  public_blurb text,                    -- shown on /network when certified
+  utm_source text,
+  referrer_host text,
+  landing_path text,
+  created_at timestamptz default now()
+);
+
 -- ─────────────────────────────────────────────
 -- Indexes
 -- ─────────────────────────────────────────────
@@ -122,6 +153,10 @@ create index if not exists checks_status_idx on checks(status);
 create index if not exists checks_created_at_idx on checks(created_at desc);
 create index if not exists guide_requests_status_idx on guide_requests(status);
 create index if not exists guide_requests_created_at_idx on guide_requests(created_at desc);
+create index if not exists certified_applications_status_idx
+  on certified_applications(status);
+create index if not exists certified_applications_created_at_idx
+  on certified_applications(created_at desc);
 
 -- ─────────────────────────────────────────────
 -- Row Level Security
@@ -135,6 +170,7 @@ alter table letters enable row level security;
 alter table events enable row level security;
 alter table checks enable row level security;
 alter table guide_requests enable row level security;
+alter table certified_applications enable row level security;
 
 drop policy if exists "anon insert assessments" on assessments;
 create policy "anon insert assessments" on assessments
@@ -158,6 +194,10 @@ create policy "anon insert checks" on checks
 
 drop policy if exists "anon insert guide_requests" on guide_requests;
 create policy "anon insert guide_requests" on guide_requests
+  for insert to anon with check (true);
+
+drop policy if exists "anon insert certified_applications" on certified_applications;
+create policy "anon insert certified_applications" on certified_applications
   for insert to anon with check (true);
 
 -- ─────────────────────────────────────────────
