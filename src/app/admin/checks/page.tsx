@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { CHECK_QUESTIONS, CHECK_SECTIONS } from "@/lib/checkQuestions";
+import StatusBar from "@/components/admin/StatusBar";
+
+const CHECK_STATUSES = [
+  { value: "submitted", label: "受付中" },
+  { value: "reviewing", label: "確認中" },
+  { value: "replied", label: "返信済み" },
+  { value: "archived", label: "アーカイブ" },
+];
 
 export const metadata: Metadata = {
   title: "Recovery Checks — Admin",
@@ -126,7 +134,7 @@ export default async function ChecksAdminPage() {
                       </ul>
                     </section>
                   ))}
-                  <div className="mt-8 flex flex-wrap gap-3 text-[11px]">
+                  <div className="mt-8 flex flex-wrap items-center gap-3 text-[11px]">
                     {r.email && (
                       <Link
                         href={`mailto:${r.email}?subject=${encodeURIComponent(
@@ -137,6 +145,11 @@ export default async function ChecksAdminPage() {
                         メールで返信
                       </Link>
                     )}
+                    <StatusBar
+                      endpoint={`/api/admin/checks/${r.id}`}
+                      current={r.status}
+                      options={CHECK_STATUSES}
+                    />
                   </div>
                 </div>
               </details>

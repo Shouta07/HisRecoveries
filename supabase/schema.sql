@@ -87,6 +87,27 @@ create table if not exists checks (
   created_at timestamptz default now()
 );
 
+-- Recovery Guide requests (Layer 3 product). 90-minute editorial
+-- session intake. Editor confirms scheduling + payment by email.
+create table if not exists guide_requests (
+  id uuid primary key default gen_random_uuid(),
+  email text,
+  name text,
+  email_hash text,
+  format text default 'online',         -- online / in_person
+  preferences jsonb default '[]'::jsonb,-- ['weekday_day','weekday_eve','weekend']
+  check_taken text default 'no',        -- yes / no / maybe
+  topic text not null,
+  budget text default 'undecided',      -- beta / regular / undecided
+  extra text,
+  status text default 'submitted',      -- submitted / scheduling / scheduled / completed / cancelled
+  notes text,                           -- editor notes
+  utm_source text,
+  referrer_host text,
+  landing_path text,
+  created_at timestamptz default now()
+);
+
 -- ─────────────────────────────────────────────
 -- Indexes
 -- ─────────────────────────────────────────────
@@ -99,6 +120,8 @@ create index if not exists stories_category_idx on stories(category);
 create index if not exists stories_created_at_idx on stories(created_at desc);
 create index if not exists checks_status_idx on checks(status);
 create index if not exists checks_created_at_idx on checks(created_at desc);
+create index if not exists guide_requests_status_idx on guide_requests(status);
+create index if not exists guide_requests_created_at_idx on guide_requests(created_at desc);
 
 -- ─────────────────────────────────────────────
 -- Row Level Security
@@ -111,6 +134,7 @@ alter table stories enable row level security;
 alter table letters enable row level security;
 alter table events enable row level security;
 alter table checks enable row level security;
+alter table guide_requests enable row level security;
 
 drop policy if exists "anon insert assessments" on assessments;
 create policy "anon insert assessments" on assessments
@@ -130,6 +154,10 @@ create policy "anon insert events" on events
 
 drop policy if exists "anon insert checks" on checks;
 create policy "anon insert checks" on checks
+  for insert to anon with check (true);
+
+drop policy if exists "anon insert guide_requests" on guide_requests;
+create policy "anon insert guide_requests" on guide_requests
   for insert to anon with check (true);
 
 -- ─────────────────────────────────────────────
