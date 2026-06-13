@@ -4,52 +4,13 @@ import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
 import TagMarquee from "@/components/TagMarquee";
+import { getAllFeelings } from "@/lib/feelings";
 import { site } from "@/lib/site";
 
 const chapterRomans = ["I", "II", "III", "IV"];
 
-// Recovery Hub — segmentation surface. "あなたは今どこにいますか？"
-// Each card lets the visitor self-select their concern territory.
-const HUB = [
-  {
-    ja: "汗・におい",
-    en: "Sweat & Odor",
-    note: "多汗症・ワキガ・加齢臭",
-    href: "/territories/sweat-odor",
-  },
-  {
-    ja: "肌・ニキビ",
-    en: "Skin & Acne",
-    note: "ニキビ跡・肌の凹凸",
-    href: "/territories/skin-acne",
-  },
-  {
-    ja: "薄毛・AGA",
-    en: "Hair & AGA",
-    note: "生え際・密度",
-    href: "/territories/hair-loss",
-  },
-  {
-    ja: "ヒゲ・体毛",
-    en: "Beard & Body Hair",
-    note: "整える/整えない",
-    href: "/territories/beard-body-hair",
-  },
-  {
-    ja: "顔・印象",
-    en: "Face & Presence",
-    note: "老け見え・自意識",
-    href: "/territories/face-impression",
-  },
-  {
-    ja: "睡眠・疲労",
-    en: "Sleep & Energy",
-    note: "鏡の中の疲労感",
-    href: "/territories/mind-awareness",
-  },
-];
-
 export default function HomePage() {
+  const feelings = getAllFeelings();
   return (
     <>
       {/* ─────────────────────────────────────────
@@ -149,17 +110,18 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE III — Recovery Hub (segmentation)
-         "あなたは今、どこにいますか？" The visitor self-selects their
-         concern territory before being offered the Check.
+         SCENE III — Recovery Hub (emotional entry)
+         "あなたは今、どこにいますか？" The visitor selects by FEELING,
+         not symptom. Each leads to a feeling page that translates the
+         feeling into possible causes.
          ───────────────────────────────────────── */}
       <Reveal>
         <section
           aria-labelledby="recovery-hub"
           className="bg-cream-deep border-t border-hair-line"
         >
-          <div className="mx-auto max-w-[1100px] px-6 sm:px-10 py-20 sm:py-32">
-            <div className="text-center mb-12 sm:mb-16">
+          <div className="mx-auto max-w-[860px] px-6 sm:px-10 py-20 sm:py-32">
+            <div className="mb-12 sm:mb-16">
               <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
                 Recovery Hub
               </p>
@@ -169,27 +131,32 @@ export default function HomePage() {
               >
                 あなたは今、どこにいますか？
               </h2>
-              <p className="mt-5 font-mincho text-[13.5px] sm:text-sm text-sub-gray max-w-[28rem] mx-auto leading-[2]">
-                気になる領域から、その悩みが「なぜ起こるのか」を読みほどく。
+              <p className="mt-5 font-mincho text-[13.5px] sm:text-sm text-sub-gray max-w-[30rem] leading-[2]">
+                症状ではなく、いまの気持ちから。近いものを選ぶと、
+                その奥にある原因を、一緒に読みほどきます。
               </p>
             </div>
 
-            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-              {HUB.map((item) => (
-                <li key={item.href}>
+            <ul className="border-t border-hair-line">
+              {feelings.map((f) => (
+                <li key={f.slug} className="border-b border-hair-line">
                   <Link
-                    href={item.href}
-                    className="group block h-full bg-paper border border-hair-line p-5 sm:p-7 hover:border-gold transition-colors card-lift"
+                    href={`/feelings/${f.slug}`}
+                    className="group flex items-center gap-4 sm:gap-6 py-5 sm:py-6 hover:px-2 transition-all"
                   >
-                    <p className="logo-type italic text-[10px] sm:text-[11px] tracking-[0.25em] text-gold uppercase">
-                      {item.en}
-                    </p>
-                    <h3 className="mt-3 font-mincho text-base sm:text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
-                      {item.ja}
-                    </h3>
-                    <p className="mt-2 text-[12px] text-sub-gray leading-[1.95]">
-                      {item.note}
-                    </p>
+                    <span
+                      aria-hidden
+                      className="shrink-0 w-5 h-5 border border-sub-gray/50 group-hover:border-gold group-hover:bg-gold/10 transition-colors"
+                    />
+                    <span className="flex-1 font-mincho text-[1.05rem] sm:text-[1.3rem] text-ink leading-[1.5] group-hover:text-gold transition-colors">
+                      {f.statement}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="text-sub-gray group-hover:text-gold group-hover:translate-x-1 transition-all text-lg shrink-0"
+                    >
+                      →
+                    </span>
                   </Link>
                 </li>
               ))}
