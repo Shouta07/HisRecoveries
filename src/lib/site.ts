@@ -20,6 +20,12 @@ export const site = {
   locale: "ja_JP",
   language: "ja",
   region: "JP",
+  company: {
+    name: "バイタリティデザイン合同会社",
+    nameEn: "Vitality Design LLC",
+    statement: "We Design Vitality.",
+    definition: "人と事業の活力を設計する会社",
+  },
   topics: [
     "Male Conditioning",
     "Quiet Masculinity",
