@@ -6,42 +6,9 @@ import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
 import TagMarquee from "@/components/TagMarquee";
-import { getAllConcerns } from "@/lib/concerns";
 import { site } from "@/lib/site";
 
 const chapterRomans = ["I", "II", "III", "IV"];
-
-// The "What We Offer" index — the studio-style table of contents.
-const INDEX = [
-  {
-    no: "01",
-    en: "Concerns",
-    ja: "悩み票",
-    href: "/concerns",
-    desc: "悩みごとに「場所」を持つ、当事者のアーカイブ。",
-  },
-  {
-    no: "02",
-    en: "Journal",
-    ja: "記録",
-    href: "/articles",
-    desc: "一人称・過去形で書かれた、半歩先からのエッセイ。",
-  },
-  {
-    no: "03",
-    en: "Recovery Check",
-    ja: "診る",
-    href: "/check",
-    desc: "30 問の自己観察に、編集者が手紙で応える。",
-  },
-  {
-    no: "04",
-    en: "Recovery Guide",
-    ja: "話す",
-    href: "/guide",
-    desc: "編集者と 90 分、状態を整理し、選択肢を翻訳する。",
-  },
-];
 
 export default function HomePage() {
   const articles = getAllArticles();
@@ -49,7 +16,6 @@ export default function HomePage() {
     const flagged = articles.filter((a) => a.popular);
     return (flagged.length > 0 ? flagged : articles).slice(0, 3);
   })();
-  const homeConcerns = getAllConcerns().slice(0, 6);
 
   return (
     <>
@@ -144,137 +110,6 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE III — Index / What We Offer
-         Studio-style numbered table of contents.
-         ───────────────────────────────────────── */}
-      <Reveal>
-        <section
-          aria-labelledby="index"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-32"
-        >
-          <div className="mb-10 sm:mb-14">
-            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-              Index
-            </p>
-            <h2
-              id="index"
-              className="mt-4 font-mincho text-2xl sm:text-4xl text-ink leading-[1.4]"
-            >
-              His Recoveries にあるもの
-            </h2>
-          </div>
-
-          <ol className="border-t border-hair-line">
-            {INDEX.map((item) => (
-              <li key={item.href} className="border-b border-hair-line">
-                <Link
-                  href={item.href}
-                  className="group grid grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[5rem_1fr_auto] items-baseline gap-4 sm:gap-10 py-7 sm:py-9 hover:bg-paper/50 transition-colors"
-                >
-                  <span className="logo-type italic text-[13px] sm:text-sm tracking-[0.2em] text-gold">
-                    {item.no}
-                  </span>
-                  <div>
-                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                      <h3 className="font-mincho text-xl sm:text-3xl text-ink leading-[1.3] group-hover:text-gold transition-colors">
-                        {item.ja}
-                      </h3>
-                      <span className="logo-type italic text-[12px] sm:text-sm tracking-[0.2em] uppercase text-sub-gray">
-                        {item.en}
-                      </span>
-                    </div>
-                    <p className="mt-2 font-mincho text-[13px] sm:text-[14px] text-ink/70 leading-[1.9] max-w-[34rem]">
-                      {item.desc}
-                    </p>
-                  </div>
-                  <span
-                    aria-hidden
-                    className="text-sub-gray group-hover:text-gold group-hover:translate-x-1 transition-all duration-300 text-lg sm:text-xl"
-                  >
-                    →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </Reveal>
-
-      {/* ─────────────────────────────────────────
-         SCENE IV — Concerns preview（primary entry）
-         ───────────────────────────────────────── */}
-      {homeConcerns.length > 0 && (
-        <Reveal>
-          <section
-            aria-labelledby="home-concerns"
-            className="bg-paper/40 border-y border-hair-line"
-          >
-            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-32">
-              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-14">
-                <SectionLabel
-                  en="Concerns"
-                  ja="悩み票"
-                  number={chapterRomans[0]}
-                />
-                <p
-                  id="home-concerns"
-                  className="font-mincho text-[14px] sm:text-[15px] text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
-                >
-                  悩みごとに「場所」を持っています。
-                  <br className="hidden sm:inline" />
-                  そこには、当事者の声と、記録と、選択肢の地形図があります。
-                </p>
-              </div>
-
-              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                {homeConcerns.map((c) => (
-                  <li key={c.slug}>
-                    <Link
-                      href={`/concerns/${c.slug}`}
-                      className="group block h-full bg-cream border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors card-lift"
-                    >
-                      <div className="flex items-baseline justify-between gap-3">
-                        <span className="logo-type italic text-[12px] tracking-[0.25em] text-gold">
-                          #{c.ticketId}
-                        </span>
-                        <span className="text-[10px] tracking-[0.1em] text-sub-gray uppercase">
-                          {c.status}
-                        </span>
-                      </div>
-                      <h3 className="mt-5 font-mincho text-base sm:text-lg text-ink leading-[1.55] group-hover:text-gold transition-colors">
-                        {c.title}
-                      </h3>
-                      {c.excerpt && (
-                        <p className="mt-4 font-mincho text-[13px] sm:text-[13.5px] text-ink/75 leading-[2] line-clamp-3">
-                          {c.excerpt}
-                        </p>
-                      )}
-                      <p className="mt-5 text-[11px] tracking-[0.06em] text-sub-gray">
-                        {c.articles.length} 件の記録
-                        {c.voices.length > 0 && (
-                          <span> · {c.voices.length} の声</span>
-                        )}
-                      </p>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-10 sm:mt-12 flex justify-end">
-                <Link
-                  href="/concerns"
-                  className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
-                >
-                  すべての悩み票を見る
-                  <span aria-hidden> →</span>
-                </Link>
-              </div>
-            </div>
-          </section>
-        </Reveal>
-      )}
-
-      {/* ─────────────────────────────────────────
          SCENE V — Most Read
          ───────────────────────────────────────── */}
       {popularArticles.length > 0 && (
@@ -287,7 +122,7 @@ export default function HomePage() {
               <SectionLabel
                 en="Most Read"
                 ja="よく読まれている記事"
-                number={chapterRomans[1]}
+                number={chapterRomans[0]}
               />
               <p
                 id="most-read"
@@ -369,7 +204,7 @@ export default function HomePage() {
               <SectionLabel
                 en="Recovery Check"
                 ja="自分の状態を、編集者と整理する"
-                number={chapterRomans[2]}
+                number={chapterRomans[1]}
               />
               <p
                 id="recovery-check"
