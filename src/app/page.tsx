@@ -12,35 +12,52 @@ export default function HomePage() {
     <>
       {/* ─────────────────────────────────────────
          SCENE I — Hero
-         Full-viewport, type only. One statement.
+         Cinematic background, type only. One statement.
          ───────────────────────────────────────── */}
-      <section className="relative min-h-[86vh] flex flex-col items-center justify-center text-center px-6 sm:px-10">
-        <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold">
-          {site.tagline}
-        </p>
-        <h1 className="mt-6 logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-ink leading-[1]">
-          {site.name}
-        </h1>
-        <div className="mt-8 flex justify-center">
-          <span aria-hidden className="block w-14 sm:w-20 h-px bg-gold draw-in" />
+      <section className="relative min-h-[86vh] flex flex-col items-center justify-center text-center px-6 sm:px-10 bg-navy overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/cityscape-dawn.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center opacity-90"
+          />
         </div>
-        <p className="mt-8 font-mincho text-[1.5rem] sm:text-4xl lg:text-[3.25rem] leading-[1.4] text-ink tracking-[0.04em]">
-          {site.promise}
-        </p>
-        <p className="mt-8 font-mincho text-[13.5px] sm:text-[15px] text-ink/70 leading-[2] max-w-[30rem]">
-          男性が言葉にしにくいことを、
-          <br className="hidden sm:inline" />
-          当事者の視点で記録する場所。
-        </p>
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/45 to-black/70"
+        />
+
+        <div className="relative">
+          <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold-bright">
+            {site.tagline}
+          </p>
+          <h1 className="mt-6 logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-cream leading-[1] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+            {site.name}
+          </h1>
+          <div className="mt-8 flex justify-center">
+            <span aria-hidden className="block w-14 sm:w-20 h-px bg-gold-bright draw-in" />
+          </div>
+          <p className="mt-8 font-mincho text-[1.5rem] sm:text-4xl lg:text-[3.25rem] leading-[1.4] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+            {site.promise}
+          </p>
+          <p className="mt-8 mx-auto font-mincho text-[13.5px] sm:text-[15px] text-cream/85 leading-[2] max-w-[30rem]">
+            男性が言葉にしにくいことを、
+            <br className="hidden sm:inline" />
+            当事者の視点で記録する場所。
+          </p>
+        </div>
 
         {/* Scroll cue */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-sub-gray">
+          <span className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-cream/60">
             Scroll
           </span>
           <span
             aria-hidden
-            className="block w-px h-10 bg-gradient-to-b from-gold to-transparent soft-float"
+            className="block w-px h-10 bg-gradient-to-b from-gold-bright to-transparent soft-float"
           />
         </div>
       </section>
@@ -99,42 +116,6 @@ export default function HomePage() {
           "心と余白",
         ]}
       />
-
-      {/* ─────────────────────────────────────────
-         SCENE VI — Philosophy moment (cinematic)
-         ───────────────────────────────────────── */}
-      <Reveal>
-        <section aria-label="A Philosophy" className="relative bg-navy">
-          <div className="absolute inset-0">
-            <Image
-              src="/cityscape-dawn.png"
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover object-center opacity-90"
-            />
-          </div>
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70"
-          />
-          <div className="relative mx-auto max-w-[1000px] px-6 sm:px-10 py-24 sm:py-48 lg:py-56 text-center text-cream">
-            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
-              A Philosophy
-            </p>
-            <p className="mt-7 sm:mt-10 font-mincho text-[1.5rem] sm:text-3xl lg:text-[2.5rem] leading-[1.55] tracking-[0.05em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
-              男性は、強くなるのではなく、
-              <br />
-              整うのだ。
-            </p>
-            <p className="mt-7 sm:mt-10 font-mincho italic text-[13px] sm:text-sm tracking-[0.15em] text-cream/75">
-              Men are not meant to become stronger.
-              <br />
-              They are meant to become more aligned.
-            </p>
-          </div>
-        </section>
-      </Reveal>
 
       {/* ─────────────────────────────────────────
          SCENE VII — Recovery Check
