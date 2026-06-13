@@ -135,6 +135,12 @@ export default async function ChecksAdminPage() {
                     </section>
                   ))}
                   <div className="mt-8 flex flex-wrap items-center gap-3 text-[11px]">
+                    <Link
+                      href={`/admin/checks/${r.id}`}
+                      className="bg-ink text-cream hover:bg-gold px-3 py-1.5 transition-colors tracking-[0.06em]"
+                    >
+                      レポートを開く →
+                    </Link>
                     {r.email && (
                       <Link
                         href={`mailto:${r.email}?subject=${encodeURIComponent(
