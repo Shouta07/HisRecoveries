@@ -57,6 +57,29 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Concern vocabulary — SEO/GEO-grabbable words the persona searches,
+         mixed with the emotional phrases that say "you are seen here."
+         Sits between Hero and Concept so the persona feels recognized
+         before reading the statement. */}
+      <TagMarquee
+        items={[
+          "多汗症",
+          "ワキガ",
+          "ニキビ跡",
+          "薄毛・AGA",
+          "加齢臭",
+          "男性の自意識",
+          "清潔感が欲しい",
+          "鏡を見るのが怖い",
+          "温泉に誘われたくない",
+          "集合写真が好きになれない",
+          "婚活写真が苦手",
+          "派手にはなりたくない",
+          "老けて見えると言われた",
+          "美容皮膚科に行けない",
+        ]}
+      />
+
       {/* ─────────────────────────────────────────
          SCENE II — Concept (scroll-revealed statement)
          Sentence by sentence, staggered fade-in.
@@ -82,27 +105,6 @@ export default function HomePage() {
           </Reveal>
         </div>
       </section>
-
-      {/* Concern vocabulary — SEO/GEO-grabbable words the persona searches,
-         mixed with the emotional phrases that say "you are seen here." */}
-      <TagMarquee
-        items={[
-          "多汗症",
-          "ワキガ",
-          "ニキビ跡",
-          "薄毛・AGA",
-          "加齢臭",
-          "男性の自意識",
-          "清潔感が欲しい",
-          "鏡を見るのが怖い",
-          "温泉に誘われたくない",
-          "集合写真が好きになれない",
-          "婚活写真が苦手",
-          "派手にはなりたくない",
-          "老けて見えると言われた",
-          "美容皮膚科に行けない",
-        ]}
-      />
 
       {/* ─────────────────────────────────────────
          SCENE VII — Recovery Check
@@ -191,58 +193,109 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE IX — Belonging (cinematic close)
+         SCENE IX — Recovery Letters (paid close)
+         The home funnel terminates here: the persona who has read
+         this far is ready to be addressed by name. State the product,
+         the price, and the offer plainly.
          ───────────────────────────────────────── */}
       <Reveal>
-        <section aria-labelledby="belonging" className="relative bg-navy">
+        <section aria-labelledby="letters" className="relative bg-navy">
           <div className="absolute inset-0">
             <Image
               src="/room-morning.png"
               alt=""
               fill
               sizes="100vw"
-              className="object-cover object-center opacity-85"
+              className="object-cover object-center opacity-80"
             />
           </div>
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80"
+            className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/85"
           />
           <div className="relative mx-auto max-w-[1100px] px-6 sm:px-10 py-20 sm:py-40 text-center text-cream">
-            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
-              Belonging · ニュースレターを受け取る
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
+              Recovery Letters
             </p>
             <p
-              id="belonging"
-              className="mt-7 sm:mt-10 font-mincho text-[1.35rem] sm:text-2xl lg:text-3xl leading-[1.65] max-w-[32rem] mx-auto drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]"
+              id="letters"
+              className="mt-7 sm:mt-10 font-mincho text-[1.5rem] sm:text-[2rem] lg:text-[2.6rem] leading-[1.55] max-w-[34rem] mx-auto drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]"
             >
-              月に一度か二度、
-              <br className="sm:hidden" />
-              新しい記録と覚え書きが届きます。
+              ここまで読んだあなたへ、
+              <br />
+              月に二度、編集者からの手紙を。
             </p>
-            <p className="mt-5 sm:mt-6 text-[13px] sm:text-sm leading-[1.95] text-cream/70 max-w-[30rem] mx-auto">
-              通知も煽りもありません。読まない月は読まないでください。
+            <p className="mt-6 sm:mt-7 font-mincho text-[14.5px] sm:text-[15.5px] leading-[2.05] text-cream/85 max-w-[30rem] mx-auto">
+              公開記事には書けなかった、半歩先からの私的な覚え書き。
+              <br className="hidden sm:inline" />
+              季節ごとに、自己観察の続きの問いも届きます。
             </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
+            <ul className="mt-9 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6 max-w-[44rem] mx-auto text-left">
+              <li className="border-t border-cream/25 pt-4">
+                <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold-bright">
+                  Letters
+                </p>
+                <p className="mt-2 font-mincho text-[14px] text-cream/90 leading-[1.85]">
+                  月 2 通の
+                  <br />
+                  クローズドレター
+                </p>
+              </li>
+              <li className="border-t border-cream/25 pt-4">
+                <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold-bright">
+                  Prompts
+                </p>
+                <p className="mt-2 font-mincho text-[14px] text-cream/90 leading-[1.85]">
+                  季節ごとに 1 回の
+                  <br />
+                  自己観察の問い
+                </p>
+              </li>
+              <li className="border-t border-cream/25 pt-4">
+                <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold-bright">
+                  Archive
+                </p>
+                <p className="mt-2 font-mincho text-[14px] text-cream/90 leading-[1.85]">
+                  過去レターの
+                  <br />
+                  いつでも閲覧
+                </p>
+              </li>
+            </ul>
+
+            <p className="mt-10 sm:mt-12 font-mincho text-cream leading-[1.4]">
+              <span className="text-[2rem] sm:text-[2.5rem] align-middle">¥500</span>
+              <span className="ml-2 text-[13px] tracking-[0.08em] text-cream/70 align-middle">
+                / 月 · Substack で購読 · いつでも解約
+              </span>
+            </p>
+
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
               <TrackedCTA
-                href={site.social.substack}
-                event="subscribe_click"
-                eventProps={{ location: "home_belonging" }}
+                href={`${site.social.substack}/subscribe`}
+                event="membership_subscribe_click"
+                eventProps={{ location: "home_letters" }}
                 className="btn-gold justify-center"
               >
-                Substack で購読する
+                Recovery Letters を購読する
                 <span aria-hidden>→</span>
               </TrackedCTA>
               <TrackedCTA
-                href={site.social.threads}
+                href="/membership"
                 event="subscribe_click"
-                eventProps={{ location: "home_belonging", channel: "threads" }}
-                className="text-sm tracking-[0.12em] text-cream border border-cream/40 hover:border-gold-bright hover:text-gold-bright transition-colors px-6 py-3.5"
+                eventProps={{ location: "home_letters", target: "details" }}
+                className="text-sm tracking-[0.12em] text-cream border border-cream/40 hover:border-gold-bright hover:text-gold-bright transition-colors px-6 py-3.5 text-center"
               >
-                Threads でフォロー
+                内容を詳しく見る
               </TrackedCTA>
             </div>
+
+            <p className="mt-8 text-[12px] tracking-[0.06em] text-cream/55 leading-[1.95] max-w-[28rem] mx-auto">
+              通知も、煽りも、催促もありません。
+              <br className="hidden sm:inline" />
+              読まない月は、読まないでください。
+            </p>
           </div>
         </section>
       </Reveal>
