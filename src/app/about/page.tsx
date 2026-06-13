@@ -102,6 +102,15 @@ export default function AboutPage() {
     description: site.company.definition,
     subOrganization: { "@id": `${site.url}/#publisher` },
     areaServed: { "@type": "Country", name: "Japan" },
+    email: site.company.email,
+    address: {
+      "@type": "PostalAddress",
+      postalCode: "153-0064",
+      addressRegion: "東京都",
+      addressLocality: "目黒区",
+      streetAddress: "下目黒1丁目1番14号 コノトラビル7F",
+      addressCountry: "JP",
+    },
   };
 
   const breadcrumbLd = {
@@ -367,6 +376,39 @@ export default function AboutPage() {
               The company earns. The brand is trusted.
             </em>
           </p>
+
+          {/* 会社概要 — corporate profile table */}
+          <dl className="mt-10 border-t border-hair-line text-[15px]">
+            <ProfileRow label="会社名">
+              {site.company.name}
+              <span className="text-sub-gray text-[13px] ml-2">
+                （{site.company.nameEn}）
+              </span>
+            </ProfileRow>
+            <ProfileRow label="代表者">
+              {site.company.representative}
+            </ProfileRow>
+            <ProfileRow label="所在地">
+              {site.company.postalCode}
+              <br />
+              {site.company.address}
+            </ProfileRow>
+            <ProfileRow label="事業内容">
+              <ul className="space-y-1">
+                {site.company.businesses.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
+            </ProfileRow>
+            <ProfileRow label="連絡先">
+              <a
+                href={`mailto:${site.company.email}`}
+                className="border-b border-hair-line hover:border-ink transition-colors"
+              >
+                {site.company.email}
+              </a>
+            </ProfileRow>
+          </dl>
         </div>
 
         {/* Contact */}
@@ -393,6 +435,23 @@ export default function AboutPage() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ProfileRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-[7rem_1fr] gap-1 sm:gap-6 border-b border-hair-line py-4">
+      <dt className="text-sub-gray text-[13px] tracking-[0.08em] pt-0.5">
+        {label}
+      </dt>
+      <dd className="text-ink leading-[1.9]">{children}</dd>
     </div>
   );
 }
