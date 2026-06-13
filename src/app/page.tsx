@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
@@ -6,6 +7,47 @@ import TagMarquee from "@/components/TagMarquee";
 import { site } from "@/lib/site";
 
 const chapterRomans = ["I", "II", "III", "IV"];
+
+// Recovery Hub — segmentation surface. "あなたは今どこにいますか？"
+// Each card lets the visitor self-select their concern territory.
+const HUB = [
+  {
+    ja: "汗・におい",
+    en: "Sweat & Odor",
+    note: "多汗症・ワキガ・加齢臭",
+    href: "/territories/sweat-odor",
+  },
+  {
+    ja: "肌・ニキビ",
+    en: "Skin & Acne",
+    note: "ニキビ跡・肌の凹凸",
+    href: "/territories/skin-acne",
+  },
+  {
+    ja: "薄毛・AGA",
+    en: "Hair & AGA",
+    note: "生え際・密度",
+    href: "/territories/hair-loss",
+  },
+  {
+    ja: "ヒゲ・体毛",
+    en: "Beard & Body Hair",
+    note: "整える/整えない",
+    href: "/territories/beard-body-hair",
+  },
+  {
+    ja: "顔・印象",
+    en: "Face & Presence",
+    note: "老け見え・自意識",
+    href: "/territories/face-impression",
+  },
+  {
+    ja: "睡眠・疲労",
+    en: "Sleep & Energy",
+    note: "鏡の中の疲労感",
+    href: "/territories/mind-awareness",
+  },
+];
 
 export default function HomePage() {
   return (
@@ -69,14 +111,14 @@ export default function HomePage() {
               <p className="text-[1.55rem] sm:text-[2.4rem] lg:text-[2.85rem] leading-[1.7] tracking-[0.04em] text-cream drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]">
                 誰にも言えない悩みを抱える男性は、
                 <br className="hidden sm:inline" />
-                今日もひとりで検索している。
+                たいてい、ひとりで検索している。
               </p>
             </Reveal>
             <Reveal delay={220}>
               <p className="text-[1.55rem] sm:text-[2.4rem] lg:text-[2.85rem] leading-[1.7] tracking-[0.04em] text-cream/85 drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]">
-                His Recoveries は、その検索の終着点ではなく、
+                His Recoveries は、
                 <br className="hidden sm:inline" />
-                回復の記録でありたい。
+                その検索の先にある場所です。
               </p>
             </Reveal>
           </div>
@@ -105,6 +147,56 @@ export default function HomePage() {
           "美容皮膚科に行けない",
         ]}
       />
+
+      {/* ─────────────────────────────────────────
+         SCENE III — Recovery Hub (segmentation)
+         "あなたは今、どこにいますか？" The visitor self-selects their
+         concern territory before being offered the Check.
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="recovery-hub"
+          className="bg-cream-deep border-t border-hair-line"
+        >
+          <div className="mx-auto max-w-[1100px] px-6 sm:px-10 py-20 sm:py-32">
+            <div className="text-center mb-12 sm:mb-16">
+              <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+                Recovery Hub
+              </p>
+              <h2
+                id="recovery-hub"
+                className="mt-5 font-mincho text-2xl sm:text-[2.2rem] text-ink leading-[1.45]"
+              >
+                あなたは今、どこにいますか？
+              </h2>
+              <p className="mt-5 font-mincho text-[13.5px] sm:text-sm text-sub-gray max-w-[28rem] mx-auto leading-[2]">
+                近いものを選ぶと、当事者の記録と、半歩先の選択肢の地形がひらきます。
+              </p>
+            </div>
+
+            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+              {HUB.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="group block h-full bg-paper border border-hair-line p-5 sm:p-7 hover:border-gold transition-colors card-lift"
+                  >
+                    <p className="logo-type italic text-[10px] sm:text-[11px] tracking-[0.25em] text-gold uppercase">
+                      {item.en}
+                    </p>
+                    <h3 className="mt-3 font-mincho text-base sm:text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
+                      {item.ja}
+                    </h3>
+                    <p className="mt-2 text-[12px] text-sub-gray leading-[1.95]">
+                      {item.note}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </Reveal>
 
       {/* ─────────────────────────────────────────
          SCENE VII — Recovery Check
@@ -193,13 +285,12 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE IX — Recovery Letters (paid close)
-         The home funnel terminates here: the persona who has read
-         this far is ready to be addressed by name. State the product,
-         the price, and the offer plainly.
+         SCENE IX — Recoveries Letter (the place, not a product)
+         Frame the Substack as a place to belong, not a paid subscription.
+         Price stays discoverable but is not the headline.
          ───────────────────────────────────────── */}
       <Reveal>
-        <section aria-labelledby="letters" className="relative bg-navy">
+        <section aria-labelledby="letter" className="relative bg-navy">
           <div className="absolute inset-0">
             <Image
               src="/room-morning.png"
@@ -215,86 +306,48 @@ export default function HomePage() {
           />
           <div className="relative mx-auto max-w-[1100px] px-6 sm:px-10 py-20 sm:py-40 text-center text-cream">
             <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
-              Recovery Letters
+              Recoveries Letter
             </p>
             <p
-              id="letters"
-              className="mt-7 sm:mt-10 font-mincho text-[1.5rem] sm:text-[2rem] lg:text-[2.6rem] leading-[1.55] max-w-[34rem] mx-auto drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]"
+              id="letter"
+              className="mt-7 sm:mt-10 font-mincho text-[1.6rem] sm:text-[2.2rem] lg:text-[2.85rem] leading-[1.55] max-w-[36rem] mx-auto drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]"
             >
-              ここまで読んだあなたへ、
+              毎週日曜日。
               <br />
-              月に二度、編集者からの手紙を。
+              男性の身体と自意識について。
+              <br />
+              広告のない場所で。
             </p>
-            <p className="mt-6 sm:mt-7 font-mincho text-[14.5px] sm:text-[15.5px] leading-[2.05] text-cream/85 max-w-[30rem] mx-auto">
-              公開記事には書けなかった、半歩先からの私的な覚え書き。
+            <p className="mt-7 sm:mt-9 font-mincho text-[14.5px] sm:text-[15.5px] leading-[2.05] text-cream/85 max-w-[30rem] mx-auto">
+              公開記事には書けなかった、半歩先からの覚え書きを、
               <br className="hidden sm:inline" />
-              季節ごとに、自己観察の続きの問いも届きます。
+              週に一度、Substack でお送りします。
             </p>
 
-            <ul className="mt-9 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6 max-w-[44rem] mx-auto text-left">
-              <li className="border-t border-cream/25 pt-4">
-                <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold-bright">
-                  Letters
-                </p>
-                <p className="mt-2 font-mincho text-[14px] text-cream/90 leading-[1.85]">
-                  月 2 通の
-                  <br />
-                  クローズドレター
-                </p>
-              </li>
-              <li className="border-t border-cream/25 pt-4">
-                <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold-bright">
-                  Prompts
-                </p>
-                <p className="mt-2 font-mincho text-[14px] text-cream/90 leading-[1.85]">
-                  季節ごとに 1 回の
-                  <br />
-                  自己観察の問い
-                </p>
-              </li>
-              <li className="border-t border-cream/25 pt-4">
-                <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold-bright">
-                  Archive
-                </p>
-                <p className="mt-2 font-mincho text-[14px] text-cream/90 leading-[1.85]">
-                  過去レターの
-                  <br />
-                  いつでも閲覧
-                </p>
-              </li>
-            </ul>
-
-            <p className="mt-10 sm:mt-12 font-mincho text-cream leading-[1.4]">
-              <span className="text-[2rem] sm:text-[2.5rem] align-middle">¥500</span>
-              <span className="ml-2 text-[13px] tracking-[0.08em] text-cream/70 align-middle">
-                / 月 · Substack で購読 · いつでも解約
-              </span>
-            </p>
-
-            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
+            <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
               <TrackedCTA
                 href={`${site.social.substack}/subscribe`}
                 event="membership_subscribe_click"
-                eventProps={{ location: "home_letters" }}
+                eventProps={{ location: "home_letter" }}
                 className="btn-gold justify-center"
               >
-                Recovery Letters を購読する
+                日曜日の手紙を受け取る
                 <span aria-hidden>→</span>
               </TrackedCTA>
               <TrackedCTA
-                href="/membership"
+                href={site.social.substack}
                 event="subscribe_click"
-                eventProps={{ location: "home_letters", target: "details" }}
+                eventProps={{ location: "home_letter", target: "preview" }}
                 className="text-sm tracking-[0.12em] text-cream border border-cream/40 hover:border-gold-bright hover:text-gold-bright transition-colors px-6 py-3.5 text-center"
               >
-                内容を詳しく見る
+                過去の手紙を読む
               </TrackedCTA>
             </div>
 
-            <p className="mt-8 text-[12px] tracking-[0.06em] text-cream/55 leading-[1.95] max-w-[28rem] mx-auto">
-              通知も、煽りも、催促もありません。
+            <p className="mt-9 text-[12px] tracking-[0.08em] text-cream/55 leading-[1.95] max-w-[30rem] mx-auto">
+              無料で読める便りと、月 ¥500 の Recoveries Letter から選べます。
               <br className="hidden sm:inline" />
-              読まない月は、読まないでください。
+              通知も催促もありません。読まない日曜日は、読まないでください。
             </p>
           </div>
         </section>
