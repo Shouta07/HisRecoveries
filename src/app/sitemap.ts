@@ -3,6 +3,7 @@ import { getAllArticles } from "@/lib/articles";
 import { getAllEvents } from "@/lib/events";
 import { getAllTerritories } from "@/lib/territories";
 import { getAllConcerns } from "@/lib/concerns";
+import { getAllFeelingSlugs } from "@/lib/feelings";
 import { categories, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -72,6 +73,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
+  const feelingPaths: MetadataRoute.Sitemap = getAllFeelingSlugs().map((slug) => ({
+    url: `${site.url}/feelings/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.85,
+  }));
+
   return [
     ...staticPaths,
     ...categoryPaths,
@@ -79,5 +87,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...eventPaths,
     ...territoryPaths,
     ...concernPaths,
+    ...feelingPaths,
   ];
 }
