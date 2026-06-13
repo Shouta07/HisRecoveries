@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import TrackedCTA from "@/components/TrackedCTA";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -34,22 +35,39 @@ export default function CheckCompletePage() {
         までご連絡ください。
       </p>
 
-      <div className="mt-12 pt-8 border-t border-hair-line">
-        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
-          A next half-step
+      {/* Primary funnel terminus — Recoveries Letter (Substack) */}
+      <div className="mt-12 border border-hair-line bg-paper p-6 sm:p-8">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-3">
+          レポートが届くまでに
         </p>
-        <p className="font-mincho text-[14.5px] text-ink/85 leading-[2.05]">
-          編集者から月に二度、私的なクローズドレターが届く Recovery Letters もあります。
-          季節ごとに、自己観察の続きの問いも送ります。
+        <p className="font-mincho text-xl sm:text-2xl text-ink leading-[1.5]">
+          毎週日曜日、続きを受け取る。
         </p>
-        <div className="mt-5">
+        <p className="mt-4 font-mincho text-[14px] text-sub-gray leading-[2.05]">
+          Recoveries Letter は、編集者から日曜日に届く手紙です。
+          男性の身体と自意識について、広告のない場所で。
+          季節ごとに、今回の自己観察の続きの問いも送ります。
+        </p>
+        <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+          <TrackedCTA
+            href={`${site.social.substack}/subscribe`}
+            event="membership_subscribe_click"
+            eventProps={{ location: "check_complete" }}
+            className="btn-gold justify-center"
+          >
+            日曜日の手紙を受け取る
+            <span aria-hidden>→</span>
+          </TrackedCTA>
           <Link
             href="/membership"
-            className="text-[13px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5 inline-flex"
+            className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold transition-colors px-6 py-3.5 text-center"
           >
-            Recovery Letters を見る →
+            内容を詳しく見る
           </Link>
         </div>
+        <p className="mt-4 text-[11px] text-sub-gray leading-[1.95]">
+          無料で読める便りもあります。読まない日曜日は、読まないでください。
+        </p>
       </div>
 
       <div className="mt-10 pt-8 border-t border-hair-line">
@@ -60,32 +78,22 @@ export default function CheckCompletePage() {
           <li>
             ・{" "}
             <Link
-              href="/concerns"
+              href="/stories"
               className="border-b border-hair-line hover:border-gold transition-colors"
             >
-              悩み票を読む
+              回復の記録を読む
             </Link>
-            （あなたの観察に近いものが、すでに置かれているかもしれません）
+            （同じ悩みを通過した人の記録）
           </li>
           <li>
             ・{" "}
             <Link
-              href="/articles"
+              href="/territories"
               className="border-b border-hair-line hover:border-gold transition-colors"
             >
-              記録を読む
+              原因を読む
             </Link>
-            （一人称・過去形のエッセイ）
-          </li>
-          <li>
-            ・{" "}
-            <Link
-              href="/subscribe"
-              className="border-b border-hair-line hover:border-gold transition-colors"
-            >
-              便りを受け取る
-            </Link>
-            （月に一度か二度）
+            （その悩みが、なぜ起こるのか）
           </li>
         </ul>
       </div>

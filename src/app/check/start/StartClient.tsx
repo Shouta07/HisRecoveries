@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { CheckQuestion } from "@/lib/checkQuestions";
@@ -57,12 +57,23 @@ export default function StartClient({ sections, questions }: Props) {
     }
   }, [index, responses, email, name]);
 
+  const advanceTimer = useRef<number | null>(null);
+
+  // Clear any pending auto-advance on unmount.
+  useEffect(() => {
+    return () => {
+      if (advanceTimer.current) window.clearTimeout(advanceTimer.current);
+    };
+  }, []);
+
   const currentQuestion = questions[index];
   const currentSection = useMemo(
     () => sections.find((s) => s.id === currentQuestion?.section),
     [sections, currentQuestion]
   );
   const progress = ((index + 1) / questions.length) * 100;
+  const remaining = questions.length - (index + 1);
+  const remainingMinutes = Math.max(1, Math.ceil(remaining * 0.5));
 
   const isAnswered = useCallback(
     (q: CheckQuestion): boolean => {
@@ -78,6 +89,24 @@ export default function StartClient({ sections, questions }: Props) {
 
   function setAnswer(qid: string, value: string | string[] | number) {
     setResponses((prev) => ({ ...prev, [qid]: value }));
+  }
+
+  // For single-tap fields (single / scale): record the answer and
+  // auto-advance to the next question. This removes a whole tap per
+  // question — the single biggest completion-rate lever on a 30-step form.
+  function answerAndAdvance(qid: string, value: string | number) {
+    setError("");
+    setAnswer(qid, value);
+    if (advanceTimer.current) window.clearTimeout(advanceTimer.current);
+    advanceTimer.current = window.setTimeout(() => {
+      setIndex((i) => {
+        if (i < questions.length - 1) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return i + 1;
+        }
+        return i;
+      });
+    }, 320);
   }
 
   function next() {
@@ -213,7 +242,7 @@ export default function StartClient({ sections, questions }: Props) {
           <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
             {currentSection?.label}
           </p>
-          <p className="text-[11px] tracking-[0.06em] text-sub-gray">
+          <p className="text-[11px] tracking-[0.06em] text-sub-gray tabular-nums">
             {index + 1} / {questions.length}
           </p>
         </div>
@@ -223,6 +252,11 @@ export default function StartClient({ sections, questions }: Props) {
             style={{ width: `${progress}%` }}
           />
         </div>
+        <p className="mt-2 text-[11px] text-sub-gray tracking-[0.04em]">
+          {remaining > 0
+            ? `あと ${remaining} 問 · 約 ${remainingMinutes} 分`
+            : "最後の問いです"}
+        </p>
       </div>
 
       {/* Question */}
@@ -246,7 +280,7 @@ export default function StartClient({ sections, questions }: Props) {
             <SingleField
               q={currentQuestion}
               value={responses[currentQuestion.id] as string | undefined}
-              onChange={(v) => setAnswer(currentQuestion.id, v)}
+              onChange={(v) => answerAndAdvance(currentQuestion.id, v)}
             />
           )}
           {currentQuestion.kind === "multi" && (
@@ -260,7 +294,7 @@ export default function StartClient({ sections, questions }: Props) {
             <ScaleField
               q={currentQuestion}
               value={responses[currentQuestion.id] as number | undefined}
-              onChange={(v) => setAnswer(currentQuestion.id, v)}
+              onChange={(v) => answerAndAdvance(currentQuestion.id, v)}
             />
           )}
           {currentQuestion.kind === "text" && (
