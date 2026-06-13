@@ -4,14 +4,14 @@ import TrackedCTA from "@/components/TrackedCTA";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Recovery Letters — 月に二度、編集者からの手紙",
+  title: "Recoveries Letter — 毎週日曜日、男性の身体と自意識について",
   description:
-    "Recovery Letters は、His Recoveries の編集者から月に二度届く、有料のクローズドレターです。月額 ¥500・Substack 経由。通知も煽りもありません。読まない月は読まないでください。",
+    "Recoveries Letter は、His Recoveries の編集者から毎週日曜日に届く、広告のないクローズドレターです。月額 ¥500・Substack 経由。通知も催促もありません。読まない日曜日は、読まないでください。",
   alternates: { canonical: `${site.url}/membership` },
   openGraph: {
-    title: `Recovery Letters — ${site.name}`,
+    title: `Recoveries Letter — ${site.name}`,
     description:
-      "月に二度、編集者からのクローズドレター。月額 ¥500・Substack。通知も煽りもありません。",
+      "毎週日曜日、男性の身体と自意識について。広告のない場所で。月額 ¥500・Substack。",
     url: `${site.url}/membership`,
   },
 };
@@ -39,10 +39,10 @@ export default function MembershipPage() {
     "@context": "https://schema.org",
     "@type": "Product",
     "@id": `${site.url}/membership#product`,
-    name: "Recovery Letters",
+    name: "Recoveries Letter",
     brand: { "@id": `${site.url}/#publisher` },
     description:
-      "月に二度、編集者から届くクローズドレター。季節ごとに 1 回、Recovery Check の振り返り問。過去レターの閲覧。",
+      "毎週日曜日、編集者から届くクローズドレター。男性の身体と自意識について、広告のない場所で。季節ごとに 1 回、Recovery Check の振り返り問。過去レターの閲覧。",
     offers: {
       "@type": "Offer",
       price: "500",
@@ -72,21 +72,23 @@ export default function MembershipPage() {
 
       <header className="mb-14 sm:mb-20">
         <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-          Recovery Letters
+          Recoveries Letter
         </p>
         <h1 className="mt-6 font-mincho text-3xl sm:text-5xl text-ink leading-[1.35]">
-          月に二度、
+          毎週日曜日。
           <br />
-          編集者からの手紙。
+          男性の身体と自意識について。
+          <br />
+          広告のない場所で。
         </h1>
         <p className="mt-8 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05] max-w-[34rem]">
           公開記事には書けなかった、編集者の私的な手紙が、
           <br className="hidden sm:inline" />
-          月に二度、メールで届きます。
+          毎週日曜日、メールで届きます。
         </p>
         <p className="mt-6 font-mincho text-[13.5px] text-sub-gray leading-[2.05] max-w-[34rem]">
           通知も、煽りも、催促もありません。
-          読まない月は、読まないでください。
+          読まない日曜日は、読まないでください。
         </p>
       </header>
 
@@ -97,7 +99,7 @@ export default function MembershipPage() {
         <ol className="border-l border-hair-line pl-6 space-y-7 max-w-[34rem]">
           <li>
             <p className="font-mincho text-[15px] text-ink leading-[1.85]">
-              月に二度の、クローズド・レター。
+              毎週日曜日、クローズド・レター。
             </p>
             <p className="mt-2 text-[12.5px] text-sub-gray leading-[1.95]">
               公開記事より私的な、半歩先の覚え書き。誰にも見せない机の上から、そのままお送りします。
@@ -144,7 +146,7 @@ export default function MembershipPage() {
             eventProps={{ location: "membership_hero" }}
             className="btn-gold justify-center"
           >
-            Substack で購読する <span aria-hidden>→</span>
+            日曜日の手紙を受け取る <span aria-hidden>→</span>
           </TrackedCTA>
           <Link
             href="/subscribe"
@@ -163,7 +165,7 @@ export default function MembershipPage() {
           編集を担当するのは、多汗症のボトックスを 5 年、ワキガの手術を 1 回、
           ニキビ跡の美容皮膚科に 6 年通院した、His Recoveries の運営者本人です。
           実名・顔は出していませんが、当事者として通過した時間を、
-          月に二度の手紙のなかでお渡しします。
+          毎週日曜日の手紙のなかでお渡しします。
         </p>
       </section>
 
