@@ -13,7 +13,8 @@ export type ConversionEvent =
   | "assessment_complete" // 完了: Recovery Assessment
   | "article_cta_click" // クリック: 記事下 CTA
   | "story_start" // 開始: Story 投稿フォーム
-  | "story_submitted"; // 完了: Story 投稿
+  | "story_submitted" // 完了: Story 投稿
+  | "membership_subscribe_click"; // クリック: Recovery Letters 購読
 
 type Props = Record<string, string | number | boolean | undefined>;
 

@@ -20,7 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/territories",
     "/concerns",
     "/check",
-    "/guide",
+    "/membership",
     "/network",
     "/reflect",
     "/assessment",

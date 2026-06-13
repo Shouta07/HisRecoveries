@@ -300,24 +300,22 @@ export function generateCheckReport(args: {
   lines.push(`---`);
   lines.push("");
 
-  // V. Guide / closing
+  // V. Letters / closing
   if (guideInterest === "yes" || guideInterest === "maybe") {
     lines.push(`## V. 次の半歩（任意）`);
     lines.push("");
     lines.push(
-      `Recovery Guide にも関心を寄せてくださいました。`
+      `編集者と続けて関わることに関心を寄せてくださいました。`
     );
     lines.push(
-      `編集者と 90 分、状態の整理と選択肢の翻訳を直接行うセッションです。`
+      `Recovery Letters は、月に二度の私的なクローズドレターです。`
     );
-    lines.push(`診断ではなく、選ぶ前の時間を整えるためのものです。`);
-    lines.push("");
     lines.push(
-      `ご興味があれば、こちらからお申し込みください：`
+      `季節ごとに、自己観察の続きの問いも送ります。`
     );
-    lines.push(`https://www.hisrecoveries.com/guide`);
     lines.push("");
-    lines.push(`β 期間中（先着 10 名）は ¥9,800 でご案内しています。`);
+    lines.push(`月額 ¥500（Substack）、いつでも解約可能。`);
+    lines.push(`https://www.hisrecoveries.com/membership`);
     lines.push("");
     lines.push(`---`);
     lines.push("");
