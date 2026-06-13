@@ -11,70 +11,122 @@ import { site } from "@/lib/site";
 
 const chapterRomans = ["I", "II", "III", "IV"];
 
+// The "What We Offer" index — the studio-style table of contents.
+const INDEX = [
+  {
+    no: "01",
+    en: "Concerns",
+    ja: "悩み票",
+    href: "/concerns",
+    desc: "悩みごとに「場所」を持つ、当事者のアーカイブ。",
+  },
+  {
+    no: "02",
+    en: "Journal",
+    ja: "記録",
+    href: "/articles",
+    desc: "一人称・過去形で書かれた、半歩先からのエッセイ。",
+  },
+  {
+    no: "03",
+    en: "Recovery Check",
+    ja: "診る",
+    href: "/check",
+    desc: "30 問の自己観察に、編集者が手紙で応える。",
+  },
+  {
+    no: "04",
+    en: "Recovery Guide",
+    ja: "話す",
+    href: "/guide",
+    desc: "編集者と 90 分、状態を整理し、選択肢を翻訳する。",
+  },
+];
+
 export default function HomePage() {
   const articles = getAllArticles();
-  // Most-read picks: filter by frontmatter `popular: true` first, fall back to
-  // recency-ordered head when no curation has happened yet.
   const popularArticles = (() => {
     const flagged = articles.filter((a) => a.popular);
     return (flagged.length > 0 ? flagged : articles).slice(0, 3);
   })();
-  // Concerns on the home — 6 most-recently-opened tickets as the
-  // primary entry surface (the "ticket-style" pivot per ops brief).
   const homeConcerns = getAllConcerns().slice(0, 6);
 
   return (
     <>
       {/* ─────────────────────────────────────────
          SCENE I — Hero
+         Full-viewport, type only. One statement.
          ───────────────────────────────────────── */}
-      <section className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-14 sm:pt-36 pb-14 sm:pb-28 text-center">
+      <section className="relative min-h-[86vh] flex flex-col items-center justify-center text-center px-6 sm:px-10">
         <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold">
           {site.tagline}
         </p>
-        <h1 className="mt-5 sm:mt-7 logo-type text-[2.6rem] sm:text-7xl lg:text-8xl text-ink leading-[1]">
+        <h1 className="mt-6 logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-ink leading-[1]">
           {site.name}
         </h1>
-        <div className="mt-7 sm:mt-10 flex justify-center">
-          <span aria-hidden className="block w-12 sm:w-16 h-px bg-gold draw-in" />
+        <div className="mt-8 flex justify-center">
+          <span aria-hidden className="block w-14 sm:w-20 h-px bg-gold draw-in" />
         </div>
-        <p className="mt-7 sm:mt-10 font-mincho text-[1.4rem] sm:text-4xl lg:text-[3rem] leading-[1.45] text-ink tracking-[0.03em]">
+        <p className="mt-8 font-mincho text-[1.5rem] sm:text-4xl lg:text-[3.25rem] leading-[1.4] text-ink tracking-[0.04em]">
           {site.promise}
         </p>
+        <p className="mt-8 font-mincho text-[13.5px] sm:text-[15px] text-ink/70 leading-[2] max-w-[30rem]">
+          男性が言葉にしにくいことを、
+          <br className="hidden sm:inline" />
+          当事者の視点で記録する場所。
+        </p>
 
-        <div className="mt-9 sm:mt-16 max-w-[34rem] mx-auto">
-          <p className="font-mincho text-[14px] sm:text-base text-ink/85 leading-[1.95]">
-            汗・におい・肌・髪・髭・自意識。
-            <br className="hidden sm:inline" />
-            男性が言葉にしにくいことを、
-            <br className="hidden sm:inline" />
-            当事者の視点で書く読みものです。
-          </p>
-
-          <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
-            <TrackedCTA
-              href={site.social.substack}
-              event="subscribe_click"
-              eventProps={{ location: "hero" }}
-              className="btn-gold justify-center"
-            >
-              Substack で読む
-              <span aria-hidden>→</span>
-            </TrackedCTA>
-            <TrackedCTA
-              href="/concerns"
-              event="hero_cta_click"
-              eventProps={{ target: "concerns" }}
-              className="text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold-bright transition-colors px-6 py-3.5"
-            >
-              悩み票を見る
-            </TrackedCTA>
-          </div>
+        {/* Scroll cue */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <span className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-sub-gray">
+            Scroll
+          </span>
+          <span
+            aria-hidden
+            className="block w-px h-10 bg-gradient-to-b from-gold to-transparent soft-float"
+          />
         </div>
       </section>
 
-      {/* Quiet horizontal current — brand vocabulary
-          + the 6 chapters drifting slowly */}
+      {/* ─────────────────────────────────────────
+         SCENE II — Concept (scroll-revealed statement)
+         Sentence by sentence, staggered fade-in.
+         ───────────────────────────────────────── */}
+      <section
+        aria-label="Concept"
+        className="mx-auto max-w-[860px] px-6 sm:px-10 py-28 sm:py-48"
+      >
+        <div className="space-y-10 sm:space-y-16 font-mincho text-ink">
+          <Reveal>
+            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em]">
+              男性は、誰にも言えない悩みを、
+              <br className="hidden sm:inline" />
+              ひとりで検索している。
+            </p>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em]">
+              汗、におい、肌、髪、髭、そして自意識。
+            </p>
+          </Reveal>
+          <Reveal delay={240}>
+            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em] text-ink/80">
+              His Recoveries は、その沈黙を、
+              <br className="hidden sm:inline" />
+              恥ではなく、理解へ変えるための場所です。
+            </p>
+          </Reveal>
+          <Reveal delay={360}>
+            <p className="text-[15px] sm:text-base leading-[2.1] text-sub-gray max-w-[34rem]">
+              解決策を売らず、励まさず、煽らない。
+              ただ、半歩先を歩いた当事者の記録を、静かに置いておく。
+              それだけで距離が縮まる、という経験を残したい。
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Quiet horizontal current — brand vocabulary divider */}
       <TagMarquee
         items={[
           "Male Conditioning",
@@ -92,9 +144,184 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE II — Philosophy moment (cinematic)
-         A single quiet dark break: the one dark
-         section on a bright site (Aesop pattern).
+         SCENE III — Index / What We Offer
+         Studio-style numbered table of contents.
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section
+          aria-labelledby="index"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-32"
+        >
+          <div className="mb-10 sm:mb-14">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+              Index
+            </p>
+            <h2
+              id="index"
+              className="mt-4 font-mincho text-2xl sm:text-4xl text-ink leading-[1.4]"
+            >
+              His Recoveries にあるもの
+            </h2>
+          </div>
+
+          <ol className="border-t border-hair-line">
+            {INDEX.map((item) => (
+              <li key={item.href} className="border-b border-hair-line">
+                <Link
+                  href={item.href}
+                  className="group grid grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[5rem_1fr_auto] items-baseline gap-4 sm:gap-10 py-7 sm:py-9 hover:bg-paper/50 transition-colors"
+                >
+                  <span className="logo-type italic text-[13px] sm:text-sm tracking-[0.2em] text-gold">
+                    {item.no}
+                  </span>
+                  <div>
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <h3 className="font-mincho text-xl sm:text-3xl text-ink leading-[1.3] group-hover:text-gold transition-colors">
+                        {item.ja}
+                      </h3>
+                      <span className="logo-type italic text-[12px] sm:text-sm tracking-[0.2em] uppercase text-sub-gray">
+                        {item.en}
+                      </span>
+                    </div>
+                    <p className="mt-2 font-mincho text-[13px] sm:text-[14px] text-ink/70 leading-[1.9] max-w-[34rem]">
+                      {item.desc}
+                    </p>
+                  </div>
+                  <span
+                    aria-hidden
+                    className="text-sub-gray group-hover:text-gold group-hover:translate-x-1 transition-all duration-300 text-lg sm:text-xl"
+                  >
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </Reveal>
+
+      {/* ─────────────────────────────────────────
+         SCENE IV — Concerns preview（primary entry）
+         ───────────────────────────────────────── */}
+      {homeConcerns.length > 0 && (
+        <Reveal>
+          <section
+            aria-labelledby="home-concerns"
+            className="bg-paper/40 border-y border-hair-line"
+          >
+            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-32">
+              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-14">
+                <SectionLabel
+                  en="Concerns"
+                  ja="悩み票"
+                  number={chapterRomans[0]}
+                />
+                <p
+                  id="home-concerns"
+                  className="font-mincho text-[14px] sm:text-[15px] text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
+                >
+                  悩みごとに「場所」を持っています。
+                  <br className="hidden sm:inline" />
+                  そこには、当事者の声と、記録と、選択肢の地形図があります。
+                </p>
+              </div>
+
+              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                {homeConcerns.map((c) => (
+                  <li key={c.slug}>
+                    <Link
+                      href={`/concerns/${c.slug}`}
+                      className="group block h-full bg-cream border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors card-lift"
+                    >
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="logo-type italic text-[12px] tracking-[0.25em] text-gold">
+                          #{c.ticketId}
+                        </span>
+                        <span className="text-[10px] tracking-[0.1em] text-sub-gray uppercase">
+                          {c.status}
+                        </span>
+                      </div>
+                      <h3 className="mt-5 font-mincho text-base sm:text-lg text-ink leading-[1.55] group-hover:text-gold transition-colors">
+                        {c.title}
+                      </h3>
+                      {c.excerpt && (
+                        <p className="mt-4 font-mincho text-[13px] sm:text-[13.5px] text-ink/75 leading-[2] line-clamp-3">
+                          {c.excerpt}
+                        </p>
+                      )}
+                      <p className="mt-5 text-[11px] tracking-[0.06em] text-sub-gray">
+                        {c.articles.length} 件の記録
+                        {c.voices.length > 0 && (
+                          <span> · {c.voices.length} の声</span>
+                        )}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-10 sm:mt-12 flex justify-end">
+                <Link
+                  href="/concerns"
+                  className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+                >
+                  すべての悩み票を見る
+                  <span aria-hidden> →</span>
+                </Link>
+              </div>
+            </div>
+          </section>
+        </Reveal>
+      )}
+
+      {/* ─────────────────────────────────────────
+         SCENE V — Most Read
+         ───────────────────────────────────────── */}
+      {popularArticles.length > 0 && (
+        <Reveal>
+          <section
+            aria-labelledby="most-read"
+            className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-32"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-16">
+              <SectionLabel
+                en="Most Read"
+                ja="よく読まれている記事"
+                number={chapterRomans[1]}
+              />
+              <p
+                id="most-read"
+                className="font-mincho text-[14px] sm:text-base text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
+              >
+                はじめての方は、ここから。
+                <br className="hidden sm:inline" />
+                検索から辿り着いた読者が、よく読んでいる記録です。
+              </p>
+            </div>
+
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-10">
+              {popularArticles.map((a) => (
+                <li key={a.slug}>
+                  <ArticleCard article={a} variant="card" />
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 sm:mt-12 flex justify-end">
+              <Link
+                href="/articles"
+                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+              >
+                すべての記録を見る
+                <span aria-hidden> →</span>
+              </Link>
+            </div>
+          </section>
+        </Reveal>
+      )}
+
+      {/* ─────────────────────────────────────────
+         SCENE VI — Philosophy moment (cinematic)
          ───────────────────────────────────────── */}
       <Reveal>
         <section aria-label="A Philosophy" className="relative bg-navy">
@@ -104,7 +331,6 @@ export default function HomePage() {
               alt=""
               fill
               sizes="100vw"
-              priority
               className="object-cover object-center opacity-90"
             />
           </div>
@@ -112,11 +338,11 @@ export default function HomePage() {
             aria-hidden
             className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70"
           />
-          <div className="relative mx-auto max-w-[1000px] px-6 sm:px-10 py-20 sm:py-44 lg:py-52 text-center text-cream">
+          <div className="relative mx-auto max-w-[1000px] px-6 sm:px-10 py-24 sm:py-48 lg:py-56 text-center text-cream">
             <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold-bright">
               A Philosophy
             </p>
-            <p className="mt-7 sm:mt-10 font-mincho text-[1.45rem] sm:text-3xl lg:text-[2.4rem] leading-[1.55] tracking-[0.05em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+            <p className="mt-7 sm:mt-10 font-mincho text-[1.5rem] sm:text-3xl lg:text-[2.5rem] leading-[1.55] tracking-[0.05em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
               男性は、強くなるのではなく、
               <br />
               整うのだ。
@@ -131,140 +357,12 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE III — Concerns（悩み票・primary entry）
-         The new primary entry surface. Each card is a
-         felt-language concern that aggregates voices,
-         records, options and shelf items in one place.
-         ───────────────────────────────────────── */}
-      {homeConcerns.length > 0 && (
-        <Reveal>
-          <section
-            aria-labelledby="home-concerns"
-            className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-14 sm:pt-32 pb-14 sm:pb-20"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-14">
-              <SectionLabel
-                en="Concerns"
-                ja="悩み票"
-                number={chapterRomans[0]}
-              />
-              <p
-                id="home-concerns"
-                className="font-mincho text-[14px] sm:text-[15px] text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
-              >
-                His Recoveries は、悩みごとに「場所」を持っています。
-                <br className="hidden sm:inline" />
-                そこには、当事者の声と、記録と、選択肢の地形図があります。
-              </p>
-            </div>
-
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-              {homeConcerns.map((c) => (
-                <li key={c.slug}>
-                  <Link
-                    href={`/concerns/${c.slug}`}
-                    className="group block h-full bg-paper border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors card-lift"
-                  >
-                    <div className="flex items-baseline justify-between gap-3">
-                      <span className="logo-type italic text-[12px] tracking-[0.25em] text-gold">
-                        #{c.ticketId}
-                      </span>
-                      <span className="text-[10px] tracking-[0.1em] text-sub-gray uppercase">
-                        {c.status}
-                      </span>
-                    </div>
-                    <h3 className="mt-5 font-mincho text-base sm:text-lg text-ink leading-[1.55] group-hover:text-gold transition-colors">
-                      {c.title}
-                    </h3>
-                    {c.excerpt && (
-                      <p className="mt-4 font-mincho text-[13px] sm:text-[13.5px] text-ink/75 leading-[2] line-clamp-3">
-                        {c.excerpt}
-                      </p>
-                    )}
-                    <p className="mt-5 text-[11px] tracking-[0.06em] text-sub-gray">
-                      {c.articles.length} 件の記録
-                      {c.voices.length > 0 && (
-                        <span> · {c.voices.length} の声</span>
-                      )}
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-10 sm:mt-12 flex justify-end">
-              <Link
-                href="/concerns"
-                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
-              >
-                すべての悩み票を見る
-                <span aria-hidden> →</span>
-              </Link>
-            </div>
-          </section>
-        </Reveal>
-      )}
-
-      {/* ─────────────────────────────────────────
-         SCENE IV — Most Read (SEO/GEO traffic surface)
-         The journal entry point on home. Reading these
-         is where affiliate conversions originate.
-         ───────────────────────────────────────── */}
-      {popularArticles.length > 0 && (
-        <Reveal>
-          <section
-            aria-labelledby="most-read"
-            className="bg-paper/40 border-y border-hair-line"
-          >
-            <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-32">
-              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-16">
-                <SectionLabel
-                  en="Most Read"
-                  ja="よく読まれている記事"
-                  number={chapterRomans[1]}
-                />
-                <p
-                  id="most-read"
-                  className="font-mincho text-[14px] sm:text-base text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
-                >
-                  はじめての方は、ここから。
-                  <br className="hidden sm:inline" />
-                  検索から辿り着いた読者がよく読んでいる記録です。
-                </p>
-              </div>
-
-              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-10">
-                {popularArticles.map((a) => (
-                  <li key={a.slug}>
-                    <ArticleCard article={a} variant="card" />
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-8 sm:mt-12 flex justify-end">
-                <Link
-                  href="/articles"
-                  className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
-                >
-                  すべての記録を見る
-                  <span aria-hidden> →</span>
-                </Link>
-              </div>
-            </div>
-          </section>
-        </Reveal>
-      )}
-
-      {/* ─────────────────────────────────────────
-         SCENE V — Recovery Check
-         The flagship Layer 2 product. 30 questions, a
-         24h reply from a human editor. Sets the brand
-         apart from quiz-style "AI diagnostics".
+         SCENE VII — Recovery Check
          ───────────────────────────────────────── */}
       <Reveal>
         <section
           aria-labelledby="recovery-check"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-16 sm:pt-32 pb-16 sm:pb-28"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 py-16 sm:py-32"
         >
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 lg:gap-16 items-center">
             <div>
@@ -345,14 +443,46 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE VI — Belonging (fan capture, cinematic)
-         Closing dark moment with the morning-room image.
+         SCENE VIII — The Company (quiet band → /about)
          ───────────────────────────────────────── */}
       <Reveal>
         <section
-          aria-labelledby="belonging"
-          className="relative bg-navy"
+          aria-label="The Company"
+          className="border-t border-hair-line"
         >
+          <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-20 sm:py-28 text-center">
+            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
+              The Company
+            </p>
+            <p className="mt-7 font-mincho text-[1.2rem] sm:text-2xl text-ink leading-[1.7] max-w-[32rem] mx-auto">
+              His Recoveries は、
+              <br className="sm:hidden" />
+              {site.company.name}が運営する、
+              <br className="hidden sm:inline" />
+              独立したエディトリアル・ブランドです。
+            </p>
+            <p className="mt-5 font-mincho text-[13.5px] text-sub-gray leading-[2] max-w-[30rem] mx-auto">
+              「{site.company.statement}」を掲げる、
+              {site.company.definition}。
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/about"
+                className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors"
+              >
+                ブランドと会社について
+                <span aria-hidden> →</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ─────────────────────────────────────────
+         SCENE IX — Belonging (cinematic close)
+         ───────────────────────────────────────── */}
+      <Reveal>
+        <section aria-labelledby="belonging" className="relative bg-navy">
           <div className="absolute inset-0">
             <Image
               src="/room-morning.png"
