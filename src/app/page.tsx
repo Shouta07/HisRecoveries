@@ -92,7 +92,7 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE I½ — Philosophy moment (cinematic)
+         SCENE II — Philosophy moment (cinematic)
          A single quiet dark break: the one dark
          section on a bright site (Aesop pattern).
          ───────────────────────────────────────── */}
@@ -131,7 +131,7 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE Iƒ — Concerns（悩み票）
+         SCENE III — Concerns（悩み票・primary entry）
          The new primary entry surface. Each card is a
          felt-language concern that aggregates voices,
          records, options and shelf items in one place.
@@ -143,18 +143,15 @@ export default function HomePage() {
             className="mx-auto max-w-[1200px] px-6 sm:px-10 pt-14 sm:pt-32 pb-14 sm:pb-20"
           >
             <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-8 sm:mb-14">
-              <div>
-                <p className="logo-type italic text-[11px] sm:text-[12px] tracking-[0.4em] uppercase text-gold">
-                  Concerns
-                </p>
-                <h2
-                  id="home-concerns"
-                  className="mt-4 font-mincho text-2xl sm:text-4xl text-ink leading-[1.4]"
-                >
-                  悩み票
-                </h2>
-              </div>
-              <p className="font-mincho text-[14px] sm:text-[15px] text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2">
+              <SectionLabel
+                en="Concerns"
+                ja="悩み票"
+                number={chapterRomans[0]}
+              />
+              <p
+                id="home-concerns"
+                className="font-mincho text-[14px] sm:text-[15px] text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
+              >
                 His Recoveries は、悩みごとに「場所」を持っています。
                 <br className="hidden sm:inline" />
                 そこには、当事者の声と、記録と、選択肢の地形図があります。
@@ -209,7 +206,7 @@ export default function HomePage() {
       )}
 
       {/* ─────────────────────────────────────────
-         SCENE II — Most Read (SEO/GEO traffic surface)
+         SCENE IV — Most Read (SEO/GEO traffic surface)
          The journal entry point on home. Reading these
          is where affiliate conversions originate.
          ───────────────────────────────────────── */}
@@ -224,7 +221,7 @@ export default function HomePage() {
                 <SectionLabel
                   en="Most Read"
                   ja="よく読まれている記事"
-                  number={chapterRomans[0]}
+                  number={chapterRomans[1]}
                 />
                 <p
                   id="most-read"
@@ -259,7 +256,7 @@ export default function HomePage() {
       )}
 
       {/* ─────────────────────────────────────────
-         SCENE III — Recovery Check
+         SCENE V — Recovery Check
          The flagship Layer 2 product. 30 questions, a
          24h reply from a human editor. Sets the brand
          apart from quiz-style "AI diagnostics".
@@ -274,7 +271,7 @@ export default function HomePage() {
               <SectionLabel
                 en="Recovery Check"
                 ja="自分の状態を、編集者と整理する"
-                number={chapterRomans[1]}
+                number={chapterRomans[2]}
               />
               <p
                 id="recovery-check"
@@ -348,7 +345,7 @@ export default function HomePage() {
       </Reveal>
 
       {/* ─────────────────────────────────────────
-         SCENE V — Belonging (fan capture, cinematic)
+         SCENE VI — Belonging (fan capture, cinematic)
          Closing dark moment with the morning-room image.
          ───────────────────────────────────────── */}
       <Reveal>
