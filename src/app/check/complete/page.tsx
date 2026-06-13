@@ -36,6 +36,24 @@ export default function CheckCompletePage() {
 
       <div className="mt-12 pt-8 border-t border-hair-line">
         <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          A next half-step
+        </p>
+        <p className="font-mincho text-[14.5px] text-ink/85 leading-[2.05]">
+          編集者と 90 分、状態を直接整理する Recovery Guide もあります。
+          診断ではなく、選ぶ前の時間を整えるためのセッションです。
+        </p>
+        <div className="mt-5">
+          <Link
+            href="/guide"
+            className="text-[13px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5 inline-flex"
+          >
+            Recovery Guide を見る →
+          </Link>
+        </div>
+      </div>
+
+      <div className="mt-10 pt-8 border-t border-hair-line">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
           While you wait
         </p>
         <ul className="font-mincho text-[14.5px] leading-[2.1] text-ink/85 space-y-2">

@@ -78,6 +78,46 @@ export async function dbSelect<T = unknown>(
 }
 
 /**
+ * PATCH a row by id using the service key. Used by /api/admin/* to flip
+ * status and write editor notes. Returns ok / error.
+ */
+export async function dbUpdate(
+  table: string,
+  id: string,
+  patch: Record<string, unknown>
+): Promise<{ ok: boolean; error?: string }> {
+  if (!dbAdminEnabled) {
+    return { ok: false, error: "admin db not configured" };
+  }
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: SUPABASE_SERVICE_KEY!,
+          Authorization: `Bearer ${SUPABASE_SERVICE_KEY!}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify(patch),
+      }
+    );
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`[db] patch failed (${res.status})`, text);
+      return { ok: false, error: text };
+    }
+    return { ok: true };
+  } catch (e) {
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : "patch failed",
+    };
+  }
+}
+
+/**
  * SHA-256 hash of an email (lowercased, trimmed).
  * Stored instead of raw email so we never persist PII.
  */
