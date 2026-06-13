@@ -14,15 +14,9 @@ const nav = [
 const secondary = [
   { href: "/check", label: "Recovery Check — 30 問の自己観察" },
   { href: "/guide", label: "Recovery Guide — 編集者と 90 分" },
-  { href: "/network", label: "Certified Network — 信頼の連合" },
   { href: "/recoveries", label: "Three Recoveries — 回復の物語" },
   { href: "/territories", label: "Chapters — 悩みの章" },
   { href: "/stories", label: "Stories — 回復の記録" },
-  { href: "/about", label: "Philosophy — このサイトについて" },
-  { href: "/manifesto", label: "Manifesto — 男性の回復について" },
-  { href: "/founder", label: "Founder's Note — なぜ始めたか" },
-  { href: "/concierge", label: "Recovery Concierge — 1 対 1 の対話" },
-  { href: "/events", label: "Experiences — 静かな集まり" },
   { href: "/reflect", label: "Reflect — 整理する" },
 ];
 

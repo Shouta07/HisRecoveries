@@ -34,6 +34,14 @@ export default function Footer() {
             <Link href="/privacy" className="hover:text-ink transition-colors">
               プライバシーポリシー
             </Link>
+            <span aria-hidden>·</span>
+            <Link href="/about" className="hover:text-ink transition-colors">
+              運営会社
+            </Link>
+            <span aria-hidden>·</span>
+            <Link href="/network" className="hover:text-ink transition-colors">
+              事業者の方へ
+            </Link>
           </div>
         </div>
       </div>
