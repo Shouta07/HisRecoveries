@@ -16,6 +16,7 @@ export type TerritoryFrontmatter = {
   relatedExit: "events" | "subscribe" | "territory";
   order: number;
   status?: "draft" | "published";
+  faq: { q: string; a: string }[];
 };
 
 export type Territory = TerritoryFrontmatter & {
@@ -48,6 +49,7 @@ function parseFile(filename: string) {
     relatedExit: data.relatedExit ?? "subscribe",
     order: data.order ?? 99,
     status: data.status ?? "published",
+    faq: (data.faq as { q: string; a: string }[]) ?? [],
   };
   return { fm, content };
 }

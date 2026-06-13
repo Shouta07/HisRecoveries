@@ -170,7 +170,7 @@ export default function HomePage() {
                 あなたは今、どこにいますか？
               </h2>
               <p className="mt-5 font-mincho text-[13.5px] sm:text-sm text-sub-gray max-w-[28rem] mx-auto leading-[2]">
-                近いものを選ぶと、当事者の記録と、半歩先の選択肢の地形がひらきます。
+                気になる領域から、その悩みが「なぜ起こるのか」を読みほどく。
               </p>
             </div>
 
