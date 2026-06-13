@@ -43,11 +43,6 @@ export default function HomePage() {
           <p className="mt-8 font-mincho text-[1.5rem] sm:text-4xl lg:text-[3.25rem] leading-[1.4] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
             {site.promise}
           </p>
-          <p className="mt-8 mx-auto font-mincho text-[13.5px] sm:text-[15px] text-cream/85 leading-[2] max-w-[30rem]">
-            男性が言葉にしにくいことを、
-            <br className="hidden sm:inline" />
-            当事者の視点で記録する場所。
-          </p>
         </div>
 
         {/* Scroll cue */}
@@ -70,31 +65,19 @@ export default function HomePage() {
         aria-label="Concept"
         className="mx-auto max-w-[860px] px-6 sm:px-10 py-28 sm:py-48"
       >
-        <div className="space-y-10 sm:space-y-16 font-mincho text-ink">
+        <div className="space-y-10 sm:space-y-14 font-mincho text-ink">
           <Reveal>
             <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em]">
-              男性は、誰にも言えない悩みを、
+              誰にも言えない悩みを抱える男性は、
               <br className="hidden sm:inline" />
-              ひとりで検索している。
+              今日もひとりで検索している。
             </p>
           </Reveal>
-          <Reveal delay={120}>
-            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em]">
-              汗、におい、肌、髪、髭、そして自意識。
-            </p>
-          </Reveal>
-          <Reveal delay={240}>
-            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em] text-ink/80">
-              His Recoveries は、その沈黙を、
+          <Reveal delay={160}>
+            <p className="text-[1.35rem] sm:text-[2rem] leading-[1.85] tracking-[0.04em] text-ink/85">
+              His Recoveries は、その検索の終着点ではなく、
               <br className="hidden sm:inline" />
-              恥ではなく、理解へ変えるための場所です。
-            </p>
-          </Reveal>
-          <Reveal delay={360}>
-            <p className="text-[15px] sm:text-base leading-[2.1] text-sub-gray max-w-[34rem]">
-              解決策を売らず、励まさず、煽らない。
-              ただ、半歩先を歩いた当事者の記録を、静かに置いておく。
-              それだけで距離が縮まる、という経験を残したい。
+              回復の記録でありたい。
             </p>
           </Reveal>
         </div>
