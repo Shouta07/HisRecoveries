@@ -31,7 +31,7 @@ export default function HomePage() {
         />
 
         <div className="relative">
-          <p className="logo-type italic text-[11px] sm:text-xs tracking-[0.5em] uppercase text-gold-bright">
+          <p className="logo-type italic text-[12.5px] sm:text-[13px] tracking-[0.5em] uppercase text-gold-bright drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
             {site.tagline}
           </p>
           <h1 className="mt-6 logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-cream leading-[1] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
@@ -40,7 +40,7 @@ export default function HomePage() {
           <div className="mt-8 flex justify-center">
             <span aria-hidden className="block w-14 sm:w-20 h-px bg-gold-bright draw-in" />
           </div>
-          <p className="mt-8 font-mincho text-[1.5rem] sm:text-4xl lg:text-[3.25rem] leading-[1.4] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+          <p className="mt-7 font-mincho text-[1.15rem] sm:text-[1.65rem] lg:text-[2.25rem] leading-[1.4] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
             {site.promise}
           </p>
         </div>
@@ -83,20 +83,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quiet horizontal current — brand vocabulary divider */}
+      {/* Concern vocabulary — SEO/GEO-grabbable words the persona searches,
+         mixed with the emotional phrases that say "you are seen here." */}
       <TagMarquee
         items={[
-          "Male Conditioning",
-          "Recover Your Presence",
-          "Quiet Grooming",
-          "Social Recovery",
-          "Quiet Masculinity",
-          "汗とにおい",
-          "肌と跡",
-          "顔の印象",
-          "髪と自意識",
-          "髭と体毛",
-          "心と余白",
+          "多汗症",
+          "ワキガ",
+          "ニキビ跡",
+          "薄毛・AGA",
+          "加齢臭",
+          "男性の自意識",
+          "清潔感が欲しい",
+          "鏡を見るのが怖い",
+          "温泉に誘われたくない",
+          "集合写真が好きになれない",
+          "婚活写真が苦手",
+          "派手にはなりたくない",
+          "老けて見えると言われた",
+          "美容皮膚科に行けない",
         ]}
       />
 
