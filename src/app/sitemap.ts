@@ -81,6 +81,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  // English (core) mirror.
+  const enStatic: MetadataRoute.Sitemap = [
+    "/en/territories",
+    "/en/stories",
+  ].map((p) => ({
+    url: `${site.url}${p}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  const enTerritoryPaths: MetadataRoute.Sitemap = getAllTerritories("en").map(
+    (t) => ({
+      url: `${site.url}/en/territories/${t.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    })
+  );
+
+  const enFeelingPaths: MetadataRoute.Sitemap = getAllFeelingSlugs().map(
+    (slug) => ({
+      url: `${site.url}/en/feelings/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    })
+  );
+
   return [
     ...staticPaths,
     ...categoryPaths,
@@ -89,5 +118,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...territoryPaths,
     ...concernPaths,
     ...feelingPaths,
+    ...enStatic,
+    ...enTerritoryPaths,
+    ...enFeelingPaths,
   ];
 }

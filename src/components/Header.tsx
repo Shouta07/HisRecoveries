@@ -16,10 +16,27 @@ const secondary = [
   { href: "/articles", label: "記録 — Journal" },
 ];
 
+// Sections that exist in both languages, so the switch can land on the
+// same page in the other language instead of bouncing to the home.
+const MIRRORED = ["/territories", "/feelings", "/stories"];
+
+function mirroredOrHome(path: string): boolean {
+  return path === "/" || MIRRORED.some((p) => path === p || path.startsWith(`${p}/`));
+}
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const isEn = pathname === "/en" || pathname.startsWith("/en/");
+
+  // Counterpart URLs for the JP / EN switch.
+  const jpPath = isEn ? pathname.replace(/^\/en(?=\/|$)/, "") || "/" : pathname;
+  const jpHref = mirroredOrHome(jpPath) ? jpPath : "/";
+  const enHref = (() => {
+    if (isEn) return pathname;
+    if (pathname === "/") return "/en";
+    return mirroredOrHome(pathname) ? `/en${pathname}` : "/en";
+  })();
 
   // Close on route change
   useEffect(() => {
@@ -66,7 +83,7 @@ export default function Header() {
               ))}
             </ul>
           </nav>
-          <LangSwitch isEn={isEn} />
+          <LangSwitch isEn={isEn} jpHref={jpHref} enHref={enHref} />
         </div>
 
         {/* Mobile menu toggle (< md) */}
@@ -147,7 +164,13 @@ export default function Header() {
               <p className="text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-3">
                 Language
               </p>
-              <LangSwitch isEn={isEn} onNavigate={() => setOpen(false)} size="lg" />
+              <LangSwitch
+                isEn={isEn}
+                jpHref={jpHref}
+                enHref={enHref}
+                onNavigate={() => setOpen(false)}
+                size="lg"
+              />
             </div>
           </nav>
         </div>
@@ -158,10 +181,14 @@ export default function Header() {
 
 function LangSwitch({
   isEn,
+  jpHref,
+  enHref,
   onNavigate,
   size = "sm",
 }: {
   isEn: boolean;
+  jpHref: string;
+  enHref: string;
   onNavigate?: () => void;
   size?: "sm" | "lg";
 }) {
@@ -174,7 +201,7 @@ function LangSwitch({
       className={`flex items-center gap-2 tracking-[0.18em] ${text}`}
     >
       <Link
-        href="/"
+        href={jpHref}
         onClick={onNavigate}
         aria-current={!isEn ? "true" : undefined}
         className={!isEn ? active : idle}
@@ -185,7 +212,7 @@ function LangSwitch({
         /
       </span>
       <Link
-        href="/en"
+        href={enHref}
         onClick={onNavigate}
         aria-current={isEn ? "true" : undefined}
         className={isEn ? active : idle}

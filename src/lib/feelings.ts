@@ -5,26 +5,35 @@
 // into possible causes (territories). Flow:
 //
 //   感情 → 自意識（なぜ気になるのか）→ 悩み票 → 原因候補 → 理解 → 次の一歩
+//
+// Content is bilingual: top-level fields are Japanese; `en` mirrors them.
 
 export type FeelingCause = {
   /** territory slug the cause analysis lives at */
   territory: string;
-  /** the cause, named in the visitor's words */
+  /** the cause, named in the visitor's words (ja) */
   cause: string;
+  /** the cause in English */
+  causeEn: string;
+};
+
+export type FeelingL10n = {
+  statement: string;
+  why: string;
+  who: string;
+  vignettes: string[];
 };
 
 export type Feeling = {
   slug: string;
-  /** the statement the visitor selects on the home Hub */
+  /** ja statement (kept top-level for existing JP code) */
   statement: string;
-  /** why this feeling arises — self-consciousness framing */
   why: string;
-  /** who tends to carry this feeling */
   who: string;
-  /** 悩み票 — life-pain vignettes, not symptoms */
   vignettes: string[];
-  /** 原因候補 — possible causes, each links into a cause-analysis page */
   causes: FeelingCause[];
+  /** English mirror of the localized fields */
+  en: FeelingL10n;
 };
 
 // Display label for each territory (genre), shown as a tag on cause cards.
@@ -35,6 +44,15 @@ export const TERRITORY_LABEL: Record<string, string> = {
   "beard-body-hair": "髭と体毛",
   "face-impression": "顔の印象",
   "mind-awareness": "心と自意識",
+};
+
+export const TERRITORY_LABEL_EN: Record<string, string> = {
+  "sweat-odor": "Sweat & Odor",
+  "skin-acne": "Skin & Acne Scars",
+  "hair-loss": "Hair Loss & AGA",
+  "beard-body-hair": "Beard & Body Hair",
+  "face-impression": "Facial Impression",
+  "mind-awareness": "Mind & Self-Consciousness",
 };
 
 const FEELINGS: Feeling[] = [
@@ -50,12 +68,23 @@ const FEELINGS: Feeling[] = [
       "髭を剃るとき、フェイスラインばかり見てしまう",
     ],
     causes: [
-      { territory: "skin-acne", cause: "ニキビ跡・赤み・肌の凹凸" },
-      { territory: "face-impression", cause: "毛穴・表情の癖・印象" },
-      { territory: "beard-body-hair", cause: "ヒゲの濃さ・剃り跡" },
-      { territory: "hair-loss", cause: "生え際・髪の密度" },
-      { territory: "mind-awareness", cause: "鏡への違和感そのもの" },
+      { territory: "skin-acne", cause: "ニキビ跡・赤み・肌の凹凸", causeEn: "Acne scars, redness, uneven skin" },
+      { territory: "face-impression", cause: "毛穴・表情の癖・印象", causeEn: "Pores, expression habits, impression" },
+      { territory: "beard-body-hair", cause: "ヒゲの濃さ・剃り跡", causeEn: "Beard thickness, shaving marks" },
+      { territory: "hair-loss", cause: "生え際・髪の密度", causeEn: "Hairline, hair density" },
+      { territory: "mind-awareness", cause: "鏡への違和感そのもの", causeEn: "The discomfort with the mirror itself" },
     ],
+    en: {
+      statement: "I don't quite like looking in the mirror",
+      why: "Disliking the mirror is usually less about a specific flaw than about how you evaluate your own face. The trigger differs — acne scars, pores, the thickness of a beard, a receding hairline, a habit of expression — but what they share is a gaze that subtracts a little each time you look. It begins with separating where that gaze is actually pointed.",
+      who: "Men whose time checking a particular feature in the morning routine has slowly grown. Common among those for whom no one has pointed anything out, yet the scoring continues inside themselves.",
+      vignettes: [
+        "While brushing your teeth, you can't put your eyes on the center of the mirror",
+        "The few seconds standing at the sink in the morning feel somehow heavy",
+        "Each time you push your hair back, you check the hairline",
+        "When shaving, you keep watching the jawline",
+      ],
+    },
   },
   {
     slug: "photo",
@@ -69,11 +98,22 @@ const FEELINGS: Feeling[] = [
       "撮り直しを頼めず、苦手な一枚が残る",
     ],
     causes: [
-      { territory: "face-impression", cause: "顔の印象・老け見え" },
-      { territory: "hair-loss", cause: "頭頂部・つむじ" },
-      { territory: "skin-acne", cause: "肌の質感・凹凸" },
-      { territory: "mind-awareness", cause: "自己評価の癖" },
+      { territory: "face-impression", cause: "顔の印象・老け見え", causeEn: "Facial impression, looking older" },
+      { territory: "hair-loss", cause: "頭頂部・つむじ", causeEn: "The crown, the whorl" },
+      { territory: "skin-acne", cause: "肌の質感・凹凸", causeEn: "Skin texture, unevenness" },
+      { territory: "mind-awareness", cause: "自己評価の癖", causeEn: "The habit of self-evaluation" },
     ],
+    en: {
+      statement: "I'm not good at being in photos",
+      why: "Being uncomfortable in photos comes from facing the moment your appearance diverges from your self-image. You're used to the mirror's left-right reversal; a photo is not that. And a frozen frame has no escape — skin, contour, crown, expression all stay on record exactly as the parts you mind. The discomfort is usually not one flaw but the sum of several small catches.",
+      who: "Men who unconsciously choose where to stand in group shots. Common among those who look at the taken photo longer than others, checking.",
+      vignettes: [
+        "In group photos, only you seem not to blend in",
+        "Before being photographed, you unconsciously step toward the back",
+        "You always avoid angles that show the crown of your head",
+        "Unable to ask for a retake, the photo you dislike remains",
+      ],
+    },
   },
   {
     slug: "cleanliness",
@@ -87,11 +127,22 @@ const FEELINGS: Feeling[] = [
       "自分のにおいが、ふと不安になる瞬間がある",
     ],
     causes: [
-      { territory: "sweat-odor", cause: "汗・におい" },
-      { territory: "skin-acne", cause: "肌・テカリ" },
-      { territory: "beard-body-hair", cause: "ヒゲ・体毛の処理" },
-      { territory: "face-impression", cause: "全体の印象" },
+      { territory: "sweat-odor", cause: "汗・におい", causeEn: "Sweat & odor" },
+      { territory: "skin-acne", cause: "肌・テカリ", causeEn: "Skin, shine" },
+      { territory: "beard-body-hair", cause: "ヒゲ・体毛の処理", causeEn: "Beard & body-hair grooming" },
+      { territory: "face-impression", cause: "全体の印象", causeEn: "Overall impression" },
     ],
+    en: {
+      statement: "I'm not confident about cleanliness",
+      why: "'Cleanliness' is, in fact, less about being clean than about whether you look put-together. That's exactly why it's vague and hard to feel confident about. Sweat and odor, oily skin, beard and body-hair grooming, the neatness of hair — you're evaluated as an overall impression rather than any single thing, and that feeds a diffuse unease. Break it into elements and you can see where you're caught.",
+      who: "Men who somehow brace at the words 'a person with cleanliness.' Common among those who feel awkward in situations where the distance to others closes.",
+      vignettes: [
+        "You brace, somehow, at the word 'cleanliness'",
+        "In summer, situations where people come close feel difficult",
+        "You haven't chosen a gray shirt in years",
+        "There are moments your own odor suddenly worries you",
+      ],
+    },
   },
   {
     slug: "before-meeting",
@@ -105,12 +156,23 @@ const FEELINGS: Feeling[] = [
       "「見られる」と思った瞬間、意識が顔に集まる",
     ],
     causes: [
-      { territory: "sweat-odor", cause: "汗・におい" },
-      { territory: "skin-acne", cause: "肌" },
-      { territory: "beard-body-hair", cause: "ヒゲ・体毛" },
-      { territory: "hair-loss", cause: "髪" },
-      { territory: "face-impression", cause: "顔の印象" },
+      { territory: "sweat-odor", cause: "汗・におい", causeEn: "Sweat & odor" },
+      { territory: "skin-acne", cause: "肌", causeEn: "Skin" },
+      { territory: "beard-body-hair", cause: "ヒゲ・体毛", causeEn: "Beard & body hair" },
+      { territory: "hair-loss", cause: "髪", causeEn: "Hair" },
+      { territory: "face-impression", cause: "顔の印象", causeEn: "Facial impression" },
     ],
+    en: {
+      statement: "There's something I mind before meeting people",
+      why: "Awareness rises before meeting people because the premise of 'being seen' comes alive. The place you mind shifts with the person or the setting — sweat and odor, skin, beard, hair — attention gathers somewhere in the body according to the day's situation. Not feeling sure even after grooming may be because you feel the standard of judgment lies outside yourself.",
+      who: "Men who spend longer in front of the mirror before an appointment. Common among those who finish preparing yet still feel unsettled.",
+      vignettes: [
+        "Before an appointment, your time in front of the mirror grows",
+        "The place you mind changes with who you're meeting",
+        "Even after grooming, you can't feel sure",
+        "The moment you think 'I'll be seen,' awareness gathers in your face",
+      ],
+    },
   },
   {
     slug: "aging",
@@ -124,10 +186,21 @@ const FEELINGS: Feeling[] = [
       "鏡より、写真のほうが正直に見える",
     ],
     causes: [
-      { territory: "face-impression", cause: "肌・輪郭・表情" },
-      { territory: "hair-loss", cause: "薄毛・AGA" },
-      { territory: "mind-awareness", cause: "比較と老化感" },
+      { territory: "face-impression", cause: "肌・輪郭・表情", causeEn: "Skin, contour, expression" },
+      { territory: "hair-loss", cause: "薄毛・AGA", causeEn: "Hair loss, AGA" },
+      { territory: "mind-awareness", cause: "比較と老化感", causeEn: "Comparison and the sense of aging" },
     ],
+    en: {
+      statement: "I feel like I've aged",
+      why: "'Feeling like I've aged' is you detecting a change in impression, not your actual age. Skin texture, a loosening contour, hair density, and unconscious expression. Many elements are reversible — but what works even more strongly is the inner motion of comparing yourself to peers. The sense of aging intensifies as the multiplication of appearance and comparison.",
+      who: "Men who, standing beside peers, feel only they look a little older. Common among those who find the fatigue of an offhand expression in a photo.",
+      vignettes: [
+        "Beside peers of the same age, only you seem to look a bit older",
+        "An offhand expression looks more tired than you'd thought",
+        "You think 'I don't want to age' without being able to say it aloud",
+        "Photos look more honest than the mirror",
+      ],
+    },
   },
   {
     slug: "tired",
@@ -141,10 +214,21 @@ const FEELINGS: Feeling[] = [
       "夕方になると、鏡の中の自分が重く見える",
     ],
     causes: [
-      { territory: "mind-awareness", cause: "睡眠・目元・自意識" },
-      { territory: "face-impression", cause: "目元・くすみ・印象" },
-      { territory: "skin-acne", cause: "肌のコンディション" },
+      { territory: "mind-awareness", cause: "睡眠・目元・自意識", causeEn: "Sleep, the eye area, self-consciousness" },
+      { territory: "face-impression", cause: "目元・くすみ・印象", causeEn: "Eye area, dullness, impression" },
+      { territory: "skin-acne", cause: "肌のコンディション", causeEn: "Skin condition" },
     ],
+    en: {
+      statement: "Lately, I look tired",
+      why: "'Looking tired' is a bodily sign in the eye area, skin, and expression — and at the same time a matter of self-consciousness, of catching it yourself. Sleep debt surfaces as dark circles, puffiness, and dull skin, and a lowered mouth corner or posture strengthens the impression. Your face looking tired even after a good night's sleep is because the cause is not sleep alone.",
+      who: "Men who want to deny 'You look tired?' but find it hits the mark. Common among those for whom the evening mirror looks heavy.",
+      vignettes: [
+        "Even after sleeping well, only your face is tired",
+        "You mind the area under your eyes more than others do",
+        "Asked 'Are you tired?', you want to deny it but it's true",
+        "By evening, the self in the mirror looks heavy",
+      ],
+    },
   },
 ];
 
