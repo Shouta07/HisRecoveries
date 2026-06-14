@@ -43,6 +43,12 @@ Even after the physical concern improves, the habit of monitoring "how I'm seen"
 - **"Sleep restores everything"** — sleep is the foundation, but the eye area, puffiness, and habits can need a separate approach.
 - **"Just stop comparing"** — comparison is not something to stop, but something to redirect.
 
+## Japan vs. overseas — a difference in view
+
+Research on self-consciousness about appearance — and on body dysmorphia (BDD) and muscle dysmorphia — has accumulated mostly in the West. Meanwhile, the tendency for men to find it hard to talk about appearance concerns (low help-seeking) is reported widely across cultures.
+
+In Japan, the norm of "not showing weakness" layers on top, so the stage of searching alone, unable to tell anyone, tends to drag on. This is exactly the gap His Recoveries tries to fill: a problem common to the world, where in Japan the silence runs one layer deeper.
+
 ## A map of options
 
 The foundation of sleep and routine / care for the eye area and puffiness / dermatology and aesthetic medicine / and putting "distance from self-consciousness" into words. This is the area His Recoveries has spent the most time on.

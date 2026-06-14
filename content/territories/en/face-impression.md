@@ -33,6 +33,12 @@ The feeling of "not being able to like my own face" is, in this area, often born
 - **"Impression won't change without altering features"** — adjusting cleanliness, skin, and the eye area alone moves it greatly.
 - **"Looking older = your actual age"** — many reversible elements (sleep, puffiness, posture) are involved.
 
+## Japan vs. overseas — a difference in view
+
+The sensitivity to "cleanliness" and "looking older" tends to run strong in East Asia (especially Japan and Korea), and men's skincare habits spread there earlier than in the West.
+
+In recent years the men's grooming market has expanded rapidly in the West, so the directions are converging globally. What holds across cultures: impression moves far more on whether things look tidy — skin, the eye area, cleanliness — than on the features (the shape of parts) themselves.
+
 ## A map of options
 
 Adjusting cleanliness (brows, skin, hair) / lifestyle and eye-area care / skincare and dermatology / aesthetic medicine. Before going to "changing features," first separate out the elements that are creating the impression.

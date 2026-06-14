@@ -48,6 +48,12 @@ The deeper and longer the inflammation, the more likely a scar. **Pigmentation**
 - **"Only greasy food causes it"** — diet is one factor; hormones, keratinization, and bacteria are more fundamental.
 - **"Scars always fade with time"** — pigmentation fades, but pits do not return on their own.
 
+## Japan vs. overseas — a difference in view
+
+The standard for acne treatment is the same worldwide — topical retinoids, and oral medication for severe cases. What differs is **access**. In the West, tretinoin and oral isotretinoin have long been widely prescribed.
+
+In Japan, adapalene was approved relatively late (2008) and isotretinoin remains unapproved (self-pay / personal import), so the entry point of "suppressing inflammation early through medicine" was narrower for a long time. As a result, men in Japan tend to self-treat with over-the-counter care and skincare for longer before seeing a clinic. Same mechanism, different point at which you meet medicine.
+
 ## A map of options
 
 Reviewing lifestyle and skincare / over-the-counter actives / insured dermatology (topical, oral) / out-of-pocket procedures (peels, lasers — especially for scars). The entry point changes depending on whether your concern is "the acne you have now" or "the scars left behind."
