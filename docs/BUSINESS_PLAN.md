@@ -476,10 +476,34 @@ Y5 |■■■■■■■■■■■  + 海外初期収益
 ## 16. 体制
 
 - **運営**: バイタリティデザイン合同会社（「人と事業の活力を設計する会社」）。
-- **現在**: 編集（運営者）1人 + AI・DX システム開発の本業。
+- **現在**: 編集（運営者）1人 + AI・DX システム開発の本業 + **AI による GTM Engineering**（§16.1）。
 - **将来**: 編集チーム、覆面審査員、パートナー開発、システム開発体制へ段階拡張。
 - **資産の置き場所**: ブランド（His Recoveries）は中立の編集体。収益事業（認証運用・
   システム・パッケージ・SaaS）は会社側。編集の独立を構造で守る。
+
+### 16.1 GTM Engineering（AI による機構化）
+
+His Recoveries は、1人創業の限界を **AI による GTM Engineering** で構造的に超える。
+GTM Engineer = ツール・データ・AI を組み合わせ、マーケ/営業/CS を**再現性のある成長機構**
+に変える役割。HR では編集（人）と機構（AI）を役割分担し、複利を作る。
+
+**役割分担**
+- **Founder（人）**: 戦略・声・編集判断・オフライン・パートナーとの関係。
+- **GTM Engineer（AI）**: オンラインの全機構化 — コンテンツ生成、配信、計測、ファネル、
+  低摩擦の自動化、勝ち筋分析。
+
+**既に在る GTM 資産**
+- 配信エンジン: [`CONTENT_ENGINE.md`](./CONTENT_ENGINE.md)（7プラットフォーム用の生成プロンプト）。
+- 計測: UTM 規約 × `/admin/data`（流入元別 × トピック別の Check 転換）+ 100件進捗バー。
+- ファネル: `/feelings` → `/territories` → `/qa` → `/ask` / `/check` → `/check/complete` → Substack。
+- 取得: `/ask` 軽量フォーム + `/check` 30問 + `/admin/asks` / `/admin/checks` ワークフロー。
+- SEO/GEO: Article / FAQPage / Breadcrumb 構造化データ × hreflang × OG × `llms.txt` × `robots.ts`。
+- 編集の半自動化: `checkReport.ts`（手紙の下書き生成）+ `/admin/asks` の Ask → Q&A リフトUI。
+
+**運用ループ**: AI が作る → Founder が承認・流す → 計測で勝ち筋が見える → AI が次を作る（複利）。
+
+**投資家・パートナーへの説明**: 「1人創業 + AI GTM Engineer」体制で、編集の独立を守りつつ
+オンライン機構をスケールさせる。これが小規模で複利を作る現代的な編成。
 
 ## 17. 次の12ヶ月（具体）
 

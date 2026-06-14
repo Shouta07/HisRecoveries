@@ -19,6 +19,26 @@ export const dynamic = "force-dynamic";
 
 type GuideRow = { status: string; format: string | null; budget: string | null; created_at: string };
 type CertRow = { status: string; org_type: string | null };
+type AskRow = {
+  territory: string | null;
+  utm_source: string | null;
+  referrer_host: string | null;
+  consent_publish: boolean;
+  status: string;
+  created_at: string;
+};
+type CheckSourceRow = { utm_source: string | null; referrer_host: string | null };
+
+function tallyChannel(rows: { utm_source: string | null; referrer_host: string | null }[]): { value: string; label: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    const key = r.utm_source ?? r.referrer_host ?? "direct/unknown";
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([value, count]) => ({ value, label: value, count }));
+}
 
 export default async function DataPage() {
   if (!dbAdminEnabled) {
@@ -32,11 +52,31 @@ export default async function DataPage() {
     );
   }
 
-  const [checks, guides, certs] = await Promise.all([
+  const [checks, checkSources, asks, guides, certs] = await Promise.all([
     dbSelect<CheckRow>("checks?select=responses,created_at&order=created_at.desc&limit=1000"),
+    dbSelect<CheckSourceRow>("checks?select=utm_source,referrer_host&limit=1000"),
+    dbSelect<AskRow>(
+      "asks?select=territory,utm_source,referrer_host,consent_publish,status,created_at&order=created_at.desc&limit=500"
+    ),
     dbSelect<GuideRow>("guide_requests?select=status,format,budget,created_at&limit=1000"),
     dbSelect<CertRow>("certified_applications?select=status,org_type&limit=1000"),
   ]);
+
+  const checkChannels = tallyChannel(checkSources);
+  const askChannels = tallyChannel(asks);
+  const askByTerritory = (() => {
+    const counts = new Map<string, number>();
+    for (const a of asks) {
+      const key = a.territory ?? "(未選択)";
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([value, count]) => ({ value, label: value, count }));
+  })();
+  const askPublishable = asks.filter(
+    (a) => a.consent_publish && a.status !== "published" && a.status !== "archived"
+  ).length;
 
   const concernFreq = tallyMulti(checks, "concerns");
   const durationDist = tallySingle(checks, "duration");
@@ -104,6 +144,54 @@ export default async function DataPage() {
           </div>
         </div>
       </header>
+
+      {/* Recovery Q&A — Asks queue overview */}
+      <section className="mb-12">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          Recovery Q&amp;A — 届いた問い
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">届いた問い 累計</p>
+            <p className="mt-2 font-mincho text-3xl text-ink tabular-nums">{asks.length}</p>
+          </div>
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">公開同意あり・未公開</p>
+            <p className="mt-2 font-mincho text-3xl text-ink tabular-nums">{askPublishable}</p>
+            <p className="mt-1 text-[10px] text-sub-gray">→ Q&amp;A 化の候補</p>
+          </div>
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">未対応</p>
+            <p className="mt-2 font-mincho text-3xl text-ink tabular-nums">
+              {asks.filter((a) => a.status === "submitted").length}
+            </p>
+          </div>
+        </div>
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BarPanel title="Asks の領域" subtitle="single" data={askByTerritory} />
+          <BarPanel title="Asks の流入元" subtitle="UTM or referrer" data={askChannels} />
+        </div>
+      </section>
+
+      {/* Channels — winning routes for Checks (UTM/referrer attribution). */}
+      <section className="mb-12">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          勝ち筋 — Check の流入元
+        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BarPanel title="Check の流入元" subtitle="UTM or referrer" data={checkChannels} />
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-3">
+              読み方
+            </p>
+            <p className="font-mincho text-[13px] text-ink/85 leading-[2]">
+              UTM を付けたリンクから来た訪問者と、referrer から判定した訪問者の合計件数です。
+              特定のプラットフォーム/トピックが伸びていれば、そこに資源を寄せる判断材料に
+              なります。&quot;direct/unknown&quot; が多い場合は、UTM 付与の徹底を検討してください。
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* First-party concern intelligence — the reason this phase exists. */}
       <section className="mb-12">
