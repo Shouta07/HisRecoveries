@@ -105,10 +105,17 @@ export default function QAIndexPage() {
           A Next Half-Step
         </p>
         <p className="font-mincho text-[14.5px] text-ink/85 leading-[2.05] max-w-[34rem]">
-          自分の問いを置きたい方は、Recovery Check に静かに答えてください。
-          編集者が読み、24 時間以内に手紙でお返事します。
+          ひとつだけ問いを置きたい方は <Link href="/ask" className="border-b border-gold/60 hover:text-gold transition-colors">問いを置く</Link>、
+          自分の状態を 30 問で整理したい方は <Link href="/check" className="border-b border-gold/60 hover:text-gold transition-colors">Recovery Check</Link>。
+          どちらも編集者が読み、手紙でお返事します。
         </p>
-        <div className="mt-5">
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link
+            href="/ask"
+            className="btn-gold !py-3 !px-5 text-xs"
+          >
+            問いを置く →
+          </Link>
           <Link
             href="/check"
             className="text-[13px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5 inline-flex"
