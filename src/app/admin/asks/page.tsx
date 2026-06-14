@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import StatusBar from "@/components/admin/StatusBar";
+import LiftToQA from "@/components/admin/LiftToQA";
 
 const STATUSES = [
   { value: "submitted", label: "受付" },
@@ -185,6 +186,12 @@ export default async function AsksAdminPage() {
                       current={r.status}
                       options={STATUSES}
                     />
+                  </div>
+                  <div className="pt-3 border-t border-hair-line">
+                    <p className="text-[10px] tracking-[0.1em] uppercase text-sub-gray mb-2">
+                      Q&A 化（下書き生成）
+                    </p>
+                    <LiftToQA askId={r.id} canPublish={r.consent_publish} />
                   </div>
                   {r.notes && (
                     <div>
