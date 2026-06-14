@@ -16,6 +16,7 @@ export default function Footer() {
 
           <Column label="読みもの・つながる">
             <FLink href="/territories">原因を読む</FLink>
+            <FLink href="/qa">Recovery Q&amp;A</FLink>
             <FLink href="/articles">記録</FLink>
             <FExt href={site.social.threads}>Threads</FExt>
             <FExt href={site.social.substack}>Substack</FExt>
