@@ -58,11 +58,49 @@ export default function FeelingPage({ params }: { params: Params }) {
     ],
   };
 
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: `「${f.statement}」と感じるとき`,
+    description: f.why.slice(0, 200),
+    inLanguage: "ja",
+    isPartOf: { "@id": `${site.url}/#website` },
+    publisher: { "@id": `${site.url}/#publisher` },
+    mainEntityOfPage: url,
+  };
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `「${f.statement}」と感じるのは、なぜ？`,
+        acceptedAnswer: { "@type": "Answer", text: f.why },
+      },
+      {
+        "@type": "Question",
+        name: "どんな人が、こう感じやすい？",
+        acceptedAnswer: { "@type": "Answer", text: f.who },
+      },
+    ],
+  };
+
   return (
     <article>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       {/* Header */}
