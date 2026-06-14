@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import TrackedCTA from "@/components/TrackedCTA";
+import ShareCheck from "@/components/ShareCheck";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -70,6 +71,9 @@ export default function CheckCompletePage() {
         </p>
       </div>
 
+      {/* Pass-it-on share — viral seed for more Checks */}
+      <ShareCheck />
+
       <div className="mt-10 pt-8 border-t border-hair-line">
         <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
           While you wait
@@ -96,6 +100,26 @@ export default function CheckCompletePage() {
             （その悩みが、なぜ起こるのか）
           </li>
         </ul>
+      </div>
+
+      {/* Improvement-case loop — the defensible data asset */}
+      <div className="mt-10 pt-8 border-t border-hair-line">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          いつか、変化があったら
+        </p>
+        <p className="font-mincho text-[14px] text-ink/85 leading-[2.05]">
+          半年後でも、一年後でも構いません。何かが少しでも変わったとき、その記録を
+          置いていってください。あなたの「その後」が、いま同じ場所にいる誰かの
+          地図になります。
+        </p>
+        <div className="mt-5">
+          <Link
+            href="/submit-story"
+            className="text-[13px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5 inline-flex"
+          >
+            回復の途中を記録する →
+          </Link>
+        </div>
       </div>
     </div>
   );
