@@ -28,6 +28,13 @@ type AskRow = {
   created_at: string;
 };
 type CheckSourceRow = { utm_source: string | null; referrer_host: string | null };
+type CheckLoopRow = {
+  id: string;
+  created_at: string;
+  status: string;
+  follow_up_at: string | null;
+  story_slug: string | null;
+};
 
 function tallyChannel(rows: { utm_source: string | null; referrer_host: string | null }[]): { value: string; label: string; count: number }[] {
   const counts = new Map<string, number>();
@@ -52,15 +59,29 @@ export default async function DataPage() {
     );
   }
 
-  const [checks, checkSources, asks, guides, certs] = await Promise.all([
+  const [checks, checkSources, checkLoop, asks, guides, certs] = await Promise.all([
     dbSelect<CheckRow>("checks?select=responses,created_at&order=created_at.desc&limit=1000"),
     dbSelect<CheckSourceRow>("checks?select=utm_source,referrer_host&limit=1000"),
+    dbSelect<CheckLoopRow>(
+      "checks?select=id,created_at,status,follow_up_at,story_slug&order=created_at.asc&limit=1000"
+    ),
     dbSelect<AskRow>(
       "asks?select=territory,utm_source,referrer_host,consent_publish,status,created_at&order=created_at.desc&limit=500"
     ),
     dbSelect<GuideRow>("guide_requests?select=status,format,budget,created_at&limit=1000"),
     dbSelect<CertRow>("certified_applications?select=status,org_type&limit=1000"),
   ]);
+
+  const DAY = 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const followUpDue = checkLoop.filter(
+    (c) =>
+      !c.follow_up_at &&
+      c.status !== "archived" &&
+      now - new Date(c.created_at).getTime() >= 90 * DAY
+  );
+  const followUpSent = checkLoop.filter((c) => c.follow_up_at).length;
+  const storiesLifted = checkLoop.filter((c) => c.story_slug).length;
 
   const checkChannels = tallyChannel(checkSources);
   const askChannels = tallyChannel(asks);
@@ -144,6 +165,91 @@ export default async function DataPage() {
           </div>
         </div>
       </header>
+
+      {/* Recovery Stories — improvement-case loop (10件ゲート) */}
+      <section className="mb-12">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          Recovery Stories — 改善事例の収集ループ
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">公開済 Stories</p>
+            <p className="mt-2 font-mincho text-3xl text-ink tabular-nums">
+              {storiesLifted}
+              <span className="text-[13px] text-sub-gray ml-2">/ 10 件</span>
+            </p>
+            <div className="mt-3 h-1.5 bg-cream-deep">
+              <div
+                className="h-1.5 bg-gold"
+                style={{
+                  width: `${Math.min(100, Math.round((storiesLifted / 10) * 100))}%`,
+                }}
+              />
+            </div>
+          </div>
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">Follow-up 送付済</p>
+            <p className="mt-2 font-mincho text-3xl text-ink tabular-nums">
+              {followUpSent}
+            </p>
+          </div>
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">Follow-up 待ち</p>
+            <p className="mt-2 font-mincho text-3xl text-ink tabular-nums">
+              {followUpDue.length}
+            </p>
+            <p className="mt-1 text-[10px] text-sub-gray">
+              90 日経過・未送付・未アーカイブ
+            </p>
+          </div>
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">Story 化率</p>
+            <p className="mt-2 font-mincho text-3xl text-ink tabular-nums">
+              {followUpSent === 0
+                ? "—"
+                : `${Math.round((storiesLifted / followUpSent) * 100)}%`}
+            </p>
+            <p className="mt-1 text-[10px] text-sub-gray">送付済中の公開率</p>
+          </div>
+        </div>
+
+        {followUpDue.length > 0 && (
+          <div className="mt-6 bg-paper border border-hair-line p-5">
+            <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-3">
+              Follow-up 待ちキュー（最大10件）
+            </p>
+            <ul className="space-y-2 text-[12.5px]">
+              {followUpDue.slice(0, 10).map((c) => {
+                const days = Math.floor(
+                  (now - new Date(c.created_at).getTime()) / DAY
+                );
+                return (
+                  <li
+                    key={c.id}
+                    className="flex items-baseline justify-between gap-3 border-b border-hair-line/60 pb-2"
+                  >
+                    <a
+                      href={`/admin/checks#${c.id}`}
+                      className="text-ink hover:text-gold transition-colors font-mono"
+                    >
+                      {c.id.slice(0, 8)}
+                    </a>
+                    <span className="text-sub-gray">
+                      {c.created_at.slice(0, 10)}
+                    </span>
+                    <span className="text-sub-gray ml-auto tabular-nums">
+                      {days}日経過
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mt-4 text-[11px] text-sub-gray leading-[1.95]">
+              /admin/checks で対応 → 「Follow-up を送付済にする」+ 必要に応じ「Story 下書きを生成」。
+            </p>
+          </div>
+        )}
+      </section>
 
       {/* Recovery Q&A — Asks queue overview */}
       <section className="mb-12">

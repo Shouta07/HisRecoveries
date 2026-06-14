@@ -84,8 +84,16 @@ create table if not exists checks (
   utm_source text,
   referrer_host text,
   landing_path text,
+  -- Follow-up loop: who has been asked "その後どうですか?" and who became a
+  -- Recovery Story. These are the foundations of the 10-cases moat asset.
+  follow_up_at timestamptz,      -- when the editor sent the follow-up
+  story_slug text,               -- if lifted into /stories/[slug], the slug
   created_at timestamptz default now()
 );
+
+-- Idempotent column additions (for tables created by older deploys).
+alter table checks add column if not exists follow_up_at timestamptz;
+alter table checks add column if not exists story_slug text;
 
 -- Recovery Q&A submissions (/ask). A lightweight single-question
 -- intake — the natural evolution of Recovery Check. Editor reads,

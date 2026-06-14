@@ -6,7 +6,13 @@ export const dynamic = "force-dynamic";
 
 const VALID_STATUSES = ["submitted", "reviewing", "replied", "archived"];
 
-type Body = { status?: string; notes?: string };
+type Body = {
+  status?: string;
+  notes?: string;
+  story_slug?: string | null;
+  /** "now" → server stamps current time; null → clear */
+  follow_up_at?: "now" | string | null;
+};
 
 export async function PATCH(
   req: NextRequest,
@@ -37,6 +43,26 @@ export async function PATCH(
   }
   if (typeof body.notes === "string") {
     patch.notes = body.notes.slice(0, 4000);
+  }
+  if (body.story_slug !== undefined) {
+    patch.story_slug =
+      typeof body.story_slug === "string"
+        ? body.story_slug.slice(0, 120) || null
+        : null;
+  }
+  if (body.follow_up_at !== undefined) {
+    if (body.follow_up_at === null) {
+      patch.follow_up_at = null;
+    } else if (body.follow_up_at === "now") {
+      patch.follow_up_at = new Date().toISOString();
+    } else if (typeof body.follow_up_at === "string") {
+      // accept ISO8601; reject anything else.
+      const d = new Date(body.follow_up_at);
+      if (Number.isNaN(d.getTime())) {
+        return NextResponse.json({ error: "invalid follow_up_at" }, { status: 400 });
+      }
+      patch.follow_up_at = d.toISOString();
+    }
   }
   if (Object.keys(patch).length === 0) {
     return NextResponse.json({ error: "no fields to update" }, { status: 400 });
