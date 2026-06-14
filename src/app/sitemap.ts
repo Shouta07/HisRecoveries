@@ -5,6 +5,7 @@ import { getAllTerritories } from "@/lib/territories";
 import { getAllConcerns } from "@/lib/concerns";
 import { getAllFeelingSlugs } from "@/lib/feelings";
 import { getAllQASlugs } from "@/lib/qa";
+import { getAllStorySlugs } from "@/lib/stories";
 import { categories, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -93,6 +94,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const storyPaths: MetadataRoute.Sitemap = getAllStorySlugs().map((slug) => ({
+    url: `${site.url}/stories/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
   // English (core) mirror.
   const enStatic: MetadataRoute.Sitemap = [
     "/en/territories",
@@ -132,6 +140,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...feelingPaths,
     ...qaIndex,
     ...qaPaths,
+    ...storyPaths,
     ...enStatic,
     ...enTerritoryPaths,
     ...enFeelingPaths,

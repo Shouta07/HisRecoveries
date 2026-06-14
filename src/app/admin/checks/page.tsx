@@ -3,6 +3,8 @@ import Link from "next/link";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { CHECK_QUESTIONS, CHECK_SECTIONS } from "@/lib/checkQuestions";
 import StatusBar from "@/components/admin/StatusBar";
+import LiftToStory from "@/components/admin/LiftToStory";
+import MarkFollowedUp from "@/components/admin/MarkFollowedUp";
 
 const CHECK_STATUSES = [
   { value: "submitted", label: "受付中" },
@@ -27,6 +29,8 @@ type CheckRow = {
   notes: string | null;
   utm_source: string | null;
   referrer_host: string | null;
+  follow_up_at: string | null;
+  story_slug: string | null;
   created_at: string;
 };
 
@@ -156,6 +160,28 @@ export default async function ChecksAdminPage() {
                       current={r.status}
                       options={CHECK_STATUSES}
                     />
+                  </div>
+
+                  {/* GTM loop: follow-up tracking + Story lift */}
+                  <div className="mt-8 pt-6 border-t border-hair-line space-y-5">
+                    <div>
+                      <p className="text-[10px] tracking-[0.1em] uppercase text-sub-gray mb-2">
+                        Follow-up（その後どうですか）
+                      </p>
+                      <MarkFollowedUp
+                        checkId={r.id}
+                        followUpAt={r.follow_up_at}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-[10px] tracking-[0.1em] uppercase text-sub-gray mb-2">
+                        Recovery Story 化（改善事例の公開アーカイブ）
+                      </p>
+                      <LiftToStory
+                        checkId={r.id}
+                        existingStorySlug={r.story_slug}
+                      />
+                    </div>
                   </div>
                 </div>
               </details>
