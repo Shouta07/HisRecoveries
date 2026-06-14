@@ -20,6 +20,12 @@ export const site = {
   locale: "ja_JP",
   language: "ja",
   region: "JP",
+  // Global-ready foundation. Content is validated in Japanese first; the
+  // English layer is a single brand landing (/en) for now. Expansion later.
+  locales: {
+    default: "ja",
+    supported: ["ja", "en"],
+  },
   company: {
     name: "バイタリティデザイン合同会社",
     nameEn: "Vitality Design LLC",

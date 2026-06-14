@@ -43,6 +43,10 @@ export default function Footer() {
             <Link href="/network" className="hover:text-ink transition-colors">
               事業者の方へ
             </Link>
+            <span aria-hidden>·</span>
+            <Link href="/en" className="hover:text-ink transition-colors">
+              English
+            </Link>
           </div>
         </div>
       </div>
