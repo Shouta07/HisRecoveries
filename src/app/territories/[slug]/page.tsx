@@ -289,7 +289,26 @@ export default async function TerritoryPage({
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+            <Link
+              href={`/ask?territory=${t.slug}`}
+              className="group block bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors card-lift"
+            >
+              <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold">
+                Recovery Q&A
+              </p>
+              <h3 className="mt-3 font-mincho text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
+                ひとつだけ、問いを置く
+              </h3>
+              <p className="mt-3 font-mincho text-[13px] text-sub-gray leading-[2]">
+                いまの言葉のままで構いません。編集者が読み、手紙で返事を書きます。
+              </p>
+              <span className="mt-5 inline-flex text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
+                問いを置く
+                <span aria-hidden> →</span>
+              </span>
+            </Link>
+
             <Link
               href="/check"
               className="group block bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors card-lift"

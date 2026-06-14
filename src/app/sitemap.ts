@@ -84,6 +84,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const qaIndex: MetadataRoute.Sitemap = [
     { url: `${site.url}/qa`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${site.url}/ask`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
   ];
   const qaPaths: MetadataRoute.Sitemap = getAllQASlugs().map((slug) => ({
     url: `${site.url}/qa/${slug}`,

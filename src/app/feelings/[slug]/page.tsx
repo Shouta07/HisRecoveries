@@ -225,6 +225,12 @@ export default function FeelingPage({ params }: { params: Params }) {
               Recovery Check を始める <span aria-hidden>→</span>
             </Link>
             <Link
+              href={`/ask?feeling=${f.slug}`}
+              className="text-sm tracking-[0.12em] text-cream border border-cream/40 hover:border-gold-bright hover:text-gold-bright transition-colors px-6 py-3.5 text-center"
+            >
+              ひとつだけ問いを置く
+            </Link>
+            <Link
               href="/membership"
               className="text-sm tracking-[0.12em] text-cream border border-cream/40 hover:border-gold-bright hover:text-gold-bright transition-colors px-6 py-3.5 text-center"
             >

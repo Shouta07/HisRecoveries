@@ -87,6 +87,30 @@ create table if not exists checks (
   created_at timestamptz default now()
 );
 
+-- Recovery Q&A submissions (/ask). A lightweight single-question
+-- intake — the natural evolution of Recovery Check. Editor reads,
+-- replies privately, and may publish an anonymized version under
+-- /qa/[slug] if the asker consents (consent_publish).
+create table if not exists asks (
+  id uuid primary key default gen_random_uuid(),
+  email text,                    -- short-lived contact (purge after reply / publication)
+  email_hash text,               -- permanent anonymized identifier
+  question text not null,
+  context text,                  -- optional life-pain context line
+  age_range text,                -- optional (e.g. "20代後半")
+  territory text,                -- optional self-selected territory slug
+  feeling text,                  -- optional referring feeling slug
+  consent_reply boolean default true,    -- consent to receive an editor reply
+  consent_publish boolean default false, -- consent to anonymized publication on /qa
+  status text default 'submitted', -- submitted / reviewing / replied / published / archived
+  notes text,                    -- editor notes
+  qa_slug text,                  -- once published, the /qa/[slug] this was lifted into
+  utm_source text,
+  referrer_host text,
+  landing_path text,
+  created_at timestamptz default now()
+);
+
 -- Recovery Guide requests (Layer 3 product). 90-minute editorial
 -- session intake. Editor confirms scheduling + payment by email.
 create table if not exists guide_requests (
@@ -151,6 +175,9 @@ create index if not exists stories_category_idx on stories(category);
 create index if not exists stories_created_at_idx on stories(created_at desc);
 create index if not exists checks_status_idx on checks(status);
 create index if not exists checks_created_at_idx on checks(created_at desc);
+create index if not exists asks_status_idx on asks(status);
+create index if not exists asks_created_at_idx on asks(created_at desc);
+create index if not exists asks_territory_idx on asks(territory);
 create index if not exists guide_requests_status_idx on guide_requests(status);
 create index if not exists guide_requests_created_at_idx on guide_requests(created_at desc);
 create index if not exists certified_applications_status_idx
@@ -190,6 +217,10 @@ create policy "anon insert events" on events
 
 drop policy if exists "anon insert checks" on checks;
 create policy "anon insert checks" on checks
+  for insert to anon with check (true);
+
+drop policy if exists "anon insert asks" on asks;
+create policy "anon insert asks" on asks
   for insert to anon with check (true);
 
 drop policy if exists "anon insert guide_requests" on guide_requests;
