@@ -4,9 +4,9 @@ import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Recovery Certified Network — 編集者が信頼するパートナー",
+  title: "Recovery Certified Network — 男性の沈黙を任せられる相手を",
   description:
-    "Recovery Certified Network は、His Recoveries が定める 5 つの原則（顧客理解 / 強引営業の禁止 / 改善データの提供 / 顧客教育 / 長期伴走）を満たすクリニック・サロン・ジム・専門家の認証連合です。紹介手数料を受け取らない、中立の認証。",
+    "His Recoveries は商品も施術も売りません。だから中立に、男性の悩みを正面から扱うに足るクリニック・サロン・ジム・専門家を認証します。5 つの原則（顧客理解 / 強引営業の禁止 / 改善データの提供 / 顧客教育 / 長期伴走）と覆面審査。紹介手数料も広告費も受け取りません。",
   alternates: { canonical: `${site.url}/network` },
   openGraph: {
     title: `Recovery Certified Network — ${site.name}`,
@@ -68,18 +68,20 @@ export default async function NetworkPage() {
           Recovery Certified Network
         </p>
         <h1 className="mt-6 font-mincho text-3xl sm:text-5xl text-ink leading-[1.35]">
-          編集者が信頼する、
+          男性の沈黙を任せられる、
           <br />
-          パートナーの輪。
+          数少ない相手を。
         </h1>
         <p className="mt-8 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-          His Recoveries は、商品も施術も売りません。
-          代わりに、男性の沈黙を扱うに足るパートナーを認証します。
+          His Recoveries は、商品も施術も売りません。だから、中立でいられます。
+          その立場でできる唯一のことが、男性の悩みを正面から扱うに足る相手を、
+          編集者の目で認証することです。
         </p>
         <p className="mt-6 font-mincho text-[13.5px] text-sub-gray leading-[2.05]">
-          認証されたクリニック・サロン・ジム・専門家は、
-          5 つの原則を毎年更新し、編集者の覆面顧客審査を経ています。
-          紹介手数料は、私たちからもパートナーからも、一切受け取りません。
+          認証されたクリニック・サロン・ジム・専門家は、5 つの原則を毎年更新し、
+          編集者による覆面の顧客審査を通過しています。紹介手数料も広告費も、
+          私たちからもパートナーからも、一切受け取りません。
+          だから、ここに名前があることは、お金では買えません。
         </p>
       </header>
 
@@ -92,27 +94,27 @@ export default async function NetworkPage() {
             {
               n: "01",
               t: "顧客理解",
-              d: "カウンセリングの過程を文書化し、相手の状態を、本人と一緒に整理する。",
+              d: "カウンセリングの過程を記録に残し、相手の状態を、本人と一緒に言葉にする。売る前に、まず理解する。",
             },
             {
               n: "02",
               t: "強引営業の禁止",
-              d: "初回相談から 24 時間のクーリング期間を必ず設け、当日決断を強いない。",
+              d: "初回相談から最低 24 時間のクーリング期間を置き、その日のうちの決断を、決して迫らない。",
             },
             {
               n: "03",
               t: "改善データの提供",
-              d: "施術後 6 ヶ月・1 年の顧客状態を、匿名で His Recoveries に共有する。",
+              d: "施術後 6 ヶ月・1 年の顧客の状態を、匿名で His Recoveries に共有する。検証できない「効果」は、語らない。",
             },
             {
               n: "04",
               t: "顧客教育",
-              d: "院内 / 店内に、決定を急がせない顧客向けの読み物を備える。",
+              d: "院内・店内に、決定を急がせないための読み物を備える。迷う時間を、奪わない。",
             },
             {
               n: "05",
               t: "長期伴走",
-              d: "単発処置で終わらせず、年単位の伴走の選択肢を、必ず提示する。",
+              d: "単発の処置で終わらせず、年単位で付き合う選択肢を、必ず差し出す。",
             },
           ].map((p) => (
             <li key={p.n} className="border-b border-hair-line py-6">
@@ -131,8 +133,8 @@ export default async function NetworkPage() {
           ))}
         </ol>
         <p className="mt-6 text-[12px] text-sub-gray leading-[2]">
-          認証は年次更新です。原則が守られていない場合、剥奪します。
-          剥奪事例は年 1 回、当ページで公開します。
+          認証は毎年更新されます。原則が守られていないと判断した場合、認証を取り消します。
+          取り消した事例は、年に一度、このページで公開します。隠さないことも、原則のひとつです。
         </p>
       </section>
 
@@ -143,11 +145,13 @@ export default async function NetworkPage() {
         {certified.length === 0 ? (
           <div className="border border-hair-line bg-paper p-8 sm:p-10">
             <p className="font-mincho text-[15px] text-ink leading-[2.05]">
-              認証パートナーは、現在準備中です。
+              認証パートナーは、まだ一つもありません。
             </p>
             <p className="mt-4 font-mincho text-[13.5px] text-sub-gray leading-[2.05]">
-              2026 年内に、最初の 10 院・サロン・専門家が認証される予定です。
-              認証されると、このページに公開されます。
+              いま His Recoveries は、男性が本当は何に悩んでいるのか——その一次情報を
+              集めている段階です。十分な理解が貯まったうえで、2026 年内に、
+              最初の数院・数名を認証します。最初の認証が決まれば、ここに名前が並びます。
+              急いで数を増やすつもりは、ありません。
             </p>
           </div>
         ) : (
@@ -198,12 +202,13 @@ export default async function NetworkPage() {
           認証を申請する
         </h2>
         <p className="mt-4 font-mincho text-[14px] text-ink/85 leading-[2]">
-          上の 5 つの原則をすべて満たす、または半年以内に満たせる
-          クリニック・サロン・ジム・専門家からのお申し込みを受け付けています。
+          5 つの原則をすでに満たしている、あるいは半年以内に満たす意志のある
+          クリニック・サロン・ジム・専門家からの申請を受け付けています。
+          数ではなく、質で選びます。
         </p>
         <p className="mt-3 font-mincho text-[12.5px] text-sub-gray leading-[2]">
           申請料・年会費は、β 期間中は無料です。
-          審査には平均 4〜8 週間（覆面顧客審査の日程調整を含む）かかります。
+          審査には、覆面顧客審査の日程調整を含めて、平均 4〜8 週間かかります。
         </p>
         <div className="mt-6">
           <Link href="/network/apply" className="btn-gold !py-3 !px-5 text-xs">
