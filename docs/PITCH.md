@@ -31,6 +31,8 @@ Male Conditioning — Recover Your Presence.
 
 ### ビジネスモデル（収益は多角・順次）
 - 購読（Recoveries Letter）／ **体験パッケージ**（High/Low：医療×サロン×デジタルデトックス）
+- **Recovery Path（理解→行動の SaaS）** — 図解×ゲーミフィケーション×システムで顧客教育。
+  toB ホワイトラベル（認証パートナー）＋ toC
 - **Recovery Certified Network** — 認証＋**バッジ契約（ミシュラン型）**。認証は中立に保ち、
   収益はバッジ年会費・システム・商品・データから（認証と収益源を分離）
 - **パートナー向けシステム開発**で現場の一次情報を基盤化 → **Recovery Data** を還元（toB）

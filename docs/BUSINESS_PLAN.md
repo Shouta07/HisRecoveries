@@ -56,6 +56,10 @@
 ### 将来（収益化フェーズ）
 - **体験パッケージ**（High/Low、後述 §7）
 - **Recovery Certified Network** — 認証 + バッジ契約（後述 §6）
+- **Recovery Path（理解→行動の SaaS）** — ゲーミフィケーション×図解×システムで、顧客が
+  本質から悩みを理解し行動を改善する教育プロダクト。toB（パートナーの顧客教育・
+  ホワイトラベル）と toC の両方で SaaS 展開。詳細は
+  [`PRODUCT_RECOVERY_PATH.md`](./PRODUCT_RECOVERY_PATH.md)
 - **パートナー向けシステム開発** — 現場の一次情報を貯める基盤（後述 §8）
 - **共同商品** — 提携パートナーとのプロダクト・ローンチ
 - **Recovery Data** — 匿名集計の知見提供（B2B）
@@ -67,6 +71,7 @@
 | Recoveries Letter（購読） | toC・継続 | フェーズ0〜 |
 | 体験パッケージ（High/Low） | toC・単発+継続 | フェーズ2 |
 | 認証 + バッジ年会費 | toB・継続 | フェーズ1〜2 |
+| Recovery Path（顧客教育 SaaS） | toB（ホワイトラベル）+ toC | フェーズ3 |
 | パートナー向けシステム開発・運用 | toB・受託+SaaS | フェーズ3 |
 | 共同商品（レベニューシェア） | toB2C | フェーズ2〜3 |
 | Recovery Data（知見提供） | toB | フェーズ3〜 |
