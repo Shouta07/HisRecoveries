@@ -19,6 +19,7 @@ const secondary = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const isEn = pathname === "/en" || pathname.startsWith("/en/");
 
   // Close on route change
   useEffect(() => {
@@ -48,22 +49,25 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav (≥ md) */}
-        <nav aria-label="primary" className="hidden md:block text-sm">
-          <ul className="flex items-center gap-6 lg:gap-8 text-ink/85">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="inline-block py-2 hover:text-gold transition-colors"
-                >
-                  <span className="font-mincho text-[14px] tracking-[0.12em] whitespace-nowrap">
-                    {item.label}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <div className="hidden md:flex items-center gap-6 lg:gap-8">
+          <nav aria-label="primary" className="text-sm">
+            <ul className="flex items-center gap-6 lg:gap-8 text-ink/85">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="inline-block py-2 hover:text-gold transition-colors"
+                  >
+                    <span className="font-mincho text-[14px] tracking-[0.12em] whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <LangSwitch isEn={isEn} />
+        </div>
 
         {/* Mobile menu toggle (< md) */}
         <button
@@ -138,10 +142,57 @@ export default function Header() {
                 Contact — {site.email}
               </a>
             </div>
+
+            <div className="mt-10 pt-8 border-t border-hair-line">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-3">
+                Language
+              </p>
+              <LangSwitch isEn={isEn} onNavigate={() => setOpen(false)} size="lg" />
+            </div>
           </nav>
         </div>
       )}
     </header>
+  );
+}
+
+function LangSwitch({
+  isEn,
+  onNavigate,
+  size = "sm",
+}: {
+  isEn: boolean;
+  onNavigate?: () => void;
+  size?: "sm" | "lg";
+}) {
+  const text = size === "lg" ? "text-[15px]" : "text-[11px]";
+  const active = "text-ink";
+  const idle = "text-sub-gray/60 hover:text-gold transition-colors";
+  return (
+    <div
+      aria-label="言語 / Language"
+      className={`flex items-center gap-2 tracking-[0.18em] ${text}`}
+    >
+      <Link
+        href="/"
+        onClick={onNavigate}
+        aria-current={!isEn ? "true" : undefined}
+        className={!isEn ? active : idle}
+      >
+        JP
+      </Link>
+      <span aria-hidden className="text-hair-line">
+        /
+      </span>
+      <Link
+        href="/en"
+        onClick={onNavigate}
+        aria-current={isEn ? "true" : undefined}
+        className={isEn ? active : idle}
+      >
+        EN
+      </Link>
+    </div>
   );
 }
 
