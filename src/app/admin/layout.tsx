@@ -15,6 +15,8 @@ const tabs = [
   { href: "/admin/network", label: "Certified" },
   { href: "/admin/articles", label: "Articles" },
   { href: "/admin/media", label: "Media" },
+  { href: "/admin/tools/eval-thread", label: "Eval" },
+  { href: "/admin/tools/letter", label: "Letter" },
 ];
 
 export default function AdminLayout({
