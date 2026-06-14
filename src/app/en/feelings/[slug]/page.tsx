@@ -65,11 +65,49 @@ export default function EnFeelingPage({ params }: { params: Params }) {
     ],
   };
 
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: `When you feel "${L.statement}"`,
+    description: L.why.slice(0, 200),
+    inLanguage: "en",
+    isPartOf: { "@id": `${site.url}/#website` },
+    publisher: { "@id": `${site.url}/#publisher` },
+    mainEntityOfPage: url,
+  };
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `Why do I feel "${L.statement}"?`,
+        acceptedAnswer: { "@type": "Answer", text: L.why },
+      },
+      {
+        "@type": "Question",
+        name: "Who tends to feel this way?",
+        acceptedAnswer: { "@type": "Answer", text: L.who },
+      },
+    ],
+  };
+
   return (
     <article lang="en">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       <header className="mx-auto max-w-reading px-6 sm:px-10 pt-14 sm:pt-24 pb-10">
