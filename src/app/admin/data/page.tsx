@@ -166,6 +166,58 @@ export default async function DataPage() {
         </div>
       </header>
 
+      {/* Phase 0 Gate — at-a-glance readiness for Phase 1 */}
+      <section className="mb-12">
+        <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+          Phase 0 Gate — 認証フェーズへの準備
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">Check 100 件</p>
+            <p className="mt-2 font-mincho text-2xl text-ink tabular-nums">
+              {checks.length} / 100
+            </p>
+            <div className="mt-2 h-1 bg-cream-deep">
+              <div
+                className="h-1 bg-gold"
+                style={{
+                  width: `${Math.min(100, Math.round((checks.length / 100) * 100))}%`,
+                }}
+              />
+            </div>
+          </div>
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">Stories 10 件</p>
+            <p className="mt-2 font-mincho text-2xl text-ink tabular-nums">
+              {storiesLifted} / 10
+            </p>
+            <div className="mt-2 h-1 bg-cream-deep">
+              <div
+                className="h-1 bg-gold"
+                style={{
+                  width: `${Math.min(100, Math.round((storiesLifted / 10) * 100))}%`,
+                }}
+              />
+            </div>
+          </div>
+          <div className="bg-paper border border-hair-line p-5">
+            <p className="text-[11px] tracking-[0.08em] text-sub-gray">
+              総合判定
+            </p>
+            <p className="mt-2 font-mincho text-2xl text-ink">
+              {checks.length >= 100 && storiesLifted >= 10
+                ? "Phase 1 移行可"
+                : "Phase 0 継続"}
+            </p>
+            <p className="mt-1 text-[10px] text-sub-gray leading-[1.7]">
+              {checks.length >= 100 && storiesLifted >= 10
+                ? "docs/PHASE1_TRANSITION.md を参照"
+                : `あと Check ${Math.max(0, 100 - checks.length)} 件 / Stories ${Math.max(0, 10 - storiesLifted)} 件`}
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Recovery Stories — improvement-case loop (10件ゲート) */}
       <section className="mb-12">
         <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
