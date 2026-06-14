@@ -8,6 +8,7 @@ import {
   getTerritory,
 } from "@/lib/territories";
 import { getFeelingsForTerritory } from "@/lib/feelings";
+import { getQAForTerritory } from "@/lib/qa";
 import { site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -63,6 +64,7 @@ export default async function TerritoryPage({
   const otherTerritories = getAllTerritories().filter(
     (o) => o.slug !== t.slug
   );
+  const relatedQA = getQAForTerritory(t.slug).slice(0, 4);
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -207,8 +209,29 @@ export default async function TerritoryPage({
         </section>
       )}
 
-      {/* Internal links — related feelings (entry) + other causes */}
+      {/* Internal links — related feelings (entry) + Q&A + other causes */}
       <section className="mx-auto max-w-reading px-6 sm:px-10 py-12 border-t border-hair-line">
+        {relatedQA.length > 0 && (
+          <div className="mb-10">
+            <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
+              この領域に届いた問い
+            </p>
+            <ul className="space-y-3">
+              {relatedQA.map((q) => (
+                <li key={q.slug}>
+                  <Link
+                    href={`/qa/${q.slug}`}
+                    className="block font-mincho text-[14.5px] text-ink hover:text-gold transition-colors"
+                  >
+                    <span className="text-gold mr-2">Q.</span>
+                    {q.question}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {relatedFeelings.length > 0 && (
           <div className="mb-10">
             <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
