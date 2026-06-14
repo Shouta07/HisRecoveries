@@ -35,6 +35,12 @@ In short, thickness is close to a fixed setting from the start — not something
 - **"Thick body hair = excess male hormones"** — the difference in receptor sensitivity matters more.
 - **"It's thick because of poor hygiene"** — it is a matter of constitution, unrelated to cleanliness.
 
+## Japan vs. overseas — a difference in view
+
+There are large differences in body-hair density itself by ethnicity and genetics (people of European descent tend to have heavier body hair), and what counts as "thick" shifts by culture too.
+
+Norms around "groom or don't" also differ widely: in the West, manscaping (self-grooming) is fairly normal, while in Japan male hair removal has been normalizing rapidly only in the past few years. What's shared is that how far you go is a matter of culture and personal comfort, not medicine.
+
 ## A map of options
 
 Leaving it (as is) / shaving or trimming yourself / depilatory or hair-reduction care / medical or aesthetic hair removal (permanent removal is irreversible). You are free to choose by your own comfort rather than by social standards.

@@ -40,6 +40,12 @@ What matters is that this sensitivity is **concentrated at the front and top of 
 - **"More shedding = AGA right away"** — there is seasonal and stress-related shedding; the pattern by area is the clue.
 - **"Progression can't be slowed"** — by mechanism, means to slow it exist. The earlier, the more options.
 
+## Japan vs. overseas — a difference in view
+
+The pillars of treatment — finasteride and minoxidil — are the same worldwide. What differs is the culture of *where you begin*.
+
+In the US, starting easily via over-the-counter minoxidil or telehealth is well established. In Japan, the self-pay AGA clinic market is large, so "consulting = going to a clinic" tends to be the entry point. In both countries, because it is progressive, the principle holds: the earlier you act, the more options you have.
+
 ## A map of options
 
 Doing nothing (accepting it, keeping it short) / adjusting lifestyle and scalp environment / medical treatment (oral, topical) / hair transplant. Because timing matters here, "when to act" is as much the question as "what to choose."

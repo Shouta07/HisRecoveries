@@ -47,6 +47,12 @@ On a separate axis, age-related odor is mainly attributed to **nonenal**, formed
 - **Odor doesn't simply wash away.** The cause is bacterial breakdown, not the secretion itself, so washing alone tends to let it return.
 - **"Antiperspirant doesn't work" ≠ severe.** Ingredient, concentration, and timing change the result.
 
+## Japan vs. overseas — a difference in view
+
+Body-odor constitution differs by genetics. The gene that decides wet vs. dry earwax (ABCC11) means a higher proportion of East Asians have weaker apocrine odor, while it tends to be stronger among people of European and African descent.
+
+Partly for that reason, deodorant use is established as a near-necessity of daily life in the West, while in Japan the cultural pressure of "do I smell more than others?" tends to weigh heavier. Choosing a surgical response — as with "bromhidrosis surgery" — is more prominent in Japan and Korea than in the West. So even with the same sweat and odor, what counts as "the problem" differs by culture.
+
 ## A map of options (as layers, not steps)
 
 Doing nothing / lifestyle adjustments (absorbent fabrics, changing clothes) / over-the-counter antiperspirants (aluminium chloride, etc.) / topical and insured treatment at a dermatologist / out-of-pocket procedures such as botulinum toxin or microwave / surgery. The higher you go, the more irreversible and costly. You do not have to climb in order — choose by how much it affects your life.
