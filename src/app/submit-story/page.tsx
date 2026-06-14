@@ -24,9 +24,9 @@ export default function SubmitStoryPage() {
           回復体験を、共有する。
         </h1>
         <p className="mt-7 font-mincho text-sub-gray text-[0.9375rem] leading-[2] max-w-[34rem]">
-          かつてのあなたの記録が、
-          いま同じ場所にいる誰かの希望になります。
-          匿名でも、断片でも、構いません。
+          かつてのあなたの記録が、いま同じ場所にいる誰かの希望になります。
+          すっかり終わった話でなくて構いません。
+          回復の途中、ほんの少しの変化、断片でも。匿名でも構いません。
         </p>
       </header>
 
