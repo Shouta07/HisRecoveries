@@ -42,10 +42,12 @@ export default function HomePage() {
           <div className="mt-8 flex justify-center">
             <span aria-hidden className="block w-16 sm:w-24 h-px bg-gold-bright draw-in" />
           </div>
-          <p className="mt-9 font-mincho text-[1.5rem] sm:text-[2rem] lg:text-[2.75rem] leading-[1.45] text-cream tracking-[0.06em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
-            男性の回復を、
+          <p className="mt-9 font-mincho text-[1.35rem] sm:text-[1.85rem] lg:text-[2.5rem] leading-[1.55] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+            男性コンプレックスの
             <br className="sm:hidden" />
-            編集する。
+            <span className="text-gold-bright">「なんで？」</span>を解剖し、
+            <br />
+            背中を後押しするメディア。
           </p>
           <p className="mt-7 font-mincho italic text-[12.5px] sm:text-[14px] tracking-[0.22em] text-cream/65 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
             {site.promise}
