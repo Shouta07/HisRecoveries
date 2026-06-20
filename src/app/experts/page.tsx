@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NeutralBadge from "@/components/NeutralBadge";
 import NextStepBlock from "@/components/NextStepBlock";
 import MedicalDisclaimer from "@/components/MedicalDisclaimer";
 import { getAllExperts } from "@/lib/experts";
@@ -24,24 +23,18 @@ export default function ExpertsIndexPage() {
   return (
     <>
       <div className="mx-auto max-w-reading px-6 sm:px-10 pt-16 sm:pt-24 pb-12">
-        <header className="mb-12 sm:mb-16">
-          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-            Interviews — Experts
-          </p>
-          <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.3]">
-            男性活力を支える、
-            <br />
-            取材された専門家。
+        <header className="mb-14 sm:mb-20">
+          <h1 className="font-mincho text-3xl sm:text-5xl text-ink leading-[1.3] tracking-[0.01em]">
+            取材された、専門家。
           </h1>
-          <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-            医師・トレーナー・コーチ・カウンセラー・美容専門家。編集者が直接話を聞き、
-            「なぜこの仕事をしているか」「上手くいく人の共通点」を取材して載せています。
-            HR が推薦するのではなく、編集の基準に達した方だけを並べます。
-            紹介手数料はゼロ。連絡は本人へ直接お願いします。
+          <p className="mt-7 font-mincho text-[14.5px] sm:text-[15.5px] text-ink/80 leading-[2.05] max-w-[34rem]">
+            医師・トレーナー・コーチ・カウンセラー・美容専門家。
+            編集者が直接話を聞き、なぜこの仕事をしているか、上手くいく人の共通点を載せています。
+            連絡は本人へ直接お願いします。
           </p>
-          <div className="mt-6">
-            <NeutralBadge />
-          </div>
+          <p className="mt-4 text-[12px] tracking-[0.04em] text-sub-gray leading-[1.95]">
+            紹介手数料・広告費は受け取りません。掲載は買えません。
+          </p>
         </header>
 
         {items.length === 0 ? (

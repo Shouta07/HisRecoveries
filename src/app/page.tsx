@@ -4,11 +4,8 @@ import SectionLabel from "@/components/SectionLabel";
 import Reveal from "@/components/Reveal";
 import TrackedCTA from "@/components/TrackedCTA";
 import TagMarquee from "@/components/TagMarquee";
-import NeutralBadge from "@/components/NeutralBadge";
 import { getAllFeelings, TERRITORY_LABEL } from "@/lib/feelings";
 import { getAllRecoveries } from "@/lib/recoveries";
-import { getAllExperts } from "@/lib/experts";
-import { getAllServices } from "@/lib/services";
 import { site } from "@/lib/site";
 
 const chapterRomans = ["I", "II", "III", "IV"];
@@ -16,8 +13,6 @@ const chapterRomans = ["I", "II", "III", "IV"];
 export default function HomePage() {
   const feelings = getAllFeelings();
   const recoveries = getAllRecoveries().slice(0, 6);
-  const experts = getAllExperts().slice(0, 3);
-  const services = getAllServices().slice(0, 3);
   return (
     <>
       {/* ─────────────────────────────────────────
@@ -41,53 +36,20 @@ export default function HomePage() {
         />
 
         <div className="relative">
-          {/* WHAT — Japanese descriptor. The brand sign (Recover Your
-             Presence) lives below as English flavor; this is the line a
-             first-time visitor reads to know what the site is. */}
-          <p className="font-mincho text-[13.5px] sm:text-[15px] tracking-[0.25em] text-gold-bright drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
-            男性の回復を、編集する。
-          </p>
-          <h1 className="mt-5 logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-cream leading-[1] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+          <h1 className="logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-cream leading-[1] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
             {site.name}
           </h1>
-          <div className="mt-7 flex justify-center">
-            <span aria-hidden className="block w-14 sm:w-20 h-px bg-gold-bright draw-in" />
+          <div className="mt-8 flex justify-center">
+            <span aria-hidden className="block w-16 sm:w-24 h-px bg-gold-bright draw-in" />
           </div>
-          <p className="mt-6 font-mincho text-[1.15rem] sm:text-[1.65rem] lg:text-[2.25rem] leading-[1.4] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+          <p className="mt-9 font-mincho text-[1.5rem] sm:text-[2rem] lg:text-[2.75rem] leading-[1.45] text-cream tracking-[0.06em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+            男性の回復を、
+            <br className="sm:hidden" />
+            編集する。
+          </p>
+          <p className="mt-7 font-mincho italic text-[12.5px] sm:text-[14px] tracking-[0.22em] text-cream/65 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
             {site.promise}
           </p>
-          {/* HOW — one quiet line of plain Japanese, so the brand sign
-             above doesn't have to do all the explaining alone. */}
-          <p className="mt-6 font-mincho text-[12.5px] sm:text-[13.5px] leading-[1.95] text-cream/80 tracking-[0.04em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
-            前に進んだ男性たちに話を聞く、
-            <br className="sm:hidden" />
-            キュレーション × インタビュー・メディア。
-          </p>
-
-          {/* Quiet CTA strip — surfaces the editorial product (Interviews)
-             without breaking the cinematic mood. */}
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[12px] tracking-[0.16em]">
-            <Link
-              href="/recoveries"
-              className="text-cream border-b border-gold-bright pb-1 hover:text-gold-bright transition-colors"
-            >
-              実例を読む
-            </Link>
-            <span aria-hidden className="text-cream/30">·</span>
-            <Link
-              href="/interview"
-              className="text-cream/85 border-b border-cream/30 pb-1 hover:text-gold-bright hover:border-gold-bright transition-colors"
-            >
-              インタビューを受ける
-            </Link>
-            <span aria-hidden className="text-cream/30">·</span>
-            <Link
-              href="/partners"
-              className="text-cream/85 border-b border-cream/30 pb-1 hover:text-gold-bright hover:border-gold-bright transition-colors"
-            >
-              パートナーになる
-            </Link>
-          </div>
         </div>
 
         {/* Scroll cue */}
@@ -159,149 +121,109 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE III — Featured Interviews（実例・キュレーション）
-         HR は記事メディアではなく、取材メディア。Hero/Concept の直後に
-         実例を最大の面で見せる。当事者・専門家・サービスの3パネル。
+         SCENE III — Featured Recoveries（実例）
+         エディトリアル誌のような版面: 大きな番号 + 1枚目 featured +
+         残りの記録。ラベルで「インタビュー」と叫ばず、作品が並ぶことで
+         語らせる。
          ───────────────────────────────────────── */}
       <Reveal>
         <section
-          aria-labelledby="featured-interviews"
-          className="mx-auto max-w-[1200px] px-6 sm:px-10 py-20 sm:py-28"
+          aria-labelledby="featured-recoveries"
+          className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-36"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-14 items-end mb-10 sm:mb-14">
-            <SectionLabel
-              en="Interviews"
-              ja="前に進んだ男性たちに、話を聞く。"
-              number={chapterRomans[0]}
-            />
-            <p
-              id="featured-interviews"
-              className="font-mincho text-[14px] sm:text-[15px] text-ink/80 leading-[1.95] max-w-[34rem] lg:pb-2"
+          <header className="mb-14 sm:mb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end">
+            <h2
+              id="featured-recoveries"
+              className="font-mincho text-[1.8rem] sm:text-[2.6rem] lg:text-[3rem] text-ink leading-[1.35] tracking-[0.01em] max-w-[28rem]"
             >
-              悩み・行動・支援者・変化・現在を、当事者の言葉で取材します。
-              完了形ではなく、半歩進んだ時間の記録として。
+              前に進んだ
+              <br />
+              男性たちの、記録。
+            </h2>
+            <p className="font-mincho text-[12.5px] tracking-[0.18em] text-sub-gray uppercase lg:pb-3">
+              {recoveries.length > 0 ? `${recoveries.length} stories` : "coming soon"}
             </p>
-          </div>
+          </header>
 
           {recoveries.length > 0 ? (
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-              {recoveries.map((r) => (
-                <li key={r.slug}>
-                  <Link
-                    href={`/recoveries/${r.slug}`}
-                    className="group block h-full bg-paper border border-hair-line p-6 sm:p-7 hover:border-gold transition-colors card-lift"
+            <ul className="space-y-px">
+              {recoveries.map((r, i) => {
+                const isFeatured = i === 0;
+                return (
+                  <li
+                    key={r.slug}
+                    className="border-t border-hair-line last:border-b last:border-b-hair-line"
                   >
-                    <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                      <p className="logo-type italic text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-gold">
-                        {TERRITORY_LABEL[r.territory] ?? r.territory}
-                      </p>
-                      {r.span && (
-                        <p className="text-[11px] tracking-[0.06em] text-sub-gray">
-                          {r.span}
-                        </p>
-                      )}
-                    </div>
-                    <h3 className="mt-4 font-mincho text-[1.05rem] sm:text-[1.15rem] text-ink leading-[1.55] group-hover:text-gold transition-colors">
-                      {r.title}
-                    </h3>
-                    {r.asker?.context && (
-                      <p className="mt-4 font-mincho text-[13px] text-sub-gray leading-[1.95] line-clamp-3">
-                        — {r.asker.context}
-                      </p>
-                    )}
-                    <span className="mt-5 inline-flex text-[12px] tracking-[0.1em] text-sub-gray group-hover:text-gold transition-colors">
-                      話を聞く <span aria-hidden className="ml-1">→</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-
-              {/* Interview invitation card — always visible to keep the
-                 supply-side ask present even when recoveries are thin. */}
-              <li>
-                <Link
-                  href="/interview"
-                  className="group flex flex-col h-full border border-hair-line bg-navy text-cream p-6 sm:p-7 hover:border-gold-bright transition-colors card-lift"
-                >
-                  <p className="logo-type italic text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-gold-bright">
-                    Interview Invitation
-                  </p>
-                  <h3 className="mt-4 font-mincho text-[1.05rem] sm:text-[1.15rem] leading-[1.55]">
-                    あなたの「その後」を、編集者に話してみませんか。
-                  </h3>
-                  <p className="mt-4 font-mincho text-[13px] text-cream/75 leading-[1.95]">
-                    完了した話でなくて構いません。半歩進んだ時間の記録として、匿名で受け付けています。
-                  </p>
-                  <span className="mt-auto pt-5 inline-flex text-[12px] tracking-[0.1em] text-cream/80 group-hover:text-gold-bright transition-colors">
-                    インタビューを受ける <span aria-hidden className="ml-1">→</span>
-                  </span>
-                </Link>
-              </li>
+                    <Link
+                      href={`/recoveries/${r.slug}`}
+                      className="group grid grid-cols-[4.5rem_1fr_auto] sm:grid-cols-[6rem_1fr_auto] gap-4 sm:gap-10 items-baseline py-7 sm:py-9 hover:px-2 transition-all"
+                    >
+                      <span
+                        aria-hidden
+                        className="logo-type italic text-gold text-[2rem] sm:text-[3rem] leading-none tabular-nums"
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div>
+                        <div className="flex items-baseline gap-3 text-[10.5px] tracking-[0.18em] text-sub-gray uppercase">
+                          <span>{TERRITORY_LABEL[r.territory] ?? r.territory}</span>
+                          {r.span && (
+                            <>
+                              <span aria-hidden className="text-hair-line">/</span>
+                              <span>{r.span}</span>
+                            </>
+                          )}
+                        </div>
+                        <h3
+                          className={`mt-3 font-mincho text-ink leading-[1.5] tracking-[0.01em] group-hover:text-gold transition-colors ${
+                            isFeatured
+                              ? "text-[1.4rem] sm:text-[1.85rem]"
+                              : "text-[1.15rem] sm:text-[1.35rem]"
+                          }`}
+                        >
+                          {r.title}
+                        </h3>
+                        {r.asker?.context && (
+                          <p
+                            className={`mt-3 font-mincho text-sub-gray leading-[1.95] max-w-[34rem] ${
+                              isFeatured
+                                ? "text-[13.5px] sm:text-[14.5px]"
+                                : "text-[12.5px] sm:text-[13px] line-clamp-2"
+                            }`}
+                          >
+                            {r.asker.context}
+                          </p>
+                        )}
+                      </div>
+                      <span
+                        aria-hidden
+                        className="text-sub-gray group-hover:text-gold group-hover:translate-x-1 transition-all text-xl shrink-0 self-center"
+                      >
+                        →
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           ) : (
-            <div className="border border-hair-line bg-paper p-8 sm:p-10">
+            <div className="border-t border-b border-hair-line py-12">
               <p className="font-mincho text-[15px] text-ink leading-[2.05]">
-                最初のインタビューが、まだ公開されていません。
+                最初の記録が、まだ届いていません。
               </p>
-              <p className="mt-4 font-mincho text-[13.5px] text-sub-gray leading-[2.05]">
-                編集者が、最初の数本を準備しています。
-                あなた自身の「その後」を話してみたい方は、インタビュー応募からお願いします。
-              </p>
-              <div className="mt-6">
-                <Link
-                  href="/interview"
-                  className="btn-gold !py-3 !px-5 text-xs"
-                >
-                  インタビューを受ける →
-                </Link>
-              </div>
             </div>
           )}
 
-          {/* Curation hints — Experts + Services. Only show when at least
-             one exists; otherwise stay quiet and let interviews lead. */}
-          {(experts.length > 0 || services.length > 0) && (
-            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          {recoveries.length > 0 && (
+            <div className="mt-14 flex justify-end">
               <Link
-                href="/experts"
-                className="group block border border-hair-line bg-paper p-6 hover:border-gold transition-colors"
+                href="/recoveries"
+                className="logo-type italic text-[13px] tracking-[0.2em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors uppercase"
               >
-                <p className="logo-type italic text-[10px] tracking-[0.25em] uppercase text-gold">
-                  Interviews — Experts
-                </p>
-                <h3 className="mt-3 font-mincho text-[15px] text-ink leading-[1.55] group-hover:text-gold transition-colors">
-                  取材された専門家 {experts.length > 0 && `(${experts.length})`}
-                </h3>
-                <p className="mt-3 text-[12.5px] text-sub-gray leading-[1.95]">
-                  医師・トレーナー・コーチ・カウンセラー・美容専門家。HR が直接話を聞いた人だけ。
-                </p>
-              </Link>
-              <Link
-                href="/services"
-                className="group block border border-hair-line bg-paper p-6 hover:border-gold transition-colors"
-              >
-                <p className="logo-type italic text-[10px] tracking-[0.25em] uppercase text-gold">
-                  Curation — Services
-                </p>
-                <h3 className="mt-3 font-mincho text-[15px] text-ink leading-[1.55] group-hover:text-gold transition-colors">
-                  編集者の保証つきサービス {services.length > 0 && `(${services.length})`}
-                </h3>
-                <p className="mt-3 text-[12.5px] text-sub-gray leading-[1.95]">
-                  紹介手数料はゼロ。掲載は買えません。問い合わせは事業者へ直接。
-                </p>
+                See all stories <span aria-hidden>→</span>
               </Link>
             </div>
           )}
-
-          <div className="mt-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <NeutralBadge variant="subtle" />
-            <Link
-              href="/recoveries"
-              className="text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors self-start sm:self-auto"
-            >
-              すべての取材を見る <span aria-hidden>→</span>
-            </Link>
-          </div>
         </section>
       </Reveal>
 
