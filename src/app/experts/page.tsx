@@ -26,17 +26,18 @@ export default function ExpertsIndexPage() {
       <div className="mx-auto max-w-reading px-6 sm:px-10 pt-16 sm:pt-24 pb-12">
         <header className="mb-12 sm:mb-16">
           <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-            Experts
+            Interviews — Experts
           </p>
           <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.3]">
-            男性の沈黙を任せられる、
+            男性活力を支える、
             <br />
-            数少ない専門家。
+            取材された専門家。
           </h1>
           <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-            医師・トレーナー・コーチ・カウンセラー・美容専門家。
-            HR が推薦するのではなく、編集の基準に達した方だけを、ここに並べます。
-            紹介手数料は受け取りません。連絡は本人へ直接お願いしています。
+            医師・トレーナー・コーチ・カウンセラー・美容専門家。編集者が直接話を聞き、
+            「なぜこの仕事をしているか」「上手くいく人の共通点」を取材して載せています。
+            HR が推薦するのではなく、編集の基準に達した方だけを並べます。
+            紹介手数料はゼロ。連絡は本人へ直接お願いします。
           </p>
           <div className="mt-6">
             <NeutralBadge />

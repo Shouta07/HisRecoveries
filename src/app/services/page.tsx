@@ -25,14 +25,14 @@ export default function ServicesIndexPage() {
       <div className="mx-auto max-w-reading px-6 sm:px-10 pt-16 sm:pt-24 pb-12">
         <header className="mb-12 sm:mb-16">
           <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-            Services
+            Curation — Services
           </p>
           <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.3]">
             買えない、編集者の保証。
           </h1>
           <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-            HR が編集の目で保証する、男性活力市場のサービスのキュレーション。
-            紹介手数料は受け取りません。問い合わせは事業者へ直接お願いします。
+            男性活力市場のサービスを、編集者が選びます。AGA・メンズ美容・睡眠・ジム・コーチング。
+            掲載は買えません。紹介手数料はゼロ。問い合わせは事業者へ直接お願いします。
           </p>
           <div className="mt-6">
             <NeutralBadge />

@@ -79,7 +79,14 @@ export default function HomePage() {
               <p className="text-[1.55rem] sm:text-[2.4rem] lg:text-[2.85rem] leading-[1.7] tracking-[0.04em] text-cream/85 drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]">
                 His Recoveries は、
                 <br className="hidden sm:inline" />
-                その検索の先にある場所です。
+                前に進んだ男性の話を、編集する場所です。
+              </p>
+            </Reveal>
+            <Reveal delay={420}>
+              <p className="text-[1.05rem] sm:text-[1.3rem] leading-[1.95] tracking-[0.04em] text-cream/70 drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]">
+                男性活力（Male Vitality）を扱う、
+                <br className="hidden sm:inline" />
+                キュレーション × インタビュー・メディア。
               </p>
             </Reveal>
           </div>

@@ -53,15 +53,15 @@ export default function RecoveriesIndexPage() {
 
         <header className="mb-12 sm:mb-16">
           <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-            Recoveries
+            Interviews — Recoveries
           </p>
           <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.3]">
-            人生を前進させた、
+            前に進んだ男性たちに、
             <br />
-            男性たちの実例集。
+            話を聞いた記録。
           </h1>
           <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-            悩み・行動・変化・現在を、当事者の言葉で残しています。
+            悩み・行動・支援者・変化・現在を、編集者が当事者の声で取材します。
             匿名化のうえ、本人の同意で公開。完了形ではなく、半歩進んだ時間の記録として。
           </p>
           <div className="mt-6">
