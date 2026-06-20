@@ -48,19 +48,11 @@ export default function HomePage() {
             className="mt-9 font-mincho text-[1.5rem] sm:text-[2.1rem] lg:text-[2.8rem] leading-[1.55] text-cream tracking-[0.02em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)]"
             style={{ fontWeight: 700 }}
           >
-            男性コンプレックスの
-            <br className="sm:hidden" />
-            <span className="text-gold-bright">「なんで？」</span>を解剖し、
+            <span className="text-gold-bright">体の仕組み</span>で悩みを解き、
             <br />
-            背中を後押しするメディア。
+            次の一歩へ。
           </p>
-          <p
-            className="mt-8 font-mincho text-[12.5px] sm:text-[14.5px] tracking-[0.4em] uppercase text-cream/85 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]"
-            style={{ fontWeight: 600 }}
-          >
-            {site.promise}
-          </p>
-          <div className="mt-9">
+          <div className="mt-10">
             <Link
               href="/screen"
               className="inline-flex items-center gap-3 bg-gold-bright text-navy px-7 py-4 text-[13px] tracking-[0.16em] hover:bg-cream transition-colors"
