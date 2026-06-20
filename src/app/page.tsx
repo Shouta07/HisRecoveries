@@ -64,6 +64,15 @@ export default function HomePage() {
           >
             {site.promise}
           </p>
+          <div className="mt-9">
+            <Link
+              href="/screen"
+              className="inline-flex items-center gap-3 bg-gold-bright text-navy px-7 py-4 text-[13px] tracking-[0.16em] hover:bg-cream transition-colors"
+              style={{ fontWeight: 700 }}
+            >
+              3 分の軽診断を始める →
+            </Link>
+          </div>
         </div>
 
         {/* Scroll cue — solid SCROLL label, thicker rule */}
