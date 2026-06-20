@@ -6,28 +6,8 @@ export default function Footer() {
 
   return (
     <footer className="mt-20 sm:mt-32 bg-cream-deep text-ink border-t border-hair-line">
-      <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-12 sm:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-7 gap-x-8 text-sm">
-          <Column label="お品書き">
-            <FLink href="/recoveries">実例（Recoveries）</FLink>
-            <FLink href="/experts">専門家</FLink>
-            <FLink href="/services">サービス</FLink>
-            <FLink href="/check">Recovery Check（無料）</FLink>
-            <FLink href="/membership">Recoveries Letter（月500円）</FLink>
-          </Column>
-
-          <Column label="読みもの・つながる">
-            <FLink href="/map">男性活力市場マップ</FLink>
-            <FLink href="/territories">原因を読む</FLink>
-            <FLink href="/qa">Recovery Q&amp;A</FLink>
-            <FLink href="/interview">インタビューを受ける</FLink>
-            <FLink href="/partners">パートナーになる</FLink>
-            <FExt href={site.social.threads}>Threads</FExt>
-            <FExt href={site.social.substack}>Substack</FExt>
-          </Column>
-        </div>
-
-        <div className="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-hair-line flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+      <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-10 sm:py-14">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <p className="logo-type text-2xl text-ink">{site.name}</p>
             <p className="mt-1 font-mincho text-xs text-sub-gray">
@@ -56,47 +36,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
-}
-
-function Column({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold mb-4">
-        {label}
-      </p>
-      <ul className="space-y-2.5 text-[13px] text-ink/80">{children}</ul>
-    </div>
-  );
-}
-
-function FLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <li>
-      <Link href={href} className="hover:text-gold transition-colors">
-        {children}
-      </Link>
-    </li>
-  );
-}
-
-function FExt({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <li>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:text-gold transition-colors"
-      >
-        {children}
-      </a>
-    </li>
   );
 }

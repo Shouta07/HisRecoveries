@@ -2,13 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import TagMarquee from "@/components/TagMarquee";
-import { getAllFeelings, TERRITORY_LABEL } from "@/lib/feelings";
-import { getAllRecoveries } from "@/lib/recoveries";
-import { site } from "@/lib/site";
+import { getAllFeelings } from "@/lib/feelings";
+import { getAllArticles } from "@/lib/articles";
+import { categoryLabel, site } from "@/lib/site";
 
 export default function HomePage() {
   const feelings = getAllFeelings();
-  const recoveries = getAllRecoveries().slice(0, 6);
+  const curatedReads = getAllArticles().slice(0, 6);
   return (
     <>
       {/* ─────────────────────────────────────────
@@ -135,45 +135,45 @@ export default function HomePage() {
       />
 
       {/* ─────────────────────────────────────────
-         SCENE III — Featured Recoveries（実例）
-         エディトリアル誌のような版面: 大きな番号 + 1枚目 featured +
-         残りの記録。ラベルで「インタビュー」と叫ばず、作品が並ぶことで
-         語らせる。
+         SCENE III — キュレーション・メディア（編集の解剖記事）
+         「体の仕組みで悩みを解く」を体現する解説記事を、Hero 直後の
+         最初の意味のあるブロックに置く。番号 + 大見出し + 長めの excerpt
+         のエディトリアル列。
          ───────────────────────────────────────── */}
       <Reveal>
         <section
-          aria-labelledby="featured-recoveries"
+          aria-labelledby="curated-reads"
           className="mx-auto max-w-[1200px] px-6 sm:px-10 py-24 sm:py-36"
         >
           <header className="mb-14 sm:mb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end">
             <h2
-              id="featured-recoveries"
-              className="font-mincho text-[2rem] sm:text-[2.85rem] lg:text-[3.3rem] text-ink leading-[1.3] tracking-[-0.005em] max-w-[28rem]"
+              id="curated-reads"
+              className="font-mincho text-[2rem] sm:text-[2.85rem] lg:text-[3.3rem] text-ink leading-[1.3] tracking-[-0.005em] max-w-[32rem]"
               style={{ fontWeight: 700 }}
             >
-              前に進んだ
+              体の仕組みから、
               <br />
-              男性たちの、記録。
+              悩みを解剖する。
             </h2>
             <p
               className="font-mincho text-[12.5px] tracking-[0.22em] text-sub-gray uppercase lg:pb-3"
               style={{ fontWeight: 600 }}
             >
-              {recoveries.length > 0 ? `${recoveries.length} stories` : "coming soon"}
+              {curatedReads.length > 0 ? `${curatedReads.length} readings` : "coming soon"}
             </p>
           </header>
 
-          {recoveries.length > 0 ? (
+          {curatedReads.length > 0 ? (
             <ul className="space-y-px">
-              {recoveries.map((r, i) => {
+              {curatedReads.map((a, i) => {
                 const isFeatured = i === 0;
                 return (
                   <li
-                    key={r.slug}
+                    key={a.slug}
                     className="border-t-2 border-ink/15 last:border-b-2 last:border-b-ink/15"
                   >
                     <Link
-                      href={`/recoveries/${r.slug}`}
+                      href={`/articles/${a.slug}`}
                       className="group grid grid-cols-[5rem_1fr_auto] sm:grid-cols-[7rem_1fr_auto] gap-4 sm:gap-10 items-baseline py-8 sm:py-10 hover:px-2 transition-all"
                     >
                       <span
@@ -188,13 +188,9 @@ export default function HomePage() {
                           className="flex items-baseline gap-3 text-[10.5px] tracking-[0.22em] text-sub-gray uppercase"
                           style={{ fontWeight: 600 }}
                         >
-                          <span>{TERRITORY_LABEL[r.territory] ?? r.territory}</span>
-                          {r.span && (
-                            <>
-                              <span aria-hidden className="text-hair-line">/</span>
-                              <span>{r.span}</span>
-                            </>
-                          )}
+                          <span>{categoryLabel(a.category)}</span>
+                          <span aria-hidden className="text-hair-line">/</span>
+                          <span>{a.readingMinutes} min read</span>
                         </div>
                         <h3
                           className={`mt-3 font-mincho text-ink leading-[1.4] tracking-[-0.005em] group-hover:text-gold transition-colors ${
@@ -204,17 +200,17 @@ export default function HomePage() {
                           }`}
                           style={{ fontWeight: isFeatured ? 700 : 600 }}
                         >
-                          {r.title}
+                          {a.title}
                         </h3>
-                        {r.asker?.context && (
+                        {a.excerpt && (
                           <p
-                            className={`mt-3 font-mincho text-sub-gray leading-[1.95] max-w-[34rem] ${
+                            className={`mt-3 font-mincho text-sub-gray leading-[1.95] max-w-[42rem] ${
                               isFeatured
-                                ? "text-[13.5px] sm:text-[14.5px]"
+                                ? "text-[13.5px] sm:text-[14.5px] line-clamp-3"
                                 : "text-[12.5px] sm:text-[13px] line-clamp-2"
                             }`}
                           >
-                            {r.asker.context}
+                            {a.excerpt}
                           </p>
                         )}
                       </div>
@@ -232,18 +228,18 @@ export default function HomePage() {
           ) : (
             <div className="border-t border-b border-hair-line py-12">
               <p className="font-mincho text-[15px] text-ink leading-[2.05]">
-                最初の記録が、まだ届いていません。
+                最初の解剖記事を、編集中です。
               </p>
             </div>
           )}
 
-          {recoveries.length > 0 && (
+          {curatedReads.length > 0 && (
             <div className="mt-14 flex justify-end">
               <Link
-                href="/recoveries"
+                href="/articles"
                 className="logo-type italic text-[13px] tracking-[0.2em] text-ink border-b border-gold pb-1 hover:text-gold transition-colors uppercase"
               >
-                See all stories <span aria-hidden>→</span>
+                See all readings <span aria-hidden>→</span>
               </Link>
             </div>
           )}
