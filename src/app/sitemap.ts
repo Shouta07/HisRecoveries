@@ -8,6 +8,7 @@ import { getAllQASlugs } from "@/lib/qa";
 import { getAllRecoverySlugs, getAllTagsByKind } from "@/lib/recoveries";
 import { getAllExpertSlugs } from "@/lib/experts";
 import { getAllServiceSlugs } from "@/lib/services";
+import { getAllScreenings } from "@/lib/screenings";
 import { categories, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -29,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/concierge",
     "/territories",
     "/concerns",
+    "/screen",
     "/check",
     "/membership",
     "/network",
@@ -135,6 +137,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
+  const screenPaths: MetadataRoute.Sitemap = getAllScreenings().map((s) => ({
+    url: `${site.url}/screen/${s.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
   // English (core) mirror.
   const enStatic: MetadataRoute.Sitemap = [
     "/en/territories",
@@ -178,6 +187,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...tagPaths,
     ...expertPaths,
     ...servicePaths,
+    ...screenPaths,
     ...enStatic,
     ...enTerritoryPaths,
     ...enFeelingPaths,

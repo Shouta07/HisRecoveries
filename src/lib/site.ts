@@ -17,6 +17,13 @@ export const site = {
     note: "https://note.com/his_recoveries",
     substack: "https://hisrecoveries.substack.com",
   },
+  // LINE は SaaS モード（LINE Login + LIFF + 詳細診断）の入口。
+  // addFriendUrl が空の間は、UI は「準備中」表示になる（壊れない）。
+  // 値が入った瞬間に Hero / Screen result / Letter から自動で出る。
+  line: {
+    addFriendUrl: process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ?? "",
+    liffUrl: process.env.NEXT_PUBLIC_LINE_LIFF_URL ?? "",
+  },
   locale: "ja_JP",
   language: "ja",
   region: "JP",
