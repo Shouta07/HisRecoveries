@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NeutralBadge from "@/components/NeutralBadge";
 import NextStepBlock from "@/components/NextStepBlock";
 import MedicalDisclaimer from "@/components/MedicalDisclaimer";
 import { getAllRecoveries } from "@/lib/recoveries";
@@ -51,22 +50,14 @@ export default function RecoveriesIndexPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
         />
 
-        <header className="mb-12 sm:mb-16">
-          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-            Interviews — Recoveries
-          </p>
-          <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.3]">
-            前に進んだ男性たちに、
-            <br />
-            話を聞いた記録。
+        <header className="mb-14 sm:mb-20">
+          <h1 className="font-mincho text-3xl sm:text-5xl text-ink leading-[1.3] tracking-[0.01em]">
+            前に進んだ男性たちの、記録。
           </h1>
-          <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-            悩み・行動・支援者・変化・現在を、編集者が当事者の声で取材します。
-            匿名化のうえ、本人の同意で公開。完了形ではなく、半歩進んだ時間の記録として。
+          <p className="mt-7 font-mincho text-[14.5px] sm:text-[15.5px] text-ink/80 leading-[2.05] max-w-[34rem]">
+            悩み・行動・支援者・変化・現在を、当事者の言葉で残しています。
+            匿名化のうえ、本人の同意で公開。半歩進んだ時間の記録として。
           </p>
-          <div className="mt-6">
-            <NeutralBadge />
-          </div>
         </header>
 
         {items.length === 0 ? (

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NeutralBadge from "@/components/NeutralBadge";
 import NextStepBlock from "@/components/NextStepBlock";
 import MedicalDisclaimer from "@/components/MedicalDisclaimer";
 import { getAllServices } from "@/lib/services";
@@ -23,20 +22,17 @@ export default function ServicesIndexPage() {
   return (
     <>
       <div className="mx-auto max-w-reading px-6 sm:px-10 pt-16 sm:pt-24 pb-12">
-        <header className="mb-12 sm:mb-16">
-          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-            Curation — Services
-          </p>
-          <h1 className="mt-5 font-mincho text-3xl sm:text-5xl text-ink leading-[1.3]">
-            買えない、編集者の保証。
+        <header className="mb-14 sm:mb-20">
+          <h1 className="font-mincho text-3xl sm:text-5xl text-ink leading-[1.3] tracking-[0.01em]">
+            選び抜いた、サービス。
           </h1>
-          <p className="mt-7 font-mincho text-[15px] sm:text-base text-ink/85 leading-[2.05]">
-            男性活力市場のサービスを、編集者が選びます。AGA・メンズ美容・睡眠・ジム・コーチング。
-            掲載は買えません。紹介手数料はゼロ。問い合わせは事業者へ直接お願いします。
+          <p className="mt-7 font-mincho text-[14.5px] sm:text-[15.5px] text-ink/80 leading-[2.05] max-w-[34rem]">
+            AGA・メンズ美容・睡眠・ジム・コーチング。
+            編集者が選び、外部直リンクで紹介します。問い合わせは事業者へ直接お願いします。
           </p>
-          <div className="mt-6">
-            <NeutralBadge />
-          </div>
+          <p className="mt-4 text-[12px] tracking-[0.04em] text-sub-gray leading-[1.95]">
+            掲載は買えません。紹介手数料・広告費は受け取りません。
+          </p>
         </header>
 
         {items.length === 0 ? (
