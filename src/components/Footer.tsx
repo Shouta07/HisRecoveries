@@ -9,15 +9,19 @@ export default function Footer() {
       <div className="mx-auto max-w-[1200px] px-6 sm:px-10 py-12 sm:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-7 gap-x-8 text-sm">
           <Column label="お品書き">
+            <FLink href="/recoveries">実例（Recoveries）</FLink>
+            <FLink href="/experts">専門家</FLink>
+            <FLink href="/services">サービス</FLink>
             <FLink href="/check">Recovery Check（無料）</FLink>
-            <FLink href="/stories">Recovery Stories（無料）</FLink>
             <FLink href="/membership">Recoveries Letter（月500円）</FLink>
           </Column>
 
           <Column label="読みもの・つながる">
+            <FLink href="/map">男性活力市場マップ</FLink>
             <FLink href="/territories">原因を読む</FLink>
             <FLink href="/qa">Recovery Q&amp;A</FLink>
-            <FLink href="/articles">記録</FLink>
+            <FLink href="/interview">インタビューを受ける</FLink>
+            <FLink href="/partners">パートナーになる</FLink>
             <FExt href={site.social.threads}>Threads</FExt>
             <FExt href={site.social.substack}>Substack</FExt>
           </Column>
