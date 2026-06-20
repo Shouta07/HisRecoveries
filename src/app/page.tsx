@@ -36,32 +36,47 @@ export default function HomePage() {
         />
 
         <div className="relative">
-          <h1 className="logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-cream leading-[1] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+          <h1
+            className="logo-type text-[3rem] sm:text-[5.5rem] lg:text-[7rem] text-cream leading-[0.95] tracking-[-0.01em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)]"
+            style={{ fontWeight: 600 }}
+          >
             {site.name}
           </h1>
-          <div className="mt-8 flex justify-center">
-            <span aria-hidden className="block w-16 sm:w-24 h-px bg-gold-bright draw-in" />
+          <div className="mt-9 flex justify-center">
+            <span
+              aria-hidden
+              className="block w-20 sm:w-28 h-[3px] bg-gold-bright draw-in"
+            />
           </div>
-          <p className="mt-9 font-mincho text-[1.35rem] sm:text-[1.85rem] lg:text-[2.5rem] leading-[1.55] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+          <p
+            className="mt-9 font-mincho text-[1.5rem] sm:text-[2.1rem] lg:text-[2.8rem] leading-[1.55] text-cream tracking-[0.02em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)]"
+            style={{ fontWeight: 700 }}
+          >
             男性コンプレックスの
             <br className="sm:hidden" />
             <span className="text-gold-bright">「なんで？」</span>を解剖し、
             <br />
             背中を後押しするメディア。
           </p>
-          <p className="mt-7 font-mincho italic text-[12.5px] sm:text-[14px] tracking-[0.22em] text-cream/65 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+          <p
+            className="mt-8 font-mincho text-[12.5px] sm:text-[14.5px] tracking-[0.4em] uppercase text-cream/85 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]"
+            style={{ fontWeight: 600 }}
+          >
             {site.promise}
           </p>
         </div>
 
-        {/* Scroll cue */}
+        {/* Scroll cue — solid SCROLL label, thicker rule */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-cream/60">
+          <span
+            className="font-mincho text-[10.5px] tracking-[0.45em] uppercase text-cream/80"
+            style={{ fontWeight: 600 }}
+          >
             Scroll
           </span>
           <span
             aria-hidden
-            className="block w-px h-10 bg-gradient-to-b from-gold-bright to-transparent soft-float"
+            className="block w-[2px] h-10 bg-gradient-to-b from-gold-bright to-transparent soft-float"
           />
         </div>
       </section>
@@ -136,13 +151,17 @@ export default function HomePage() {
           <header className="mb-14 sm:mb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end">
             <h2
               id="featured-recoveries"
-              className="font-mincho text-[1.8rem] sm:text-[2.6rem] lg:text-[3rem] text-ink leading-[1.35] tracking-[0.01em] max-w-[28rem]"
+              className="font-mincho text-[2rem] sm:text-[2.85rem] lg:text-[3.3rem] text-ink leading-[1.3] tracking-[-0.005em] max-w-[28rem]"
+              style={{ fontWeight: 700 }}
             >
               前に進んだ
               <br />
               男性たちの、記録。
             </h2>
-            <p className="font-mincho text-[12.5px] tracking-[0.18em] text-sub-gray uppercase lg:pb-3">
+            <p
+              className="font-mincho text-[12.5px] tracking-[0.22em] text-sub-gray uppercase lg:pb-3"
+              style={{ fontWeight: 600 }}
+            >
               {recoveries.length > 0 ? `${recoveries.length} stories` : "coming soon"}
             </p>
           </header>
@@ -154,20 +173,24 @@ export default function HomePage() {
                 return (
                   <li
                     key={r.slug}
-                    className="border-t border-hair-line last:border-b last:border-b-hair-line"
+                    className="border-t-2 border-ink/15 last:border-b-2 last:border-b-ink/15"
                   >
                     <Link
                       href={`/recoveries/${r.slug}`}
-                      className="group grid grid-cols-[4.5rem_1fr_auto] sm:grid-cols-[6rem_1fr_auto] gap-4 sm:gap-10 items-baseline py-7 sm:py-9 hover:px-2 transition-all"
+                      className="group grid grid-cols-[5rem_1fr_auto] sm:grid-cols-[7rem_1fr_auto] gap-4 sm:gap-10 items-baseline py-8 sm:py-10 hover:px-2 transition-all"
                     >
                       <span
                         aria-hidden
-                        className="logo-type italic text-gold text-[2rem] sm:text-[3rem] leading-none tabular-nums"
+                        className="logo-type text-gold text-[2.5rem] sm:text-[3.75rem] leading-none tabular-nums"
+                        style={{ fontWeight: 600 }}
                       >
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       <div>
-                        <div className="flex items-baseline gap-3 text-[10.5px] tracking-[0.18em] text-sub-gray uppercase">
+                        <div
+                          className="flex items-baseline gap-3 text-[10.5px] tracking-[0.22em] text-sub-gray uppercase"
+                          style={{ fontWeight: 600 }}
+                        >
                           <span>{TERRITORY_LABEL[r.territory] ?? r.territory}</span>
                           {r.span && (
                             <>
@@ -177,11 +200,12 @@ export default function HomePage() {
                           )}
                         </div>
                         <h3
-                          className={`mt-3 font-mincho text-ink leading-[1.5] tracking-[0.01em] group-hover:text-gold transition-colors ${
+                          className={`mt-3 font-mincho text-ink leading-[1.4] tracking-[-0.005em] group-hover:text-gold transition-colors ${
                             isFeatured
-                              ? "text-[1.4rem] sm:text-[1.85rem]"
-                              : "text-[1.15rem] sm:text-[1.35rem]"
+                              ? "text-[1.55rem] sm:text-[2.05rem]"
+                              : "text-[1.25rem] sm:text-[1.5rem]"
                           }`}
+                          style={{ fontWeight: isFeatured ? 700 : 600 }}
                         >
                           {r.title}
                         </h3>
