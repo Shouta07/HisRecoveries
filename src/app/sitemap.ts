@@ -5,7 +5,9 @@ import { getAllTerritories } from "@/lib/territories";
 import { getAllConcerns } from "@/lib/concerns";
 import { getAllFeelingSlugs } from "@/lib/feelings";
 import { getAllQASlugs } from "@/lib/qa";
-import { getAllStorySlugs } from "@/lib/stories";
+import { getAllRecoverySlugs, getAllTagsByKind } from "@/lib/recoveries";
+import { getAllExpertSlugs } from "@/lib/experts";
+import { getAllServiceSlugs } from "@/lib/services";
 import { categories, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -15,6 +17,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/en",
     "/recoveries",
+    "/experts",
+    "/services",
+    "/map",
+    "/interview",
     "/about",
     "/manifesto",
     "/founder",
@@ -28,10 +34,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/network",
     "/reflect",
     "/assessment",
-    "/stories",
     "/submit-story",
     "/subscribe",
     "/privacy",
+    // /stories は /recoveries に 301 リダイレクトされるためインデックスから除外
   ].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: now,
@@ -94,11 +100,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const storyPaths: MetadataRoute.Sitemap = getAllStorySlugs().map((slug) => ({
-    url: `${site.url}/stories/${slug}`,
+  const recoveryPaths: MetadataRoute.Sitemap = getAllRecoverySlugs().map(
+    (slug) => ({
+      url: `${site.url}/recoveries/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    })
+  );
+
+  const tagsByKind = getAllTagsByKind();
+  const tagPaths: MetadataRoute.Sitemap = [
+    ...tagsByKind.concern.map((tag) => ({ kind: "concern", tag })),
+    ...tagsByKind.action.map((tag) => ({ kind: "action", tag })),
+    ...tagsByKind.outcome.map((tag) => ({ kind: "outcome", tag })),
+  ].map(({ kind, tag }) => ({
+    url: `${site.url}/recoveries/by-tag/${kind}/${encodeURIComponent(tag)}`,
     lastModified: now,
     changeFrequency: "monthly",
-    priority: 0.8,
+    priority: 0.55,
+  }));
+
+  const expertPaths: MetadataRoute.Sitemap = getAllExpertSlugs().map((slug) => ({
+    url: `${site.url}/experts/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
+
+  const servicePaths: MetadataRoute.Sitemap = getAllServiceSlugs().map((slug) => ({
+    url: `${site.url}/services/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.75,
   }));
 
   // English (core) mirror.
@@ -140,7 +174,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...feelingPaths,
     ...qaIndex,
     ...qaPaths,
-    ...storyPaths,
+    ...recoveryPaths,
+    ...tagPaths,
+    ...expertPaths,
+    ...servicePaths,
     ...enStatic,
     ...enTerritoryPaths,
     ...enFeelingPaths,

@@ -6,14 +6,20 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
+  { href: "/recoveries", label: "実例", ja: "人生を前進させた男性たち" },
+  { href: "/experts", label: "専門家", ja: "数少ない専門家" },
+  { href: "/services", label: "サービス", ja: "編集者の保証" },
   { href: "/check", label: "Recovery Check", ja: "今の状態を理解する" },
-  { href: "/stories", label: "Recovery Stories", ja: "回復の記録を読む" },
-  { href: "/membership", label: "Recoveries Letter", ja: "週に一度の手紙" },
 ];
 
 const secondary = [
+  { href: "/map", label: "男性活力市場マップ" },
   { href: "/territories", label: "原因を読む — なぜ起こるのか" },
-  { href: "/articles", label: "記録 — Journal" },
+  { href: "/qa", label: "Recovery Q&A — 静かな問いと観察" },
+  { href: "/membership", label: "Recoveries Letter — 週に一度の手紙" },
+  { href: "/interview", label: "インタビューを受ける" },
+  { href: "/partners", label: "パートナーになる" },
+  { href: "/articles", label: "記録 — Journal（アーカイブ）" },
 ];
 
 // Sections that exist in both languages, so the switch can land on the
