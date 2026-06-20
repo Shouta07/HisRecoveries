@@ -19,74 +19,110 @@ export default function HomePage() {
          SCENE I — Hero
          Cinematic background, type only. One statement.
          ───────────────────────────────────────── */}
-      <section className="relative min-h-[86vh] flex flex-col items-center justify-center text-center px-6 sm:px-10 bg-navy overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/cityscape-dawn.png"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center opacity-90"
-          />
-        </div>
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/45 to-black/70"
-        />
-
-        <div className="relative">
-          <h1
-            className="logo-type text-[3rem] sm:text-[5.5rem] lg:text-[7rem] text-cream leading-[0.95] tracking-[-0.01em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)]"
-            style={{ fontWeight: 600 }}
-          >
-            {site.name}
-          </h1>
-          <div className="mt-9 flex justify-center">
-            <span
-              aria-hidden
-              className="block w-20 sm:w-28 h-[3px] bg-gold-bright draw-in"
-            />
+      <section
+        className="relative min-h-[92vh] flex flex-col bg-cream overflow-hidden"
+        style={{
+          // 編集誌のカバーらしい紙の質感。実画像ではなく CSS グラデで擬似的に。
+          backgroundImage:
+            "radial-gradient(circle at 20% 0%, rgba(199,154,75,0.08), transparent 55%), radial-gradient(circle at 100% 100%, rgba(28,34,48,0.06), transparent 50%)",
+        }}
+      >
+        {/* Top masthead bar — Monocle-ish issue mark */}
+        <div className="border-b-2 border-ink/90">
+          <div className="mx-auto max-w-[1300px] px-6 sm:px-10 py-3 flex items-center justify-between text-[11px] tracking-[0.18em] uppercase text-ink"
+               style={{ fontWeight: 700 }}>
+            <span>Vol. 01 — Standing Issue</span>
+            <span className="hidden sm:inline">男性コンプレックス回復のための、編集メディア</span>
+            <span>JP / 2026</span>
           </div>
-          <p
-            className="mt-9 font-mincho text-[1.5rem] sm:text-[2.1rem] lg:text-[2.8rem] leading-[1.55] text-cream tracking-[0.02em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)]"
-            style={{ fontWeight: 700 }}
-          >
-            男性コンプレックスの
-            <br className="sm:hidden" />
-            <span className="text-gold-bright">「なんで？」</span>を解剖し、
-            <br />
-            背中を後押しするメディア。
-          </p>
-          <p
-            className="mt-8 font-mincho text-[12.5px] sm:text-[14.5px] tracking-[0.4em] uppercase text-cream/85 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]"
-            style={{ fontWeight: 600 }}
-          >
-            {site.promise}
-          </p>
-          <div className="mt-9">
-            <Link
-              href="/screen"
-              className="inline-flex items-center gap-3 bg-gold-bright text-navy px-7 py-4 text-[13px] tracking-[0.16em] hover:bg-cream transition-colors"
+        </div>
+
+        {/* The cover */}
+        <div className="flex-1 grid grid-cols-12 gap-x-6 sm:gap-x-10 gap-y-10 mx-auto w-full max-w-[1300px] px-6 sm:px-10 py-10 sm:py-16 lg:py-20">
+          {/* Left column — masthead + statement + CTA */}
+          <div className="col-span-12 lg:col-span-7 flex flex-col">
+            <h1
+              className="logo-type text-[3.2rem] sm:text-[5rem] lg:text-[6.5rem] text-ink leading-[0.92] tracking-[-0.015em]"
+              style={{ fontWeight: 600 }}
+            >
+              His
+              <br />
+              Recoveries
+            </h1>
+            <p
+              className="mt-8 font-mincho text-[11px] tracking-[0.4em] uppercase text-ink/60"
+              style={{ fontWeight: 600 }}
+            >
+              {site.promise}
+            </p>
+
+            <p
+              className="mt-12 sm:mt-16 font-mincho text-[1.55rem] sm:text-[1.85rem] lg:text-[2.25rem] leading-[1.5] text-ink tracking-[-0.005em] max-w-[28rem]"
               style={{ fontWeight: 700 }}
             >
-              3 分の軽診断を始める →
-            </Link>
+              男性コンプレックスの
+              <br className="sm:hidden" />
+              「なんで？」を解剖し、
+              <br />
+              背中を後押しするメディア。
+            </p>
+
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <Link
+                href="/screen"
+                className="inline-flex items-center gap-3 bg-ink text-cream px-7 py-4 text-[13px] tracking-[0.14em] hover:bg-gold transition-colors"
+                style={{ fontWeight: 700 }}
+              >
+                3 分の軽診断を始める →
+              </Link>
+              <Link
+                href="/recoveries"
+                className="text-[13px] tracking-[0.14em] text-ink border-b-2 border-ink hover:text-gold hover:border-gold transition-colors pb-1"
+                style={{ fontWeight: 700 }}
+              >
+                取材された実例を読む
+              </Link>
+            </div>
+          </div>
+
+          {/* Right column — giant "なんで？" as the cover's signature graphic */}
+          <div className="col-span-12 lg:col-span-5 relative flex items-end lg:items-center justify-end">
+            <div className="relative">
+              <p
+                aria-hidden
+                className="font-mincho text-[10rem] sm:text-[16rem] lg:text-[20rem] leading-[0.85] text-gold tracking-[-0.04em] select-none"
+                style={{ fontWeight: 800 }}
+              >
+                何で？
+              </p>
+              <p
+                className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 font-mincho text-[10px] sm:text-[12px] tracking-[0.25em] uppercase text-ink/70"
+                style={{ fontWeight: 600 }}
+              >
+                The First Question
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Scroll cue — solid SCROLL label, thicker rule */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span
-            className="font-mincho text-[10.5px] tracking-[0.45em] uppercase text-cream/80"
-            style={{ fontWeight: 600 }}
-          >
-            Scroll
-          </span>
-          <span
-            aria-hidden
-            className="block w-[2px] h-10 bg-gradient-to-b from-gold-bright to-transparent soft-float"
-          />
+        {/* Bottom contents bar — magazine-cover style */}
+        <div className="border-t-2 border-ink/90 bg-cream-deep">
+          <div className="mx-auto max-w-[1300px] px-6 sm:px-10 py-4 flex flex-wrap items-baseline gap-x-8 gap-y-2 text-[11px] tracking-[0.16em] uppercase text-ink"
+               style={{ fontWeight: 700 }}>
+            <span className="text-gold">Inside</span>
+            <Link href="/recoveries" className="hover:text-gold transition-colors">
+              01 — 前に進んだ男性たちの、記録
+            </Link>
+            <Link href="/territories" className="hover:text-gold transition-colors">
+              02 — 原因を読む
+            </Link>
+            <Link href="/screen" className="hover:text-gold transition-colors">
+              03 — 3 分の軽診断
+            </Link>
+            <Link href="/membership" className="hover:text-gold transition-colors">
+              04 — 日曜日の手紙
+            </Link>
+          </div>
         </div>
       </section>
 
