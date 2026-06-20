@@ -41,17 +41,27 @@ export default function HomePage() {
         />
 
         <div className="relative">
-          <p className="logo-type italic text-[12.5px] sm:text-[13px] tracking-[0.5em] uppercase text-gold-bright drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
-            {site.tagline}
+          {/* WHAT — Japanese descriptor. The brand sign (Recover Your
+             Presence) lives below as English flavor; this is the line a
+             first-time visitor reads to know what the site is. */}
+          <p className="font-mincho text-[13.5px] sm:text-[15px] tracking-[0.25em] text-gold-bright drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
+            男性の回復を、編集する。
           </p>
-          <h1 className="mt-6 logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-cream leading-[1] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+          <h1 className="mt-5 logo-type text-[2.8rem] sm:text-7xl lg:text-[6.5rem] text-cream leading-[1] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
             {site.name}
           </h1>
-          <div className="mt-8 flex justify-center">
+          <div className="mt-7 flex justify-center">
             <span aria-hidden className="block w-14 sm:w-20 h-px bg-gold-bright draw-in" />
           </div>
-          <p className="mt-7 font-mincho text-[1.15rem] sm:text-[1.65rem] lg:text-[2.25rem] leading-[1.4] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
+          <p className="mt-6 font-mincho text-[1.15rem] sm:text-[1.65rem] lg:text-[2.25rem] leading-[1.4] text-cream tracking-[0.04em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
             {site.promise}
+          </p>
+          {/* HOW — one quiet line of plain Japanese, so the brand sign
+             above doesn't have to do all the explaining alone. */}
+          <p className="mt-6 font-mincho text-[12.5px] sm:text-[13.5px] leading-[1.95] text-cream/80 tracking-[0.04em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+            前に進んだ男性たちに話を聞く、
+            <br className="sm:hidden" />
+            キュレーション × インタビュー・メディア。
           </p>
 
           {/* Quiet CTA strip — surfaces the editorial product (Interviews)
