@@ -10,7 +10,7 @@ export const site = {
   authorBio:
     "多汗症、ワキガ、ニキビ跡、顔の自意識を、当事者として実際に通過した日本人男性が運営するエディトリアル・メディア。20 代前半から多汗症の外用治療と脇のボトックスを継続、20 代後半にワキガの手術、ニキビ跡の美容皮膚科に 6 年。実名・顔・実年齢は非公開で運営しています。",
   handle: "@his_recoveries",
-  email: "shota@vitality-design.jp",
+  email: "contact@vitality-design.jp",
   social: {
     threads: "https://www.threads.com/@hisrecoveries_jp",
     x: "https://x.com/his_recoveries",
@@ -38,7 +38,7 @@ export const site = {
     nameEn: "Vitality Design LLC",
     statement: "We Design Vitality.",
     definition: "人と事業の活力を設計する会社",
-    email: "shota@vitality-design.jp",
+    email: "contact@vitality-design.jp",
     postalCode: "〒153-0064",
     address: "東京都目黒区下目黒1丁目1番14号 コノトラビル7F",
     businesses: [

@@ -20,7 +20,7 @@ const TYPES = [
     cta: "問いを置く（まずひとつだけ）",
   },
   {
-    href: "mailto:shota@vitality-design.jp?subject=Recovery%20Q%26A%E5%B0%82%E9%96%80%E5%AE%B6%E3%83%91%E3%83%8D%E3%83%AB%E5%BF%9C%E5%8B%9F",
+    href: "mailto:contact@vitality-design.jp?subject=Recovery%20Q%26A%E5%B0%82%E9%96%80%E5%AE%B6%E3%83%91%E3%83%8D%E3%83%AB%E5%BF%9C%E5%8B%9F",
     title: "専門家として",
     eyebrow: "Expert / 知見の登壇",
     body: "医師・トレーナー・コーチ・カウンセラー・美容専門家。HR の編集判断は独立、回答内の宣伝は入れない規律で運営しています。",
