@@ -106,7 +106,6 @@ const PROFILE: { label: string; value: React.ReactNode }[] = [
     ),
   },
   { label: "Founded", value: "2024" },
-  { label: "Representative", value: "山本 翔太（Shota Yamamoto）" },
   {
     label: "Address",
     value: (
@@ -159,7 +158,6 @@ export default function AboutPage() {
       streetAddress: "下目黒1丁目1番14号 コノトラビル7F",
       addressCountry: "JP",
     },
-    founder: { "@type": "Person", name: site.company.representative },
     areaServed: { "@type": "Country", name: "Japan" },
     subOrganization: { "@id": `${site.url}/#publisher` },
   };
