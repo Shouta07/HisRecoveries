@@ -38,7 +38,6 @@ export const site = {
     nameEn: "Vitality Design LLC",
     statement: "We Design Vitality.",
     definition: "人と事業の活力を設計する会社",
-    representative: "山本 翔太",
     email: "shota@vitality-design.jp",
     postalCode: "〒153-0064",
     address: "東京都目黒区下目黒1丁目1番14号 コノトラビル7F",
