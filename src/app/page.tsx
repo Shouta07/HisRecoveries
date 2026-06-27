@@ -15,14 +15,14 @@ const HEAD: React.CSSProperties = {
 
 const INTERVIEWS_MORE = [
   {
-    href: "/recoveries/dental-hygienist-mask-skin",
+    href: "#how",
     tag: "ニキビ・肌",
     span: "8ヶ月後",
     title: "歯科衛生士、一日中マスクの下で頬を気にしていた頃のこと",
     who: "20代後半・歯科衛生士 / 勤務中はほぼ終日マスク",
   },
   {
-    href: "/recoveries/wakiga-six-months-grey-shirt",
+    href: "#how",
     tag: "汗・におい",
     span: "半年後",
     title: "ワキガ手術から半年、夏のグレーを選び直せた朝のこと",
@@ -93,24 +93,20 @@ export default function HomePage() {
 
         {/* Bottom-right link */}
         <div className="hidden sm:flex absolute right-6 md:right-10 bottom-8 md:bottom-10 z-10 items-center gap-2 text-white/90 text-sm">
-          <Link href="/recoveries" className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors">
+          <a href="#interviews" className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors">
             <svg className="w-3 h-3 ml-0.5 fill-white text-white" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-          </Link>
+          </a>
           <span className="font-medium">メカニズム特集</span>
           <span className="text-white/60">インタビュー</span>
         </div>
       </section>
 
       {/* ============ Forest (dark sections) ============ */}
-      {/* Translucent dark gradient so the fixed boomerang video stays faintly
-          visible behind the content while scrolling. */}
-      <div className="relative z-10 overflow-hidden">
+      {/* Solid dark-green background from the complexes section down — keeps
+          text crisp and legible (no video bleed / blurred streaks). */}
+      <div className="relative z-10 overflow-hidden bg-[#16241a]">
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(22,36,26,0.86) 0%,rgba(27,44,32,0.9) 26%,rgba(22,35,26,0.92) 60%,rgba(14,21,13,0.95) 100%)" }} />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(72% 46% at 18% 6%,rgba(133,171,139,0.22),transparent 70%),radial-gradient(56% 42% at 88% 22%,rgba(133,171,139,0.14),transparent 72%)" }} />
-          <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 46px,rgba(7,14,8,0.55) 68px,rgba(0,0,0,0) 92px,rgba(0,0,0,0) 150px)", filter: "blur(7px)", opacity: 0.5 }} />
-          <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 120px,rgba(5,11,6,0.42) 150px,rgba(0,0,0,0) 188px,rgba(0,0,0,0) 280px)", filter: "blur(12px)", opacity: 0.45 }} />
-          <div className="absolute inset-x-0 top-0 h-44" style={{ background: "linear-gradient(180deg,rgba(150,180,150,0.16),transparent)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#16241a 0%,#1b2c20 30%,#16231a 65%,#0e150d 100%)" }} />
         </div>
 
         {/* ===== Complexes ===== */}
@@ -125,12 +121,12 @@ export default function HomePage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-[1.5rem] overflow-hidden border border-white/10">
               {complexes.map((c, i) => (
-                <Link key={c.id} href={`/territories/${c.territory}`} className="group bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-sm transition-colors p-7 md:p-8 flex flex-col">
+                <a key={c.id} href="#interviews" className="group bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-sm transition-colors p-7 md:p-8 flex flex-col">
                   <div className="text-[13px] text-[#85AB8B] font-medium mb-3">{String(i + 1).padStart(2, "0")}</div>
                   <h3 className="text-xl text-white font-semibold mb-2">{c.ja}</h3>
                   <p className="text-[13.5px] text-white/70 leading-relaxed">{c.mechanism}</p>
                   <span className="mt-5 text-[13px] text-[#85AB8B] font-medium group-hover:opacity-70 transition-opacity">なぜ起きる？を読む →</span>
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -149,7 +145,7 @@ export default function HomePage() {
 
             {/* featured */}
             <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-stretch mb-10">
-              <Link href="/recoveries/sales-hairline-front-desk" className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-8 md:p-12 flex flex-col justify-between min-h-[320px] hover:bg-[#0f1a10]/70 transition-colors">
+              <a href="#how" className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-8 md:p-12 flex flex-col justify-between min-h-[320px] hover:bg-[#0f1a10]/70 transition-colors">
                 <div>
                   <div className="flex items-center gap-2 text-[#85AB8B] text-[13px] font-medium mb-6">
                     <span>薄毛・AGA</span><span className="text-white/30">·</span><span className="text-white/60">1年後</span>
@@ -157,13 +153,13 @@ export default function HomePage() {
                   <p className="text-2xl md:text-[2rem] leading-[1.5] font-normal text-white" style={{ letterSpacing: "-0.02em" }}>「名刺を渡す角度を、いつのまにか変えていた。気づいたのは、変えなくてよくなってからでした。」</p>
                 </div>
                 <div className="mt-8 text-white/55 text-sm">30代前半・法人営業 / 一日に何度も初対面の相手と向き合う</div>
-              </Link>
+              </a>
               <div className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-8 md:p-10 flex flex-col">
                 <div className="text-xs tracking-[0.16em] text-[#85AB8B] font-medium mb-5">メカニズム</div>
                 <h3 className="text-lg text-white font-semibold mb-3">なぜ起きるのか</h3>
                 <p className="text-white/70 text-sm leading-[1.9]">テストステロンが5αリダクターゼによってDHTへ変換され、感受性の高い前頭部・頭頂部の毛包でヘアサイクルが短縮します。原因を見立てた上で、必要なら連携医療機関へ。</p>
                 <div className="mt-auto pt-8">
-                  <Link href="/territories/hair-loss" className="inline-flex items-center gap-2 text-[#85AB8B] text-sm font-medium hover:opacity-70 transition-opacity">改善の進め方を見る →</Link>
+                  <a href="#how" className="inline-flex items-center gap-2 text-[#85AB8B] text-sm font-medium hover:opacity-70 transition-opacity">改善の進め方を見る →</a>
                 </div>
               </div>
             </div>
@@ -171,13 +167,13 @@ export default function HomePage() {
             {/* more */}
             <div className="grid sm:grid-cols-2 gap-6">
               {INTERVIEWS_MORE.map((it) => (
-                <Link key={it.href} href={it.href} className="group rounded-[1.5rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 hover:bg-[#33422f] transition-colors p-7 md:p-8 flex flex-col min-h-[200px]">
+                <a key={it.title} href={it.href} className="group rounded-[1.5rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 hover:bg-[#33422f] transition-colors p-7 md:p-8 flex flex-col min-h-[200px]">
                   <div className="flex items-center gap-2 text-[#85AB8B] text-[13px] font-medium mb-5">
                     <span>{it.tag}</span><span className="text-white/30">·</span><span className="text-white/60">{it.span}</span>
                   </div>
                   <h3 className="text-lg md:text-xl leading-[1.55] text-white font-normal">{it.title}</h3>
                   <div className="mt-auto pt-6 text-white/50 text-[13px]">{it.who}</div>
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -284,17 +280,17 @@ export default function HomePage() {
                 <div className="text-[11px] tracking-[0.16em] text-white/40 font-medium mb-4">悩み</div>
                 <ul className="space-y-2.5 text-[13.5px] text-white/70">
                   {complexes.map((c) => (
-                    <li key={c.id}><Link href={`/territories/${c.territory}`} className="hover:text-white transition-colors">{c.ja}</Link></li>
+                    <li key={c.id}><a href="#complexes" className="hover:text-white transition-colors">{c.ja}</a></li>
                   ))}
                 </ul>
               </div>
               <div>
                 <div className="text-[11px] tracking-[0.16em] text-white/40 font-medium mb-4">読む</div>
                 <ul className="space-y-2.5 text-[13.5px] text-white/70">
-                  <li><Link href="/recoveries" className="hover:text-white transition-colors">インタビュー</Link></li>
-                  <li><Link href="/territories" className="hover:text-white transition-colors">メカニズム</Link></li>
+                  <li><a href="#interviews" className="hover:text-white transition-colors">インタビュー</a></li>
+                  <li><a href="#complexes" className="hover:text-white transition-colors">メカニズム</a></li>
                   <li><a href="#how" className="hover:text-white transition-colors">進め方</a></li>
-                  <li><Link href="/manifesto" className="hover:text-white transition-colors">編集方針</Link></li>
+                  <li><Link href="/articles" className="hover:text-white transition-colors">記事</Link></li>
                   <li><Link href="/en" className="hover:text-white transition-colors">English</Link></li>
                 </ul>
               </div>

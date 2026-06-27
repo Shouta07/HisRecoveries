@@ -6,17 +6,18 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/recoveries", label: "インタビュー", ja: "現場の人に聞く" },
-  { href: "/territories", label: "メカニズム", ja: "なぜ起きるのか" },
+  { href: "/#complexes", label: "悩み", ja: "6つの悩み" },
+  { href: "/#interviews", label: "インタビュー", ja: "現場の声" },
+  { href: "/#how", label: "進め方", ja: "Webアプリ×オフライン" },
   { href: "/articles", label: "記事", ja: "原因の解剖" },
-  { href: "/manifesto", label: "編集方針", ja: "このメディアについて" },
 ];
 
 const secondary = [
-  { href: "/territories", label: "6 つの原因を読む" },
-  { href: "/recoveries", label: "インタビュー一覧" },
-  { href: "/qa", label: "Recovery Q&A — 静かな問いと観察" },
-  { href: "/check", label: "Recovery Check — 今の状態を理解する" },
+  { href: "/#complexes", label: "6つの悩み" },
+  { href: "/#interviews", label: "インタビュー" },
+  { href: "/articles", label: "記事 — Journal" },
+  { href: "/qa", label: "Recovery Q&A" },
+  { href: "/check", label: "Recovery Check" },
 ];
 
 // Sections that exist in both languages, so the switch can land on the

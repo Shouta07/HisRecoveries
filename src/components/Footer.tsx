@@ -8,10 +8,10 @@ import { complexes } from "@/lib/complexes";
 const ACCENT = "#0F766E";
 
 const READ = [
-  { href: "/recoveries", label: "インタビュー" },
-  { href: "/territories", label: "メカニズム" },
+  { href: "/#interviews", label: "インタビュー" },
+  { href: "/#complexes", label: "メカニズム" },
+  { href: "/#how", label: "進め方" },
   { href: "/articles", label: "記事" },
-  { href: "/manifesto", label: "編集方針" },
 ];
 
 export default function Footer() {
@@ -51,7 +51,7 @@ export default function Footer() {
               {complexes.map((c) => (
                 <li key={c.id}>
                   <Link
-                    href={`/territories/${c.territory}`}
+                    href="/#complexes"
                     className="inline-flex items-center gap-2 text-zinc-600 hover:text-zinc-900 transition-colors"
                   >
                     <span
