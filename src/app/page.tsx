@@ -66,12 +66,17 @@ export default function HomePage() {
 
       {/* ============ Hero ============ */}
       <section className="relative z-10 w-full min-h-screen sm:h-screen overflow-hidden">
-        {/* Bottom scrim — keeps the white bottom copy legible before the video
-            loads (or on browsers without H.264) without darkening the heading. */}
+        {/* Bottom scrim — desktop uses a dark scrim under white copy. */}
         <div
           aria-hidden
           className="absolute inset-0 z-[1] pointer-events-none hidden sm:block"
           style={{ background: "linear-gradient(180deg, transparent 48%, rgba(15,26,16,0.55) 100%)" }}
+        />
+        {/* Mobile uses a light scrim so the dark-green bottom copy stays legible. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 z-[1] pointer-events-none sm:hidden"
+          style={{ background: "linear-gradient(180deg, transparent 42%, rgba(245,247,242,0.86) 100%)" }}
         />
 
         <GlassNav />
@@ -79,22 +84,22 @@ export default function HomePage() {
         {/* Hero copy */}
         <div className="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-28 md:pt-32 px-4 sm:px-6">
           <div className="flex items-center gap-3 mb-5 text-[#4b5b47]">
-            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/70" />
-            <span className="text-[11px] sm:text-xs tracking-[0.42em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
+            <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
+            <span className="text-xs sm:text-sm tracking-[0.4em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
               男性のための
             </span>
-            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/70" />
+            <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
           </div>
           <h1
-            className="text-[#336443] text-[2.6rem] sm:text-[3.4rem] md:text-[4.25rem] lg:text-[4.75rem] xl:text-[5.25rem] max-w-4xl"
-            style={{ ...HERO_HEAD, lineHeight: 1.22 }}
+            className="text-[#336443] text-[2.75rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.75rem] xl:text-[6.5rem] max-w-5xl"
+            style={{ ...HERO_HEAD, lineHeight: 1.2 }}
           >
             コンプレックス
             <br />
             からの<span className="text-[#85AB8B]">解放</span>
           </h1>
           <p
-            className="mt-7 sm:mt-9 text-[#4b5b47] text-[13.5px] sm:text-[15px] md:text-base leading-[2.05] tracking-[0.04em] max-w-md px-2"
+            className="mt-7 sm:mt-9 text-[#4b5b47] text-[15px] sm:text-[17px] md:text-lg leading-[2.05] tracking-[0.04em] max-w-lg px-2"
             style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400 }}
           >
             言えない悩みを持つ人同士で。
@@ -103,13 +108,14 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Bottom-left CTA block */}
-        <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 max-w-sm">
-          <div className="flex items-center gap-2 text-[#3d5638] sm:text-white/95 mb-3">
+        {/* Bottom-left CTA block — on mobile the on-media halo + light scrim
+            keep the dark-green copy legible over the bright video. */}
+        <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 max-w-sm on-media sm:[text-shadow:none]">
+          <div className="flex items-center gap-2 text-[#2d4228] sm:text-white/95 mb-3">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" /><path d="M19 3v4" /><path d="M21 5h-4" /></svg>
             <span className="text-sm font-semibold sm:font-medium">完全招待制 ・ 中立</span>
           </div>
-          <p className="text-[#3d5638]/90 sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs font-medium sm:font-normal">
+          <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs font-semibold sm:font-normal">
             Webアプリで状態を可視化し、オフラインで専属が伴走。各悩みのメカニズムは、当事者のインタビューで特集します。効果は保証しません。
           </p>
           <div className="flex items-center gap-4 flex-wrap">
