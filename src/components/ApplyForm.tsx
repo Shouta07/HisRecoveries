@@ -18,7 +18,7 @@ export default function ApplyForm() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSubmit) return;
-    const subject = encodeURIComponent("参加申し込み — His Recoveries");
+    const subject = encodeURIComponent("予約登録 — His Recoveries");
     const body = encodeURIComponent(
       [
         `お名前: ${name}`,
@@ -29,7 +29,7 @@ export default function ApplyForm() {
         message || "（未記入）",
         "",
         "── 秘密保持への同意 ──",
-        "本申し込みにあたり、秘密保持に同意しました。",
+        "本予約登録にあたり、秘密保持に同意しました。",
       ].join("\n")
     );
     window.location.href = `mailto:${site.company.email}?subject=${subject}&body=${body}`;
@@ -121,7 +121,7 @@ export default function ApplyForm() {
             required
           />
           <span className="text-[13.5px] font-medium text-[#1f2a1d] leading-[1.7]">
-            秘密保持に同意します。（同意がない場合はお申し込みいただけません）
+            秘密保持に同意します。（同意がない場合はご登録いただけません）
           </span>
         </label>
       </div>
@@ -132,11 +132,11 @@ export default function ApplyForm() {
         className="w-full rounded-full text-white text-[15px] font-semibold px-7 py-4 transition-colors disabled:cursor-not-allowed"
         style={{ backgroundColor: canSubmit ? "#1f2a1d" : "#9aa79a" }}
       >
-        {agreed ? "申し込む" : "秘密保持に同意すると送信できます"}
+        {agreed ? "予約登録する" : "秘密保持に同意すると送信できます"}
       </button>
 
       <p className="text-[11.5px] text-[#6b7a66] leading-[1.8]">
-        ※ 完全招待制・選考制です。お申し込み後、対話を経てご招待をお送りします。
+        ※ 完全招待制・選考制です。ご予約登録後、対話を経てご招待をお送りします。
         本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。
       </p>
     </form>

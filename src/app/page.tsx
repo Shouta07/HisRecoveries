@@ -119,7 +119,7 @@ export default function HomePage() {
             すべて匿名・守秘義務のもとで。Webアプリで状態を可視化し、オフラインで専属が伴走します。完全招待制・中立。効果は保証しません。
           </p>
           <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
-            <Link href={APPLY} className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors shadow-sm">参加を申し込む</Link>
+            <Link href={APPLY} className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors shadow-sm">予約登録する</Link>
             <a href="#how" className="text-[#3d5638] sm:text-white text-sm font-semibold sm:font-medium hover:opacity-80 transition-opacity">進め方を見る</a>
           </div>
         </div>
@@ -171,7 +171,7 @@ export default function HomePage() {
                       <p className="mt-4 text-[#C9D2C4] text-sm md:text-base leading-[1.9]">{f.tagline}</p>
                       <p className="mt-5 text-[13px] text-[#9FB0A0]">{f.forWhom}</p>
                       <div className="mt-7 flex flex-wrap items-center gap-4">
-                        <Link href={APPLY} className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-6 py-3 rounded-full transition-colors">参加を申し込む</Link>
+                        <Link href={APPLY} className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-6 py-3 rounded-full transition-colors">予約登録する</Link>
                         <Link href="/packages" className="text-[#85AB8B] text-sm font-medium hover:text-[#EDF1E8] transition-colors">すべての体験パッケージ →</Link>
                       </div>
                     </div>
@@ -305,7 +305,7 @@ export default function HomePage() {
             </div>
 
             <div className="on-media mt-12 flex flex-wrap items-center gap-4">
-              <Link href={APPLY} className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">参加を申し込む</Link>
+              <Link href={APPLY} className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">予約登録する</Link>
               <span className="text-[#4b5b47] text-[13px]">すべて完全匿名・守秘義務のもとで運営します。※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
             </div>
           </div>

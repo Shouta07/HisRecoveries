@@ -69,7 +69,7 @@ export default function MechanismPage() {
             同じ悩みの人の声を読む <span aria-hidden>→</span>
           </Link>
           <Link href="/apply" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
-            参加を申し込む <span aria-hidden>→</span>
+            予約登録する <span aria-hidden>→</span>
           </Link>
         </div>
       </div>

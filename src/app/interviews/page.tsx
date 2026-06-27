@@ -109,7 +109,7 @@ export default function InterviewsPage() {
             なぜ起きるのかを読む <span aria-hidden>→</span>
           </Link>
           <Link href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
-            参加を申し込む <span aria-hidden>→</span>
+            予約登録する <span aria-hidden>→</span>
           </Link>
         </div>
       </div>
