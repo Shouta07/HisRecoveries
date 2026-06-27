@@ -89,17 +89,17 @@ export default function HomePage() {
             className="text-[#336443] text-[2.6rem] sm:text-[3.4rem] md:text-[4.25rem] lg:text-[4.75rem] xl:text-[5.25rem] max-w-4xl"
             style={{ ...HERO_HEAD, lineHeight: 1.22 }}
           >
-            恥じらいの
+            コンプレックス
             <br />
-            悩みを、<span className="text-[#85AB8B]">救う。</span>
+            からの<span className="text-[#85AB8B]">解放</span>
           </h1>
           <p
             className="mt-7 sm:mt-9 text-[#4b5b47] text-[13.5px] sm:text-[15px] md:text-base leading-[2.05] tracking-[0.04em] max-w-md px-2"
             style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400 }}
           >
-            薄毛・汗・肌・顔・体毛。人に言えない悩みを、原因から。
+            言えない悩みを持つ人同士で。
             <wbr />
-            完全招待制の改善プログラム。
+            完全招待制の匿名改善プログラム。
           </p>
         </div>
 
