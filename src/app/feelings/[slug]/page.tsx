@@ -28,11 +28,6 @@ export async function generateMetadata({
     description: f.why.slice(0, 120),
     alternates: {
       canonical: url,
-      languages: {
-        ja: url,
-        en: `${site.url}/en/feelings/${f.slug}`,
-        "x-default": url,
-      },
     },
     openGraph: { type: "article", title, description: f.why.slice(0, 120), url },
     twitter: {

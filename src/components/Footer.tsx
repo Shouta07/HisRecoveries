@@ -82,14 +82,6 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  href="/en"
-                  className="text-zinc-600 hover:text-zinc-900 transition-colors"
-                >
-                  English
-                </Link>
-              </li>
             </ul>
           </nav>
         </div>

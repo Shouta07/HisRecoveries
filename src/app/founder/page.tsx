@@ -155,7 +155,7 @@ export default function FounderPage() {
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             <Link
-              href="/assessment"
+              href="/apply"
               className="text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
             >
               Recovery Assessment を受ける

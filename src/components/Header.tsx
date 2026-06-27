@@ -21,26 +21,9 @@ const secondary = [
 ];
 
 // Sections that exist in both languages, so the switch can land on the
-// same page in the other language instead of bouncing to the home.
-const MIRRORED = ["/territories", "/feelings", "/stories"];
-
-function mirroredOrHome(path: string): boolean {
-  return path === "/" || MIRRORED.some((p) => path === p || path.startsWith(`${p}/`));
-}
-
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isEn = pathname === "/en" || pathname.startsWith("/en/");
-
-  // Counterpart URLs for the JP / EN switch.
-  const jpPath = isEn ? pathname.replace(/^\/en(?=\/|$)/, "") || "/" : pathname;
-  const jpHref = mirroredOrHome(jpPath) ? jpPath : "/";
-  const enHref = (() => {
-    if (isEn) return pathname;
-    if (pathname === "/") return "/en";
-    return mirroredOrHome(pathname) ? `/en${pathname}` : "/en";
-  })();
 
   // Close on route change
   useEffect(() => {
@@ -91,7 +74,6 @@ export default function Header() {
               ))}
             </ul>
           </nav>
-          <LangSwitch isEn={isEn} jpHref={jpHref} enHref={enHref} />
           <Link
             href="/check"
             className="inline-flex items-center gap-1.5 rounded-full bg-[#0F766E] text-white text-[13px] font-bold px-5 py-2.5 hover:opacity-90 transition-opacity whitespace-nowrap"
@@ -182,67 +164,10 @@ export default function Header() {
                 Contact — {site.email}
               </a>
             </div>
-
-            <div className="mt-10 pt-8 border-t border-zinc-200">
-              <p className="text-[10px] tracking-[0.3em] uppercase text-zinc-400 mb-3">
-                Language
-              </p>
-              <LangSwitch
-                isEn={isEn}
-                jpHref={jpHref}
-                enHref={enHref}
-                onNavigate={() => setOpen(false)}
-                size="lg"
-              />
-            </div>
           </nav>
         </div>
       )}
     </>
-  );
-}
-
-function LangSwitch({
-  isEn,
-  jpHref,
-  enHref,
-  onNavigate,
-  size = "sm",
-}: {
-  isEn: boolean;
-  jpHref: string;
-  enHref: string;
-  onNavigate?: () => void;
-  size?: "sm" | "lg";
-}) {
-  const text = size === "lg" ? "text-[15px]" : "text-[11px]";
-  const active = "text-zinc-900";
-  const idle = "text-zinc-400 hover:text-[#0F766E] transition-colors";
-  return (
-    <div
-      aria-label="言語 / Language"
-      className={`flex items-center gap-2 tracking-[0.18em] ${text}`}
-    >
-      <Link
-        href={jpHref}
-        onClick={onNavigate}
-        aria-current={!isEn ? "true" : undefined}
-        className={!isEn ? active : idle}
-      >
-        JP
-      </Link>
-      <span aria-hidden className="text-white/20">
-        /
-      </span>
-      <Link
-        href={enHref}
-        onClick={onNavigate}
-        aria-current={isEn ? "true" : undefined}
-        className={isEn ? active : idle}
-      >
-        EN
-      </Link>
-    </div>
   );
 }
 

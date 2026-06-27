@@ -3,7 +3,7 @@ import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import { complexes } from "@/lib/complexes";
 
-const APPLY = "/assessment";
+const APPLY = "/apply";
 
 // Heading face: the design uses Neue Haas Grotesk (licensed). Fall back to
 // Inter + Zen Kaku Gothic New, which we load, then system grotesks.
@@ -18,11 +18,16 @@ const HEAD: React.CSSProperties = {
   textRendering: "optimizeLegibility",
 };
 
-// Hero display — a touch more weight + presence than section headings.
+// Hero display — an elegant high-contrast mincho serif for a premium,
+// editorial feel (the grotesk read too generic / "cheap" at hero scale).
 const HERO_HEAD: React.CSSProperties = {
-  ...HEAD,
-  fontWeight: 600,
-  letterSpacing: "-0.02em",
+  fontFamily:
+    "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', 'YuMincho', serif",
+  fontWeight: 800,
+  letterSpacing: "0.015em",
+  fontFeatureSettings: '"palt" 1',
+  WebkitFontSmoothing: "antialiased",
+  textRendering: "optimizeLegibility",
 };
 
 const INTERVIEWS_MORE = [
@@ -81,11 +86,12 @@ export default function HomePage() {
             <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/70" />
           </div>
           <h1
-            className="text-[#336443] text-[2.6rem] sm:text-[3.4rem] md:text-6xl lg:text-[5.5rem] xl:text-[6.25rem] max-w-5xl"
-            style={{ ...HERO_HEAD, lineHeight: 1.04 }}
+            className="text-[#336443] text-[2.6rem] sm:text-[3.4rem] md:text-[4.25rem] lg:text-[4.75rem] xl:text-[5.25rem] max-w-4xl"
+            style={{ ...HERO_HEAD, lineHeight: 1.22 }}
           >
-            恥じらいの悩みを、{" "}
-            <span className="text-[#85AB8B]">救う。</span>
+            恥じらいの
+            <br />
+            悩みを、<span className="text-[#85AB8B]">救う。</span>
           </h1>
           <p
             className="mt-7 sm:mt-9 text-[#4b5b47] text-[13.5px] sm:text-[15px] md:text-base leading-[2.05] tracking-[0.04em] max-w-md px-2"
@@ -127,9 +133,9 @@ export default function HomePage() {
           keeps faintly moving behind; content sits on top in dark ink. */}
       <div className="relative z-10 overflow-hidden">
         <div
-          className="absolute inset-0 pointer-events-none backdrop-blur-2xl"
+          className="absolute inset-0 pointer-events-none backdrop-blur-md"
           aria-hidden="true"
-          style={{ background: "linear-gradient(180deg, rgba(245,247,242,0.82) 0%, rgba(240,244,238,0.74) 40%, rgba(238,243,237,0.78) 100%)" }}
+          style={{ background: "linear-gradient(180deg, rgba(245,247,242,0.5) 0%, rgba(240,244,238,0.42) 40%, rgba(238,243,237,0.46) 100%)" }}
         />
 
         {/* ===== Complexes ===== */}
@@ -314,7 +320,6 @@ export default function HomePage() {
                   <li><a href="#complexes" className="hover:text-[#1f2a1d] transition-colors">メカニズム</a></li>
                   <li><a href="#how" className="hover:text-[#1f2a1d] transition-colors">進め方</a></li>
                   <li><Link href="/articles" className="hover:text-[#1f2a1d] transition-colors">記事</Link></li>
-                  <li><Link href="/en" className="hover:text-[#1f2a1d] transition-colors">English</Link></li>
                 </ul>
               </div>
             </div>
