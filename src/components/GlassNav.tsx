@@ -37,7 +37,7 @@ export default function GlassNav() {
       <nav
         className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-4 sm:py-5 transition-colors duration-300 ${
           scrolled
-            ? "bg-[#f6f8f4] border-b border-[#1f2a1d]/10 shadow-sm"
+            ? "bg-[#f6f8f4]/70 backdrop-blur-xl border-b border-[#1f2a1d]/10 shadow-sm"
             : "bg-transparent"
         }`}
       >
