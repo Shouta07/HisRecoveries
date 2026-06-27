@@ -14,6 +14,7 @@ const LINKS = [
 /** Glass navbar + animated mobile drawer, ported from the Boomerang Hero design. */
 export default function GlassNav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -22,12 +23,24 @@ export default function GlassNav() {
     };
   }, [open]);
 
+  // Transparent glass over the hero; solid frosted bar once scrolling so
+  // content passing under the fixed nav is hidden (no overlap).
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-4 sm:py-5">
-        {/* subtle scrim so the sticky nav stays legible over both the hero
-            and the lighter lower sections while scrolling */}
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none bg-gradient-to-b from-white/55 to-transparent backdrop-blur-[2px]" />
+      <nav
+        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-4 sm:py-5 transition-colors duration-300 ${
+          scrolled
+            ? "bg-[#f6f8f4]/90 backdrop-blur-md border-b border-[#1f2a1d]/10 shadow-sm"
+            : "bg-transparent"
+        }`}
+      >
         <div className="flex items-center gap-2 text-[#1f2a1d]">
           <Link
             href="/"

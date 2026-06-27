@@ -384,9 +384,10 @@ a {
   display: none;
 }
 
-/* Smooth scroll for in-page anchors */
+/* Smooth scroll for in-page anchors; offset for the fixed nav */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 84px;
 }
 @media (prefers-reduced-motion: reduce) {
   html {
