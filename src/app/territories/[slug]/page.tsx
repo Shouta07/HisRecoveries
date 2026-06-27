@@ -9,6 +9,7 @@ import {
 } from "@/lib/territories";
 import { getFeelingsForTerritory } from "@/lib/feelings";
 import { getQAForTerritory } from "@/lib/qa";
+import { complexByTerritory } from "@/lib/complexes";
 import { site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -60,10 +61,11 @@ export default async function TerritoryPage({
   if (!t) notFound();
 
   const url = `${site.url}/territories/${t.slug}`;
+  const c = complexByTerritory(t.slug);
+  const accent = c?.accent ?? "#18181b";
+  const soft = c?.accentSoft ?? "#f4f4f5";
   const relatedFeelings = getFeelingsForTerritory(t.slug);
-  const otherTerritories = getAllTerritories().filter(
-    (o) => o.slug !== t.slug
-  );
+  const otherTerritories = getAllTerritories().filter((o) => o.slug !== t.slug);
   const relatedQA = getQAForTerritory(t.slug).slice(0, 4);
 
   const breadcrumbLd = {
@@ -108,7 +110,7 @@ export default async function TerritoryPage({
       : null;
 
   return (
-    <article>
+    <article className="bg-[#FAF6F0] text-zinc-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
@@ -124,83 +126,85 @@ export default async function TerritoryPage({
         />
       )}
 
-      <header className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-12 sm:pt-16 pb-12 sm:pb-16">
-        <nav
-          aria-label="breadcrumb"
-          className="mb-8 text-[11px] tracking-widest text-sub-gray"
-        >
+      {/* Header */}
+      <header className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-10 sm:pt-14 pb-10 sm:pb-14">
+        <nav aria-label="breadcrumb" className="mb-7 text-[12px] text-zinc-400">
           <ol className="flex flex-wrap items-center gap-2">
             <li>
-              <Link
-                href="/"
-                className="hover:text-ink transition-colors uppercase"
-              >
-                Home
+              <Link href="/" className="hover:text-zinc-700 transition-colors">
+                ホーム
               </Link>
             </li>
-            <li aria-hidden>—</li>
+            <li aria-hidden>›</li>
             <li>
-              <Link
-                href="/territories"
-                className="hover:text-ink transition-colors"
-              >
-                原因を読む
+              <Link href="/territories" className="hover:text-zinc-700 transition-colors">
+                悩み別
               </Link>
             </li>
           </ol>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center">
           <div className="order-2 lg:order-1">
-            <h1 className="text-3xl sm:text-5xl font-bold leading-[1.4] text-ink">
-              {t.title}は、なぜ起こるのか
+            {c && (
+              <span
+                className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12.5px] font-bold"
+                style={{ backgroundColor: soft, color: accent }}
+              >
+                {c.ja} · {c.stat}
+              </span>
+            )}
+            <h1 className="mt-5 text-[2.1rem] sm:text-[3.2rem] font-extrabold leading-[1.25] tracking-[-0.01em] text-zinc-900">
+              {t.title}は、
+              <br className="hidden sm:inline" />
+              なぜ起こるの？
             </h1>
-            <p className="mt-6 font-mincho text-sub-gray text-base sm:text-lg leading-[2]">
-              — {t.subtitle} —
-            </p>
-            <p className="mt-8 text-[1rem] leading-[2.1] text-ink max-w-[34rem]">
+            <p className="mt-5 text-[15px] sm:text-[1.05rem] text-zinc-500 leading-[1.95] max-w-[34rem]">
               {t.intro}
             </p>
           </div>
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2 rounded-3xl overflow-hidden shadow-sm bg-white">
             <TerritoryArt slug={t.slug} aspectClass="aspect-[4/3]" />
           </div>
         </div>
       </header>
 
-      {/* Cause analysis — the in-site content. SEO/GEO oriented. */}
-      <div className="mx-auto max-w-reading px-6 sm:px-10 pb-8">
-        <div
-          className="article-body"
-          dangerouslySetInnerHTML={{ __html: t.contentHtml }}
-        />
-        <p className="mt-12 text-[12px] text-sub-gray leading-[2] border-t border-hair-line pt-6">
-          ※ 本ページは一般的な情報を整理したものであり、診断・治療を目的としたものではありません。
-          症状や治療の判断は、医療機関にご相談ください。
-        </p>
+      {/* Cause analysis body — white rounded reading card */}
+      <div className="mx-auto max-w-[760px] px-6 sm:px-10 pb-4">
+        <div className="rounded-3xl bg-white p-7 sm:p-12 shadow-sm">
+          <div
+            className="article-body"
+            dangerouslySetInnerHTML={{ __html: t.contentHtml }}
+          />
+          <p className="mt-12 text-[12px] text-zinc-400 leading-[2] border-t border-zinc-100 pt-6">
+            ※ 本ページは一般的な情報を整理したものであり、診断・治療を目的としたものではありません。
+            症状や治療の判断は、医療機関にご相談ください。
+          </p>
+        </div>
       </div>
 
-      {/* FAQ — also emitted as FAQPage structured data above. */}
+      {/* FAQ */}
       {t.faq.length > 0 && (
         <section
           aria-labelledby="faq"
-          className="mx-auto max-w-reading px-6 sm:px-10 py-12"
+          className="mx-auto max-w-[760px] px-6 sm:px-10 py-12"
         >
-          <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold mb-8">
-            Questions — よくある問い
-          </p>
-          <h2 id="faq" className="sr-only">
-            {t.title}についてよくある質問
+          <h2 id="faq" className="text-[1.5rem] sm:text-[1.9rem] font-extrabold text-zinc-900 mb-7">
+            よくある質問
           </h2>
-          <dl className="space-y-7">
+          <dl className="space-y-3">
             {t.faq.map((item, i) => (
-              <div key={i}>
-                <dt className="text-ink font-mincho text-[1.0625rem] leading-[1.8]">
-                  <span className="logo-type text-gold mr-2">Q.</span>
+              <div key={i} className="rounded-2xl bg-white p-5 sm:p-6 shadow-sm">
+                <dt className="flex gap-3 text-zinc-900 font-bold text-[15.5px] leading-[1.7]">
+                  <span
+                    className="shrink-0 grid place-items-center w-6 h-6 rounded-full text-[12px] font-bold"
+                    style={{ backgroundColor: soft, color: accent }}
+                  >
+                    Q
+                  </span>
                   {item.q}
                 </dt>
-                <dd className="mt-3 font-mincho text-sub-gray text-[15px] leading-[2.05]">
-                  <span className="logo-type text-gold mr-2">A.</span>
+                <dd className="mt-3 pl-9 text-zinc-600 text-[14px] leading-[2]">
                   {item.a}
                 </dd>
               </div>
@@ -209,21 +213,23 @@ export default async function TerritoryPage({
         </section>
       )}
 
-      {/* Internal links — related feelings (entry) + Q&A + other causes */}
-      <section className="mx-auto max-w-reading px-6 sm:px-10 py-12 border-t border-hair-line">
+      {/* Related links */}
+      <section className="mx-auto max-w-[760px] px-6 sm:px-10 py-8">
         {relatedQA.length > 0 && (
           <div className="mb-10">
-            <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
-              この領域に届いた問い
+            <p className="text-[12px] font-bold tracking-[0.04em] text-zinc-400 mb-4">
+              この悩みに届いた問い
             </p>
-            <ul className="space-y-3">
+            <ul className="space-y-2.5">
               {relatedQA.map((q) => (
                 <li key={q.slug}>
                   <Link
                     href={`/qa/${q.slug}`}
-                    className="block font-mincho text-[14.5px] text-ink hover:text-gold transition-colors"
+                    className="block rounded-xl bg-white px-4 py-3 text-[14px] text-zinc-700 hover:text-zinc-900 shadow-sm transition-colors"
                   >
-                    <span className="text-gold mr-2">Q.</span>
+                    <span className="font-bold mr-2" style={{ color: accent }}>
+                      Q.
+                    </span>
                     {q.question}
                   </Link>
                 </li>
@@ -234,15 +240,15 @@ export default async function TerritoryPage({
 
         {relatedFeelings.length > 0 && (
           <div className="mb-10">
-            <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
-              この感覚から、来た方へ
+            <p className="text-[12px] font-bold tracking-[0.04em] text-zinc-400 mb-4">
+              この感覚から来た方へ
             </p>
             <ul className="flex flex-wrap gap-2.5">
               {relatedFeelings.map((f) => (
                 <li key={f.slug}>
                   <Link
                     href={`/feelings/${f.slug}`}
-                    className="inline-flex border border-hair-line bg-paper px-4 py-2 text-[13px] text-ink hover:border-gold hover:text-gold transition-colors"
+                    className="inline-flex rounded-full bg-white px-4 py-2 text-[13px] text-zinc-700 shadow-sm hover:text-zinc-900 transition-colors"
                   >
                     {f.statement}
                   </Link>
@@ -253,102 +259,119 @@ export default async function TerritoryPage({
         )}
 
         <div>
-          <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-4">
-            ほかの原因も読む
+          <p className="text-[12px] font-bold tracking-[0.04em] text-zinc-400 mb-4">
+            ほかの悩みも読む
           </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[13.5px]">
-            {otherTerritories.map((o) => (
-              <li key={o.slug}>
-                <Link
-                  href={`/territories/${o.slug}`}
-                  className="text-ink border-b border-hair-line hover:border-gold hover:text-gold transition-colors pb-0.5"
-                >
-                  {o.title}
-                </Link>
-              </li>
-            ))}
+          <ul className="flex flex-wrap gap-2.5">
+            {otherTerritories.map((o) => {
+              const oc = complexByTerritory(o.slug);
+              return (
+                <li key={o.slug}>
+                  <Link
+                    href={`/territories/${o.slug}`}
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-[13px] font-medium text-zinc-700 shadow-sm hover:-translate-y-0.5 transition-all"
+                  >
+                    <span
+                      aria-hidden
+                      className="block w-2 h-2 rounded-full"
+                      style={{ backgroundColor: oc?.accent ?? "#a1a1aa" }}
+                    />
+                    {o.title}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>
 
-      {/* 次の半歩 — connects 悩み選択 → 診断 / 行動 */}
-      <section
-        aria-labelledby="next-step"
-        className="border-t border-hair-line bg-cream-deep"
-      >
-        <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="text-center mb-10 sm:mb-12">
-            <p className="logo-type italic text-[11px] tracking-[0.4em] uppercase text-gold">
-              A Next Half-Step
-            </p>
+      {/* Next half-step */}
+      <section aria-labelledby="next-step" className="px-6 sm:px-10 pb-20 pt-8">
+        <div className="mx-auto max-w-[1000px]">
+          <div className="text-center mb-9">
             <h2
               id="next-step"
-              className="mt-5 font-mincho text-2xl sm:text-[2rem] text-ink leading-[1.45]"
+              className="text-[1.6rem] sm:text-[2.1rem] font-extrabold text-zinc-900"
             >
               読んだあとの、次の半歩
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
-            <Link
+            <NextCard
               href={`/ask?territory=${t.slug}`}
-              className="group block bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors card-lift"
-            >
-              <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold">
-                Recovery Q&A
-              </p>
-              <h3 className="mt-3 font-mincho text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
-                ひとつだけ、問いを置く
-              </h3>
-              <p className="mt-3 font-mincho text-[13px] text-sub-gray leading-[2]">
-                いまの言葉のままで構いません。編集者が読み、手紙で返事を書きます。
-              </p>
-              <span className="mt-5 inline-flex text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
-                問いを置く
-                <span aria-hidden> →</span>
-              </span>
-            </Link>
-
-            <Link
+              eyebrow="Q&A"
+              title="ひとつだけ、問いを置く"
+              body="いまの言葉のままで構いません。編集者が読み、手紙で返事を書きます。"
+              cta="問いを置く"
+              accent={accent}
+              soft={soft}
+            />
+            <NextCard
               href="/check"
-              className="group block bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors card-lift"
-            >
-              <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold">
-                Recovery Check
-              </p>
-              <h3 className="mt-3 font-mincho text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
-                自分の状態を、編集者と整理する
-              </h3>
-              <p className="mt-3 font-mincho text-[13px] text-sub-gray leading-[2]">
-                30 問の自己観察に答えると、編集者が読んで「あなたの状態の地形図」を返します。β 期間中は無料。
-              </p>
-              <span className="mt-5 inline-flex text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
-                Recovery Check を始める
-                <span aria-hidden> →</span>
-              </span>
-            </Link>
-
-            <Link
-              href="/membership"
-              className="group block bg-paper border border-hair-line p-6 sm:p-8 hover:border-gold transition-colors card-lift"
-            >
-              <p className="logo-type italic text-[11px] tracking-[0.25em] uppercase text-gold">
-                Recoveries Letter
-              </p>
-              <h3 className="mt-3 font-mincho text-lg text-ink leading-[1.5] group-hover:text-gold transition-colors">
-                毎週日曜日、続きを受け取る
-              </h3>
-              <p className="mt-3 font-mincho text-[13px] text-sub-gray leading-[2]">
-                公開記事には書けない、半歩先からの覚え書きと当事者の記録を、週に一度 Substack で。
-              </p>
-              <span className="mt-5 inline-flex text-sm tracking-[0.12em] text-ink border-b border-gold pb-1 group-hover:text-gold transition-colors">
-                日曜日の手紙を受け取る
-                <span aria-hidden> →</span>
-              </span>
-            </Link>
+              eyebrow="Check"
+              title="自分の状態を整理する"
+              body="30 問の自己観察に答えると、あなたの状態の地形図が返ります。β 期間は無料。"
+              cta="チェックを始める"
+              accent={accent}
+              soft={soft}
+            />
+            <NextCard
+              href="/recoveries"
+              eyebrow="Voices"
+              title="同じ悩みの人の声を読む"
+              body="第一線で働く人が、悩みとどう過ごし、何を選んだか。飾らない一人称の記録です。"
+              cta="インタビューを読む"
+              accent={accent}
+              soft={soft}
+            />
           </div>
         </div>
       </section>
     </article>
+  );
+}
+
+function NextCard({
+  href,
+  eyebrow,
+  title,
+  body,
+  cta,
+  accent,
+  soft,
+}: {
+  href: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  cta: string;
+  accent: string;
+  soft: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col rounded-3xl bg-white p-6 sm:p-7 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all"
+    >
+      <span
+        className="inline-flex w-fit rounded-full px-3 py-1 text-[11px] font-bold tracking-[0.08em] uppercase"
+        style={{ backgroundColor: soft, color: accent }}
+      >
+        {eyebrow}
+      </span>
+      <h3 className="mt-4 text-[1.15rem] font-bold text-zinc-900 leading-[1.5]">
+        {title}
+      </h3>
+      <p className="mt-3 text-[13px] text-zinc-500 leading-[1.95] flex-1">
+        {body}
+      </p>
+      <span
+        className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold group-hover:gap-2.5 transition-all"
+        style={{ color: accent }}
+      >
+        {cta} <span aria-hidden>→</span>
+      </span>
+    </Link>
   );
 }

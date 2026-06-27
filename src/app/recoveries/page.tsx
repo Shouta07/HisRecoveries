@@ -3,7 +3,7 @@ import Link from "next/link";
 import NextStepBlock from "@/components/NextStepBlock";
 import MedicalDisclaimer from "@/components/MedicalDisclaimer";
 import { getAllRecoveries } from "@/lib/recoveries";
-import { TERRITORY_LABEL } from "@/lib/feelings";
+import { complexByTerritory } from "@/lib/complexes";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -43,61 +43,71 @@ export default function RecoveriesIndexPage() {
   };
 
   return (
-    <>
-      <div className="mx-auto max-w-reading px-6 sm:px-10 pt-16 sm:pt-24 pb-12">
+    <div className="bg-[#FAF6F0] text-zinc-900">
+      <div className="mx-auto max-w-[1180px] px-6 sm:px-10 pt-14 sm:pt-20 pb-12">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
         />
 
-        <header className="mb-14 sm:mb-20">
-          <h1 className="font-mincho text-3xl sm:text-5xl text-ink leading-[1.3] tracking-[0.01em]">
-            前に進んだ男性たちの、記録。
+        <header className="mb-12 max-w-[40rem]">
+          <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
+            Voices
+          </p>
+          <h1 className="mt-3 text-[2.2rem] sm:text-[3.2rem] font-extrabold leading-[1.25] tracking-[-0.01em] text-zinc-900">
+            現場の人の、リアルな声。
           </h1>
-          <p className="mt-7 font-mincho text-[14.5px] sm:text-[15.5px] text-ink/80 leading-[2.05] max-w-[34rem]">
-            悩み・行動・支援者・変化・現在を、当事者の言葉で残しています。
-            匿名化のうえ、本人の同意で公開。半歩進んだ時間の記録として。
+          <p className="mt-5 text-[15px] text-zinc-500 leading-[1.95]">
+            第一線で働く人たちが、悩みとどう過ごし、何を選び、いまどこにいるのか。
+            匿名化のうえ、本人の同意で公開する、飾らない一人称の記録です。
           </p>
         </header>
 
         {items.length === 0 ? (
-          <section className="border border-hair-line bg-paper p-8">
-            <p className="font-mincho text-[15px] text-ink leading-[2.05]">
+          <div className="rounded-3xl bg-white p-8 shadow-sm">
+            <p className="text-[15px] text-zinc-600 leading-[2]">
               最初の記録が、まだ届いていません。
             </p>
-          </section>
+          </div>
         ) : (
-          <ul className="border-t border-hair-line">
-            {items.map((r) => (
-              <li key={r.slug} className="border-b border-hair-line">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {items.map((r) => {
+              const c = complexByTerritory(r.territory);
+              const accent = c?.accent ?? "#71717a";
+              const soft = c?.accentSoft ?? "#f4f4f5";
+              return (
                 <Link
+                  key={r.slug}
                   href={`/recoveries/${r.slug}`}
-                  className="group block py-7 sm:py-8 hover:bg-paper/40 transition-colors"
+                  className="group flex flex-col rounded-3xl bg-white p-6 sm:p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
                 >
-                  <div className="flex items-baseline justify-between gap-4 flex-wrap">
-                    <p className="logo-type italic text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-gold">
-                      {TERRITORY_LABEL[r.territory] ?? r.territory}
-                      {r.span ? ` · ${r.span}` : ""}
-                    </p>
-                    <p className="text-[11px] tracking-[0.06em] text-sub-gray tabular-nums">
-                      {r.publishedAt}
-                    </p>
+                  <div className="flex items-center gap-2.5 text-[12px]">
+                    <span
+                      className="rounded-full px-3 py-1 font-bold"
+                      style={{ backgroundColor: soft, color: accent }}
+                    >
+                      {c?.ja ?? r.territory}
+                    </span>
+                    {r.span && (
+                      <span className="text-zinc-400">{r.span}の記録</span>
+                    )}
                   </div>
-                  <h2 className="mt-3 font-mincho text-lg sm:text-xl text-ink leading-[1.55] group-hover:text-gold transition-colors">
+                  <h2 className="mt-5 text-[1.15rem] sm:text-[1.25rem] font-bold leading-[1.55] text-zinc-900 group-hover:text-zinc-600 transition-colors flex-1">
                     {r.title}
                   </h2>
                   {r.asker?.context && (
-                    <p className="mt-3 font-mincho text-[13.5px] text-sub-gray leading-[1.95]">
-                      — {r.asker.context}
+                    <p className="mt-5 pt-4 border-t border-zinc-100 text-[12.5px] text-zinc-500 leading-[1.8]">
+                      {r.asker.ageRange ? `${r.asker.ageRange}・` : ""}
+                      {r.asker.context}
                     </p>
                   )}
                 </Link>
-              </li>
-            ))}
-          </ul>
+              );
+            })}
+          </div>
         )}
 
-        <div className="mt-8">
+        <div className="mt-10">
           <MedicalDisclaimer />
         </div>
       </div>
@@ -106,6 +116,6 @@ export default function RecoveriesIndexPage() {
         body="自分の状態を観察したい方は Recovery Check へ。あなたの「その後」を共有したい方は、記録を投稿できます。"
         tertiary={{ href: "/interview", label: "インタビューを受ける" }}
       />
-    </>
+    </div>
   );
 }

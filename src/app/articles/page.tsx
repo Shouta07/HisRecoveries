@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
-import ArticleCard from "@/components/ArticleCard";
-import { categories, site } from "@/lib/site";
+import { complexByCategory } from "@/lib/complexes";
+import { categories, categoryLabel, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Presence Journal — すべての記録",
@@ -56,61 +56,97 @@ export default function ArticlesPage() {
   };
 
   return (
-    <div className="mx-auto max-w-reading px-6 pb-24 pt-20 sm:pt-28">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
-      />
-      <header className="mb-16">
-        <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
-          Articles — All Records
-        </p>
-        <h1 className="mt-5 font-mincho text-3xl sm:text-4xl text-ink leading-[1.4]">
-          すべての記録
-        </h1>
-        <p className="mt-6 font-mincho text-sub-gray text-[0.9375rem] leading-[2] max-w-[32rem]">
-          過去の事実、今の状態、自意識の残り方を、
-          新しいものから順に並べています。
-        </p>
-      </header>
+    <div className="bg-[#FAF6F0] text-zinc-900">
+      <div className="mx-auto max-w-[1180px] px-6 sm:px-10 pb-20 pt-14 sm:pt-20">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        />
+        <header className="mb-10 max-w-[40rem]">
+          <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
+            Read deeper
+          </p>
+          <h1 className="mt-3 text-[2.2rem] sm:text-[3.2rem] font-extrabold leading-[1.25] tracking-[-0.01em] text-zinc-900">
+            なぜ起きる？を、もっと深く。
+          </h1>
+          <p className="mt-5 text-[15px] text-zinc-500 leading-[1.95]">
+            医学・行動科学のレイヤーから悩みの仕組みを分解する記事を、
+            新しいものから順に並べています。
+          </p>
+        </header>
 
-      <nav aria-label="categories" className="mb-12">
-        <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-sub-gray">
-          <li>
-            <Link href="/articles" className="text-ink underline-offset-4">
-              すべて
-            </Link>
-          </li>
-          {Object.entries(categories).map(([slug, c]) => (
-            <li key={slug}>
+        <nav aria-label="categories" className="mb-10">
+          <ul className="flex flex-wrap gap-2.5 text-[13px] font-medium">
+            <li>
               <Link
-                href={`/articles/category/${slug}`}
-                className="hover:text-ink transition-colors"
+                href="/articles"
+                className="inline-flex rounded-full bg-zinc-900 text-white px-4 py-1.5"
               >
-                {c.label}
+                すべて
               </Link>
             </li>
-          ))}
-        </ul>
-      </nav>
+            {Object.entries(categories).map(([slug, c]) => (
+              <li key={slug}>
+                <Link
+                  href={`/articles/category/${slug}`}
+                  className="inline-flex rounded-full bg-white text-zinc-600 px-4 py-1.5 shadow-sm hover:text-zinc-900 transition-colors"
+                >
+                  {c.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-      {articles.length === 0 ? (
-        <p className="font-mincho text-sm text-sub-gray leading-[2]">
-          記事はまもなく公開されます。
-          <br />
-          最初の数本は、いま静かに書かれているところです。
-        </p>
-      ) : (
-        <div>
-          {articles.map((a) => (
-            <ArticleCard key={a.slug} article={a} />
-          ))}
-        </div>
-      )}
+        {articles.length === 0 ? (
+          <p className="text-[14px] text-zinc-500 leading-[2]">
+            記事はまもなく公開されます。最初の数本は、いま静かに書かれているところです。
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {articles.map((a) => {
+              const c = complexByCategory(a.category);
+              const accent = c?.accent ?? "#71717a";
+              const soft = c?.accentSoft ?? "#f4f4f5";
+              return (
+                <Link
+                  key={a.slug}
+                  href={`/articles/${a.slug}`}
+                  className="group flex flex-col rounded-3xl bg-white p-6 sm:p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="flex items-center gap-2.5 text-[12px] font-bold">
+                    <span
+                      className="rounded-full px-3 py-1"
+                      style={{ backgroundColor: soft, color: accent }}
+                    >
+                      {c?.ja ?? categoryLabel(a.category)}
+                    </span>
+                    <span className="text-zinc-400">{a.readingMinutes} 分</span>
+                  </div>
+                  <h2 className="mt-4 text-[1.2rem] sm:text-[1.3rem] font-bold leading-[1.5] text-zinc-900 group-hover:text-zinc-600 transition-colors">
+                    {a.title}
+                  </h2>
+                  {a.excerpt && (
+                    <p className="mt-3 text-[13px] text-zinc-500 leading-[1.9] line-clamp-3 flex-1">
+                      {a.excerpt}
+                    </p>
+                  )}
+                  <span
+                    className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold group-hover:gap-2.5 transition-all"
+                    style={{ color: accent }}
+                  >
+                    読んでみる <span aria-hidden>→</span>
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
