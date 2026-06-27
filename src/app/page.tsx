@@ -133,9 +133,9 @@ export default function HomePage() {
           keeps faintly moving behind; content sits on top in dark ink. */}
       <div className="relative z-10 overflow-hidden">
         <div
-          className="absolute inset-0 pointer-events-none backdrop-blur-md"
+          className="absolute inset-0 pointer-events-none backdrop-blur-[2px]"
           aria-hidden="true"
-          style={{ background: "linear-gradient(180deg, rgba(245,247,242,0.5) 0%, rgba(240,244,238,0.42) 40%, rgba(238,243,237,0.46) 100%)" }}
+          style={{ background: "linear-gradient(180deg, rgba(245,247,242,0.2) 0%, rgba(240,244,238,0.12) 40%, rgba(238,243,237,0.16) 100%)" }}
         />
 
         {/* ===== Complexes ===== */}
