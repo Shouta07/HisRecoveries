@@ -2,6 +2,9 @@ import Link from "next/link";
 import { getAllRecoveries } from "@/lib/recoveries";
 import { complexes, complexByTerritory } from "@/lib/complexes";
 import { PhoneMock, ClinicScene } from "@/components/ServiceMock";
+import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
+import ScrollProgress from "@/components/ScrollProgress";
 
 const ACCENT = "#0F766E"; // calm, trustworthy teal
 const ACCENT_SOFT = "#E6F2F0";
@@ -76,6 +79,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-white text-zinc-900">
+      <ScrollProgress />
       {/* ───────────────────────── Hero ───────────────────────── */}
       <section className="border-b border-zinc-100 overflow-hidden">
         <div className="mx-auto max-w-[1120px] px-6 sm:px-10 pt-14 sm:pt-20 pb-16 sm:pb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-10 items-center">
@@ -131,7 +135,7 @@ export default function HomePage() {
           </div>
 
           {/* Service mock — online system */}
-          <div className="justify-self-center lg:justify-self-end">
+          <div className="justify-self-center lg:justify-self-end soft-float">
             <PhoneMock />
           </div>
         </div>
@@ -140,7 +144,7 @@ export default function HomePage() {
       {/* ───────────────────────── What His Recoveries is ───────────────────────── */}
       <section className="bg-[#F7F8F7] border-b border-zinc-100">
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-20">
-          <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase mb-5">
+          <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase mb-5">
             About His Recoveries
           </p>
           <p className="text-[1.3rem] sm:text-[1.7rem] font-bold leading-[1.6] text-zinc-900 max-w-[34ch]">
@@ -181,11 +185,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ───────────────────────── Stats band (animated) ───────────────────────── */}
+      <section className="border-b border-zinc-100">
+        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-14 sm:py-16">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6">
+            {[
+              { v: <CountUp to={6} suffix=" 領域" />, label: "向き合う悩み" },
+              { v: <CountUp to={0} prefix="¥" />, label: "紹介手数料（中立）" },
+              { v: <CountUp to={5} suffix=" STEP" />, label: "改善の進め方" },
+              { v: <span>1:1</span>, label: "専属で伴走" },
+            ].map((s, i) => (
+              <div key={i} className="text-center">
+                <div
+                  className="text-[2.4rem] sm:text-[3rem] font-extrabold leading-none tracking-[-0.02em]"
+                  style={{ color: ACCENT }}
+                >
+                  {s.v}
+                </div>
+                <div className="mt-3 text-[12.5px] font-medium text-zinc-500">
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ───────────────────────── Solution: system × offline ───────────────────────── */}
+      <Reveal>
       <section className="border-b border-zinc-100">
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
           <div className="max-w-[40rem]">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
+            <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
               Our solution
             </p>
             <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
@@ -286,12 +317,14 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+      </Reveal>
 
       {/* ───────────────────────── Approach (how) ───────────────────────── */}
+      <Reveal>
       <section id="approach" className="scroll-mt-20 border-b border-zinc-100">
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
           <div className="max-w-[40rem]">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
+            <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
               How it works
             </p>
             <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
@@ -323,8 +356,10 @@ export default function HomePage() {
           </ol>
         </div>
       </section>
+      </Reveal>
 
       {/* ───────────────────────── Do / Don't (honesty) ───────────────────────── */}
+      <Reveal>
       <section className="bg-[#F7F8F7] border-b border-zinc-100">
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
           <h2 className="text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
@@ -362,12 +397,14 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ───────────────────────── Complexes ───────────────────────── */}
+      <Reveal>
       <section className="border-b border-zinc-100">
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
           <div className="max-w-[40rem]">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
+            <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
               What we work on
             </p>
             <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
@@ -405,8 +442,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ───────────────────────── Cost & transparency ───────────────────────── */}
+      <Reveal>
       <section className="bg-[#F7F8F7] border-b border-zinc-100">
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
           <h2 className="text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
@@ -431,13 +470,15 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ───────────────────────── Voices ───────────────────────── */}
       {voices.length > 0 && (
+        <Reveal>
         <section className="border-b border-zinc-100">
           <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
             <div className="max-w-[40rem]">
-              <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
+              <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
                 Voices
               </p>
               <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
@@ -478,9 +519,11 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        </Reveal>
       )}
 
       {/* ───────────────────────── FAQ (address skepticism) ───────────────────────── */}
+      <Reveal>
       <section className="border-b border-zinc-100">
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
           <h2 className="text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
@@ -505,8 +548,10 @@ export default function HomePage() {
           </dl>
         </div>
       </section>
+      </Reveal>
 
       {/* ───────────────────────── Final CTA ───────────────────────── */}
+      <Reveal>
       <section>
         <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-20 sm:py-28">
           <div
@@ -543,6 +588,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
     </div>
   );
 }
