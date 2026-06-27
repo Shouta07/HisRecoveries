@@ -110,15 +110,15 @@ export default function HomePage() {
 
         {/* Bottom-left CTA block — on mobile the on-media halo + light scrim
             keep the dark-green copy legible over the bright video. */}
-        <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 max-w-sm on-media sm:[text-shadow:none]">
-          <div className="flex items-center gap-2 text-[#2d4228] sm:text-white/95 mb-3">
+        <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 sm:max-w-sm on-media sm:[text-shadow:none] text-center sm:text-left">
+          <div className="flex items-center justify-center sm:justify-start gap-2 text-[#2d4228] sm:text-white/95 mb-3">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" /><path d="M19 3v4" /><path d="M21 5h-4" /></svg>
             <span className="text-sm font-semibold sm:font-medium">完全招待制 ・ 中立</span>
           </div>
-          <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs font-semibold sm:font-normal">
+          <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs mx-auto sm:mx-0 font-semibold sm:font-normal">
             Webアプリで状態を可視化し、オフラインで専属が伴走。各悩みのメカニズムは、当事者のインタビューで特集します。効果は保証しません。
           </p>
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
             <Link href={APPLY} className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors shadow-sm">参加を申し込む</Link>
             <a href="#how" className="text-[#3d5638] sm:text-white text-sm font-semibold sm:font-medium hover:opacity-80 transition-opacity">進め方を見る</a>
           </div>
