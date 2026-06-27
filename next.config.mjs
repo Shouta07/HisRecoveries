@@ -21,12 +21,12 @@ const nextConfig = {
     return [
       // /recoveries (and legacy /stories) were folded into the one-page home;
       // send them to the home's interviews section.
-      { source: "/stories", destination: "/", permanent: true },
-      { source: "/stories/:slug", destination: "/", permanent: true },
-      { source: "/recoveries", destination: "/", permanent: true },
-      { source: "/recoveries/:slug*", destination: "/", permanent: true },
-      { source: "/territories", destination: "/", permanent: true },
-      { source: "/territories/:slug*", destination: "/", permanent: true },
+      { source: "/stories", destination: "/interviews", permanent: true },
+      { source: "/stories/:slug", destination: "/interviews", permanent: true },
+      { source: "/recoveries", destination: "/interviews", permanent: true },
+      { source: "/recoveries/:slug*", destination: "/interviews", permanent: true },
+      { source: "/territories", destination: "/mechanism", permanent: true },
+      { source: "/territories/:slug*", destination: "/mechanism", permanent: true },
       { source: "/manifesto", destination: "/", permanent: true },
       // /en mirror removed — Japanese only for now.
       { source: "/en", destination: "/", permanent: true },

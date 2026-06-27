@@ -24,14 +24,16 @@ export default function ApplyPage() {
       </div>
       <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
         <p className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">
-          APPLY · 完全招待制
+          APPLY · 完全招待制 · 完全匿名
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
           参加を申し込む。
         </h1>
         <p className="mt-5 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
-          まずは対話から。いまの悩みを聞かせてください。私たちが力になれると判断したとき、
-          ご招待をお送りします。お申し込みには、秘密保持への同意が必要です。
+          まずは対話から。いまの悩みを聞かせてください。すべて
+          <strong className="font-bold text-[#1f2a1d]">完全匿名・守秘義務</strong>
+          のもとで扱います。私たちが力になれると判断したとき、ご招待をお送りします。
+          お申し込みには、秘密保持への同意が必要です。
         </p>
 
         <ApplyForm />

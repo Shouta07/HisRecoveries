@@ -16,6 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/apply",
     "/packages",
+    "/mechanism",
+    "/interviews",
     "/experts",
     "/services",
     "/map",
