@@ -149,22 +149,12 @@ export default function HomePage() {
 
         {/* ===== How (web app × offline, 5 steps) ===== */}
         <section id="how" className="relative z-10 text-[#1f2a1d]">
-          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
-            <div className="on-media max-w-2xl mb-12 md:mb-16">
-              <div className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">HOW IT WORKS</div>
-              <h2 className="leading-[1.04] text-[#1f2a1d] text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
-                Webアプリ × オフラインで、<br className="hidden sm:block" /><span className="text-[#3d5638]">改善する。</span>
-              </h2>
-              <p className="mt-5 text-[#4b5b47] text-sm md:text-base leading-relaxed">アプリだけでは続かない。対面だけでも届かない。両輪を一つにして、原因から定着まで運びます。</p>
-            </div>
-
-            {/* one picture: tilted phone mockups × offline photos */}
-            <div className="mb-16 md:mb-20">
-              <HowShowcase />
-            </div>
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
+            {/* device showcase — placed directly under the hero */}
+            <HowShowcase />
 
             {/* 5 steps */}
-            <div className="on-media mb-8">
+            <div className="on-media mt-16 md:mt-24 mb-8">
               <h3 className="text-xl md:text-2xl text-[#1f2a1d] font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
               <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">どれも、隠さず・順番どおりに。</p>
             </div>

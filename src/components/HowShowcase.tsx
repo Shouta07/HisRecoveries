@@ -1,21 +1,33 @@
-// "Webアプリ × オフライン" as one composed picture: tilted phone mockups
-// (the online system) layered with offline photo panels — hacomono-style.
+// "Webアプリ × オフライン" as one premium composed picture: tilted phone
+// mockups (the online system) layered with offline photo panels.
 // Photos are branded placeholders; drop real images into /public/media/how later.
 
-function Photo({ className = "" }: { className?: string }) {
+const HEAD: React.CSSProperties = {
+  fontFamily:
+    "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+  fontWeight: 800,
+  letterSpacing: "0.01em",
+  fontFeatureSettings: '"palt" 1',
+};
+
+function Photo({ className = "", rotate = 0 }: { className?: string; rotate?: number }) {
   return (
     <div
       aria-hidden
-      className={`relative overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5 ${className}`}
-      style={{ background: "linear-gradient(135deg,#cdd8c8,#9fb0a0)" }}
+      className={`relative overflow-hidden rounded-[1.4rem] shadow-[0_24px_50px_-18px_rgba(20,32,26,0.45)] ring-1 ring-black/5 ${className}`}
+      style={{
+        background: "linear-gradient(135deg,#cdd8c8,#8ea391)",
+        transform: `rotate(${rotate}deg)`,
+      }}
     >
       <div className="absolute inset-0 flex items-center justify-center">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#16241a" strokeWidth="1.4" className="opacity-30" aria-hidden>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#16241a" strokeWidth="1.4" className="opacity-25" aria-hidden>
           <rect x="3" y="3" width="18" height="18" rx="3" />
           <circle cx="8.5" cy="9" r="1.6" />
           <path d="M21 16l-5-5L5 21" />
         </svg>
       </div>
+      <div className="absolute inset-x-0 bottom-0 h-1/3" style={{ background: "linear-gradient(to top, rgba(14,21,13,0.35), transparent)" }} />
     </div>
   );
 }
@@ -23,13 +35,21 @@ function Photo({ className = "" }: { className?: string }) {
 function PhoneFrame({
   children,
   className = "",
+  style,
 }: {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   return (
-    <div className={`w-[180px] sm:w-[210px] rounded-[2rem] bg-zinc-900 p-2 shadow-[0_30px_60px_-18px_rgba(0,0,0,0.4)] ${className}`}>
-      <div className="rounded-[1.6rem] bg-[#f7f8f7] overflow-hidden">
+    <div
+      className={`relative w-[176px] sm:w-[212px] rounded-[2.2rem] bg-zinc-900 p-[6px] shadow-[0_40px_70px_-20px_rgba(20,32,26,0.55)] ring-1 ring-black/20 ${className}`}
+      style={style}
+    >
+      {/* side buttons */}
+      <span aria-hidden className="absolute -left-[2px] top-16 w-[2px] h-7 rounded-l bg-zinc-700" />
+      <span aria-hidden className="absolute -right-[2px] top-20 w-[2px] h-10 rounded-r bg-zinc-700" />
+      <div className="rounded-[1.8rem] bg-[#f7f8f7] overflow-hidden">
         <div className="relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-4 bg-zinc-900 rounded-b-xl z-10" />
           {children}
@@ -39,7 +59,6 @@ function PhoneFrame({
   );
 }
 
-/** App dashboard screen */
 function DashboardScreen() {
   return (
     <div>
@@ -80,7 +99,6 @@ function DashboardScreen() {
   );
 }
 
-/** Member / mypage screen (offline link, reservations) */
 function MemberScreen() {
   return (
     <div>
@@ -122,34 +140,55 @@ function MemberScreen() {
 
 export default function HowShowcase() {
   return (
-    <div className="relative overflow-hidden rounded-[2rem] bg-[#eef1ea] border border-[#1f2a1d]/10 px-4 sm:px-8 py-12 sm:py-16">
-      {/* labels */}
-      <div className="flex items-center justify-center gap-4 mb-8 text-[11px] font-semibold tracking-[0.08em]">
-        <span className="text-[#3d5638]">ONLINE — Webアプリ</span>
-        <span className="text-[#1f2a1d]/30">×</span>
-        <span className="text-[#3d5638]">OFFLINE — 専属伴走</span>
+    <div className="relative overflow-hidden rounded-[2.5rem] border border-[#1f2a1d]/10 px-4 sm:px-10 py-12 sm:py-16"
+      style={{ background: "linear-gradient(180deg,#f3f6f0 0%,#e8efe6 55%,#dfe8da 100%)" }}
+    >
+      {/* soft ambient blobs */}
+      <div aria-hidden className="absolute -top-16 -left-10 w-72 h-72 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.25)" }} />
+      <div aria-hidden className="absolute -bottom-20 -right-10 w-80 h-80 rounded-full blur-3xl" style={{ background: "rgba(22,36,26,0.10)" }} />
+
+      <div className="relative">
+        <div className="text-center mb-3">
+          <span className="font-mono text-[11px] tracking-[0.18em] text-[#3d5638] uppercase">How it works</span>
+        </div>
+        <h3 className="text-center text-[1.5rem] sm:text-[2rem] leading-[1.3] mb-2" style={HEAD}>
+          Webアプリ <span className="text-[#85AB8B]">×</span> オフライン。
+        </h3>
+        <p className="text-center text-[13px] text-[#4b5b47] leading-[1.9] max-w-[30rem] mx-auto mb-10">
+          続ける力はアプリで、変える力は人で。両輪を、一枚に。
+        </p>
+
+        {/* composed devices + photos */}
+        <div className="relative flex items-end justify-center" style={{ perspective: "1400px" }}>
+          <Photo className="hidden md:block w-36 h-56 -mr-12 mb-8" rotate={-9} />
+
+          <PhoneFrame
+            className="z-10"
+            style={{ transform: "rotate(-5deg) translateY(10px)" }}
+          >
+            <DashboardScreen />
+          </PhoneFrame>
+
+          <PhoneFrame
+            className="z-20 -ml-8 sm:-ml-10"
+            style={{ transform: "rotate(4deg) translateY(-14px) scale(1.03)" }}
+          >
+            <MemberScreen />
+          </PhoneFrame>
+
+          <Photo className="hidden md:block w-36 h-56 -ml-12 mb-8" rotate={9} />
+        </div>
+
+        {/* baseline soft shadow */}
+        <div aria-hidden className="mx-auto mt-2 h-6 w-[60%] rounded-[50%] blur-xl" style={{ background: "rgba(20,32,26,0.18)" }} />
+
+        {/* labels */}
+        <div className="mt-8 flex items-center justify-center gap-5 text-[11.5px] font-semibold">
+          <span className="inline-flex items-center gap-1.5 text-[#3d5638]"><span className="w-1.5 h-1.5 rounded-full bg-[#85AB8B]" />ONLINE — Webアプリ</span>
+          <span className="text-[#1f2a1d]/30">×</span>
+          <span className="inline-flex items-center gap-1.5 text-[#3d5638]"><span className="w-1.5 h-1.5 rounded-full bg-[#85AB8B]" />OFFLINE — 専属伴走</span>
+        </div>
       </div>
-
-      <div className="relative flex items-center justify-center">
-        {/* back-left offline photo */}
-        <Photo className="hidden md:block w-40 h-60 -rotate-[8deg] -mr-10 mt-6" />
-
-        {/* phones */}
-        <PhoneFrame className="-rotate-[5deg] z-10 relative">
-          <DashboardScreen />
-        </PhoneFrame>
-        <PhoneFrame className="rotate-[4deg] -ml-8 sm:-ml-10 mt-10 z-20 relative">
-          <MemberScreen />
-        </PhoneFrame>
-
-        {/* back-right offline photo */}
-        <Photo className="hidden md:block w-40 h-60 rotate-[8deg] -ml-10 mt-6" />
-      </div>
-
-      <p className="mt-10 text-center text-[13px] text-[#4b5b47] leading-[1.9] max-w-[34rem] mx-auto">
-        セルフ診断・記録・連絡はアプリで。診断・改善設計・定着は、専属担当と専門家がオフラインで。
-        <span className="text-[#1f2a1d] font-semibold"> 両輪を、一枚に。</span>
-      </p>
     </div>
   );
 }
