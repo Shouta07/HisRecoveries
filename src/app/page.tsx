@@ -58,19 +58,18 @@ export default function HomePage() {
 
         {/* Hero copy */}
         <div className="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-28 md:pt-32 px-4 sm:px-6">
+          <p className="text-[#4b5b47] text-xs sm:text-sm tracking-[0.18em] font-medium mb-4">
+            男性のための
+          </p>
           <h1
-            className="font-normal leading-[0.95] text-[#336443] text-[2rem] sm:text-4xl md:text-5xl lg:text-[4.75rem] xl:text-[5.25rem] max-w-5xl"
+            className="font-normal leading-[0.95] text-[#336443] text-[2.4rem] sm:text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] max-w-5xl"
             style={HEAD}
           >
-            男性の悩みを、{" "}
-            <span className="text-[#85AB8B]">
-              原因から
-              <br className="hidden sm:block" />
-              整える人。
-            </span>
+            恥じらいの悩みを、{" "}
+            <span className="text-[#85AB8B]">救う。</span>
           </h1>
           <p className="mt-6 sm:mt-8 text-[#4b5b47] text-sm sm:text-base md:text-lg leading-relaxed max-w-md px-2">
-            薄毛・汗・肌・顔・体毛・自意識を、Webアプリと専属の伴走の両輪で、原因から整える完全招待制の改善プログラム。商品も施術も売りません。
+            薄毛・汗・肌・顔・体毛。人に言えない悩みを、原因から。完全招待制の改善プログラム。
           </p>
         </div>
 
