@@ -7,10 +7,22 @@ const APPLY = "/assessment";
 
 // Heading face: the design uses Neue Haas Grotesk (licensed). Fall back to
 // Inter + Zen Kaku Gothic New, which we load, then system grotesks.
+// `palt` enables proportional Japanese metrics for tight, professional kerning.
 const HEAD: React.CSSProperties = {
   fontFamily:
     "var(--font-inter), var(--font-zen), 'Helvetica Neue', Helvetica, Arial, sans-serif",
-  letterSpacing: "-0.035em",
+  letterSpacing: "-0.025em",
+  fontWeight: 500,
+  fontFeatureSettings: '"palt" 1, "kern" 1',
+  WebkitFontSmoothing: "antialiased",
+  textRendering: "optimizeLegibility",
+};
+
+// Hero display — a touch more weight + presence than section headings.
+const HERO_HEAD: React.CSSProperties = {
+  ...HEAD,
+  fontWeight: 600,
+  letterSpacing: "-0.02em",
 };
 
 const INTERVIEWS_MORE = [
@@ -61,18 +73,27 @@ export default function HomePage() {
 
         {/* Hero copy */}
         <div className="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-28 md:pt-32 px-4 sm:px-6">
-          <p className="text-[#4b5b47] text-xs sm:text-sm tracking-[0.18em] font-medium mb-4">
-            男性のための
-          </p>
+          <div className="flex items-center gap-3 mb-5 text-[#4b5b47]">
+            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/70" />
+            <span className="text-[11px] sm:text-xs tracking-[0.42em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
+              男性のための
+            </span>
+            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/70" />
+          </div>
           <h1
-            className="font-normal leading-[0.95] text-[#336443] text-[2.4rem] sm:text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] max-w-5xl"
-            style={HEAD}
+            className="text-[#336443] text-[2.6rem] sm:text-[3.4rem] md:text-6xl lg:text-[5.5rem] xl:text-[6.25rem] max-w-5xl"
+            style={{ ...HERO_HEAD, lineHeight: 1.04 }}
           >
             恥じらいの悩みを、{" "}
             <span className="text-[#85AB8B]">救う。</span>
           </h1>
-          <p className="mt-6 sm:mt-8 text-[#4b5b47] text-sm sm:text-base md:text-lg leading-relaxed max-w-md px-2">
-            薄毛・汗・肌・顔・体毛。人に言えない悩みを、原因から。完全招待制の改善プログラム。
+          <p
+            className="mt-7 sm:mt-9 text-[#4b5b47] text-[13.5px] sm:text-[15px] md:text-base leading-[2.05] tracking-[0.04em] max-w-md px-2"
+            style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400 }}
+          >
+            薄毛・汗・肌・顔・体毛。人に言えない悩みを、原因から。
+            <wbr />
+            完全招待制の改善プログラム。
           </p>
         </div>
 
@@ -101,31 +122,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============ Forest (dark sections) ============ */}
-      {/* Solid dark-green background from the complexes section down — keeps
-          text crisp and legible (no video bleed / blurred streaks). */}
-      <div className="relative z-10 overflow-hidden bg-[#16241a]">
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#16241a 0%,#1b2c20 30%,#16231a 65%,#0e150d 100%)" }} />
-        </div>
+      {/* ============ Lower sections — frosted glass over the boomerang video ============ */}
+      {/* The fixed video shows through a translucent, white-blurred veil so it
+          keeps faintly moving behind; content sits on top in dark ink. */}
+      <div className="relative z-10 overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none backdrop-blur-2xl"
+          aria-hidden="true"
+          style={{ background: "linear-gradient(180deg, rgba(245,247,242,0.82) 0%, rgba(240,244,238,0.74) 40%, rgba(238,243,237,0.78) 100%)" }}
+        />
 
         {/* ===== Complexes ===== */}
-        <section id="complexes" className="relative z-10 text-white">
+        <section id="complexes" className="relative z-10 text-[#1f2a1d]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
             <div className="max-w-2xl mb-12 md:mb-16">
-              <div className="text-xs tracking-[0.18em] text-[#85AB8B] font-medium mb-4">WHAT WE WORK ON</div>
-              <h2 className="font-normal leading-[1.02] text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
-                向き合う、<span className="text-[#85AB8B]">6つの悩み。</span>
+              <div className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">WHAT WE WORK ON</div>
+              <h2 className="leading-[1.04] text-[#1f2a1d] text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
+                向き合う、<span className="text-[#3d5638]">6つの悩み。</span>
               </h2>
-              <p className="mt-5 text-white/70 text-sm md:text-base leading-relaxed">それぞれ「なぜ起きるのか」を、原因から読めるようにしています。煽らず、断定せず、仕組みから。</p>
+              <p className="mt-5 text-[#4b5b47] text-sm md:text-base leading-relaxed">それぞれ「なぜ起きるのか」を、原因から読めるようにしています。煽らず、断定せず、仕組みから。</p>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-[1.5rem] overflow-hidden border border-white/10">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#1f2a1d]/10 rounded-[1.5rem] overflow-hidden border border-[#1f2a1d]/10">
               {complexes.map((c, i) => (
-                <a key={c.id} href="#interviews" className="group bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-sm transition-colors p-7 md:p-8 flex flex-col">
-                  <div className="text-[13px] text-[#85AB8B] font-medium mb-3">{String(i + 1).padStart(2, "0")}</div>
-                  <h3 className="text-xl text-white font-semibold mb-2">{c.ja}</h3>
-                  <p className="text-[13.5px] text-white/70 leading-relaxed">{c.mechanism}</p>
-                  <span className="mt-5 text-[13px] text-[#85AB8B] font-medium group-hover:opacity-70 transition-opacity">なぜ起きる？を読む →</span>
+                <a key={c.id} href="#interviews" className="group bg-white/65 hover:bg-white/85 backdrop-blur-md transition-colors p-7 md:p-8 flex flex-col">
+                  <div className="text-[13px] text-[#3d5638] font-semibold mb-3">{String(i + 1).padStart(2, "0")}</div>
+                  <h3 className="text-xl text-[#1f2a1d] font-semibold mb-2">{c.ja}</h3>
+                  <p className="text-[13.5px] text-[#4b5b47] leading-relaxed">{c.mechanism}</p>
+                  <span className="mt-5 text-[13px] text-[#3d5638] font-semibold group-hover:opacity-70 transition-opacity">なぜ起きる？を読む →</span>
                 </a>
               ))}
             </div>
@@ -133,33 +156,33 @@ export default function HomePage() {
         </section>
 
         {/* ===== Interviews ===== */}
-        <section id="interviews" className="relative z-10 text-white">
+        <section id="interviews" className="relative z-10 text-[#1f2a1d]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
             <div className="max-w-2xl mb-12 md:mb-16">
-              <div className="text-xs tracking-[0.18em] text-[#85AB8B] font-medium mb-4">INTERVIEWS</div>
-              <h2 className="font-normal leading-[1.02] text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
-                同じ道を、<span className="text-[#85AB8B]">通った人たち。</span>
+              <div className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">INTERVIEWS</div>
+              <h2 className="leading-[1.04] text-[#1f2a1d] text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
+                同じ道を、<span className="text-[#3d5638]">通った人たち。</span>
               </h2>
-              <p className="mt-5 text-white/70 text-sm md:text-base leading-relaxed">悩みごとに、原因のメカニズムと、当事者がどう向き合ったか。成功談ではなく、過程の記録として。</p>
+              <p className="mt-5 text-[#4b5b47] text-sm md:text-base leading-relaxed">悩みごとに、原因のメカニズムと、当事者がどう向き合ったか。成功談ではなく、過程の記録として。</p>
             </div>
 
             {/* featured */}
             <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-stretch mb-10">
-              <a href="#how" className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-8 md:p-12 flex flex-col justify-between min-h-[320px] hover:bg-[#0f1a10]/70 transition-colors">
+              <a href="#how" className="rounded-[2rem] bg-white/70 backdrop-blur-md border border-[#1f2a1d]/10 p-8 md:p-12 flex flex-col justify-between min-h-[320px] hover:bg-white/85 transition-colors shadow-sm">
                 <div>
-                  <div className="flex items-center gap-2 text-[#85AB8B] text-[13px] font-medium mb-6">
-                    <span>薄毛・AGA</span><span className="text-white/30">·</span><span className="text-white/60">1年後</span>
+                  <div className="flex items-center gap-2 text-[#3d5638] text-[13px] font-semibold mb-6">
+                    <span>薄毛・AGA</span><span className="text-[#1f2a1d]/25">·</span><span className="text-[#6b7a66]">1年後</span>
                   </div>
-                  <p className="text-2xl md:text-[2rem] leading-[1.5] font-normal text-white" style={{ letterSpacing: "-0.02em" }}>「名刺を渡す角度を、いつのまにか変えていた。気づいたのは、変えなくてよくなってからでした。」</p>
+                  <p className="text-2xl md:text-[2rem] leading-[1.5] font-normal text-[#1f2a1d]" style={{ letterSpacing: "-0.02em" }}>「名刺を渡す角度を、いつのまにか変えていた。気づいたのは、変えなくてよくなってからでした。」</p>
                 </div>
-                <div className="mt-8 text-white/55 text-sm">30代前半・法人営業 / 一日に何度も初対面の相手と向き合う</div>
+                <div className="mt-8 text-[#6b7a66] text-sm">30代前半・法人営業 / 一日に何度も初対面の相手と向き合う</div>
               </a>
-              <div className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-8 md:p-10 flex flex-col">
-                <div className="text-xs tracking-[0.16em] text-[#85AB8B] font-medium mb-5">メカニズム</div>
-                <h3 className="text-lg text-white font-semibold mb-3">なぜ起きるのか</h3>
-                <p className="text-white/70 text-sm leading-[1.9]">テストステロンが5αリダクターゼによってDHTへ変換され、感受性の高い前頭部・頭頂部の毛包でヘアサイクルが短縮します。原因を見立てた上で、必要なら連携医療機関へ。</p>
+              <div className="rounded-[2rem] bg-white/70 backdrop-blur-md border border-[#1f2a1d]/10 p-8 md:p-10 flex flex-col shadow-sm">
+                <div className="text-xs tracking-[0.16em] text-[#3d5638] font-semibold mb-5">メカニズム</div>
+                <h3 className="text-lg text-[#1f2a1d] font-semibold mb-3">なぜ起きるのか</h3>
+                <p className="text-[#4b5b47] text-sm leading-[1.9]">テストステロンが5αリダクターゼによってDHTへ変換され、感受性の高い前頭部・頭頂部の毛包でヘアサイクルが短縮します。原因を見立てた上で、必要なら連携医療機関へ。</p>
                 <div className="mt-auto pt-8">
-                  <a href="#how" className="inline-flex items-center gap-2 text-[#85AB8B] text-sm font-medium hover:opacity-70 transition-opacity">改善の進め方を見る →</a>
+                  <a href="#how" className="inline-flex items-center gap-2 text-[#3d5638] text-sm font-semibold hover:opacity-70 transition-opacity">改善の進め方を見る →</a>
                 </div>
               </div>
             </div>
@@ -167,12 +190,12 @@ export default function HomePage() {
             {/* more */}
             <div className="grid sm:grid-cols-2 gap-6">
               {INTERVIEWS_MORE.map((it) => (
-                <a key={it.title} href={it.href} className="group rounded-[1.5rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 hover:bg-[#33422f] transition-colors p-7 md:p-8 flex flex-col min-h-[200px]">
-                  <div className="flex items-center gap-2 text-[#85AB8B] text-[13px] font-medium mb-5">
-                    <span>{it.tag}</span><span className="text-white/30">·</span><span className="text-white/60">{it.span}</span>
+                <a key={it.title} href={it.href} className="group rounded-[1.5rem] bg-white/70 backdrop-blur-md border border-[#1f2a1d]/10 hover:bg-white/90 transition-colors p-7 md:p-8 flex flex-col min-h-[200px] shadow-sm">
+                  <div className="flex items-center gap-2 text-[#3d5638] text-[13px] font-semibold mb-5">
+                    <span>{it.tag}</span><span className="text-[#1f2a1d]/25">·</span><span className="text-[#6b7a66]">{it.span}</span>
                   </div>
-                  <h3 className="text-lg md:text-xl leading-[1.55] text-white font-normal">{it.title}</h3>
-                  <div className="mt-auto pt-6 text-white/50 text-[13px]">{it.who}</div>
+                  <h3 className="text-lg md:text-xl leading-[1.55] text-[#1f2a1d] font-normal">{it.title}</h3>
+                  <div className="mt-auto pt-6 text-[#6b7a66] text-[13px]">{it.who}</div>
                 </a>
               ))}
             </div>
@@ -180,21 +203,21 @@ export default function HomePage() {
         </section>
 
         {/* ===== How (web app × offline, 5 steps) ===== */}
-        <section id="how" className="relative z-10 text-white">
+        <section id="how" className="relative z-10 text-[#1f2a1d]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
             <div className="max-w-2xl mb-12 md:mb-16">
-              <div className="text-xs tracking-[0.18em] text-[#85AB8B] font-medium mb-4">HOW IT WORKS</div>
-              <h2 className="font-normal leading-[1.02] text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
-                Webアプリ × オフラインで、<br className="hidden sm:block" /><span className="text-[#85AB8B]">改善する。</span>
+              <div className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">HOW IT WORKS</div>
+              <h2 className="leading-[1.04] text-[#1f2a1d] text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
+                Webアプリ × オフラインで、<br className="hidden sm:block" /><span className="text-[#3d5638]">改善する。</span>
               </h2>
-              <p className="mt-5 text-white/70 text-sm md:text-base leading-relaxed">アプリだけでは続かない。対面だけでも届かない。両輪を一つにして、原因から定着まで運びます。</p>
+              <p className="mt-5 text-[#4b5b47] text-sm md:text-base leading-relaxed">アプリだけでは続かない。対面だけでも届かない。両輪を一つにして、原因から定着まで運びます。</p>
             </div>
 
             {/* eye-catch: web app + offline */}
             <div className="grid lg:grid-cols-2 gap-6 mb-16 md:mb-20">
               {/* web app */}
-              <div className="rounded-[2rem] bg-white p-7 md:p-9 flex flex-col">
-                <div className="flex items-center gap-2 text-[13px] font-medium text-[#3d5638] mb-6">
+              <div className="rounded-[2rem] bg-white p-7 md:p-9 flex flex-col shadow-sm">
+                <div className="flex items-center gap-2 text-[13px] font-semibold text-[#3d5638] mb-6">
                   <span className="w-2 h-2 rounded-full bg-[#85AB8B]" />ONLINE — Webアプリ
                 </div>
                 <div className="rounded-[1.4rem] bg-[#f4f5f1] border border-[#e4e6df] p-6">
@@ -220,83 +243,83 @@ export default function HomePage() {
               </div>
 
               {/* offline */}
-              <div className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 text-white p-7 md:p-9 flex flex-col">
-                <div className="flex items-center gap-2 text-[13px] font-medium text-[#85AB8B] mb-6">
+              <div className="rounded-[2rem] bg-white/70 backdrop-blur-md border border-[#1f2a1d]/10 text-[#1f2a1d] p-7 md:p-9 flex flex-col shadow-sm">
+                <div className="flex items-center gap-2 text-[13px] font-semibold text-[#3d5638] mb-6">
                   <span className="w-2 h-2 rounded-full bg-[#85AB8B]" />OFFLINE — 専属伴走
                 </div>
-                <div className="rounded-[1.4rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-6 flex-1 flex flex-col justify-center gap-4">
+                <div className="rounded-[1.4rem] bg-white/60 border border-[#1f2a1d]/10 p-6 flex-1 flex flex-col justify-center gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-[#85AB8B]/20 border border-[#85AB8B]/30 flex items-center justify-center shrink-0">
-                      <svg className="w-5 h-5 text-[#85AB8B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    <div className="w-12 h-12 rounded-full bg-[#85AB8B]/20 border border-[#85AB8B]/40 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5 text-[#3d5638]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
                     </div>
                     <div>
-                      <div className="text-white font-semibold">専属担当との面談</div>
-                      <div className="text-white/55 text-[13px]">オンライン / 対面・連携クリニック</div>
+                      <div className="text-[#1f2a1d] font-semibold">専属担当との面談</div>
+                      <div className="text-[#6b7a66] text-[13px]">オンライン / 対面・連携クリニック</div>
                     </div>
                   </div>
-                  <div className="h-px bg-white/10" />
-                  <ul className="space-y-3 text-sm text-white/80">
-                    <li className="flex gap-3"><span className="text-[#85AB8B]">—</span>専属担当による改善設計</li>
-                    <li className="flex gap-3"><span className="text-[#85AB8B]">—</span>専門医療機関との連携</li>
-                    <li className="flex gap-3"><span className="text-[#85AB8B]">—</span>定着までの継続フォロー</li>
+                  <div className="h-px bg-[#1f2a1d]/10" />
+                  <ul className="space-y-3 text-sm text-[#4b5b47]">
+                    <li className="flex gap-3"><span className="text-[#3d5638]">—</span>専属担当による改善設計</li>
+                    <li className="flex gap-3"><span className="text-[#3d5638]">—</span>専門医療機関との連携</li>
+                    <li className="flex gap-3"><span className="text-[#3d5638]">—</span>定着までの継続フォロー</li>
                   </ul>
                 </div>
-                <p className="mt-6 text-white/70 text-sm leading-relaxed">原因の診断から定着まで、専属の担当と専門家が、対面でもオンラインでも並走します。</p>
+                <p className="mt-6 text-[#4b5b47] text-sm leading-relaxed">原因の診断から定着まで、専属の担当と専門家が、対面でもオンラインでも並走します。</p>
               </div>
             </div>
 
             {/* 5 steps */}
             <div className="mb-8">
-              <h3 className="text-xl md:text-2xl text-white font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
-              <p className="mt-3 text-white/70 text-sm leading-relaxed">どれも、隠さず・順番どおりに。</p>
+              <h3 className="text-xl md:text-2xl text-[#1f2a1d] font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
+              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">どれも、隠さず・順番どおりに。</p>
             </div>
-            <div className="grid md:grid-cols-5 gap-px bg-white/10 rounded-[1.5rem] overflow-hidden border border-white/10">
+            <div className="grid md:grid-cols-5 gap-px bg-[#1f2a1d]/10 rounded-[1.5rem] overflow-hidden border border-[#1f2a1d]/10">
               {STEPS.map((s) => (
-                <div key={s.n} className="bg-white/[0.06] backdrop-blur-sm p-6 flex flex-col">
-                  <div className="text-[#85AB8B] text-sm font-semibold mb-4">{s.n}</div>
-                  <h4 className="text-[15px] text-white font-semibold mb-2">{s.t}</h4>
-                  <p className="text-[12.5px] text-white/70 leading-relaxed">{s.d}</p>
+                <div key={s.n} className="bg-white/65 backdrop-blur-md p-6 flex flex-col">
+                  <div className="text-[#3d5638] text-sm font-semibold mb-4">{s.n}</div>
+                  <h4 className="text-[15px] text-[#1f2a1d] font-semibold mb-2">{s.t}</h4>
+                  <p className="text-[12.5px] text-[#4b5b47] leading-relaxed">{s.d}</p>
                 </div>
               ))}
             </div>
 
             <div className="mt-12 flex flex-wrap items-center gap-4">
               <Link href={APPLY} className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">参加を申し込む</Link>
-              <span className="text-white/70 text-[13px]">※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
+              <span className="text-[#6b7a66] text-[13px]">※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
             </div>
           </div>
         </section>
 
         {/* ===== Footer ===== */}
-        <footer className="relative z-10 border-t border-white/10">
+        <footer className="relative z-10 border-t border-[#1f2a1d]/10">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-14 md:py-16">
             <div className="grid gap-10 md:grid-cols-[1.6fr_1fr_1fr]">
               <div>
-                <div className="logo-type text-lg font-semibold tracking-tight text-white mb-4">His Recoveries</div>
-                <p className="text-white/55 text-[13px] leading-[1.95] max-w-xs">男性のコンプレックスを、原因の特定から定着まで伴走して整える、完全招待制の改善プログラム。Webアプリと、専属の伴走で。</p>
-                <Link href={APPLY} className="mt-6 inline-block bg-white/10 hover:bg-white/[0.16] border border-white/15 text-white text-sm font-medium px-6 py-3 rounded-full transition-colors">参加を申し込む</Link>
+                <div className="logo-type text-lg font-semibold tracking-tight text-[#1f2a1d] mb-4">His Recoveries</div>
+                <p className="text-[#4b5b47] text-[13px] leading-[1.95] max-w-xs">男性のコンプレックスを、原因の特定から定着まで伴走して整える、完全招待制の改善プログラム。Webアプリと、専属の伴走で。</p>
+                <Link href={APPLY} className="mt-6 inline-block bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-medium px-6 py-3 rounded-full transition-colors">参加を申し込む</Link>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.16em] text-white/40 font-medium mb-4">悩み</div>
-                <ul className="space-y-2.5 text-[13.5px] text-white/70">
+                <div className="text-[11px] tracking-[0.16em] text-[#6b7a66] font-semibold mb-4">悩み</div>
+                <ul className="space-y-2.5 text-[13.5px] text-[#4b5b47]">
                   {complexes.map((c) => (
-                    <li key={c.id}><a href="#complexes" className="hover:text-white transition-colors">{c.ja}</a></li>
+                    <li key={c.id}><a href="#complexes" className="hover:text-[#1f2a1d] transition-colors">{c.ja}</a></li>
                   ))}
                 </ul>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.16em] text-white/40 font-medium mb-4">読む</div>
-                <ul className="space-y-2.5 text-[13.5px] text-white/70">
-                  <li><a href="#interviews" className="hover:text-white transition-colors">インタビュー</a></li>
-                  <li><a href="#complexes" className="hover:text-white transition-colors">メカニズム</a></li>
-                  <li><a href="#how" className="hover:text-white transition-colors">進め方</a></li>
-                  <li><Link href="/articles" className="hover:text-white transition-colors">記事</Link></li>
-                  <li><Link href="/en" className="hover:text-white transition-colors">English</Link></li>
+                <div className="text-[11px] tracking-[0.16em] text-[#6b7a66] font-semibold mb-4">読む</div>
+                <ul className="space-y-2.5 text-[13.5px] text-[#4b5b47]">
+                  <li><a href="#interviews" className="hover:text-[#1f2a1d] transition-colors">インタビュー</a></li>
+                  <li><a href="#complexes" className="hover:text-[#1f2a1d] transition-colors">メカニズム</a></li>
+                  <li><a href="#how" className="hover:text-[#1f2a1d] transition-colors">進め方</a></li>
+                  <li><Link href="/articles" className="hover:text-[#1f2a1d] transition-colors">記事</Link></li>
+                  <li><Link href="/en" className="hover:text-[#1f2a1d] transition-colors">English</Link></li>
                 </ul>
               </div>
             </div>
-            <div className="mt-12 pt-6 border-t border-white/10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-[12px] text-white/40">
-              <div>© 2026 His Recoveries ・ <Link href="/privacy" className="hover:text-white/70 transition-colors">プライバシー・免責事項</Link></div>
+            <div className="mt-12 pt-6 border-t border-[#1f2a1d]/10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-[12px] text-[#6b7a66]">
+              <div>© 2026 His Recoveries ・ <Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link></div>
               <div>※ 診断・治療は連携する医療機関が行います。</div>
             </div>
           </div>

@@ -5,8 +5,8 @@ export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
 /**
- * Apple touch icon — same brand sigil + small wordmark caption.
- * Reads as an editorial seal on iOS home screen / Safari pinned tabs.
+ * Apple touch icon — "H" monogram + wordmark on deep forest green,
+ * matching the current His Recoveries identity (forest, sage accent).
  */
 export default function AppleIcon() {
   return new ImageResponse(
@@ -15,77 +15,31 @@ export default function AppleIcon() {
         style={{
           width: "100%",
           height: "100%",
-          background:
-            "radial-gradient(circle at 68% 24%, rgba(217,181,132,0.20) 0%, #0E0C09 65%)",
+          background: "linear-gradient(150deg, #1b2c20 0%, #16241a 55%, #0e150d 100%)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: 18,
+          padding: 24,
         }}
       >
-        <div
-          style={{
-            width: 102,
-            height: 102,
-            borderRadius: "50%",
-            border: "1.5px solid rgba(184, 145, 105, 0.36)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              width: 66,
-              height: 66,
-              borderRadius: "50%",
-              border: "1.5px solid rgba(217, 181, 132, 0.55)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: "50%",
-                border: "1.8px solid rgba(217, 181, 132, 0.78)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: 11,
-                  height: 11,
-                  borderRadius: "50%",
-                  background: "#D9B584",
-                }}
-              />
-            </div>
-          </div>
+        {/* H monogram */}
+        <div style={{ position: "relative", width: 78, height: 84, display: "flex" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, width: 15, height: 84, background: "#EDF1E8" }} />
+          <div style={{ position: "absolute", right: 0, top: 0, width: 15, height: 84, background: "#EDF1E8" }} />
+          <div style={{ position: "absolute", left: 0, top: 34.5, width: 78, height: 15, background: "#85AB8B" }} />
         </div>
 
-        <div
-          style={{
-            marginTop: 18,
-            width: 36,
-            height: 1,
-            background: "rgba(184, 145, 105, 0.6)",
-          }}
-        />
+        <div style={{ marginTop: 22, width: 40, height: 1, background: "rgba(133,171,139,0.6)" }} />
 
         <div
           style={{
-            marginTop: 12,
-            color: "#E8DCBF",
-            fontSize: 11,
+            marginTop: 14,
+            color: "#EDF1E8",
+            fontSize: 12,
             fontFamily: "serif",
             letterSpacing: 4,
-            opacity: 0.78,
+            opacity: 0.82,
             display: "flex",
           }}
         >
