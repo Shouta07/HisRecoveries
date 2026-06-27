@@ -116,15 +116,6 @@ export default function ManifestoPage() {
             ·
           </span>
           <Link
-            href="/about"
-            className="hover:text-ink transition-colors border-b border-hair-line hover:border-gold pb-0.5"
-          >
-            About
-          </Link>
-          <span aria-hidden className="text-hair-line">
-            ·
-          </span>
-          <Link
             href="/assessment"
             className="hover:text-ink transition-colors border-b border-hair-line hover:border-gold pb-0.5"
           >

@@ -22,7 +22,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/services",
     "/map",
     "/interview",
-    "/about",
     "/manifesto",
     "/founder",
     "/articles",

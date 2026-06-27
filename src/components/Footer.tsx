@@ -1,16 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 
-const CORPORATE_ROUTES = ["/about"];
-
 export default function Footer() {
-  const pathname = usePathname();
-  if (CORPORATE_ROUTES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
-    return null;
-  }
   const year = new Date().getFullYear();
 
   return (
@@ -28,10 +19,6 @@ export default function Footer() {
             <span aria-hidden>·</span>
             <Link href="/privacy" className="hover:text-ink transition-colors">
               プライバシー・免責事項
-            </Link>
-            <span aria-hidden>·</span>
-            <Link href="/about" className="hover:text-ink transition-colors">
-              運営会社
             </Link>
             <span aria-hidden>·</span>
             <Link href="/network" className="hover:text-ink transition-colors">

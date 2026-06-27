@@ -30,11 +30,6 @@ function mirroredOrHome(path: string): boolean {
   return path === "/" || MIRRORED.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
-// Routes that are part of the Vitality Design corporate site, not the
-// His Recoveries editorial brand. These get their own chrome (no HR
-// header/footer) so the corporate site reads as its own surface.
-const CORPORATE_ROUTES = ["/about"];
-
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -64,10 +59,6 @@ export default function Header() {
       };
     }
   }, [open]);
-
-  if (CORPORATE_ROUTES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
-    return null;
-  }
 
   return (
     <header className="w-full bg-cream/95 backdrop-blur text-ink sticky top-0 z-50 border-b border-hair-line">

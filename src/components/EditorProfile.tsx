@@ -21,7 +21,7 @@ export default function EditorProfile() {
           {site.authorBio}
         </p>
         <Link
-          href="/about"
+          href="/manifesto"
           className="mt-5 inline-flex items-center gap-2 text-[12px] sm:text-[13px] tracking-[0.1em] text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
         >
           くわしく
