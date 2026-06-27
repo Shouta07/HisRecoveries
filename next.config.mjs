@@ -19,11 +19,15 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // /stories → /recoveries — same content under the brand-aligned URL.
-      // The src/app/stories/ pages remain in the repo only as historical
-      // artifacts; this redirect makes them unreachable in production.
-      { source: "/stories", destination: "/recoveries", permanent: true },
-      { source: "/stories/:slug", destination: "/recoveries/:slug", permanent: true },
+      // /recoveries (and legacy /stories) were folded into the one-page home;
+      // send them to the home's interviews section.
+      { source: "/stories", destination: "/", permanent: true },
+      { source: "/stories/:slug", destination: "/", permanent: true },
+      { source: "/recoveries", destination: "/", permanent: true },
+      { source: "/recoveries/:slug*", destination: "/", permanent: true },
+      { source: "/territories", destination: "/", permanent: true },
+      { source: "/territories/:slug*", destination: "/", permanent: true },
+      { source: "/manifesto", destination: "/", permanent: true },
       // /partners → /network — the new IA name; old route stays canonical
       // for now so we don't break existing links during the rename window.
       { source: "/partners", destination: "/network", permanent: false },

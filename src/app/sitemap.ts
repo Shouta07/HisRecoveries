@@ -5,7 +5,6 @@ import { getAllTerritories } from "@/lib/territories";
 import { getAllConcerns } from "@/lib/concerns";
 import { getAllFeelingSlugs } from "@/lib/feelings";
 import { getAllQASlugs } from "@/lib/qa";
-import { getAllRecoverySlugs, getAllTagsByKind } from "@/lib/recoveries";
 import { getAllExpertSlugs } from "@/lib/experts";
 import { getAllServiceSlugs } from "@/lib/services";
 import { getAllScreenings } from "@/lib/screenings";
@@ -17,17 +16,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths: MetadataRoute.Sitemap = [
     "",
     "/en",
-    "/recoveries",
     "/experts",
     "/services",
     "/map",
     "/interview",
-    "/manifesto",
     "/founder",
     "/articles",
     "/events",
     "/concierge",
-    "/territories",
     "/concerns",
     "/screen",
     "/check",
@@ -68,13 +64,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const territoryPaths: MetadataRoute.Sitemap = getAllTerritories().map((t) => ({
-    url: `${site.url}/territories/${t.slug}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.8,
-  }));
-
   const concernPaths: MetadataRoute.Sitemap = getAllConcerns().map((c) => ({
     url: `${site.url}/concerns/${c.slug}`,
     lastModified: new Date(c.opened),
@@ -98,27 +87,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: now,
     changeFrequency: "monthly",
     priority: 0.8,
-  }));
-
-  const recoveryPaths: MetadataRoute.Sitemap = getAllRecoverySlugs().map(
-    (slug) => ({
-      url: `${site.url}/recoveries/${slug}`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.85,
-    })
-  );
-
-  const tagsByKind = getAllTagsByKind();
-  const tagPaths: MetadataRoute.Sitemap = [
-    ...tagsByKind.concern.map((tag) => ({ kind: "concern", tag })),
-    ...tagsByKind.action.map((tag) => ({ kind: "action", tag })),
-    ...tagsByKind.outcome.map((tag) => ({ kind: "outcome", tag })),
-  ].map(({ kind, tag }) => ({
-    url: `${site.url}/recoveries/by-tag/${kind}/${encodeURIComponent(tag)}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.55,
   }));
 
   const expertPaths: MetadataRoute.Sitemap = getAllExpertSlugs().map((slug) => ({
@@ -176,13 +144,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...categoryPaths,
     ...articlePaths,
     ...eventPaths,
-    ...territoryPaths,
     ...concernPaths,
     ...feelingPaths,
     ...qaIndex,
     ...qaPaths,
-    ...recoveryPaths,
-    ...tagPaths,
     ...expertPaths,
     ...servicePaths,
     ...screenPaths,

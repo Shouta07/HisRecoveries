@@ -43,7 +43,7 @@ export default function ArticleConversion({ articleSlug, territory }: Props) {
           </TrackedCTA>
           {territory && (
             <Link
-              href={`/territories/${territory.slug}`}
+              href="/#complexes"
               className="text-sm text-ink border-b border-gold/60 pb-1 hover:text-gold transition-colors"
             >
               {territory.label}は、なぜ起こるのか →
@@ -70,7 +70,7 @@ export default function ArticleConversion({ articleSlug, territory }: Props) {
           日曜日の手紙を受け取る
         </TrackedCTA>
         <Link
-          href="/stories"
+          href="/#interviews"
           className="border-b border-hair-line hover:border-ink transition-colors"
         >
           回復の記録を読む
