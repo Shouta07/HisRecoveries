@@ -11,6 +11,7 @@ import CoverImage from "@/components/CoverImage";
 import ArticleConversion from "@/components/ArticleConversion";
 import { getConcernsForArticle } from "@/lib/concerns";
 import { territoryForCategory, TERRITORY_LABEL } from "@/lib/feelings";
+import { complexByCategory } from "@/lib/complexes";
 import { categories, categoryLabel, site } from "@/lib/site";
 
 type Params = { slug: string };
@@ -52,6 +53,9 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
   const related = getRelatedArticles(article);
   const parentConcerns = getConcernsForArticle(article.slug);
+  const complex = complexByCategory(article.category);
+  const accent = complex?.accent ?? "#18181b";
+  const soft = complex?.accentSoft ?? "#f4f4f5";
   const territorySlug = territoryForCategory(article.category);
   const territory = territorySlug
     ? { slug: territorySlug, label: TERRITORY_LABEL[territorySlug] ?? "この悩み" }
@@ -119,165 +123,147 @@ export default async function ArticlePage({ params }: { params: Params }) {
   };
 
   return (
-    <article className="mx-auto max-w-reading px-6 pb-24 pt-12 sm:pt-20">
-      {/* Breadcrumb */}
-      <nav
-        aria-label="breadcrumb"
-        className="mb-12 text-[11px] tracking-widest text-sub-gray"
-      >
-        <ol className="flex flex-wrap items-center gap-2">
-          <li>
-            <Link
-              href="/"
-              className="hover:text-ink transition-colors uppercase"
-            >
-              Home
-            </Link>
-          </li>
-          <li aria-hidden>—</li>
-          <li>
-            <Link
-              href="/articles"
-              className="hover:text-ink transition-colors uppercase"
-            >
-              Articles
-            </Link>
-          </li>
-          <li aria-hidden>—</li>
-          <li>
-            <Link
-              href={`/articles/category/${article.category}`}
-              className="hover:text-ink transition-colors"
-            >
-              {categoryLabel(article.category)}
-            </Link>
-          </li>
-        </ol>
-      </nav>
+    <div className="bg-[#FAF6F0] text-zinc-900">
+      <article className="mx-auto max-w-[820px] px-6 sm:px-10 pb-20 pt-10 sm:pt-14">
+        {/* Breadcrumb */}
+        <nav aria-label="breadcrumb" className="mb-7 text-[12px] text-zinc-400">
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link href="/" className="hover:text-zinc-700 transition-colors">
+                ホーム
+              </Link>
+            </li>
+            <li aria-hidden>›</li>
+            <li>
+              <Link href="/articles" className="hover:text-zinc-700 transition-colors">
+                記事
+              </Link>
+            </li>
+            <li aria-hidden>›</li>
+            <li>
+              <Link
+                href={`/articles/category/${article.category}`}
+                className="hover:text-zinc-700 transition-colors"
+              >
+                {complex?.ja ?? categoryLabel(article.category)}
+              </Link>
+            </li>
+          </ol>
+        </nav>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
-      />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        />
 
-      <header className="mb-16">
-        <p className="text-[10px] tracking-[0.3em] text-sub-gray uppercase">
-          A Record
-        </p>
-        <div className="mt-5 text-xs tracking-widest text-sub-gray">
-          <Link
-            href={`/articles/category/${article.category}`}
-            className="hover:text-ink transition-colors"
-          >
-            {categoryLabel(article.category)}
-          </Link>
-          <span className="mx-2">·</span>
-          <time dateTime={article.publishedAt}>
-            {formatDate(article.publishedAt)}
-          </time>
+        <div className="rounded-3xl bg-white p-6 sm:p-12 shadow-sm">
+          <header className="mb-10">
+            <div className="flex items-center gap-2.5 text-[12px] font-bold">
+              <Link
+                href={`/articles/category/${article.category}`}
+                className="rounded-full px-3 py-1"
+                style={{ backgroundColor: soft, color: accent }}
+              >
+                {complex?.ja ?? categoryLabel(article.category)}
+              </Link>
+              <span className="text-zinc-400">{article.readingMinutes} 分で読める</span>
+            </div>
+            <h1 className="mt-5 font-mincho text-[1.9rem] sm:text-[2.6rem] font-bold text-zinc-900 leading-[1.45]">
+              {article.title}
+            </h1>
+
+            {article.cover && (
+              <div className="mt-10 rounded-2xl overflow-hidden">
+                <CoverImage
+                  src={article.cover}
+                  alt={article.coverAlt ?? `${article.title}（記事カバー）`}
+                  eyebrow={categoryLabel(article.category)}
+                  title={article.title}
+                  meta={formatDate(article.publishedAt)}
+                  aspectRatio="21/9"
+                  size="lg"
+                  priority
+                />
+              </div>
+            )}
+
+            <div className="mt-8 pt-5 border-t border-zinc-100 flex items-center justify-between text-[13px] text-zinc-400">
+              <span className="font-bold text-zinc-700">{site.name} 編集部</span>
+              <time dateTime={article.publishedAt}>
+                {formatDate(article.publishedAt)}
+              </time>
+            </div>
+          </header>
+
+          <div
+            className="article-body font-mincho"
+            dangerouslySetInnerHTML={{ __html: article.contentHtml }}
+          />
+
+          {/* Conversion immediately after the body — highest intent moment. */}
+          <ArticleConversion articleSlug={article.slug} territory={territory} />
         </div>
-        <h1 className="mt-5 font-mincho text-3xl sm:text-[2.5rem] text-ink leading-[1.55]">
-          {article.title}
-        </h1>
 
-        {article.cover && (
-          <div className="mt-12">
-            <CoverImage
-              src={article.cover}
-              alt={article.coverAlt ?? `${article.title}（記事カバー）`}
-              eyebrow={categoryLabel(article.category)}
-              title={article.title}
-              meta={formatDate(article.publishedAt)}
-              aspectRatio="21/9"
-              size="lg"
-              priority
-            />
-          </div>
+        {parentConcerns.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.2rem] font-extrabold text-zinc-900 mb-5">
+              この記事が紐づく悩み
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {parentConcerns.map((c) => (
+                <li key={c.slug}>
+                  <Link
+                    href={`/concerns/${c.slug}`}
+                    className="group block rounded-2xl bg-white p-4 shadow-sm hover:-translate-y-0.5 transition-all"
+                  >
+                    <p className="text-[11px] font-bold" style={{ color: accent }}>
+                      #{c.ticketId}
+                    </p>
+                    <p className="mt-1.5 text-[14px] font-medium text-zinc-800 leading-[1.55] group-hover:text-zinc-600 transition-colors">
+                      {c.title}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
-        <div className="mt-10 pt-6 border-t border-hair-line flex items-center justify-between text-sm text-sub-gray">
-          <span className="logo-type tracking-wider text-ink">
-            {site.author}
-          </span>
-          <span className="text-xs tracking-widest">
-            {article.readingMinutes} 分
-          </span>
-        </div>
-      </header>
-
-      <div
-        className="article-body font-mincho"
-        dangerouslySetInnerHTML={{ __html: article.contentHtml }}
-      />
-
-      {/* Conversion immediately after the body — the moment of highest intent. */}
-      <ArticleConversion articleSlug={article.slug} territory={territory} />
-
-      {parentConcerns.length > 0 && (
-        <section className="mt-24 border-t border-hair-line pt-10">
-          <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
-            Appears in
-          </p>
-          <h2 className="mt-3 font-mincho text-lg sm:text-xl text-ink leading-[1.55]">
-            この記録が紐づく悩み票
-          </h2>
-          <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {parentConcerns.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  href={`/concerns/${c.slug}`}
-                  className="group block border border-hair-line bg-paper/40 p-4 hover:border-gold transition-colors"
-                >
-                  <p className="text-[11px] tracking-[0.1em] text-gold">
-                    #{c.ticketId}
-                  </p>
-                  <p className="mt-1.5 font-mincho text-[14px] text-ink leading-[1.55] group-hover:text-gold transition-colors">
-                    {c.title}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {related.length > 0 && (
-        <section className="mt-24 border-t border-hair-line pt-12">
-          <h2 className="font-mincho text-sm tracking-widest text-sub-gray">
-            関連する記録
-          </h2>
-          <ul className="mt-8 space-y-6">
-            {related.map((a) => (
-              <li key={a.slug}>
-                <Link
-                  href={`/articles/${a.slug}`}
-                  className="group block"
-                >
-                  <div className="text-xs text-sub-gray">
-                    {categoryLabel(a.category)}
-                  </div>
-                  <div className="mt-1 font-mincho text-lg text-ink group-hover:text-quiet-brass transition-colors">
-                    {a.title}
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <footer className="mt-24 border-t border-hair-line pt-12">
-        <div className="flex items-center gap-4">
-          <span aria-hidden className="block w-10 h-px bg-gold" />
-          <span className="logo-type tracking-[0.2em] text-sm text-ink">
-            {site.name}
-          </span>
-        </div>
-      </footer>
-    </article>
+        {related.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.2rem] font-extrabold text-zinc-900 mb-5">
+              あわせて読みたい
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {related.map((a) => {
+                const rc = complexByCategory(a.category);
+                return (
+                  <li key={a.slug}>
+                    <Link
+                      href={`/articles/${a.slug}`}
+                      className="group block rounded-2xl bg-white p-5 shadow-sm hover:-translate-y-0.5 transition-all"
+                    >
+                      <div
+                        className="text-[12px] font-bold"
+                        style={{ color: rc?.accent ?? "#71717a" }}
+                      >
+                        {rc?.ja ?? categoryLabel(a.category)}
+                      </div>
+                      <div className="mt-1.5 text-[15px] font-bold text-zinc-900 leading-[1.5] group-hover:text-zinc-600 transition-colors">
+                        {a.title}
+                      </div>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+      </article>
+    </div>
   );
 }

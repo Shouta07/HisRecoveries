@@ -103,37 +103,36 @@ export default function NextStepBlock({
   tertiary,
 }: Props) {
   const isDark = variant === "dark";
-  const bg = isDark
-    ? "border-t border-hair-line bg-navy text-cream"
-    : "border-t border-hair-line bg-cream-deep";
-  const eye = isDark ? "text-gold-bright" : "text-gold";
-  const text = isDark ? "text-cream/85" : "text-ink/85";
+  const bg = isDark ? "bg-zinc-900 text-white" : "bg-white";
+  const eye = isDark ? "text-zinc-500" : "text-zinc-400";
+  const text = isDark ? "text-zinc-400" : "text-zinc-500";
+  const primaryClass = isDark
+    ? "inline-flex items-center justify-center gap-2 rounded-full bg-white text-zinc-900 text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-200 transition-colors"
+    : "inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 text-white text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-700 transition-colors";
   const secondaryClass = isDark
-    ? "text-sm tracking-[0.12em] text-cream border border-cream/40 hover:border-gold-bright hover:text-gold-bright transition-colors px-6 py-3.5 text-center"
-    : "text-sm tracking-[0.12em] text-ink border border-ink/40 hover:border-gold hover:text-gold transition-colors px-6 py-3.5 text-center";
+    ? "inline-flex items-center justify-center gap-2 rounded-full border border-zinc-600 text-white text-[14px] font-bold px-6 py-3.5 hover:border-zinc-400 transition-colors"
+    : "inline-flex items-center justify-center gap-2 rounded-full bg-zinc-100 text-zinc-900 text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-200 transition-colors";
 
   return (
     <section className={bg}>
-      <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-14 sm:py-20 text-center">
-        <p
-          className={`logo-type italic text-[11px] tracking-[0.4em] uppercase ${eye}`}
-        >
+      <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-16 sm:py-24 text-center">
+        <p className={`text-[12px] font-bold tracking-[0.08em] uppercase ${eye}`}>
           {eyebrow}
         </p>
         <h2
-          className={`mt-4 font-mincho text-xl sm:text-[1.7rem] leading-[1.5] ${
-            isDark ? "text-cream" : "text-ink"
+          className={`mt-3 text-[1.5rem] sm:text-[2rem] font-extrabold leading-[1.35] ${
+            isDark ? "text-white" : "text-zinc-900"
           }`}
         >
           {title}
         </h2>
-        <p className={`mt-4 font-mincho text-[14px] leading-[2.05] max-w-[34rem] mx-auto ${text}`}>
+        <p className={`mt-4 text-[14px] leading-[2] max-w-[34rem] mx-auto ${text}`}>
           {body}
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
           <ActionButton
             action={primary}
-            className="btn-gold justify-center"
+            className={primaryClass}
             defaultLocation="next_step_primary"
           />
           <ActionButton

@@ -150,10 +150,11 @@ a {
 }
 
 .article-body blockquote {
-  border-left: 2px solid var(--gold);
-  background: var(--paper);
+  border-left: 3px solid #d4d4d8;
+  background: #faf6f0;
+  border-radius: 0.75rem;
   padding: 1em 1.4em;
-  color: var(--ink);
+  color: #3f3f46;
   margin: 2em 0;
   font-family: var(--font-shippori), serif;
 }
@@ -169,13 +170,14 @@ a {
 }
 
 .article-body a {
-  color: var(--ink);
-  border-bottom: 1px solid var(--gold);
+  color: #18181b;
+  border-bottom: 1px solid #a1a1aa;
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .article-body a:hover {
-  color: var(--gold);
+  color: #52525b;
+  border-color: #18181b;
 }
 
 .article-body hr {
