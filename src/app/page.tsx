@@ -1,6 +1,7 @@
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
+import HowShowcase from "@/components/HowShowcase";
 import { flagshipPackage, themePackages } from "@/lib/packages";
 
 const APPLY = "/apply";
@@ -157,59 +158,9 @@ export default function HomePage() {
               <p className="mt-5 text-[#4b5b47] text-sm md:text-base leading-relaxed">アプリだけでは続かない。対面だけでも届かない。両輪を一つにして、原因から定着まで運びます。</p>
             </div>
 
-            {/* eye-catch: web app + offline */}
-            <div className="grid lg:grid-cols-2 gap-6 mb-16 md:mb-20">
-              {/* web app */}
-              <div className="rounded-[2rem] bg-white p-7 md:p-9 flex flex-col shadow-sm">
-                <div className="flex items-center gap-2 text-[13px] font-semibold text-[#3d5638] mb-6">
-                  <span className="w-2 h-2 rounded-full bg-[#85AB8B]" />ONLINE — Webアプリ
-                </div>
-                <div className="rounded-[1.4rem] bg-[#f4f5f1] border border-[#e4e6df] p-6">
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="text-[13px] font-semibold text-[#1f2a1d]">His Recoveries</span>
-                    <span className="text-[11px] px-3 py-1 rounded-full bg-[#e7ede4] text-[#3d5638] font-medium">改善中</span>
-                  </div>
-                  <div className="text-[11px] text-[#8a9285] tracking-wide mb-1">いまの状態</div>
-                  <div className="flex items-end gap-2 mb-3">
-                    <span className="text-[3.2rem] leading-none font-normal text-[#1f2a1d]" style={{ letterSpacing: "-0.03em" }}>62</span>
-                    <span className="text-[#a0a89c] text-sm mb-2">/ 100</span>
-                  </div>
-                  <div className="h-1.5 w-full rounded-full bg-[#e2e5dd] overflow-hidden mb-6">
-                    <div className="h-full w-[62%] rounded-full bg-[#3d5638]" />
-                  </div>
-                  <div className="text-[11px] text-[#8a9285] tracking-wide mb-3">変化の記録</div>
-                  <div className="space-y-2.5">
-                    <div className="max-w-[80%] rounded-2xl rounded-tl-md bg-white border border-[#e7e9e2] px-4 py-2.5 text-[12.5px] leading-relaxed text-[#3a423a]">今週、調子はどうですか？写真も見ますよ。</div>
-                    <div className="ml-auto max-w-[72%] rounded-2xl rounded-tr-md bg-[#3d5638] px-4 py-2.5 text-[12.5px] leading-relaxed text-white">少し落ち着いてきました</div>
-                  </div>
-                </div>
-                <p className="mt-6 text-[#4b5b47] text-sm leading-relaxed">セルフ診断で現在地を把握し、記録で変化を追う。専属担当とのやり取りも、ひとつの画面に。</p>
-              </div>
-
-              {/* offline */}
-              <div className="rounded-[2rem] bg-white/92 backdrop-blur-md border border-[#1f2a1d]/10 text-[#1f2a1d] p-7 md:p-9 flex flex-col shadow-sm">
-                <div className="flex items-center gap-2 text-[13px] font-semibold text-[#3d5638] mb-6">
-                  <span className="w-2 h-2 rounded-full bg-[#85AB8B]" />OFFLINE — 専属伴走
-                </div>
-                <div className="rounded-[1.4rem] bg-white/88 border border-[#1f2a1d]/10 p-6 flex-1 flex flex-col justify-center gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-[#85AB8B]/20 border border-[#85AB8B]/40 flex items-center justify-center shrink-0">
-                      <svg className="w-5 h-5 text-[#3d5638]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
-                    </div>
-                    <div>
-                      <div className="text-[#1f2a1d] font-semibold">専属担当との面談</div>
-                      <div className="text-[#6b7a66] text-[13px]">オンライン / 対面・連携クリニック</div>
-                    </div>
-                  </div>
-                  <div className="h-px bg-[#1f2a1d]/10" />
-                  <ul className="space-y-3 text-sm text-[#4b5b47]">
-                    <li className="flex gap-3"><span className="text-[#3d5638]">—</span>専属担当による改善設計</li>
-                    <li className="flex gap-3"><span className="text-[#3d5638]">—</span>専門医療機関との連携</li>
-                    <li className="flex gap-3"><span className="text-[#3d5638]">—</span>定着までの継続フォロー</li>
-                  </ul>
-                </div>
-                <p className="mt-6 text-[#4b5b47] text-sm leading-relaxed">原因の診断から定着まで、専属の担当と専門家が、対面でもオンラインでも並走します。</p>
-              </div>
+            {/* one picture: tilted phone mockups × offline photos */}
+            <div className="mb-16 md:mb-20">
+              <HowShowcase />
             </div>
 
             {/* 5 steps */}
