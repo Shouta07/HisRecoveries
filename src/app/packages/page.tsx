@@ -112,11 +112,6 @@ export default function PackagesPage() {
             </div>
           ))}
         </div>
-
-        <p className="mt-10 text-[12px] text-[#6b7a66] leading-[1.9] max-w-[40rem]">
-          ※ 完全招待制・選考制です。価格は目安で、内容により異なります。
-          体験は非医療です。診断・治療が必要な場合は、紹介手数料ゼロで提携医療機関にご案内します。
-        </p>
       </div>
     </div>
   );
