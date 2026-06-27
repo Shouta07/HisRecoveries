@@ -49,7 +49,7 @@ const INTERVIEWS_MORE = [
 
 const STEPS = [
   { n: "01", t: "原因を特定する", d: "自己観察と連携専門家の診断で、何が・なぜ起きているかを言葉に。" },
-  { n: "02", t: "中立に並べる", d: "効果・期間・費用・リスクを正直に。「何もしない」も含めて。" },
+  { n: "02", t: "中立に並べる", d: "期間・費用・リスクを正直に。「何もしない」も含めて。" },
   { n: "03", t: "医療と連携する", d: "必要な段階なら、その悩みに強い医療機関へ。紹介手数料はゼロ。" },
   { n: "04", t: "専属で伴走する", d: "生活に根づくまで、専属担当がオンライン・対面で並走。" },
   { n: "05", t: "定着したら卒業", d: "自分で再現できる状態がゴール。終わりを設計に含めます。" },
@@ -114,10 +114,10 @@ export default function HomePage() {
         <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 sm:max-w-sm on-media sm:[text-shadow:none] text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2 text-[#2d4228] sm:text-white/95 mb-3">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" /><path d="M19 3v4" /><path d="M21 5h-4" /></svg>
-            <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 守秘義務のもと</span>
+            <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 完全守秘義務のもと</span>
           </div>
           <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs mx-auto sm:mx-0 font-semibold sm:font-normal">
-            すべて匿名・守秘義務のもとで。Webアプリで状態を可視化し、オフラインで専属が伴走します。完全招待制・中立。効果は保証しません。
+            すべて匿名・完全守秘義務のもとで。Webアプリで状態を可視化し、オフラインで専属が伴走します。完全招待制・中立。
           </p>
           <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
             <Link href={APPLY} className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors shadow-sm">予約登録する</Link>
@@ -307,7 +307,7 @@ export default function HomePage() {
 
             <div className="on-media mt-12 flex flex-wrap items-center gap-4">
               <Link href={APPLY} className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">予約登録する</Link>
-              <span className="text-[#4b5b47] text-[13px]">すべて完全匿名・守秘義務のもとで運営します。※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
+              <span className="text-[#4b5b47] text-[13px]">すべて完全匿名・完全守秘義務のもとで運営します。※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
             </div>
           </div>
         </section>
