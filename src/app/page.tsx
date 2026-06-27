@@ -40,12 +40,15 @@ const STEPS = [
 
 export default function HomePage() {
   return (
-    <div className="font-sans">
-      {/* ============ Hero (boomerang video) ============ */}
-      <section className="relative w-full min-h-screen sm:h-screen overflow-hidden bg-[#dfe6dc]">
-        <div className="absolute inset-0 w-full h-full z-0">
-          <BoomerangVideo src="/media/hero/boomerang.mp4" />
-        </div>
+    <div className="relative font-sans bg-[#dfe6dc]">
+      {/* Persistent ambient boomerang video — fixed behind everything, so it
+          keeps playing faintly in the background while you scroll. */}
+      <div aria-hidden className="fixed inset-0 z-0 pointer-events-none">
+        <BoomerangVideo src="/media/hero/boomerang.mp4" />
+      </div>
+
+      {/* ============ Hero ============ */}
+      <section className="relative z-10 w-full min-h-screen sm:h-screen overflow-hidden">
         {/* Bottom scrim — keeps the white bottom copy legible before the video
             loads (or on browsers without H.264) without darkening the heading. */}
         <div
@@ -99,9 +102,11 @@ export default function HomePage() {
       </section>
 
       {/* ============ Forest (dark sections) ============ */}
-      <div className="relative overflow-hidden">
+      {/* Translucent dark gradient so the fixed boomerang video stays faintly
+          visible behind the content while scrolling. */}
+      <div className="relative z-10 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#16241a 0%,#1b2c20 26%,#16231a 60%,#0e150d 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(22,36,26,0.86) 0%,rgba(27,44,32,0.9) 26%,rgba(22,35,26,0.92) 60%,rgba(14,21,13,0.95) 100%)" }} />
           <div className="absolute inset-0" style={{ background: "radial-gradient(72% 46% at 18% 6%,rgba(133,171,139,0.22),transparent 70%),radial-gradient(56% 42% at 88% 22%,rgba(133,171,139,0.14),transparent 72%)" }} />
           <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 46px,rgba(7,14,8,0.55) 68px,rgba(0,0,0,0) 92px,rgba(0,0,0,0) 150px)", filter: "blur(7px)", opacity: 0.5 }} />
           <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 120px,rgba(5,11,6,0.42) 150px,rgba(0,0,0,0) 188px,rgba(0,0,0,0) 280px)", filter: "blur(12px)", opacity: 0.45 }} />
