@@ -94,10 +94,6 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-zinc-700 transition-colors">
             プライバシー・免責事項
           </Link>
-          <span aria-hidden>·</span>
-          <Link href="/network" className="hover:text-zinc-700 transition-colors">
-            事業者の方へ
-          </Link>
         </div>
       </div>
     </footer>

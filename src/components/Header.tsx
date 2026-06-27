@@ -16,8 +16,6 @@ const secondary = [
   { href: "/territories", label: "6 つの原因を読む" },
   { href: "/recoveries", label: "インタビュー一覧" },
   { href: "/qa", label: "Recovery Q&A — 静かな問いと観察" },
-  { href: "/interview", label: "取材・寄稿について" },
-  { href: "/partners", label: "パートナーになる" },
   { href: "/check", label: "Recovery Check — 今の状態を理解する" },
 ];
 
