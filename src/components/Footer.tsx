@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/mechanism", label: "メカニズム" },
   { href: "/interviews", label: "インタビュー" },
   { href: "/packages", label: "体験パッケージ" },
+  { href: "/animals", label: "動物と過ごす" },
   { href: "/articles", label: "記事" },
   { href: "/privacy", label: "プライバシー・免責事項" },
 ];
