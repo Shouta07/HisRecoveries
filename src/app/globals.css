@@ -427,3 +427,10 @@ html {
   outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
+
+/* Keeps dark text readable when it sits over the boomerang video showing
+   through a near-transparent section — a soft light halo, no white box. */
+.on-media {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7),
+    0 2px 16px rgba(255, 255, 255, 0.55);
+}

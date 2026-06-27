@@ -24,7 +24,10 @@ export default function GlassNav() {
 
   return (
     <>
-      <nav className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-4 sm:py-6">
+      <nav className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-4 sm:py-5">
+        {/* subtle scrim so the sticky nav stays legible over both the hero
+            and the lighter lower sections while scrolling */}
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none bg-gradient-to-b from-white/55 to-transparent backdrop-blur-[2px]" />
         <div className="flex items-center gap-2 text-[#1f2a1d]">
           <Link
             href="/"
