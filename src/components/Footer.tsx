@@ -16,8 +16,8 @@ const READ = [
 
 export default function Footer() {
   const pathname = usePathname();
-  // The home page ("/") ships its own footer from the Boomerang design.
-  if (pathname === "/") return null;
+  // The home ("/") ships its own footer; /apply is a focused form page.
+  if (pathname === "/" || pathname === "/apply") return null;
   const year = new Date().getFullYear();
 
   return (

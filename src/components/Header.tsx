@@ -41,8 +41,8 @@ export default function Header() {
     }
   }, [open]);
 
-  // The home page ("/") ships its own glass navbar from the Boomerang design.
-  if (pathname === "/") return null;
+  // The home ("/") ships its own glass navbar; /apply is a focused form page.
+  if (pathname === "/" || pathname === "/apply") return null;
 
   return (
     <>

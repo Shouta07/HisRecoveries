@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ApplyForm from "@/components/ApplyForm";
 import { site } from "@/lib/site";
 
@@ -13,7 +14,15 @@ export const metadata: Metadata = {
 export default function ApplyPage() {
   return (
     <div className="bg-[#f7f8f5] text-[#1f2a1d] min-h-screen">
-      <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-16 sm:pt-24 pb-24">
+      {/* minimal logo bar — back to home, no nav/footer on this focused page */}
+      <div className="border-b border-[#1f2a1d]/10">
+        <div className="mx-auto max-w-[640px] px-6 sm:px-8 py-5">
+          <Link href="/" className="logo-type text-lg font-semibold tracking-tight text-[#1f2a1d] hover:opacity-70 transition-opacity">
+            His Recoveries
+          </Link>
+        </div>
+      </div>
+      <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
         <p className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">
           APPLY · 完全招待制
         </p>
