@@ -6,20 +6,19 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const nav = [
-  { href: "/recoveries", label: "実例", ja: "人生を前進させた男性たち" },
-  { href: "/experts", label: "専門家", ja: "数少ない専門家" },
-  { href: "/services", label: "サービス", ja: "編集者の保証" },
-  { href: "/check", label: "Recovery Check", ja: "今の状態を理解する" },
+  { href: "/recoveries", label: "インタビュー", ja: "現場の人に聞く" },
+  { href: "/territories", label: "メカニズム", ja: "なぜ起きるのか" },
+  { href: "/articles", label: "記事", ja: "原因の解剖" },
+  { href: "/manifesto", label: "編集方針", ja: "このメディアについて" },
 ];
 
 const secondary = [
-  { href: "/map", label: "男性活力市場マップ" },
-  { href: "/territories", label: "原因を読む — なぜ起こるのか" },
+  { href: "/territories", label: "6 つの原因を読む" },
+  { href: "/recoveries", label: "インタビュー一覧" },
   { href: "/qa", label: "Recovery Q&A — 静かな問いと観察" },
-  { href: "/membership", label: "Recoveries Letter — 週に一度の手紙" },
-  { href: "/interview", label: "インタビューを受ける" },
+  { href: "/interview", label: "取材・寄稿について" },
   { href: "/partners", label: "パートナーになる" },
-  { href: "/articles", label: "記録 — Journal（アーカイブ）" },
+  { href: "/check", label: "Recovery Check — 今の状態を理解する" },
 ];
 
 // Sections that exist in both languages, so the switch can land on the
@@ -61,12 +60,12 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="w-full bg-cream/95 backdrop-blur text-ink sticky top-0 z-50 border-b border-hair-line">
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 sm:px-10 py-5 sm:py-6">
+    <header className="w-full bg-white/90 backdrop-blur text-zinc-950 sticky top-0 z-50 border-b border-zinc-200">
+      <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 sm:px-10 py-4 sm:py-5">
         <Link
           href="/"
           aria-label={`${site.name} ホーム`}
-          className="logo-type text-lg sm:text-xl text-ink hover:text-gold transition-colors"
+          className="logo-type text-lg sm:text-xl text-zinc-950 hover:text-zinc-500 transition-colors"
         >
           {site.name}
         </Link>
@@ -74,14 +73,14 @@ export default function Header() {
         {/* Desktop nav (≥ md) */}
         <div className="hidden md:flex items-center gap-6 lg:gap-8">
           <nav aria-label="primary" className="text-sm">
-            <ul className="flex items-center gap-6 lg:gap-8 text-ink/85">
+            <ul className="flex items-center gap-6 lg:gap-8 text-zinc-600">
               {nav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="inline-block py-2 hover:text-gold transition-colors"
+                    className="inline-block py-2 hover:text-zinc-950 transition-colors"
                   >
-                    <span className="font-mincho text-[14px] tracking-[0.12em] whitespace-nowrap">
+                    <span className="text-[13.5px] font-medium tracking-[0.04em] whitespace-nowrap">
                       {item.label}
                     </span>
                   </Link>
@@ -99,7 +98,7 @@ export default function Header() {
           aria-label={open ? "メニューを閉じる" : "メニューを開く"}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="md:hidden p-2 -mr-2 text-ink hover:text-gold transition-colors"
+          className="md:hidden p-2 -mr-2 text-zinc-950 hover:text-zinc-500 transition-colors"
         >
           {open ? <CloseIcon /> : <MenuIcon />}
         </button>
@@ -109,7 +108,7 @@ export default function Header() {
       {open && (
         <div
           id="mobile-nav"
-          className="md:hidden fixed inset-x-0 top-[68px] bottom-0 bg-cream text-ink z-40 overflow-y-auto"
+          className="md:hidden fixed inset-x-0 top-[60px] bottom-0 bg-white text-zinc-950 z-40 overflow-y-auto"
         >
           <nav
             aria-label="mobile primary"
@@ -125,19 +124,19 @@ export default function Header() {
                   >
                     <div className="flex items-baseline justify-between gap-4">
                       <div>
-                        <span className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
+                        <span className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-zinc-400">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        <h2 className="mt-2 font-mincho text-[2rem] font-medium leading-[1.35] text-ink group-hover:text-gold transition-colors">
+                        <h2 className="mt-2 font-mincho text-[2rem] font-bold leading-[1.35] text-zinc-950 group-hover:text-zinc-500 transition-colors">
                           {item.label}
                         </h2>
-                        <p className="mt-1 text-[13px] tracking-[0.08em] text-sub-gray">
+                        <p className="mt-1 text-[13px] tracking-[0.04em] text-zinc-500">
                           {item.ja}
                         </p>
                       </div>
                       <span
                         aria-hidden
-                        className="text-sub-gray group-hover:text-gold transition-colors text-xl shrink-0"
+                        className="text-zinc-400 group-hover:text-zinc-900 transition-colors text-xl shrink-0"
                       >
                         →
                       </span>
@@ -147,27 +146,27 @@ export default function Header() {
               ))}
             </ul>
 
-            <div className="mt-14 pt-10 border-t border-hair-line space-y-4 text-[13px] text-sub-gray">
+            <div className="mt-14 pt-10 border-t border-zinc-200 space-y-4 text-[13px] text-zinc-500">
               {secondary.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block hover:text-gold transition-colors"
+                  className="block hover:text-zinc-900 transition-colors"
                 >
                   {item.label}
                 </Link>
               ))}
               <a
                 href={`mailto:${site.email}`}
-                className="block hover:text-gold transition-colors"
+                className="block hover:text-zinc-900 transition-colors"
               >
                 Contact — {site.email}
               </a>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-hair-line">
-              <p className="text-[10px] tracking-[0.3em] uppercase text-sub-gray mb-3">
+            <div className="mt-10 pt-8 border-t border-zinc-200">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-zinc-500 mb-3">
                 Language
               </p>
               <LangSwitch
@@ -199,8 +198,8 @@ function LangSwitch({
   size?: "sm" | "lg";
 }) {
   const text = size === "lg" ? "text-[15px]" : "text-[11px]";
-  const active = "text-ink";
-  const idle = "text-sub-gray/60 hover:text-gold transition-colors";
+  const active = "text-zinc-950";
+  const idle = "text-zinc-400 hover:text-zinc-900 transition-colors";
   return (
     <div
       aria-label="言語 / Language"
@@ -214,7 +213,7 @@ function LangSwitch({
       >
         JP
       </Link>
-      <span aria-hidden className="text-hair-line">
+      <span aria-hidden className="text-zinc-300">
         /
       </span>
       <Link
