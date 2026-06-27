@@ -64,6 +64,9 @@ export default function HomePage() {
         <BoomerangVideo src="/media/hero/boomerang.mp4" />
       </div>
 
+      {/* Fixed nav at the root level so it stays above every section. */}
+      <GlassNav />
+
       {/* ============ Hero ============ */}
       <section className="relative z-10 w-full min-h-screen sm:h-screen overflow-hidden">
         {/* Bottom scrim — desktop uses a dark scrim under white copy. */}
@@ -78,8 +81,6 @@ export default function HomePage() {
           className="absolute inset-0 z-[1] pointer-events-none sm:hidden"
           style={{ background: "linear-gradient(180deg, transparent 42%, rgba(245,247,242,0.86) 100%)" }}
         />
-
-        <GlassNav />
 
         {/* Hero copy */}
         <div className="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-28 md:pt-32 px-4 sm:px-6">
