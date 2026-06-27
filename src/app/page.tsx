@@ -289,15 +289,16 @@ export default function HomePage() {
               ))}
             </div>
 
-            <div className="mt-12 flex flex-wrap items-center gap-4">
+            <div className="on-media mt-12 flex flex-wrap items-center gap-4">
               <Link href={APPLY} className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">参加を申し込む</Link>
-              <span className="text-[#6b7a66] text-[13px]">※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
+              <span className="text-[#4b5b47] text-[13px]">※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
             </div>
           </div>
         </section>
 
         {/* ===== Footer ===== */}
-        <footer className="relative z-10 border-t border-[#1f2a1d]/10">
+        {/* Solid backing so the footer stays fully legible (no video bleed here). */}
+        <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-14 md:py-16">
             <div className="grid gap-10 md:grid-cols-[1.6fr_1fr_1fr]">
               <div>
