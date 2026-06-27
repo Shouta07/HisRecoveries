@@ -58,6 +58,7 @@ export default function Header() {
   }, [open]);
 
   return (
+    <>
     <header className="w-full bg-white/90 backdrop-blur text-zinc-900 sticky top-0 z-50 border-b border-zinc-100">
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 sm:px-10 py-4 sm:py-5">
         <Link
@@ -107,6 +108,7 @@ export default function Header() {
           {open ? <CloseIcon /> : <MenuIcon />}
         </button>
       </div>
+    </header>
 
       {/* Mobile fullscreen overlay (< md) */}
       {open && (
@@ -192,7 +194,7 @@ export default function Header() {
           </nav>
         </div>
       )}
-    </header>
+    </>
   );
 }
 

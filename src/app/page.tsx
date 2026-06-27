@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllRecoveries } from "@/lib/recoveries";
 import { complexes, complexByTerritory } from "@/lib/complexes";
+import { PhoneMock, ClinicScene } from "@/components/ServiceMock";
 
 const ACCENT = "#0F766E"; // calm, trustworthy teal
 const ACCENT_SOFT = "#E6F2F0";
@@ -76,8 +77,9 @@ export default function HomePage() {
   return (
     <div className="bg-white text-zinc-900">
       {/* ───────────────────────── Hero ───────────────────────── */}
-      <section className="border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 pt-16 sm:pt-24 pb-16 sm:pb-20">
+      <section className="border-b border-zinc-100 overflow-hidden">
+        <div className="mx-auto max-w-[1120px] px-6 sm:px-10 pt-14 sm:pt-20 pb-16 sm:pb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-10 items-center">
+          <div>
           <span
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12.5px] font-bold"
             style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
@@ -126,6 +128,12 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
+          </div>
+
+          {/* Service mock — online system */}
+          <div className="justify-self-center lg:justify-self-end">
+            <PhoneMock />
+          </div>
         </div>
       </section>
 
@@ -198,6 +206,33 @@ export default function HomePage() {
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* System (online) */}
             <div className="rounded-2xl border border-zinc-100 bg-white p-7 sm:p-9">
+              {/* mini system mock */}
+              <div className="mb-9 rounded-2xl bg-[#F7F8F7] border border-zinc-100 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[11px] font-bold text-zinc-400">いまの状態</span>
+                  <span className="text-[11px] font-bold" style={{ color: ACCENT }}>改善中</span>
+                </div>
+                <div className="h-2 rounded-full bg-zinc-200 overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: "62%", backgroundColor: ACCENT }} />
+                </div>
+                <div className="mt-4 flex items-end gap-1.5 h-12">
+                  {[35, 42, 38, 50, 55, 60, 72].map((h, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-t-[3px]"
+                      style={{ height: `${h}%`, backgroundColor: i >= 5 ? ACCENT : "#CBD5D2" }}
+                    />
+                  ))}
+                </div>
+                <div className="mt-4 flex gap-1.5">
+                  <span
+                    className="rounded-2xl rounded-tl-sm px-3 py-1.5 text-[10.5px]"
+                    style={{ backgroundColor: ACCENT_SOFT, color: "#134E48" }}
+                  >
+                    今週の調子はどうですか？
+                  </span>
+                </div>
+              </div>
               <span
                 className="inline-flex w-fit rounded-full px-3 py-1 text-[11.5px] font-bold mb-5"
                 style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
@@ -222,6 +257,7 @@ export default function HomePage() {
 
             {/* Offline (human) */}
             <div className="rounded-2xl border border-zinc-100 bg-white p-7 sm:p-9">
+              <ClinicScene className="mb-9" />
               <span
                 className="inline-flex w-fit rounded-full px-3 py-1 text-[11.5px] font-bold mb-5"
                 style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
