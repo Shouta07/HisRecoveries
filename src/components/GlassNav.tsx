@@ -41,7 +41,7 @@ export default function GlassNav() {
             : "bg-transparent"
         }`}
       >
-        <div className="flex items-center gap-2 text-[#1f2a1d]">
+        <div className={`flex items-center gap-2 transition-colors ${open ? "text-[#EDF1E8]" : "text-[#1f2a1d]"}`}>
           <Link
             href="/"
             className="logo-type text-lg sm:text-xl md:text-2xl font-semibold tracking-tight"
@@ -113,33 +113,50 @@ export default function GlassNav() {
         <div className="absolute inset-0 bg-[#1f2a1d]/40 backdrop-blur-sm" />
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — deep forest, mincho labels, sage accents (on-brand) */}
       <div
-        className={`lg:hidden fixed top-0 right-0 bottom-0 z-20 w-[85%] max-w-sm bg-white/95 backdrop-blur-xl shadow-2xl transition-transform duration-500 ${open ? "translate-x-0" : "translate-x-full"}`}
-        style={{ transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1)" }}
+        className={`lg:hidden fixed top-0 right-0 bottom-0 z-20 w-[85%] max-w-sm shadow-2xl transition-transform duration-500 ${open ? "translate-x-0" : "translate-x-full"}`}
+        style={{
+          transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
+          background:
+            "linear-gradient(160deg, #1b2c20 0%, #16241a 55%, #0e150d 100%)",
+        }}
       >
-        <div className="flex flex-col h-full pt-24 px-8 pb-8">
-          <div className="flex flex-col gap-1">
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(80% 40% at 80% 8%, rgba(133,171,139,0.18), transparent 70%)" }}
+        />
+        <div className="relative flex flex-col h-full pt-24 px-8 pb-10">
+          <div className="flex flex-col">
             {LINKS.map((l, i) => (
               <a
                 key={i}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className={`text-2xl font-semibold text-[#1f2a1d] py-4 border-b border-[#1f2a1d]/10 transition-all duration-500 ${open ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}
+                className={`group flex items-baseline gap-4 py-5 border-b border-white/10 transition-all duration-500 ${open ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}
                 style={{ transitionDelay: open ? `${150 + i * 70}ms` : "0ms" }}
               >
-                {l.label}
+                <span className="logo-type italic text-[12px] tracking-[0.2em] text-[#85AB8B] pt-1">
+                  0{i + 1}
+                </span>
+                <span
+                  className="font-mincho text-[1.9rem] font-bold text-[#EDF1E8] group-hover:text-[#85AB8B] transition-colors"
+                  style={{ fontFeatureSettings: '"palt" 1' }}
+                >
+                  {l.label}
+                </span>
               </a>
             ))}
           </div>
           <div
-            className={`mt-8 flex flex-col gap-4 transition-all duration-500 ${open ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}
+            className={`mt-10 flex flex-col gap-5 transition-all duration-500 ${open ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}
             style={{ transitionDelay: open ? "400ms" : "0ms" }}
           >
             <a
               href="#interviews"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 text-sm font-medium text-[#2d3a2a]"
+              className="flex items-center gap-2 text-sm font-medium text-[#A8B7A6] hover:text-[#EDF1E8] transition-colors"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" /></svg>
               インタビュー
@@ -147,7 +164,7 @@ export default function GlassNav() {
             <Link
               href={APPLY}
               onClick={() => setOpen(false)}
-              className="mt-2 bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-5 py-3 rounded-full transition-colors text-center"
+              className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-5 py-3.5 rounded-full transition-colors text-center"
             >
               参加を申し込む
             </Link>
