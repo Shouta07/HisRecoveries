@@ -3,6 +3,8 @@ import {
   Cormorant_Garamond,
   Noto_Sans_JP,
   Shippori_Mincho_B1,
+  Zen_Kaku_Gothic_New,
+  Inter,
 } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -28,6 +30,20 @@ const shipporiMincho = Shippori_Mincho_B1({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
   variable: "--font-shippori",
+  display: "swap",
+});
+
+const zenKaku = Zen_Kaku_Gothic_New({
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
+  variable: "--font-zen",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -163,7 +179,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${cormorant.variable} ${notoSansJp.variable} ${shipporiMincho.variable}`}
+      className={`${cormorant.variable} ${notoSansJp.variable} ${shipporiMincho.variable} ${zenKaku.variable} ${inter.variable}`}
     >
       <body className="min-h-screen flex flex-col">
         <script

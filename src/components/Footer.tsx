@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
 
@@ -12,6 +15,9 @@ const READ = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  // The home page ("/") ships its own footer from the Boomerang design.
+  if (pathname === "/") return null;
   const year = new Date().getFullYear();
 
   return (

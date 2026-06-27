@@ -1,632 +1,307 @@
 import Link from "next/link";
-import { getAllRecoveries } from "@/lib/recoveries";
-import { complexes, complexByTerritory } from "@/lib/complexes";
-import { PhoneMock, ClinicScene } from "@/components/ServiceMock";
-import Reveal from "@/components/Reveal";
-import CountUp from "@/components/CountUp";
-import ScrollProgress from "@/components/ScrollProgress";
+import GlassNav from "@/components/GlassNav";
+import BoomerangVideo from "@/components/BoomerangVideo";
+import { complexes } from "@/lib/complexes";
 
-const ACCENT = "#0F766E"; // calm, trustworthy teal
-const ACCENT_SOFT = "#E6F2F0";
+const APPLY = "/assessment";
 
-const APPLY = "/check"; // free, low-pressure first step
+// Heading face: the design uses Neue Haas Grotesk (licensed). Fall back to
+// Inter + Zen Kaku Gothic New, which we load, then system grotesks.
+const HEAD: React.CSSProperties = {
+  fontFamily:
+    "var(--font-inter), var(--font-zen), 'Helvetica Neue', Helvetica, Arial, sans-serif",
+  letterSpacing: "-0.035em",
+};
+
+const INTERVIEWS_MORE = [
+  {
+    href: "/recoveries/dental-hygienist-mask-skin",
+    tag: "ニキビ・肌",
+    span: "8ヶ月後",
+    title: "歯科衛生士、一日中マスクの下で頬を気にしていた頃のこと",
+    who: "20代後半・歯科衛生士 / 勤務中はほぼ終日マスク",
+  },
+  {
+    href: "/recoveries/wakiga-six-months-grey-shirt",
+    tag: "汗・におい",
+    span: "半年後",
+    title: "ワキガ手術から半年、夏のグレーを選び直せた朝のこと",
+    who: "20代後半・夏のグレーを、何年も避けてきた",
+  },
+];
 
 const STEPS = [
-  {
-    no: "01",
-    title: "原因を特定する",
-    body: "推測で進めません。自己観察と、連携する専門家の診断で、「何が・なぜ起きているのか」を言葉にします。ここがずれると、対処もずれます。",
-  },
-  {
-    no: "02",
-    title: "選択肢を、中立に並べる",
-    body: "効果・期間・費用・リスクを、正直に表にします。「何もしない」を含めて。私たちは特定の商品やクリニックから手数料を受け取らないので、利害なく比べられます。",
-  },
-  {
-    no: "03",
-    title: "必要なら、医療と連携する",
-    body: "私たち自身は診断も治療もしません。医療が必要な段階なら、その悩みに本当に強い医療機関へおつなぎします（紹介手数料はいただきません）。",
-  },
-  {
-    no: "04",
-    title: "専属で、伴走する",
-    body: "設計した道筋が生活に根づくまで、専属の担当がオンライン・対面で並走します。迷いや停滞を、その都度いっしょにほどきます。",
-  },
-  {
-    no: "05",
-    title: "定着したら、卒業する",
-    body: "ずっと抱え込ませません。自分で再現できる状態になったら、そこがゴール。終わりを設計に含めているのが、私たちの考え方です。",
-  },
-];
-
-const DO = [
-  "原因を、仕組みから言語化する",
-  "中立に、選択肢を並べる",
-  "必要な医療機関へつなぐ",
-  "定着まで、専属で伴走する",
-  "費用を、最初に明確に伝える",
-];
-
-const DONT = [
-  "商品や施術を、売りつける",
-  "効果を、保証・断定する",
-  "紹介手数料を、受け取る",
-  "不安を煽って、契約を急がせる",
-  "診断・治療を、自分たちで行う",
-];
-
-const FAQ = [
-  {
-    q: "正直、ちょっと怪しくないですか？",
-    a: "もっともな疑いです。だから私たちは「やらないこと」を先に公開しています。商品・施術は売りません。効果は保証しません。紹介手数料も受け取りません。収益はプログラムの伴走料のみで、費用は初回相談で明確にお伝えします。",
-  },
-  {
-    q: "結局、何かを売りつけられませんか？",
-    a: "売りません。私たちの役割は、原因を特定し、中立に選択肢を並べ、必要なら医療につなぎ、伴走することです。特定の商品やクリニックを勧めて手数料を得る構造を、最初から持っていません。",
-  },
-  {
-    q: "効果は保証されますか？",
-    a: "保証はしません。からだのことに「必ず」はないからです。できるのは、原因の解像度を上げ、根拠のある選択肢を示し、続けられるよう伴走することまで。診断・治療の判断は、連携する医師が行います。",
-  },
-  {
-    q: "費用はいくらですか？",
-    a: "悩みと内容によって変わるため、初回相談で明確にお伝えします。不透明な追加課金はありません。初回相談は無料・申し込み義務もありません。",
-  },
+  { n: "01", t: "原因を特定する", d: "自己観察と連携専門家の診断で、何が・なぜ起きているかを言葉に。" },
+  { n: "02", t: "中立に並べる", d: "効果・期間・費用・リスクを正直に。「何もしない」も含めて。" },
+  { n: "03", t: "医療と連携する", d: "必要な段階なら、その悩みに強い医療機関へ。紹介手数料はゼロ。" },
+  { n: "04", t: "専属で伴走する", d: "生活に根づくまで、専属担当がオンライン・対面で並走。" },
+  { n: "05", t: "定着したら卒業", d: "自分で再現できる状態がゴール。終わりを設計に含めます。" },
 ];
 
 export default function HomePage() {
-  const voices = getAllRecoveries().slice(0, 3);
-
   return (
-    <div className="bg-white text-zinc-900">
-      <ScrollProgress />
-      {/* ───────────────────────── Hero ───────────────────────── */}
-      <section className="border-b border-zinc-100 overflow-hidden">
-        <div className="mx-auto max-w-[1120px] px-6 sm:px-10 pt-14 sm:pt-20 pb-16 sm:pb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-10 items-center">
-          <div>
-          <span
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12.5px] font-bold"
-            style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
+    <div className="font-sans">
+      {/* ============ Hero (boomerang video) ============ */}
+      <section className="relative w-full min-h-screen sm:h-screen overflow-hidden bg-[#dfe6dc]">
+        <div className="absolute inset-0 w-full h-full z-0">
+          <BoomerangVideo src="/media/hero/boomerang.mp4" />
+        </div>
+        {/* Bottom scrim — keeps the white bottom copy legible before the video
+            loads (or on browsers without H.264) without darkening the heading. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 z-[1] pointer-events-none hidden sm:block"
+          style={{ background: "linear-gradient(180deg, transparent 48%, rgba(15,26,16,0.55) 100%)" }}
+        />
+
+        <GlassNav />
+
+        {/* Hero copy */}
+        <div className="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-28 md:pt-32 px-4 sm:px-6">
+          <h1
+            className="font-normal leading-[0.95] text-[#336443] text-[2rem] sm:text-4xl md:text-5xl lg:text-[4.75rem] xl:text-[5.25rem] max-w-5xl"
+            style={HEAD}
           >
-            His Recoveries（ヒズ・リカバリーズ）とは
-          </span>
-
-          <h1 className="mt-7 text-[2.4rem] sm:text-[3.6rem] lg:text-[4.4rem] font-extrabold leading-[1.2] tracking-[-0.02em] text-zinc-900 max-w-[20ch]">
-            男性の悩みを、
-            <br className="hidden sm:inline" />
-            <span style={{ color: ACCENT }}>原因から</span>整える人。
+            男性の悩みを、{" "}
+            <span className="text-[#85AB8B]">
+              原因から
+              <br className="hidden sm:block" />
+              整える人。
+            </span>
           </h1>
-
-          <p className="mt-7 text-[1.05rem] sm:text-[1.2rem] leading-[1.9] text-zinc-600 max-w-[40rem]">
-            His Recoveries は、薄毛・汗・肌・顔・体毛・自意識といった
-            <strong className="font-bold text-zinc-900">男性のコンプレックス</strong>を、
-            <strong className="font-bold text-zinc-900">オンラインのシステム</strong>と
-            <strong className="font-bold text-zinc-900">オフラインの専属伴走</strong>の両輪で、
-            原因から整える少人数の改善プログラムです。
-            商品も施術も売りません。
-          </p>
-
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Link
-              href={APPLY}
-              className="inline-flex items-center gap-2 rounded-full text-white text-[15px] font-bold px-7 py-4 hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: ACCENT }}
-            >
-              まずは無料で相談する
-              <span aria-hidden>→</span>
-            </Link>
-            <a
-              href="#approach"
-              className="inline-flex items-center gap-2 rounded-full border border-zinc-300 text-zinc-800 text-[15px] font-bold px-7 py-4 hover:border-zinc-900 transition-colors"
-            >
-              改善の進め方を見る
-              <span aria-hidden>↓</span>
-            </a>
-          </div>
-
-          <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-zinc-500">
-            {["中立 — 紹介手数料ゼロ", "医療機関と連携", "初回相談は無料・義務なし"].map((t) => (
-              <li key={t} className="inline-flex items-center gap-1.5">
-                <CheckIcon />
-                {t}
-              </li>
-            ))}
-          </ul>
-          </div>
-
-          {/* Service mock — online system */}
-          <div className="justify-self-center lg:justify-self-end soft-float">
-            <PhoneMock />
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────── What His Recoveries is ───────────────────────── */}
-      <section className="bg-[#F7F8F7] border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-20">
-          <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase mb-5">
-            About His Recoveries
-          </p>
-          <p className="text-[1.3rem] sm:text-[1.7rem] font-bold leading-[1.6] text-zinc-900 max-w-[34ch]">
-            「調べても変わらなかった」を、
-            <span style={{ color: ACCENT }}>いっしょに前へ。</span>
-          </p>
-          <p className="mt-6 text-[15px] text-zinc-600 leading-[2] max-w-[40rem]">
-            原因はもう、検索すれば出てくる時代です。それでも変わらないのは、
-            自分の状態に合わせて選び、続けられるよう伴走する人がいないから。
-            His Recoveries は、その間を一緒に渡るためにあります。
-            派手な宣伝も、もったいぶりもありません。やることを、正直に書きます。
-          </p>
-
-          {/* 3 quick facts: what it is / isn't / for whom */}
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              {
-                t: "これは何か",
-                d: "原因の特定から定着までを伴走する、男性のコンプレックス改善プログラム。",
-              },
-              {
-                t: "これは何でないか",
-                d: "商品や施術を売る場所ではありません。診断・治療も行いません（医療は連携先が担当）。",
-              },
-              {
-                t: "誰のためか",
-                d: "ひとりで調べ続けて、それでも前に進めずにいる男性のために。",
-              },
-            ].map((f) => (
-              <div key={f.t} className="rounded-2xl bg-white border border-zinc-100 p-6">
-                <p className="text-[14px] font-bold" style={{ color: ACCENT }}>
-                  {f.t}
-                </p>
-                <p className="mt-2.5 text-[13.5px] text-zinc-600 leading-[1.9]">{f.d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────── Stats band (animated) ───────────────────────── */}
-      <section className="border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-14 sm:py-16">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6">
-            {[
-              { v: <CountUp to={6} suffix=" 領域" />, label: "向き合う悩み" },
-              { v: <CountUp to={0} prefix="¥" />, label: "紹介手数料（中立）" },
-              { v: <CountUp to={5} suffix=" STEP" />, label: "改善の進め方" },
-              { v: <span>1:1</span>, label: "専属で伴走" },
-            ].map((s, i) => (
-              <div key={i} className="text-center">
-                <div
-                  className="text-[2.4rem] sm:text-[3rem] font-extrabold leading-none tracking-[-0.02em]"
-                  style={{ color: ACCENT }}
-                >
-                  {s.v}
-                </div>
-                <div className="mt-3 text-[12.5px] font-medium text-zinc-500">
-                  {s.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────── Solution: system × offline ───────────────────────── */}
-      <Reveal>
-      <section className="border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="max-w-[40rem]">
-            <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
-              Our solution
-            </p>
-            <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-              システム × オフラインで、
-              <br className="hidden sm:inline" />
-              解決する。
-            </h2>
-            <p className="mt-4 text-[15px] text-zinc-600 leading-[1.95]">
-              アプリやセルフ診断だけでは、人は変わりきれません。
-              かといって、対面の伴走だけでは続きません。
-              His Recoveries は、
-              <strong className="font-bold text-zinc-900">オンラインのシステム</strong>と
-              <strong className="font-bold text-zinc-900">オフラインの専属伴走</strong>を
-              ひとつにして、悩みを解決まで運びます。
-            </p>
-          </div>
-
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* System (online) */}
-            <div className="rounded-2xl border border-zinc-100 bg-white p-7 sm:p-9">
-              {/* mini system mock */}
-              <div className="mb-9 rounded-2xl bg-[#F7F8F7] border border-zinc-100 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-bold text-zinc-400">いまの状態</span>
-                  <span className="text-[11px] font-bold" style={{ color: ACCENT }}>改善中</span>
-                </div>
-                <div className="h-2 rounded-full bg-zinc-200 overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: "62%", backgroundColor: ACCENT }} />
-                </div>
-                <div className="mt-4 flex items-end gap-1.5 h-12">
-                  {[35, 42, 38, 50, 55, 60, 72].map((h, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 rounded-t-[3px]"
-                      style={{ height: `${h}%`, backgroundColor: i >= 5 ? ACCENT : "#CBD5D2" }}
-                    />
-                  ))}
-                </div>
-                <div className="mt-4 flex gap-1.5">
-                  <span
-                    className="rounded-2xl rounded-tl-sm px-3 py-1.5 text-[10.5px]"
-                    style={{ backgroundColor: ACCENT_SOFT, color: "#134E48" }}
-                  >
-                    今週の調子はどうですか？
-                  </span>
-                </div>
-              </div>
-              <span
-                className="inline-flex w-fit rounded-full px-3 py-1 text-[11.5px] font-bold mb-5"
-                style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
-              >
-                Online — システム
-              </span>
-              <h3 className="text-[1.35rem] font-extrabold text-zinc-900">
-                状態を、可視化する。
-              </h3>
-              <p className="mt-3 text-[14px] text-zinc-600 leading-[1.95]">
-                セルフ診断で現在地を把握し、記録で変化を追う。専属担当とのやり取りも、ひとつの画面に。いつでも、どこからでも。
-              </p>
-              <ul className="mt-6 space-y-2.5">
-                {["セルフ診断・原因の見立て", "変化の記録とふりかえり", "担当へのチャット相談"].map((t) => (
-                  <li key={t} className="flex items-start gap-2.5 text-[13.5px] text-zinc-700 leading-[1.7]">
-                    <CheckIcon />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Offline (human) */}
-            <div className="rounded-2xl border border-zinc-100 bg-white p-7 sm:p-9">
-              <ClinicScene className="mb-9" />
-              <span
-                className="inline-flex w-fit rounded-full px-3 py-1 text-[11.5px] font-bold mb-5"
-                style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
-              >
-                Offline — 専属伴走
-              </span>
-              <h3 className="text-[1.35rem] font-extrabold text-zinc-900">
-                人が、最後まで伴走する。
-              </h3>
-              <p className="mt-3 text-[14px] text-zinc-600 leading-[1.95]">
-                原因の診断、改善設計、医療連携、そして定着まで。専属の担当と専門家が、対面でもオンラインでも、あなたに並走します。
-              </p>
-              <ul className="mt-6 space-y-2.5">
-                {["専属担当による改善設計", "専門医療機関との連携", "定着までの継続フォロー"].map((t) => (
-                  <li key={t} className="flex items-start gap-2.5 text-[13.5px] text-zinc-700 leading-[1.7]">
-                    <CheckIcon />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <p className="mt-6 text-center text-[13px] text-zinc-500">
-            システムが「続ける力」を、人が「変える力」を担います。
+          <p className="mt-6 sm:mt-8 text-[#4b5b47] text-sm sm:text-base md:text-lg leading-relaxed max-w-md px-2">
+            薄毛・汗・肌・顔・体毛・自意識を、Webアプリと専属の伴走の両輪で、原因から整える完全招待制の改善プログラム。商品も施術も売りません。
           </p>
         </div>
-      </section>
-      </Reveal>
 
-      {/* ───────────────────────── Approach (how) ───────────────────────── */}
-      <Reveal>
-      <section id="approach" className="scroll-mt-20 border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="max-w-[40rem]">
-            <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
-              How it works
-            </p>
-            <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-              どうやって、改善するのか。
-            </h2>
-            <p className="mt-4 text-[15px] text-zinc-600 leading-[1.95]">
-              5 つのステップで進めます。どれも、隠さず・順番どおりに。
-            </p>
+        {/* Bottom-left CTA block */}
+        <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 max-w-sm">
+          <div className="flex items-center gap-2 text-[#3d5638] sm:text-white/95 mb-3">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" /><path d="M19 3v4" /><path d="M21 5h-4" /></svg>
+            <span className="text-sm font-semibold sm:font-medium">完全招待制 ・ 中立</span>
           </div>
-
-          <ol className="mt-12 space-y-4">
-            {STEPS.map((s) => (
-              <li
-                key={s.no}
-                className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-7 rounded-2xl border border-zinc-100 bg-white p-6 sm:p-7 shadow-[0_1px_0_rgba(0,0,0,0.03)]"
-              >
-                <span
-                  className="shrink-0 grid place-items-center w-12 h-12 rounded-full text-[16px] font-extrabold tabular-nums"
-                  style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
-                >
-                  {s.no}
-                </span>
-                <div>
-                  <h3 className="text-[1.2rem] font-bold text-zinc-900">{s.title}</h3>
-                  <p className="mt-2 text-[14px] text-zinc-600 leading-[1.95]">{s.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-      </Reveal>
-
-      {/* ───────────────────────── Do / Don't (honesty) ───────────────────────── */}
-      <Reveal>
-      <section className="bg-[#F7F8F7] border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
-          <h2 className="text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-            やること、やらないこと。
-          </h2>
-          <p className="mt-4 text-[15px] text-zinc-600 leading-[1.95] max-w-[36rem]">
-            胡散臭さは、曖昧さから生まれます。だから、先に線を引いておきます。
+          <p className="text-[#3d5638]/90 sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs font-medium sm:font-normal">
+            Webアプリで状態を可視化し、オフラインで専属が伴走。各悩みのメカニズムは、当事者のインタビューで特集します。効果は保証しません。
           </p>
-
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="rounded-2xl bg-white border border-zinc-100 p-7 sm:p-8">
-              <p className="text-[13px] font-bold mb-5" style={{ color: ACCENT }}>
-                やること
-              </p>
-              <ul className="space-y-3.5">
-                {DO.map((d) => (
-                  <li key={d} className="flex items-start gap-3 text-[14.5px] text-zinc-800 leading-[1.7]">
-                    <CheckIcon />
-                    {d}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-2xl bg-white border border-zinc-100 p-7 sm:p-8">
-              <p className="text-[13px] font-bold text-zinc-400 mb-5">やらないこと</p>
-              <ul className="space-y-3.5">
-                {DONT.map((d) => (
-                  <li key={d} className="flex items-start gap-3 text-[14.5px] text-zinc-500 leading-[1.7]">
-                    <CrossIcon />
-                    {d}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="flex items-center gap-4 flex-wrap">
+            <Link href={APPLY} className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors shadow-sm">参加を申し込む</Link>
+            <a href="#how" className="text-[#3d5638] sm:text-white text-sm font-semibold sm:font-medium hover:opacity-80 transition-opacity">進め方を見る</a>
           </div>
         </div>
-      </section>
-      </Reveal>
 
-      {/* ───────────────────────── Complexes ───────────────────────── */}
-      <Reveal>
-      <section className="border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="max-w-[40rem]">
-            <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
-              What we work on
-            </p>
-            <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-              向き合う、6 つの悩み。
-            </h2>
-            <p className="mt-4 text-[15px] text-zinc-600 leading-[1.95]">
-              それぞれ「なぜ起きるのか」を、原因から読めるようにしています。
-            </p>
-          </div>
-
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {complexes.map((c) => (
-              <Link
-                key={c.id}
-                href={`/territories/${c.territory}`}
-                className="group flex flex-col rounded-2xl border border-zinc-100 bg-white p-6 hover:-translate-y-0.5 hover:shadow-md transition-all"
-              >
-                <span
-                  aria-hidden
-                  className="block w-9 h-1 rounded-full mb-5"
-                  style={{ backgroundColor: c.accent }}
-                />
-                <h3 className="text-[1.3rem] font-extrabold text-zinc-900">{c.ja}</h3>
-                <p className="mt-2 text-[13px] text-zinc-500 leading-[1.9] flex-1">
-                  {c.mechanism}
-                </p>
-                <span
-                  className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold group-hover:gap-2.5 transition-all"
-                  style={{ color: c.accent }}
-                >
-                  なぜ起きる？を読む <span aria-hidden>→</span>
-                </span>
-              </Link>
-            ))}
-          </div>
+        {/* Bottom-right link */}
+        <div className="hidden sm:flex absolute right-6 md:right-10 bottom-8 md:bottom-10 z-10 items-center gap-2 text-white/90 text-sm">
+          <Link href="/recoveries" className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors">
+            <svg className="w-3 h-3 ml-0.5 fill-white text-white" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+          </Link>
+          <span className="font-medium">メカニズム特集</span>
+          <span className="text-white/60">インタビュー</span>
         </div>
       </section>
-      </Reveal>
 
-      {/* ───────────────────────── Cost & transparency ───────────────────────── */}
-      <Reveal>
-      <section className="bg-[#F7F8F7] border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
-          <h2 className="text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-            費用と、進め方。
-          </h2>
-          <p className="mt-4 text-[15px] text-zinc-600 leading-[1.95] max-w-[38rem]">
-            お金の話を曖昧にしません。安心して相談できるように、先に書いておきます。
-          </p>
-
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { t: "初回相談は無料", d: "まずは話すだけ。申し込みの義務はありません。" },
-              { t: "費用は相談で明示", d: "悩みと内容で変わるため、最初にはっきりお伝えします。" },
-              { t: "追加課金なし", d: "あとから不透明な請求が増えることはありません。" },
-              { t: "いつでも卒業", d: "定着したら終わり。続けさせる仕組みは作りません。" },
-            ].map((row) => (
-              <div key={row.t} className="rounded-2xl bg-white border border-zinc-100 p-6">
-                <p className="text-[15px] font-bold text-zinc-900">{row.t}</p>
-                <p className="mt-2 text-[13px] text-zinc-500 leading-[1.85]">{row.d}</p>
-              </div>
-            ))}
-          </div>
+      {/* ============ Forest (dark sections) ============ */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#16241a 0%,#1b2c20 26%,#16231a 60%,#0e150d 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(72% 46% at 18% 6%,rgba(133,171,139,0.22),transparent 70%),radial-gradient(56% 42% at 88% 22%,rgba(133,171,139,0.14),transparent 72%)" }} />
+          <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 46px,rgba(7,14,8,0.55) 68px,rgba(0,0,0,0) 92px,rgba(0,0,0,0) 150px)", filter: "blur(7px)", opacity: 0.5 }} />
+          <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 120px,rgba(5,11,6,0.42) 150px,rgba(0,0,0,0) 188px,rgba(0,0,0,0) 280px)", filter: "blur(12px)", opacity: 0.45 }} />
+          <div className="absolute inset-x-0 top-0 h-44" style={{ background: "linear-gradient(180deg,rgba(150,180,150,0.16),transparent)" }} />
         </div>
-      </section>
-      </Reveal>
 
-      {/* ───────────────────────── Voices ───────────────────────── */}
-      {voices.length > 0 && (
-        <Reveal>
-        <section className="border-b border-zinc-100">
-          <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
-            <div className="max-w-[40rem]">
-              <p className="font-mono text-[12px] font-medium tracking-[0.12em] text-zinc-400 uppercase">
-                Voices
-              </p>
-              <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-                同じ道を、通った人たち。
+        {/* ===== Complexes ===== */}
+        <section id="complexes" className="relative z-10 text-white">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
+            <div className="max-w-2xl mb-12 md:mb-16">
+              <div className="text-xs tracking-[0.18em] text-[#85AB8B] font-medium mb-4">WHAT WE WORK ON</div>
+              <h2 className="font-normal leading-[1.02] text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
+                向き合う、<span className="text-[#85AB8B]">6つの悩み。</span>
               </h2>
+              <p className="mt-5 text-white/70 text-sm md:text-base leading-relaxed">それぞれ「なぜ起きるのか」を、原因から読めるようにしています。煽らず、断定せず、仕組みから。</p>
             </div>
-
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-              {voices.map((r) => {
-                const c = complexByTerritory(r.territory);
-                const accent = c?.accent ?? "#71717a";
-                const soft = c?.accentSoft ?? "#f4f4f5";
-                return (
-                  <Link
-                    key={r.slug}
-                    href={`/recoveries/${r.slug}`}
-                    className="group flex flex-col rounded-2xl border border-zinc-100 bg-white p-6 hover:-translate-y-0.5 hover:shadow-md transition-all"
-                  >
-                    <span
-                      className="inline-flex w-fit rounded-full px-3 py-1 text-[11.5px] font-bold"
-                      style={{ backgroundColor: soft, color: accent }}
-                    >
-                      {c?.ja ?? r.territory}
-                      {r.span ? ` · ${r.span}` : ""}
-                    </span>
-                    <h3 className="mt-4 text-[1.15rem] font-bold leading-[1.55] text-zinc-900 group-hover:text-zinc-600 transition-colors flex-1">
-                      {r.title}
-                    </h3>
-                    {r.asker?.context && (
-                      <p className="mt-4 pt-4 border-t border-zinc-100 text-[12.5px] text-zinc-500 leading-[1.8]">
-                        {r.asker.ageRange ? `${r.asker.ageRange}・` : ""}
-                        {r.asker.context}
-                      </p>
-                    )}
-                  </Link>
-                );
-              })}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-[1.5rem] overflow-hidden border border-white/10">
+              {complexes.map((c, i) => (
+                <Link key={c.id} href={`/territories/${c.territory}`} className="group bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-sm transition-colors p-7 md:p-8 flex flex-col">
+                  <div className="text-[13px] text-[#85AB8B] font-medium mb-3">{String(i + 1).padStart(2, "0")}</div>
+                  <h3 className="text-xl text-white font-semibold mb-2">{c.ja}</h3>
+                  <p className="text-[13.5px] text-white/70 leading-relaxed">{c.mechanism}</p>
+                  <span className="mt-5 text-[13px] text-[#85AB8B] font-medium group-hover:opacity-70 transition-opacity">なぜ起きる？を読む →</span>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
-        </Reveal>
-      )}
 
-      {/* ───────────────────────── FAQ (address skepticism) ───────────────────────── */}
-      <Reveal>
-      <section className="border-b border-zinc-100">
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-16 sm:py-24">
-          <h2 className="text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-            よくある不安に、正直に。
-          </h2>
-
-          <dl className="mt-10 space-y-3 max-w-[46rem]">
-            {FAQ.map((item) => (
-              <div key={item.q} className="rounded-2xl border border-zinc-100 bg-white p-6 sm:p-7">
-                <dt className="flex gap-3 text-[15.5px] font-bold text-zinc-900 leading-[1.7]">
-                  <span
-                    className="shrink-0 grid place-items-center w-6 h-6 rounded-full text-[12px] font-bold"
-                    style={{ backgroundColor: ACCENT_SOFT, color: ACCENT }}
-                  >
-                    Q
-                  </span>
-                  {item.q}
-                </dt>
-                <dd className="mt-3 pl-9 text-[14px] text-zinc-600 leading-[2]">{item.a}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-      </Reveal>
-
-      {/* ───────────────────────── Final CTA ───────────────────────── */}
-      <Reveal>
-      <section>
-        <div className="mx-auto max-w-[1080px] px-6 sm:px-10 py-20 sm:py-28">
-          <div
-            className="rounded-3xl px-8 sm:px-14 py-14 sm:py-20 text-center"
-            style={{ backgroundColor: ACCENT_SOFT }}
-          >
-            <h2 className="text-[1.8rem] sm:text-[2.6rem] font-extrabold leading-[1.3] tracking-[-0.01em] text-zinc-900 max-w-[22ch] mx-auto">
-              まずは、話すだけでも。
-            </h2>
-            <p className="mt-5 text-[14.5px] sm:text-base text-zinc-600 leading-[2] max-w-[34rem] mx-auto">
-              初回相談は無料で、申し込みの義務はありません。
-              いまの悩みを聞かせてください。合わないと感じたら、それで構いません。
-            </p>
-            <div className="mt-9 flex flex-wrap justify-center gap-3">
-              <Link
-                href={APPLY}
-                className="inline-flex items-center gap-2 rounded-full text-white text-[15px] font-bold px-8 py-4 hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: ACCENT }}
-              >
-                無料で相談する
-                <span aria-hidden>→</span>
-              </Link>
-              <Link
-                href="/territories"
-                className="inline-flex items-center gap-2 rounded-full border border-zinc-300 text-zinc-800 text-[15px] font-bold px-7 py-4 hover:border-zinc-900 transition-colors bg-white"
-              >
-                まず悩みを読む
-                <span aria-hidden>→</span>
-              </Link>
+        {/* ===== Interviews ===== */}
+        <section id="interviews" className="relative z-10 text-white">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
+            <div className="max-w-2xl mb-12 md:mb-16">
+              <div className="text-xs tracking-[0.18em] text-[#85AB8B] font-medium mb-4">INTERVIEWS</div>
+              <h2 className="font-normal leading-[1.02] text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
+                同じ道を、<span className="text-[#85AB8B]">通った人たち。</span>
+              </h2>
+              <p className="mt-5 text-white/70 text-sm md:text-base leading-relaxed">悩みごとに、原因のメカニズムと、当事者がどう向き合ったか。成功談ではなく、過程の記録として。</p>
             </div>
-            <p className="mt-7 text-[11.5px] text-zinc-400 leading-[1.9] max-w-[32rem] mx-auto">
-              ※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。
-            </p>
+
+            {/* featured */}
+            <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-stretch mb-10">
+              <Link href="/recoveries/sales-hairline-front-desk" className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-8 md:p-12 flex flex-col justify-between min-h-[320px] hover:bg-[#0f1a10]/70 transition-colors">
+                <div>
+                  <div className="flex items-center gap-2 text-[#85AB8B] text-[13px] font-medium mb-6">
+                    <span>薄毛・AGA</span><span className="text-white/30">·</span><span className="text-white/60">1年後</span>
+                  </div>
+                  <p className="text-2xl md:text-[2rem] leading-[1.5] font-normal text-white" style={{ letterSpacing: "-0.02em" }}>「名刺を渡す角度を、いつのまにか変えていた。気づいたのは、変えなくてよくなってからでした。」</p>
+                </div>
+                <div className="mt-8 text-white/55 text-sm">30代前半・法人営業 / 一日に何度も初対面の相手と向き合う</div>
+              </Link>
+              <div className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-8 md:p-10 flex flex-col">
+                <div className="text-xs tracking-[0.16em] text-[#85AB8B] font-medium mb-5">メカニズム</div>
+                <h3 className="text-lg text-white font-semibold mb-3">なぜ起きるのか</h3>
+                <p className="text-white/70 text-sm leading-[1.9]">テストステロンが5αリダクターゼによってDHTへ変換され、感受性の高い前頭部・頭頂部の毛包でヘアサイクルが短縮します。原因を見立てた上で、必要なら連携医療機関へ。</p>
+                <div className="mt-auto pt-8">
+                  <Link href="/territories/hair-loss" className="inline-flex items-center gap-2 text-[#85AB8B] text-sm font-medium hover:opacity-70 transition-opacity">改善の進め方を見る →</Link>
+                </div>
+              </div>
+            </div>
+
+            {/* more */}
+            <div className="grid sm:grid-cols-2 gap-6">
+              {INTERVIEWS_MORE.map((it) => (
+                <Link key={it.href} href={it.href} className="group rounded-[1.5rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 hover:bg-[#33422f] transition-colors p-7 md:p-8 flex flex-col min-h-[200px]">
+                  <div className="flex items-center gap-2 text-[#85AB8B] text-[13px] font-medium mb-5">
+                    <span>{it.tag}</span><span className="text-white/30">·</span><span className="text-white/60">{it.span}</span>
+                  </div>
+                  <h3 className="text-lg md:text-xl leading-[1.55] text-white font-normal">{it.title}</h3>
+                  <div className="mt-auto pt-6 text-white/50 text-[13px]">{it.who}</div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-      </Reveal>
+        </section>
+
+        {/* ===== How (web app × offline, 5 steps) ===== */}
+        <section id="how" className="relative z-10 text-white">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
+            <div className="max-w-2xl mb-12 md:mb-16">
+              <div className="text-xs tracking-[0.18em] text-[#85AB8B] font-medium mb-4">HOW IT WORKS</div>
+              <h2 className="font-normal leading-[1.02] text-white text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
+                Webアプリ × オフラインで、<br className="hidden sm:block" /><span className="text-[#85AB8B]">改善する。</span>
+              </h2>
+              <p className="mt-5 text-white/70 text-sm md:text-base leading-relaxed">アプリだけでは続かない。対面だけでも届かない。両輪を一つにして、原因から定着まで運びます。</p>
+            </div>
+
+            {/* eye-catch: web app + offline */}
+            <div className="grid lg:grid-cols-2 gap-6 mb-16 md:mb-20">
+              {/* web app */}
+              <div className="rounded-[2rem] bg-white p-7 md:p-9 flex flex-col">
+                <div className="flex items-center gap-2 text-[13px] font-medium text-[#3d5638] mb-6">
+                  <span className="w-2 h-2 rounded-full bg-[#85AB8B]" />ONLINE — Webアプリ
+                </div>
+                <div className="rounded-[1.4rem] bg-[#f4f5f1] border border-[#e4e6df] p-6">
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="text-[13px] font-semibold text-[#1f2a1d]">His Recoveries</span>
+                    <span className="text-[11px] px-3 py-1 rounded-full bg-[#e7ede4] text-[#3d5638] font-medium">改善中</span>
+                  </div>
+                  <div className="text-[11px] text-[#8a9285] tracking-wide mb-1">いまの状態</div>
+                  <div className="flex items-end gap-2 mb-3">
+                    <span className="text-[3.2rem] leading-none font-normal text-[#1f2a1d]" style={{ letterSpacing: "-0.03em" }}>62</span>
+                    <span className="text-[#a0a89c] text-sm mb-2">/ 100</span>
+                  </div>
+                  <div className="h-1.5 w-full rounded-full bg-[#e2e5dd] overflow-hidden mb-6">
+                    <div className="h-full w-[62%] rounded-full bg-[#3d5638]" />
+                  </div>
+                  <div className="text-[11px] text-[#8a9285] tracking-wide mb-3">変化の記録</div>
+                  <div className="space-y-2.5">
+                    <div className="max-w-[80%] rounded-2xl rounded-tl-md bg-white border border-[#e7e9e2] px-4 py-2.5 text-[12.5px] leading-relaxed text-[#3a423a]">今週、調子はどうですか？写真も見ますよ。</div>
+                    <div className="ml-auto max-w-[72%] rounded-2xl rounded-tr-md bg-[#3d5638] px-4 py-2.5 text-[12.5px] leading-relaxed text-white">少し落ち着いてきました</div>
+                  </div>
+                </div>
+                <p className="mt-6 text-[#4b5b47] text-sm leading-relaxed">セルフ診断で現在地を把握し、記録で変化を追う。専属担当とのやり取りも、ひとつの画面に。</p>
+              </div>
+
+              {/* offline */}
+              <div className="rounded-[2rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 text-white p-7 md:p-9 flex flex-col">
+                <div className="flex items-center gap-2 text-[13px] font-medium text-[#85AB8B] mb-6">
+                  <span className="w-2 h-2 rounded-full bg-[#85AB8B]" />OFFLINE — 専属伴走
+                </div>
+                <div className="rounded-[1.4rem] bg-[#0f1a10]/55 backdrop-blur-md border border-white/10 p-6 flex-1 flex flex-col justify-center gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[#85AB8B]/20 border border-[#85AB8B]/30 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5 text-[#85AB8B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    </div>
+                    <div>
+                      <div className="text-white font-semibold">専属担当との面談</div>
+                      <div className="text-white/55 text-[13px]">オンライン / 対面・連携クリニック</div>
+                    </div>
+                  </div>
+                  <div className="h-px bg-white/10" />
+                  <ul className="space-y-3 text-sm text-white/80">
+                    <li className="flex gap-3"><span className="text-[#85AB8B]">—</span>専属担当による改善設計</li>
+                    <li className="flex gap-3"><span className="text-[#85AB8B]">—</span>専門医療機関との連携</li>
+                    <li className="flex gap-3"><span className="text-[#85AB8B]">—</span>定着までの継続フォロー</li>
+                  </ul>
+                </div>
+                <p className="mt-6 text-white/70 text-sm leading-relaxed">原因の診断から定着まで、専属の担当と専門家が、対面でもオンラインでも並走します。</p>
+              </div>
+            </div>
+
+            {/* 5 steps */}
+            <div className="mb-8">
+              <h3 className="text-xl md:text-2xl text-white font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
+              <p className="mt-3 text-white/70 text-sm leading-relaxed">どれも、隠さず・順番どおりに。</p>
+            </div>
+            <div className="grid md:grid-cols-5 gap-px bg-white/10 rounded-[1.5rem] overflow-hidden border border-white/10">
+              {STEPS.map((s) => (
+                <div key={s.n} className="bg-white/[0.06] backdrop-blur-sm p-6 flex flex-col">
+                  <div className="text-[#85AB8B] text-sm font-semibold mb-4">{s.n}</div>
+                  <h4 className="text-[15px] text-white font-semibold mb-2">{s.t}</h4>
+                  <p className="text-[12.5px] text-white/70 leading-relaxed">{s.d}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-12 flex flex-wrap items-center gap-4">
+              <Link href={APPLY} className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">参加を申し込む</Link>
+              <span className="text-white/70 text-[13px]">※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== Footer ===== */}
+        <footer className="relative z-10 border-t border-white/10">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-14 md:py-16">
+            <div className="grid gap-10 md:grid-cols-[1.6fr_1fr_1fr]">
+              <div>
+                <div className="logo-type text-lg font-semibold tracking-tight text-white mb-4">His Recoveries</div>
+                <p className="text-white/55 text-[13px] leading-[1.95] max-w-xs">男性のコンプレックスを、原因の特定から定着まで伴走して整える、完全招待制の改善プログラム。Webアプリと、専属の伴走で。</p>
+                <Link href={APPLY} className="mt-6 inline-block bg-white/10 hover:bg-white/[0.16] border border-white/15 text-white text-sm font-medium px-6 py-3 rounded-full transition-colors">参加を申し込む</Link>
+              </div>
+              <div>
+                <div className="text-[11px] tracking-[0.16em] text-white/40 font-medium mb-4">悩み</div>
+                <ul className="space-y-2.5 text-[13.5px] text-white/70">
+                  {complexes.map((c) => (
+                    <li key={c.id}><Link href={`/territories/${c.territory}`} className="hover:text-white transition-colors">{c.ja}</Link></li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-[11px] tracking-[0.16em] text-white/40 font-medium mb-4">読む</div>
+                <ul className="space-y-2.5 text-[13.5px] text-white/70">
+                  <li><Link href="/recoveries" className="hover:text-white transition-colors">インタビュー</Link></li>
+                  <li><Link href="/territories" className="hover:text-white transition-colors">メカニズム</Link></li>
+                  <li><a href="#how" className="hover:text-white transition-colors">進め方</a></li>
+                  <li><Link href="/manifesto" className="hover:text-white transition-colors">編集方針</Link></li>
+                  <li><Link href="/en" className="hover:text-white transition-colors">English</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-12 pt-6 border-t border-white/10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-[12px] text-white/40">
+              <div>© 2026 His Recoveries ・ <Link href="/privacy" className="hover:text-white/70 transition-colors">プライバシー・免責事項</Link></div>
+              <div>※ 診断・治療は連携する医療機関が行います。</div>
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={ACCENT}
-      strokeWidth="2.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className="mt-0.5 shrink-0"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function CrossIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#a1a1aa"
-      strokeWidth="2.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className="mt-0.5 shrink-0"
-    >
-      <path d="M18 6 6 18M6 6l12 12" />
-    </svg>
   );
 }

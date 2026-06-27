@@ -57,6 +57,9 @@ export default function Header() {
     }
   }, [open]);
 
+  // The home page ("/") ships its own glass navbar from the Boomerang design.
+  if (pathname === "/") return null;
+
   return (
     <>
     <header className="w-full bg-white/90 backdrop-blur text-zinc-900 sticky top-0 z-50 border-b border-zinc-100">
