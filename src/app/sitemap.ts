@@ -1,7 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
 import { getAllEvents } from "@/lib/events";
-import { getAllTerritories } from "@/lib/territories";
 import { getAllConcerns } from "@/lib/concerns";
 import { getAllFeelingSlugs } from "@/lib/feelings";
 import { getAllQASlugs } from "@/lib/qa";
@@ -15,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticPaths: MetadataRoute.Sitemap = [
     "",
-    "/en",
+    "/apply",
     "/experts",
     "/services",
     "/map",
@@ -29,11 +28,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/check",
     "/membership",
     "/reflect",
-    "/assessment",
     "/submit-story",
     "/subscribe",
     "/privacy",
-    // /stories は /recoveries に 301 リダイレクトされるためインデックスから除外
   ].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: now,
@@ -110,35 +107,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // English (core) mirror.
-  const enStatic: MetadataRoute.Sitemap = [
-    "/en/territories",
-    "/en/stories",
-  ].map((p) => ({
-    url: `${site.url}${p}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }));
-
-  const enTerritoryPaths: MetadataRoute.Sitemap = getAllTerritories("en").map(
-    (t) => ({
-      url: `${site.url}/en/territories/${t.slug}`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    })
-  );
-
-  const enFeelingPaths: MetadataRoute.Sitemap = getAllFeelingSlugs().map(
-    (slug) => ({
-      url: `${site.url}/en/feelings/${slug}`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    })
-  );
-
   return [
     ...staticPaths,
     ...categoryPaths,
@@ -151,8 +119,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...expertPaths,
     ...servicePaths,
     ...screenPaths,
-    ...enStatic,
-    ...enTerritoryPaths,
-    ...enFeelingPaths,
   ];
 }

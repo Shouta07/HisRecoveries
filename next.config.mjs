@@ -28,6 +28,11 @@ const nextConfig = {
       { source: "/territories", destination: "/", permanent: true },
       { source: "/territories/:slug*", destination: "/", permanent: true },
       { source: "/manifesto", destination: "/", permanent: true },
+      // /en mirror removed — Japanese only for now.
+      { source: "/en", destination: "/", permanent: true },
+      { source: "/en/:slug*", destination: "/", permanent: true },
+      // /assessment folded into the application form.
+      { source: "/assessment", destination: "/apply", permanent: true },
       // /partners → /network — the new IA name; old route stays canonical
       // for now so we don't break existing links during the rename window.
       { source: "/partners", destination: "/network", permanent: false },

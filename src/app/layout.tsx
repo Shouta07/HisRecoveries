@@ -86,11 +86,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: site.url,
-    languages: {
-      ja: site.url,
-      en: `${site.url}/en`,
-      "x-default": site.url,
-    },
     types: {
       "application/atom+xml": [
         { url: "/feed.xml", title: `${site.name} — Atom Feed` },

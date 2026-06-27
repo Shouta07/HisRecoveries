@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const APPLY = "/assessment";
+const APPLY = "/apply";
 
 const LINKS = [
   { href: "#complexes", label: "私たちについて" },

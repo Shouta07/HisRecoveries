@@ -304,7 +304,7 @@ export default async function ConcernPage({ params }: { params: Params }) {
             この票に声を寄せる →
           </Link>
           <Link
-            href="/assessment"
+            href="/apply"
             className="text-[12px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5"
           >
             The Mirror を始める →
