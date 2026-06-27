@@ -10,6 +10,7 @@ const ACCENT = "#0F766E";
 const READ = [
   { href: "/#interviews", label: "インタビュー" },
   { href: "/#complexes", label: "メカニズム" },
+  { href: "/packages", label: "体験パッケージ" },
   { href: "/#how", label: "進め方" },
   { href: "/articles", label: "記事" },
 ];

@@ -2,6 +2,7 @@ import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import { complexes } from "@/lib/complexes";
+import { flagshipPackage, themePackages } from "@/lib/packages";
 
 const APPLY = "/apply";
 
@@ -214,6 +215,84 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ===== Experience packages ===== */}
+        <section id="packages" className="relative z-10 text-[#1f2a1d]">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
+            <div className="on-media max-w-2xl mb-12 md:mb-16">
+              <div className="font-mono text-[12px] tracking-[0.12em] text-[#3d5638] uppercase font-medium mb-4">EXPERIENCE PACKAGES</div>
+              <h2 className="leading-[1.04] text-[#1f2a1d] text-[2rem] sm:text-[2.5rem] md:text-[3rem]" style={HEAD}>
+                体験は点ではなく、<span className="text-[#3d5638]">線で。</span>
+              </h2>
+              <p className="mt-5 text-[#4b5b47] text-sm md:text-base leading-relaxed">
+                単発の体験ではなく、「現在地を知る診断 → 複数の体験 → 定着」までを一本のジャーニーに。到達点が見える形で束ねています。
+              </p>
+            </div>
+
+            {/* flagship */}
+            {(() => {
+              const f = flagshipPackage();
+              return (
+                <div className="rounded-[2rem] bg-[#16241a] text-[#EDF1E8] p-8 md:p-12 mb-6 overflow-hidden relative">
+                  <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(70% 50% at 85% 10%, rgba(133,171,139,0.18), transparent 70%)" }} />
+                  <div className="relative grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-center">
+                    <div>
+                      <div className="text-[11px] tracking-[0.16em] uppercase text-[#85AB8B] font-medium mb-4">{f.theme}</div>
+                      <h3 className="font-mincho text-[1.9rem] md:text-[2.4rem] font-bold leading-[1.3]">{f.name}</h3>
+                      <p className="mt-4 text-[#C9D2C4] text-sm md:text-base leading-[1.9]">{f.tagline}</p>
+                      <p className="mt-5 text-[13px] text-[#9FB0A0]">{f.forWhom}</p>
+                      <div className="mt-7 flex flex-wrap items-center gap-4">
+                        <Link href={APPLY} className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-6 py-3 rounded-full transition-colors">参加を申し込む</Link>
+                        <Link href="/packages" className="text-[#85AB8B] text-sm font-medium hover:text-[#EDF1E8] transition-colors">すべての体験パッケージ →</Link>
+                      </div>
+                    </div>
+                    <div className="rounded-[1.4rem] bg-white/[0.06] border border-white/10 p-6">
+                      <div className="flex items-center justify-between text-[12px] mb-4">
+                        <span className="text-[#85AB8B] font-medium tracking-wide">ジャーニー</span>
+                        <span className="text-[#9FB0A0]">{f.duration} ・ {f.price}</span>
+                      </div>
+                      <ol className="space-y-3">
+                        {f.steps.map((s, i) => (
+                          <li key={i} className="flex items-start gap-3 text-[13.5px] text-[#D7DED2] leading-[1.7]">
+                            <span className="shrink-0 grid place-items-center w-6 h-6 rounded-full bg-[#85AB8B]/15 text-[#85AB8B] text-[11px] font-bold">{i + 1}</span>
+                            {s}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* theme packages */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#1f2a1d]/10 rounded-[1.5rem] overflow-hidden border border-[#1f2a1d]/10">
+              {themePackages().map((p) => (
+                <div key={p.id} className="bg-white/92 backdrop-blur-md p-6 flex flex-col">
+                  <div className="text-[11px] tracking-[0.1em] uppercase text-[#3d5638] font-semibold mb-3">{p.theme}</div>
+                  <h3 className="text-[1.05rem] font-bold text-[#1f2a1d] leading-[1.5]">{p.name}</h3>
+                  <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.8]">{p.tagline}</p>
+                  <ul className="mt-4 space-y-1.5 flex-1">
+                    {p.steps.map((s, i) => (
+                      <li key={i} className="flex gap-2 text-[12px] text-[#6b7a66] leading-[1.6]">
+                        <span className="text-[#85AB8B]">→</span>{s}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-5 pt-4 border-t border-[#1f2a1d]/10 text-[12px] text-[#3d5638] font-semibold">
+                    {p.duration} ・ {p.price}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8">
+              <Link href="/packages" className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
+                体験パッケージの詳細を見る <span aria-hidden>→</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* ===== How (web app × offline, 5 steps) ===== */}
         <section id="how" className="relative z-10 text-[#1f2a1d]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 md:py-28">
@@ -325,6 +404,7 @@ export default function HomePage() {
                 <ul className="space-y-2.5 text-[13.5px] text-[#4b5b47]">
                   <li><a href="#interviews" className="hover:text-[#1f2a1d] transition-colors">インタビュー</a></li>
                   <li><a href="#complexes" className="hover:text-[#1f2a1d] transition-colors">メカニズム</a></li>
+                  <li><Link href="/packages" className="hover:text-[#1f2a1d] transition-colors">体験パッケージ</Link></li>
                   <li><a href="#how" className="hover:text-[#1f2a1d] transition-colors">進め方</a></li>
                   <li><Link href="/articles" className="hover:text-[#1f2a1d] transition-colors">記事</Link></li>
                 </ul>
