@@ -20,6 +20,10 @@ export type Complex = {
   mechanism: string;
   /** the body system named in plain terms (shown as a chip) */
   system: string;
+  /** a relatable, first-person "あるある" worry used as a friendly entry */
+  worry: string;
+  /** normalization line — "you're not alone" framing */
+  stat: string;
   accent: string;
   accentSoft: string;
 };
@@ -33,6 +37,8 @@ export const complexes: Complex[] = [
     en: "Hair",
     mechanism: "テストステロンから DHT への変換と、毛包の感受性。",
     system: "5αリダクターゼ / DHT",
+    worry: "生え際、後退してきた気がする",
+    stat: "成人男性の約 3 人に 1 人",
     accent: "#B45309",
     accentSoft: "#FEF3E2",
   },
@@ -44,6 +50,8 @@ export const complexes: Complex[] = [
     en: "Sweat & Odor",
     mechanism: "エクリン／アポクリン腺の働きと、皮膚常在菌の代謝。",
     system: "アポクリン腺 / 常在菌",
+    worry: "汗ジミとにおいが、ずっと気になる",
+    stat: "多汗症は約 20 人に 1 人とも",
     accent: "#0F766E",
     accentSoft: "#E5F4F2",
   },
@@ -55,6 +63,8 @@ export const complexes: Complex[] = [
     en: "Skin",
     mechanism: "皮脂・毛穴の角化・アクネ菌が重なって起きる炎症。",
     system: "皮脂腺 / 角化 / アクネ菌",
+    worry: "ニキビ跡が、なかなか消えない",
+    stat: "大人の男性にも、とても多い",
     accent: "#BE123C",
     accentSoft: "#FCE9EE",
   },
@@ -66,6 +76,8 @@ export const complexes: Complex[] = [
     en: "Face",
     mechanism: "骨格・むくみ・表情の癖が、印象の評価をつくる。",
     system: "骨格 / 浮腫 / 表情",
+    worry: "実年齢より、老けて見られる",
+    stat: "第一印象は数秒で決まる",
     accent: "#6D28D9",
     accentSoft: "#F1EAFC",
   },
@@ -77,6 +89,8 @@ export const complexes: Complex[] = [
     en: "Body Hair",
     mechanism: "アンドロゲンと毛周期が、濃さと分布を決める。",
     system: "アンドロゲン / 毛周期",
+    worry: "髭や体毛の濃さが、気になる",
+    stat: "濃さは遺伝とホルモン次第",
     accent: "#15803D",
     accentSoft: "#E7F4EB",
   },
@@ -88,6 +102,8 @@ export const complexes: Complex[] = [
     en: "Self-Image",
     mechanism: "注意のバイアスと、自己評価の癖が悩みを増幅する。",
     system: "注意バイアス / 自己評価",
+    worry: "鏡を見るのが、ちょっと怖い",
+    stat: "気にしすぎ、には理由がある",
     accent: "#4338CA",
     accentSoft: "#EAEAFB",
   },
