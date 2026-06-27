@@ -134,14 +134,14 @@ export default function GlassNav() {
                 key={i}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className={`group flex items-baseline gap-4 py-5 border-b border-white/10 transition-all duration-500 ${open ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}
+                className={`group flex items-baseline gap-3.5 py-4 border-b border-white/10 transition-all duration-500 ${open ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}
                 style={{ transitionDelay: open ? `${150 + i * 70}ms` : "0ms" }}
               >
-                <span className="logo-type italic text-[12px] tracking-[0.2em] text-[#85AB8B] pt-1">
+                <span className="logo-type italic text-[11px] tracking-[0.2em] text-[#85AB8B]/80">
                   0{i + 1}
                 </span>
                 <span
-                  className="font-mincho text-[1.9rem] font-bold text-[#EDF1E8] group-hover:text-[#85AB8B] transition-colors"
+                  className="font-mincho text-[1.3rem] font-medium tracking-[0.02em] text-[#EDF1E8]/90 group-hover:text-[#85AB8B] transition-colors"
                   style={{ fontFeatureSettings: '"palt" 1' }}
                 >
                   {l.label}
