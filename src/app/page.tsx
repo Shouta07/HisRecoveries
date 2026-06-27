@@ -1,126 +1,211 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { getAllRecoveries } from "@/lib/recoveries";
-import { getAllArticles } from "@/lib/articles";
-import {
-  complexes,
-  complexByTerritory,
-  complexByCategory,
-  type Complex,
-} from "@/lib/complexes";
-import { categoryLabel } from "@/lib/site";
+import { complexes, complexByTerritory } from "@/lib/complexes";
+
+const ACCENT = "#C5A572";
+const ACCENT_DIM = "#8C7853";
+
+const APPLY = "/assessment";
+
+const PILLARS = [
+  {
+    no: "01",
+    title: "原因から、設計する",
+    body: "対症ではなく、なぜ起きているのかの構造から始めます。薄毛も汗も肌も、からだの仕組みに分解できる。原因の解像度が上がるほど、打ち手は正確になります。",
+  },
+  {
+    no: "02",
+    title: "中立だから、最適を選べる",
+    body: "私たちは特定のクリニックや商品から紹介手数料を受け取りません。だから「売れるもの」ではなく「あなたに効くもの」だけを、利害なく選べます。",
+  },
+  {
+    no: "03",
+    title: "数少ない専門家と組む",
+    body: "医師・専門家のネットワークから、その悩みに本当に強い相手だけを選んで連携します。一般論ではなく、あなたの状態に対する個別の判断を。",
+  },
+  {
+    no: "04",
+    title: "専属コンシェルジュが、伴走する",
+    body: "一度の助言で終わらせません。設計した道筋が生活に根づくまで、専属のコンシェルジュと専門家チームが伴走します。オンラインでも対面でも、途中でくじけない構造を組み込みます。",
+  },
+];
+
+const STEPS = [
+  { no: "01", title: "選考・対話", body: "まずは申し込みと対話から。私たちが本当に力になれるか、双方で確かめます。" },
+  { no: "02", title: "原因診断", body: "専門家と連携し、悩みの構造を特定。何が、なぜ起きているのかを言語化します。" },
+  { no: "03", title: "改善設計", body: "あなた専用の道筋を設計。選択肢・順番・期間を、利害なく組み立てます。" },
+  { no: "04", title: "専属伴走", body: "実行のあいだ、専属の担当が並走。迷いや停滞を、その都度ほどいていきます。" },
+  { no: "05", title: "定着", body: "変化が日常に根づくまで。再現できる状態を、最終的なゴールにします。" },
+];
 
 export default function HomePage() {
-  const interviews = getAllRecoveries().slice(0, 6);
-  const reads = getAllArticles().slice(0, 4);
+  const voices = getAllRecoveries().slice(0, 3);
 
   return (
-    <div className="bg-[#FAF6F0] text-zinc-900">
+    <div className="bg-[#0E0E10] text-[#F3EEE6]">
       {/* ───────────────────────── Hero ───────────────────────── */}
-      <section className="relative overflow-hidden">
+      <section className="grain relative overflow-hidden border-b border-white/5">
         <div
           aria-hidden
-          className="absolute -top-24 -right-20 w-[460px] h-[460px] rounded-full bg-amber-200/40 blur-3xl"
+          className="absolute inset-0 opacity-60"
+          style={{
+            background:
+              "radial-gradient(120% 80% at 80% 0%, rgba(197,165,114,0.16) 0%, rgba(14,14,16,0) 55%)",
+          }}
         />
-        <div
-          aria-hidden
-          className="absolute top-40 -left-24 w-[380px] h-[380px] rounded-full bg-rose-200/30 blur-3xl"
-        />
-        <div className="relative mx-auto max-w-[1180px] px-6 sm:px-10 pt-14 sm:pt-20 pb-16 sm:pb-20">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[12px] font-bold tracking-[0.02em] text-zinc-700 shadow-sm">
-            <span aria-hidden className="text-[15px]">🪞</span>
-            男性のための、からだの悩み解体メディア
+        <div className="relative mx-auto max-w-[1180px] px-6 sm:px-10 pt-16 sm:pt-24 pb-20 sm:pb-28">
+          <span
+            className="inline-flex items-center gap-2.5 rounded-full border px-4 py-1.5 text-[11.5px] font-medium tracking-[0.18em]"
+            style={{ borderColor: "rgba(197,165,114,0.4)", color: ACCENT }}
+          >
+            <span aria-hidden>◇</span>
+            完全招待制 ・ 会員制コンプレックス改善プログラム
           </span>
 
-          <h1 className="mt-7 text-[2.4rem] sm:text-[3.6rem] lg:text-[4.5rem] font-extrabold leading-[1.18] tracking-[-0.02em] text-zinc-900 max-w-[18ch]">
-            その悩み、ちゃんと
-            <br className="hidden sm:inline" />
-            <span className="relative inline-block">
-              <span className="relative z-10">「仕組み」</span>
-              <span
-                aria-hidden
-                className="absolute inset-x-0 bottom-1 h-3 sm:h-4 bg-amber-300/70 -z-0 rounded"
-              />
-            </span>
-            があります。
+          <h1 className="mt-9 font-mincho text-[2.6rem] sm:text-[4.2rem] lg:text-[5.4rem] leading-[1.12] tracking-[0.01em] text-[#F6F1E8]" style={{ fontWeight: 800 }}>
+            その悩みを、
+            <br />
+            <span style={{ color: ACCENT }}>原因から</span>終わらせる。
           </h1>
 
-          <p className="mt-7 text-[1.05rem] sm:text-[1.25rem] leading-[1.95] text-zinc-600 max-w-[40rem]">
-            薄毛も、汗も、ニキビも、顔も。
-            ひとりで検索していたことを、
-            <strong className="font-bold text-zinc-900">なぜ起きるのか</strong>
-            の原因と、同じ悩みで働く人の声から、いっしょに読みほどきます。
+          <p className="mt-9 text-[1.05rem] sm:text-[1.25rem] leading-[1.95] text-[#C9C2B6] max-w-[42rem] font-mincho">
+            薄毛、汗、肌、顔、体毛、自意識。
+            ひとりで検索して終わる夜を、原因の解明と専属の伴走で、本気で変えていく。
+            <span className="text-[#F3EEE6]">私たちが「変えられる」と確信できた方だけ</span>を、ご招待します。
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <a
-              href="#worries"
-              className="inline-flex items-center gap-2 rounded-full bg-zinc-900 text-white text-[15px] font-bold px-7 py-4 hover:bg-zinc-700 transition-colors shadow-lg shadow-zinc-900/10"
-            >
-              気になることから探す
-              <span aria-hidden>↓</span>
-            </a>
+          <div className="mt-11 flex flex-wrap items-center gap-4">
             <Link
-              href="/recoveries"
-              className="inline-flex items-center gap-2 rounded-full bg-white text-zinc-900 text-[15px] font-bold px-7 py-4 hover:bg-zinc-50 transition-colors shadow-sm"
+              href={APPLY}
+              className="inline-flex items-center gap-2.5 rounded-full px-8 py-4 text-[15px] font-bold text-[#0E0E10] transition-transform hover:-translate-y-0.5"
+              style={{ backgroundColor: ACCENT }}
             >
-              インタビューを読む
+              招待をリクエストする
               <span aria-hidden>→</span>
             </Link>
+            <a
+              href="#program"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-4 text-[15px] font-medium text-[#F3EEE6] hover:border-white/50 transition-colors"
+            >
+              プログラムを見る
+              <span aria-hidden>↓</span>
+            </a>
           </div>
 
-          {/* trust mini badges */}
-          <ul className="mt-10 flex flex-wrap gap-x-5 gap-y-2 text-[12.5px] font-medium text-zinc-500">
-            {["商品も施術も売らない", "紹介手数料ゼロ", "煽らない・断定しない"].map(
-              (t) => (
-                <li key={t} className="inline-flex items-center gap-1.5">
-                  <CheckIcon />
-                  {t}
-                </li>
-              )
-            )}
+          <ul className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-[12.5px] text-[#9A938763] [&_li]:text-[#9C9488]">
+            {["各期 定員制", "完全招待・選考制", "紹介手数料ゼロの中立設計"].map((t) => (
+              <li key={t} className="inline-flex items-center gap-2">
+                <span aria-hidden style={{ color: ACCENT }}>—</span>
+                {t}
+              </li>
+            ))}
           </ul>
         </div>
       </section>
 
-      {/* ───────────────────────── Worry-led entry ───────────────────────── */}
-      <section id="worries" className="scroll-mt-20">
-        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="text-center max-w-[34rem] mx-auto">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
-              Start here
-            </p>
-            <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.3] tracking-[-0.01em]">
-              こんなこと、
-              <br className="sm:hidden" />
-              ありませんか？
-            </h2>
-            <p className="mt-4 text-[14.5px] text-zinc-500 leading-[1.9]">
-              近いものを選ぶと、その奥にある「なぜ」と、
-              同じ悩みを抱えて働く人の声へつながります。
-            </p>
-          </div>
+      {/* ───────────────────────── Empathy ───────────────────────── */}
+      <section className="border-b border-white/5">
+        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-20 sm:py-28">
+          <p className="font-mincho text-[1.7rem] sm:text-[2.6rem] lg:text-[3rem] leading-[1.5] tracking-[0.01em] text-[#F3EEE6] max-w-[24ch]" style={{ fontWeight: 700 }}>
+            「知っている」と「変わった」のあいだには、
+            <span style={{ color: ACCENT }}>深い谷</span>がある。
+          </p>
+          <p className="mt-9 text-[15px] sm:text-base leading-[2.1] text-[#A8A096] max-w-[40rem]">
+            原因はもう、検索すれば出てくる時代です。
+            それでも変わらないのは、知識が足りないからではなく、
+            <span className="text-[#F3EEE6]">自分の状態に合わせて設計し、最後まで伴走する人がいない</span>から。
+            His Recoveries は、その谷を一緒に渡るための、招待制の改善プログラムです。
+          </p>
+        </div>
+      </section>
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {complexes.map((c) => (
+      {/* ───────────────────────── Why we can change it ───────────────────────── */}
+      <section className="border-b border-white/5">
+        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-20 sm:py-28">
+          <SectionHead en="Why we can change it" ja="なぜ、変えられるのか。" />
+
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/10">
+            {PILLARS.map((p) => (
+              <div key={p.no} className="bg-[#121215] p-8 sm:p-10">
+                <span
+                  className="logo-type text-[2.4rem] leading-none tabular-nums"
+                  style={{ color: ACCENT_DIM, fontWeight: 600 }}
+                >
+                  {p.no}
+                </span>
+                <h3 className="mt-5 font-mincho text-[1.4rem] text-[#F3EEE6] leading-[1.4]" style={{ fontWeight: 700 }}>
+                  {p.title}
+                </h3>
+                <p className="mt-4 text-[14px] leading-[2] text-[#A8A096]">
+                  {p.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────── The program ───────────────────────── */}
+      <section id="program" className="scroll-mt-20 border-b border-white/5">
+        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-20 sm:py-28">
+          <SectionHead
+            en="The Program"
+            ja="完全招待制の、改善プログラム。"
+            lead="入口から定着まで、ひとつの流れとして設計しています。 一人ひとりに深く伴走するため、各期の人数は絞っています。"
+          />
+
+          <ol className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-white/10 border border-white/10">
+            {STEPS.map((s) => (
+              <li key={s.no} className="bg-[#121215] p-7 flex flex-col">
+                <span
+                  className="text-[12px] font-bold tracking-[0.2em]"
+                  style={{ color: ACCENT }}
+                >
+                  STEP {s.no}
+                </span>
+                <h3 className="mt-4 font-mincho text-[1.2rem] text-[#F3EEE6] leading-[1.4]" style={{ fontWeight: 700 }}>
+                  {s.title}
+                </h3>
+                <p className="mt-3 text-[12.5px] leading-[1.95] text-[#9C9488]">
+                  {s.body}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ───────────────────────── Target complexes ───────────────────────── */}
+      <section className="border-b border-white/5">
+        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-20 sm:py-28">
+          <SectionHead en="What we work on" ja="向き合う、6 つの悩み。" />
+
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10">
+            {complexes.map((c, i) => (
               <Link
                 key={c.id}
                 href={`/territories/${c.territory}`}
-                className="group flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                className="group relative bg-[#121215] p-8 sm:p-9 flex flex-col min-h-[14rem] hover:bg-[#17171b] transition-colors"
               >
                 <span
-                  className="shrink-0 grid place-items-center w-12 h-12 rounded-xl"
-                  style={{ backgroundColor: c.accentSoft, color: c.accent }}
-                >
-                  <ComplexIcon id={c.id} />
-                </span>
-                <span className="flex-1">
-                  <span className="block text-[15px] font-bold leading-[1.5] text-zinc-900">
-                    {c.worry}
+                  aria-hidden
+                  className="absolute top-0 left-0 h-px w-0 group-hover:w-full transition-all duration-500"
+                  style={{ backgroundColor: ACCENT }}
+                />
+                <div className="flex items-baseline justify-between">
+                  <span className="logo-type italic text-[12px] tracking-[0.2em] uppercase" style={{ color: ACCENT }}>
+                    {String(i + 1).padStart(2, "0")} · {c.en}
                   </span>
-                  <span className="mt-0.5 block text-[12px] font-medium" style={{ color: c.accent }}>
-                    {c.ja} のなぜ →
-                  </span>
+                </div>
+                <h3 className="mt-5 font-mincho text-[1.7rem] text-[#F3EEE6] leading-[1.3]" style={{ fontWeight: 700 }}>
+                  {c.ja}
+                </h3>
+                <p className="mt-3 text-[13px] leading-[1.95] text-[#9C9488] flex-1">
+                  {c.mechanism}
+                </p>
+                <span className="mt-6 inline-flex items-center gap-1.5 text-[12.5px] font-medium group-hover:gap-2.5 transition-all" style={{ color: ACCENT }}>
+                  このテーマを読む <span aria-hidden>→</span>
                 </span>
               </Link>
             ))}
@@ -128,83 +213,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────────────────── The Six (deep) ───────────────────────── */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="flex items-end justify-between gap-6 flex-wrap">
-            <div className="max-w-[40rem]">
-              <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
-                The Six
-              </p>
-              <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-                6 つの悩みを、仕組みから。
-              </h2>
-              <p className="mt-4 text-[14.5px] text-zinc-500 leading-[1.9] max-w-[34rem]">
-                どれも、性格でもだらしなさでもありません。
-                からだの仕組みで説明できる、再現性のある現象です。
-              </p>
-            </div>
-          </div>
+      {/* ───────────────────────── Voices ───────────────────────── */}
+      {voices.length > 0 && (
+        <section className="border-b border-white/5">
+          <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-20 sm:py-28">
+            <SectionHead
+              en="Voices"
+              ja="同じ道を、通った人たち。"
+              lead="第一線で働く人たちが、悩みとどう向き合い、何を選んだか。飾らない一人称の記録です。"
+            />
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {complexes.map((c) => (
-              <ComplexCard key={c.id} c={c} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────── Interviews ───────────────────────── */}
-      <section>
-        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="max-w-[40rem]">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
-              Voices
-            </p>
-            <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-              現場の人の、リアルな声。
-            </h2>
-            <p className="mt-4 text-[14.5px] text-zinc-500 leading-[1.9]">
-              第一線で働く人たちが、悩みとどう過ごし、何を選び、いまどこにいるのか。
-              飾らない一人称の記録です。
-            </p>
-          </div>
-
-          {interviews.length > 0 ? (
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {interviews.map((r) => {
+            <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
+              {voices.map((r) => {
                 const c = complexByTerritory(r.territory);
-                const accent = c?.accent ?? "#71717a";
-                const soft = c?.accentSoft ?? "#f4f4f5";
                 return (
                   <Link
                     key={r.slug}
                     href={`/recoveries/${r.slug}`}
-                    className="group flex flex-col rounded-3xl bg-white p-6 sm:p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                    className="group bg-[#121215] p-8 flex flex-col hover:bg-[#17171b] transition-colors"
                   >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="grid place-items-center w-11 h-11 rounded-full"
-                        style={{ backgroundColor: soft, color: accent }}
-                      >
-                        {c ? <ComplexIcon id={c.id} /> : null}
-                      </span>
-                      <div className="text-[12px]">
-                        <span className="block font-bold" style={{ color: accent }}>
-                          {c?.ja ?? "悩み"}
-                        </span>
-                        {r.span && (
-                          <span className="block text-zinc-400">{r.span}の記録</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <h3 className="mt-5 text-[1.15rem] sm:text-[1.25rem] font-bold leading-[1.55] text-zinc-900 group-hover:text-zinc-600 transition-colors flex-1">
+                    <span className="text-[11px] font-bold tracking-[0.12em] uppercase" style={{ color: ACCENT }}>
+                      {c?.ja ?? r.territory}
+                      {r.span ? ` · ${r.span}` : ""}
+                    </span>
+                    <h3 className="mt-5 font-mincho text-[1.25rem] text-[#F3EEE6] leading-[1.55] flex-1" style={{ fontWeight: 700 }}>
                       {r.title}
                     </h3>
-
                     {r.asker?.context && (
-                      <p className="mt-5 pt-4 border-t border-zinc-100 text-[12.5px] text-zinc-500 leading-[1.8]">
+                      <p className="mt-5 pt-5 border-t border-white/10 text-[12.5px] text-[#9C9488] leading-[1.8]">
                         {r.asker.ageRange ? `${r.asker.ageRange}・` : ""}
                         {r.asker.context}
                       </p>
@@ -213,302 +249,127 @@ export default function HomePage() {
                 );
               })}
             </div>
-          ) : (
-            <p className="mt-10 text-zinc-500">最初のインタビューを編集中です。</p>
-          )}
-
-          <div className="mt-10">
-            <Link
-              href="/recoveries"
-              className="inline-flex items-center gap-2 rounded-full bg-zinc-900 text-white text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-700 transition-colors"
-            >
-              インタビューをもっと見る
-              <span aria-hidden>→</span>
-            </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ───────────────────────── Mechanism reads ───────────────────────── */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="max-w-[40rem]">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
-              Read deeper
-            </p>
-            <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
-              なぜ起きる？を、もっと深く。
-            </h2>
-            <p className="mt-4 text-[14.5px] text-zinc-500 leading-[1.9]">
-              医学・行動科学のレイヤーから、悩みの仕組みを順に分解。
-              出典を引きながら、断定せず、淡々と。
+      {/* ───────────────────────── Invitation-only explained ───────────────────────── */}
+      <section className="border-b border-white/5">
+        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-20 sm:py-28 grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20">
+          <div>
+            <SectionHead en="Why invitation-only" ja="なぜ、完全招待制なのか。" />
+            <p className="mt-8 text-[15px] leading-[2.1] text-[#A8A096]">
+              誰でも受けられるようにすれば、一人あたりに注げる深さは薄くなります。
+              私たちは逆を選びました。
+              <span className="text-[#F3EEE6]">本当に力になれると確信できた方だけ</span>を、
+              各期、限られた人数だけご招待する。
+              それが、結果の質を守るための構造です。
             </p>
           </div>
 
-          {reads.length > 0 ? (
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
-              {reads.map((a) => {
-                const c = complexByCategory(a.category);
-                const accent = c?.accent ?? "#71717a";
-                const soft = c?.accentSoft ?? "#f4f4f5";
-                return (
-                  <Link
-                    key={a.slug}
-                    href={`/articles/${a.slug}`}
-                    className="group flex flex-col rounded-3xl bg-[#FAF6F0] p-6 sm:p-8 hover:bg-[#F5EFE6] transition-colors"
-                  >
-                    <div className="flex items-center gap-2.5 text-[12px] font-bold">
-                      <span
-                        className="rounded-full px-3 py-1"
-                        style={{ backgroundColor: soft, color: accent }}
-                      >
-                        {c?.ja ?? categoryLabel(a.category)}
-                      </span>
-                      <span className="text-zinc-400">{a.readingMinutes} 分で読める</span>
-                    </div>
-
-                    <h3 className="mt-4 text-[1.3rem] sm:text-[1.5rem] font-bold leading-[1.5] text-zinc-900 group-hover:text-zinc-600 transition-colors">
-                      {a.title}
-                    </h3>
-
-                    {a.excerpt && (
-                      <p className="mt-3 text-[13.5px] text-zinc-500 leading-[1.95] line-clamp-3">
-                        {a.excerpt}
-                      </p>
-                    )}
-
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold" style={{ color: accent }}>
-                      読んでみる <span aria-hidden>→</span>
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="mt-10 text-zinc-500">最初の解剖記事を編集中です。</p>
-          )}
-
-          <div className="mt-10">
-            <Link
-              href="/articles"
-              className="inline-flex items-center gap-2 rounded-full bg-zinc-900 text-white text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-700 transition-colors"
-            >
-              記事をもっと見る
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────── Trust / why safe ───────────────────────── */}
-      <section>
-        <div className="mx-auto max-w-[1180px] px-6 sm:px-10 py-16 sm:py-24">
-          <div className="text-center max-w-[34rem] mx-auto">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-zinc-400 uppercase">
-              Why you can trust us
-            </p>
-            <h2 className="mt-3 text-[1.9rem] sm:text-[2.6rem] font-extrabold leading-[1.3] tracking-[-0.01em]">
-              安心して読める理由。
-            </h2>
-          </div>
-
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <dl className="space-y-px bg-white/10 border border-white/10 self-start w-full">
             {[
-              {
-                emoji: "🚫",
-                title: "売らない",
-                body: "商品も施術も売りません。だから、いいことも悪いことも、そのまま書けます。",
-              },
-              {
-                emoji: "🤝",
-                title: "手数料ゼロ",
-                body: "クリニックからの紹介手数料も受け取りません。中立でいるための構造です。",
-              },
-              {
-                emoji: "📖",
-                title: "煽らない",
-                body: "一人称・過去形で、断定せず。医療の判断は専門家へ、と必ず添えます。",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-3xl bg-white p-7 sm:p-8 shadow-sm text-center"
-              >
-                <span className="text-[2rem]" aria-hidden>
-                  {item.emoji}
-                </span>
-                <h3 className="mt-3 text-[1.2rem] font-bold text-zinc-900">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-[13.5px] text-zinc-500 leading-[1.95]">
-                  {item.body}
-                </p>
+              { t: "選考制", d: "申し込みと対話を経て、双方で適性を確認します。" },
+              { t: "定員制", d: "各期の人数を絞り、専属で深く伴走します。" },
+              { t: "形式", d: "オンラインと対面の両方に対応。専属コンシェルジュと専門家チームが担当します。" },
+              { t: "料金", d: "プログラム内容は一人ひとり異なるため、選考後に個別にご提示します。" },
+              { t: "中立", d: "特定の医療機関・商品からの紹介手数料は受け取りません。" },
+            ].map((row) => (
+              <div key={row.t} className="bg-[#121215] p-6 sm:p-7 grid grid-cols-[6rem_1fr] gap-4">
+                <dt className="text-[13px] font-bold tracking-[0.08em]" style={{ color: ACCENT }}>
+                  {row.t}
+                </dt>
+                <dd className="text-[13.5px] leading-[1.9] text-[#A8A096]">{row.d}</dd>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
       </section>
 
-      {/* ───────────────────────── Closing CTA ───────────────────────── */}
+      {/* ───────────────────────── Final CTA ───────────────────────── */}
       <Reveal>
-        <section className="px-6 sm:px-10 pb-20 sm:pb-28">
-          <div className="mx-auto max-w-[1180px] rounded-[2rem] bg-zinc-900 text-white px-8 sm:px-16 py-16 sm:py-24 text-center relative overflow-hidden">
-            <div
-              aria-hidden
-              className="absolute -top-16 -right-10 w-72 h-72 rounded-full bg-amber-400/20 blur-3xl"
-            />
-            <div
-              aria-hidden
-              className="absolute -bottom-16 -left-10 w-72 h-72 rounded-full bg-indigo-400/20 blur-3xl"
-            />
-            <div className="relative">
-              <h2 className="text-[1.9rem] sm:text-[3rem] font-extrabold leading-[1.3] tracking-[-0.01em] max-w-[20ch] mx-auto">
-                ひとりで検索する夜を、
-                <br />
-                少しだけ短く。
-              </h2>
-              <p className="mt-6 text-[14.5px] sm:text-base text-zinc-400 leading-[2] max-w-[36rem] mx-auto">
-                正体がわかれば、次の半歩は自分で選べます。
-                気になる悩みから、読みはじめてください。
-              </p>
-              <div className="mt-10 flex flex-wrap justify-center gap-3">
-                <a
-                  href="#worries"
-                  className="inline-flex items-center gap-2 rounded-full bg-white text-zinc-900 text-[15px] font-bold px-7 py-4 hover:bg-zinc-200 transition-colors"
-                >
-                  悩みから探す
-                  <span aria-hidden>↑</span>
-                </a>
-                <Link
-                  href="/manifesto"
-                  className="inline-flex items-center gap-2 rounded-full border border-zinc-600 text-white text-[15px] font-bold px-7 py-4 hover:border-zinc-400 transition-colors"
-                >
-                  編集方針を読む
-                  <span aria-hidden>→</span>
-                </Link>
-              </div>
+        <section className="grain relative overflow-hidden">
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-70"
+            style={{
+              background:
+                "radial-gradient(100% 80% at 50% 100%, rgba(197,165,114,0.18) 0%, rgba(14,14,16,0) 60%)",
+            }}
+          />
+          <div className="relative mx-auto max-w-[1180px] px-6 sm:px-10 py-24 sm:py-36 text-center">
+            <p className="logo-type italic text-[12px] tracking-[0.3em] uppercase" style={{ color: ACCENT }}>
+              Request an invitation
+            </p>
+            <h2 className="mt-6 font-mincho text-[2.1rem] sm:text-[3.4rem] leading-[1.3] tracking-[0.01em] text-[#F6F1E8] max-w-[20ch] mx-auto" style={{ fontWeight: 800 }}>
+              次の選考枠は、
+              <br />
+              若干名です。
+            </h2>
+            <p className="mt-7 text-[14.5px] sm:text-base leading-[2] text-[#A8A096] max-w-[34rem] mx-auto">
+              まずは対話から。あなたの悩みを聞かせてください。
+              私たちが力になれると判断したとき、ご招待をお送りします。
+            </p>
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <Link
+                href={APPLY}
+                className="inline-flex items-center gap-2.5 rounded-full px-8 py-4 text-[15px] font-bold text-[#0E0E10] transition-transform hover:-translate-y-0.5"
+                style={{ backgroundColor: ACCENT }}
+              >
+                招待をリクエストする
+                <span aria-hidden>→</span>
+              </Link>
+              <Link
+                href="/territories"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-4 text-[15px] font-medium text-[#F3EEE6] hover:border-white/50 transition-colors"
+              >
+                まず悩みを読む
+                <span aria-hidden>→</span>
+              </Link>
             </div>
+            <p className="mt-8 text-[11.5px] text-[#7C766B] leading-[1.9] max-w-[32rem] mx-auto">
+              ※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。
+            </p>
           </div>
         </section>
       </Reveal>
+
+      {/* Sticky mobile CTA */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-white/10 bg-[#0E0E10]/95 backdrop-blur px-4 py-3">
+        <Link
+          href={APPLY}
+          className="flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-bold text-[#0E0E10]"
+          style={{ backgroundColor: ACCENT }}
+        >
+          招待をリクエストする <span aria-hidden>→</span>
+        </Link>
+      </div>
     </div>
   );
 }
 
-/* ───────────────────────── pieces ───────────────────────── */
-
-function ComplexCard({ c }: { c: Complex }) {
+function SectionHead({
+  en,
+  ja,
+  lead,
+}: {
+  en: string;
+  ja: string;
+  lead?: string;
+}) {
   return (
-    <Link
-      href={`/territories/${c.territory}`}
-      className="group relative flex flex-col rounded-3xl bg-white p-7 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all overflow-hidden"
-    >
-      <span
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-1.5"
-        style={{ backgroundColor: c.accent }}
-      />
-      <div className="flex items-center justify-between">
-        <span
-          className="grid place-items-center w-14 h-14 rounded-2xl"
-          style={{ backgroundColor: c.accentSoft, color: c.accent }}
-        >
-          <ComplexIcon id={c.id} large />
-        </span>
-        <span
-          className="rounded-full px-3 py-1 text-[11.5px] font-bold"
-          style={{ backgroundColor: c.accentSoft, color: c.accent }}
-        >
-          {c.stat}
-        </span>
-      </div>
-
-      <h3 className="mt-5 text-[1.5rem] font-extrabold leading-[1.3] text-zinc-900">
-        {c.ja}
-      </h3>
-      <p className="mt-2 text-[13.5px] text-zinc-500 leading-[1.9] flex-1">
-        {c.mechanism}
-      </p>
-
-      <span className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold group-hover:gap-2.5 transition-all" style={{ color: c.accent }}>
-        なぜ起きる？を読む <span aria-hidden>→</span>
+    <div className="max-w-[60rem]">
+      <span className="logo-type italic text-[12px] tracking-[0.24em] uppercase" style={{ color: ACCENT }}>
+        {en}
       </span>
-    </Link>
+      <h2 className="mt-4 font-mincho text-[1.9rem] sm:text-[2.7rem] leading-[1.25] tracking-[0.01em] text-[#F3EEE6] max-w-[22ch]" style={{ fontWeight: 700 }}>
+        {ja}
+      </h2>
+      {lead && (
+        <p className="mt-6 text-[14.5px] sm:text-[15px] leading-[2] text-[#A8A096] max-w-[42rem]">
+          {lead}
+        </p>
+      )}
+    </div>
   );
-}
-
-function CheckIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="text-emerald-500">
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function ComplexIcon({ id, large = false }: { id: string; large?: boolean }) {
-  const s = large ? 28 : 22;
-  const common = {
-    width: s,
-    height: s,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.8,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-  };
-  switch (id) {
-    case "hair":
-      return (
-        <svg {...common}>
-          <path d="M5 20c0-4 3-7 7-7s7 3 7 7" />
-          <path d="M7 10c1-4 3-6 5-6s4 2 5 6" />
-          <path d="M10 9c0-2 1-3 2-3" />
-        </svg>
-      );
-    case "sweat":
-      return (
-        <svg {...common}>
-          <path d="M12 3c3.5 4.5 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 2.5-6.5 6-11z" />
-        </svg>
-      );
-    case "skin":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <circle cx="9" cy="10" r="1" />
-          <circle cx="15" cy="13" r="1" />
-          <circle cx="11" cy="15" r="0.8" />
-        </svg>
-      );
-    case "face":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="8" r="4" />
-          <path d="M5 20c0-4 3.2-6 7-6s7 2 7 6" />
-        </svg>
-      );
-    case "body-hair":
-      return (
-        <svg {...common}>
-          <rect x="6" y="3.5" width="12" height="5" rx="1.5" />
-          <path d="M9 8.5v3M12 8.5v3M15 8.5v3" />
-          <path d="M12 14v6" />
-        </svg>
-      );
-    case "self":
-      return (
-        <svg {...common}>
-          <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      );
-    default:
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-        </svg>
-      );
-  }
 }
