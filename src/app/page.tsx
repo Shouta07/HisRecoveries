@@ -150,7 +150,7 @@ export default function HomePage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#1f2a1d]/10 rounded-[1.5rem] overflow-hidden border border-[#1f2a1d]/10">
               {complexes.map((c, i) => (
-                <a key={c.id} href="#interviews" className="group bg-white/82 hover:bg-white/85 backdrop-blur-md transition-colors p-7 md:p-8 flex flex-col">
+                <a key={c.id} href="#interviews" className="group bg-white/92 hover:bg-white/92 backdrop-blur-md transition-colors p-7 md:p-8 flex flex-col">
                   <div className="text-[13px] text-[#3d5638] font-semibold mb-3">{String(i + 1).padStart(2, "0")}</div>
                   <h3 className="text-xl text-[#1f2a1d] font-semibold mb-2">{c.ja}</h3>
                   <p className="text-[13.5px] text-[#4b5b47] leading-relaxed">{c.mechanism}</p>
@@ -174,7 +174,7 @@ export default function HomePage() {
 
             {/* featured */}
             <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-stretch mb-10">
-              <a href="#how" className="rounded-[2rem] bg-white/85 backdrop-blur-md border border-[#1f2a1d]/10 p-8 md:p-12 flex flex-col justify-between min-h-[320px] hover:bg-white/85 transition-colors shadow-sm">
+              <a href="#how" className="rounded-[2rem] bg-white/92 backdrop-blur-md border border-[#1f2a1d]/10 p-8 md:p-12 flex flex-col justify-between min-h-[320px] hover:bg-white/92 transition-colors shadow-sm">
                 <div>
                   <div className="flex items-center gap-2 text-[#3d5638] text-[13px] font-semibold mb-6">
                     <span>薄毛・AGA</span><span className="text-[#1f2a1d]/25">·</span><span className="text-[#6b7a66]">1年後</span>
@@ -183,7 +183,7 @@ export default function HomePage() {
                 </div>
                 <div className="mt-8 text-[#6b7a66] text-sm">30代前半・法人営業 / 一日に何度も初対面の相手と向き合う</div>
               </a>
-              <div className="rounded-[2rem] bg-white/85 backdrop-blur-md border border-[#1f2a1d]/10 p-8 md:p-10 flex flex-col shadow-sm">
+              <div className="rounded-[2rem] bg-white/92 backdrop-blur-md border border-[#1f2a1d]/10 p-8 md:p-10 flex flex-col shadow-sm">
                 <div className="text-xs tracking-[0.16em] text-[#3d5638] font-semibold mb-5">メカニズム</div>
                 <h3 className="text-lg text-[#1f2a1d] font-semibold mb-3">なぜ起きるのか</h3>
                 <p className="text-[#4b5b47] text-sm leading-[1.9]">テストステロンが5αリダクターゼによってDHTへ変換され、感受性の高い前頭部・頭頂部の毛包でヘアサイクルが短縮します。原因を見立てた上で、必要なら連携医療機関へ。</p>
@@ -196,7 +196,7 @@ export default function HomePage() {
             {/* more */}
             <div className="grid sm:grid-cols-2 gap-6">
               {INTERVIEWS_MORE.map((it) => (
-                <a key={it.title} href={it.href} className="group rounded-[1.5rem] bg-white/85 backdrop-blur-md border border-[#1f2a1d]/10 hover:bg-white/90 transition-colors p-7 md:p-8 flex flex-col min-h-[200px] shadow-sm">
+                <a key={it.title} href={it.href} className="group rounded-[1.5rem] bg-white/92 backdrop-blur-md border border-[#1f2a1d]/10 hover:bg-white/90 transition-colors p-7 md:p-8 flex flex-col min-h-[200px] shadow-sm">
                   <div className="flex items-center gap-2 text-[#3d5638] text-[13px] font-semibold mb-5">
                     <span>{it.tag}</span><span className="text-[#1f2a1d]/25">·</span><span className="text-[#6b7a66]">{it.span}</span>
                   </div>
@@ -249,11 +249,11 @@ export default function HomePage() {
               </div>
 
               {/* offline */}
-              <div className="rounded-[2rem] bg-white/85 backdrop-blur-md border border-[#1f2a1d]/10 text-[#1f2a1d] p-7 md:p-9 flex flex-col shadow-sm">
+              <div className="rounded-[2rem] bg-white/92 backdrop-blur-md border border-[#1f2a1d]/10 text-[#1f2a1d] p-7 md:p-9 flex flex-col shadow-sm">
                 <div className="flex items-center gap-2 text-[13px] font-semibold text-[#3d5638] mb-6">
                   <span className="w-2 h-2 rounded-full bg-[#85AB8B]" />OFFLINE — 専属伴走
                 </div>
-                <div className="rounded-[1.4rem] bg-white/78 border border-[#1f2a1d]/10 p-6 flex-1 flex flex-col justify-center gap-4">
+                <div className="rounded-[1.4rem] bg-white/88 border border-[#1f2a1d]/10 p-6 flex-1 flex flex-col justify-center gap-4">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-[#85AB8B]/20 border border-[#85AB8B]/40 flex items-center justify-center shrink-0">
                       <svg className="w-5 h-5 text-[#3d5638]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
@@ -281,7 +281,7 @@ export default function HomePage() {
             </div>
             <div className="grid md:grid-cols-5 gap-px bg-[#1f2a1d]/10 rounded-[1.5rem] overflow-hidden border border-[#1f2a1d]/10">
               {STEPS.map((s) => (
-                <div key={s.n} className="bg-white/82 backdrop-blur-md p-6 flex flex-col">
+                <div key={s.n} className="bg-white/92 backdrop-blur-md p-6 flex flex-col">
                   <div className="text-[#3d5638] text-sm font-semibold mb-4">{s.n}</div>
                   <h4 className="text-[15px] text-[#1f2a1d] font-semibold mb-2">{s.t}</h4>
                   <p className="text-[12.5px] text-[#4b5b47] leading-relaxed">{s.d}</p>
