@@ -18,14 +18,14 @@ export default function PackagesSection() {
           <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">
-              Step ③ — Experience Packages
+              Recovery Packages
             </span>
           </div>
           <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.3] text-[#1f2a1d]" style={{ ...MINCHO, fontWeight: 800 }}>
-            悩みに合わせて、<span className="text-[#3d5638]">選ぶ。</span>
+            あなたに合わせて、<span className="text-[#3d5638]">改善を設計する。</span>
           </h2>
           <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-            現在地の分析（②）をもとに、悩み別の体験パッケージを一緒に選びます。点ではなく、一本の線で。
+            現在地の整理をもとに、悩み別の改善パッケージを一緒に選びます。点ではなく、一本の線で。
           </p>
         </div>
 

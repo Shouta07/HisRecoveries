@@ -63,6 +63,14 @@ const STEPS = [
   },
 ];
 
+// Where the Web app shows up along the journey — kept as a quiet touchpoint,
+// not the headline (the app supports the change, it isn't the product).
+const APP_TOUCH: Record<string, string> = {
+  "02": "現在地を整理",
+  "04": "記録する",
+  "05": "振り返る",
+};
+
 function Arrow() {
   return (
     <div aria-hidden className="shrink-0 self-center hidden sm:flex items-center px-1 text-[#85AB8B]">
@@ -101,6 +109,11 @@ export default function HowFlow() {
                 </div>
                 <h4 className="text-[15px] text-[#1f2a1d] font-semibold mb-2">{s.t}</h4>
                 <p className="text-[12.5px] text-[#4b5b47] leading-[1.85]">{s.d}</p>
+                {APP_TOUCH[s.n] && (
+                  <span className="mt-3 inline-flex w-fit items-center gap-1 rounded-full bg-[#16241a]/[0.06] text-[#16241a] px-2.5 py-1 text-[11px] font-medium">
+                    <span aria-hidden>📱</span> {APP_TOUCH[s.n]}
+                  </span>
+                )}
                 {s.n === "03" ? (
                   <a href="#packages" className="mt-auto pt-4 text-[12px] font-semibold text-[#3d5638] inline-flex items-center gap-1 hover:gap-1.5 transition-all">
                     パッケージを見る <span aria-hidden>↓</span>
@@ -122,15 +135,14 @@ export default function HowFlow() {
       <div className="mt-5 rounded-[1.6rem] bg-[#16241a] text-[#EDF1E8] overflow-hidden grid md:grid-cols-[1.25fr_1fr] items-center">
         <div className="p-7 md:p-9">
           <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B] mb-2">
-            Online · ずっと伴走するインフラ
+            改善を支える仕組み
           </div>
           <h4 className="text-[1.3rem] md:text-[1.5rem] font-bold text-[#EDF1E8] mb-2" style={{ fontFamily: "var(--font-shippori), serif" }}>
-            Webアプリで可視化
+            改善を、一人で終わらせない。
           </h4>
           <p className="text-[13px] text-[#C9D2C4] leading-[1.95]">
-            状態のスコア・記録・連絡を、いつでも手元で。
-            <span className="text-[#85AB8B] font-medium">①〜⑤のすべてを、一気通貫で伴走</span>
-            します。
+            すべての改善は<span className="text-[#85AB8B] font-medium">記録され、見える化され、専属担当と共有</span>されます。
+            理解から定着まで、ずっと一緒に。
           </p>
         </div>
         <div className="relative flex items-end justify-center overflow-hidden pt-6 md:pt-8" style={{ perspective: "1200px" }}>

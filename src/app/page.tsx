@@ -5,6 +5,7 @@ import HowFlow from "@/components/HowFlow";
 import BookingCTA from "@/components/BookingCTA";
 import PackagesSection from "@/components/PackagesSection";
 import MechanismSection from "@/components/MechanismSection";
+import InterviewsSection from "@/components/InterviewsSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -80,11 +81,11 @@ export default function HomePage() {
             <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 完全守秘義務のもと</span>
           </div>
           <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs mx-auto sm:mx-0 font-semibold sm:font-normal">
-            言えない悩みを持つ人同士で。現在地を可視化し、専属が伴走しながら、変化を一緒に設計します。完全匿名・完全守秘義務・中立。
+            「なぜ起きるのか」を理解し、「どう変われるか」を知り、自分に合った改善を選ぶ。His Recoveries は、コンプレックスから自信までを伴走します。
           </p>
-          <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
-            <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
-            <a href="#how" className="text-[#3d5638] sm:text-white text-sm font-semibold sm:font-medium hover:opacity-80 transition-opacity">進め方を見る</a>
+          <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
+            <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
+            <a href="#mechanism" className="border border-[#3d5638]/60 sm:border-white/70 text-[#2d4228] sm:text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#3d5638]/10 sm:hover:bg-white/15 transition-colors">変化の仕組みを見る</a>
           </div>
         </div>
 
@@ -109,29 +110,106 @@ export default function HomePage() {
         />
 
 
-        {/* ===== How (app × 5 steps, merged into one swipeable diagram) ===== */}
-        <section id="how" className="relative z-10 text-[#1f2a1d]">
-          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
-            <div className="on-media mb-8">
-              <h3 className="text-xl md:text-2xl text-[#1f2a1d] font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
-              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">原因の特定から、パッケージの実行、定着まで。コンプレックスから自信へ、一本の流れで設計します。</p>
+        {/* ② 理解する — なぜ変われるのか（メカニズム → 記事） */}
+        <MechanismSection />
+
+        {/* ③ 希望を持つ — どう変わったのか（インタビュー） */}
+        <InterviewsSection />
+
+        {/* ④ 安心への入口 — His Recoveries とは */}
+        <section className="relative z-10 text-[#1f2a1d]">
+          <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-16 md:py-24 text-center on-media">
+            <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium mb-5">
+              His Recoveries
             </div>
-
-            {/* swipeable diagram: phone mock + 5 steps */}
-            <HowFlow />
-
-            <div className="on-media mt-10 flex flex-wrap items-center gap-4">
-              <BookingCTA className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">予約登録する</BookingCTA>
-              <span className="text-[#4b5b47] text-[13px]">すべて完全匿名・完全守秘義務のもとで運営します。※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
+            <h2 className="text-[1.7rem] md:text-[2.3rem] leading-[1.5] text-[#1f2a1d]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
+              私たちは、<span className="text-[#3d5638]">治療を売る会社ではありません。</span>
+            </h2>
+            <p className="mt-6 text-[#4b5b47] text-[15px] leading-[2] max-w-xl mx-auto">
+              コンプレックスは、施術だけでは終わりません。
+              理解し、実践し、定着するまで。専属が、ずっと伴走します。
+            </p>
+            <div className="mt-8 flex items-center justify-center gap-3 text-[13px] font-semibold text-[#3d5638]">
+              <span>理解</span>
+              <span aria-hidden className="text-[#85AB8B]">→</span>
+              <span>実践</span>
+              <span aria-hidden className="text-[#85AB8B]">→</span>
+              <span>定着</span>
             </div>
           </div>
         </section>
 
-        {/* ===== Step ③ — Experience packages (moved from /packages) ===== */}
+        {/* ⑤⑥ Recovery Journey — 5 steps with the app woven in */}
+        <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-6 pb-20 md:pb-28">
+            <div className="on-media mb-8 max-w-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
+                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">
+                  Recovery Journey
+                </span>
+              </div>
+              <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.3]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
+                理解から、<span className="text-[#3d5638]">自信まで。</span>
+              </h2>
+              <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
+                原因の特定から、実践、定着まで。コンプレックスから自信へ、一本の流れで設計します。
+              </p>
+            </div>
+
+            <HowFlow />
+          </div>
+        </section>
+
+        {/* ⑦ 改善パッケージ */}
         <PackagesSection />
 
-        {/* ===== Mechanism + voices (moved from /mechanism & /interviews) ===== */}
-        <MechanismSection />
+        {/* ⑧ 予約 CTA */}
+        <section className="relative z-10">
+          <div className="max-w-[920px] mx-auto px-5 sm:px-8 pb-16 md:pb-24">
+            <div className="rounded-[2rem] bg-[#16241a] text-[#EDF1E8] p-9 md:p-14 text-center">
+              <h2 className="text-[1.5rem] md:text-[2rem] leading-[1.55] text-[#EDF1E8]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
+                一人で考え続けるより、
+                <br className="hidden sm:block" />
+                一度、現在地を整理してみませんか。
+              </h2>
+              <div className="mt-6 flex items-center justify-center gap-3 text-[12.5px] text-[#85AB8B] font-medium">
+                <span>完全匿名</span>
+                <span className="text-white/25">・</span>
+                <span>完全守秘義務</span>
+                <span className="text-white/25">・</span>
+                <span>中立</span>
+              </div>
+              <div className="mt-8">
+                <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-8 py-4 rounded-full transition-colors">
+                  予約登録する
+                </BookingCTA>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ⑨ 医療連携・サロン・専門家・免責 */}
+        <section className="relative z-10 on-media">
+          <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+              {[
+                { t: "医療連携", d: "必要な段階は、紹介手数料ゼロで連携医療機関へ中立につなぎます。" },
+                { t: "提携サロン・専門家", d: "日々の見え方は、提携先と役割を分けて伴走します。" },
+                { t: "中立・匿名", d: "売らない・断定しない・完全守秘義務のもとで運営します。" },
+              ].map((x) => (
+                <div key={x.t} className="rounded-[1.2rem] bg-white/85 border border-[#1f2a1d]/10 p-5">
+                  <div className="text-[13px] font-bold text-[#1f2a1d] mb-1.5">{x.t}</div>
+                  <p className="text-[12px] text-[#4b5b47] leading-[1.8]">{x.d}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-[12px] text-[#6b7a66] leading-[1.9]">
+              ※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。
+              特定の医療機関・商品を推奨・斡旋せず、紹介手数料は受け取りません（中立）。
+            </p>
+          </div>
+        </section>
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
