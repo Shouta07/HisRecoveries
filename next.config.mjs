@@ -34,6 +34,9 @@ const nextConfig = {
       { source: "/territories", destination: "/#mechanism", permanent: true },
       { source: "/territories/:slug*", destination: "/#mechanism", permanent: true },
       { source: "/manifesto", destination: "/", permanent: true },
+      // legacy company/legal pages removed — fold into the home / privacy.
+      { source: "/about", destination: "/#about", permanent: true },
+      { source: "/legal", destination: "/privacy", permanent: true },
       // /en mirror removed — Japanese only for now.
       { source: "/en", destination: "/", permanent: true },
       { source: "/en/:slug*", destination: "/", permanent: true },
