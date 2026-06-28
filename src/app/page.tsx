@@ -1,7 +1,8 @@
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
-import HowShowcase from "@/components/HowShowcase";
+import HowFlow from "@/components/HowFlow";
+import PackagesShowcase from "@/components/PackagesShowcase";
 
 const APPLY = "/apply";
 
@@ -32,14 +33,6 @@ const INTERVIEWS_MORE = [
     title: "ワキガ手術から半年、夏のグレーを選び直せた朝のこと",
     who: "20代後半・夏のグレーを、何年も避けてきた",
   },
-];
-
-const STEPS = [
-  { n: "01", t: "原因を特定する", d: "自己観察と連携専門家の診断で、何が・なぜ起きているかを言葉に。" },
-  { n: "02", t: "中立に並べる", d: "期間・費用・リスクを正直に。「何もしない」も含めて。" },
-  { n: "03", t: "医療と連携する", d: "必要な段階なら、その悩みに強い医療機関へ。紹介手数料はゼロ。" },
-  { n: "04", t: "専属で伴走する", d: "生活に根づくまで、専属担当がオンライン・対面で並走。" },
-  { n: "05", t: "定着したら卒業", d: "自分で再現できる状態がゴール。終わりを設計に含めます。" },
 ];
 
 export default function HomePage() {
@@ -133,47 +126,26 @@ export default function HomePage() {
         />
 
 
-        {/* ===== How (web app × offline, 5 steps) ===== */}
+        {/* ===== How (app × 5 steps, merged into one swipeable diagram) ===== */}
         <section id="how" className="relative z-10 text-[#1f2a1d]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
-            {/* device showcase — placed directly under the hero */}
-            <HowShowcase />
-
-            {/* 5 steps */}
-            <div className="on-media mt-16 md:mt-24 mb-8">
+            <div className="on-media mb-8">
               <h3 className="text-xl md:text-2xl text-[#1f2a1d] font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
-              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">どれも、隠さず・順番どおりに。</p>
-            </div>
-            {/* 5-step flow diagram */}
-            <div className="relative rounded-[1.5rem] bg-white/92 backdrop-blur-md border border-[#1f2a1d]/10 p-6 sm:p-10">
-              {/* connecting line */}
-              <div aria-hidden className="hidden md:block absolute left-[10%] right-[10%] top-[4.6rem] h-px bg-[#1f2a1d]/12" />
-              <ol className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-4">
-                {STEPS.map((s, i) => (
-                  <li key={s.n} className="relative flex md:flex-col items-start md:items-center gap-4 md:gap-0 text-left md:text-center">
-                    {/* node */}
-                    <div className="relative z-10 shrink-0 grid place-items-center w-12 h-12 rounded-full bg-[#16241a] text-[#EDF1E8] font-mono text-[14px] font-bold md:mb-5">
-                      {s.n}
-                    </div>
-                    {/* mobile vertical connector */}
-                    {i < STEPS.length - 1 && (
-                      <span aria-hidden className="md:hidden absolute left-6 top-12 -translate-x-1/2 w-px h-[calc(100%-1rem)] bg-[#1f2a1d]/12" />
-                    )}
-                    <div className="md:px-1">
-                      <h4 className="text-[15px] text-[#1f2a1d] font-semibold mb-1.5">{s.t}</h4>
-                      <p className="text-[12.5px] text-[#4b5b47] leading-relaxed">{s.d}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">アプリで可視化しながら、隠さず・順番どおりに。</p>
             </div>
 
-            <div className="on-media mt-12 flex flex-wrap items-center gap-4">
+            {/* swipeable diagram: phone mock + 5 steps */}
+            <HowFlow />
+
+            <div className="on-media mt-10 flex flex-wrap items-center gap-4">
               <Link href={APPLY} className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">予約登録する</Link>
               <span className="text-[#4b5b47] text-[13px]">すべて完全匿名・完全守秘義務のもとで運営します。※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。</span>
             </div>
           </div>
         </section>
+
+        {/* ===== Experience packages (EC-style parallel grid) ===== */}
+        <PackagesShowcase />
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">

@@ -24,7 +24,7 @@ function Photo({ className = "", rotate = 0 }: { className?: string; rotate?: nu
   );
 }
 
-function PhoneFrame({
+export function PhoneFrame({
   children,
   className = "",
   style,
@@ -51,7 +51,7 @@ function PhoneFrame({
   );
 }
 
-function DashboardScreen() {
+export function DashboardScreen() {
   return (
     <div>
       <div className="px-3.5 pt-6 pb-2.5 bg-white border-b border-zinc-100 flex items-center justify-between">
@@ -91,7 +91,7 @@ function DashboardScreen() {
   );
 }
 
-function MemberScreen() {
+export function MemberScreen() {
   return (
     <div>
       <div className="px-3.5 pt-6 pb-2.5 bg-white border-b border-zinc-100 flex items-center justify-between">

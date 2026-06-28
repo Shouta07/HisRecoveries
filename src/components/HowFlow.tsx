@@ -1,0 +1,136 @@
+// "改善の進め方" as one swipeable diagram: the app (phone mock) and the
+// 5 steps merged into a single horizontal rail you swipe through with a finger.
+// CSS scroll-snap only — native touch / trackpad swipe, no JS needed.
+import { PhoneFrame, DashboardScreen, MemberScreen } from "@/components/HowShowcase";
+
+const STEPS = [
+  {
+    n: "01",
+    t: "原因を特定する",
+    d: "自己観察と連携専門家の診断で、何が・なぜ起きているかを言葉に。",
+    icon: (
+      <>
+        <circle cx="11" cy="11" r="6" />
+        <path d="M20 20l-3.5-3.5" />
+      </>
+    ),
+  },
+  {
+    n: "02",
+    t: "中立に並べる",
+    d: "期間・費用・リスクを正直に。「何もしない」も含めて。",
+    icon: (
+      <>
+        <path d="M4 7h16M4 12h16M4 17h10" />
+      </>
+    ),
+  },
+  {
+    n: "03",
+    t: "医療と連携する",
+    d: "必要な段階なら、その悩みに強い医療機関へ。紹介手数料はゼロ。",
+    icon: (
+      <>
+        <path d="M12 5v14M5 12h14" />
+      </>
+    ),
+  },
+  {
+    n: "04",
+    t: "専属で伴走する",
+    d: "生活に根づくまで、専属担当がオンライン・対面で並走。",
+    icon: (
+      <>
+        <circle cx="8" cy="8" r="3" />
+        <circle cx="17" cy="9" r="2.5" />
+        <path d="M3 20c0-3 2.5-5 5-5s5 2 5 5M14 20c0-2 1.5-3.5 3-3.5s3 1.5 3 3.5" />
+      </>
+    ),
+  },
+  {
+    n: "05",
+    t: "定着したら卒業",
+    d: "自分で再現できる状態がゴール。終わりを設計に含めます。",
+    icon: (
+      <>
+        <path d="M20 6L9 17l-5-5" />
+      </>
+    ),
+  },
+];
+
+function Arrow() {
+  return (
+    <div aria-hidden className="shrink-0 self-center hidden sm:flex items-center px-1 text-[#85AB8B]">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </div>
+  );
+}
+
+export default function HowFlow() {
+  return (
+    <div className="relative">
+      {/* swipe hint */}
+      <div className="on-media flex items-center gap-2 mb-3 text-[#6b7a66] text-[12px]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M5 12h14M5 12l5-5M5 12l5 5M19 12l-5-5M19 12l-5 5" />
+        </svg>
+        <span>横にスワイプ — アプリと5つのステップ</span>
+      </div>
+
+      {/* horizontal swipe rail */}
+      <div className="-mx-5 sm:-mx-8 px-5 sm:px-8 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-5 sm:scroll-px-8 overscroll-x-contain">
+        <div className="flex items-stretch gap-4 sm:gap-3 pb-5 w-max">
+          {/* lead card — the app (phone mock) */}
+          <article className="snap-start shrink-0 w-[300px] sm:w-[360px] rounded-[1.6rem] overflow-hidden bg-[#16241a] text-[#EDF1E8] flex flex-col">
+            <div className="px-6 pt-6">
+              <div className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-[#85AB8B] mb-1">Online</div>
+              <h4 className="text-[1.1rem] font-bold text-[#EDF1E8] mb-1" style={{ fontFamily: "var(--font-shippori), serif" }}>
+                Webアプリで可視化
+              </h4>
+              <p className="text-[12px] text-[#9FB0A0] leading-[1.7]">
+                状態のスコア・記録・連絡を、いつでも手元で。
+              </p>
+            </div>
+            <div className="relative flex-1 flex items-end justify-center gap-0 pt-4 overflow-hidden" style={{ perspective: "1200px" }}>
+              <div className="scale-[0.82] sm:scale-90 flex items-end -mb-6">
+                <PhoneFrame className="z-10" style={{ transform: "rotate(-5deg) translateY(8px)" }}>
+                  <DashboardScreen />
+                </PhoneFrame>
+                <PhoneFrame className="z-20 -ml-10" style={{ transform: "rotate(4deg) translateY(-10px) scale(1.02)" }}>
+                  <MemberScreen />
+                </PhoneFrame>
+              </div>
+            </div>
+          </article>
+
+          <Arrow />
+
+          {/* step cards */}
+          {STEPS.map((s, i) => (
+            <div key={s.n} className="flex items-stretch">
+              <article className="snap-start shrink-0 w-[230px] sm:w-[244px] rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-sm p-6 flex flex-col">
+                <div className="flex items-center justify-between mb-5">
+                  <span className="grid place-items-center w-11 h-11 rounded-full bg-[#16241a] text-[#EDF1E8] font-mono text-[13px] font-bold">
+                    {s.n}
+                  </span>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#85AB8B" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    {s.icon}
+                  </svg>
+                </div>
+                <h4 className="text-[15px] text-[#1f2a1d] font-semibold mb-2">{s.t}</h4>
+                <p className="text-[12.5px] text-[#4b5b47] leading-[1.85]">{s.d}</p>
+                <span aria-hidden className="mt-auto pt-4 text-[10.5px] tracking-[0.14em] uppercase font-mono text-[#a7b3a2]">
+                  Step {s.n}
+                </span>
+              </article>
+              {i < STEPS.length - 1 && <Arrow />}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
