@@ -1,9 +1,9 @@
 export const site = {
   name: "His Recoveries",
-  tagline: "Male Conditioning",
-  promise: "Recover Your Presence.",
+  tagline: "From Complex to Confidence",
+  promise: "コンプレックスから自信への変化を、デザインする。",
   description:
-    "Male Conditioning — Recover Your Presence. 清潔感、疲労、余白、男性の自意識について、静かに記録する Male Conditioning Journal / Recovery Culture Brand. 都市で疲れた現代男性が、整った状態を取り戻すための場所。",
+    "コンプレックスから自信への変化を、デザインする。男性のための、完全匿名・完全守秘義務・完全招待制の改善プログラム。Webアプリで現在地を可視化し、専属がオフラインで伴走。必要なときは、紹介手数料ゼロで連携医療機関と中立につなぎます。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",

@@ -31,7 +31,7 @@ export default function ApplyPage() {
         </h1>
         <p className="mt-4 text-[15px] font-semibold text-[#3d5638]">予約登録する。</p>
         <p className="mt-4 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
-          まずは対話から。いまの悩みを聞かせてください。すべて
+          コンプレックスから自信への変化を、一緒に設計します。まずは対話から。すべて
           <strong className="font-bold text-[#1f2a1d]">完全匿名・完全守秘義務</strong>
           のもとで扱います。私たちが力になれると判断したとき、ご招待をお送りします。
           ご予約登録には、秘密保持への同意が必要です。

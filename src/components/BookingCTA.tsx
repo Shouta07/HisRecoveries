@@ -82,7 +82,7 @@ export default function BookingCTA({
               {/* body (scrolls if tall) */}
               <div className="px-6 sm:px-8 py-6 max-h-[72vh] overflow-y-auto">
                 <p className="text-[14px] text-[#4b5b47] leading-[1.95] mb-7">
-                  まずは対話から。いまの悩みを聞かせてください。すべて
+                  コンプレックスから自信への変化を、一緒に設計します。まずは対話から。すべて
                   <strong className="font-bold text-[#1f2a1d]">完全匿名・完全守秘義務</strong>
                   のもとで扱います。ご予約登録には、秘密保持への同意が必要です。
                 </p>

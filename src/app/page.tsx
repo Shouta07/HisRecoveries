@@ -58,17 +58,17 @@ export default function HomePage() {
             className="text-[#336443] text-[2.75rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.75rem] xl:text-[6.5rem] max-w-5xl"
             style={{ ...HERO_HEAD, lineHeight: 1.2 }}
           >
-            コンプレックス
+            コンプレックスから、
             <br />
-            からの<span className="text-[#85AB8B]">解放</span>
+            <span className="text-[#85AB8B]">自信</span>へ。
           </h1>
           <p
             className="mt-7 sm:mt-9 text-[#4b5b47] text-[15px] sm:text-[17px] md:text-lg leading-[2.05] tracking-[0.04em] max-w-lg px-2"
             style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400 }}
           >
-            言えない悩みを持つ人同士で。
+            その変化を、デザインする。
             <wbr />
-            完全招待制の匿名改善プログラム。
+            完全招待制・完全匿名の、改善プログラム。
           </p>
         </div>
 
@@ -80,7 +80,7 @@ export default function HomePage() {
             <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 完全守秘義務のもと</span>
           </div>
           <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs mx-auto sm:mx-0 font-semibold sm:font-normal">
-            すべて匿名・完全守秘義務のもとで。Webアプリで状態を可視化し、オフラインで専属が伴走します。完全招待制・中立。
+            言えない悩みを持つ人同士で。現在地を可視化し、専属が伴走しながら、変化を一緒に設計します。完全匿名・完全守秘義務・中立。
           </p>
           <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap">
             <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
@@ -114,7 +114,7 @@ export default function HomePage() {
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
             <div className="on-media mb-8">
               <h3 className="text-xl md:text-2xl text-[#1f2a1d] font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
-              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">原因の特定から、パッケージの実行、定着まで。点ではなく、一本の流れで。</p>
+              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">原因の特定から、パッケージの実行、定着まで。コンプレックスから自信へ、一本の流れで設計します。</p>
             </div>
 
             {/* swipeable diagram: phone mock + 5 steps */}
