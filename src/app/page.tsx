@@ -81,7 +81,7 @@ export default function HomePage() {
             <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 完全守秘義務のもと</span>
           </div>
           <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
-            <a href="#mechanism" className="border border-[#3d5638]/60 sm:border-white/70 text-[#2d4228] sm:text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#3d5638]/10 sm:hover:bg-white/15 transition-colors">変化の仕組みを見る</a>
+            <a href="#how" className="border border-[#3d5638]/60 sm:border-white/70 text-[#2d4228] sm:text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#3d5638]/10 sm:hover:bg-white/15 transition-colors">変化の仕組みを見る</a>
             <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
           </div>
         </div>
@@ -107,38 +107,9 @@ export default function HomePage() {
         />
 
 
-        {/* ② 理解する — なぜ変われるのか（メカニズム → 記事） */}
-        <MechanismSection />
-
-        {/* ③ 希望を持つ — どう変わったのか（インタビュー） */}
-        <InterviewsSection />
-
-        {/* ④ 安心への入口 — His Recoveries とは */}
-        <section className="relative z-10 text-[#1f2a1d]">
-          <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-16 md:py-24 text-center on-media">
-            <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium mb-5">
-              His Recoveries
-            </div>
-            <h2 className="text-[1.7rem] md:text-[2.3rem] leading-[1.5] text-[#1f2a1d]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
-              私たちは、<span className="text-[#3d5638]">治療を売る会社ではありません。</span>
-            </h2>
-            <p className="mt-6 text-[#4b5b47] text-[15px] leading-[2] max-w-xl mx-auto">
-              コンプレックスは、施術だけでは終わりません。
-              理解し、選び、続ける。そのすべてを、専属が伴走します。
-            </p>
-            <div className="mt-8 flex items-center justify-center gap-3 text-[13px] font-semibold text-[#3d5638]">
-              <span>理解</span>
-              <span aria-hidden className="text-[#85AB8B]">→</span>
-              <span>選ぶ</span>
-              <span aria-hidden className="text-[#85AB8B]">→</span>
-              <span>続ける</span>
-            </div>
-          </div>
-        </section>
-
-        {/* ⑤⑥ Recovery Journey — 5 steps with the app woven in */}
+        {/* Recovery Journey — directly under the hero */}
         <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
-          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-6 pb-20 md:pb-28">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
             <div className="on-media mb-8 max-w-2xl">
               <div className="flex items-center gap-3 mb-4">
                 <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
@@ -158,7 +129,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ⑦ 改善パッケージ */}
+        {/* 取り扱う領域 — mechanism → 記事 */}
+        <MechanismSection />
+
+        {/* 改善事例 — interviews */}
+        <InterviewsSection />
+
+        {/* 改善パッケージ */}
         <PackagesSection />
 
         {/* ⑧ FAQ */}

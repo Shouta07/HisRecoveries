@@ -16,17 +16,12 @@ export default function MechanismSection() {
           <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">
-              The Mechanism
+              Areas We Work With
             </span>
           </div>
-          <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.35] text-[#1f2a1d]" style={{ ...MINCHO, fontWeight: 800 }}>
-            あなたの悩みは、<br className="hidden sm:block" />
-            <span className="text-[#3d5638]">仕組みから理解できます。</span>
+          <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.3] text-[#1f2a1d]" style={{ ...MINCHO, fontWeight: 800 }}>
+            取り扱う<span className="text-[#3d5638]">領域。</span>
           </h2>
-          <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-            コンプレックスの多くは、性格ではなく、身体や心理の仕組みから説明できます。
-            医師監修のもと、原因から。カードから、そのまま記事へ。
-          </p>
         </div>
 
         {/* concern cards — parallel grid, each links to the articles */}
