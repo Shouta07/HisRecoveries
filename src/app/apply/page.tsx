@@ -24,12 +24,13 @@ export default function ApplyPage() {
       </div>
       <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
         <p className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">
-          APPLY · 完全招待制 · 完全匿名
+          CONTACT · 完全招待制 · 完全匿名
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
-          予約登録する。
+          無料で、相談する。
         </h1>
-        <p className="mt-5 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
+        <p className="mt-4 text-[15px] font-semibold text-[#3d5638]">予約登録する。</p>
+        <p className="mt-4 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
           まずは対話から。いまの悩みを聞かせてください。すべて
           <strong className="font-bold text-[#1f2a1d]">完全匿名・完全守秘義務</strong>
           のもとで扱います。私たちが力になれると判断したとき、ご招待をお送りします。
@@ -37,6 +38,20 @@ export default function ApplyPage() {
         </p>
 
         <ApplyForm />
+
+        <div className="mt-8 flex items-start gap-2.5 text-[13px] text-[#4b5b47] leading-[1.9]">
+          <span aria-hidden className="text-[#85AB8B] mt-px">→</span>
+          <p>
+            送信いただいた内容は{" "}
+            <a
+              href={`mailto:${site.email}`}
+              className="text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4 hover:decoration-[#3d5638] transition-colors"
+            >
+              {site.email}
+            </a>{" "}
+            宛に届きます。3営業日目処で返信いたします。
+          </p>
+        </div>
       </div>
     </div>
   );
