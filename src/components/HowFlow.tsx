@@ -1,7 +1,6 @@
 // "改善の進め方" as one swipeable diagram: the app (phone mock) and the
 // 5 steps merged into a single horizontal rail you swipe through with a finger.
 // CSS scroll-snap only — native touch / trackpad swipe, no JS needed.
-import { PhoneFrame, DashboardScreen, MemberScreen } from "@/components/HowShowcase";
 
 const STEPS = [
   {
@@ -130,34 +129,6 @@ export default function HowFlow() {
               {i < STEPS.length - 1 && <Arrow />}
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* The Web app is end-to-end infrastructure — it accompanies all of
-          ①〜⑤, so it sits across the flow (not as a step before ①). */}
-      <div className="mt-5 rounded-[1.6rem] bg-[#16241a] text-[#EDF1E8] overflow-hidden grid md:grid-cols-[1.25fr_1fr] items-center">
-        <div className="p-7 md:p-9">
-          <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B] mb-2">
-            改善を続けられる理由
-          </div>
-          <h4 className="text-[1.3rem] md:text-[1.5rem] font-bold text-[#EDF1E8] mb-2" style={{ fontFamily: "var(--font-shippori), serif" }}>
-            一人で、終わらせない。
-          </h4>
-          <p className="text-[13px] text-[#C9D2C4] leading-[1.95]">
-            改善は、思い出した時だけ頑張るものではありません。
-            <span className="text-[#85AB8B] font-medium">状態を記録し、担当者と共有し、変化を見える化</span>
-            する。だから、続きます。
-          </p>
-        </div>
-        <div className="relative flex items-end justify-center overflow-hidden pt-6 md:pt-8" style={{ perspective: "1200px" }}>
-          <div className="scale-[0.8] sm:scale-90 flex items-end -mb-8 md:-mb-10">
-            <PhoneFrame className="z-10" style={{ transform: "rotate(-5deg) translateY(8px)" }}>
-              <DashboardScreen />
-            </PhoneFrame>
-            <PhoneFrame className="z-20 -ml-10" style={{ transform: "rotate(4deg) translateY(-10px) scale(1.02)" }}>
-              <MemberScreen />
-            </PhoneFrame>
-          </div>
         </div>
       </div>
     </div>
