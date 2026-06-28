@@ -2,7 +2,6 @@ import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import HowFlow from "@/components/HowFlow";
-import BookingCTA from "@/components/BookingCTA";
 import PackagesSection from "@/components/PackagesSection";
 import MechanismSection from "@/components/MechanismSection";
 import InterviewsSection from "@/components/InterviewsSection";
@@ -67,32 +66,8 @@ export default function HomePage() {
             className="mt-7 sm:mt-9 text-[#4b5b47] text-[14px] sm:text-[16px] md:text-[17px] leading-[2.05] tracking-[0.04em] max-w-xl px-2"
             style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400 }}
           >
-            原因を理解し、改善を選び、変化が定着するまで。
-            <wbr />
-            His Recoveries は、コンプレックスから自信まで伴走する改善サービスです。
+            His Recoveries は、コンプレックスから自信まで完全守秘義務のもと伴走する改善サービスです。
           </p>
-        </div>
-
-        {/* Bottom-left CTA block — on mobile the on-media halo + light scrim
-            keep the dark-green copy legible over the bright video. */}
-        <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 sm:max-w-sm on-media sm:[text-shadow:none] text-center sm:text-left">
-          <div className="flex items-center justify-center sm:justify-start gap-2 text-[#2d4228] sm:text-white/95 mb-3">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" /><path d="M19 3v4" /><path d="M21 5h-4" /></svg>
-            <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 完全守秘義務のもと</span>
-          </div>
-          <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
-            <a href="#how" className="border border-[#3d5638]/60 sm:border-white/70 text-[#2d4228] sm:text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#3d5638]/10 sm:hover:bg-white/15 transition-colors">変化の仕組みを見る</a>
-            <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
-          </div>
-        </div>
-
-        {/* Bottom-right link */}
-        <div className="hidden sm:flex absolute right-6 md:right-10 bottom-8 md:bottom-10 z-10 items-center gap-2 text-white/90 text-sm">
-          <a href="/#mechanism" className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors">
-            <svg className="w-3 h-3 ml-0.5 fill-white text-white" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-          </a>
-          <span className="font-medium">メカニズム特集</span>
-          <span className="text-white/60">インタビュー</span>
         </div>
       </section>
 
