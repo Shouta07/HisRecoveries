@@ -1,6 +1,7 @@
 // 取り扱う領域 — concern cards as a CURATION: a short medical-supervised
 // mechanism, then short excerpts quoted from each clinic's own articles
 // (always attributed + linked out, never endorsed).
+import Link from "next/link";
 import { complexes } from "@/lib/complexes";
 import { citationsByComplex } from "@/lib/citations";
 
@@ -65,36 +66,25 @@ export default function MechanismSection() {
                   <p className="text-[12.5px] text-[#3a423a] leading-[1.95] line-clamp-5">{c.why}</p>
                 </div>
 
-                {/* curation — quotes from clinics */}
-                <div className="mt-auto pt-4 border-t border-[#1f2a1d]/8">
-                  <div className="text-[11px] font-medium text-[#3d5638] mb-3">クリニックの解説より（引用）</div>
+                {/* curation preview + link to the full article */}
+                <div className="mt-4 pt-4 border-t border-[#1f2a1d]/8">
+                  <div className="text-[11px] font-medium text-[#3d5638] mb-2">クリニックの解説より（引用）</div>
                   {cites.length > 0 ? (
-                    <div className="space-y-3">
-                      {cites.map((q, qi) => (
-                        <blockquote key={qi} className="border-l-2 border-[#85AB8B] pl-3">
-                          <p className="text-[12px] text-[#1f2a1d] leading-[1.85]">「{q.quote}」</p>
-                          <footer className="mt-1.5 text-[11px] text-[#6b7a66]">
-                            — {q.source}
-                            {q.url && (
-                              <a
-                                href={q.url}
-                                target="_blank"
-                                rel="noopener noreferrer nofollow"
-                                className="ml-1.5 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]"
-                              >
-                                解説を読む↗
-                              </a>
-                            )}
-                          </footer>
-                        </blockquote>
-                      ))}
-                    </div>
+                    <blockquote className="border-l-2 border-[#85AB8B] pl-3">
+                      <p className="text-[12px] text-[#1f2a1d] leading-[1.85] line-clamp-3">「{cites[0].quote}」</p>
+                      <footer className="mt-1.5 text-[11px] text-[#6b7a66]">— {cites[0].source}</footer>
+                    </blockquote>
                   ) : (
-                    <p className="text-[12px] text-[#9aa79a] leading-[1.8]">
-                      各クリニックの解説から、順次キュレーションします。
-                    </p>
+                    <p className="text-[12px] text-[#9aa79a] leading-[1.8]">各クリニックの解説から、順次キュレーション。</p>
                   )}
                 </div>
+
+                <Link
+                  href={`/areas/${c.id}`}
+                  className="mt-auto pt-5 text-[12.5px] font-semibold text-[#3d5638] inline-flex items-center gap-1 hover:gap-1.5 transition-all"
+                >
+                  解説を読む <span aria-hidden>→</span>
+                </Link>
               </article>
             );
           })}
