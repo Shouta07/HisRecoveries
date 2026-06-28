@@ -1,6 +1,6 @@
-// "改善の進め方" as one swipeable diagram: the app (phone mock) and the
-// 5 steps merged into a single horizontal rail you swipe through with a finger.
-// CSS scroll-snap only — native touch / trackpad swipe, no JS needed.
+// Recovery Journey as a CYCLE (循環), not a line: step 05「つながり続ける」
+// loops back to 01, so the five steps sit around a ring (desktop) / a vertical
+// loop with a return arrow (mobile). CSS only, no JS.
 
 const STEPS = [
   {
@@ -53,7 +53,7 @@ const STEPS = [
   {
     n: "05",
     t: "つながり続ける",
-    d: "定着は、終わりではありません。匿名のまま、次の人を支える側へ。",
+    d: "終わりではなく、次の人を支える側へ。",
     icon: (
       <>
         <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
@@ -65,70 +65,105 @@ const STEPS = [
   },
 ];
 
-// Where the Web app shows up along the journey — kept as a quiet touchpoint,
-// not the headline (the app supports the change, it isn't the product).
+// Where the Web app shows up along the journey — quiet touchpoints.
 const APP_TOUCH: Record<string, string> = {
   "02": "現在地を整理",
   "04": "記録する",
   "05": "つながる",
 };
 
-function Arrow() {
+// Node positions around the ring (5 points, 72° apart, starting at top).
+const POS = [
+  { left: "50%", top: "6%" },
+  { left: "89%", top: "37%" },
+  { left: "74%", top: "85%" },
+  { left: "26%", top: "85%" },
+  { left: "11%", top: "37%" },
+];
+
+function CycleIcon({ className = "", size = 22 }: { className?: string; size?: number }) {
   return (
-    <div aria-hidden className="shrink-0 self-center hidden sm:flex items-center px-1 text-[#85AB8B]">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 12h14M13 6l6 6-6 6" />
-      </svg>
-    </div>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+      <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+      <path d="M21 3v5h-5" />
+      <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+      <path d="M3 21v-5h5" />
+    </svg>
   );
 }
 
 export default function HowFlow() {
   return (
     <div className="relative">
-      {/* swipe hint */}
-      <div className="on-media flex items-center gap-2 mb-3 text-[#6b7a66] text-[12px]">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M5 12h14M5 12l5-5M5 12l5 5M19 12l-5-5M19 12l-5 5" />
-        </svg>
-        <span>横にスワイプ — 5つのステップ</span>
+      {/* ===== Desktop / tablet: circular diagram ===== */}
+      <div className="hidden md:block">
+        <div className="relative mx-auto aspect-square w-full max-w-[560px] overflow-visible">
+          {/* cycle path */}
+          <div aria-hidden className="absolute inset-[9%] rounded-full border border-dashed border-[#1f2a1d]/20" />
+
+          {/* center hub */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[36%] aspect-square rounded-full bg-white/85 backdrop-blur-sm border border-[#1f2a1d]/10 grid place-items-center text-center p-4 shadow-sm">
+            <div>
+              <CycleIcon className="mx-auto text-[#85AB8B]" size={24} />
+              <div className="font-mono text-[9.5px] tracking-[0.2em] uppercase text-[#3d5638] mt-1.5">Recovery Journey</div>
+              <div className="text-[12.5px] font-bold text-[#1f2a1d] mt-1" style={{ fontFamily: "var(--font-shippori), serif" }}>
+                理解 → 自信 → つながり
+              </div>
+            </div>
+          </div>
+
+          {/* nodes */}
+          {STEPS.map((s, i) => (
+            <div
+              key={s.n}
+              className="absolute w-[150px] -translate-x-1/2 -translate-y-1/2 text-center"
+              style={POS[i]}
+            >
+              <div className="relative mx-auto mb-2 grid place-items-center w-12 h-12 rounded-full bg-[#16241a] text-[#EDF1E8] font-mono text-[13px] font-bold ring-4 ring-white/70">
+                {s.n}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#85AB8B" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="absolute -right-2 -bottom-1 bg-white rounded-full p-px" aria-hidden>
+                  {s.icon}
+                </svg>
+              </div>
+              <h4 className="text-[14px] font-semibold text-[#1f2a1d]">{s.t}</h4>
+              <p className="text-[11px] text-[#4b5b47] leading-[1.6] mt-0.5">{s.d}</p>
+              {APP_TOUCH[s.n] && (
+                <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-[#16241a]/[0.06] text-[#16241a] px-2 py-0.5 text-[10.5px] font-medium">
+                  <span aria-hidden>📱</span> {APP_TOUCH[s.n]}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* horizontal swipe rail */}
-      <div className="-mx-5 sm:-mx-8 px-5 sm:px-8 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-5 sm:scroll-px-8 overscroll-x-contain">
-        <div className="flex items-stretch gap-4 sm:gap-3 pb-5 w-max">
-          {/* step cards */}
+      {/* ===== Mobile: vertical loop with a return arrow ===== */}
+      <div className="md:hidden">
+        <ol className="relative">
           {STEPS.map((s, i) => (
-            <div key={s.n} className="flex items-stretch">
-              <article className="snap-start shrink-0 w-[230px] sm:w-[244px] rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-sm p-6 flex flex-col">
-                <div className="flex items-center justify-between mb-5">
-                  <span className="grid place-items-center w-11 h-11 rounded-full bg-[#16241a] text-[#EDF1E8] font-mono text-[13px] font-bold">
-                    {s.n}
-                  </span>
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#85AB8B" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    {s.icon}
-                  </svg>
-                </div>
-                <h4 className="text-[15px] text-[#1f2a1d] font-semibold mb-2">{s.t}</h4>
-                <p className="text-[12.5px] text-[#4b5b47] leading-[1.85]">{s.d}</p>
+            <li key={s.n} className="relative flex gap-4 pb-6 last:pb-0">
+              <div className="flex flex-col items-center">
+                <span className="relative z-10 grid place-items-center w-11 h-11 rounded-full bg-[#16241a] text-[#EDF1E8] font-mono text-[13px] font-bold shrink-0">
+                  {s.n}
+                </span>
+                {i < STEPS.length - 1 && <span aria-hidden className="w-px flex-1 bg-[#1f2a1d]/15 mt-1" />}
+              </div>
+              <div className="pt-1.5">
+                <h4 className="text-[15px] font-semibold text-[#1f2a1d]">{s.t}</h4>
+                <p className="text-[12.5px] text-[#4b5b47] leading-[1.8] mt-1">{s.d}</p>
                 {APP_TOUCH[s.n] && (
-                  <span className="mt-3 inline-flex w-fit items-center gap-1 rounded-full bg-[#16241a]/[0.06] text-[#16241a] px-2.5 py-1 text-[11px] font-medium">
+                  <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#16241a]/[0.06] text-[#16241a] px-2.5 py-1 text-[11px] font-medium">
                     <span aria-hidden>📱</span> {APP_TOUCH[s.n]}
                   </span>
                 )}
-                {s.n === "03" ? (
-                  <a href="#packages" className="mt-auto pt-4 text-[12px] font-semibold text-[#3d5638] inline-flex items-center gap-1 hover:gap-1.5 transition-all">
-                    パッケージを見る <span aria-hidden>↓</span>
-                  </a>
-                ) : (
-                  <span aria-hidden className="mt-auto pt-4 text-[10.5px] tracking-[0.14em] uppercase font-mono text-[#a7b3a2]">
-                    Step {s.n}
-                  </span>
-                )}
-              </article>
-              {i < STEPS.length - 1 && <Arrow />}
-            </div>
+              </div>
+            </li>
           ))}
+        </ol>
+        {/* loop-back */}
+        <div className="mt-5 flex items-center gap-2 rounded-full bg-[#e7ede4] text-[#3d5638] px-4 py-2 w-fit text-[12px] font-semibold">
+          <CycleIcon size={16} />
+          つながり、また理解へ。循環する。
         </div>
       </div>
     </div>

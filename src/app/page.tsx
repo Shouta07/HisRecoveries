@@ -95,7 +95,7 @@ export default function HomePage() {
                 理解から、<span className="text-[#3d5638]">自信まで。</span>
               </h2>
               <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-                原因の特定から、実践、定着まで。コンプレックスから自信へ、一本の流れで設計します。
+                理解から実践、定着、そしてつながりへ。一本の線ではなく、循環する設計です。
               </p>
             </div>
 
