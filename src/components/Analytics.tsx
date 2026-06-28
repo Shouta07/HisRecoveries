@@ -4,7 +4,9 @@ import Script from "next/script";
 import { useEffect } from "react";
 import { captureUtm } from "@/lib/analytics";
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+// Ships with the live GA4 tag so measurement works out of the box;
+// override in Vercel via NEXT_PUBLIC_GA_ID if the ID ever changes.
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-DWTE9DWQ0S";
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
 /**
