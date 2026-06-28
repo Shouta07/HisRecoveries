@@ -44,8 +44,8 @@ export default function HomePage() {
           style={{ background: "linear-gradient(180deg, transparent 42%, rgba(245,247,242,0.86) 100%)" }}
         />
 
-        {/* Hero copy */}
-        <div className="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-28 md:pt-32 px-4 sm:px-6">
+        {/* Hero copy — vertically centered in the viewport */}
+        <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-screen px-4 sm:px-6 pt-20 pb-16 on-media">
           <div className="flex items-center gap-3 mb-5 text-[#4b5b47]">
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
             <span className="text-xs sm:text-sm tracking-[0.4em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>

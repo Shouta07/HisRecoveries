@@ -1,7 +1,6 @@
 // Experience packages on the home (moved from the old /packages page).
 // Anchored at #packages so step ③「パッケージを選ぶ」 of the flow links here.
 import { packages } from "@/lib/packages";
-import BookingCTA from "@/components/BookingCTA";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -69,15 +68,6 @@ export default function PackagesSection() {
               清潔感・未来の自分・動物と過ごす など。あなたの悩みに合わせて、選考後にご案内します。
             </p>
           </div>
-        </div>
-
-        <div className="on-media mt-10 flex flex-wrap items-center gap-4">
-          <BookingCTA className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-            このまま相談する
-          </BookingCTA>
-          <span className="text-[#4b5b47] text-[13px]">
-            完全招待制・選考制。価格は目安で、内容により異なります。
-          </span>
         </div>
       </div>
     </section>
