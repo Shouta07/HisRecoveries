@@ -141,8 +141,9 @@ export default function HowFlow() {
             改善を、一人で終わらせない。
           </h4>
           <p className="text-[13px] text-[#C9D2C4] leading-[1.95]">
-            すべての改善は<span className="text-[#85AB8B] font-medium">記録され、見える化され、専属担当と共有</span>されます。
-            理解から定着まで、ずっと一緒に。
+            改善は、一度頑張ることではありません。
+            <span className="text-[#85AB8B] font-medium">状態を記録し、変化を見える化し、専属担当と共有</span>
+            しながら進めます。
           </p>
         </div>
         <div className="relative flex items-end justify-center overflow-hidden pt-6 md:pt-8" style={{ perspective: "1200px" }}>

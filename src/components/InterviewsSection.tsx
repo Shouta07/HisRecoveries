@@ -9,9 +9,8 @@ const MINCHO: React.CSSProperties = {
 
 const STAGES = [
   { key: "before", label: "Before" },
-  { key: "noticed", label: "気づいたこと" },
-  { key: "did", label: "取り組んだこと" },
-  { key: "now", label: "今" },
+  { key: "did", label: "取り組み" },
+  { key: "after", label: "After" },
 ] as const;
 
 export default function InterviewsSection() {
@@ -22,15 +21,14 @@ export default function InterviewsSection() {
           <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">
-              Interviews
+              Recovery Stories
             </span>
           </div>
           <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.35] text-[#1f2a1d]" style={{ ...MINCHO, fontWeight: 800 }}>
-            同じ悩みを持っていた人は、<br className="hidden sm:block" />
-            <span className="text-[#3d5638]">どう変わったのか。</span>
+            変わった人の、<span className="text-[#3d5638]">記録。</span>
           </h2>
           <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-            成功談ではなく、過程の記録として。完了形ではなく、半歩進んだ時間として。
+            同じ悩みを持っていた人は、どう変わったのか。成功談ではなく、過程の記録として。
           </p>
         </div>
 
@@ -54,10 +52,10 @@ export default function InterviewsSection() {
                     {i < STAGES.length - 1 && (
                       <span aria-hidden className="absolute left-[4.5px] top-4 bottom-[-1rem] w-px bg-[#1f2a1d]/12" />
                     )}
-                    <div className={`font-mono text-[10.5px] tracking-[0.12em] uppercase mb-1 ${s.key === "now" ? "text-[#3d5638] font-bold" : "text-[#a7b3a2]"}`}>
+                    <div className={`font-mono text-[10.5px] tracking-[0.12em] uppercase mb-1 ${s.key === "after" ? "text-[#3d5638] font-bold" : "text-[#a7b3a2]"}`}>
                       {s.label}
                     </div>
-                    <p className={`text-[13px] leading-[1.8] ${s.key === "now" ? "text-[#1f2a1d] font-medium" : "text-[#4b5b47]"}`}>
+                    <p className={`text-[13px] leading-[1.8] ${s.key === "after" ? "text-[#1f2a1d] font-medium" : "text-[#4b5b47]"}`}>
                       {j[s.key]}
                     </p>
                   </li>

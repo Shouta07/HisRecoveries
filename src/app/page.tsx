@@ -81,11 +81,11 @@ export default function HomePage() {
             <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 完全守秘義務のもと</span>
           </div>
           <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs mx-auto sm:mx-0 font-semibold sm:font-normal">
-            「なぜ起きるのか」を理解し、「どう変われるか」を知り、自分に合った改善を選ぶ。His Recoveries は、コンプレックスから自信までを伴走します。
+            「なぜ起きるのか」を理解し、「どう変われるのか」を知り、自分に合った改善を選ぶ。His Recoveries は、理解から定着まで伴走する改善サービスです。
           </p>
           <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
-            <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
             <a href="#mechanism" className="border border-[#3d5638]/60 sm:border-white/70 text-[#2d4228] sm:text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#3d5638]/10 sm:hover:bg-white/15 transition-colors">変化の仕組みを見る</a>
+            <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
           </div>
         </div>
 
@@ -169,9 +169,9 @@ export default function HomePage() {
           <div className="max-w-[920px] mx-auto px-5 sm:px-8 pb-16 md:pb-24">
             <div className="rounded-[2rem] bg-[#16241a] text-[#EDF1E8] p-9 md:p-14 text-center">
               <h2 className="text-[1.5rem] md:text-[2rem] leading-[1.55] text-[#EDF1E8]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
-                一人で考え続けるより、
+                一人で悩み続けるより、
                 <br className="hidden sm:block" />
-                一度、現在地を整理してみませんか。
+                まずは現在地を整理しませんか。
               </h2>
               <div className="mt-6 flex items-center justify-center gap-3 text-[12.5px] text-[#85AB8B] font-medium">
                 <span>完全匿名</span>

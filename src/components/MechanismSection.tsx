@@ -20,11 +20,11 @@ export default function MechanismSection() {
             </span>
           </div>
           <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.35] text-[#1f2a1d]" style={{ ...MINCHO, fontWeight: 800 }}>
-            なぜ変われるのか。<br className="hidden sm:block" />
-            まずは、<span className="text-[#3d5638]">仕組みを知る。</span>
+            あなたの悩みは、<br className="hidden sm:block" />
+            <span className="text-[#3d5638]">仕組みから理解できます。</span>
           </h2>
           <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-            性格でも、だらしなさでもありません。からだの仕組みで説明できる、再現性のある現象です。
+            コンプレックスの多くは、性格ではなく、身体や心理の仕組みから説明できます。
             医師監修のもと、原因から。カードから、そのまま記事へ。
           </p>
         </div>

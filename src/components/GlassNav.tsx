@@ -5,10 +5,9 @@ import Link from "next/link";
 import BookingCTA from "@/components/BookingCTA";
 
 const LINKS = [
-  { href: "/#mechanism", label: "メカニズム" },
-  { href: "/#how", label: "進め方" },
-  { href: "/#packages", label: "体験" },
-  { href: "/#interviews", label: "インタビュー", desktopOnly: true },
+  { href: "/#mechanism", label: "仕組みを知る" },
+  { href: "/#interviews", label: "改善事例", desktopOnly: true },
+  { href: "/#packages", label: "改善プログラム", desktopOnly: true },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,

@@ -1,14 +1,13 @@
-// Transformation stories for the Interviews section: the same four-beat arc
-// — Before → 気づいたこと → 取り組んだこと → 今 — so a reader thinks
-// 「自分もいけるかも」. Anonymous, observational, no completed/efficacy claims.
+// Recovery Stories — 変わった人の記録. A tight three-beat arc:
+// Before → 取り組み → After. Punchy, anonymous, observational
+// (no completed/efficacy claims, no clinic names). Grow this list over time.
 
 export type Journey = {
   theme: string;
   span: string;
   before: string;
-  noticed: string;
   did: string;
-  now: string;
+  after: string;
   who: string;
 };
 
@@ -16,28 +15,25 @@ export const journeys: Journey[] = [
   {
     theme: "薄毛・AGA",
     span: "1年",
-    before: "名刺を渡すたび、相手の視線が生え際に向いている気がしていた。",
-    noticed: "進行性だと知り、「気にしない」より「知る」ほうが楽だと気づいた。",
-    did: "選択肢を中立に並べ、自分のペースで頭皮ケアとスタイリングを続けた。",
-    now: "名刺を渡す角度を、いつのまにか変えなくなっていた。",
+    before: "帽子が、手放せなかった。",
+    did: "医療とスタイリングを、中立に選んだ。",
+    after: "写真を、避けなくなった。",
     who: "30代前半・法人営業",
   },
   {
     theme: "ニキビ・肌",
     span: "8ヶ月",
-    before: "マスクのせいだと後回しにして、一日中、頬を気にしていた。",
-    noticed: "「炎症・乾燥・摩擦」を分けて理解できた。",
-    did: "原因ごとにケアを変え、頬に触れる回数を減らしていった。",
-    now: "鏡の前にいる時間が、目に見えて短くなった。",
+    before: "マスクの下で、一日中、頬を気にしていた。",
+    did: "「炎症・乾燥・摩擦」を分けてケアした。",
+    after: "鏡の前にいる時間が、短くなった。",
     who: "20代後半・歯科衛生士",
   },
   {
     theme: "汗・におい",
     span: "半年",
     before: "夏のグレーを、何年も避けてきた。",
-    noticed: "においは汗そのものより、菌の代謝の結果だと知った。",
-    did: "「量」と「菌」を分けて対処し、必要な段階では医療にも相談した。",
-    now: "シャツの色を、自分の好みで選び直せるようになってきた。",
+    did: "「量」と「菌」を分け、必要な段階で医療にも相談した。",
+    after: "シャツの色を、好みで選べるようになってきた。",
     who: "20代後半",
   },
 ];
