@@ -5,9 +5,8 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const LINKS = [
-  { href: "/mechanism", label: "メカニズム" },
-  { href: "/interviews", label: "インタビュー" },
-  { href: "/packages", label: "体験" },
+  { href: "/#mechanism", label: "メカニズム" },
+  { href: "/#packages", label: "体験" },
   { href: "/articles", label: "記事", desktopOnly: true },
 ];
 

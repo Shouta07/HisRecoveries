@@ -19,14 +19,20 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // /recoveries (and legacy /stories) were folded into the one-page home;
-      // send them to the home's interviews section.
-      { source: "/stories", destination: "/interviews", permanent: true },
-      { source: "/stories/:slug", destination: "/interviews", permanent: true },
-      { source: "/recoveries", destination: "/interviews", permanent: true },
-      { source: "/recoveries/:slug*", destination: "/interviews", permanent: true },
-      { source: "/territories", destination: "/mechanism", permanent: true },
-      { source: "/territories/:slug*", destination: "/mechanism", permanent: true },
+      // /packages, /mechanism, /interviews were folded into the one-page home.
+      { source: "/packages", destination: "/#packages", permanent: true },
+      { source: "/packages/:slug*", destination: "/#packages", permanent: true },
+      { source: "/mechanism", destination: "/#mechanism", permanent: true },
+      { source: "/mechanism/:slug*", destination: "/#mechanism", permanent: true },
+      { source: "/interviews", destination: "/#mechanism", permanent: true },
+      { source: "/interviews/:slug*", destination: "/#mechanism", permanent: true },
+      // legacy routes also fold into the home's mechanism section.
+      { source: "/stories", destination: "/#mechanism", permanent: true },
+      { source: "/stories/:slug", destination: "/#mechanism", permanent: true },
+      { source: "/recoveries", destination: "/#mechanism", permanent: true },
+      { source: "/recoveries/:slug*", destination: "/#mechanism", permanent: true },
+      { source: "/territories", destination: "/#mechanism", permanent: true },
+      { source: "/territories/:slug*", destination: "/#mechanism", permanent: true },
       { source: "/manifesto", destination: "/", permanent: true },
       // /en mirror removed — Japanese only for now.
       { source: "/en", destination: "/", permanent: true },

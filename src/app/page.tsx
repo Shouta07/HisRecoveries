@@ -3,6 +3,8 @@ import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import HowFlow from "@/components/HowFlow";
 import BookingCTA from "@/components/BookingCTA";
+import PackagesSection from "@/components/PackagesSection";
+import MechanismSection from "@/components/MechanismSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -15,23 +17,6 @@ const HERO_HEAD: React.CSSProperties = {
   WebkitFontSmoothing: "antialiased",
   textRendering: "optimizeLegibility",
 };
-
-const INTERVIEWS_MORE = [
-  {
-    href: "/interviews",
-    tag:"ニキビ・肌",
-    span: "8ヶ月後",
-    title: "歯科衛生士、一日中マスクの下で頬を気にしていた頃のこと",
-    who: "20代後半・歯科衛生士 / 勤務中はほぼ終日マスク",
-  },
-  {
-    href: "/interviews",
-    tag:"汗・におい",
-    span: "半年後",
-    title: "ワキガ手術から半年、夏のグレーを選び直せた朝のこと",
-    who: "20代後半・夏のグレーを、何年も避けてきた",
-  },
-];
 
 export default function HomePage() {
   return (
@@ -105,7 +90,7 @@ export default function HomePage() {
 
         {/* Bottom-right link */}
         <div className="hidden sm:flex absolute right-6 md:right-10 bottom-8 md:bottom-10 z-10 items-center gap-2 text-white/90 text-sm">
-          <a href="/interviews" className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors">
+          <a href="/#mechanism" className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors">
             <svg className="w-3 h-3 ml-0.5 fill-white text-white" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3" /></svg>
           </a>
           <span className="font-medium">メカニズム特集</span>
@@ -141,6 +126,12 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* ===== Step ③ — Experience packages (moved from /packages) ===== */}
+        <PackagesSection />
+
+        {/* ===== Mechanism + voices (moved from /mechanism & /interviews) ===== */}
+        <MechanismSection />
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
