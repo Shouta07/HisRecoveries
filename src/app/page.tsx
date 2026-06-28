@@ -62,10 +62,12 @@ export default function HomePage() {
             「<span className="text-[#85AB8B]">変われるもの</span>」にする。
           </h1>
           <p
-            className="mt-7 sm:mt-9 text-[#4b5b47] text-[14px] sm:text-[16px] md:text-[17px] leading-[2.05] tracking-[0.04em] max-w-xl px-2"
-            style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400 }}
+            className="mt-7 sm:mt-9 text-[#4b5b47] text-[14px] sm:text-[16px] md:text-[17px] leading-[2.05] tracking-[0.04em] max-w-2xl px-2 [text-wrap:balance]"
+            style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400, wordBreak: "keep-all", overflowWrap: "anywhere" }}
           >
-            His Recoveries は、コンプレックスから自信まで完全守秘義務のもと伴走する改善サービスです。
+            His Recoveries は、コンプレックスから自信まで
+            <br className="hidden sm:block" />
+            完全守秘義務のもと伴走する、改善サービスです。
           </p>
         </div>
       </section>
