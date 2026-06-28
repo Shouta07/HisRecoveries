@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-const APPLY = "/apply";
+import BookingCTA from "@/components/BookingCTA";
 
 const LINKS = [
   { href: "/mechanism", label: "メカニズム" },
@@ -53,12 +52,9 @@ export default function GlassNav() {
               </li>
             ))}
           </ul>
-          <Link
-            href={APPLY}
-            className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[12px] sm:text-[13px] font-semibold px-4 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap"
-          >
+          <BookingCTA className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[12px] sm:text-[13px] font-semibold px-4 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap">
             予約登録
-          </Link>
+          </BookingCTA>
         </div>
       </div>
     </nav>
