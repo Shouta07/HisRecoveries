@@ -2,7 +2,6 @@ import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import HowFlow from "@/components/HowFlow";
-import PackagesShowcase from "@/components/PackagesShowcase";
 
 const APPLY = "/apply";
 
@@ -131,7 +130,7 @@ export default function HomePage() {
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
             <div className="on-media mb-8">
               <h3 className="text-xl md:text-2xl text-[#1f2a1d] font-normal" style={{ letterSpacing: "-0.02em" }}>改善の進め方 — 5つのステップ</h3>
-              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">アプリで可視化しながら、隠さず・順番どおりに。</p>
+              <p className="mt-3 text-[#4b5b47] text-sm leading-relaxed">原因の特定から、パッケージの実行、定着まで。点ではなく、一本の流れで。</p>
             </div>
 
             {/* swipeable diagram: phone mock + 5 steps */}
@@ -143,9 +142,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* ===== Experience packages (EC-style parallel grid) ===== */}
-        <PackagesShowcase />
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
