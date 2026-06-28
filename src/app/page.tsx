@@ -56,20 +56,20 @@ export default function HomePage() {
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
           </div>
           <h1
-            className="text-[#336443] text-[2.75rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.75rem] xl:text-[6.5rem] max-w-5xl"
-            style={{ ...HERO_HEAD, lineHeight: 1.2 }}
+            className="text-[#336443] text-[2rem] sm:text-[2.9rem] md:text-[3.6rem] lg:text-[4.2rem] max-w-4xl"
+            style={{ ...HERO_HEAD, lineHeight: 1.32 }}
           >
-            コンプレックスから、
+            誰にも言えなかった悩みを、
             <br />
-            <span className="text-[#85AB8B]">自信</span>へ。
+            「<span className="text-[#85AB8B]">変われるもの</span>」にする。
           </h1>
           <p
-            className="mt-7 sm:mt-9 text-[#4b5b47] text-[15px] sm:text-[17px] md:text-lg leading-[2.05] tracking-[0.04em] max-w-lg px-2"
+            className="mt-7 sm:mt-9 text-[#4b5b47] text-[14px] sm:text-[16px] md:text-[17px] leading-[2.05] tracking-[0.04em] max-w-xl px-2"
             style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400 }}
           >
-            その変化を、デザインする。
+            原因を理解し、改善を選び、変化が定着するまで。
             <wbr />
-            完全招待制・完全匿名の、改善プログラム。
+            His Recoveries は、コンプレックスから自信まで伴走する改善サービスです。
           </p>
         </div>
 
@@ -80,9 +80,6 @@ export default function HomePage() {
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" /><path d="M19 3v4" /><path d="M21 5h-4" /></svg>
             <span className="text-sm font-semibold sm:font-medium">完全匿名 ・ 完全守秘義務のもと</span>
           </div>
-          <p className="text-[#2d4228] sm:text-white/85 text-xs leading-relaxed mb-6 max-w-xs mx-auto sm:mx-0 font-semibold sm:font-normal">
-            「なぜ起きるのか」を理解し、「どう変われるのか」を知り、自分に合った改善を選ぶ。His Recoveries は、理解から定着まで伴走する改善サービスです。
-          </p>
           <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
             <a href="#mechanism" className="border border-[#3d5638]/60 sm:border-white/70 text-[#2d4228] sm:text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#3d5638]/10 sm:hover:bg-white/15 transition-colors">変化の仕組みを見る</a>
             <BookingCTA className="bg-[#3d5638] sm:bg-white hover:bg-[#2d4228] sm:hover:bg-white/90 text-white sm:text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm">予約登録する</BookingCTA>
@@ -127,14 +124,14 @@ export default function HomePage() {
             </h2>
             <p className="mt-6 text-[#4b5b47] text-[15px] leading-[2] max-w-xl mx-auto">
               コンプレックスは、施術だけでは終わりません。
-              理解し、実践し、定着するまで。専属が、ずっと伴走します。
+              理解し、選び、続ける。そのすべてを、専属が伴走します。
             </p>
             <div className="mt-8 flex items-center justify-center gap-3 text-[13px] font-semibold text-[#3d5638]">
               <span>理解</span>
               <span aria-hidden className="text-[#85AB8B]">→</span>
-              <span>実践</span>
+              <span>選ぶ</span>
               <span aria-hidden className="text-[#85AB8B]">→</span>
-              <span>定着</span>
+              <span>続ける</span>
             </div>
           </div>
         </section>
@@ -164,12 +161,40 @@ export default function HomePage() {
         {/* ⑦ 改善パッケージ */}
         <PackagesSection />
 
-        {/* ⑧ 予約 CTA */}
+        {/* ⑧ FAQ */}
+        <section id="faq" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+          <div className="max-w-[820px] mx-auto px-5 sm:px-8 pb-16 md:pb-20">
+            <div className="on-media mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
+                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">FAQ</span>
+              </div>
+              <h2 className="text-[1.7rem] md:text-[2.1rem] leading-[1.4]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
+                よくある質問。
+              </h2>
+            </div>
+            <dl className="rounded-[1.4rem] bg-white/85 border border-[#1f2a1d]/10 px-6 sm:px-8 divide-y divide-[#1f2a1d]/10">
+              {[
+                { q: "本当に匿名ですか？", a: "はい。本名・顔・実年齢は不要です。会員IDで運用し、完全守秘義務のもとで扱います。" },
+                { q: "これは医療行為ですか？", a: "いいえ。本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。必要な段階のみ、紹介手数料ゼロで中立にご案内します。" },
+                { q: "料金はいくらですか？", a: "完全招待制・選考制です。内容により異なり、選考後にご提示します。" },
+                { q: "誰向けのサービスですか？", a: "言えない悩みを、原因から整え、自信まで伴走してほしい男性へ。" },
+              ].map((f) => (
+                <div key={f.q} className="py-5">
+                  <dt className="text-[14.5px] font-bold text-[#1f2a1d] mb-2">{f.q}</dt>
+                  <dd className="text-[13px] text-[#4b5b47] leading-[1.95]">{f.a}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* ⑨ 予約 CTA */}
         <section className="relative z-10">
           <div className="max-w-[920px] mx-auto px-5 sm:px-8 pb-16 md:pb-24">
             <div className="rounded-[2rem] bg-[#16241a] text-[#EDF1E8] p-9 md:p-14 text-center">
               <h2 className="text-[1.5rem] md:text-[2rem] leading-[1.55] text-[#EDF1E8]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
-                一人で悩み続けるより、
+                一人で調べ続けるより、
                 <br className="hidden sm:block" />
                 まずは現在地を整理しませんか。
               </h2>
@@ -189,22 +214,18 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ⑨ 医療連携・サロン・専門家・免責 */}
-        <section className="relative z-10 on-media">
-          <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pb-16">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-              {[
-                { t: "医療連携", d: "必要な段階は、紹介手数料ゼロで連携医療機関へ中立につなぎます。" },
-                { t: "提携サロン・専門家", d: "日々の見え方は、提携先と役割を分けて伴走します。" },
-                { t: "中立・匿名", d: "売らない・断定しない・完全守秘義務のもとで運営します。" },
-              ].map((x) => (
-                <div key={x.t} className="rounded-[1.2rem] bg-white/85 border border-[#1f2a1d]/10 p-5">
-                  <div className="text-[13px] font-bold text-[#1f2a1d] mb-1.5">{x.t}</div>
-                  <p className="text-[12px] text-[#4b5b47] leading-[1.8]">{x.d}</p>
-                </div>
-              ))}
+        {/* ⑩ About — Vitality Design */}
+        <section id="about" className="relative z-10 scroll-mt-24 on-media">
+          <div className="max-w-[820px] mx-auto px-5 sm:px-8 pb-16 text-center">
+            <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium mb-4">
+              About
             </div>
-            <p className="text-[12px] text-[#6b7a66] leading-[1.9]">
+            <p className="text-[#4b5b47] text-[14px] leading-[2] max-w-xl mx-auto">
+              His Recoveries は、<span className="font-semibold text-[#1f2a1d]">Vitality Design</span> が運営する、
+              人の状態変化を研究・実践する改善サービスです。ここで得られる一次情報は、
+              より良いサービス・医療・体験設計へ活かされています。
+            </p>
+            <p className="mt-5 text-[12px] text-[#6b7a66] leading-[1.9] max-w-xl mx-auto">
               ※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。
               特定の医療機関・商品を推奨・斡旋せず、紹介手数料は受け取りません（中立）。
             </p>

@@ -6,8 +6,8 @@ import { PhoneFrame, DashboardScreen, MemberScreen } from "@/components/HowShowc
 const STEPS = [
   {
     n: "01",
-    t: "原因を特定する",
-    d: "自己観察と連携専門家の診断で、何が・なぜ起きているかを言葉に。",
+    t: "理解する",
+    d: "なぜ起きるのか、原因から。",
     icon: (
       <>
         <circle cx="11" cy="11" r="6" />
@@ -17,8 +17,8 @@ const STEPS = [
   },
   {
     n: "02",
-    t: "現状を分析する",
-    d: "期間・費用・リスクを中立に並べる。「何もしない」も含めて。",
+    t: "整理する",
+    d: "期間・費用・リスクを、中立に。",
     icon: (
       <>
         <path d="M4 19V5M4 19h16" />
@@ -28,8 +28,8 @@ const STEPS = [
   },
   {
     n: "03",
-    t: "パッケージを選ぶ",
-    d: "悩みに合った体験パッケージを、押し付けずに一緒に選ぶ。",
+    t: "選ぶ",
+    d: "自分に合った改善を、一緒に。",
     icon: (
       <>
         <rect x="3.5" y="3.5" width="7" height="7" rx="1.2" />
@@ -41,8 +41,8 @@ const STEPS = [
   },
   {
     n: "04",
-    t: "実行し、伴走する",
-    d: "専属担当がオンライン・対面で並走。必要な段階なら、紹介手数料ゼロで医療機関へ。",
+    t: "伴走する",
+    d: "専属が、オンライン・対面で並走。",
     icon: (
       <>
         <circle cx="8" cy="8" r="3" />
@@ -53,8 +53,8 @@ const STEPS = [
   },
   {
     n: "05",
-    t: "定着したら卒業",
-    d: "自分で再現できる状態がゴール。終わりを設計に含めます。",
+    t: "卒業する",
+    d: "自分で再現できる状態へ。",
     icon: (
       <>
         <path d="M20 6L9 17l-5-5" />
@@ -135,15 +135,15 @@ export default function HowFlow() {
       <div className="mt-5 rounded-[1.6rem] bg-[#16241a] text-[#EDF1E8] overflow-hidden grid md:grid-cols-[1.25fr_1fr] items-center">
         <div className="p-7 md:p-9">
           <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B] mb-2">
-            改善を支える仕組み
+            改善を続けられる理由
           </div>
           <h4 className="text-[1.3rem] md:text-[1.5rem] font-bold text-[#EDF1E8] mb-2" style={{ fontFamily: "var(--font-shippori), serif" }}>
-            改善を、一人で終わらせない。
+            一人で、終わらせない。
           </h4>
           <p className="text-[13px] text-[#C9D2C4] leading-[1.95]">
-            改善は、一度頑張ることではありません。
-            <span className="text-[#85AB8B] font-medium">状態を記録し、変化を見える化し、専属担当と共有</span>
-            しながら進めます。
+            改善は、思い出した時だけ頑張るものではありません。
+            <span className="text-[#85AB8B] font-medium">状態を記録し、担当者と共有し、変化を見える化</span>
+            する。だから、続きます。
           </p>
         </div>
         <div className="relative flex items-end justify-center overflow-hidden pt-6 md:pt-8" style={{ perspective: "1200px" }}>

@@ -9,6 +9,7 @@ const MINCHO: React.CSSProperties = {
 
 const STAGES = [
   { key: "before", label: "Before" },
+  { key: "turning", label: "Turning Point" },
   { key: "did", label: "取り組み" },
   { key: "after", label: "After" },
 ] as const;
@@ -52,7 +53,7 @@ export default function InterviewsSection() {
                     {i < STAGES.length - 1 && (
                       <span aria-hidden className="absolute left-[4.5px] top-4 bottom-[-1rem] w-px bg-[#1f2a1d]/12" />
                     )}
-                    <div className={`font-mono text-[10.5px] tracking-[0.12em] uppercase mb-1 ${s.key === "after" ? "text-[#3d5638] font-bold" : "text-[#a7b3a2]"}`}>
+                    <div className={`font-mono text-[10.5px] tracking-[0.12em] uppercase mb-1 ${s.key === "after" ? "text-[#3d5638] font-bold" : s.key === "turning" ? "text-[#3d5638]" : "text-[#a7b3a2]"}`}>
                       {s.label}
                     </div>
                     <p className={`text-[13px] leading-[1.8] ${s.key === "after" ? "text-[#1f2a1d] font-medium" : "text-[#4b5b47]"}`}>

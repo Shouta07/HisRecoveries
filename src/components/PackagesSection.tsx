@@ -31,7 +31,7 @@ export default function PackagesSection() {
 
         {/* theme packages */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {themes.map((p) => (
+          {themes.slice(0, 3).map((p) => (
             <article
               key={p.id}
               className="flex flex-col rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 shadow-sm p-7"
@@ -59,6 +59,16 @@ export default function PackagesSection() {
               </div>
             </article>
           ))}
+
+          {/* restraint — don't show the whole catalogue */}
+          <div className="flex flex-col justify-center rounded-[1.4rem] border border-dashed border-[#1f2a1d]/20 bg-white/40 p-7">
+            <div className="text-[1.05rem] font-bold text-[#1f2a1d] mb-2" style={MINCHO}>
+              ほかにも、あります。
+            </div>
+            <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
+              清潔感・未来の自分・動物と過ごす など。あなたの悩みに合わせて、選考後にご案内します。
+            </p>
+          </div>
         </div>
 
         <div className="on-media mt-10 flex flex-wrap items-center gap-4">
