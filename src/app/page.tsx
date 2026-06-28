@@ -189,31 +189,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ⑨ 予約 CTA */}
-        <section className="relative z-10">
-          <div className="max-w-[920px] mx-auto px-5 sm:px-8 pb-16 md:pb-24">
-            <div className="rounded-[2rem] bg-[#16241a] text-[#EDF1E8] p-9 md:p-14 text-center">
-              <h2 className="text-[1.5rem] md:text-[2rem] leading-[1.55] text-[#EDF1E8]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
-                一人で調べ続けるより、
-                <br className="hidden sm:block" />
-                まずは現在地を整理しませんか。
-              </h2>
-              <div className="mt-6 flex items-center justify-center gap-3 text-[12.5px] text-[#85AB8B] font-medium">
-                <span>完全匿名</span>
-                <span className="text-white/25">・</span>
-                <span>完全守秘義務</span>
-                <span className="text-white/25">・</span>
-                <span>中立</span>
-              </div>
-              <div className="mt-8">
-                <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-8 py-4 rounded-full transition-colors">
-                  予約登録する
-                </BookingCTA>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* ⑩ About — Vitality Design */}
         <section id="about" className="relative z-10 scroll-mt-24 on-media">
           <div className="max-w-[820px] mx-auto px-5 sm:px-8 pb-16 text-center">
@@ -227,7 +202,7 @@ export default function HomePage() {
             </p>
             <p className="mt-5 text-[12px] text-[#6b7a66] leading-[1.9] max-w-xl mx-auto">
               ※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。
-              特定の医療機関・商品を推奨・斡旋せず、紹介手数料は受け取りません（中立）。
+              特定の医療機関・商品を推奨・斡旋しません。
             </p>
           </div>
         </section>
