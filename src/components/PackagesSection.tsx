@@ -9,7 +9,6 @@ const MINCHO: React.CSSProperties = {
 };
 
 export default function PackagesSection() {
-  const flagship = packages.find((p) => p.flagship);
   const themes = packages.filter((p) => !p.flagship);
 
   return (
@@ -29,40 +28,6 @@ export default function PackagesSection() {
             現在地の分析（②）をもとに、悩み別の体験パッケージを一緒に選びます。点ではなく、一本の線で。
           </p>
         </div>
-
-        {/* flagship */}
-        {flagship && (
-          <div className="rounded-[1.8rem] bg-[#16241a] text-[#EDF1E8] p-7 md:p-10 mb-5">
-            <div className="grid lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12">
-              <div>
-                <div className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-[#85AB8B] mb-3">
-                  Flagship · {flagship.theme}
-                </div>
-                <h3 className="text-[1.6rem] md:text-[2rem] font-bold leading-[1.35] text-[#EDF1E8]" style={MINCHO}>
-                  {flagship.name}
-                </h3>
-                <p className="mt-3 text-[14px] text-[#C9D2C4] leading-[1.95]">{flagship.tagline}</p>
-                <p className="mt-3 text-[12.5px] text-[#9FB0A0]">{flagship.forWhom}</p>
-                <div className="mt-5 text-[13px] font-semibold text-[#85AB8B]">
-                  {flagship.duration} ・ {flagship.price}
-                </div>
-              </div>
-              <div className="rounded-[1.4rem] bg-white/[0.06] border border-white/10 p-6">
-                <div className="text-[12px] font-medium text-[#85AB8B] mb-4">ジャーニーの流れ</div>
-                <ol className="space-y-3">
-                  {flagship.steps.map((s, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[13.5px] leading-[1.7] text-[#D7DED2]">
-                      <span className="shrink-0 grid place-items-center w-6 h-6 rounded-full bg-[#85AB8B]/15 text-[#85AB8B] text-[11px] font-bold">
-                        {i + 1}
-                      </span>
-                      {s}
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* theme packages */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
