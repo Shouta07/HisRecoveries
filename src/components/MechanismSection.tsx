@@ -1,7 +1,8 @@
-// ② 理解する — "なぜ変われるのか。まずは、仕組みを知る。"
-// Concern cards in parallel; each links into the existing articles (SEO).
-import Link from "next/link";
+// 取り扱う領域 — concern cards as a CURATION: a short medical-supervised
+// mechanism, then short excerpts quoted from each clinic's own articles
+// (always attributed + linked out, never endorsed).
 import { complexes } from "@/lib/complexes";
+import { citationsByComplex } from "@/lib/citations";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -22,54 +23,86 @@ export default function MechanismSection() {
           <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.3] text-[#1f2a1d]" style={{ ...MINCHO, fontWeight: 800 }}>
             取り扱う<span className="text-[#3d5638]">領域。</span>
           </h2>
+          <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
+            各クリニックの解説を引用しながら、中立にキュレーションします。
+          </p>
         </div>
 
-        {/* concern cards — parallel grid, each links to the articles */}
+        {/* concern cards — parallel grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {complexes.map((c, i) => (
-            <Link
-              key={c.id}
-              id={c.id}
-              href={`/articles/category/${c.categories[0]}`}
-              className="group scroll-mt-24 flex flex-col rounded-[1.5rem] bg-white border border-[#1f2a1d]/10 p-6 shadow-sm hover:shadow-[0_20px_40px_-22px_rgba(20,32,26,0.45)] hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <div className="flex items-baseline gap-2.5 mb-3">
-                <span className="font-mono text-[12px] text-[#85AB8B]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-[1.25rem] font-bold text-[#1f2a1d]" style={MINCHO}>
-                  {c.ja}
-                </h3>
-              </div>
-              <span
-                className="inline-flex w-fit rounded-full px-3 py-1 text-[11px] font-bold"
-                style={{ backgroundColor: c.accentSoft, color: c.accent }}
+          {complexes.map((c, i) => {
+            const cites = citationsByComplex[c.id] ?? [];
+            return (
+              <article
+                key={c.id}
+                id={c.id}
+                className="scroll-mt-24 flex flex-col rounded-[1.5rem] bg-white border border-[#1f2a1d]/10 p-6 shadow-sm"
               >
-                {c.system}
-              </span>
-
-              <p className="mt-4 text-[13px] italic text-[#6b7a66] leading-[1.8]">「{c.worry}」</p>
-
-              <div className="mt-4 pt-4 border-t border-[#1f2a1d]/8">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-2.5 py-0.5 text-[10.5px] font-bold">
-                    医師監修
+                <div className="flex items-baseline gap-2.5 mb-3">
+                  <span className="font-mono text-[12px] text-[#85AB8B]">
+                    {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-[11px] text-[#6b7a66]">メカニズム</span>
+                  <h3 className="text-[1.25rem] font-bold text-[#1f2a1d]" style={MINCHO}>
+                    {c.ja}
+                  </h3>
                 </div>
-                <p className="text-[12.5px] text-[#3a423a] leading-[1.95] line-clamp-5">{c.why}</p>
-              </div>
+                <span
+                  className="inline-flex w-fit rounded-full px-3 py-1 text-[11px] font-bold"
+                  style={{ backgroundColor: c.accentSoft, color: c.accent }}
+                >
+                  {c.system}
+                </span>
 
-              <span className="mt-auto pt-5 text-[12.5px] font-semibold text-[#3d5638] inline-flex items-center gap-1 group-hover:gap-1.5 transition-all">
-                記事を読む <span aria-hidden>→</span>
-              </span>
-            </Link>
-          ))}
+                <p className="mt-4 text-[13px] italic text-[#6b7a66] leading-[1.8]">「{c.worry}」</p>
+
+                <div className="mt-4 pt-4 border-t border-[#1f2a1d]/8">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-2.5 py-0.5 text-[10.5px] font-bold">
+                      医師監修
+                    </span>
+                    <span className="text-[11px] text-[#6b7a66]">メカニズム</span>
+                  </div>
+                  <p className="text-[12.5px] text-[#3a423a] leading-[1.95] line-clamp-5">{c.why}</p>
+                </div>
+
+                {/* curation — quotes from clinics */}
+                <div className="mt-auto pt-4 border-t border-[#1f2a1d]/8">
+                  <div className="text-[11px] font-medium text-[#3d5638] mb-3">クリニックの解説より（引用）</div>
+                  {cites.length > 0 ? (
+                    <div className="space-y-3">
+                      {cites.map((q, qi) => (
+                        <blockquote key={qi} className="border-l-2 border-[#85AB8B] pl-3">
+                          <p className="text-[12px] text-[#1f2a1d] leading-[1.85]">「{q.quote}」</p>
+                          <footer className="mt-1.5 text-[11px] text-[#6b7a66]">
+                            — {q.source}
+                            {q.url && (
+                              <a
+                                href={q.url}
+                                target="_blank"
+                                rel="noopener noreferrer nofollow"
+                                className="ml-1.5 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]"
+                              >
+                                解説を読む↗
+                              </a>
+                            )}
+                          </footer>
+                        </blockquote>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[12px] text-[#9aa79a] leading-[1.8]">
+                      各クリニックの解説から、順次キュレーションします。
+                    </p>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <p className="on-media mt-8 text-[12px] text-[#6b7a66] leading-[1.9]">
-          ※ メカニズムは医師監修のもと、一般的に知られる情報を整理したものです。診断・治療・受診勧奨を目的としたものではありません。
-          個別の判断は医療機関にご相談ください。
+          ※ メカニズムは医師監修のもと、一般的に知られる情報を整理したものです。引用は各クリニックの解説により、出典を明記します。
+          特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
         </p>
       </div>
     </section>
