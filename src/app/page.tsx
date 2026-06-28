@@ -147,11 +147,6 @@ export default function HomePage() {
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
             <Link href="/" className="logo-type text-xl font-semibold tracking-tight text-[#1f2a1d]">His Recoveries</Link>
             <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#4b5b47]">
-              <Link href="/mechanism" className="hover:text-[#1f2a1d] transition-colors">メカニズム</Link>
-              <Link href="/interviews" className="hover:text-[#1f2a1d] transition-colors">インタビュー</Link>
-              <Link href="/packages" className="hover:text-[#1f2a1d] transition-colors">体験パッケージ</Link>
-              <Link href="/animals" className="hover:text-[#1f2a1d] transition-colors">動物と過ごす</Link>
-              <Link href="/articles" className="hover:text-[#1f2a1d] transition-colors">記事</Link>
               <Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link>
             </nav>
             <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries</span>

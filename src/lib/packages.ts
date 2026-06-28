@@ -69,6 +69,16 @@ export const packages: ExperiencePackage[] = [
     price: "相談でご提示",
     forWhom: "今だけでなく、これからを整えたい方へ。",
   },
+  {
+    id: "animals",
+    name: "動物と過ごすパッケージ",
+    theme: "つながり / 予防",
+    tagline: "犬や猫と過ごす時間で、静かに整える。",
+    steps: ["現在地の確認", "犬と歩く・猫と過ごす体験", "暮らしの中で続ける", "ふりかえり"],
+    duration: "継続 / 月1〜",
+    price: "相談でご提示",
+    forWhom: "孤立感や将来の不安を、やわらげたい方へ。",
+  },
 ];
 
 export function flagshipPackage() {
