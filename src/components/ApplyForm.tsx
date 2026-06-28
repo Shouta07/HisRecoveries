@@ -6,18 +6,25 @@ import { site } from "@/lib/site";
 
 const ACCENT = "#3d5638";
 
+// Formspree form id (the hashid in formspree.io/f/XXXX). Set in Vercel as
+// NEXT_PUBLIC_FORMSPREE_ID so submissions complete on-site. If empty, the
+// form gracefully falls back to a mailto link so it never breaks.
+const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "";
+const ENDPOINT = FORMSPREE_ID ? `https://formspree.io/f/${FORMSPREE_ID}` : "";
+
+type Status = "idle" | "submitting" | "success" | "error";
+
 export default function ApplyForm() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [topic, setTopic] = useState("");
   const [message, setMessage] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
 
-  const canSubmit = name.trim() && contact.trim() && agreed;
+  const canSubmit = !!(name.trim() && contact.trim() && agreed) && status !== "submitting";
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!canSubmit) return;
+  function mailtoFallback() {
     const subject = encodeURIComponent("予約登録 — His Recoveries");
     const body = encodeURIComponent(
       [
@@ -35,9 +42,67 @@ export default function ApplyForm() {
     window.location.href = `mailto:${site.company.email}?subject=${subject}&body=${body}`;
   }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canSubmit) return;
+
+    // No endpoint configured yet → keep working via mailto.
+    if (!ENDPOINT) {
+      mailtoFallback();
+      return;
+    }
+
+    setStatus("submitting");
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          お名前: name,
+          ご連絡先: contact,
+          email: contact, // reply-to if it's an email address
+          気になる悩み: topic || "未選択",
+          ご相談内容: message || "（未記入）",
+          秘密保持への同意: "同意済み",
+          _subject: "予約登録 — His Recoveries",
+        }),
+      });
+      if (res.ok) {
+        setStatus("success");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
+
   const field =
     "w-full rounded-2xl border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[15px] text-[#1f2a1d] outline-none focus:border-[#3d5638] transition-colors";
   const label = "block text-[13px] font-semibold text-[#1f2a1d] mb-2";
+
+  // ── Success state — completes entirely on-site ──
+  if (status === "success") {
+    return (
+      <div className="rounded-[1.6rem] border border-[#1f2a1d]/12 bg-[#f4f6f2] p-8 sm:p-10 text-center">
+        <div className="mx-auto mb-5 grid place-items-center w-14 h-14 rounded-full bg-[#16241a] text-[#EDF1E8]">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </div>
+        <h2 className="text-[1.4rem] font-bold text-[#1f2a1d] mb-3" style={{ fontFamily: "var(--font-shippori), serif" }}>
+          ご予約登録を受け付けました。
+        </h2>
+        <p className="text-[14px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
+          いただいた内容を拝見し、私たちが力になれると判断したとき、
+          ご連絡先へご招待をお送りします。すべて完全匿名・完全守秘義務のもとで扱います。
+        </p>
+        <p className="mt-5 text-[12px] text-[#6b7a66]">
+          ※ 完全招待制・選考制です。本プログラムは医療行為ではありません。
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -126,13 +191,23 @@ export default function ApplyForm() {
         </label>
       </div>
 
+      {status === "error" && (
+        <p className="text-[13px] text-[#a3402f] bg-[#f7ece9] border border-[#a3402f]/20 rounded-xl px-4 py-3">
+          送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。
+        </p>
+      )}
+
       <button
         type="submit"
         disabled={!canSubmit}
         className="w-full rounded-full text-white text-[15px] font-semibold px-7 py-4 transition-colors disabled:cursor-not-allowed"
         style={{ backgroundColor: canSubmit ? "#1f2a1d" : "#9aa79a" }}
       >
-        {agreed ? "予約登録する" : "秘密保持に同意すると送信できます"}
+        {status === "submitting"
+          ? "送信中…"
+          : agreed
+          ? "予約登録する"
+          : "秘密保持に同意すると送信できます"}
       </button>
 
       <p className="text-[11.5px] text-[#6b7a66] leading-[1.8]">
