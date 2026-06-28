@@ -6,10 +6,10 @@ import { site } from "@/lib/site";
 
 const ACCENT = "#3d5638";
 
-// Formspree form id (the hashid in formspree.io/f/XXXX). Set in Vercel as
-// NEXT_PUBLIC_FORMSPREE_ID so submissions complete on-site. If empty, the
-// form gracefully falls back to a mailto link so it never breaks.
-const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "";
+// Formspree form id (the hashid in formspree.io/f/XXXX). Ships with a working
+// default so submissions complete on-site out of the box; override in Vercel
+// via NEXT_PUBLIC_FORMSPREE_ID if the endpoint ever changes.
+const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID ?? "xnjkvzgk";
 const ENDPOINT = FORMSPREE_ID ? `https://formspree.io/f/${FORMSPREE_ID}` : "";
 
 type Status = "idle" | "submitting" | "success" | "error";
