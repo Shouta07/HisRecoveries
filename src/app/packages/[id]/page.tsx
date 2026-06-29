@@ -6,6 +6,7 @@ import { complexById } from "@/lib/complexes";
 import { site } from "@/lib/site";
 import PackageBuilder from "@/components/PackageBuilder";
 import BookingCTA from "@/components/BookingCTA";
+import MembershipLanding from "@/components/MembershipLanding";
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -45,6 +46,9 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
 export default function PackageDetailPage({ params }: { params: { id: string } }) {
   const p = detailPackages.find((x) => x.id === params.id);
   if (!p) notFound();
+
+  // ハイエンド会員は専用LP
+  if (p.id === "membership") return <MembershipLanding p={p} />;
 
   const relatedAreas = (RELATED_AREAS[p.id] ?? [])
     .map((id) => complexById(id))
