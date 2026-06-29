@@ -9,6 +9,7 @@ import { getAllServiceSlugs } from "@/lib/services";
 import { getAllScreenings } from "@/lib/screenings";
 import { categories, site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
+import { clusters } from "@/lib/clusters";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -116,9 +117,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  const clusterPaths: MetadataRoute.Sitemap = clusters.map((a) => ({
+    url: `${site.url}/areas/${a.areaId}/${a.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
   return [
     ...staticPaths,
     ...areaPaths,
+    ...clusterPaths,
     ...categoryPaths,
     ...articlePaths,
     ...eventPaths,

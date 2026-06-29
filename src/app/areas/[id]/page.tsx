@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { complexes, complexById } from "@/lib/complexes";
 import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
+import { clustersByArea } from "@/lib/clusters";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -39,6 +40,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
   if (!c || !area) notFound();
 
   const cites = citationsByComplex[c.id] ?? [];
+  const related = clustersByArea(c.id);
   const url = `${site.url}/areas/${c.id}`;
 
   // ---- structured data (SEO + GEO) ----
@@ -198,6 +200,26 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             </p>
           )}
         </section>
+
+        {/* 関連記事（クラスタ） */}
+        {related.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>関連記事</h2>
+            <ul className="space-y-2">
+              {related.map((r) => (
+                <li key={r.slug}>
+                  <Link
+                    href={`/areas/${c.id}/${r.slug}`}
+                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#1f2a1d]/10 bg-white px-4 py-3.5 hover:border-[#3d5638]/40 transition-colors"
+                  >
+                    <span className="text-[13.5px] font-semibold text-[#1f2a1d]">{r.title}</span>
+                    <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
           ※ 本記事は医師監修のもと、一般的に知られる情報を整理したものです。出典・参考リンクは中立な医学情報源によります。
