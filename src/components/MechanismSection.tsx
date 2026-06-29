@@ -66,7 +66,13 @@ export default function MechanismSection() {
           ))}
         </div>
 
-        <p className="on-media mt-8 text-[12px] text-[#6b7a66] leading-[1.9]">
+        <div className="on-media mt-8">
+          <Link href="/areas" className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#3d5638] hover:gap-2.5 transition-all">
+            すべての解説を読む（ライブラリ） <span aria-hidden>→</span>
+          </Link>
+        </div>
+
+        <p className="on-media mt-6 text-[12px] text-[#6b7a66] leading-[1.9]">
           ※ メカニズムは医師監修のもと、一般的に知られる情報を整理したものです。出典・参考リンクは中立な医学情報源によります。
           特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
         </p>
