@@ -1,6 +1,7 @@
 // Experience packages on the home (moved from the old /packages page).
 // Anchored at #packages so step ③「パッケージを選ぶ」 of the flow links here.
 import { packages } from "@/lib/packages";
+import PackageBuilder from "@/components/PackageBuilder";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -52,22 +53,12 @@ export default function PackagesSection() {
                   </div>
                 )}
                 <div className="mt-5 text-[13px] font-semibold text-[#85AB8B]">
-                  {featured.duration} ・ {featured.price}
+                  {featured.duration}・選択式（パーソナライズ）
                 </div>
               </div>
-              <div className="rounded-[1.4rem] bg-white/[0.06] border border-white/10 p-6">
-                <div className="text-[12px] font-medium text-[#85AB8B] mb-4">当日の流れ</div>
-                <ol className="space-y-3">
-                  {featured.steps.map((s, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[13.5px] leading-[1.7] text-[#D7DED2]">
-                      <span className="shrink-0 grid place-items-center w-6 h-6 rounded-full bg-[#85AB8B]/15 text-[#85AB8B] text-[11px] font-bold">
-                        {i + 1}
-                      </span>
-                      {s}
-                    </li>
-                  ))}
-                </ol>
-              </div>
+
+              {/* 選択式ビルダー（内容を選ぶと目安合計が変動） */}
+              <PackageBuilder />
             </div>
           </div>
         )}
