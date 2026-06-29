@@ -9,9 +9,9 @@ import BookingCTA from "@/components/BookingCTA";
 type Goal = "fix" | "confidence" | "both";
 
 const GOALS: { id: Goal; label: string }[] = [
-  { id: "fix", label: "コンプレックスを直す" },
+  { id: "fix", label: "直す" },
   { id: "confidence", label: "自信をつける" },
-  { id: "both", label: "直して、自信をつける" },
+  { id: "both", label: "両方" },
 ];
 
 type Option = { id: string; label: string; goals: Goal[]; required?: boolean };
@@ -68,8 +68,8 @@ export default function PackageBuilder() {
   return (
     <div className="rounded-[1.4rem] bg-white/[0.06] border border-white/10 p-6">
       {/* ① 目的を選ぶ */}
-      <div className="text-[12px] font-medium text-[#85AB8B] mb-3">① 目的を選ぶ</div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
+      <div className="text-[12px] font-medium text-[#85AB8B] mb-2">① 目的を選ぶ</div>
+      <div className="grid grid-cols-3 gap-2 mb-5">
         {GOALS.map((g) => {
           const on = goal === g.id;
           return (
@@ -78,7 +78,7 @@ export default function PackageBuilder() {
               type="button"
               onClick={() => changeGoal(g.id)}
               aria-pressed={on}
-              className={`rounded-xl border px-3 py-2.5 text-[12.5px] font-semibold transition-colors ${
+              className={`rounded-lg border px-2 py-2 text-[12.5px] font-semibold transition-colors ${
                 on ? "bg-[#85AB8B] border-[#85AB8B] text-[#16241a]" : "bg-white/[0.04] border-white/15 text-[#EDF1E8] hover:border-white/30"
               }`}
             >
@@ -122,18 +122,20 @@ export default function PackageBuilder() {
         })}
       </div>
 
-      {/* 価格は目安レンジ（ギフト〜ハイエンド） */}
-      <div className="mt-6">
-        <div className="text-[12px] font-medium text-[#85AB8B] mb-3">価格の目安</div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      {/* 価格は目安レンジ（ギフト〜ハイエンド）— 1行ずつコンパクト */}
+      <div className="mt-5">
+        <div className="text-[12px] font-medium text-[#85AB8B] mb-2">価格の目安</div>
+        <div className="space-y-1.5">
           {TIERS.map((t) => (
             <div
               key={t.name}
-              className={`rounded-xl border p-3.5 ${t.anchor ? "bg-[#85AB8B]/10 border-[#85AB8B]/40" : "bg-white/[0.04] border-white/10"}`}
+              className={`flex items-center justify-between gap-3 rounded-lg border px-3 py-2 ${t.anchor ? "bg-[#85AB8B]/10 border-[#85AB8B]/40" : "bg-white/[0.04] border-white/10"}`}
             >
-              <div className="text-[12.5px] font-bold text-[#EDF1E8]">{t.name}</div>
-              <div className={`text-[12px] mt-0.5 ${t.anchor ? "text-[#85AB8B] font-semibold" : "text-[#9FB0A0]"}`}>{t.price}</div>
-              <p className="text-[11px] text-[#9FB0A0] leading-[1.7] mt-1.5">{t.d}</p>
+              <span className="min-w-0">
+                <span className="text-[12.5px] font-bold text-[#EDF1E8]">{t.name}</span>
+                <span className="text-[11px] text-[#9FB0A0]"> — {t.d}</span>
+              </span>
+              <span className={`text-[12px] shrink-0 ${t.anchor ? "text-[#85AB8B] font-semibold" : "text-[#9FB0A0]"}`}>{t.price}</span>
             </div>
           ))}
         </div>

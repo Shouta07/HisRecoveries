@@ -64,13 +64,6 @@ export default function HomePage() {
           >
             誰にも言えなかった悩みを、<wbr />「<span className="text-[#3d5638]">変われるもの</span>」に。
           </p>
-
-          <p
-            className="mt-5 sm:mt-6 text-[#4b5b47] text-[13.5px] sm:text-[15px] md:text-[16px] leading-[2] tracking-[0.04em] max-w-2xl px-2 [text-wrap:balance]"
-            style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400, wordBreak: "keep-all", overflowWrap: "anywhere" }}
-          >
-            コンプレックスから自信まで。あなたに合わせて整える、完全守秘義務のウェルネス伴走サービス。
-          </p>
         </div>
       </section>
 
@@ -84,26 +77,6 @@ export default function HomePage() {
           style={{ background: "linear-gradient(180deg, rgba(245,247,242,0.2) 0%, rgba(240,244,238,0.12) 40%, rgba(238,243,237,0.16) 100%)" }}
         />
 
-
-        {/* 誰に・何を・どう — 一目でわかる価値（モバイルもコンパクト） */}
-        <section className="relative z-10 text-[#1f2a1d]">
-          <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-10 sm:pt-16">
-            <div className="on-media grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-              {[
-                { k: "誰に", t: "言えない悩みを持つ、男性へ。" },
-                { k: "何を", t: "コンプレックスを、自信に。" },
-                { k: "どう", t: "匿名・中立で、専属が選んで伴走。" },
-              ].map((x) => (
-                <div key={x.k} className="rounded-[1.1rem] bg-white/85 border border-[#1f2a1d]/10 px-4 py-3.5 sm:px-5 sm:py-5 flex items-start gap-3">
-                  <span className="shrink-0 mt-0.5 inline-flex items-center justify-center rounded-full bg-[#16241a] text-[#EDF1E8] text-[11px] font-bold w-9 h-9">
-                    {x.k}
-                  </span>
-                  <p className="text-[13.5px] sm:text-[14px] font-semibold text-[#1f2a1d] leading-[1.6]">{x.t}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Recovery Journey — directly under the hero */}
         <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
