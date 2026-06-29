@@ -12,14 +12,6 @@ const HEAD: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-// なぜ個別でやるより His Recoveries を通すのか（共通の便益）
-const BENEFITS = [
-  { t: "窓口は、ひとつ", d: "複数の専門家・提携クリニックの予約・決済を、まとめて代行。自分で何件も探さない。" },
-  { t: "中立に、選ぶ", d: "紹介手数料はゼロ。売るためでなく、あなたに合う専門家・施術を中立に選びます。" },
-  { t: "一気通貫で、伴走", d: "バラバラの単発を、ひとつの設計に。記録・可視化で、定着まで並走します。" },
-  { t: "匿名で、安心", d: "本名・顔・実年齢は不要。言えない悩みも、完全守秘義務のもとで。" },
-];
-
 export function generateStaticParams() {
   return packages.map((p) => ({ id: p.id }));
 }
@@ -88,16 +80,16 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
           </p>
         </div>
 
-        {/* なぜ His Recoveries を通すのか（便益） */}
+        {/* このはじめ方“ならでは”の付加価値 */}
         <section className="mb-10">
           <h2 className="text-[1.2rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>
-            なぜ、個別でやるより <span className="text-[#3d5638]">His Recoveries を通すのか。</span>
+            {p.name}の、<span className="text-[#3d5638]">付加価値。</span>
           </h2>
           <p className="text-[13px] text-[#6b7a66] leading-[1.9] mb-5">
-            自分で探す手間・選ぶ失敗・続かなさ・人に言う恥ずかしさを、肩代わりします。
+            His Recoveries は、業界で唯一“あなたの側”に立ちます。売らないから、あなたの最適だけを。
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
-            {BENEFITS.map((b) => (
+            {p.value.map((b) => (
               <div key={b.t} className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 p-5">
                 <h3 className="text-[14px] font-bold text-[#1f2a1d] mb-1.5" style={HEAD}>{b.t}</h3>
                 <p className="text-[12.5px] text-[#4b5b47] leading-[1.85]">{b.d}</p>
