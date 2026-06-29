@@ -3,7 +3,6 @@
 // (always attributed + linked out, never endorsed).
 import Link from "next/link";
 import { complexes } from "@/lib/complexes";
-import { citationsByComplex } from "@/lib/citations";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -25,69 +24,46 @@ export default function MechanismSection() {
             取り扱う<span className="text-[#3d5638]">領域。</span>
           </h2>
           <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-            中立な医学情報源を参考に、出典を明記してキュレーションします。
+            悩み別に、原因を中立に。詳しくは各ページで（医師監修・出典明記）。
           </p>
         </div>
 
         {/* concern cards — parallel grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {complexes.map((c, i) => {
-            const cites = citationsByComplex[c.id] ?? [];
-            return (
-              <article
-                key={c.id}
-                id={c.id}
-                className="scroll-mt-24 flex flex-col rounded-[1.5rem] bg-white border border-[#1f2a1d]/10 p-6 shadow-sm"
-              >
-                <div className="flex items-baseline gap-2.5 mb-3">
-                  <span className="font-mono text-[12px] text-[#85AB8B]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="text-[1.25rem] font-bold text-[#1f2a1d]" style={MINCHO}>
-                    {c.ja}
-                  </h3>
-                </div>
-                <span
-                  className="inline-flex w-fit rounded-full px-3 py-1 text-[11px] font-bold"
-                  style={{ backgroundColor: c.accentSoft, color: c.accent }}
-                >
-                  {c.system}
+          {complexes.map((c, i) => (
+            <Link
+              key={c.id}
+              id={c.id}
+              href={`/areas/${c.id}`}
+              className="group scroll-mt-24 flex flex-col rounded-[1.5rem] bg-white border border-[#1f2a1d]/10 p-6 shadow-sm hover:shadow-[0_20px_40px_-22px_rgba(20,32,26,0.45)] hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <div className="flex items-baseline gap-2.5 mb-3">
+                <span className="font-mono text-[12px] text-[#85AB8B]">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
+                <h3 className="text-[1.25rem] font-bold text-[#1f2a1d]" style={MINCHO}>
+                  {c.ja}
+                </h3>
+              </div>
+              <span
+                className="inline-flex w-fit rounded-full px-3 py-1 text-[11px] font-bold"
+                style={{ backgroundColor: c.accentSoft, color: c.accent }}
+              >
+                {c.system}
+              </span>
 
-                <p className="mt-4 text-[13px] italic text-[#6b7a66] leading-[1.8]">「{c.worry}」</p>
+              <p className="mt-4 text-[13px] italic text-[#6b7a66] leading-[1.8]">「{c.worry}」</p>
 
-                <div className="mt-4 pt-4 border-t border-[#1f2a1d]/8">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-2.5 py-0.5 text-[10.5px] font-bold">
-                      医師監修
-                    </span>
-                    <span className="text-[11px] text-[#6b7a66]">メカニズム</span>
-                  </div>
-                  <p className="text-[12.5px] text-[#3a423a] leading-[1.95] line-clamp-5">{c.why}</p>
-                </div>
-
-                {/* reference preview + link to the full article */}
-                <div className="mt-4 pt-4 border-t border-[#1f2a1d]/8">
-                  <div className="text-[11px] font-medium text-[#3d5638] mb-2">出典・参考</div>
-                  {cites.length > 0 ? (
-                    <p className="text-[12px] text-[#4b5b47] leading-[1.7]">
-                      {cites[0].quote ? `「${cites[0].quote}」— ` : ""}
-                      {Array.from(new Set(cites.map((c) => c.source))).join(" ・ ")}
-                    </p>
-                  ) : (
-                    <p className="text-[12px] text-[#9aa79a] leading-[1.8]">出典は順次追加。</p>
-                  )}
-                </div>
-
-                <Link
-                  href={`/areas/${c.id}`}
-                  className="mt-auto pt-5 text-[12.5px] font-semibold text-[#3d5638] inline-flex items-center gap-1 hover:gap-1.5 transition-all"
-                >
+              <div className="mt-auto pt-5 flex items-center justify-between border-t border-[#1f2a1d]/8">
+                <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-2.5 py-0.5 text-[10px] font-bold">
+                  医師監修
+                </span>
+                <span className="text-[12.5px] font-semibold text-[#3d5638] inline-flex items-center gap-1 group-hover:gap-1.5 transition-all">
                   解説を読む <span aria-hidden>→</span>
-                </Link>
-              </article>
-            );
-          })}
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
 
         <p className="on-media mt-8 text-[12px] text-[#6b7a66] leading-[1.9]">
