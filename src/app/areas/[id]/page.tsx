@@ -159,41 +159,48 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </dl>
         </section>
 
-        {/* 引用（従） */}
+        {/* 出典・参考（従） */}
         <section className="mt-12">
           <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
-            クリニックの解説より（引用）
+            出典・参考リンク
           </h2>
           {cites.length > 0 ? (
-            <div className="space-y-4">
+            <ul className="space-y-3">
               {cites.map((q, i) => (
-                <blockquote key={i} className="border-l-2 border-[#85AB8B] pl-4 py-1">
-                  <p className="text-[13.5px] text-[#1f2a1d] leading-[1.95]">「{q.quote}」</p>
-                  <footer className="mt-2 text-[12px] text-[#6b7a66]">
-                    — {q.source}
-                    {q.url && (
-                      <a
-                        href={q.url}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="ml-2 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]"
-                      >
-                        解説を読む↗
-                      </a>
-                    )}
-                  </footer>
-                </blockquote>
+                <li key={i} className="rounded-[1rem] border border-[#1f2a1d]/10 bg-white p-4">
+                  {q.quote ? (
+                    <blockquote className="border-l-2 border-[#85AB8B] pl-3">
+                      <p className="text-[13.5px] text-[#1f2a1d] leading-[1.95]">「{q.quote}」</p>
+                      <footer className="mt-2 text-[12px] text-[#6b7a66]">
+                        — {q.source}
+                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="ml-2 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
+                          原文を読む↗
+                        </a>
+                      </footer>
+                    </blockquote>
+                  ) : (
+                    <div className="flex items-start gap-2">
+                      <span className="text-[#85AB8B] mt-px" aria-hidden>›</span>
+                      <p className="text-[13px] text-[#3a423a] leading-[1.85]">
+                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
+                          {q.source}↗
+                        </a>
+                        {q.note && <span className="text-[#6b7a66]"> — {q.note}</span>}
+                      </p>
+                    </div>
+                  )}
+                </li>
               ))}
-            </div>
+            </ul>
           ) : (
             <p className="text-[13px] text-[#9aa79a] leading-[1.9]">
-              各クリニックの解説から、順次キュレーションします。
+              出典は順次追加していきます。
             </p>
           )}
         </section>
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
-          ※ 本記事は医師監修のもと、一般的に知られる情報を整理したものです。引用は各クリニックの解説により、出典を明記します。
+          ※ 本記事は医師監修のもと、一般的に知られる情報を整理したものです。出典・参考リンクは中立な医学情報源によります。
           特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
         </p>
 

@@ -25,7 +25,7 @@ export default function MechanismSection() {
             取り扱う<span className="text-[#3d5638]">領域。</span>
           </h2>
           <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-            各クリニックの解説を引用しながら、中立にキュレーションします。
+            中立な医学情報源を参考に、出典を明記してキュレーションします。
           </p>
         </div>
 
@@ -66,16 +66,16 @@ export default function MechanismSection() {
                   <p className="text-[12.5px] text-[#3a423a] leading-[1.95] line-clamp-5">{c.why}</p>
                 </div>
 
-                {/* curation preview + link to the full article */}
+                {/* reference preview + link to the full article */}
                 <div className="mt-4 pt-4 border-t border-[#1f2a1d]/8">
-                  <div className="text-[11px] font-medium text-[#3d5638] mb-2">クリニックの解説より（引用）</div>
+                  <div className="text-[11px] font-medium text-[#3d5638] mb-2">出典・参考</div>
                   {cites.length > 0 ? (
-                    <blockquote className="border-l-2 border-[#85AB8B] pl-3">
-                      <p className="text-[12px] text-[#1f2a1d] leading-[1.85] line-clamp-3">「{cites[0].quote}」</p>
-                      <footer className="mt-1.5 text-[11px] text-[#6b7a66]">— {cites[0].source}</footer>
-                    </blockquote>
+                    <p className="text-[12px] text-[#4b5b47] leading-[1.7]">
+                      {cites[0].quote ? `「${cites[0].quote}」— ` : ""}
+                      {Array.from(new Set(cites.map((c) => c.source))).join(" ・ ")}
+                    </p>
                   ) : (
-                    <p className="text-[12px] text-[#9aa79a] leading-[1.8]">各クリニックの解説から、順次キュレーション。</p>
+                    <p className="text-[12px] text-[#9aa79a] leading-[1.8]">出典は順次追加。</p>
                   )}
                 </div>
 
@@ -91,7 +91,7 @@ export default function MechanismSection() {
         </div>
 
         <p className="on-media mt-8 text-[12px] text-[#6b7a66] leading-[1.9]">
-          ※ メカニズムは医師監修のもと、一般的に知られる情報を整理したものです。引用は各クリニックの解説により、出典を明記します。
+          ※ メカニズムは医師監修のもと、一般的に知られる情報を整理したものです。出典・参考リンクは中立な医学情報源によります。
           特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
         </p>
       </div>

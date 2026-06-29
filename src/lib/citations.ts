@@ -1,43 +1,63 @@
-// Curation: per-complex citations quoting what each clinic/authority writes.
-// Neutral — always attribute the source and link out; never present as our own,
-// never endorse one clinic over another.
+// Curation: per-complex references/citations. Neutral — always attribute the
+// source and link out; never present as our own, never endorse one clinic.
 //
-// 記入方法: 各配列に { source, url, quote } を追加するだけで、
-//   - ホームの「取り扱う領域」カード（先頭1件をプレビュー）
-//   - 記事ページ /areas/[id]（全件）
-// に自動反映されます。
+// 現状: 中立な医学情報源（MSDマニュアル家庭版）の該当ページを「参考・出典リンク」
+// として掲載。verbatim の引用文（quote）は、原文ページを確認のうえ後から追加可能。
+//   - quote を入れると、その文を「」付きの引用として表示。
+//   - quote が無ければ、source + note の「参考リンク」として表示。
 //
-// ルール（docs/CURATION_PLAYBOOK.md 参照）:
-//   - quote は短い抜粋（1〜2文）。全文転載しない／改変しない。
-//   - source は出典名、url は元記事の正規URL（別タブ・nofollowで表示）。
-//   - 体験談ではなく「メカニズム・一般的知見」を引用（医療広告配慮）。
-//   - 特定院に偏らせない。可能なら公的・学会を優先。
+// ルール（docs/CURATION_PLAYBOOK.md）: 短い抜粋・改変しない・出典明記・
+// 体験談ではなくメカニズム・特定院に偏らせない。
 
 export type Citation = {
-  /** clinic / authority name shown as attribution */
+  /** 出典名（権威・公的を優先） */
   source: string;
-  /** canonical URL of the original article (opens in a new tab) */
+  /** 元ページの正規URL（別タブ・nofollow） */
   url: string;
-  /** a short, fairly-used excerpt */
-  quote: string;
+  /** リンク先ページの内容を表す中立な一言（quote が無いとき表示） */
+  note?: string;
+  /** 原文からの短い抜粋（確認済みのときのみ。「」付きで表示） */
+  quote?: string;
 };
 
+const MSD = "MSDマニュアル家庭版";
+
 export const citationsByComplex: Record<string, Citation[]> = {
-  // 推奨出典: 日本皮膚科学会「男性型脱毛症診療ガイドライン」/ MSDマニュアル家庭版「男性型脱毛症」/ 専門クリニックの医師監修ページ
-  hair: [],
-
-  // 推奨出典: 日本皮膚科学会「原発性局所多汗症診療ガイドライン」/ MSDマニュアル「多汗症」「臭汗症」
-  sweat: [],
-
-  // 推奨出典: 日本皮膚科学会「尋常性痤瘡（ざ瘡）治療ガイドライン」/ MSDマニュアル「ざ瘡（にきび）」
-  skin: [],
-
-  // 推奨出典: 厚労省 e-ヘルスネット（睡眠など）/ 形成・美容皮膚科の医師監修ページ（印象の要素分解）
+  hair: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/17-%E7%9A%AE%E8%86%9A%E3%81%AE%E7%97%85%E6%B0%97/%E6%AF%9B%E9%AB%AA%E3%81%AE%E7%97%85%E6%B0%97/%E8%84%B1%E6%AF%9B%E7%97%87%EF%BC%88%E8%84%B1%E6%AF%9B%EF%BC%89",
+      note: "脱毛症（男性型脱毛症を含む）の原因と仕組み",
+    },
+  ],
+  sweat: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/17-%E7%9A%AE%E8%86%9A%E3%81%AE%E7%97%85%E6%B0%97/%E6%B1%97%E3%81%AE%E7%97%85%E6%B0%97/%E4%BD%93%E8%87%AD",
+      note: "体臭（汗のにおい）が生まれる仕組み",
+    },
+  ],
+  skin: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/17-%E7%9A%AE%E8%86%9A%E3%81%AE%E7%97%85%E6%B0%97/%E3%81%AB%E3%81%8D%E3%81%B3%E3%81%A8%E9%96%A2%E9%80%A3%E7%96%BE%E6%82%A3/%E3%81%AB%E3%81%8D%E3%81%B3-%E3%81%96%E7%98%A1",
+      note: "にきび（ざ瘡）の原因と仕組み",
+    },
+  ],
+  // 顔の印象は適切な公的・中立の単一ソースが少ないため、原文（主）中心。順次追加。
   face: [],
-
-  // 推奨出典: 日本皮膚科学会「医療レーザー脱毛ガイドライン」/ アンドロゲン・毛周期に触れた皮膚科解説
-  "body-hair": [],
-
-  // 推奨出典: 厚労省「こころの情報サイト」/ MSDマニュアル「身体醜形症（BDD）」
-  self: [],
+  "body-hair": [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/17-%E7%9A%AE%E8%86%9A%E3%81%AE%E7%97%85%E6%B0%97/%E6%AF%9B%E9%AB%AA%E3%81%AE%E7%97%85%E6%B0%97/%E5%A4%9A%E6%AF%9B",
+      note: "多毛（体毛が濃くなる）の原因",
+    },
+  ],
+  self: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/10-%E5%BF%83%E3%81%AE%E5%81%A5%E5%BA%B7%E5%95%8F%E9%A1%8C/%E5%BC%B7%E8%BF%AB%E7%97%87%E3%81%8A%E3%82%88%E3%81%B3%E9%96%A2%E9%80%A3%E7%97%87%E7%BE%A4/%E8%BA%AB%E4%BD%93%E9%86%9C%E5%BD%A2%E7%97%87",
+      note: "身体醜形症（外見へのとらわれ）の解説",
+    },
+  ],
 };
