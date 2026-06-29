@@ -2,6 +2,7 @@ import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import ServiceSection from "@/components/ServiceSection";
+import WhySection from "@/components/WhySection";
 import PricingSection from "@/components/PricingSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
@@ -78,8 +79,11 @@ export default function HomePage() {
         />
 
 
-        {/* サービス内容（Webで伴走を内包） */}
+        {/* サービス内容（オフライン／オンライン） */}
         <ServiceSection />
+
+        {/* Why — なぜやるのか */}
+        <WhySection />
 
         {/* 3パターン価格 */}
         <PricingSection />
