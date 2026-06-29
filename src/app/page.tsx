@@ -4,7 +4,6 @@ import BoomerangVideo from "@/components/BoomerangVideo";
 import HowFlow from "@/components/HowFlow";
 import PackagesSection from "@/components/PackagesSection";
 import MembershipSection from "@/components/MembershipSection";
-import MechanismSection from "@/components/MechanismSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -105,9 +104,6 @@ export default function HomePage() {
             <HowFlow />
           </div>
         </section>
-
-        {/* 取り扱う領域 — mechanism → 記事 */}
-        <MechanismSection />
 
         {/* 改善パッケージ */}
         <PackagesSection />

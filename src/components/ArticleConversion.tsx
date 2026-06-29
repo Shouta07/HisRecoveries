@@ -70,10 +70,10 @@ export default function ArticleConversion({ articleSlug, territory }: Props) {
           日曜日の手紙を受け取る
         </TrackedCTA>
         <Link
-          href="/#interviews"
+          href="/areas"
           className="border-b border-hair-line hover:border-ink transition-colors"
         >
-          回復の記録を読む
+          仕組みを知る
         </Link>
       </div>
     </section>

@@ -23,17 +23,17 @@ const nextConfig = {
       { source: "/packages", destination: "/#packages", permanent: true },
       // 会員はホームに統合済み
       { source: "/packages/membership", destination: "/#membership", permanent: true },
-      { source: "/mechanism", destination: "/#mechanism", permanent: true },
-      { source: "/mechanism/:slug*", destination: "/#mechanism", permanent: true },
-      { source: "/interviews", destination: "/#mechanism", permanent: true },
-      { source: "/interviews/:slug*", destination: "/#mechanism", permanent: true },
-      // legacy routes also fold into the home's mechanism section.
-      { source: "/stories", destination: "/#mechanism", permanent: true },
-      { source: "/stories/:slug", destination: "/#mechanism", permanent: true },
-      { source: "/recoveries", destination: "/#mechanism", permanent: true },
-      { source: "/recoveries/:slug*", destination: "/#mechanism", permanent: true },
-      { source: "/territories", destination: "/#mechanism", permanent: true },
-      { source: "/territories/:slug*", destination: "/#mechanism", permanent: true },
+      { source: "/mechanism", destination: "/areas", permanent: true },
+      { source: "/mechanism/:slug*", destination: "/areas", permanent: true },
+      { source: "/interviews", destination: "/areas", permanent: true },
+      { source: "/interviews/:slug*", destination: "/areas", permanent: true },
+      // legacy routes also fold into the mechanism library.
+      { source: "/stories", destination: "/areas", permanent: true },
+      { source: "/stories/:slug", destination: "/areas", permanent: true },
+      { source: "/recoveries", destination: "/areas", permanent: true },
+      { source: "/recoveries/:slug*", destination: "/areas", permanent: true },
+      { source: "/territories", destination: "/areas", permanent: true },
+      { source: "/territories/:slug*", destination: "/areas", permanent: true },
       { source: "/manifesto", destination: "/", permanent: true },
       // legacy company/legal pages removed — fold into the home / privacy.
       { source: "/about", destination: "/#about", permanent: true },

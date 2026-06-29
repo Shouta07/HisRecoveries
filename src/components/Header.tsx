@@ -5,9 +5,9 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const LINKS = [
-  { href: "/#mechanism", label: "仕組みを知る" },
-  { href: "/#interviews", label: "改善事例", desktopOnly: true },
-  { href: "/#packages", label: "改善プログラム", desktopOnly: true },
+  { href: "/areas", label: "仕組みを知る" },
+  { href: "/#packages", label: "改善プログラム" },
+  { href: "/#membership", label: "会員", desktopOnly: true },
 ];
 
 export default function Header() {
