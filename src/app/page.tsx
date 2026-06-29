@@ -1,7 +1,6 @@
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
-import HowFlow from "@/components/HowFlow";
 import ServiceSection from "@/components/ServiceSection";
 import PricingSection from "@/components/PricingSection";
 
@@ -84,28 +83,6 @@ export default function HomePage() {
 
         {/* 3パターン価格 */}
         <PricingSection />
-
-        {/* Recovery Journey */}
-        <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
-          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
-            <div className="on-media mb-8 max-w-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">
-                  Recovery Journey
-                </span>
-              </div>
-              <h2 className="text-[1.9rem] md:text-[2.4rem] leading-[1.3]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
-                理解から、<span className="text-[#3d5638]">自信まで。</span>
-              </h2>
-              <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-                理解から実践、定着、そしてつながりへ。一本の線ではなく、循環する設計です。
-              </p>
-            </div>
-
-            <HowFlow />
-          </div>
-        </section>
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
