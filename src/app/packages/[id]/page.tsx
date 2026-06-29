@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { packages } from "@/lib/packages";
+import { complexById } from "@/lib/complexes";
 import { site } from "@/lib/site";
 import PackageBuilder from "@/components/PackageBuilder";
 import BookingCTA from "@/components/BookingCTA";
@@ -14,6 +15,15 @@ const HEAD: React.CSSProperties = {
 };
 
 const detailPackages = packages.filter((p) => !p.flagship);
+
+// パッケージ → 関連する「取り扱う領域」(/areas) の id
+const RELATED_AREAS: Record<string, string[]> = {
+  "first-impression": ["face", "self"],
+  cleanliness: ["sweat", "skin"],
+  hair: ["hair"],
+  future: [],
+  animals: ["self"],
+};
 
 export function generateStaticParams() {
   return detailPackages.map((p) => ({ id: p.id }));
@@ -35,6 +45,10 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
 export default function PackageDetailPage({ params }: { params: { id: string } }) {
   const p = detailPackages.find((x) => x.id === params.id);
   if (!p) notFound();
+
+  const relatedAreas = (RELATED_AREAS[p.id] ?? [])
+    .map((id) => complexById(id))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c));
 
   return (
     <div className="bg-[#f4f6f2] text-[#1f2a1d]">
@@ -117,6 +131,28 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
               </Link>
             </div>
           </div>
+        )}
+
+        {/* 関連：仕組みを知る（/areas へ内部リンク） */}
+        {relatedAreas.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>関連：仕組みを知る</h2>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {relatedAreas.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/areas/${c.id}`}
+                  className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#1f2a1d]/10 bg-white px-4 py-3.5 hover:border-[#3d5638]/40 transition-colors"
+                >
+                  <span>
+                    <span className="text-[13.5px] font-semibold text-[#1f2a1d]">{c.ja}</span>
+                    <span className="block text-[11px] text-[#6b7a66] mt-0.5">{c.system}</span>
+                  </span>
+                  <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
 
         <p className="mt-10 text-[12px] text-[#6b7a66] leading-[1.9]">
