@@ -3,7 +3,7 @@ export const site = {
   tagline: "From Complex to Confidence",
   promise: "コンプレックスから自信への変化を、デザインする。",
   description:
-    "コンプレックスから自信への変化を、デザインする。男性のための、完全匿名・完全守秘義務・完全招待制の改善プログラム。Webアプリで現在地を可視化し、専属がオフラインで伴走。必要なときは、紹介手数料ゼロで連携医療機関と中立につなぎます。",
+    "コンプレックスから自信への変化を、デザインする。男性のための、ウェルネス（医療と美容の中間）を軸にした完全匿名・完全守秘義務・完全招待制の改善サービス。現在地を可視化し、専属が伴走。必要なときは、紹介手数料ゼロで連携医療機関と中立につなぎます。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",

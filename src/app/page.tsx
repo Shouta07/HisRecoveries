@@ -147,8 +147,8 @@ export default function HomePage() {
             </div>
             <p className="text-[#4b5b47] text-[14px] leading-[2] max-w-xl mx-auto">
               His Recoveries は、<span className="font-semibold text-[#1f2a1d]">Vitality Design</span> が運営する、
-              人の状態変化を研究・実践する改善サービスです。ここで得られる一次情報は、
-              より良いサービス・医療・体験設計へ活かされています。
+              ウェルネス（医療と美容の中間）を軸にした改善サービスです。人の状態変化を研究・実践し、
+              ここで得られる一次情報は、より良いサービス・体験設計へ活かされています。
             </p>
             <p className="mt-5 text-[12px] text-[#6b7a66] leading-[1.9] max-w-xl mx-auto">
               ※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。

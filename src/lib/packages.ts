@@ -15,6 +15,8 @@ export type ExperiencePackage = {
   forWhom: string;
   /** flagship gets the large card */
   flagship?: boolean;
+  /** short selling points for the featured card */
+  highlights?: string[];
 };
 
 export const packages: ExperiencePackage[] = [
@@ -32,12 +34,13 @@ export const packages: ExperiencePackage[] = [
   {
     id: "first-impression",
     name: "第一印象パッケージ",
-    theme: "顔・自意識",
-    tagline: "印象を、再現できる型に。",
-    steps: ["肌・印象の診断", "メイク＋服選び＋撮影", "1ヶ月後の再撮影"],
-    duration: "1ヶ月",
-    price: "¥38,000〜",
-    forWhom: "写真・人前が苦手／老け見えが気になる方へ。",
+    theme: "顔・自意識 / 1日完結",
+    tagline: "カウンセリング＋メイク＋服選びを、1日で。印象を、再現できる型に。",
+    steps: ["印象カウンセリング", "メイク", "服選び（手持ち＋提案）", "撮影（ビフォーアフター）"],
+    duration: "1日完結",
+    price: "予算に合わせて組み合わせ（目安 ¥38,000〜）",
+    forWhom: "結婚式前・駆け込み・第一印象を変えたい方へ。ギフトにも。",
+    highlights: ["1日完結", "予約・決済は窓口ひとつ", "予算に合わせて組み合わせ", "ギフト・結婚式前にも"],
   },
   {
     id: "cleanliness",
