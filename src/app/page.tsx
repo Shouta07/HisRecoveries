@@ -65,9 +65,9 @@ export default function HomePage() {
             className="mt-7 sm:mt-9 text-[#4b5b47] text-[14px] sm:text-[16px] md:text-[17px] leading-[2.05] tracking-[0.04em] max-w-2xl px-2 [text-wrap:balance]"
             style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400, wordBreak: "keep-all", overflowWrap: "anywhere" }}
           >
-            His Recoveries は、コンプレックスから自信まで
+            His Recoveries は、コンプレックスから自信まで。
             <br className="hidden sm:block" />
-            完全守秘義務のもと伴走する、改善サービスです。
+            あなたに合わせて整え、完全守秘義務のもと伴走するウェルネス・サービスです。
           </p>
         </div>
       </section>
