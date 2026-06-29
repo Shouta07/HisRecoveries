@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import BookingCTA from "@/components/BookingCTA";
 
-const LINKS = [
+const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "仕組みを知る" },
   { href: "/#packages", label: "改善プログラム" },
-  { href: "/#membership", label: "会員", desktopOnly: true },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,

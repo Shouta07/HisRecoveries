@@ -4,10 +4,9 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { site } from "@/lib/site";
 
-const LINKS = [
+const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "仕組みを知る" },
   { href: "/#packages", label: "改善プログラム" },
-  { href: "/#membership", label: "会員", desktopOnly: true },
 ];
 
 export default function Header() {

@@ -3,7 +3,6 @@ import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import HowFlow from "@/components/HowFlow";
 import PackagesSection from "@/components/PackagesSection";
-import MembershipSection from "@/components/MembershipSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -107,55 +106,6 @@ export default function HomePage() {
 
         {/* 改善パッケージ */}
         <PackagesSection />
-
-        {/* ハイエンド会員（ホームに統合） */}
-        <MembershipSection />
-
-        {/* ⑧ FAQ */}
-        <section id="faq" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
-          <div className="max-w-[820px] mx-auto px-5 sm:px-8 pb-16 md:pb-20">
-            <div className="on-media mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">FAQ</span>
-              </div>
-              <h2 className="text-[1.7rem] md:text-[2.1rem] leading-[1.4]" style={{ ...HERO_HEAD, fontWeight: 800 }}>
-                よくある質問。
-              </h2>
-            </div>
-            <dl className="rounded-[1.4rem] bg-white/85 border border-[#1f2a1d]/10 px-6 sm:px-8 divide-y divide-[#1f2a1d]/10">
-              {[
-                { q: "本当に匿名ですか？", a: "はい。本名・顔・実年齢は不要です。会員IDで運用し、完全守秘義務のもとで扱います。" },
-                { q: "これは医療行為ですか？", a: "いいえ。本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。必要な段階のみ、紹介手数料ゼロで中立にご案内します。" },
-                { q: "料金はいくらですか？", a: "完全招待制・選考制です。内容により異なり、選考後にご提示します。" },
-                { q: "誰向けのサービスですか？", a: "言えない悩みを、原因から整え、自信まで伴走してほしい男性へ。" },
-              ].map((f) => (
-                <div key={f.q} className="py-5">
-                  <dt className="text-[14.5px] font-bold text-[#1f2a1d] mb-2">{f.q}</dt>
-                  <dd className="text-[13px] text-[#4b5b47] leading-[1.95]">{f.a}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
-
-        {/* ⑩ About — Vitality Design */}
-        <section id="about" className="relative z-10 scroll-mt-24 on-media">
-          <div className="max-w-[820px] mx-auto px-5 sm:px-8 pb-16 text-center">
-            <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium mb-4">
-              About
-            </div>
-            <p className="text-[#4b5b47] text-[14px] leading-[2] max-w-xl mx-auto">
-              His Recoveries は、<span className="font-semibold text-[#1f2a1d]">Vitality Design</span> が運営する、
-              医療と美容の中間で伴走する、ウェルネス伴走サービスです。人の状態変化を研究・実践し、
-              ここで得られる一次情報は、より良いサービス・体験設計へ活かされています。
-            </p>
-            <p className="mt-5 text-[12px] text-[#6b7a66] leading-[1.9] max-w-xl mx-auto">
-              ※ 本プログラムは医療行為ではありません。診断・治療は連携する医療機関が行います。
-              特定の医療機関・商品を推奨・斡旋しません。
-            </p>
-          </div>
-        </section>
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">

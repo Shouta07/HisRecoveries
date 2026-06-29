@@ -21,8 +21,8 @@ const nextConfig = {
     return [
       // /packages index folds into the home section; /packages/[id] are real detail pages.
       { source: "/packages", destination: "/#packages", permanent: true },
-      // 会員はホームに統合済み
-      { source: "/packages/membership", destination: "/#membership", permanent: true },
+      // 会員は現在ホームに掲載なし → 改善プログラムへ
+      { source: "/packages/membership", destination: "/#packages", permanent: true },
       { source: "/mechanism", destination: "/areas", permanent: true },
       { source: "/mechanism/:slug*", destination: "/areas", permanent: true },
       { source: "/interviews", destination: "/areas", permanent: true },

@@ -1,68 +1,82 @@
 "use client";
 
-// 選択式の体験ビルダー（第一印象パッケージ用）。
-// - 内容を選ぶと目安合計が変動
-// - 目的別プリセット（結婚式前 / 駆け込み / ギフト / フル）
-// - 予算を入れると「予算内で最優先のおすすめ」を提案
-// 専門家への予約・決済は窓口ひとつ。最終価格はヒアリングで提示する前提。
+// 選択式の体験ビルダー。
+// ① 目的を3択（直す / 自信をつける / 両方）→ ② 中身を選択 → 目安合計が変動。
+// 予算を入れると「予算内で最優先のおすすめ」を提案。最終価格はヒアリングで提示。
 import { useMemo, useState } from "react";
 import BookingCTA from "@/components/BookingCTA";
+
+type Goal = "fix" | "confidence" | "both";
+
+const GOALS: { id: Goal; label: string }[] = [
+  { id: "fix", label: "コンプレックスを直す" },
+  { id: "confidence", label: "自信をつける" },
+  { id: "both", label: "直して、自信をつける" },
+];
 
 type Option = {
   id: string;
   label: string;
-  /** 目安価格（円）。0 は基本料に含む */
-  price: number;
-  /** 予算内おすすめの優先度（小さいほど優先） */
-  priority: number;
+  price: number; // 目安価格（円）。0 は基本料に含む／相談無料
+  goals: Goal[]; // どの目的に属するか
+  priority: number; // 予算内おすすめの優先度（小さいほど優先）
   required?: boolean;
 };
 
 const OPTIONS: Option[] = [
-  { id: "counsel", label: "印象カウンセリング", price: 0, priority: 0, required: true },
-  { id: "makeup", label: "メイク（施術＋再現レッスン）", price: 12000, priority: 1 },
-  { id: "style", label: "服選び（スタイリスト同行）", price: 15000, priority: 2 },
-  { id: "photo", label: "撮影（ビフォーアフター）", price: 10000, priority: 3 },
-  { id: "color", label: "パーソナルカラー診断", price: 8000, priority: 4 },
-  { id: "hair", label: "ヘアセット", price: 6000, priority: 5 },
-  { id: "bone", label: "骨格診断", price: 8000, priority: 6 },
-];
-
-const PRESETS: { id: string; label: string; ids: string[] }[] = [
-  { id: "wedding", label: "結婚式前", ids: ["counsel", "color", "makeup", "style", "photo", "hair"] },
-  { id: "rush", label: "駆け込み（1日）", ids: ["counsel", "makeup", "hair"] },
-  { id: "gift", label: "ギフト", ids: ["counsel", "makeup", "style", "photo"] },
-  { id: "full", label: "フル", ids: OPTIONS.map((o) => o.id) },
+  { id: "counsel", label: "印象カウンセリング", price: 0, goals: ["fix", "confidence"], priority: 0, required: true },
+  // 直す（原因・ケア・医療連携）
+  { id: "diagnosis", label: "現状の分析・見立て（原因）", price: 8000, goals: ["fix"], priority: 1 },
+  { id: "skincare", label: "清潔感・スキンケアの型", price: 9000, goals: ["fix"], priority: 2 },
+  { id: "medical", label: "医療連携の相談（中立・手数料ゼロ）", price: 0, goals: ["fix"], priority: 3 },
+  // 自信（見せ方・スタイリング）
+  { id: "makeup", label: "メイク（施術＋再現レッスン）", price: 12000, goals: ["confidence"], priority: 1 },
+  { id: "style", label: "服選び（スタイリスト同行）", price: 15000, goals: ["confidence"], priority: 2 },
+  { id: "photo", label: "撮影（ビフォーアフター）", price: 10000, goals: ["confidence"], priority: 3 },
+  { id: "color", label: "パーソナルカラー診断", price: 8000, goals: ["confidence"], priority: 4 },
+  { id: "hair", label: "ヘアセット", price: 6000, goals: ["confidence"], priority: 5 },
+  { id: "bone", label: "骨格診断", price: 8000, goals: ["confidence"], priority: 6 },
 ];
 
 const yen = (n: number) => `¥${n.toLocaleString("en-US")}`;
-const required = new Set(OPTIONS.filter((o) => o.required).map((o) => o.id));
+
+function visibleFor(goal: Goal) {
+  return OPTIONS.filter((o) => goal === "both" || o.goals.includes(goal));
+}
+function requiredIds(goal: Goal) {
+  return new Set(visibleFor(goal).filter((o) => o.required).map((o) => o.id));
+}
 
 export default function PackageBuilder() {
-  const [selected, setSelected] = useState<Set<string>>(() => new Set(required));
+  const [goal, setGoal] = useState<Goal>("both");
+  const [selected, setSelected] = useState<Set<string>>(() => requiredIds("both"));
   const [budget, setBudget] = useState<string>("");
 
+  const visible = useMemo(() => visibleFor(goal), [goal]);
   const total = useMemo(
-    () => OPTIONS.filter((o) => selected.has(o.id)).reduce((s, o) => s + o.price, 0),
-    [selected]
+    () => visible.filter((o) => selected.has(o.id)).reduce((s, o) => s + o.price, 0),
+    [visible, selected]
   );
   const budgetNum = budget ? parseInt(budget.replace(/[^\d]/g, ""), 10) || 0 : 0;
   const overBudget = budgetNum > 0 && total > budgetNum;
 
-  // 予算内で、優先度の高い順に入るだけ入れた「おすすめ」
   const suggested = useMemo(() => {
     if (!budgetNum) return null;
-    const ids = new Set(required);
+    const ids = requiredIds(goal);
     let sum = 0;
-    for (const o of [...OPTIONS].filter((o) => !o.required).sort((a, b) => a.priority - b.priority)) {
+    for (const o of visible.filter((o) => !o.required).sort((a, b) => a.priority - b.priority)) {
       if (sum + o.price <= budgetNum) {
         ids.add(o.id);
         sum += o.price;
       }
     }
     return { ids, sum };
-  }, [budgetNum]);
+  }, [budgetNum, goal, visible]);
 
+  function changeGoal(g: Goal) {
+    setGoal(g);
+    setSelected(requiredIds(g)); // 目的を変えたら中身はリセット
+  }
   function toggle(o: Option) {
     if (o.required) return;
     setSelected((prev) => {
@@ -74,25 +88,34 @@ export default function PackageBuilder() {
 
   return (
     <div className="rounded-[1.4rem] bg-white/[0.06] border border-white/10 p-6">
-      <div className="text-[12px] font-medium text-[#85AB8B]">内容を選ぶ（パーソナライズ）</div>
-      <p className="text-[11px] text-[#9FB0A0] mt-1 mb-4">専門家への予約・決済は、窓口ひとつで。</p>
-
-      {/* 目的別プリセット */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {PRESETS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setSelected(new Set(p.ids))}
-            className="text-[11.5px] text-[#D7DED2] bg-white/[0.05] border border-white/15 hover:border-[#85AB8B]/60 rounded-full px-3 py-1 transition-colors"
-          >
-            {p.label}
-          </button>
-        ))}
+      {/* ① 目的を選ぶ（3択） */}
+      <div className="text-[12px] font-medium text-[#85AB8B] mb-3">① 目的を選ぶ</div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
+        {GOALS.map((g) => {
+          const on = goal === g.id;
+          return (
+            <button
+              key={g.id}
+              type="button"
+              onClick={() => changeGoal(g.id)}
+              aria-pressed={on}
+              className={`rounded-xl border px-3 py-2.5 text-[12.5px] font-semibold transition-colors ${
+                on ? "bg-[#85AB8B] border-[#85AB8B] text-[#16241a]" : "bg-white/[0.04] border-white/15 text-[#EDF1E8] hover:border-white/30"
+              }`}
+            >
+              {g.label}
+            </button>
+          );
+        })}
       </div>
 
+      {/* ② 中身を選ぶ */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-[12px] font-medium text-[#85AB8B]">② 中身を選ぶ</div>
+        <span className="text-[11px] text-[#9FB0A0]">予約・決済は窓口ひとつ</span>
+      </div>
       <div className="space-y-2">
-        {OPTIONS.map((o) => {
+        {visible.map((o) => {
           const on = selected.has(o.id);
           return (
             <button
@@ -105,12 +128,7 @@ export default function PackageBuilder() {
               } ${o.required ? "cursor-default" : "cursor-pointer"}`}
             >
               <span className="flex items-center gap-2.5">
-                <span
-                  className={`grid place-items-center w-4 h-4 rounded-[5px] border ${
-                    on ? "bg-[#85AB8B] border-[#85AB8B]" : "border-white/40"
-                  }`}
-                  aria-hidden
-                >
+                <span className={`grid place-items-center w-4 h-4 rounded-[5px] border ${on ? "bg-[#85AB8B] border-[#85AB8B]" : "border-white/40"}`} aria-hidden>
                   {on && (
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16241a" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 6L9 17l-5-5" />
@@ -143,7 +161,6 @@ export default function PackageBuilder() {
         </div>
       </div>
 
-      {/* 予算内おすすめ */}
       {budgetNum > 0 && suggested && (
         <button
           type="button"
