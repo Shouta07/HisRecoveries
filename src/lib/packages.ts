@@ -56,7 +56,7 @@ export const packages: ExperiencePackage[] = [
       "記録と伴走",
     ],
     duration: "1〜3ヶ月",
-    price: "目安 ¥60,000〜",
+    price: "目安 ¥100,000〜",
     forWhom: "原因から、複数の悩みを整えたい方へ。",
     highlights: ["提携クリニックを中立に紹介", "紹介手数料ゼロ", "窓口ひとつ", "専属が伴走"],
     value: [

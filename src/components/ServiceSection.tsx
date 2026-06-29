@@ -122,9 +122,6 @@ export default function ServiceSection() {
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-[11.5px] text-[#6b7a66] leading-[1.7]">
-              施術は提携クリニックが担当。中立に束ねて、紹介手数料はゼロ。
-            </p>
           </div>
 
           {/* オンライン：日々の伴走 */}

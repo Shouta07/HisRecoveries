@@ -10,7 +10,7 @@ const MINCHO: React.CSSProperties = {
 
 const TIERS = [
   { id: "gift", name: "ギフト・お試し", price: "目安 ¥30,000〜", d: "第一印象の改善。1日完結。贈り物にも。", anchor: false },
-  { id: "standard", name: "スタンダード", price: "目安 ¥60,000〜", d: "血液検査・コンプレックス施術。提携クリニックと中立に。", anchor: false },
+  { id: "standard", name: "スタンダード", price: "目安 ¥100,000〜", d: "血液検査・コンプレックス施術。提携クリニックと中立に。", anchor: false },
   { id: "highend", name: "ハイエンド", price: "応相談・完全招待制", d: "フルパッケージ。専属が一気通貫で伴走。", anchor: true },
 ];
 
