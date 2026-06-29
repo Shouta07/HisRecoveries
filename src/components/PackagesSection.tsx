@@ -11,7 +11,10 @@ const MINCHO: React.CSSProperties = {
 export default function PackagesSection() {
   const themes = packages.filter((p) => !p.flagship);
   const featured = themes.find((p) => p.id === "first-impression");
-  const others = themes.filter((p) => p.id !== "first-impression");
+  // 招待制（ハイエンド）を先頭に、その後に準備中
+  const others = themes
+    .filter((p) => p.id !== "first-impression")
+    .sort((a, b) => (b.invitation ? 1 : 0) - (a.invitation ? 1 : 0));
 
   return (
     <section id="packages" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
@@ -27,7 +30,7 @@ export default function PackagesSection() {
             あなたに合わせて、<span className="text-[#3d5638]">設計します。</span>
           </h2>
           <p className="mt-4 text-[#4b5b47] text-[14.5px] leading-[1.95]">
-            内容と予算に合わせて、選んで組み立てます。現在は第一印象パッケージを受付中、ほかは順次ご案内します。
+            第一印象パッケージを受付中。年間伴走の会員は完全招待制、ほかの領域は順次ご案内します。
           </p>
         </div>
 
@@ -67,11 +70,19 @@ export default function PackagesSection() {
             <Link
               key={p.id}
               href={`/packages/${p.id}`}
-              className="group flex flex-col rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 shadow-sm p-6 hover:shadow-[0_20px_40px_-22px_rgba(20,32,26,0.45)] hover:-translate-y-0.5 transition-all"
+              className={`group flex flex-col rounded-[1.4rem] shadow-sm p-6 transition-all hover:shadow-[0_20px_40px_-22px_rgba(20,32,26,0.45)] hover:-translate-y-0.5 ${
+                p.invitation
+                  ? "bg-white border border-[#85AB8B]/60 ring-1 ring-[#85AB8B]/30"
+                  : "bg-white border border-[#1f2a1d]/10"
+              }`}
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[10.5px] tracking-[0.12em] uppercase font-semibold text-[#3d5638]">{p.theme}</span>
-                <span className="inline-flex items-center rounded-full bg-[#1f2a1d]/8 text-[#6b7a66] px-2 py-0.5 text-[10px] font-bold">準備中</span>
+                {p.invitation ? (
+                  <span className="inline-flex items-center rounded-full bg-[#3d5638] text-white px-2 py-0.5 text-[10px] font-bold">完全招待制</span>
+                ) : (
+                  <span className="inline-flex items-center rounded-full bg-[#1f2a1d]/8 text-[#6b7a66] px-2 py-0.5 text-[10px] font-bold">準備中</span>
+                )}
               </div>
               <h3 className="text-[1.1rem] font-bold leading-[1.4] text-[#1f2a1d]" style={MINCHO}>{p.name}</h3>
               <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.85] flex-1">{p.tagline}</p>

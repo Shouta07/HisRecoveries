@@ -19,6 +19,8 @@ export type ExperiencePackage = {
   highlights?: string[];
   /** 現在受付中か（false/未設定は「準備中・今後ご案内」） */
   available?: boolean;
+  /** 完全招待制（ハイエンド）。available より優先して扱う */
+  invitation?: boolean;
 };
 
 export const packages: ExperiencePackage[] = [
@@ -32,6 +34,24 @@ export const packages: ExperiencePackage[] = [
     price: "完全招待制（選考後にご提示）",
     forWhom: "複数の悩みを、根本から整えたい方へ。",
     flagship: true,
+  },
+  {
+    id: "membership",
+    name: "Recovery 会員（年間伴走）",
+    theme: "ハイエンド / 年間伴走",
+    tagline: "コンプレックス全体から自信まで。専属が、定着まで一気通貫で伴走する。",
+    steps: [
+      "現在地の可視化（任意で血液診断）",
+      "領域横断のロードマップ設計",
+      "中立に専門家を束ねて実行",
+      "Webアプリで記録・定期面談",
+      "定着、そしてつながり続ける",
+    ],
+    duration: "6ヶ月〜",
+    price: "完全招待制（選考後にご提示）",
+    forWhom: "複数の悩みを、根本から・継続的に整えたい方へ。",
+    highlights: ["専属コンシェルジュ", "中立に束ねる", "完全匿名・守秘", "限定枠・優先予約"],
+    invitation: true,
   },
   {
     id: "first-impression",

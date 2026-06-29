@@ -69,6 +69,8 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
             </span>
             {p.available ? (
               <span className="inline-flex items-center rounded-full bg-[#e7ede4] text-[#3d5638] px-2.5 py-0.5 text-[10.5px] font-bold">受付中</span>
+            ) : p.invitation ? (
+              <span className="inline-flex items-center rounded-full bg-[#3d5638] text-white px-2.5 py-0.5 text-[10.5px] font-bold">完全招待制</span>
             ) : (
               <span className="inline-flex items-center rounded-full bg-[#1f2a1d]/8 text-[#6b7a66] px-2.5 py-0.5 text-[10.5px] font-bold">準備中</span>
             )}
@@ -112,6 +114,31 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
               <PackageBuilder />
             </div>
           </>
+        ) : p.invitation ? (
+          /* 完全招待制（ハイエンド） */
+          <div className="rounded-[1.6rem] bg-[#16241a] text-[#EDF1E8] p-8 text-center">
+            {p.highlights && (
+              <div className="flex flex-wrap justify-center gap-2 mb-6">
+                {p.highlights.map((h) => (
+                  <span key={h} className="text-[11.5px] text-[#D7DED2] bg-white/[0.07] border border-white/10 rounded-full px-3 py-1">{h}</span>
+                ))}
+              </div>
+            )}
+            <div className="text-[1.15rem] font-bold text-[#EDF1E8] mb-2" style={HEAD}>
+              完全招待制・選考制です。
+            </div>
+            <p className="text-[13.5px] text-[#C9D2C4] leading-[1.95] max-w-md mx-auto">
+              枠を限定し、専属が定着まで一気通貫で伴走します。まずは完全匿名の無料相談から、現在地を一緒に整理します。
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
+                招待をリクエストする（完全匿名）
+              </BookingCTA>
+              <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-white/30 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-7 py-3.5 transition-colors">
+                受付中のパッケージを見る <span aria-hidden>→</span>
+              </Link>
+            </div>
+          </div>
         ) : (
           /* 準備中 */
           <div className="rounded-[1.6rem] border border-dashed border-[#1f2a1d]/20 bg-white/60 p-8 text-center">
