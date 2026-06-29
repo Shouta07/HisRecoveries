@@ -45,28 +45,31 @@ export default function HomePage() {
 
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-screen px-4 sm:px-6 pt-20 pb-16 on-media">
-          <div className="flex items-center gap-3 mb-5 text-[#4b5b47]">
+          <div className="flex items-center gap-3 mb-6 text-[#4b5b47]">
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
-            <span className="text-xs sm:text-sm tracking-[0.4em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
-              男性のための
+            <span className="text-[11px] sm:text-sm tracking-[0.32em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
+              男性のための ウェルネス伴走サービス
             </span>
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
           </div>
-          <h1
-            className="text-[#336443] text-[2rem] sm:text-[2.9rem] md:text-[3.6rem] lg:text-[4.2rem] max-w-4xl"
-            style={{ ...HERO_HEAD, lineHeight: 1.32 }}
-          >
-            誰にも言えなかった悩みを、
-            <br />
-            「<span className="text-[#85AB8B]">変われるもの</span>」にする。
+
+          {/* ブランドを中心に */}
+          <h1 className="logo-type text-[#1f2a1d] text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.25rem] leading-[1.05] tracking-[0.01em]">
+            His <span className="text-[#3d5638]">Recoveries</span>
           </h1>
+
           <p
-            className="mt-7 sm:mt-9 text-[#4b5b47] text-[14px] sm:text-[16px] md:text-[17px] leading-[2.05] tracking-[0.04em] max-w-2xl px-2 [text-wrap:balance]"
+            className="mt-6 sm:mt-8 text-[#2d4228] text-[1.05rem] sm:text-[1.4rem] md:text-[1.6rem] leading-[1.5]"
+            style={{ ...HERO_HEAD, fontWeight: 800 }}
+          >
+            誰にも言えなかった悩みを、<wbr />「<span className="text-[#3d5638]">変われるもの</span>」に。
+          </p>
+
+          <p
+            className="mt-5 sm:mt-6 text-[#4b5b47] text-[13.5px] sm:text-[15px] md:text-[16px] leading-[2] tracking-[0.04em] max-w-2xl px-2 [text-wrap:balance]"
             style={{ fontFeatureSettings: '"palt" 1', fontWeight: 400, wordBreak: "keep-all", overflowWrap: "anywhere" }}
           >
-            His Recoveries は、コンプレックスから自信まで。
-            <br className="hidden sm:block" />
-            あなたに合わせて整える、完全守秘義務のウェルネス伴走サービスです。
+            コンプレックスから自信まで。あなたに合わせて整える、完全守秘義務のウェルネス伴走サービス。
           </p>
         </div>
       </section>
