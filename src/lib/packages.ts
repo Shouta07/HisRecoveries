@@ -17,6 +17,8 @@ export type ExperiencePackage = {
   flagship?: boolean;
   /** short selling points for the featured card */
   highlights?: string[];
+  /** 現在受付中か（false/未設定は「準備中・今後ご案内」） */
+  available?: boolean;
 };
 
 export const packages: ExperiencePackage[] = [
@@ -41,6 +43,7 @@ export const packages: ExperiencePackage[] = [
     price: "予算に合わせて組み合わせ（目安 ¥38,000〜）",
     forWhom: "結婚式前・駆け込み・第一印象を変えたい方へ。ギフトにも。",
     highlights: ["1日完結", "予約・決済は窓口ひとつ", "予算に合わせて組み合わせ", "ギフト・結婚式前にも"],
+    available: true,
   },
   {
     id: "cleanliness",

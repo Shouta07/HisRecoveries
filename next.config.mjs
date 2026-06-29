@@ -19,9 +19,8 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // /packages, /mechanism, /interviews were folded into the one-page home.
+      // /packages index folds into the home section; /packages/[id] are real detail pages.
       { source: "/packages", destination: "/#packages", permanent: true },
-      { source: "/packages/:slug*", destination: "/#packages", permanent: true },
       { source: "/mechanism", destination: "/#mechanism", permanent: true },
       { source: "/mechanism/:slug*", destination: "/#mechanism", permanent: true },
       { source: "/interviews", destination: "/#mechanism", permanent: true },

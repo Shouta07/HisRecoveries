@@ -10,6 +10,7 @@ import { getAllScreenings } from "@/lib/screenings";
 import { categories, site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
 import { clusters } from "@/lib/clusters";
+import { packages } from "@/lib/packages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -124,10 +125,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const packagePaths: MetadataRoute.Sitemap = packages
+    .filter((p) => !p.flagship)
+    .map((p) => ({
+      url: `${site.url}/packages/${p.id}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    }));
+
   return [
     ...staticPaths,
     ...areaPaths,
     ...clusterPaths,
+    ...packagePaths,
     ...categoryPaths,
     ...articlePaths,
     ...eventPaths,
