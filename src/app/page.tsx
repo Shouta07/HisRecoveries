@@ -82,6 +82,26 @@ export default function HomePage() {
         />
 
 
+        {/* 誰に・何を・どう — 一目でわかる価値（モバイルもコンパクト） */}
+        <section className="relative z-10 text-[#1f2a1d]">
+          <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-10 sm:pt-16">
+            <div className="on-media grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              {[
+                { k: "誰に", t: "言えない悩みを持つ、男性へ。" },
+                { k: "何を", t: "コンプレックスを、自信に。" },
+                { k: "どう", t: "匿名・中立で、専属が選んで伴走。" },
+              ].map((x) => (
+                <div key={x.k} className="rounded-[1.1rem] bg-white/85 border border-[#1f2a1d]/10 px-4 py-3.5 sm:px-5 sm:py-5 flex items-start gap-3">
+                  <span className="shrink-0 mt-0.5 inline-flex items-center justify-center rounded-full bg-[#16241a] text-[#EDF1E8] text-[11px] font-bold w-9 h-9">
+                    {x.k}
+                  </span>
+                  <p className="text-[13.5px] sm:text-[14px] font-semibold text-[#1f2a1d] leading-[1.6]">{x.t}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Recovery Journey — directly under the hero */}
         <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
