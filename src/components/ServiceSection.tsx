@@ -140,8 +140,8 @@ export default function ServiceSection() {
                 </li>
               ))}
             </ul>
-            <div className="relative flex-1 flex items-end justify-center pt-5 overflow-hidden" style={{ perspective: "1200px" }}>
-              <div className="scale-[0.78] sm:scale-[0.85] flex items-end -mb-8">
+            <div className="relative flex-1 flex items-end justify-center pt-4 overflow-hidden" style={{ perspective: "1200px" }}>
+              <div className="scale-[0.55] sm:scale-[0.6] flex items-end -mb-12">
                 <PhoneFrame className="z-10" style={{ transform: "rotate(-5deg) translateY(8px)" }}>
                   <DashboardScreen />
                 </PhoneFrame>

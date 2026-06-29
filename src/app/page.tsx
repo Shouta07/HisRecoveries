@@ -79,11 +79,11 @@ export default function HomePage() {
         />
 
 
-        {/* サービス内容（オフライン／オンライン） */}
-        <ServiceSection />
-
         {/* Why — なぜやるのか */}
         <WhySection />
+
+        {/* サービス内容（オフライン／オンライン） */}
+        <ServiceSection />
 
         {/* 3パターン価格 */}
         <PricingSection />
