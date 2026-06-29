@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexes, complexById } from "@/lib/complexes";
-import { getArea } from "@/lib/areas";
+import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
 import { site } from "@/lib/site";
 
@@ -21,10 +21,15 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
   const c = complexById(params.id);
   const area = getArea(params.id);
   if (!c || !area) return {};
+  const title = `${c.ja}は、なぜ起きるのか — 原因と仕組み`;
+  const url = `${site.url}/areas/${c.id}`;
   return {
-    title: `${c.ja} — なぜ起きるのか（取り扱う領域）`,
+    title,
     description: area.lead,
-    alternates: { canonical: `${site.url}/areas/${c.id}` },
+    keywords: [c.ja, `${c.ja} 原因`, `${c.ja} 仕組み`, c.system, c.en, "メカニズム", "男性"],
+    alternates: { canonical: url },
+    openGraph: { type: "article", url, title, description: area.lead },
+    twitter: { card: "summary_large_image", title, description: area.lead },
   };
 }
 
@@ -34,32 +39,91 @@ export default function AreaPage({ params }: { params: { id: string } }) {
   if (!c || !area) notFound();
 
   const cites = citationsByComplex[c.id] ?? [];
+  const url = `${site.url}/areas/${c.id}`;
+
+  // ---- structured data (SEO + GEO) ----
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${c.ja}は、なぜ起きるのか — 原因と仕組み`,
+    description: area.lead,
+    inLanguage: "ja",
+    mainEntityOfPage: url,
+    about: c.ja,
+    datePublished: "2026-06-01",
+    dateModified: AREA_UPDATED,
+    author: { "@type": "Organization", name: site.name, url: site.url },
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+      logo: { "@type": "ImageObject", url: `${site.url}/icon` },
+    },
+  };
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: area.faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: site.url },
+      { "@type": "ListItem", position: 2, name: "取り扱う領域", item: `${site.url}/#mechanism` },
+      { "@type": "ListItem", position: 3, name: c.ja, item: url },
+    ],
+  };
 
   return (
     <div className="bg-[#f4f6f2] text-[#1f2a1d]">
-      <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
-        <Link href="/#mechanism" className="text-[12px] text-[#3d5638] font-semibold hover:opacity-70 transition-opacity">
-          ← 取り扱う領域
-        </Link>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
-        <header className="mt-6 mb-10">
-          <div className="flex items-center gap-3 mb-4">
-            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span
-              className="inline-flex rounded-full px-3 py-1 text-[11px] font-bold"
-              style={{ backgroundColor: c.accentSoft, color: c.accent }}
-            >
-              {c.system}
-            </span>
-          </div>
+      <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
+        {/* breadcrumb */}
+        <nav aria-label="パンくず" className="text-[12px] text-[#6b7a66] mb-6">
+          <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
+          <span className="mx-1.5">/</span>
+          <Link href="/#mechanism" className="hover:text-[#1f2a1d]">取り扱う領域</Link>
+          <span className="mx-1.5">/</span>
+          <span className="text-[#1f2a1d]">{c.ja}</span>
+        </nav>
+
+        <header className="mb-8">
+          <span
+            className="inline-flex rounded-full px-3 py-1 text-[11px] font-bold mb-4"
+            style={{ backgroundColor: c.accentSoft, color: c.accent }}
+          >
+            {c.system}
+          </span>
           <h1 className="text-[2rem] sm:text-[2.6rem] leading-[1.3]" style={HEAD}>
             {c.ja}は、<span className="text-[#3d5638]">なぜ起きるのか。</span>
           </h1>
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{area.lead}</p>
-          <div className="mt-4 inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">
-            医師監修
+          <div className="mt-4 flex items-center gap-3">
+            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">医師監修</span>
+            <span className="text-[11px] text-[#9aa79a]">最終更新: {AREA_UPDATED}</span>
           </div>
         </header>
+
+        {/* 要点（TL;DR）— extractable summary for search & AI engines */}
+        <div className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-6 mb-10">
+          <div className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3d5638] font-medium mb-3">要点</div>
+          <ul className="space-y-2">
+            {area.summary.map((s, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#1f2a1d] leading-[1.85]">
+                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#85AB8B] shrink-0" />
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* 原文（主） */}
         <div className="space-y-8">
@@ -79,6 +143,21 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             <p className="text-[13.5px] text-[#4b5b47] leading-[1.95]">{area.whenToSee}</p>
           </section>
         </div>
+
+        {/* FAQ */}
+        <section className="mt-12">
+          <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+            よくある質問
+          </h2>
+          <dl className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 px-6 divide-y divide-[#1f2a1d]/10">
+            {area.faqs.map((f) => (
+              <div key={f.q} className="py-5">
+                <dt className="text-[14px] font-bold text-[#1f2a1d] mb-1.5">{f.q}</dt>
+                <dd className="text-[13px] text-[#4b5b47] leading-[1.95]">{f.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
 
         {/* 引用（従） */}
         <section className="mt-12">
