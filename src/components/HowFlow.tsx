@@ -65,13 +65,6 @@ const STEPS = [
   },
 ];
 
-// Where the Web app shows up along the journey — quiet touchpoints.
-const APP_TOUCH: Record<string, string> = {
-  "02": "現在地を整理",
-  "04": "記録する",
-  "05": "つながる",
-};
-
 // Node positions around the ring (5 points, 72° apart, starting at top).
 const POS = [
   { left: "50%", top: "6%" },
@@ -127,11 +120,6 @@ export default function HowFlow() {
               </div>
               <h4 className="text-[14px] font-semibold text-[#1f2a1d]">{s.t}</h4>
               <p className="text-[11px] text-[#4b5b47] leading-[1.6] mt-0.5">{s.d}</p>
-              {APP_TOUCH[s.n] && (
-                <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-[#16241a]/[0.06] text-[#16241a] px-2 py-0.5 text-[10.5px] font-medium">
-                  <span aria-hidden>📱</span> {APP_TOUCH[s.n]}
-                </span>
-              )}
             </div>
           ))}
         </div>
@@ -151,11 +139,6 @@ export default function HowFlow() {
               <div className="pt-1.5">
                 <h4 className="text-[15px] font-semibold text-[#1f2a1d]">{s.t}</h4>
                 <p className="text-[12.5px] text-[#4b5b47] leading-[1.8] mt-1">{s.d}</p>
-                {APP_TOUCH[s.n] && (
-                  <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#16241a]/[0.06] text-[#16241a] px-2.5 py-1 text-[11px] font-medium">
-                    <span aria-hidden>📱</span> {APP_TOUCH[s.n]}
-                  </span>
-                )}
               </div>
             </li>
           ))}

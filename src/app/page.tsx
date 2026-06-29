@@ -2,7 +2,8 @@ import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import HowFlow from "@/components/HowFlow";
-import PackagesSection from "@/components/PackagesSection";
+import ServiceSection from "@/components/ServiceSection";
+import PricingSection from "@/components/PricingSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -78,7 +79,13 @@ export default function HomePage() {
         />
 
 
-        {/* Recovery Journey — directly under the hero */}
+        {/* サービス内容（Webで伴走を内包） */}
+        <ServiceSection />
+
+        {/* 3パターン価格 */}
+        <PricingSection />
+
+        {/* Recovery Journey */}
         <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-20 md:pb-28">
             <div className="on-media mb-8 max-w-2xl">
@@ -99,9 +106,6 @@ export default function HomePage() {
             <HowFlow />
           </div>
         </section>
-
-        {/* 改善パッケージ */}
-        <PackagesSection />
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
