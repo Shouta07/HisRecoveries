@@ -1,98 +1,73 @@
-// 体験パッケージ — experiences bundled into journeys (not à la carte points).
-// Each package: 現在地を知る診断 → 複数の体験 → 定着/ふりかえり、を1本の線に。
+// 改善プログラムは3つの「はじめ方」（価格ティア）。
+// 個別ページ /packages/[id] で内容・価格目安・中立の医療連携・HRを通す便益を提示。
 
 export type ExperiencePackage = {
   id: string;
   name: string;
-  /** short theme label */
+  /** short theme / subtitle */
   theme: string;
   tagline: string;
-  /** the journey, in order */
+  /** 含まれるもの（順序） */
   steps: string[];
   duration: string;
-  /** price label (guide or 選考後) */
+  /** 価格目安 */
   price: string;
   forWhom: string;
-  /** flagship gets the large card */
-  flagship?: boolean;
-  /** short selling points for the featured card */
+  /** バッジ等のハイライト */
   highlights?: string[];
-  /** 現在受付中か（false/未設定は「準備中・今後ご案内」） */
-  available?: boolean;
-  /** 完全招待制（ハイエンド）。available より優先して扱う */
+  /** 完全招待制（ハイエンド） */
   invitation?: boolean;
 };
 
 export const packages: ExperiencePackage[] = [
   {
-    id: "journey",
-    name: "リカバリー・ジャーニー",
-    theme: "旗艦 / 総合",
-    tagline: "総合診断から、悩み別の体験、専属の伴走、そして卒業まで。",
-    steps: ["総合診断（現在地）", "悩み別の体験を組み合わせ", "専属担当の伴走", "定着・卒業"],
-    duration: "6ヶ月",
-    price: "完全招待制（選考後にご提示）",
-    forWhom: "複数の悩みを、根本から整えたい方へ。",
-    flagship: true,
-  },
-  {
-    id: "first-impression",
-    name: "第一印象パッケージ",
-    theme: "顔・自意識 / 1日完結",
-    tagline: "カウンセリング＋メイク＋服選びを、1日で。印象を、再現できる型に。",
-    steps: ["印象カウンセリング", "メイク", "服選び（手持ち＋提案）", "撮影（ビフォーアフター）"],
+    id: "gift",
+    name: "ギフト・お試し",
+    theme: "第一印象の改善 / 1日完結",
+    tagline: "第一印象を、1日で整える。贈り物にも。",
+    steps: [
+      "印象カウンセリング",
+      "メイク（施術＋再現レッスン）",
+      "服選び（スタイリスト同行）",
+      "撮影（ビフォーアフター）",
+    ],
     duration: "1日完結",
-    price: "予算に合わせて組み合わせ（目安 ¥38,000〜）",
+    price: "目安 ¥30,000〜",
     forWhom: "結婚式前・駆け込み・第一印象を変えたい方へ。ギフトにも。",
-    highlights: ["1日完結", "予約・決済は窓口ひとつ", "予算に合わせて組み合わせ", "ギフト・結婚式前にも"],
-    available: true,
+    highlights: ["医療行為なし", "1日完結", "窓口ひとつ", "ギフト可"],
   },
   {
-    id: "cleanliness",
-    name: "清潔感パッケージ",
-    theme: "汗・におい・肌",
-    tagline: "気になっていた距離を、もう計算しない。",
-    steps: ["汗・においの見立て", "サウナ×コンディショニング", "スキンケアの型", "定着チェック"],
-    duration: "1ヶ月",
-    price: "¥34,000〜",
-    forWhom: "汗ジミ・におい・テカリが気になる方へ。",
+    id: "standard",
+    name: "スタンダード",
+    theme: "血液検査・コンプレックス施術",
+    tagline: "現在地を知り、悩みに合わせて根本から整える。",
+    steps: [
+      "血液検査（現在地の可視化）",
+      "悩み別のコンプレックス施術（提携クリニック）",
+      "スタイリング・ケアの型",
+      "記録と伴走",
+    ],
+    duration: "1〜3ヶ月",
+    price: "目安 ¥60,000〜",
+    forWhom: "原因から、複数の悩みを整えたい方へ。",
+    highlights: ["提携クリニックを中立に紹介", "紹介手数料ゼロ", "窓口ひとつ", "専属が伴走"],
   },
   {
-    id: "hair",
-    name: "ヘアパッケージ",
-    theme: "薄毛・AGA",
-    tagline: "気づいた時間を、選択肢に変える。",
-    steps: ["頭皮の診断（医療連携・中立）", "スタイリング＋撮影", "定点観察"],
-    duration: "2〜3ヶ月",
-    price: "相談でご提示",
-    forWhom: "生え際・つむじが気になり始めた方へ。",
-  },
-  {
-    id: "future",
-    name: "未来の自分パッケージ",
-    theme: "予防 / 将来",
-    tagline: "今の悩みの先、将来の自分に投資する。",
-    steps: ["血液診断（現在地）", "睡眠・代謝の体験", "予防習慣（運動・自然）", "再診断でふりかえり"],
-    duration: "3ヶ月",
-    price: "相談でご提示",
-    forWhom: "今だけでなく、これからを整えたい方へ。",
-  },
-  {
-    id: "animals",
-    name: "動物と過ごすパッケージ",
-    theme: "つながり / 予防",
-    tagline: "犬や猫と過ごす時間で、静かに整える。",
-    steps: ["現在地の確認", "犬と歩く・猫と過ごす体験", "暮らしの中で続ける", "ふりかえり"],
-    duration: "継続 / 月1〜",
-    price: "相談でご提示",
-    forWhom: "孤立感や将来の不安を、やわらげたい方へ。",
+    id: "highend",
+    name: "ハイエンド",
+    theme: "フルパッケージ / 年間伴走",
+    tagline: "全領域を、一気通貫で。専属が、定着まで伴走する。",
+    steps: [
+      "現在地の総合可視化（血液検査ほか）",
+      "領域横断のロードマップ設計",
+      "提携クリニック・専門家を中立に束ねて実行",
+      "Webアプリ＋専属で伴走",
+      "定着、そしてつながり続ける",
+    ],
+    duration: "6ヶ月〜",
+    price: "応相談・完全招待制",
+    forWhom: "複数の悩みを、根本から・継続的に整えたい方へ。",
+    highlights: ["完全招待制", "専属コンシェルジュ", "中立に束ねる", "完全匿名・守秘"],
+    invitation: true,
   },
 ];
-
-export function flagshipPackage() {
-  return packages.find((p) => p.flagship) ?? packages[0];
-}
-
-export function themePackages() {
-  return packages.filter((p) => !p.flagship);
-}

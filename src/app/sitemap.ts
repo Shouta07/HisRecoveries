@@ -126,14 +126,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const packagePaths: MetadataRoute.Sitemap = packages
-    .filter((p) => !p.flagship && p.id !== "membership")
-    .map((p) => ({
-      url: `${site.url}/packages/${p.id}`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.75,
-    }));
+  const packagePaths: MetadataRoute.Sitemap = packages.map((p) => ({
+    url: `${site.url}/packages/${p.id}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
 
   return [
     ...staticPaths,

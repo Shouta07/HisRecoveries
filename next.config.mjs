@@ -23,6 +23,12 @@ const nextConfig = {
       { source: "/packages", destination: "/#packages", permanent: true },
       // 会員は現在ホームに掲載なし → 改善プログラムへ
       { source: "/packages/membership", destination: "/#packages", permanent: true },
+      // 旧パッケージID（3ティアに再編）→ 改善プログラムへ
+      { source: "/packages/first-impression", destination: "/#packages", permanent: true },
+      { source: "/packages/cleanliness", destination: "/#packages", permanent: true },
+      { source: "/packages/hair", destination: "/#packages", permanent: true },
+      { source: "/packages/future", destination: "/#packages", permanent: true },
+      { source: "/packages/animals", destination: "/#packages", permanent: true },
       { source: "/mechanism", destination: "/areas", permanent: true },
       { source: "/mechanism/:slug*", destination: "/areas", permanent: true },
       { source: "/interviews", destination: "/areas", permanent: true },
