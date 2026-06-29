@@ -126,7 +126,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const packagePaths: MetadataRoute.Sitemap = packages
-    .filter((p) => !p.flagship)
+    .filter((p) => !p.flagship && p.id !== "membership")
     .map((p) => ({
       url: `${site.url}/packages/${p.id}`,
       lastModified: now,

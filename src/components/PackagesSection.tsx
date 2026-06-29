@@ -11,10 +11,8 @@ const MINCHO: React.CSSProperties = {
 export default function PackagesSection() {
   const themes = packages.filter((p) => !p.flagship);
   const featured = themes.find((p) => p.id === "first-impression");
-  // 招待制（ハイエンド）を先頭に、その後に準備中
-  const others = themes
-    .filter((p) => p.id !== "first-impression")
-    .sort((a, b) => (b.invitation ? 1 : 0) - (a.invitation ? 1 : 0));
+  // 第一印象（受付中）と会員（別セクション）を除いた準備中のパッケージ
+  const others = themes.filter((p) => p.id !== "first-impression" && p.id !== "membership");
 
   return (
     <section id="packages" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">

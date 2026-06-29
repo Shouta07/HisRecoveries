@@ -6,7 +6,6 @@ import { complexById } from "@/lib/complexes";
 import { site } from "@/lib/site";
 import PackageBuilder from "@/components/PackageBuilder";
 import BookingCTA from "@/components/BookingCTA";
-import MembershipLanding from "@/components/MembershipLanding";
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -15,7 +14,8 @@ const HEAD: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-const detailPackages = packages.filter((p) => !p.flagship);
+// 会員（membership）はホームの #membership に統合したため個別ページは持たない
+const detailPackages = packages.filter((p) => !p.flagship && p.id !== "membership");
 
 // パッケージ → 関連する「取り扱う領域」(/areas) の id
 const RELATED_AREAS: Record<string, string[]> = {
@@ -46,9 +46,6 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
 export default function PackageDetailPage({ params }: { params: { id: string } }) {
   const p = detailPackages.find((x) => x.id === params.id);
   if (!p) notFound();
-
-  // ハイエンド会員は専用LP
-  if (p.id === "membership") return <MembershipLanding p={p} />;
 
   const relatedAreas = (RELATED_AREAS[p.id] ?? [])
     .map((id) => complexById(id))

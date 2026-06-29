@@ -3,6 +3,7 @@ import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import HowFlow from "@/components/HowFlow";
 import PackagesSection from "@/components/PackagesSection";
+import MembershipSection from "@/components/MembershipSection";
 import MechanismSection from "@/components/MechanismSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
@@ -110,6 +111,9 @@ export default function HomePage() {
 
         {/* 改善パッケージ */}
         <PackagesSection />
+
+        {/* ハイエンド会員（ホームに統合） */}
+        <MembershipSection />
 
         {/* ⑧ FAQ */}
         <section id="faq" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
