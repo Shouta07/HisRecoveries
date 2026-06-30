@@ -1,87 +1,44 @@
-// サービス内容 ＝ 2軸。具体的な「体験の場面」でイメージを湧かせる。
-// オフライン：リアルな回復体験（場面で見せる）／オンライン：日々の伴走（瞬間＋アプリ）。
-import { PhoneFrame, DashboardScreen, MemberScreen } from "@/components/HowShowcase";
+// サービス内容のメイン ＝ オフラインのリアルな回復体験（第一印象を、まるごと整える一日）。
+// 実写の体験写真を主役に。オンラインの日々の伴走は別ページ /online（準備中）へ。
+import Link from "next/link";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
 };
 
-type Tile = { t: string; s: string; bg: string; icon: React.ReactNode };
+// 各タイルは実写写真（/public/media/offline/*.jpg）を背景に敷く。
+// 写真が未配置でも、第2レイヤーのグラデが出るので“壊れた画像”にはならない。
+type Tile = { no: string; t: string; s: string; img: string; fallback: string };
 
 const OFFLINE: Tile[] = [
   {
+    no: "01",
     t: "似合う髪に、出会う",
     s: "スタイリング",
-    bg: "linear-gradient(150deg,#efeae2,#d6cdbd)",
-    icon: (
-      <>
-        <circle cx="6" cy="6" r="3" />
-        <circle cx="6" cy="18" r="3" />
-        <path d="M20 4L8.5 15.5M14.5 9.5L20 20" />
-      </>
-    ),
+    img: "/media/offline/styling.jpg",
+    fallback: "linear-gradient(150deg,#efeae2,#cdc2af)",
   },
   {
+    no: "02",
     t: "プロが選ぶ、一着",
     s: "服選び",
-    bg: "linear-gradient(150deg,#eef3ea,#cdd8c8)",
-    icon: (
-      <>
-        <path d="M12 4a2 2 0 1 0 1.8 1.1" />
-        <path d="M13 6l8 6H3l8-6" />
-        <path d="M3 12v5h18v-5" />
-      </>
-    ),
+    img: "/media/offline/clothes.jpg",
+    fallback: "linear-gradient(150deg,#eef3ea,#c2cfba)",
   },
   {
+    no: "03",
     t: "根本へ、専門の手で",
     s: "提携クリニック施術",
-    bg: "linear-gradient(150deg,#eaf1f1,#c6d6d3)",
-    icon: (
-      <>
-        <path d="M12 5v14M5 12h14" />
-      </>
-    ),
+    img: "/media/offline/clinic.jpg",
+    fallback: "linear-gradient(150deg,#eaf1f1,#bcd0cc)",
   },
   {
+    no: "04",
     t: "変わった自分を、写真で",
     s: "撮影",
-    bg: "linear-gradient(150deg,#eaefe9,#c4cfc6)",
-    icon: (
-      <>
-        <rect x="3" y="7" width="18" height="13" rx="2.5" />
-        <circle cx="12" cy="13.5" r="3.5" />
-        <path d="M8.5 7l1.3-2h4.4l1.3 2" />
-      </>
-    ),
-  },
-];
-
-const ONLINE: { t: string; icon: React.ReactNode }[] = [
-  {
-    t: "今日の調子を、ひとことで。",
-    icon: (
-      <path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z" />
-    ),
-  },
-  {
-    t: "スコアと記録で、変化が見える。",
-    icon: (
-      <>
-        <path d="M4 19V5M4 19h16" />
-        <path d="M8 16l3-4 3 2 4-6" />
-      </>
-    ),
-  },
-  {
-    t: "専属から、そっとひとこと。",
-    icon: (
-      <>
-        <path d="M21 11.5a8.5 8.5 0 0 1-11.7 7.9L4 20l1-4.5A8.5 8.5 0 1 1 21 11.5z" />
-        <path d="M9 11h6M9 8h4" />
-      </>
-    ),
+    img: "/media/offline/photo.jpg",
+    fallback: "linear-gradient(150deg,#eaefe9,#bcc8be)",
   },
 ];
 
@@ -95,62 +52,50 @@ export default function ServiceSection() {
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service</span>
           </div>
           <h2 className="text-[1.5rem] sm:text-[1.9rem] md:text-[2.4rem] leading-[1.3]" style={{ ...MINCHO, fontWeight: 800 }}>
-            回復体験を、<span className="text-[#3d5638]">2つの場所で。</span>
+            リアルで、<span className="text-[#3d5638]">整える。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
-            リアルで整える時間と、毎日そばで支える時間。その両方で、変化を自分ごとに。
+            プロと過ごす一日で、髪・服・肌、そして写真まで。
+            ひとつの窓口で、第一印象をまるごと整えます。
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 sm:gap-5 items-stretch">
-          {/* オフライン：体験の場面 */}
-          <div className="rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 p-6 sm:p-7 shadow-sm flex flex-col">
-            <div className="flex items-baseline justify-between mb-4">
-              <div>
-                <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#3d5638] mb-1">Offline</div>
-                <h3 className="text-[1.25rem] sm:text-[1.45rem] font-bold text-[#1f2a1d]" style={MINCHO}>リアルで、整える。</h3>
+        {/* オフライン体験：実写を主役にした4ステップ */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {OFFLINE.map((x) => (
+            <div
+              key={x.no}
+              className="group relative rounded-[1.4rem] overflow-hidden aspect-[3/4] shadow-sm"
+              style={{
+                backgroundImage: `url('${x.img}'), ${x.fallback}`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              {/* 下部スクリム：写真の上でも文字が読めるように */}
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(180deg, rgba(15,21,13,0) 38%, rgba(15,21,13,0.72) 100%)" }}
+              />
+              <span className="absolute top-3 left-3.5 font-mono text-[11px] tracking-[0.18em] text-white/85">{x.no}</span>
+              <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-4">
+                <div className="text-[13.5px] sm:text-[15px] font-bold text-white leading-[1.4]" style={MINCHO}>{x.t}</div>
+                <div className="text-[10.5px] sm:text-[11.5px] text-white/75 mt-1 tracking-[0.04em]">{x.s}</div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {OFFLINE.map((x) => (
-                <div key={x.t} className="rounded-[1.1rem] p-3.5 overflow-hidden" style={{ background: x.bg }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16241a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-2 opacity-80" aria-hidden>
-                    {x.icon}
-                  </svg>
-                  <div className="text-[12.5px] font-bold text-[#1f2a1d] leading-[1.4]">{x.t}</div>
-                  <div className="text-[10.5px] text-[#4b5b47] mt-0.5">{x.s}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
+        </div>
 
-          {/* オンライン：日々の伴走 */}
-          <div className="rounded-[1.6rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 overflow-hidden flex flex-col">
-            <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B] mb-1">Online</div>
-            <h3 className="text-[1.25rem] sm:text-[1.45rem] font-bold text-[#EDF1E8] mb-4" style={MINCHO}>毎日、そばで支える。</h3>
-            <ul className="space-y-2.5">
-              {ONLINE.map((x) => (
-                <li key={x.t} className="flex items-center gap-3">
-                  <span className="shrink-0 grid place-items-center w-8 h-8 rounded-full bg-white/[0.07] border border-white/10">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#85AB8B" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                      {x.icon}
-                    </svg>
-                  </span>
-                  <span className="text-[13px] text-[#D7DED2]">{x.t}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="relative flex-1 flex items-end justify-center pt-4 overflow-hidden" style={{ perspective: "1200px" }}>
-              <div className="scale-[0.55] sm:scale-[0.6] flex items-end -mb-12">
-                <PhoneFrame className="z-10" style={{ transform: "rotate(-5deg) translateY(8px)" }}>
-                  <DashboardScreen />
-                </PhoneFrame>
-                <PhoneFrame className="z-20 -ml-10" style={{ transform: "rotate(4deg) translateY(-10px) scale(1.02)" }}>
-                  <MemberScreen />
-                </PhoneFrame>
-              </div>
-            </div>
-          </div>
+        {/* オンラインは準備中 → 別ページへ */}
+        <div className="mt-6 sm:mt-7">
+          <Link
+            href="/online"
+            className="on-media inline-flex items-center gap-2 text-[12.5px] sm:text-[13.5px] text-[#3d5638] font-semibold hover:opacity-70 transition-opacity"
+          >
+            毎日そばで支える「オンライン伴走」は準備中です
+            <span aria-hidden>→</span>
+          </Link>
         </div>
       </div>
     </section>
