@@ -74,7 +74,7 @@ const nextConfig = {
       { source: "/animals", destination: "/", permanent: true },
       { source: "/manifesto", destination: "/", permanent: true },
       // legacy company/legal pages removed — fold into the home / privacy.
-      { source: "/about", destination: "/#about", permanent: true },
+      { source: "/about", destination: "/", permanent: true },
       { source: "/legal", destination: "/privacy", permanent: true },
       // /en mirror removed — Japanese only for now.
       { source: "/en", destination: "/", permanent: true },
