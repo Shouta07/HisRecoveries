@@ -43,6 +43,16 @@ export default function HomePage() {
           className="absolute inset-0 z-[1] pointer-events-none sm:hidden"
           style={{ background: "linear-gradient(180deg, transparent 42%, rgba(245,247,242,0.86) 100%)" }}
         />
+        {/* Soft center veil — a faint light glow behind the hero copy so the
+            dark-green type lifts off the busy bright image without hiding it. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 78% 58% at 50% 42%, rgba(247,249,244,0.62) 0%, rgba(247,249,244,0.30) 48%, rgba(247,249,244,0) 78%)",
+          }}
+        />
 
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-screen px-4 sm:px-6 pt-20 pb-16 on-media">
