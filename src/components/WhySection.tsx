@@ -13,7 +13,7 @@ export default function WhySection() {
           <div aria-hidden className="absolute -top-20 -right-12 w-80 h-80 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.16)" }} />
           <div className="relative">
             <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#85AB8B] mb-4">Why — なぜ、やるのか</div>
-            <h2 className="text-[1.4rem] sm:text-[2rem] leading-[1.5]" style={{ ...MINCHO, fontWeight: 800, lineBreak: "strict" }}>
+            <h2 className="text-[#EDF1E8] text-[1.4rem] sm:text-[2rem] leading-[1.5]" style={{ ...MINCHO, fontWeight: 800, lineBreak: "strict" }}>
               「気にするな」で、<br />
               <span className="text-[#85AB8B]">終わらせたくない。</span>
             </h2>
