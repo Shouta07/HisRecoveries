@@ -13,11 +13,12 @@ export default function WhySection() {
           <div aria-hidden className="absolute -top-20 -right-12 w-80 h-80 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.16)" }} />
           <div className="relative">
             <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#85AB8B] mb-4">Why — なぜ、やるのか</div>
-            <h2 className="text-[1.6rem] sm:text-[2.1rem] leading-[1.45]" style={{ ...MINCHO, fontWeight: 800 }}>
-              「気にするな」で、<span className="text-[#85AB8B]">終わらせたくない。</span>
+            <h2 className="text-[1.4rem] sm:text-[2rem] leading-[1.5]" style={{ ...MINCHO, fontWeight: 800, lineBreak: "strict" }}>
+              「気にするな」で、<br />
+              <span className="text-[#85AB8B]">終わらせたくない。</span>
             </h2>
 
-            <div className="mt-7 space-y-6 text-[14.5px] sm:text-[16px] text-[#C9D2C4] leading-[2.15] max-w-[34rem]">
+            <div className="mt-7 space-y-6 text-[14px] sm:text-[15.5px] text-[#C9D2C4] leading-[2.1] max-w-[34rem]" style={{ lineBreak: "strict" }}>
               <p>
                 男性のコンプレックスは、なかなか口にできない。
                 相談すれば「気にしすぎ」と流され、調べれば売り込みばかり。
@@ -31,7 +32,7 @@ export default function WhySection() {
                 そして、<span className="text-[#EDF1E8] font-medium">一人では、続かないこと</span>。
               </p>
               <p>
-                だから、<span className="text-[#85AB8B] font-semibold">売りません。手数料も取りません</span>。
+                だから、<span className="text-[#85AB8B] font-semibold">何も、売りません</span>。
                 匿名のまま、理解から、必要なら提携クリニックへ、定着まで。
                 <br className="hidden sm:block" />
                 ただ、<span className="text-[#EDF1E8] font-medium">あなたの側に立って伴走します</span>。
