@@ -17,27 +17,33 @@ export default function WhySection() {
               「気にするな」で、<span className="text-[#85AB8B]">終わらせたくない。</span>
             </h2>
 
-            <div className="mt-6 space-y-4 text-[14px] text-[#C9D2C4] leading-[2] max-w-xl">
+            <div className="mt-7 space-y-6 text-[14.5px] sm:text-[16px] text-[#C9D2C4] leading-[2.15] max-w-[34rem]">
               <p>
-                男性のコンプレックスは、なかなか口にできません。相談すれば「気にしすぎ」と流され、
-                調べれば売り込みばかり。本当に味方になってくれる人は、どこにもいなかった。
+                男性のコンプレックスは、なかなか口にできない。
+                相談すれば「気にしすぎ」と流され、調べれば売り込みばかり。
+                <br className="hidden sm:block" />
+                <span className="text-[#EDF1E8] font-medium">本当の味方は、どこにもいなかった。</span>
               </p>
               <p>
-                私たち自身が、当事者として同じ道を通ってきました。だから知っています。
-                コンプレックスは、性格でも甘えでもなく、仕組みで説明でき、向き合えること。
-                そして、一人ではなかなか続かないこと。
+                私たちも、当事者として同じ道を通ってきました。だから知っています。
+                <br className="hidden sm:block" />
+                コンプレックスは、性格でも甘えでもなく、<span className="text-[#EDF1E8] font-medium">仕組みで向き合えること</span>。
+                そして、<span className="text-[#EDF1E8] font-medium">一人では、続かないこと</span>。
               </p>
               <p>
-                だから、売りません。紹介手数料も取りません。匿名のまま、原因の理解から、
-                必要なら提携クリニックへ、そして定着まで——ただ、あなたの側に立って伴走します。
+                だから、<span className="text-[#85AB8B] font-semibold">売りません。手数料も取りません</span>。
+                匿名のまま、理解から、必要なら提携クリニックへ、定着まで。
+                <br className="hidden sm:block" />
+                ただ、<span className="text-[#EDF1E8] font-medium">あなたの側に立って伴走します</span>。
               </p>
             </div>
 
-            <p className="mt-7 text-[15px] sm:text-[16px] text-[#EDF1E8] font-semibold leading-[1.7]" style={MINCHO}>
-              誰にも言えなかった悩みを、「変われるもの」に。
-              <br className="hidden sm:block" />
-              それが、His Recoveries をやる理由です。
-            </p>
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <p className="text-[1.05rem] sm:text-[1.25rem] text-[#EDF1E8] leading-[1.7]" style={{ ...MINCHO, fontWeight: 800 }}>
+                誰にも言えなかった悩みを、「<span className="text-[#85AB8B]">変われるもの</span>」に。
+              </p>
+              <p className="mt-2 text-[12.5px] text-[#9FB0A0]">— それが、His Recoveries をやる理由です。</p>
+            </div>
           </div>
         </div>
       </div>
