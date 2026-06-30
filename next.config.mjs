@@ -71,6 +71,7 @@ const nextConfig = {
       { source: "/reflect", destination: "/", permanent: true },
       { source: "/submit-story", destination: "/", permanent: true },
       { source: "/subscribe", destination: "/", permanent: true },
+      { source: "/animals", destination: "/", permanent: true },
       { source: "/manifesto", destination: "/", permanent: true },
       // legacy company/legal pages removed — fold into the home / privacy.
       { source: "/about", destination: "/#about", permanent: true },
