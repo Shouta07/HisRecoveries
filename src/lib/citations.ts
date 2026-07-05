@@ -30,13 +30,6 @@ export const citationsByComplex: Record<string, Citation[]> = {
       note: "脱毛症（男性型脱毛症を含む）の原因と仕組み",
     },
   ],
-  sweat: [
-    {
-      source: MSD,
-      url: "https://www.msdmanuals.com/ja-jp/home/17-%E7%9A%AE%E8%86%9A%E3%81%AE%E7%97%85%E6%B0%97/%E6%B1%97%E3%81%AE%E7%97%85%E6%B0%97/%E4%BD%93%E8%87%AD",
-      note: "体臭（汗のにおい）が生まれる仕組み",
-    },
-  ],
   skin: [
     {
       source: MSD,
@@ -51,13 +44,6 @@ export const citationsByComplex: Record<string, Citation[]> = {
       source: MSD,
       url: "https://www.msdmanuals.com/ja-jp/home/17-%E7%9A%AE%E8%86%9A%E3%81%AE%E7%97%85%E6%B0%97/%E6%AF%9B%E9%AB%AA%E3%81%AE%E7%97%85%E6%B0%97/%E5%A4%9A%E6%AF%9B",
       note: "多毛（体毛が濃くなる）の原因",
-    },
-  ],
-  self: [
-    {
-      source: MSD,
-      url: "https://www.msdmanuals.com/ja-jp/home/10-%E5%BF%83%E3%81%AE%E5%81%A5%E5%BA%B7%E5%95%8F%E9%A1%8C/%E5%BC%B7%E8%BF%AB%E7%97%87%E3%81%8A%E3%82%88%E3%81%B3%E9%96%A2%E9%80%A3%E7%97%87%E7%BE%A4/%E8%BA%AB%E4%BD%93%E9%86%9C%E5%BD%A2%E7%97%87",
-      note: "身体醜形症（外見へのとらわれ）の解説",
     },
   ],
 };

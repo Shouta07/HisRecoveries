@@ -19,16 +19,22 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // /packages index folds into the home section; /packages/[id] are real detail pages.
+      // /packages index folds into the home section; /packages/first-impression is the real detail page.
       { source: "/packages", destination: "/#packages", permanent: true },
-      // 会員は現在ホームに掲載なし → 改善プログラムへ
-      { source: "/packages/membership", destination: "/#packages", permanent: true },
-      // 旧パッケージID（3ティアに再編）→ 改善プログラムへ
-      { source: "/packages/first-impression", destination: "/#packages", permanent: true },
-      { source: "/packages/cleanliness", destination: "/#packages", permanent: true },
-      { source: "/packages/hair", destination: "/#packages", permanent: true },
-      { source: "/packages/future", destination: "/#packages", permanent: true },
-      { source: "/packages/animals", destination: "/#packages", permanent: true },
+      // 第一印象改善パッケージ1本に特化 → 旧ティア/旧IDは実ページへ集約
+      { source: "/packages/gift", destination: "/packages/first-impression", permanent: true },
+      { source: "/packages/standard", destination: "/packages/first-impression", permanent: true },
+      { source: "/packages/highend", destination: "/packages/first-impression", permanent: true },
+      { source: "/packages/membership", destination: "/packages/first-impression", permanent: true },
+      { source: "/packages/cleanliness", destination: "/packages/first-impression", permanent: true },
+      { source: "/packages/hair", destination: "/packages/first-impression", permanent: true },
+      { source: "/packages/future", destination: "/packages/first-impression", permanent: true },
+      { source: "/packages/animals", destination: "/packages/first-impression", permanent: true },
+      // /areas は第一印象4領域に特化 → 退避した領域はライブラリ index へ
+      { source: "/areas/sweat", destination: "/areas", permanent: true },
+      { source: "/areas/sweat/:slug*", destination: "/areas", permanent: true },
+      { source: "/areas/self", destination: "/areas", permanent: true },
+      { source: "/areas/self/:slug*", destination: "/areas", permanent: true },
       { source: "/mechanism", destination: "/areas", permanent: true },
       { source: "/mechanism/:slug*", destination: "/areas", permanent: true },
       { source: "/interviews", destination: "/areas", permanent: true },

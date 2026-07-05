@@ -13,9 +13,9 @@ const HEAD: React.CSSProperties = {
 };
 
 export const metadata: Metadata = {
-  title: "仕組みを知る — 取り扱う領域（解説ライブラリ）",
+  title: "第一印象の仕組みを知る — 髪・肌・顔・体毛（解説ライブラリ）",
   description:
-    "薄毛・汗・ニキビ・顔の印象・体毛・自意識。男性のコンプレックスが「なぜ起きるのか」を、医師監修のもと中立に解説。出典を明記したキュレーション・ライブラリ。",
+    "薄毛・ニキビ/肌・顔の印象・髭/体毛。第一印象にまつわる男性のコンプレックスが「なぜ起きるのか」を、医師監修のもと中立に解説。出典を明記したキュレーション・ライブラリ。",
   alternates: { canonical: `${site.url}/areas` },
 };
 
@@ -31,10 +31,10 @@ export default function AreasIndexPage() {
             </span>
           </div>
           <h1 className="text-[2.2rem] sm:text-[3rem] leading-[1.25]" style={HEAD}>
-            仕組みを、<span className="text-[#3d5638]">知る。</span>
+            第一印象の仕組みを、<span className="text-[#3d5638]">知る。</span>
           </h1>
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[1.95] max-w-2xl">
-            男性のコンプレックスが「なぜ起きるのか」を、医師監修のもと中立に。
+            髪・肌・顔・体毛——第一印象にまつわる悩みが「なぜ起きるのか」を、医師監修のもと中立に。
             出典を明記したキュレーション・ライブラリです。気になる悩みから、どうぞ。
           </p>
         </header>
