@@ -12,10 +12,10 @@ const MINCHO: React.CSSProperties = {
 type Step = { no: string; t: string; s: string; img: string; fallback: string };
 
 const STEPS: Step[] = [
-  { no: "01", t: "似合う髪に、出会う", s: "スタイリング", img: "/media/offline/styling.jpg", fallback: "linear-gradient(150deg,#efeae2,#cdc2af)" },
-  { no: "02", t: "プロが選ぶ、一着", s: "服選び", img: "/media/offline/clothes.jpg", fallback: "linear-gradient(150deg,#eef3ea,#c2cfba)" },
-  { no: "03", t: "根本へ、専門の手で", s: "提携クリニック施術", img: "/media/offline/clinic.jpg", fallback: "linear-gradient(150deg,#eaf1f1,#bcd0cc)" },
-  { no: "04", t: "変わった自分を、写真で", s: "撮影", img: "/media/offline/photo.jpg", fallback: "linear-gradient(150deg,#eaefe9,#bcc8be)" },
+  { no: "01", t: "似合うを、言葉にする", s: "カウンセリング", img: "/media/offline/counseling.jpg", fallback: "linear-gradient(150deg,#efeae2,#cdc2af)" },
+  { no: "02", t: "はじめてでも、できる", s: "完全初心者向けメイク", img: "/media/offline/makeup.jpg", fallback: "linear-gradient(150deg,#f1eae9,#d3bfc0)" },
+  { no: "03", t: "プロが選ぶ、一着", s: "服選び", img: "/media/offline/clothes.jpg", fallback: "linear-gradient(150deg,#eef3ea,#c2cfba)" },
+  { no: "04", t: "変わった自分を、写真で", s: "写真撮影", img: "/media/offline/photo.jpg", fallback: "linear-gradient(150deg,#eaefe9,#bcc8be)" },
 ];
 
 export default function ServiceSection() {
@@ -32,8 +32,8 @@ export default function ServiceSection() {
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
             「似合う」は、一人ひとり違う。だから、あなた専属のプロが、
-            あなたに合わせてパーソナルに。髪・服・肌、そして写真まで——
-            一日で、迷わず一気に整えます。
+            あなたに合わせてパーソナルに。メイクも、服も、写真も——
+            はじめてでも、一日で迷わず整えます。
           </p>
         </div>
 

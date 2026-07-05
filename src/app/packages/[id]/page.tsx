@@ -74,9 +74,9 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
         {/* 医療連携の注記（中立） */}
         <div className="rounded-[1.2rem] bg-[#e5f0ef] border border-[#0f766e]/15 p-5 mb-10">
           <p className="text-[13px] text-[#0f766e] leading-[1.9]">
-            <span className="font-bold">医療行為は、His Recoveries は行いません。</span>
-            施術・診断・治療が必要な場合は、その悩みに強い<strong>提携クリニックを中立にご紹介</strong>し、
-            予約・準備・その後まで伴走します。<strong>売らない・中立</strong>の立場で。
+            <span className="font-bold">本パッケージは医療行為を含みません。</span>
+            カウンセリング・メイク・服選び・撮影で、第一印象を整えます。
+            将来的に施術・診断・治療が必要になった場合も、<strong>売らない・中立</strong>の立場で情報提供します。
           </p>
         </div>
 
