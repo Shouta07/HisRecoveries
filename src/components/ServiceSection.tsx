@@ -31,8 +31,9 @@ export default function ServiceSection() {
             第一印象を、<span className="text-[#3d5638]">まるごと整える。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
-            プロと過ごす一日で、髪・服・肌、そして写真まで。
-            ひとつの窓口で、迷わず一気に。
+            「似合う」は、一人ひとり違う。だから、あなた専属のプロが、
+            あなたに合わせてパーソナルに。髪・服・肌、そして写真まで——
+            一日で、迷わず一気に整えます。
           </p>
         </div>
 
@@ -53,6 +54,10 @@ export default function ServiceSection() {
             </div>
           ))}
         </div>
+
+        <p className="on-media mt-4 text-[12px] text-[#6b7a66] leading-[1.8]">
+          すべて完全マンツーマン・完全匿名で。あなたのペースと目的に合わせて、専属が伴走します。
+        </p>
       </div>
     </section>
   );
