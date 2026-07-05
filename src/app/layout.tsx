@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   authors: [{ name: site.author }],
   creator: site.author,
   publisher: site.name,
-  category: "essays",
+  category: "lifestyle",
   keywords: [...site.topics],
   openGraph: {
     type: "website",

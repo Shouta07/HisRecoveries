@@ -48,9 +48,6 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
         <header className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">{p.theme}</span>
-            {p.invitation && (
-              <span className="inline-flex items-center rounded-full bg-[#3d5638] text-white px-2.5 py-0.5 text-[10.5px] font-bold">完全招待制</span>
-            )}
           </div>
           <h1 className="text-[2rem] sm:text-[2.6rem] leading-[1.3]" style={HEAD}>{p.name}</h1>
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{p.tagline}</p>
@@ -100,15 +97,9 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
 
         {/* CTA */}
         <div className="flex flex-wrap gap-3">
-          {p.invitation ? (
-            <BookingCTA className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-              招待をリクエストする（完全匿名）
-            </BookingCTA>
-          ) : (
-            <BookingCTA className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-              このプランで相談する（完全匿名）
-            </BookingCTA>
-          )}
+          <BookingCTA className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
+            このパッケージを予約する（完全匿名）
+          </BookingCTA>
           <Link href="/areas" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
             仕組みを知る <span aria-hidden>→</span>
           </Link>

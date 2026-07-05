@@ -105,7 +105,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </h1>
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{a.lead}</p>
           <div className="mt-4 flex items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">医師監修</span>
+            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">出典明記</span>
             <span className="text-[11px] text-[#9aa79a]">最終更新: {CLUSTER_UPDATED}</span>
           </div>
         </header>
@@ -147,7 +147,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         </section>
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
-          ※ 本記事は医師監修のもと、一般的に知られる情報を整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
+          ※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">

@@ -4,9 +4,9 @@ import ApplyForm from "@/components/ApplyForm";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "予約登録する — 完全招待制",
+  title: "予約登録する — 完全匿名",
   description:
-    "His Recoveries の改善プログラムへの予約登録。完全招待制・選考制。ご予約登録には秘密保持への同意が必要です。",
+    "His Recoveries 第一印象改善パッケージの予約登録。完全匿名（実名・顔写真は不要）。ご予約登録には秘密保持への同意が必要です。",
   alternates: { canonical: `${site.url}/apply` },
   robots: { index: true, follow: true },
 };
@@ -24,16 +24,16 @@ export default function ApplyPage() {
       </div>
       <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
         <p className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">
-          CONTACT · 完全招待制 · 完全匿名
+          CONTACT · 完全匿名 · 完全守秘
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
           無料で、相談する。
         </h1>
         <p className="mt-4 text-[15px] font-semibold text-[#3d5638]">予約登録する。</p>
         <p className="mt-4 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
-          コンプレックスから自信への変化を、一緒に設計します。まずは対話から。すべて
+          第一印象改善パッケージのご予約は、まず無料相談から。日程と内容をすり合わせて、最終価格をご提示します。すべて
           <strong className="font-bold text-[#1f2a1d]">完全匿名・完全守秘義務</strong>
-          のもとで扱います。私たちが力になれると判断したとき、ご招待をお送りします。
+          のもとで扱います。実名・顔写真は不要です。
           ご予約登録には、秘密保持への同意が必要です。
         </p>
 

@@ -52,7 +52,7 @@ export default function PrivacyPage() {
           <div className="text-[14px] leading-[2] text-[#C9D2C4] space-y-4">
             <p>
               His Recoveries（以下「本プログラム」）は、完全匿名・完全守秘義務のもとで
-              運営する招待制のコンプレックス改善プログラムです。
+              運営するコンプレックス改善プログラムです。
               <strong className="font-bold text-[#EDF1E8]">
                 本プログラムは医療行為ではなく、診断・治療・投薬その他の医療行為は行いません。
                 診断・治療は、必要に応じて連携する医療機関が、その医師の責任と判断において行います。

@@ -3,12 +3,12 @@ export const site = {
   tagline: "From Complex to Confidence",
   promise: "コンプレックスから自信への変化を、デザインする。",
   description:
-    "コンプレックスから自信への変化を、デザインする。男性のための、完全匿名・完全守秘義務・完全招待制のウェルネス伴走サービス（医療と美容の中間）。現在地を可視化し、専属が伴走。必要なときは、中立に連携医療機関へおつなぎします。",
+    "コンプレックスから自信への変化を、デザインする。男性のための、完全匿名・完全守秘義務のウェルネス伴走サービス。プロと過ごす一日で、第一印象（メイク・服・写真）をまるごと整えます。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",
   authorBio:
-    "多汗症、ワキガ、ニキビ跡、顔の自意識を、当事者として実際に通過した日本人男性が運営するエディトリアル・メディア。20 代前半から多汗症の外用治療と脇のボトックスを継続、20 代後半にワキガの手術、ニキビ跡の美容皮膚科に 6 年。実名・顔・実年齢は非公開で運営しています。",
+    "男性のコンプレックスを当事者として経験した運営チームによる、完全匿名のウェルネス伴走サービス。実名・顔・実年齢は非公開で運営しています。",
   handle: "@his_recoveries",
   email: "contact@vitality-design.jp",
   social: {
@@ -43,17 +43,14 @@ export const site = {
     address: "東京都目黒区下目黒1丁目1番14号 コノトラビル7F",
   },
   topics: [
-    "Male Conditioning",
-    "Quiet Masculinity",
-    "Social Recovery",
-    "Emotional Grooming",
-    "多汗症",
-    "ニキビ",
-    "ワキガ",
-    "腋臭症",
+    "第一印象 改善",
+    "メンズメイク 初心者",
+    "男性 身だしなみ",
+    "薄毛 原因",
     "ニキビ跡",
-    "男性の自意識",
+    "顔の印象",
     "メンズスキンケア",
+    "From Complex to Confidence",
   ],
 } as const;
 

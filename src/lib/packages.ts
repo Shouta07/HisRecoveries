@@ -16,7 +16,7 @@ export type ExperiencePackage = {
   forWhom: string;
   /** バッジ等のハイライト */
   highlights?: string[];
-  /** 完全招待制（ハイエンド） */
+  /** 招待制フラグ（現在未使用。招待制ティアを再導入する場合のみ使用） */
   invitation?: boolean;
   /** このはじめ方“ならでは”の付加価値 */
   value: { t: string; d: string }[];
