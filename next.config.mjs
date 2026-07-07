@@ -88,8 +88,8 @@ const nextConfig = {
       // /assessment folded into the application form.
       { source: "/assessment", destination: "/apply", permanent: true },
       // /partners は「現場のプロの方へ」ページとして復活（リダイレクト解除）。
-      // 旧サブパスはトップの partners ページへ集約。
-      { source: "/partners/:slug*", destination: "/partners", permanent: true },
+      // 旧サブパスのみ集約（:slug+ で1階層以上。:slug* だと /partners 自身にマッチしてループする）。
+      { source: "/partners/:slug+", destination: "/partners", permanent: true },
     ];
   },
 };
