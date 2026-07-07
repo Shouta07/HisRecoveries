@@ -6,8 +6,8 @@ import BookingCTA from "@/components/BookingCTA";
 
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/manifesto", label: "思想", desktopOnly: true },
-  { href: "/areas", label: "仕組みを知る" },
-  { href: "/#packages", label: "改善プログラム" },
+  { href: "/areas", label: "Library" },
+  { href: "/#service", label: "Service" },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,

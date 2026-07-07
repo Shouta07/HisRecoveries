@@ -40,7 +40,7 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
         <nav aria-label="パンくず" className="text-[12px] text-[#6b7a66] mb-6">
           <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/#packages" className="hover:text-[#1f2a1d]">改善プログラム</Link>
+          <Link href="/#service" className="hover:text-[#1f2a1d]">Service</Link>
           <span className="mx-1.5">/</span>
           <span className="text-[#1f2a1d]">{p.name}</span>
         </nav>
@@ -102,7 +102,7 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
             このパッケージを予約する（完全匿名）
           </BookingCTA>
           <Link href="/areas" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
-            仕組みを知る <span aria-hidden>→</span>
+            ライブラリを見る <span aria-hidden>→</span>
           </Link>
         </div>
 
