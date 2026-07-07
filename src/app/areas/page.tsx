@@ -13,9 +13,9 @@ const HEAD: React.CSSProperties = {
 };
 
 export const metadata: Metadata = {
-  title: "第一印象の仕組みを知る — 髪・肌・顔・体毛（解説ライブラリ）",
+  title: "第一印象ライブラリ — 仕組みの解説と、現場のプロの言葉",
   description:
-    "薄毛・ニキビ/肌・顔の印象・髭/体毛。第一印象にまつわる男性のコンプレックスが「なぜ起きるのか」を、中立な医学情報源の出典を明記して解説するキュレーション・ライブラリ。",
+    "薄毛・ニキビ/肌・顔の印象・髭/体毛。第一印象にまつわる男性の悩みが「なぜ起きるのか」の中立な解説と、各業界の第一線で働くプロの記事・取材を、出典を明記して集約するライブラリ。",
   alternates: { canonical: `${site.url}/areas` },
 };
 
@@ -31,11 +31,11 @@ export default function AreasIndexPage() {
             </span>
           </div>
           <h1 className="text-[2.2rem] sm:text-[3rem] leading-[1.25]" style={HEAD}>
-            第一印象の仕組みを、<span className="text-[#3d5638]">知る。</span>
+            仕組みと、<span className="text-[#3d5638]">現場の言葉を、集める。</span>
           </h1>
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[1.95] max-w-2xl">
-            髪・肌・顔・体毛——第一印象にまつわる悩みが「なぜ起きるのか」を、中立に。
-            出典を明記したキュレーション・ライブラリです。気になる悩みから、どうぞ。
+            髪・肌・顔・体毛——第一印象にまつわる悩みが「なぜ起きるのか」の中立な解説に、
+            各業界の第一線で働くプロの記事の紹介と取材を重ねていく、出典明記のライブラリです。
           </p>
         </header>
 
@@ -82,7 +82,12 @@ export default function AreasIndexPage() {
                         href={`/areas/${c.id}/${a.slug}`}
                         className="group flex items-center justify-between gap-3 py-3 text-[13px] text-[#4b5b47] hover:text-[#1f2a1d] transition-colors"
                       >
-                        {a.title}
+                        <span className="flex items-center gap-2 min-w-0">
+                          {a.kind === "interview" && (
+                            <span className="inline-flex shrink-0 rounded-full bg-[#3d5638] text-white px-2 py-0.5 text-[9.5px] font-bold">取材</span>
+                          )}
+                          <span className="truncate">{a.title}</span>
+                        </span>
                         <span aria-hidden className="text-[#85AB8B] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
                       </Link>
                     </li>

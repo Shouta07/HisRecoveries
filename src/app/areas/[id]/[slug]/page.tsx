@@ -100,9 +100,25 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           >
             {c.ja}
           </span>
+          {a.kind === "interview" && (
+            <span className="inline-flex rounded-full bg-[#3d5638] text-white px-3 py-1 text-[11px] font-bold mb-4 ml-2">取材</span>
+          )}
           <h1 className="text-[1.8rem] sm:text-[2.3rem] leading-[1.35]" style={HEAD}>
             {a.title}
           </h1>
+          {a.kind === "interview" && a.interviewee && (
+            <p className="mt-3 text-[13px] text-[#6b7a66]">
+              語り手: <span className="font-semibold text-[#3d5638]">{a.interviewee.name}</span>（{a.interviewee.role}）
+              {a.interviewee.link && (
+                <>
+                  {" "}
+                  <a href={a.interviewee.link} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
+                    活動ページ↗
+                  </a>
+                </>
+              )}
+            </p>
+          )}
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{a.lead}</p>
           <div className="mt-4 flex items-center gap-3">
             <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">出典明記</span>

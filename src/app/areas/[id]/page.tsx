@@ -5,6 +5,7 @@ import { complexes, complexById } from "@/lib/complexes";
 import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
 import { clustersByArea } from "@/lib/clusters";
+import { fieldVoicesByArea } from "@/lib/fieldVoices";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -40,7 +41,10 @@ export default function AreaPage({ params }: { params: { id: string } }) {
   if (!c || !area) notFound();
 
   const cites = citationsByComplex[c.id] ?? [];
-  const related = clustersByArea(c.id);
+  const all = clustersByArea(c.id);
+  const related = all.filter((r) => r.kind !== "interview");
+  const interviews = all.filter((r) => r.kind === "interview");
+  const voices = fieldVoicesByArea(c.id);
   const url = `${site.url}/areas/${c.id}`;
 
   // ---- structured data (SEO + GEO) ----
@@ -201,7 +205,64 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           )}
         </section>
 
-        {/* 関連記事（クラスタ） */}
+        {/* 取材記事 — 現場第一線のプロへのインタビュー（一次情報） */}
+        {interviews.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>現場の言葉（取材）</h2>
+            <p className="text-[12.5px] text-[#6b7a66] leading-[1.85] mb-4">
+              この領域の第一線で働くプロに、His Recoveries が直接聞いた一次情報です。
+            </p>
+            <ul className="space-y-2">
+              {interviews.map((r) => (
+                <li key={r.slug}>
+                  <Link
+                    href={`/areas/${c.id}/${r.slug}`}
+                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#3d5638]/25 bg-white px-4 py-3.5 hover:border-[#3d5638] transition-colors"
+                  >
+                    <span className="min-w-0">
+                      <span className="block text-[13.5px] font-semibold text-[#1f2a1d]">{r.title}</span>
+                      {r.interviewee && (
+                        <span className="block mt-0.5 text-[11.5px] text-[#6b7a66]">{r.interviewee.name}（{r.interviewee.role}）</span>
+                      )}
+                    </span>
+                    <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* 現場の声（キュレーション）— 業界のプロが公開している記事の紹介 */}
+        {voices.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>現場の声（キュレーション）</h2>
+            <p className="text-[12.5px] text-[#6b7a66] leading-[1.85] mb-4">
+              この領域の現場で活躍するプロが公開している記事を、出典を明記して紹介します。順不同・中立です。
+            </p>
+            <ul className="space-y-3">
+              {voices.map((v) => (
+                <li key={v.url} className="rounded-[1rem] border border-[#1f2a1d]/10 bg-white p-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="inline-flex rounded-full bg-[#eef3ea] text-[#3d5638] px-2 py-0.5 text-[10px] font-bold">{v.industry}</span>
+                    <span className="text-[11.5px] text-[#6b7a66]">{v.author}</span>
+                  </div>
+                  <a
+                    href={v.url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="text-[13.5px] font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]"
+                  >
+                    {v.title}↗
+                  </a>
+                  <p className="mt-1.5 text-[12.5px] text-[#4b5b47] leading-[1.85]">{v.note}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* 関連記事（仕組み解説クラスタ） */}
         {related.length > 0 && (
           <section className="mt-12">
             <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>関連記事</h2>

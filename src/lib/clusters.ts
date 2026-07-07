@@ -17,6 +17,13 @@ export type ClusterArticle = {
   sections: ClusterSection[];
   faqs: ClusterFaq[];
   keywords: string[];
+  /**
+   * 記事種別。省略時は仕組み解説。
+   * "interview" = 現場第一線のプロへの取材記事（docs/INTERVIEW_PROGRAM.md）。
+   * 取材記事は interviewee（取材対象の活動名・肩書き）を持つ。
+   */
+  kind?: "interview";
+  interviewee?: { name: string; role: string; link?: string };
 };
 
 export const CLUSTER_UPDATED = "2026-06-29";
