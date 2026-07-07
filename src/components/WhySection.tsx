@@ -1,5 +1,6 @@
 // Why — なぜ His Recoveries がこれをやるのか（存在理由）。
 // 当事者視点で、煽らず・断定せず・効果に言及せず。
+import Link from "next/link";
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
@@ -44,6 +45,9 @@ export default function WhySection() {
                 誰にも言えなかった悩みを、「<span className="text-[#85AB8B]">変われるもの</span>」に。
               </p>
               <p className="mt-2 text-[12.5px] text-[#9FB0A0]">— それが、His Recoveries をやる理由です。</p>
+              <Link href="/manifesto" className="mt-4 inline-flex items-center gap-2 text-[12.5px] font-semibold text-[#85AB8B] hover:text-[#EDF1E8] transition-colors">
+                私たちの思想を読む・仲間を募っています <span aria-hidden>→</span>
+              </Link>
             </div>
           </div>
         </div>

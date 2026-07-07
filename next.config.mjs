@@ -78,7 +78,7 @@ const nextConfig = {
       { source: "/submit-story", destination: "/", permanent: true },
       { source: "/subscribe", destination: "/", permanent: true },
       { source: "/animals", destination: "/", permanent: true },
-      { source: "/manifesto", destination: "/", permanent: true },
+      // /manifesto は思想ページとして復活（リダイレクトを解除）
       // legacy company/legal pages removed — fold into the home / privacy.
       { source: "/about", destination: "/", permanent: true },
       { source: "/legal", destination: "/privacy", permanent: true },
