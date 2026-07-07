@@ -136,9 +136,9 @@ export default function ManifestoPage() {
               <Link href="/#packages" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-7 py-3.5 transition-colors">
                 サービスを見る <span aria-hidden>→</span>
               </Link>
-              <a href={`mailto:${site.email}?subject=His%20Recoveries%20への協業・取材のご相談`} className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-7 py-3.5 transition-colors">
-                取材・協業の相談 <span aria-hidden>→</span>
-              </a>
+              <Link href="/partners" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-7 py-3.5 transition-colors">
+                現場のプロの方へ <span aria-hidden>→</span>
+              </Link>
             </div>
           </div>
         </section>

@@ -1,9 +1,12 @@
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
+import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
+import FlowSection from "@/components/FlowSection";
 import WhySection from "@/components/WhySection";
 import PricingSection from "@/components/PricingSection";
+import FaqSection from "@/components/FaqSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -75,6 +78,19 @@ export default function HomePage() {
           >
             誰にも言えなかった悩みを、<wbr />「<span className="text-[#3d5638]">変われるもの</span>」に。
           </p>
+
+          <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
+            メイク・服・写真。専属チームと過ごす一日で、第一印象をまるごと。完全匿名で。
+          </p>
+
+          <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
+            <BookingCTA className="rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold px-8 py-3.5 transition-colors shadow-[0_18px_40px_-20px_rgba(20,32,26,0.8)]">
+              匿名で相談する
+            </BookingCTA>
+            <Link href="/#service" className="rounded-full border border-[#1f2a1d]/25 hover:border-[#1f2a1d] text-[#1f2a1d] text-[14px] font-semibold px-8 py-3.5 transition-colors bg-white/40 backdrop-blur-sm">
+              サービスを見る
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -89,14 +105,20 @@ export default function HomePage() {
         />
 
 
-        {/* Why — なぜやるのか */}
-        <WhySection />
-
-        {/* サービス内容（オフライン／オンライン） */}
+        {/* サービス内容（第一印象の一日） */}
         <ServiceSection />
 
-        {/* 3パターン価格 */}
+        {/* 当日の流れ */}
+        <FlowSection />
+
+        {/* Why — なぜやるのか（共感・思想） */}
+        <WhySection />
+
+        {/* 予約（商品ラダー） */}
         <PricingSection />
+
+        {/* FAQ — 予約直前の不安を潰す */}
+        <FaqSection />
 
         {/* ===== Footer (simple) ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
@@ -105,6 +127,7 @@ export default function HomePage() {
             <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#4b5b47]">
               <Link href="/manifesto" className="hover:text-[#1f2a1d] transition-colors">思想</Link>
               <Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">仕組みを知る</Link>
+              <Link href="/partners" className="hover:text-[#1f2a1d] transition-colors">現場のプロの方へ</Link>
               <Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link>
             </nav>
             <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries</span>

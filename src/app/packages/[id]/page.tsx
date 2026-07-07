@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { packages } from "@/lib/packages";
+import { packages, urgentNote } from "@/lib/packages";
 import { site } from "@/lib/site";
 import BookingCTA from "@/components/BookingCTA";
 
@@ -53,6 +53,7 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{p.tagline}</p>
           <p className="mt-3 text-[13px] text-[#6b7a66]">{p.forWhom}</p>
           <div className="mt-4 text-[14px] font-semibold text-[#3d5638]">{p.duration}・{p.price}</div>
+          <p className="mt-2 text-[12.5px] text-[#6b7a66] leading-[1.8]">{urgentNote}</p>
         </header>
 
         {/* 含まれるもの */}

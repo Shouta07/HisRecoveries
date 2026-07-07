@@ -17,6 +17,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 export default function ApplyForm() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
+  const [timing, setTiming] = useState("");
   const [topic, setTopic] = useState("");
   const [message, setMessage] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -30,6 +31,7 @@ export default function ApplyForm() {
       [
         `お名前: ${name}`,
         `ご連絡先: ${contact}`,
+        `希望時期: ${timing || "未選択"}`,
         `気になる悩み: ${topic || "未選択"}`,
         "",
         "ご相談内容:",
@@ -61,6 +63,7 @@ export default function ApplyForm() {
           お名前: name,
           ご連絡先: contact,
           email: contact, // reply-to if it's an email address
+          希望時期: timing || "未選択",
           気になる悩み: topic || "未選択",
           ご相談内容: message || "（未記入）",
           秘密保持への同意: "同意済み",
@@ -135,6 +138,23 @@ export default function ApplyForm() {
           placeholder="you@example.com"
           required
         />
+      </div>
+
+      <div>
+        <label className={label} htmlFor="ap-timing">
+          ご希望の時期
+        </label>
+        <select
+          id="ap-timing"
+          className={field}
+          value={timing}
+          onChange={(e) => setTiming(e.target.value)}
+        >
+          <option value="">選択してください（任意）</option>
+          <option value="急ぎ（7日以内）">急ぎ（7日以内・大事な日が近い）</option>
+          <option value="1ヶ月以内">1ヶ月以内</option>
+          <option value="時期は未定">時期は未定・まず相談したい</option>
+        </select>
       </div>
 
       <div>

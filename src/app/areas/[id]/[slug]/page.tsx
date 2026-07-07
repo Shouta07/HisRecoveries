@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
 import { clusters, getCluster, CLUSTER_UPDATED } from "@/lib/clusters";
+import ExperienceInvite from "@/components/ExperienceInvite";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -161,6 +162,9 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             ))}
           </dl>
         </section>
+
+        {/* 体験の提案（記事 → 体験の橋渡し） */}
+        <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} />
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
           ※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。

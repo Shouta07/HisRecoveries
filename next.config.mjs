@@ -87,10 +87,9 @@ const nextConfig = {
       { source: "/en/:slug*", destination: "/", permanent: true },
       // /assessment folded into the application form.
       { source: "/assessment", destination: "/apply", permanent: true },
-      // /partners → /network — the new IA name; old route stays canonical
-      // for now so we don't break existing links during the rename window.
-      { source: "/partners", destination: "/network", permanent: false },
-      { source: "/partners/:slug*", destination: "/network/:slug*", permanent: false },
+      // /partners は「現場のプロの方へ」ページとして復活（リダイレクト解除）。
+      // 旧サブパスはトップの partners ページへ集約。
+      { source: "/partners/:slug*", destination: "/partners", permanent: true },
     ];
   },
 };

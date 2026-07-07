@@ -6,6 +6,7 @@ import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
 import { clustersByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
+import ExperienceInvite from "@/components/ExperienceInvite";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -164,6 +165,9 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             ))}
           </dl>
         </section>
+
+        {/* 体験の提案（記事 → 体験の橋渡し） */}
+        <ExperienceInvite context={`${c.ja}の「なぜ」を知ったあなたへ`} />
 
         {/* 出典・参考（従） */}
         <section className="mt-12">
