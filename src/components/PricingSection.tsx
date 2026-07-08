@@ -24,7 +24,7 @@ export default function PricingSection() {
             第一印象を、<span className="text-[#3d5638]">予約する。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
-            まずは印象診断から。その場でロードマップと最終価格をご提示します。すべて完全匿名で。
+            入口は、無料の匿名相談から。内容に合わせて、印象診断（パッケージお申し込みで全額充当）またはパッケージをご案内します。
           </p>
         </div>
 

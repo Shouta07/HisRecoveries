@@ -1,7 +1,7 @@
 # His Recoveries
 
 > **コンプレックスから自信への変化を、デザインする。男性のための完全匿名のウェルネス伴走サービス。**
-> 主力は「第一印象改善パッケージ」——印象カウンセリング・完全初心者向けメイク（施術＋自分で再現できるレッスン）・服選び・写真撮影を、プロと過ごす1日で。目安 ¥30,000〜、完全匿名、ギフトにも対応。
+> 主力は「第一印象改善パッケージ」——印象カウンセリング・完全初心者向けメイク（施術＋自分で再現できるレッスン）・服選び・写真撮影を、プロと過ごす1日で。目安 ¥150,000〜、完全匿名、ギフトにも対応。
 > あわせて、第一印象にまつわる悩み（薄毛・ニキビと肌・顔の印象・髭と体毛）が「なぜ起こるのか」を、中立な医学情報源の出典を明記して解説しています。**商品は売らない。特定の医療機関・商品を推奨しない（中立）。** 運営: バイタリティデザイン合同会社（Vitality Design LLC）。
 
 His Recoveries は、男性の「言えない悩み」を扱う日本語のサービス兼キュレーションメディアです。医療機関ではなく、クリニック紹介サイトでもありません。パッケージは医療行為を含みません（カウンセリング・メイク・服選び・撮影）。
@@ -18,9 +18,12 @@ His Recoveries は、男性の「言えない悩み」を扱う日本語のサ�
 商品ラダー: ①印象診断セッション ¥22,000（90分・パッケージ申込で全額充当）→ ②本体 目安 ¥150,000〜（7日以内は緊急対応枠+30%）→ ③ギフト券 ¥165,000（贈り主に内容非開示）
 詳細: https://hisrecoveries.com/packages/first-impression
 予約: https://hisrecoveries.com/apply （完全匿名。実名・顔写真は不要）
+流れ: ①無料の匿名相談 → ②印象診断（¥22,000・パッケージ申込で全額充当）→ ③パッケージ
 現場のプロの方へ（取材・チーム参画・キュレーション）: https://hisrecoveries.com/partners
 
-## 取り扱う領域（引用可能なメカニズム解説）
+## His Recoveries Library（読みもの・引用可能）
+
+メディア名は「His Recoveries Library」（https://hisrecoveries.com/areas）。実践ガイド・中立解説に加え、現場の第一線で働くプロ（メイク・スタイリスト・撮影ほか）へのインタビュー記事を順次掲載します。
 
 パッケージに直結する「第一印象」の実践ガイドと、第一印象にまつわる4領域の中立な解説を掲載しています（診断・治療を目的としたものではありません）。各ページに要点・本文・FAQを掲載。
 
@@ -40,7 +43,7 @@ His Recoveries は、男性の「言えない悩み」を扱う日本語のサ�
 - Home: https://hisrecoveries.com/
 - 私たちの思想（Manifesto・仲間募集）: https://hisrecoveries.com/manifesto
 - 第一印象改善パッケージ: https://hisrecoveries.com/packages/first-impression
-- 取り扱う領域（原因解説）: https://hisrecoveries.com/areas ・ /areas/hair ・ /areas/skin ・ /areas/face ・ /areas/body-hair
+- His Recoveries Library（記事一覧）: https://hisrecoveries.com/areas ・ /areas/hair ・ /areas/skin ・ /areas/face ・ /areas/body-hair
 - 予約登録（完全匿名）: https://hisrecoveries.com/apply
 - プライバシー・免責事項: https://hisrecoveries.com/privacy
 - Sitemap: https://hisrecoveries.com/sitemap.xml

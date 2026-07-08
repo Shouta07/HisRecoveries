@@ -17,6 +17,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 export default function ApplyForm() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
+  const [menu, setMenu] = useState("");
   const [timing, setTiming] = useState("");
   const [topic, setTopic] = useState("");
   const [message, setMessage] = useState("");
@@ -31,6 +32,7 @@ export default function ApplyForm() {
       [
         `お名前: ${name}`,
         `ご連絡先: ${contact}`,
+        `ご希望: ${menu || "未選択"}`,
         `希望時期: ${timing || "未選択"}`,
         `気になる悩み: ${topic || "未選択"}`,
         "",
@@ -63,6 +65,7 @@ export default function ApplyForm() {
           お名前: name,
           ご連絡先: contact,
           email: contact, // reply-to if it's an email address
+          ご希望: menu || "未選択",
           希望時期: timing || "未選択",
           気になる悩み: topic || "未選択",
           ご相談内容: message || "（未記入）",
@@ -138,6 +141,24 @@ export default function ApplyForm() {
           placeholder="you@example.com"
           required
         />
+      </div>
+
+      <div>
+        <label className={label} htmlFor="ap-menu">
+          ご希望のメニュー
+        </label>
+        <select
+          id="ap-menu"
+          className={field}
+          value={menu}
+          onChange={(e) => setMenu(e.target.value)}
+        >
+          <option value="">選択してください（任意）</option>
+          <option value="まずは相談だけ（無料）">まずは相談だけ（無料）</option>
+          <option value="印象診断セッション（¥22,000）">印象診断セッション（¥22,000・パッケージ申込で全額充当）</option>
+          <option value="第一印象改善パッケージ">第一印象改善パッケージ（目安 ¥150,000〜）</option>
+          <option value="ギフト（大切な人へ贈る）">ギフト（大切な人へ贈る）</option>
+        </select>
       </div>
 
       <div>

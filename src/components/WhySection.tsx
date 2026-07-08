@@ -35,7 +35,7 @@ export default function WhySection() {
                 そして、<span className="text-[#EDF1E8] font-medium">一人では、続かないこと</span>。
               </p>
               <p>
-                だから、<span className="text-[#85AB8B] font-semibold">何も、売りません</span>。
+                だから、<span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
                 匿名のまま、理解から、変化の一日、そして定着まで。
                 <br className="hidden sm:block" />
                 ただ、<span className="text-[#EDF1E8] font-medium">あなたの側に立って伴走します</span>。
