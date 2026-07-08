@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
 import { clusters, getCluster, CLUSTER_UPDATED } from "@/lib/clusters";
-import ExperienceInvite from "@/components/ExperienceInvite";
+import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -142,6 +142,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             ))}
           </ul>
         </div>
+
+        <InlineConsult />
 
         {/* 本文 */}
         <div className="space-y-8">

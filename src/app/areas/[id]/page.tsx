@@ -6,7 +6,7 @@ import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
 import { clustersByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
-import ExperienceInvite from "@/components/ExperienceInvite";
+import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -140,6 +140,8 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             ))}
           </ul>
         </div>
+
+        <InlineConsult />
 
         {/* 原文（主） */}
         <div className="space-y-8">
