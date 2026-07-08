@@ -24,12 +24,14 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
   const c = complexById(params.id);
   const area = getArea(params.id);
   if (!c || !area) return {};
-  const title = `${c.ja}は、なぜ起きるのか — 原因と仕組み`;
+  const title = area.titleOverride ?? `${c.ja}は、なぜ起きるのか — 原因と仕組み`;
   const url = `${site.url}/areas/${c.id}`;
   return {
     title,
     description: area.lead,
-    keywords: [c.ja, `${c.ja} 原因`, `${c.ja} 仕組み`, c.system, c.en, "メカニズム", "男性"],
+    keywords: c.guide
+      ? [c.ja, `${c.ja} 男`, "第一印象 改善", "清潔感", "メンズ 身だしなみ", c.en]
+      : [c.ja, `${c.ja} 原因`, `${c.ja} 仕組み`, c.system, c.en, "メカニズム", "男性"],
     alternates: { canonical: url },
     openGraph: { type: "article", url, title, description: area.lead },
     twitter: { card: "summary_large_image", title, description: area.lead },
@@ -47,12 +49,13 @@ export default function AreaPage({ params }: { params: { id: string } }) {
   const interviews = all.filter((r) => r.kind === "interview");
   const voices = fieldVoicesByArea(c.id);
   const url = `${site.url}/areas/${c.id}`;
+  const pillarTitle = area.titleOverride ?? `${c.ja}は、なぜ起きるのか — 原因と仕組み`;
 
   // ---- structured data (SEO + GEO) ----
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `${c.ja}は、なぜ起きるのか — 原因と仕組み`,
+    headline: pillarTitle,
     description: area.lead,
     inLanguage: "ja",
     mainEntityOfPage: url,
@@ -110,11 +113,17 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             {c.system}
           </span>
           <h1 className="text-[2rem] sm:text-[2.6rem] leading-[1.3]" style={HEAD}>
-            {c.ja}は、<span className="text-[#3d5638]">なぜ起きるのか。</span>
+            {c.guide ? (
+              area.titleOverride
+            ) : (
+              <>
+                {c.ja}は、<span className="text-[#3d5638]">なぜ起きるのか。</span>
+              </>
+            )}
           </h1>
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{area.lead}</p>
           <div className="mt-4 flex items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">出典明記</span>
+            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">{c.guide ? "実践ガイド" : "出典明記"}</span>
             <span className="text-[11px] text-[#9aa79a]">最終更新: {AREA_UPDATED}</span>
           </div>
         </header>
@@ -145,7 +154,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
           <section className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-6">
             <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-2" style={HEAD}>
-              受診の目安
+              {c.guide ? "プロと整える目安" : "受診の目安"}
             </h2>
             <p className="text-[13.5px] text-[#4b5b47] leading-[1.95]">{area.whenToSee}</p>
           </section>
@@ -167,9 +176,10 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         </section>
 
         {/* 体験の提案（記事 → 体験の橋渡し） */}
-        <ExperienceInvite context={`${c.ja}の「なぜ」を知ったあなたへ`} />
+        <ExperienceInvite context={c.guide ? `${c.ja}を整えたいあなたへ` : `${c.ja}の「なぜ」を知ったあなたへ`} />
 
-        {/* 出典・参考（従） */}
+        {/* 出典・参考（従）— メカニズム記事のみ */}
+        {!c.guide && (
         <section className="mt-12">
           <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
             出典・参考リンク
@@ -208,6 +218,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             </p>
           )}
         </section>
+        )}
 
         {/* 取材記事 — 現場第一線のプロへのインタビュー（一次情報） */}
         {interviews.length > 0 && (
@@ -287,8 +298,9 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         )}
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
-          ※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。出典・参考リンクは中立な医学情報源によります。
-          特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
+          {c.guide
+            ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
+            : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。出典・参考リンクは中立な医学情報源によります。特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">

@@ -136,7 +136,7 @@ export default function AreasIndexPage() {
             const interviews = articles.filter((a) => a.kind === "interview");
             const voices = fieldVoicesByArea(c.id);
 
-            const meta: string[] = [`解説 ${explainers.length + 1}本`];
+            const meta: string[] = [`${c.guide ? "ガイド" : "解説"} ${explainers.length + 1}本`];
             if (interviews.length) meta.push(`取材 ${interviews.length}本`);
             if (voices.length) meta.push(`現場の声 ${voices.length}件`);
 
@@ -183,6 +183,9 @@ export default function AreasIndexPage() {
                         <span className="flex items-center gap-2 min-w-0">
                           {a.kind === "interview" && (
                             <span className="inline-flex shrink-0 rounded-full bg-[#3d5638] text-white px-2 py-0.5 text-[9.5px] font-bold">取材</span>
+                          )}
+                          {a.kind === "guide" && (
+                            <span className="inline-flex shrink-0 rounded-full bg-[#eef3ea] text-[#3d5638] px-2 py-0.5 text-[9.5px] font-bold">ガイド</span>
                           )}
                           <span className="truncate">{a.title}</span>
                         </span>

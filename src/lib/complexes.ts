@@ -28,9 +28,26 @@ export type Complex = {
   why: string;
   accent: string;
   accentSoft: string;
+  /** ガイド型（医療メカニズムではなく、第一印象・身だしなみの実践ガイド） */
+  guide?: boolean;
 };
 
 export const complexes: Complex[] = [
+  {
+    id: "impression",
+    territory: "first-impression",
+    categories: [],
+    ja: "第一印象",
+    en: "First Impression",
+    mechanism: "第一印象は数秒で、清潔感・髪・眉・服・表情の総合として決まる。",
+    system: "見た目・清潔感",
+    worry: "第一印象で、損している気がする",
+    stat: "第一印象は数秒で決まる",
+    why: "第一印象は、清潔感・髪型・眉・肌・服のサイズ感・表情・写真写りなど、複数の要素の総合として立ち上がります。生まれ持った骨格は変えにくい一方で、その多くは「整え方」で動かせる部分です。だから、要素に分解して、変えられるところから手をつけるのが近道です。",
+    accent: "#3d5638",
+    accentSoft: "#eef3ea",
+    guide: true,
+  },
   {
     id: "hair",
     territory: "hair-loss",
