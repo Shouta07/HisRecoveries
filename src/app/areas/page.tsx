@@ -147,9 +147,12 @@ export default function AreasIndexPage() {
             見た目の悩みは、<span className="text-[#3d5638]">ひとりで抱えなくていい。</span>
           </h1>
           <p className="mt-3 text-[13.5px] text-[#4b5b47] leading-[1.9] max-w-[32rem]">
-            「なぜそうなるのか」を、まず読むところから。
-            <span className="font-semibold text-[#1f2a1d]">完全匿名で読めて</span>、必要なら整える一日へ。
+            「気にするな」で流されてきた悩みを、私たちは軽く扱いません。
+            なぜそうなるのかを、<span className="font-semibold text-[#1f2a1d]">あなたの側から、中立に</span>。
           </p>
+          <Link href="/manifesto" className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity">
+            なぜ、私たちがこれを書くのか <span aria-hidden>→</span>
+          </Link>
         </header>
 
         {/* 悩みから探す — B2Cの主入口 */}
@@ -217,14 +220,14 @@ export default function AreasIndexPage() {
           <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
             <div className="flex-1">
               <h2 className="text-[1.25rem] font-bold text-[#EDF1E8] leading-[1.5] mb-1.5" style={HEAD}>
-                誰にも言えない悩みも、<span className="text-[#85AB8B]">匿名で。</span>
+                「気にするな」で、<span className="text-[#85AB8B]">終わらせたくない。</span>
               </h2>
               <p className="text-[12.5px] text-[#C9D2C4] leading-[1.85]">
-                読むだけでも大丈夫。整えたくなったら、実名・顔写真なしで相談できます。
+                あなたの悩みに、中立に、そっと伴走します。読むだけでも大丈夫。相談は、実名・顔写真なしで。
               </p>
             </div>
             <BookingCTA className="shrink-0 text-center bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-              匿名で相談する
+              そっと相談する
             </BookingCTA>
           </div>
         </section>
