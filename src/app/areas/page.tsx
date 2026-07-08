@@ -140,24 +140,31 @@ export default function AreasIndexPage() {
           <span className="text-[#1f2a1d]">第一印象ライブラリ</span>
         </nav>
 
-        {/* hero — コンパクトに */}
-        <header className="mb-8">
-          <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">Library</span>
-          <h1 className="mt-2 text-[1.6rem] sm:text-[2rem] leading-[1.32]" style={HEAD}>
+        {/* hero — コンパクトに、寄り添いから */}
+        <header className="mb-9">
+          <div className="flex items-center gap-3 mb-3">
+            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
+            <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">Library</span>
+          </div>
+          <h1 className="text-[1.7rem] sm:text-[2.1rem] leading-[1.3]" style={HEAD}>
             見た目の悩みは、<span className="text-[#3d5638]">ひとりで抱えなくていい。</span>
           </h1>
-          <p className="mt-3 text-[13.5px] text-[#4b5b47] leading-[1.9] max-w-[32rem]">
+          <p className="mt-4 text-[13.5px] sm:text-[14px] text-[#4b5b47] leading-[1.95] max-w-[33rem]">
             「気にするな」で流されてきた悩みを、私たちは軽く扱いません。
             なぜそうなるのかを、<span className="font-semibold text-[#1f2a1d]">あなたの側から、中立に</span>。
           </p>
-          <Link href="/manifesto" className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity">
+          <p className="mt-2 text-[12.5px] text-[#6b7a66] leading-[1.85] max-w-[33rem]">
+            口に出さないだけで、同じ悩みを抱える人は、あなたが思うより多い。
+          </p>
+          <Link href="/manifesto" className="mt-4 inline-flex items-center gap-1 text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity">
             なぜ、私たちがこれを書くのか <span aria-hidden>→</span>
           </Link>
         </header>
 
         {/* 悩みから探す — B2Cの主入口 */}
         <section className="mb-11">
-          <h2 className="text-[1.1rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+          <h2 className="flex items-center gap-2.5 text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+            <span aria-hidden className="w-1 h-5 rounded-full bg-[#85AB8B] shrink-0" />
             悩みから、<span className="text-[#3d5638]">探す。</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -186,7 +193,8 @@ export default function AreasIndexPage() {
 
         {/* まず読んでみる — 数を絞って、読みたくなる範囲に */}
         <section className="mb-10">
-          <h2 className="text-[1.1rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+          <h2 className="flex items-center gap-2.5 text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+            <span aria-hidden className="w-1 h-5 rounded-full bg-[#85AB8B] shrink-0" />
             まず、<span className="text-[#3d5638]">読んでみる。</span>
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
