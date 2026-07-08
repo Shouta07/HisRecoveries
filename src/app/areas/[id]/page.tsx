@@ -85,7 +85,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "ホーム", item: site.url },
-      { "@type": "ListItem", position: 2, name: "取り扱う領域", item: `${site.url}/areas` },
+      { "@type": "ListItem", position: 2, name: "Library", item: `${site.url}/areas` },
       { "@type": "ListItem", position: 3, name: c.ja, item: url },
     ],
   };
@@ -101,7 +101,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         <nav aria-label="パンくず" className="text-[12px] text-[#6b7a66] mb-6">
           <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/areas" className="hover:text-[#1f2a1d]">取り扱う領域</Link>
+          <Link href="/areas" className="hover:text-[#1f2a1d]">Library</Link>
           <span className="mx-1.5">/</span>
           <span className="text-[#1f2a1d]">{c.ja}</span>
         </nav>
