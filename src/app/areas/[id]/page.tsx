@@ -7,6 +7,7 @@ import { citationsByComplex } from "@/lib/citations";
 import { clustersByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
 import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
+import EmpathyLead from "@/components/EmpathyLead";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -128,10 +129,16 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </div>
         </header>
 
+        {/* 共感リード（心理を正面に・正常化・安心） */}
+        <EmpathyLead worry={`「${c.worry}」`} />
+
         {/* 要点（TL;DR）— extractable summary for search & AI engines */}
-        <div className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-6 mb-10">
-          <div className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3d5638] font-medium mb-3">要点</div>
-          <ul className="space-y-2">
+        <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#f4f6f2] border border-[#1f2a1d]/10 p-6 sm:p-7 mb-10">
+          <div className="flex items-center gap-2.5 mb-4">
+            <span aria-hidden className="block w-5 h-px bg-[#85AB8B]" />
+            <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">要点 / TL;DR</span>
+          </div>
+          <ul className="space-y-2.5">
             {area.summary.map((s, i) => (
               <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#1f2a1d] leading-[1.85]">
                 <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#85AB8B] shrink-0" />
@@ -147,10 +154,11 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         <div className="space-y-8">
           {area.sections.map((s) => (
             <section key={s.h}>
-              <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-2" style={HEAD}>
+              <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1f2a1d] mb-3 leading-[1.5]" style={HEAD}>
+                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#85AB8B] shrink-0" />
                 {s.h}
               </h2>
-              <p className="text-[14px] text-[#3a423a] leading-[2]">{s.body}</p>
+              <p className="text-[14.5px] text-[#3a423a] leading-[2.05] pl-3.5">{s.body}</p>
             </section>
           ))}
 
