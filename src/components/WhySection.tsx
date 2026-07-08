@@ -25,6 +25,8 @@ export default function WhySection() {
                 相談すれば「気にしすぎ」と流され、調べれば売り込みばかり。
                 <br className="hidden sm:block" />
                 <span className="text-[#EDF1E8] font-medium">本当の味方は、どこにもいなかった。</span>
+                <br className="hidden sm:block" />
+                でも——口に出さないだけで、同じ悩みを抱える人は、あなたが思うより、ずっと多い。
               </p>
               <p>
                 私たちも、当事者として同じ道を通ってきました。だから知っています。
