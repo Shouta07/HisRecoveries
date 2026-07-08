@@ -128,23 +128,22 @@ export default function LibraryPage() {
           <span className="text-[#1f2a1d]">Library</span>
         </nav>
 
-        {/* ヘッダー — 読みものサイトの顔。紹介は程々に、寄り添いから。 */}
-        <header className="mb-8 max-w-2xl">
-          <div className="flex items-center gap-3 mb-3">
+        {/* ヘッダー — 読みものサイトの顔。簡潔に。 */}
+        <header className="mb-10 max-w-2xl">
+          <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[11.5px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">His Recoveries Library</span>
           </div>
-          <h1 className="text-[1.8rem] sm:text-[2.4rem] leading-[1.28]" style={HEAD}>
+          <h1 className="text-[1.9rem] sm:text-[2.5rem] leading-[1.26]" style={HEAD}>
             見た目の悩みを、<span className="text-[#3d5638]">読むところから。</span>
           </h1>
-          <p className="mt-4 text-[13.5px] sm:text-[14.5px] text-[#4b5b47] leading-[1.95]">
-            「気にするな」で流されてきた悩みを、私たちは軽く扱いません。なぜそうなるのかを、あなたの側から、中立に。
-            <span className="text-[#6b7a66]">口に出さないだけで、同じ悩みの人は、あなたが思うより多い。</span>
+          <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
+            なぜそうなるのかを、あなたの側から、中立に。
           </p>
         </header>
 
         {/* カテゴリのクイックナビ */}
-        <div className="flex flex-wrap gap-2 mb-12 pb-6 border-b border-[#1f2a1d]/10">
+        <div className="flex flex-wrap gap-2 mb-11 pb-6 border-b border-[#1f2a1d]/10">
           {categories.map((c) => (
             <a key={c.id} href={`#cat-${c.id}`} className="inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
               {c.ja}
@@ -156,19 +155,16 @@ export default function LibraryPage() {
         </div>
 
         {/* カテゴリ別・記事一覧（読みもの本体） */}
-        <div className="space-y-14">
+        <div className="space-y-12">
           {categories.map((c) => (
             <section key={c.id} id={`cat-${c.id}`} className="scroll-mt-24">
-              <div className="flex items-center gap-3 mb-5">
-                <span aria-hidden className="grid place-items-center w-9 h-9 rounded-full shrink-0" style={{ backgroundColor: c.accentSoft }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={c.accent} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <div className="flex items-center gap-2.5 mb-5">
+                <span aria-hidden className="grid place-items-center w-8 h-8 rounded-full shrink-0" style={{ backgroundColor: c.accentSoft }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c.accent} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                     {ICONS[c.id] ?? <circle cx="12" cy="12" r="6" />}
                   </svg>
                 </span>
-                <div>
-                  <h2 className="text-[1.3rem] font-bold text-[#1f2a1d] leading-[1.3]" style={HEAD}>{c.ja}</h2>
-                  <p className="text-[11.5px] text-[#9aa79a] mt-0.5">「{c.worry}」</p>
-                </div>
+                <h2 className="text-[1.25rem] font-bold text-[#1f2a1d]" style={HEAD}>{c.ja}</h2>
                 <Link href={`/areas/${c.id}`} className="ml-auto text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
                   まとめて見る →
                 </Link>
