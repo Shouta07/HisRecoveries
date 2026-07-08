@@ -5,7 +5,32 @@ import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
 import ExperienceInvite from "@/components/ExperienceInvite";
+import BookingCTA from "@/components/BookingCTA";
 import { site } from "@/lib/site";
+
+// 悩みカードのアイコン（顔出し不可でも温度を出す線アイコン）
+const ICONS: Record<string, React.ReactNode> = {
+  impression: <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z" />,
+  hair: (
+    <>
+      <path d="M6 20V9a6 6 0 0 1 12 0v11" />
+      <path d="M9 20v-9M15 20v-9M12 20v-9" />
+    </>
+  ),
+  skin: <path d="M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z" />,
+  face: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M9 10h.01M15 10h.01M9 14.5c1.8 1.4 4.2 1.4 6 0" />
+    </>
+  ),
+  "body-hair": (
+    <>
+      <rect x="4" y="3" width="16" height="5" rx="1.5" />
+      <path d="M12 8v13M9 11l3 2 3-2M9 15l3 2 3-2" />
+    </>
+  ),
+};
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -131,24 +156,27 @@ export default function AreasIndexPage() {
           <span className="text-[#1f2a1d]">第一印象ライブラリ</span>
         </nav>
 
-        {/* header — B2C：当事者の内心から入る */}
-        <header className="mb-8 max-w-3xl">
-          <div className="flex items-center gap-3 mb-4">
-            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[12px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">Library</span>
-          </div>
-          <h1 className="text-[2rem] sm:text-[2.7rem] leading-[1.26]" style={HEAD}>
-            見た目の悩みは、<br className="hidden sm:block" />
-            <span className="text-[#3d5638]">ひとりで抱えなくていい。</span>
-          </h1>
-          <p className="mt-4 text-[14.5px] text-[#4b5b47] leading-[1.95]">
-            清潔感・メイク・服・写真から、髪・肌・顔・体毛まで。「なぜそうなるのか」を、
-            まず読むところから。<span className="font-semibold text-[#1f2a1d]">完全匿名で読めて</span>、必要なら整える一日へ。
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-2.5 text-[11.5px]">
-            <span className="inline-flex items-center rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1 font-bold">読むだけでも、OK</span>
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 font-bold">出典明記・中立</span>
-            <span className="text-[#9aa79a]">最終更新: {AREA_UPDATED}</span>
+        {/* header — B2C：当事者の内心から入る（あたたかいヒーロー面） */}
+        <header className="mb-10 rounded-[2rem] border border-[#1f2a1d]/8 p-7 sm:p-11 relative overflow-hidden" style={{ background: "linear-gradient(135deg,#eef3ea 0%,#f4f6f2 45%,#e6efe3 100%)" }}>
+          <div aria-hidden className="absolute -top-16 -right-10 w-72 h-72 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.22)" }} />
+          <div className="relative max-w-3xl">
+            <div className="flex items-center gap-3 mb-4">
+              <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
+              <span className="font-mono text-[12px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">Library</span>
+            </div>
+            <h1 className="text-[2.1rem] sm:text-[3rem] leading-[1.24]" style={HEAD}>
+              見た目の悩みは、<br className="hidden sm:block" />
+              <span className="text-[#3d5638]">ひとりで抱えなくていい。</span>
+            </h1>
+            <p className="mt-5 text-[14.5px] sm:text-[15.5px] text-[#4b5b47] leading-[2] max-w-[34rem]">
+              清潔感・メイク・服・写真から、髪・肌・顔まで。「なぜそうなるのか」を、
+              まず読むところから。<span className="font-semibold text-[#1f2a1d]">完全匿名で読めて</span>、必要なら整える一日へ。
+            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-2.5 text-[11.5px]">
+              <span className="inline-flex items-center rounded-full bg-white/70 text-[#3d5638] px-3 py-1 font-bold">読むだけでも、OK</span>
+              <span className="inline-flex items-center rounded-full bg-white/70 text-[#0f766e] px-3 py-1 font-bold">出典明記・中立</span>
+              <span className="text-[#7f8f7a]">最終更新: {AREA_UPDATED}</span>
+            </div>
           </div>
         </header>
 
@@ -162,11 +190,18 @@ export default function AreasIndexPage() {
               <Link
                 key={c.id}
                 href={`/areas/${c.id}`}
-                className="group relative flex flex-col justify-between rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5 min-h-[120px] hover:border-[#3d5638]/40 hover:shadow-[0_18px_38px_-24px_rgba(20,32,26,0.5)] transition-all"
+                className="group relative flex flex-col justify-between rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5 min-h-[132px] hover:border-[#3d5638]/40 hover:shadow-[0_18px_38px_-24px_rgba(20,32,26,0.5)] hover:-translate-y-0.5 transition-all"
               >
-                <span className="inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-bold mb-2" style={{ backgroundColor: c.accentSoft, color: c.accent }}>
-                  {c.ja}
-                </span>
+                <div className="flex items-center gap-2.5 mb-3">
+                  <span aria-hidden className="grid place-items-center w-9 h-9 rounded-full shrink-0" style={{ backgroundColor: c.accentSoft }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={c.accent} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                      {ICONS[c.id] ?? <circle cx="12" cy="12" r="6" />}
+                    </svg>
+                  </span>
+                  <span className="inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold" style={{ backgroundColor: c.accentSoft, color: c.accent }}>
+                    {c.ja}
+                  </span>
+                </div>
                 <p className="text-[14.5px] font-bold text-[#1f2a1d] leading-[1.55]" style={HEAD}>
                   「{c.worry}」
                 </p>
@@ -240,7 +275,23 @@ export default function AreasIndexPage() {
           </main>
 
           {/* サイドバー */}
-          <aside className="lg:sticky lg:top-24 self-start space-y-8">
+          <aside className="lg:sticky lg:top-24 self-start space-y-6">
+            {/* 相談パネル（B2C・匿名の安心を前面に） */}
+            <section className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 overflow-hidden relative">
+              <div aria-hidden className="absolute -top-12 -right-8 w-48 h-48 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.2)" }} />
+              <div className="relative">
+                <h2 className="text-[1.05rem] font-bold text-[#EDF1E8] leading-[1.5] mb-2" style={HEAD}>
+                  誰にも言えない悩みも、<span className="text-[#85AB8B]">匿名で。</span>
+                </h2>
+                <p className="text-[12px] text-[#C9D2C4] leading-[1.85] mb-4">
+                  読むだけでも大丈夫。整えたくなったら、実名・顔写真なしで相談できます。
+                </p>
+                <BookingCTA className="w-full text-center bg-[#EDF1E8] hover:bg-white text-[#16241a] text-[13px] font-semibold px-5 py-3 rounded-full transition-colors">
+                  匿名で相談する
+                </BookingCTA>
+              </div>
+            </section>
+
             {/* カテゴリー */}
             <section className="rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5">
               <h2 className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={HEAD}>テーマ別に読む</h2>
@@ -279,17 +330,20 @@ export default function AreasIndexPage() {
               </section>
             )}
 
-            {/* タグ */}
-            <section className="rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5">
-              <h2 className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={HEAD}>タグ</h2>
-              <div className="flex flex-wrap gap-1.5">
+            {/* タグ（B2Cでは主張させず、折りたたみ。内部リンクはDOMに保持しSEO維持） */}
+            <details className="rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5 group">
+              <summary className="text-[13.5px] font-bold text-[#1f2a1d] cursor-pointer list-none flex items-center justify-between" style={HEAD}>
+                よく検索される言葉
+                <span aria-hidden className="text-[#85AB8B] text-[12px] group-open:rotate-90 transition-transform">›</span>
+              </summary>
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 {tags.map(([k, areaId]) => (
                   <Link key={k} href={`/areas/${areaId}`} className="inline-flex rounded-md bg-[#f0f4ee] text-[#4b5b47] px-2 py-1 text-[11px] hover:bg-[#e3ecdd] hover:text-[#1f2a1d] transition-colors">
                     {k}
                   </Link>
                 ))}
               </div>
-            </section>
+            </details>
           </aside>
         </div>
       </div>
