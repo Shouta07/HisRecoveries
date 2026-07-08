@@ -131,25 +131,52 @@ export default function AreasIndexPage() {
           <span className="text-[#1f2a1d]">第一印象ライブラリ</span>
         </nav>
 
-        {/* header */}
-        <header className="mb-9 max-w-3xl">
+        {/* header — B2C：当事者の内心から入る */}
+        <header className="mb-8 max-w-3xl">
           <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[12px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">Library</span>
           </div>
           <h1 className="text-[2rem] sm:text-[2.7rem] leading-[1.26]" style={HEAD}>
-            第一印象を、<span className="text-[#3d5638]">読んで、整える。</span>
+            見た目の悩みは、<br className="hidden sm:block" />
+            <span className="text-[#3d5638]">ひとりで抱えなくていい。</span>
           </h1>
           <p className="mt-4 text-[14.5px] text-[#4b5b47] leading-[1.95]">
-            清潔感・メイク・服・写真から、髪・肌・顔・体毛まで。男性の見た目の悩みを、
-            実践ガイドと中立な解説、現場のプロへの取材で。出典を明記したライブラリです。
+            清潔感・メイク・服・写真から、髪・肌・顔・体毛まで。「なぜそうなるのか」を、
+            まず読むところから。<span className="font-semibold text-[#1f2a1d]">完全匿名で読めて</span>、必要なら整える一日へ。
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-2.5 text-[11.5px]">
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 font-bold">出典明記</span>
-            <span className="inline-flex items-center rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1 font-bold">中立・売らない</span>
+            <span className="inline-flex items-center rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1 font-bold">読むだけでも、OK</span>
+            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 font-bold">出典明記・中立</span>
             <span className="text-[#9aa79a]">最終更新: {AREA_UPDATED}</span>
           </div>
         </header>
+
+        {/* 悩みから探す — B2Cの主入口（"それ、俺だ"から） */}
+        <section className="mb-10">
+          <h2 className="text-[1.1rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+            悩みから、<span className="text-[#3d5638]">探す。</span>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {complexes.map((c) => (
+              <Link
+                key={c.id}
+                href={`/areas/${c.id}`}
+                className="group relative flex flex-col justify-between rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5 min-h-[120px] hover:border-[#3d5638]/40 hover:shadow-[0_18px_38px_-24px_rgba(20,32,26,0.5)] transition-all"
+              >
+                <span className="inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-bold mb-2" style={{ backgroundColor: c.accentSoft, color: c.accent }}>
+                  {c.ja}
+                </span>
+                <p className="text-[14.5px] font-bold text-[#1f2a1d] leading-[1.55]" style={HEAD}>
+                  「{c.worry}」
+                </p>
+                <span className="mt-3 text-[12px] font-semibold text-[#3d5638] inline-flex items-center gap-1 group-hover:gap-1.5 transition-all">
+                  なぜ？を読む <span aria-hidden>→</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* ===== メディアレイアウト：記事一覧 ＋ サイドバー ===== */}
         <div className="grid lg:grid-cols-[1fr_300px] gap-8 lg:gap-10 items-start">
@@ -216,7 +243,7 @@ export default function AreasIndexPage() {
           <aside className="lg:sticky lg:top-24 self-start space-y-8">
             {/* カテゴリー */}
             <section className="rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5">
-              <h2 className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={HEAD}>カテゴリー</h2>
+              <h2 className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={HEAD}>テーマ別に読む</h2>
               <ul className="space-y-1">
                 {complexes.map((c) => {
                   const count = clustersByArea(c.id).length + 1;
@@ -238,7 +265,7 @@ export default function AreasIndexPage() {
             {/* 注目の記事 */}
             {featured.length > 0 && (
               <section className="rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5">
-                <h2 className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={HEAD}>注目の記事</h2>
+                <h2 className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={HEAD}>はじめて読むなら</h2>
                 <ul className="space-y-3">
                   {featured.map((e) => (
                     <li key={e.href}>
