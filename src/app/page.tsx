@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
@@ -20,13 +22,26 @@ const HERO_HEAD: React.CSSProperties = {
   textRendering: "optimizeLegibility",
 };
 
+// 背景: ウェルネス体験コラージュ写真（public/media/hero/wellness-collage.png）を
+// 配置するとビルド時に自動で写真背景へ切り替わる。無い間は既存の動画のまま。
+const HERO_COLLAGE = "/media/hero/wellness-collage.png";
+const hasCollage = existsSync(join(process.cwd(), "public", "media", "hero", "wellness-collage.png"));
+
 export default function HomePage() {
   return (
     <div className="relative font-sans bg-[#dfe6dc]">
-      {/* Persistent ambient boomerang video — fixed behind everything, so it
-          keeps playing faintly in the background while you scroll. */}
+      {/* Persistent ambient backdrop — fixed behind everything. */}
       <div aria-hidden className="fixed inset-0 z-0 pointer-events-none">
-        <BoomerangVideo src="/media/hero/boomerang.mp4" />
+        {hasCollage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={HERO_COLLAGE}
+            alt=""
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <BoomerangVideo src="/media/hero/boomerang.mp4" />
+        )}
       </div>
 
       {/* Fixed nav at the root level so it stays above every section. */}
