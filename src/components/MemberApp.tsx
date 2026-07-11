@@ -52,33 +52,32 @@ const PRODUCTS: Product[] = [
   { name: "低GI 置き換え食", cat: "metabo", price: "¥3,200", note: "食事の見直しに" },
 ];
 
-// ── ゲーミフィケーション（＝一連の体験）───────────────────────────
-// 煽らない・比べない・傷つけない。ブランドの声を守るため、
-// ポイント/ランキング/罰ではなく「章立てされた変化の旅」として設計。
-// From Complex to Confidence を、そのまま進行のアーチにする。
-type DailyAction = { id: string; label: string; cat: string };
-const DAILY_ACTIONS: DailyAction[] = [
-  { id: "wash", label: "洗顔を、ていねいに", cat: "general" },
-  { id: "sleep", label: "夜、スマホを少し早めに置く", cat: "general" },
-  { id: "walk", label: "5分だけ、外を歩く", cat: "vitality" },
-  { id: "protein", label: "たんぱく質を、意識して一品", cat: "vitality" },
-  { id: "sun", label: "日中、少し陽に当たる", cat: "vitd" },
-  { id: "iron", label: "鉄を含むものを、一品", cat: "iron" },
-  { id: "zinc", label: "亜鉛を含む食材を、一品", cat: "zinc" },
-  { id: "sugar", label: "甘い飲みものを、一本減らす", cat: "metabo" },
+// ── 体験の設計思想 ───────────────────────────────────────────────
+// これは毎日開かせる習慣アプリではない。日々のセルフケアは記録させない。
+// 中心にあるのは「回復を経て、どうなりたいか（＝行き先）」。
+// その行き先へ向かって、通院・来店という現実の物語を進めていく。
+// 煽らない・比べない・傷つけない。ゆっくりでいい。
+
+// なりたい自分（行き先）の候補。自由入力も可。
+const GOALS: string[] = [
+  "自信を持って、人と会えるように",
+  "写真で、自然に笑えるように",
+  "清潔感で、第一印象を変えたい",
+  "疲れて見える自分を、変えたい",
+  "年齢に、負けたくない",
+  "鏡を見るのが、嫌じゃなくなりたい",
 ];
 
-// 章 = From Complex to Confidence の道のり。歩み（＝続けた小さな一歩の数）で進む。
+// 章 = From Complex to Confidence の道のり。行き先へ近づく段階。
 const CHAPTERS = [
-  { n: 1, ja: "気づく", desc: "記録を、はじめる", need: 0 },
-  { n: 2, ja: "整える", desc: "小さな一歩を、とる", need: 1 },
-  { n: 3, ja: "続く", desc: "習慣に、なっていく", need: 7 },
-  { n: 4, ja: "自信", desc: "変化が、板についてくる", need: 21 },
+  { n: 1, ja: "気づく", desc: "行き先を、見つける" },
+  { n: 2, ja: "整える", desc: "はじめの一歩を、踏み出す" },
+  { n: 3, ja: "続く", desc: "変化が、積み上がっていく" },
+  { n: 4, ja: "自信", desc: "なりたい自分に、近づく" },
 ];
 
 // ── ストーリー・クエスト ─────────────────────────────────────────
 // 物語の本筋は「通院（提携クリニック）」と「来店（診断・施術・サロン）」。
-// 家でのセルフケア（今日の一歩）は、来店と来店をつなぐ道中。
 // クエストを"クリア"すると章が上がる＝オフラインに行かないと物語が進まない。
 type Quest = {
   id: string;
@@ -98,30 +97,16 @@ const QUESTS: Quest[] = [
 
 type Milestone = { id: string; label: string; test: (s: JStat) => boolean };
 const MILESTONES: Milestone[] = [
-  { id: "first", label: "最初の一歩", test: (s) => s.steps >= 1 },
+  { id: "goal", label: "行き先を決めた", test: (s) => s.goalSet },
   { id: "go1", label: "はじめての来訪", test: (s) => s.visits >= 1 },
   { id: "blood", label: "検査を受けた", test: (s) => s.didBlood },
   { id: "session", label: "はじめての施術", test: (s) => s.didSession },
-  { id: "s7", label: "7日、続いた", test: (s) => s.streak >= 7 },
   { id: "go3", label: "3つの物語を越えた", test: (s) => s.visits >= 3 },
+  { id: "goal4", label: "行き先に、たどり着いた", test: (s) => s.visits >= QUESTS.length },
 ];
 
-type JStat = { steps: number; days: number; streak: number; hasBlood: boolean; visits: number; didBlood: boolean; didSession: boolean };
-type Journey = { done: Record<string, string[]>; visits: string[] }; // done: dateStr->actionId, visits: 完了したquestのid
-
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-function streakOf(done: Record<string, string[]>): number {
-  const d = new Date();
-  if (!(done[d.toISOString().slice(0, 10)]?.length)) d.setDate(d.getDate() - 1); // 今日が空でも猶予
-  let s = 0;
-  for (;;) {
-    const k = d.toISOString().slice(0, 10);
-    if (done[k]?.length) { s++; d.setDate(d.getDate() - 1); } else break;
-  }
-  return s;
-}
+type JStat = { hasBlood: boolean; visits: number; didBlood: boolean; didSession: boolean; goalSet: boolean };
+type Journey = { visits: string[]; goal: string }; // visits: 完了したquestのid, goal: なりたい自分
 
 const LS_AUTH = "hr_member_demo_auth";
 const LS_DATA = "hr_member_demo_bloods";
@@ -134,7 +119,9 @@ export default function MemberApp() {
   const [pw, setPw] = useState("");
   const [vals, setVals] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<"osusume" | "all">("osusume");
-  const [journey, setJourney] = useState<Journey>({ done: {}, visits: [] });
+  const [journey, setJourney] = useState<Journey>({ visits: [], goal: "" });
+  const [editingGoal, setEditingGoal] = useState(false);
+  const [goalDraft, setGoalDraft] = useState("");
 
   useEffect(() => {
     try {
@@ -142,7 +129,7 @@ export default function MemberApp() {
       const d = localStorage.getItem(LS_DATA);
       if (d) setVals(JSON.parse(d));
       const j = localStorage.getItem(LS_JOURNEY);
-      if (j) { const p = JSON.parse(j); setJourney({ done: p.done ?? {}, visits: p.visits ?? [] }); }
+      if (j) { const p = JSON.parse(j); setJourney({ visits: p.visits ?? [], goal: p.goal ?? "" }); }
     } catch { /* ignore */ }
     setReady(true);
   }, []);
@@ -151,11 +138,9 @@ export default function MemberApp() {
     setJourney(next);
     try { localStorage.setItem(LS_JOURNEY, JSON.stringify(next)); } catch { /* ignore */ }
   }
-  function toggleAction(aid: string) {
-    const k = todayStr();
-    const cur = journey.done[k] ?? [];
-    const nextDone = cur.includes(aid) ? cur.filter((x) => x !== aid) : [...cur, aid];
-    saveJourney({ ...journey, done: { ...journey.done, [k]: nextDone } });
+  function setGoal(goal: string) {
+    saveJourney({ ...journey, goal });
+    setEditingGoal(false);
   }
   function toggleVisit(qid: string) {
     const v = journey.visits.includes(qid) ? journey.visits.filter((x) => x !== qid) : [...journey.visits, qid];
@@ -193,28 +178,22 @@ export default function MemberApp() {
   recCats.add("general");
   const recommended = PRODUCTS.filter((p) => recCats.has(p.cat));
 
-  // ── 歩み＆物語の集計 ──
-  const doneDays = Object.keys(journey.done).filter((k) => journey.done[k].length);
-  const steps = doneDays.reduce((n, k) => n + journey.done[k].length, 0);
+  // ── 物語の集計（行き先へ、どこまで来たか）──
   const hasBlood = Object.values(vals).some((v) => v !== undefined && v !== "");
   const visits = journey.visits;
   const didKind = (k: Quest["kind"]) => QUESTS.some((q) => q.kind === k && visits.includes(q.id));
   const stat: JStat = {
-    steps, days: doneDays.length, streak: streakOf(journey.done), hasBlood,
-    visits: visits.length, didBlood: didKind("検査"), didSession: didKind("施術"),
+    hasBlood, visits: visits.length, didBlood: didKind("検査"),
+    didSession: didKind("施術"), goalSet: journey.goal.trim().length > 0,
   };
   // 章は「オフラインに行くこと」で進む。行かなければ物語は先へ進まない。
   let chIdx = 0; // 気づく
   if (didKind("相談") || didKind("検査")) chIdx = 1; // 整える
   if (didKind("施術")) chIdx = 2; // 続く
-  if (didKind("メンテ") && steps >= 14) chIdx = 3; // 自信
+  if (didKind("メンテ")) chIdx = 3; // 自信
   const chapter = CHAPTERS[chIdx];
-  // 物語全体の進捗（クエスト達成数）
   const storyProgress = visits.length / QUESTS.length;
   const nextQuest = QUESTS.find((q) => !visits.includes(q.id));
-  const todayDone = journey.done[todayStr()] ?? [];
-  // 「今日の一歩」= 一般の一歩 + 血液のフラグに紐づく一歩（＝来店と来店をつなぐ道中）
-  const todaySteps = DAILY_ACTIONS.filter((a) => a.cat === "general" || recCats.has(a.cat)).slice(0, 5);
 
   // ── ステータス（レーダーチャート＝RPGのキャラシート）──
   const RC = { cx: 120, cy: 106, R: 80 };
@@ -267,107 +246,123 @@ export default function MemberApp() {
       </div>
       <div className="mb-8">{banner}</div>
 
-      {/* ⓪ あなたの物語（一連の体験・ゲーミフィケーション） */}
-      <section className="mb-10">
-        <div className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-8">
-          <div className="flex items-center justify-between gap-4 mb-5">
-            <div>
-              <div className="text-[11px] tracking-[0.18em] text-[#85AB8B] font-semibold mb-1">YOUR RECOVERY JOURNEY</div>
-              <h2 className="text-[1.35rem]" style={HEAD}>第{chapter.n}章　{chapter.ja}</h2>
-              <p className="text-[12.5px] text-[#9FB0A0] mt-0.5">{chapter.desc}</p>
-            </div>
-            <div className="text-right shrink-0">
-              <div className="text-[2rem] leading-none" style={HEAD}>{visits.length}<span className="text-[13px] text-[#9FB0A0]">/{QUESTS.length}</span></div>
-              <div className="text-[10px] text-[#9FB0A0] mt-1">物語</div>
-            </div>
-          </div>
+      {/* ⓪ なりたい自分（行き先）＋ 物語の道のり */}
+      <section className="mb-12">
+        {/* 行き先（North Star） */}
+        <div className="relative overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-[#16241a] via-[#1b2c1f] to-[#0f1a12] text-[#EDF1E8] p-7 sm:p-10">
+          <div aria-hidden className="pointer-events-none absolute -top-16 -right-10 w-52 h-52 rounded-full bg-[#85AB8B]/10 blur-3xl" />
+          <div className="relative">
+            <div className="text-[11px] tracking-[0.22em] text-[#85AB8B] font-semibold mb-3">YOUR DESTINATION ・ なりたい自分</div>
+            {stat.goalSet && !editingGoal ? (
+              <div>
+                <p className="text-[1.5rem] sm:text-[1.9rem] leading-[1.5] text-[#F3F6EF]" style={HEAD}>「{journey.goal}」</p>
+                <button onClick={() => { setGoalDraft(journey.goal); setEditingGoal(true); }} className="mt-3 text-[12px] text-[#9FB0A0] hover:text-[#EDF1E8] underline underline-offset-2">行き先を変える</button>
+              </div>
+            ) : (
+              <div>
+                <p className="text-[15px] text-[#C9D2C4] leading-[1.9] mb-5">回復の先で、あなたはどうなりたいですか。<br className="hidden sm:block" />ひとつ選んでください。いつでも変えられます。</p>
+                <div className="flex flex-wrap gap-2.5 mb-4">
+                  {GOALS.map((g) => (
+                    <button key={g} onClick={() => setGoal(g)} className="text-left text-[13px] rounded-full border border-[#ffffff]/15 hover:border-[#85AB8B] hover:bg-[#85AB8B]/10 px-4 py-2 transition-colors">
+                      {g}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2.5 max-w-[560px]">
+                  <input
+                    value={goalDraft}
+                    onChange={(e) => setGoalDraft(e.target.value)}
+                    placeholder="自分の言葉で書く…"
+                    className="flex-1 rounded-full bg-[#0f1a12] border border-[#ffffff]/15 px-4 py-2.5 text-[14px] text-[#EDF1E8] placeholder:text-[#6f7d6c] outline-none focus:border-[#85AB8B]"
+                  />
+                  <button onClick={() => goalDraft.trim() && setGoal(goalDraft.trim())} className="rounded-full bg-[#EDF1E8] text-[#16241a] text-[13px] font-bold px-5 py-2.5 hover:bg-white transition-colors">これにする</button>
+                </div>
+              </div>
+            )}
 
-          {/* 物語の進行バー */}
-          <div className="h-2 rounded-full bg-[#0f1a12] overflow-hidden">
-            <div className="h-full rounded-full bg-[#85AB8B] transition-all" style={{ width: `${Math.round(storyProgress * 100)}%` }} />
-          </div>
-          <p className="mt-2 text-[11px] text-[#9FB0A0]">物語は、通院と来店で前に進みます。歩み <span className="text-[#EDF1E8] font-bold">{steps}</span>{stat.streak > 0 && <>・{stat.streak}日連続</>}（家での小さな一歩）が、次の来訪までを支えます。</p>
-
-          {/* 節目 */}
-          <div className="mt-5 flex flex-wrap gap-2">
-            {MILESTONES.map((m) => {
-              const got = m.test(stat);
-              return (
-                <span key={m.id} className={`text-[11px] px-2.5 py-1 rounded-full border ${got ? "border-[#85AB8B]/50 bg-[#85AB8B]/15 text-[#EDF1E8]" : "border-[#ffffff]/10 text-[#6f7d6c]"}`}>
-                  {got ? "◆" : "◇"} {m.label}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 次の物語（＝次に行く場所）。ここが本筋。 */}
-        {nextQuest ? (
-          <div className="mt-4 rounded-[1.2rem] border-2 border-[#3d5638]/25 bg-[#f5f8f2] p-5 sm:p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] tracking-[0.15em] text-[#3d5638] font-bold">次の物語</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3d5638] text-white">{nextQuest.place}</span>
-              <span className="text-[10px] text-[#6b7a66]">{nextQuest.kind}</span>
-            </div>
-            <h3 className="text-[1.15rem] text-[#1f2a1d] mb-1" style={HEAD}>{nextQuest.title}</h3>
-            <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-4">{nextQuest.desc}</p>
-            <div className="flex flex-col sm:flex-row gap-2.5">
-              <a href={nextQuest.cta.href} className="flex-1 text-center rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold py-3 transition-colors">{nextQuest.cta.label}</a>
-              <button onClick={() => toggleVisit(nextQuest.id)} className="rounded-full border border-[#3d5638]/40 text-[#3d5638] hover:bg-[#eef3ea] text-[13px] font-semibold px-5 py-3 transition-colors">行ってきた（デモ）</button>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-4 rounded-[1.2rem] border-2 border-[#3d5638]/25 bg-[#f5f8f2] p-6 text-center">
-            <div className="text-[1.1rem] text-[#1f2a1d] mb-1" style={HEAD}>物語は、続いていく。</div>
-            <p className="text-[13px] text-[#4b5b47]">ひと通りの章を越えました。ここからは、あなたのペースでメンテナンスを。</p>
-          </div>
-        )}
-
-        {/* 道のり（クエストマップ） */}
-        <div className="mt-5">
-          <h3 className="text-[13px] font-bold text-[#1f2a1d] mb-2.5">これまでと、これからの道のり</h3>
-          <ol className="relative border-l-2 border-[#1f2a1d]/10 ml-2 space-y-3">
-            {QUESTS.map((q) => {
-              const done = visits.includes(q.id);
-              const current = nextQuest?.id === q.id;
-              return (
-                <li key={q.id} className="ml-4 pl-1">
-                  <span aria-hidden className={`absolute -left-[9px] w-4 h-4 rounded-full border-2 ${done ? "bg-[#3d5638] border-[#3d5638]" : current ? "bg-white border-[#3d5638]" : "bg-[#eef1ea] border-[#1f2a1d]/15"}`} />
-                  <div className={`flex items-center gap-2 ${done || current ? "" : "opacity-55"}`}>
-                    <span className={`text-[13px] ${done ? "text-[#3d5638] font-semibold" : current ? "text-[#1f2a1d] font-bold" : "text-[#6b7a66]"}`}>{q.title}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-[#1f2a1d]/12 text-[#6b7a66]">{q.place}</span>
-                    {done && <span className="text-[11px] text-[#3d5638]">✓ 越えた</span>}
-                    {current && <span className="text-[11px] text-[#b4763c]">← いまここ</span>}
+            {/* 行き先へ、どこまで来たか */}
+            {stat.goalSet && !editingGoal && (
+              <div className="mt-7 pt-6 border-t border-[#ffffff]/10">
+                <div className="flex items-end justify-between gap-4 mb-2.5">
+                  <div>
+                    <div className="text-[11px] text-[#9FB0A0]">いまは</div>
+                    <div className="text-[1.15rem]" style={HEAD}>第{chapter.n}章　{chapter.ja}<span className="text-[12.5px] text-[#9FB0A0] font-normal ml-2">— {chapter.desc}</span></div>
                   </div>
-                </li>
-              );
-            })}
-          </ol>
+                  <div className="text-right shrink-0">
+                    <span className="text-[1.6rem] leading-none" style={HEAD}>{visits.length}</span>
+                    <span className="text-[12px] text-[#9FB0A0]">/{QUESTS.length}</span>
+                  </div>
+                </div>
+                <div className="h-2 rounded-full bg-[#0f1a12] overflow-hidden">
+                  <div className="h-full rounded-full bg-gradient-to-r from-[#85AB8B] to-[#A9CBAE] transition-all duration-500" style={{ width: `${Math.round(storyProgress * 100)}%` }} />
+                </div>
+                <p className="mt-2.5 text-[11px] text-[#9FB0A0] leading-[1.8]">物語は、通院・来店という現実の一歩で前に進みます。毎日ここを開く必要はありません。行き先に近づいたと感じたときに、また。</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {MILESTONES.map((m) => {
+                    const got = m.test(stat);
+                    return (
+                      <span key={m.id} className={`text-[11px] px-2.5 py-1 rounded-full border ${got ? "border-[#85AB8B]/50 bg-[#85AB8B]/15 text-[#EDF1E8]" : "border-[#ffffff]/10 text-[#6f7d6c]"}`}>
+                        {got ? "◆" : "◇"} {m.label}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* 今日の一歩（来店と来店をつなぐ道中） */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-[13px] font-bold text-[#1f2a1d]">来訪までの、今日の小さな一歩</h3>
-            <span className="text-[11px] text-[#6b7a66]">{todayDone.length} / {todaySteps.length} 完了</span>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-2">
-            {todaySteps.map((a) => {
-              const done = todayDone.includes(a.id);
-              return (
-                <button
-                  key={a.id}
-                  onClick={() => toggleAction(a.id)}
-                  className={`flex items-center gap-3 text-left rounded-[0.9rem] border px-4 py-3 transition-colors ${done ? "border-[#3d5638]/30 bg-[#eef3ea]" : "border-[#1f2a1d]/12 bg-white hover:border-[#3d5638]/40"}`}
-                >
-                  <span aria-hidden className={`w-5 h-5 rounded-full grid place-items-center text-[11px] shrink-0 ${done ? "bg-[#3d5638] text-white" : "border border-[#1f2a1d]/25 text-transparent"}`}>✓</span>
-                  <span className={`text-[13px] ${done ? "text-[#3d5638]" : "text-[#1f2a1d]"}`}>{a.label}</span>
-                </button>
-              );
-            })}
-          </div>
-          <p className="mt-2 text-[11px] text-[#9aa79a]">※ 家での一歩は「歩み」に、通院・来店は「物語」に積み上がります。記録はこの端末内だけに残ります。</p>
-        </div>
+        {/* 次の一歩（＝次に行く場所）。行き先を決めた人だけに出す。 */}
+        {stat.goalSet && !editingGoal && (
+          <>
+            {nextQuest ? (
+              <div className="mt-5 rounded-[1.3rem] border border-[#3d5638]/20 bg-[#f5f8f2] p-6 sm:p-7">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <span className="text-[10px] tracking-[0.16em] text-[#3d5638] font-bold">次の一歩</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3d5638] text-white">{nextQuest.place}</span>
+                  <span className="text-[10px] text-[#6b7a66]">{nextQuest.kind}</span>
+                </div>
+                <h3 className="text-[1.2rem] text-[#1f2a1d] mb-1.5" style={HEAD}>{nextQuest.title}</h3>
+                <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-5">{nextQuest.desc}</p>
+                <div className="flex flex-col sm:flex-row gap-2.5">
+                  <a href={nextQuest.cta.href} className="flex-1 text-center rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold py-3 transition-colors">{nextQuest.cta.label}</a>
+                  <button onClick={() => toggleVisit(nextQuest.id)} className="rounded-full border border-[#3d5638]/40 text-[#3d5638] hover:bg-[#eef3ea] text-[13px] font-semibold px-5 py-3 transition-colors">行ってきた（デモ）</button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 rounded-[1.3rem] border border-[#3d5638]/20 bg-[#f5f8f2] p-7 text-center">
+                <div className="text-[1.2rem] text-[#1f2a1d] mb-1.5" style={HEAD}>「{journey.goal}」へ、歩ききりました。</div>
+                <p className="text-[13px] text-[#4b5b47] leading-[1.9]">ここまでよく来ました。ここからは、あなたのペースでメンテナンスを。<br />新しい行き先ができたら、いつでも書き換えてください。</p>
+              </div>
+            )}
+
+            {/* 道のり（行き先までの地図） */}
+            <div className="mt-6">
+              <h3 className="text-[13px] font-bold text-[#1f2a1d] mb-3">行き先までの、道のり</h3>
+              <ol className="relative border-l-2 border-[#1f2a1d]/10 ml-2 space-y-3.5">
+                {QUESTS.map((q) => {
+                  const done = visits.includes(q.id);
+                  const current = nextQuest?.id === q.id;
+                  return (
+                    <li key={q.id} className="ml-4 pl-1">
+                      <span aria-hidden className={`absolute -left-[9px] w-4 h-4 rounded-full border-2 ${done ? "bg-[#3d5638] border-[#3d5638]" : current ? "bg-white border-[#3d5638] ring-4 ring-[#3d5638]/10" : "bg-[#eef1ea] border-[#1f2a1d]/15"}`} />
+                      <div className={`flex flex-wrap items-center gap-2 ${done || current ? "" : "opacity-55"}`}>
+                        <span className={`text-[13px] ${done ? "text-[#3d5638] font-semibold" : current ? "text-[#1f2a1d] font-bold" : "text-[#6b7a66]"}`}>{q.title}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-[#1f2a1d]/12 text-[#6b7a66]">{q.place}</span>
+                        {done && <span className="text-[11px] text-[#3d5638]">✓ 越えた</span>}
+                        {current && <span className="text-[11px] text-[#b4763c]">← いまここ</span>}
+                      </div>
+                    </li>
+                  );
+                })}
+                <li className="ml-4 pl-1">
+                  <span aria-hidden className={`absolute -left-[11px] w-5 h-5 rounded-full grid place-items-center text-[10px] ${storyProgress >= 1 ? "bg-[#3d5638] text-white" : "bg-[#eef1ea] text-[#9aa79a] border-2 border-[#1f2a1d]/15"}`}>★</span>
+                  <div className="text-[13px] font-bold text-[#1f2a1d]">なりたい自分「{journey.goal}」</div>
+                </li>
+              </ol>
+            </div>
+          </>
+        )}
       </section>
 
       {/* ① 血液データ入力 */}
