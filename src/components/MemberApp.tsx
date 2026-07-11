@@ -62,18 +62,38 @@ const CHAPTERS = [
   { n: 4, ja: "自信", desc: "変化が、板についてくる", need: 21 },
 ];
 
+// ── ストーリー・クエスト ─────────────────────────────────────────
+// 物語の本筋は「通院（提携クリニック）」と「来店（診断・施術・サロン）」。
+// 家でのセルフケア（今日の一歩）は、来店と来店をつなぐ道中。
+// クエストを"クリア"すると章が上がる＝オフラインに行かないと物語が進まない。
+type Quest = {
+  id: string;
+  kind: "相談" | "検査" | "診断" | "施術" | "メンテ";
+  place: "オンライン可" | "通院" | "来店";
+  title: string;
+  desc: string;
+  cta: { label: string; href: string };
+};
+const QUESTS: Quest[] = [
+  { id: "q-consult", kind: "相談", place: "オンライン可", title: "まず、そっと相談する", desc: "何から始めるか、匿名で。ここが物語の入口。", cta: { label: "無料で相談する", href: "/apply" } },
+  { id: "q-blood", kind: "検査", place: "通院", title: "血液検査を受けに行く", desc: "提携クリニックで、いまの自分を数値で知る。", cta: { label: "検査を予約する", href: "/apply" } },
+  { id: "q-diagnosis", kind: "診断", place: "来店", title: "印象診断を受ける", desc: "第一印象を、プロが要素分解。次の一手が決まる。", cta: { label: "印象診断を予約", href: "/packages/first-impression" } },
+  { id: "q-session", kind: "施術", place: "来店", title: "はじめての施術に行く", desc: "クリニック／サロンで、整えるを実行する日。", cta: { label: "パッケージを見る", href: "/packages/first-impression" } },
+  { id: "q-maintain", kind: "メンテ", place: "通院", title: "メンテナンスに通う", desc: "変化を、続く力に。定期的に整えに行く。", cta: { label: "次回を相談する", href: "/apply" } },
+];
+
 type Milestone = { id: string; label: string; test: (s: JStat) => boolean };
 const MILESTONES: Milestone[] = [
   { id: "first", label: "最初の一歩", test: (s) => s.steps >= 1 },
-  { id: "blood", label: "はじめての記録", test: (s) => s.hasBlood },
-  { id: "s3", label: "3日、続いた", test: (s) => s.streak >= 3 },
+  { id: "go1", label: "はじめての来訪", test: (s) => s.visits >= 1 },
+  { id: "blood", label: "検査を受けた", test: (s) => s.didBlood },
+  { id: "session", label: "はじめての施術", test: (s) => s.didSession },
   { id: "s7", label: "7日、続いた", test: (s) => s.streak >= 7 },
-  { id: "st10", label: "10の歩み", test: (s) => s.steps >= 10 },
-  { id: "st30", label: "30の歩み", test: (s) => s.steps >= 30 },
+  { id: "go3", label: "3つの物語を越えた", test: (s) => s.visits >= 3 },
 ];
 
-type JStat = { steps: number; days: number; streak: number; hasBlood: boolean };
-type Journey = { done: Record<string, string[]> }; // dateStr -> 完了したactionのid
+type JStat = { steps: number; days: number; streak: number; hasBlood: boolean; visits: number; didBlood: boolean; didSession: boolean };
+type Journey = { done: Record<string, string[]>; visits: string[] }; // done: dateStr->actionId, visits: 完了したquestのid
 
 function todayStr(): string {
   return new Date().toISOString().slice(0, 10);
@@ -100,7 +120,7 @@ export default function MemberApp() {
   const [pw, setPw] = useState("");
   const [vals, setVals] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<"osusume" | "all">("osusume");
-  const [journey, setJourney] = useState<Journey>({ done: {} });
+  const [journey, setJourney] = useState<Journey>({ done: {}, visits: [] });
 
   useEffect(() => {
     try {
@@ -108,7 +128,7 @@ export default function MemberApp() {
       const d = localStorage.getItem(LS_DATA);
       if (d) setVals(JSON.parse(d));
       const j = localStorage.getItem(LS_JOURNEY);
-      if (j) setJourney(JSON.parse(j));
+      if (j) { const p = JSON.parse(j); setJourney({ done: p.done ?? {}, visits: p.visits ?? [] }); }
     } catch { /* ignore */ }
     setReady(true);
   }, []);
@@ -122,6 +142,10 @@ export default function MemberApp() {
     const cur = journey.done[k] ?? [];
     const nextDone = cur.includes(aid) ? cur.filter((x) => x !== aid) : [...cur, aid];
     saveJourney({ ...journey, done: { ...journey.done, [k]: nextDone } });
+  }
+  function toggleVisit(qid: string) {
+    const v = journey.visits.includes(qid) ? journey.visits.filter((x) => x !== qid) : [...journey.visits, qid];
+    saveJourney({ ...journey, visits: v });
   }
 
   function login(e: React.FormEvent) {
@@ -155,17 +179,27 @@ export default function MemberApp() {
   recCats.add("general");
   const recommended = PRODUCTS.filter((p) => recCats.has(p.cat));
 
-  // ── 歩み（ゲーミフィケーション）の集計 ──
+  // ── 歩み＆物語の集計 ──
   const doneDays = Object.keys(journey.done).filter((k) => journey.done[k].length);
   const steps = doneDays.reduce((n, k) => n + journey.done[k].length, 0);
   const hasBlood = Object.values(vals).some((v) => v !== undefined && v !== "");
-  const stat: JStat = { steps, days: doneDays.length, streak: streakOf(journey.done), hasBlood };
-  const chIdx = CHAPTERS.reduce((acc, c, i) => (steps >= c.need ? i : acc), 0);
+  const visits = journey.visits;
+  const didKind = (k: Quest["kind"]) => QUESTS.some((q) => q.kind === k && visits.includes(q.id));
+  const stat: JStat = {
+    steps, days: doneDays.length, streak: streakOf(journey.done), hasBlood,
+    visits: visits.length, didBlood: didKind("検査"), didSession: didKind("施術"),
+  };
+  // 章は「オフラインに行くこと」で進む。行かなければ物語は先へ進まない。
+  let chIdx = 0; // 気づく
+  if (didKind("相談") || didKind("検査")) chIdx = 1; // 整える
+  if (didKind("施術")) chIdx = 2; // 続く
+  if (didKind("メンテ") && steps >= 14) chIdx = 3; // 自信
   const chapter = CHAPTERS[chIdx];
-  const nextCh = CHAPTERS[chIdx + 1];
-  const chProgress = nextCh ? Math.min(1, (steps - chapter.need) / (nextCh.need - chapter.need)) : 1;
+  // 物語全体の進捗（クエスト達成数）
+  const storyProgress = visits.length / QUESTS.length;
+  const nextQuest = QUESTS.find((q) => !visits.includes(q.id));
   const todayDone = journey.done[todayStr()] ?? [];
-  // 「今日の一歩」= 一般の一歩 + 血液のフラグに紐づく一歩（＝一連の体験の接続）
+  // 「今日の一歩」= 一般の一歩 + 血液のフラグに紐づく一歩（＝来店と来店をつなぐ道中）
   const todaySteps = DAILY_ACTIONS.filter((a) => a.cat === "general" || recCats.has(a.cat)).slice(0, 5);
 
   if (!ready) return null;
@@ -205,7 +239,7 @@ export default function MemberApp() {
       </div>
       <div className="mb-8">{banner}</div>
 
-      {/* ⓪ あなたの歩み（一連の体験・ゲーミフィケーション） */}
+      {/* ⓪ あなたの物語（一連の体験・ゲーミフィケーション） */}
       <section className="mb-10">
         <div className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-8">
           <div className="flex items-center justify-between gap-4 mb-5">
@@ -215,26 +249,16 @@ export default function MemberApp() {
               <p className="text-[12.5px] text-[#9FB0A0] mt-0.5">{chapter.desc}</p>
             </div>
             <div className="text-right shrink-0">
-              <div className="text-[2rem] leading-none" style={HEAD}>{steps}</div>
-              <div className="text-[10px] text-[#9FB0A0] mt-1">歩み</div>
+              <div className="text-[2rem] leading-none" style={HEAD}>{visits.length}<span className="text-[13px] text-[#9FB0A0]">/{QUESTS.length}</span></div>
+              <div className="text-[10px] text-[#9FB0A0] mt-1">物語</div>
             </div>
           </div>
 
-          {/* 章の進行バー */}
-          <div className="mb-2 flex items-center justify-between text-[11px] text-[#9FB0A0]">
-            <span>第{chapter.n}章 {chapter.ja}</span>
-            {nextCh ? <span>次は「{nextCh.ja}」まで あと{Math.max(0, nextCh.need - steps)}歩</span> : <span>最終章</span>}
-          </div>
+          {/* 物語の進行バー */}
           <div className="h-2 rounded-full bg-[#0f1a12] overflow-hidden">
-            <div className="h-full rounded-full bg-[#85AB8B] transition-all" style={{ width: `${Math.round(chProgress * 100)}%` }} />
+            <div className="h-full rounded-full bg-[#85AB8B] transition-all" style={{ width: `${Math.round(storyProgress * 100)}%` }} />
           </div>
-
-          {/* 継続（そっと。責めない） */}
-          <p className="mt-4 text-[12px] text-[#C9D2C4]">
-            {stat.streak > 0
-              ? <>いま <span className="font-bold text-[#EDF1E8]">{stat.streak}日</span> 続いています。できた日だけ、そっと。</>
-              : <>今日から、また一歩ずつ。続かない日があっても、大丈夫です。</>}
-          </p>
+          <p className="mt-2 text-[11px] text-[#9FB0A0]">物語は、通院と来店で前に進みます。歩み <span className="text-[#EDF1E8] font-bold">{steps}</span>{stat.streak > 0 && <>・{stat.streak}日連続</>}（家での小さな一歩）が、次の来訪までを支えます。</p>
 
           {/* 節目 */}
           <div className="mt-5 flex flex-wrap gap-2">
@@ -249,10 +273,54 @@ export default function MemberApp() {
           </div>
         </div>
 
-        {/* 今日の一歩（チェックで歩みが進む） */}
-        <div className="mt-4">
+        {/* 次の物語（＝次に行く場所）。ここが本筋。 */}
+        {nextQuest ? (
+          <div className="mt-4 rounded-[1.2rem] border-2 border-[#3d5638]/25 bg-[#f5f8f2] p-5 sm:p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[10px] tracking-[0.15em] text-[#3d5638] font-bold">次の物語</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3d5638] text-white">{nextQuest.place}</span>
+              <span className="text-[10px] text-[#6b7a66]">{nextQuest.kind}</span>
+            </div>
+            <h3 className="text-[1.15rem] text-[#1f2a1d] mb-1" style={HEAD}>{nextQuest.title}</h3>
+            <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-4">{nextQuest.desc}</p>
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              <a href={nextQuest.cta.href} className="flex-1 text-center rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold py-3 transition-colors">{nextQuest.cta.label}</a>
+              <button onClick={() => toggleVisit(nextQuest.id)} className="rounded-full border border-[#3d5638]/40 text-[#3d5638] hover:bg-[#eef3ea] text-[13px] font-semibold px-5 py-3 transition-colors">行ってきた（デモ）</button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 rounded-[1.2rem] border-2 border-[#3d5638]/25 bg-[#f5f8f2] p-6 text-center">
+            <div className="text-[1.1rem] text-[#1f2a1d] mb-1" style={HEAD}>物語は、続いていく。</div>
+            <p className="text-[13px] text-[#4b5b47]">ひと通りの章を越えました。ここからは、あなたのペースでメンテナンスを。</p>
+          </div>
+        )}
+
+        {/* 道のり（クエストマップ） */}
+        <div className="mt-5">
+          <h3 className="text-[13px] font-bold text-[#1f2a1d] mb-2.5">これまでと、これからの道のり</h3>
+          <ol className="relative border-l-2 border-[#1f2a1d]/10 ml-2 space-y-3">
+            {QUESTS.map((q) => {
+              const done = visits.includes(q.id);
+              const current = nextQuest?.id === q.id;
+              return (
+                <li key={q.id} className="ml-4 pl-1">
+                  <span aria-hidden className={`absolute -left-[9px] w-4 h-4 rounded-full border-2 ${done ? "bg-[#3d5638] border-[#3d5638]" : current ? "bg-white border-[#3d5638]" : "bg-[#eef1ea] border-[#1f2a1d]/15"}`} />
+                  <div className={`flex items-center gap-2 ${done || current ? "" : "opacity-55"}`}>
+                    <span className={`text-[13px] ${done ? "text-[#3d5638] font-semibold" : current ? "text-[#1f2a1d] font-bold" : "text-[#6b7a66]"}`}>{q.title}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-[#1f2a1d]/12 text-[#6b7a66]">{q.place}</span>
+                    {done && <span className="text-[11px] text-[#3d5638]">✓ 越えた</span>}
+                    {current && <span className="text-[11px] text-[#b4763c]">← いまここ</span>}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+        {/* 今日の一歩（来店と来店をつなぐ道中） */}
+        <div className="mt-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-[13px] font-bold text-[#1f2a1d]">今日の、小さな一歩</h3>
+            <h3 className="text-[13px] font-bold text-[#1f2a1d]">来訪までの、今日の小さな一歩</h3>
             <span className="text-[11px] text-[#6b7a66]">{todayDone.length} / {todaySteps.length} 完了</span>
           </div>
           <div className="grid sm:grid-cols-2 gap-2">
@@ -270,7 +338,7 @@ export default function MemberApp() {
               );
             })}
           </div>
-          <p className="mt-2 text-[11px] text-[#9aa79a]">※ チェックすると「歩み」が増え、章が進みます。記録はこの端末内だけに残ります。</p>
+          <p className="mt-2 text-[11px] text-[#9aa79a]">※ 家での一歩は「歩み」に、通院・来店は「物語」に積み上がります。記録はこの端末内だけに残ります。</p>
         </div>
       </section>
 
