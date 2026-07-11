@@ -3,7 +3,7 @@ export const site = {
   tagline: "From Complex to Confidence",
   promise: "コンプレックスから自信への変化を、デザインする。",
   description:
-    "男性ウェルネスに寄り添う、完全匿名の中立な伴走者。見た目（第一印象）を入口に、髪・肌・体・心の悩みまで。恥をかかず、あなたのペースで整えられるように、中立に伴走します。まずは第一印象改善パッケージから。",
+    "メンズウェルネスに寄り添う、完全匿名の中立な伴走者。見た目（第一印象）を入口に、髪・肌・体・心の悩みまで。恥をかかず、あなたのペースで整えられるように、中立に伴走します。まずは第一印象改善パッケージから。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",

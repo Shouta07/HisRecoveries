@@ -77,7 +77,7 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-6 text-[#4b5b47]">
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
             <span className="text-[11px] sm:text-sm tracking-[0.32em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
-              男性ウェルネスの、伴走者
+              メンズウェルネスの、伴走者
             </span>
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
           </div>
