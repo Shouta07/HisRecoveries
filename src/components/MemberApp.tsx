@@ -39,6 +39,18 @@ function markerScore(m: Marker, raw: string | undefined): number {
 function rankOf(score: number): string {
   return score >= 90 ? "S" : score >= 75 ? "A" : score >= 60 ? "B" : score >= 45 ? "C" : score >= 30 ? "D" : "E";
 }
+function overallOfVals(v: Record<string, string>): number {
+  const scores = MARKERS.map((m) => markerScore(m, v[m.key]));
+  const filled = MARKERS.filter((m) => v[m.key] !== undefined && v[m.key] !== "");
+  if (filled.length === 0) return 0;
+  return Math.round(scores.reduce((a, b) => a + b, 0) / MARKERS.length);
+}
+function fmtDate(iso: string): string {
+  return iso.replace(/-/g, ".");
+}
+
+// 検査ごとのスナップショット（＝時系列で「育ち」を見る）
+type Snapshot = { at: string; vals: Record<string, string> };
 
 type Product = { name: string; cat: string; price: string; note: string };
 const PRODUCTS: Product[] = [
@@ -111,6 +123,7 @@ type Journey = { visits: string[]; goal: string }; // visits: 完了したquest�
 const LS_AUTH = "hr_member_demo_auth";
 const LS_DATA = "hr_member_demo_bloods";
 const LS_JOURNEY = "hr_member_demo_journey";
+const LS_HISTORY = "hr_member_demo_bloodhist";
 
 export default function MemberApp() {
   const [ready, setReady] = useState(false);
@@ -122,6 +135,8 @@ export default function MemberApp() {
   const [journey, setJourney] = useState<Journey>({ visits: [], goal: "" });
   const [editingGoal, setEditingGoal] = useState(false);
   const [goalDraft, setGoalDraft] = useState("");
+  const [history, setHistory] = useState<Snapshot[]>([]);
+  const [justRecorded, setJustRecorded] = useState(false);
 
   useEffect(() => {
     try {
@@ -130,9 +145,22 @@ export default function MemberApp() {
       if (d) setVals(JSON.parse(d));
       const j = localStorage.getItem(LS_JOURNEY);
       if (j) { const p = JSON.parse(j); setJourney({ visits: p.visits ?? [], goal: p.goal ?? "" }); }
+      const h = localStorage.getItem(LS_HISTORY);
+      if (h) setHistory(JSON.parse(h));
     } catch { /* ignore */ }
     setReady(true);
   }, []);
+
+  function recordSnapshot() {
+    const hb = Object.values(vals).some((v) => v !== undefined && v !== "");
+    if (!hb) return;
+    const snap: Snapshot = { at: new Date().toISOString().slice(0, 10), vals: { ...vals } };
+    const next = [...history, snap].slice(-6);
+    setHistory(next);
+    try { localStorage.setItem(LS_HISTORY, JSON.stringify(next)); } catch { /* ignore */ }
+    setJustRecorded(true);
+    setTimeout(() => setJustRecorded(false), 2400);
+  }
 
   function saveJourney(next: Journey) {
     setJourney(next);
@@ -197,14 +225,19 @@ export default function MemberApp() {
 
   // ── ステータス（レーダーチャート＝RPGのキャラシート）──
   const RC = { cx: 120, cy: 106, R: 80 };
+  const lastSnap = history.length > 0 ? history[history.length - 1] : undefined;
   const radar = MARKERS.map((m, i) => {
     const ang = (-90 + i * 60) * (Math.PI / 180);
-    return { m, i, ang, sc: markerScore(m, vals[m.key]) };
+    const sc = markerScore(m, vals[m.key]);
+    const prev = lastSnap ? markerScore(m, lastSnap.vals[m.key]) : null;
+    return { m, i, ang, sc, prev, delta: prev === null ? null : sc - prev };
   });
   const overall = hasBlood ? Math.round(radar.reduce((n, a) => n + a.sc, 0) / radar.length) : 0;
-  const polyPts = radar
-    .map((a) => { const r = (RC.R * a.sc) / 100; return `${(RC.cx + r * Math.cos(a.ang)).toFixed(1)},${(RC.cy + r * Math.sin(a.ang)).toFixed(1)}`; })
-    .join(" ");
+  const prevOverall = lastSnap ? overallOfVals(lastSnap.vals) : null;
+  const overallDelta = prevOverall === null ? null : overall - prevOverall;
+  const ptFor = (sc: number, ang: number) => { const r = (RC.R * sc) / 100; return `${(RC.cx + r * Math.cos(ang)).toFixed(1)},${(RC.cy + r * Math.sin(ang)).toFixed(1)}`; };
+  const polyPts = radar.map((a) => ptFor(a.sc, a.ang)).join(" ");
+  const prevPolyPts = lastSnap ? radar.map((a) => ptFor(a.prev ?? 0, a.ang)).join(" ") : "";
   const ringPts = (pct: number) =>
     MARKERS.map((_, i) => { const ang = (-90 + i * 60) * (Math.PI / 180); const r = (RC.R * pct) / 100; return `${(RC.cx + r * Math.cos(ang)).toFixed(1)},${(RC.cy + r * Math.sin(ang)).toFixed(1)}`; })
       .join(" ");
@@ -323,7 +356,8 @@ export default function MemberApp() {
                   <span className="text-[10px] text-[#6b7a66]">{nextQuest.kind}</span>
                 </div>
                 <h3 className="text-[1.2rem] text-[#1f2a1d] mb-1.5" style={HEAD}>{nextQuest.title}</h3>
-                <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-5">{nextQuest.desc}</p>
+                <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-2">{nextQuest.desc}</p>
+                <p className="text-[12px] text-[#3d5638] leading-[1.8] mb-5">「{journey.goal}」へ向かう、次の一歩です。</p>
                 <div className="flex flex-col sm:flex-row gap-2.5">
                   <a href={nextQuest.cta.href} className="flex-1 text-center rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold py-3 transition-colors">{nextQuest.cta.label}</a>
                   <button onClick={() => toggleVisit(nextQuest.id)} className="rounded-full border border-[#3d5638]/40 text-[#3d5638] hover:bg-[#eef3ea] text-[13px] font-semibold px-5 py-3 transition-colors">行ってきた（デモ）</button>
@@ -409,6 +443,9 @@ export default function MemberApp() {
               {radar.map((a) => (
                 <line key={a.i} x1={RC.cx} y1={RC.cy} x2={RC.cx + RC.R * Math.cos(a.ang)} y2={RC.cy + RC.R * Math.sin(a.ang)} stroke="#2c3f2f" strokeWidth="1" />
               ))}
+              {/* 前回（ゴースト） */}
+              {hasBlood && lastSnap && <polygon points={prevPolyPts} fill="none" stroke="#6f7d6c" strokeWidth="1.5" strokeDasharray="3 3" />}
+              {/* 今回 */}
               {hasBlood && <polygon points={polyPts} fill="#85AB8B" fillOpacity="0.32" stroke="#A9CBAE" strokeWidth="2" />}
               {hasBlood && radar.map((a) => {
                 const r = (RC.R * a.sc) / 100;
@@ -423,16 +460,27 @@ export default function MemberApp() {
                 );
               })}
             </svg>
+            {hasBlood && lastSnap && (
+              <div className="flex items-center justify-center gap-4 -mt-1 text-[10px] text-[#9FB0A0]">
+                <span className="flex items-center gap-1.5"><span className="w-4 h-0 border-t-2 border-[#A9CBAE]" />今回</span>
+                <span className="flex items-center gap-1.5"><span className="w-4 h-0 border-t-2 border-dashed border-[#6f7d6c]" />前回（{fmtDate(lastSnap.at)}）</span>
+              </div>
+            )}
           </div>
           {/* オーバーオール＆ステータス一覧 */}
           <div>
             <div className="flex items-end gap-3 mb-4">
               <div>
                 <div className="text-[11px] tracking-[0.15em] text-[#85AB8B] font-semibold">CONDITION</div>
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-[2.6rem] leading-none" style={HEAD}>{overall}</span>
                   <span className="text-[13px] text-[#9FB0A0]">/100</span>
                   {hasBlood && <span className="text-[1.4rem] font-black text-[#A9CBAE] ml-1" style={HEAD}>ランク {rankOf(overall)}</span>}
+                  {hasBlood && overallDelta !== null && overallDelta !== 0 && (
+                    <span className={`text-[13px] font-bold ml-1 ${overallDelta > 0 ? "text-[#A9CBAE]" : "text-[#d3a08f]"}`}>
+                      前回比 {overallDelta > 0 ? "▲+" : "▼"}{overallDelta > 0 ? overallDelta : Math.abs(overallDelta)}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -442,14 +490,52 @@ export default function MemberApp() {
                 <div key={a.i} className="flex items-center gap-3">
                   <span className="w-12 text-[11px] text-[#C9D2C4] shrink-0">{a.m.short}</span>
                   <div className="flex-1 h-2 rounded-full bg-[#0f1a12] overflow-hidden">
-                    <div className="h-full rounded-full bg-[#85AB8B] transition-all" style={{ width: `${a.sc}%` }} />
+                    <div className="h-full rounded-full bg-[#85AB8B] transition-all duration-500" style={{ width: `${a.sc}%` }} />
                   </div>
+                  {a.delta !== null && a.delta !== 0 ? (
+                    <span className={`w-9 text-right text-[10px] font-mono ${a.delta > 0 ? "text-[#A9CBAE]" : "text-[#d3a08f]"}`}>{a.delta > 0 ? "+" : ""}{a.delta}</span>
+                  ) : (
+                    <span className="w-9 text-right text-[10px] font-mono text-[#6f7d6c]">±0</span>
+                  )}
                   <span className="w-8 text-right text-[11px] font-mono text-[#EDF1E8]">{a.sc}</span>
                 </div>
               ))}
             </div>
+
+            {/* 記録＆推移 */}
+            <div className="mt-5 pt-5 border-t border-[#ffffff]/10">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="text-[12px] text-[#C9D2C4]">
+                  {justRecorded ? <span className="text-[#A9CBAE] font-semibold">✓ この結果を記録しました。</span>
+                    : lastSnap ? <>これまでの記録：<span className="font-bold text-[#EDF1E8]">{history.length}</span> 回</>
+                    : <>検査に行ったら、結果を記録して変化を見ましょう。</>}
+                </div>
+                <button
+                  onClick={recordSnapshot}
+                  disabled={!hasBlood}
+                  className={`text-[12px] font-semibold rounded-full px-4 py-2 transition-colors ${hasBlood ? "bg-[#EDF1E8] text-[#16241a] hover:bg-white" : "bg-[#2c3f2f] text-[#6f7d6c] cursor-not-allowed"}`}
+                >この結果を記録する</button>
+              </div>
+              {history.length > 0 && (
+                <div className="mt-4 flex items-end gap-2 overflow-x-auto pb-1">
+                  {history.map((s, i) => {
+                    const ov = overallOfVals(s.vals);
+                    return (
+                      <div key={i} className="flex flex-col items-center gap-1 shrink-0" style={{ width: 44 }}>
+                        <div className="w-full h-16 rounded-md bg-[#0f1a12] flex items-end overflow-hidden">
+                          <div className="w-full rounded-md bg-gradient-to-t from-[#3d5638] to-[#85AB8B]" style={{ height: `${Math.max(6, ov)}%` }} />
+                        </div>
+                        <span className="text-[11px] font-bold text-[#EDF1E8]">{ov}</span>
+                        <span className="text-[9px] text-[#6f7d6c] tabular-nums">{s.at.slice(5).replace("-", "/")}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             <p className="mt-4 text-[11px] text-[#9FB0A0] leading-[1.8]">
-              ※ ゲーム的な可視化です。数値の意味・対処は医師が判断します。<span className="text-[#A9CBAE]">検査（通院）に行くと、ステータスが更新されます。</span>
+              ※ ゲーム的な可視化です。数値の意味・対処は医師が判断します。<span className="text-[#A9CBAE]">検査（通院）に行くたび記録すると、レーダーが外へ広がっていきます。</span>
             </p>
           </div>
         </div>
