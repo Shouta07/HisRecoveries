@@ -36,9 +36,9 @@ export default function WhySection() {
               </p>
               <p>
                 だから、<span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
-                匿名のまま、理解から、変化の一日、そして定着まで。
+                匿名のまま、<span className="text-[#EDF1E8] font-medium">見た目の悩みを入口に、髪・肌・体・心まで</span>。
                 <br className="hidden sm:block" />
-                ただ、<span className="text-[#EDF1E8] font-medium">あなたの側に立って伴走します</span>。
+                ただ、あなたの側に立って伴走します。それが、私たちの考える男性ウェルネスです。
               </p>
             </div>
 
