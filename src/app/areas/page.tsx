@@ -19,6 +19,7 @@ const ICONS: Record<string, React.ReactNode> = {
   skin: <path d="M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z" />,
   face: (<><circle cx="12" cy="12" r="8.5" /><path d="M9 10h.01M15 10h.01M9 14.5c1.8 1.4 4.2 1.4 6 0" /></>),
   "body-hair": (<><rect x="4" y="3" width="16" height="5" rx="1.5" /><path d="M12 8v13M9 11l3 2 3-2M9 15l3 2 3-2" /></>),
+  mind: <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />,
 };
 
 export const metadata: Metadata = {

@@ -104,6 +104,21 @@ export const complexes: Complex[] = [
     accent: "#15803D",
     accentSoft: "#E7F4EB",
   },
+  {
+    id: "mind",
+    territory: "mind-habits",
+    categories: [],
+    ja: "心・習慣",
+    en: "Mind & Habits",
+    mechanism: "見た目の奥にある睡眠・習慣・気分が、印象と自信を内側から支える。",
+    system: "睡眠・習慣・気分",
+    worry: "なんとなく、いつも疲れている",
+    stat: "整えるのは、見た目だけじゃない",
+    why: "見た目を整えると、不思議と気持ちも少し軽くなる。逆に、睡眠や生活のリズムが乱れると、どれだけ外見を整えても疲れて見えます。心・睡眠・習慣は、見た目の奥で印象と自信を支えています。ここは医療ではなく、日々の小さな整え方から動かせる部分です（つらさが続く場合は専門家へ）。",
+    accent: "#0E7490",
+    accentSoft: "#E0F2F4",
+    guide: true,
+  },
 ];
 
 export function complexByTerritory(territory: string): Complex | undefined {

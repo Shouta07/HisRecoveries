@@ -32,6 +32,7 @@ His Recoveries は、男性の「言えない悩み」を扱う日本語のサ�
 2. **ニキビ・肌** `/areas/skin` — 皮脂・毛穴の角化(詰まり)・アクネ菌・炎症の4要素が重なって起きる。跡は炎症のあとに残り、新しいニキビと分ける。マラセチア由来との見分けが重要。
 3. **顔の印象（老け見え）** `/areas/face` — 骨格・むくみ・表情の癖・肌の質感・睡眠が複合してつくる。むくみ・肌・表情・睡眠は変えやすく、骨格は変えにくい。
 4. **髭・体毛** `/areas/body-hair` — 濃さや分布はアンドロゲンへの毛包の感受性と毛周期で決まる体質。だらしなさではなく、正解はひとつではない。
+5. **心・習慣（実践ガイド）** `/areas/mind` — 見た目の奥の睡眠・習慣・気分が印象と自信を内側から支える。医療ではなく日々の整え方（睡眠・習慣化・見た目と自信の関係）。つらさが続く場合は専門家へ、と明記。
 
 ## ペルソナがよく検索すること（このサイトが答える問い）
 
@@ -46,7 +47,7 @@ His Recoveries は、男性の「言えない悩み」を扱う日本語のサ�
 - Home: https://hisrecoveries.com/
 - 私たちの思想（Manifesto・仲間募集）: https://hisrecoveries.com/manifesto
 - 第一印象改善パッケージ: https://hisrecoveries.com/packages/first-impression
-- His Recoveries Library（記事一覧）: https://hisrecoveries.com/areas ・ /areas/hair ・ /areas/skin ・ /areas/face ・ /areas/body-hair
+- His Recoveries Library（記事一覧）: https://hisrecoveries.com/areas ・ /areas/hair ・ /areas/skin ・ /areas/face ・ /areas/body-hair ・ /areas/mind
 - 予約登録（完全匿名）: https://hisrecoveries.com/apply
 - プライバシー・免責事項: https://hisrecoveries.com/privacy
 - Sitemap: https://hisrecoveries.com/sitemap.xml
