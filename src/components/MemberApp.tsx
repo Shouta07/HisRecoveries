@@ -15,16 +15,30 @@ const HEAD: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-type Marker = { key: string; label: string; unit: string; low: number; high: number; hint: string; cat: string };
+// dir: "up" = 範囲内で高いほどステータス高 / "down" = 低いほど高。short = レーダー軸の短縮名。
+type Marker = { key: string; label: string; short: string; unit: string; low: number; high: number; dir: "up" | "down"; hint: string; cat: string };
 
 const MARKERS: Marker[] = [
-  { key: "testosterone", label: "テストステロン", unit: "ng/dL", low: 250, high: 1100, hint: "活力・意欲に関わるとされる。睡眠・運動・体重管理が土台。", cat: "vitality" },
-  { key: "ferritin", label: "フェリチン（鉄）", unit: "ng/mL", low: 30, high: 300, hint: "低いと疲れやすさに関わることがある。鉄を含む食事を意識。", cat: "iron" },
-  { key: "zinc", label: "亜鉛", unit: "µg/dL", low: 80, high: 130, hint: "肌・髪・味覚に関わるとされる。牡蠣・赤身肉・ナッツなど。", cat: "zinc" },
-  { key: "vitaminD", label: "ビタミンD", unit: "ng/mL", low: 30, high: 50, hint: "日光と食事で。骨・気分との関連が語られる。", cat: "vitd" },
-  { key: "hba1c", label: "HbA1c", unit: "%", low: 4.6, high: 5.5, hint: "高めは食事・運動の見直しの目安。甘い飲料を減らす。", cat: "metabo" },
-  { key: "ldl", label: "LDLコレステロール", unit: "mg/dL", low: 0, high: 120, hint: "高めは食事・運動の見直しの目安。", cat: "metabo" },
+  { key: "testosterone", label: "テストステロン", short: "活力", unit: "ng/dL", low: 250, high: 1100, dir: "up", hint: "活力・意欲に関わるとされる。睡眠・運動・体重管理が土台。", cat: "vitality" },
+  { key: "ferritin", label: "フェリチン（鉄）", short: "鉄", unit: "ng/mL", low: 30, high: 300, dir: "up", hint: "低いと疲れやすさに関わることがある。鉄を含む食事を意識。", cat: "iron" },
+  { key: "zinc", label: "亜鉛", short: "亜鉛", unit: "µg/dL", low: 80, high: 130, dir: "up", hint: "肌・髪・味覚に関わるとされる。牡蠣・赤身肉・ナッツなど。", cat: "zinc" },
+  { key: "vitaminD", label: "ビタミンD", short: "ビタD", unit: "ng/mL", low: 30, high: 50, dir: "up", hint: "日光と食事で。骨・気分との関連が語られる。", cat: "vitd" },
+  { key: "hba1c", label: "HbA1c", short: "血糖", unit: "%", low: 4.6, high: 5.5, dir: "down", hint: "高めは食事・運動の見直しの目安。甘い飲料を減らす。", cat: "metabo" },
+  { key: "ldl", label: "LDLコレステロール", short: "脂質", unit: "mg/dL", low: 0, high: 120, dir: "down", hint: "高めは食事・運動の見直しの目安。", cat: "metabo" },
 ];
+
+// RPGステータス化：各マーカーを 0–100 の「ステータス値」に。診断ではなく可視化。
+function markerScore(m: Marker, raw: string | undefined): number {
+  if (raw === undefined || raw === "") return 0;
+  const v = Number(raw);
+  if (Number.isNaN(v)) return 0;
+  const span = m.high - m.low || 1;
+  const s = m.dir === "down" ? ((m.high - v) / span) * 100 : ((v - m.low) / span) * 100;
+  return Math.max(0, Math.min(100, Math.round(s)));
+}
+function rankOf(score: number): string {
+  return score >= 90 ? "S" : score >= 75 ? "A" : score >= 60 ? "B" : score >= 45 ? "C" : score >= 30 ? "D" : "E";
+}
 
 type Product = { name: string; cat: string; price: string; note: string };
 const PRODUCTS: Product[] = [
@@ -202,6 +216,20 @@ export default function MemberApp() {
   // 「今日の一歩」= 一般の一歩 + 血液のフラグに紐づく一歩（＝来店と来店をつなぐ道中）
   const todaySteps = DAILY_ACTIONS.filter((a) => a.cat === "general" || recCats.has(a.cat)).slice(0, 5);
 
+  // ── ステータス（レーダーチャート＝RPGのキャラシート）──
+  const RC = { cx: 120, cy: 106, R: 80 };
+  const radar = MARKERS.map((m, i) => {
+    const ang = (-90 + i * 60) * (Math.PI / 180);
+    return { m, i, ang, sc: markerScore(m, vals[m.key]) };
+  });
+  const overall = hasBlood ? Math.round(radar.reduce((n, a) => n + a.sc, 0) / radar.length) : 0;
+  const polyPts = radar
+    .map((a) => { const r = (RC.R * a.sc) / 100; return `${(RC.cx + r * Math.cos(a.ang)).toFixed(1)},${(RC.cy + r * Math.sin(a.ang)).toFixed(1)}`; })
+    .join(" ");
+  const ringPts = (pct: number) =>
+    MARKERS.map((_, i) => { const ang = (-90 + i * 60) * (Math.PI / 180); const r = (RC.R * pct) / 100; return `${(RC.cx + r * Math.cos(ang)).toFixed(1)},${(RC.cy + r * Math.sin(ang)).toFixed(1)}`; })
+      .join(" ");
+
   if (!ready) return null;
 
   const banner = (
@@ -367,6 +395,68 @@ export default function MemberApp() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* ①' ステータス（レーダーチャート＝RPGのキャラシート） */}
+      <section className="mb-10">
+        <h2 className="flex items-center gap-2.5 text-[1.15rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>
+          <span aria-hidden className="w-1 h-5 rounded-full bg-[#85AB8B]" />あなたのステータス
+        </h2>
+        <p className="text-[12px] text-[#6b7a66] mb-4">検査値を、6つのステータスとして可視化。検査に行くたびに更新され、育っていきます（診断ではありません）。</p>
+        <div className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-8 grid md:grid-cols-[240px_1fr] gap-6 items-center">
+          {/* レーダー */}
+          <div className="relative mx-auto">
+            <svg viewBox="0 0 240 205" width="240" height="205" style={{ overflow: "visible" }} aria-label="ステータスのレーダーチャート">
+              {[25, 50, 75, 100].map((p) => (
+                <polygon key={p} points={ringPts(p)} fill="none" stroke="#2c3f2f" strokeWidth="1" />
+              ))}
+              {radar.map((a) => (
+                <line key={a.i} x1={RC.cx} y1={RC.cy} x2={RC.cx + RC.R * Math.cos(a.ang)} y2={RC.cy + RC.R * Math.sin(a.ang)} stroke="#2c3f2f" strokeWidth="1" />
+              ))}
+              {hasBlood && <polygon points={polyPts} fill="#85AB8B" fillOpacity="0.32" stroke="#A9CBAE" strokeWidth="2" />}
+              {hasBlood && radar.map((a) => {
+                const r = (RC.R * a.sc) / 100;
+                return <circle key={a.i} cx={RC.cx + r * Math.cos(a.ang)} cy={RC.cy + r * Math.sin(a.ang)} r="2.5" fill="#EDF1E8" />;
+              })}
+              {radar.map((a) => {
+                const lr = RC.R + 15;
+                const x = RC.cx + lr * Math.cos(a.ang);
+                const y = RC.cy + lr * Math.sin(a.ang);
+                return (
+                  <text key={a.i} x={x} y={y} dy="3" textAnchor="middle" fontSize="10" fill="#9FB0A0">{a.m.short}</text>
+                );
+              })}
+            </svg>
+          </div>
+          {/* オーバーオール＆ステータス一覧 */}
+          <div>
+            <div className="flex items-end gap-3 mb-4">
+              <div>
+                <div className="text-[11px] tracking-[0.15em] text-[#85AB8B] font-semibold">CONDITION</div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[2.6rem] leading-none" style={HEAD}>{overall}</span>
+                  <span className="text-[13px] text-[#9FB0A0]">/100</span>
+                  {hasBlood && <span className="text-[1.4rem] font-black text-[#A9CBAE] ml-1" style={HEAD}>ランク {rankOf(overall)}</span>}
+                </div>
+              </div>
+            </div>
+            {!hasBlood && <p className="text-[12px] text-[#9FB0A0] mb-4">上の欄に検査値を入力すると、ステータスが表示されます。</p>}
+            <div className="space-y-2">
+              {radar.map((a) => (
+                <div key={a.i} className="flex items-center gap-3">
+                  <span className="w-12 text-[11px] text-[#C9D2C4] shrink-0">{a.m.short}</span>
+                  <div className="flex-1 h-2 rounded-full bg-[#0f1a12] overflow-hidden">
+                    <div className="h-full rounded-full bg-[#85AB8B] transition-all" style={{ width: `${a.sc}%` }} />
+                  </div>
+                  <span className="w-8 text-right text-[11px] font-mono text-[#EDF1E8]">{a.sc}</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-[11px] text-[#9FB0A0] leading-[1.8]">
+              ※ ゲーム的な可視化です。数値の意味・対処は医師が判断します。<span className="text-[#A9CBAE]">検査（通院）に行くと、ステータスが更新されます。</span>
+            </p>
+          </div>
         </div>
       </section>
 
