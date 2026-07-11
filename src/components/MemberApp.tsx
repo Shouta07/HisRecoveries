@@ -38,8 +38,60 @@ const PRODUCTS: Product[] = [
   { name: "低GI 置き換え食", cat: "metabo", price: "¥3,200", note: "食事の見直しに" },
 ];
 
+// ── ゲーミフィケーション（＝一連の体験）───────────────────────────
+// 煽らない・比べない・傷つけない。ブランドの声を守るため、
+// ポイント/ランキング/罰ではなく「章立てされた変化の旅」として設計。
+// From Complex to Confidence を、そのまま進行のアーチにする。
+type DailyAction = { id: string; label: string; cat: string };
+const DAILY_ACTIONS: DailyAction[] = [
+  { id: "wash", label: "洗顔を、ていねいに", cat: "general" },
+  { id: "sleep", label: "夜、スマホを少し早めに置く", cat: "general" },
+  { id: "walk", label: "5分だけ、外を歩く", cat: "vitality" },
+  { id: "protein", label: "たんぱく質を、意識して一品", cat: "vitality" },
+  { id: "sun", label: "日中、少し陽に当たる", cat: "vitd" },
+  { id: "iron", label: "鉄を含むものを、一品", cat: "iron" },
+  { id: "zinc", label: "亜鉛を含む食材を、一品", cat: "zinc" },
+  { id: "sugar", label: "甘い飲みものを、一本減らす", cat: "metabo" },
+];
+
+// 章 = From Complex to Confidence の道のり。歩み（＝続けた小さな一歩の数）で進む。
+const CHAPTERS = [
+  { n: 1, ja: "気づく", desc: "記録を、はじめる", need: 0 },
+  { n: 2, ja: "整える", desc: "小さな一歩を、とる", need: 1 },
+  { n: 3, ja: "続く", desc: "習慣に、なっていく", need: 7 },
+  { n: 4, ja: "自信", desc: "変化が、板についてくる", need: 21 },
+];
+
+type Milestone = { id: string; label: string; test: (s: JStat) => boolean };
+const MILESTONES: Milestone[] = [
+  { id: "first", label: "最初の一歩", test: (s) => s.steps >= 1 },
+  { id: "blood", label: "はじめての記録", test: (s) => s.hasBlood },
+  { id: "s3", label: "3日、続いた", test: (s) => s.streak >= 3 },
+  { id: "s7", label: "7日、続いた", test: (s) => s.streak >= 7 },
+  { id: "st10", label: "10の歩み", test: (s) => s.steps >= 10 },
+  { id: "st30", label: "30の歩み", test: (s) => s.steps >= 30 },
+];
+
+type JStat = { steps: number; days: number; streak: number; hasBlood: boolean };
+type Journey = { done: Record<string, string[]> }; // dateStr -> 完了したactionのid
+
+function todayStr(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+function streakOf(done: Record<string, string[]>): number {
+  const d = new Date();
+  if (!(done[d.toISOString().slice(0, 10)]?.length)) d.setDate(d.getDate() - 1); // 今日が空でも猶予
+  let s = 0;
+  for (;;) {
+    const k = d.toISOString().slice(0, 10);
+    if (done[k]?.length) { s++; d.setDate(d.getDate() - 1); } else break;
+  }
+  return s;
+}
+
 const LS_AUTH = "hr_member_demo_auth";
 const LS_DATA = "hr_member_demo_bloods";
+const LS_JOURNEY = "hr_member_demo_journey";
 
 export default function MemberApp() {
   const [ready, setReady] = useState(false);
@@ -48,15 +100,29 @@ export default function MemberApp() {
   const [pw, setPw] = useState("");
   const [vals, setVals] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<"osusume" | "all">("osusume");
+  const [journey, setJourney] = useState<Journey>({ done: {} });
 
   useEffect(() => {
     try {
       setAuthed(localStorage.getItem(LS_AUTH) === "1");
       const d = localStorage.getItem(LS_DATA);
       if (d) setVals(JSON.parse(d));
+      const j = localStorage.getItem(LS_JOURNEY);
+      if (j) setJourney(JSON.parse(j));
     } catch { /* ignore */ }
     setReady(true);
   }, []);
+
+  function saveJourney(next: Journey) {
+    setJourney(next);
+    try { localStorage.setItem(LS_JOURNEY, JSON.stringify(next)); } catch { /* ignore */ }
+  }
+  function toggleAction(aid: string) {
+    const k = todayStr();
+    const cur = journey.done[k] ?? [];
+    const nextDone = cur.includes(aid) ? cur.filter((x) => x !== aid) : [...cur, aid];
+    saveJourney({ ...journey, done: { ...journey.done, [k]: nextDone } });
+  }
 
   function login(e: React.FormEvent) {
     e.preventDefault();
@@ -88,6 +154,19 @@ export default function MemberApp() {
   const recCats = new Set<string>(flagged.map((m) => m.cat));
   recCats.add("general");
   const recommended = PRODUCTS.filter((p) => recCats.has(p.cat));
+
+  // ── 歩み（ゲーミフィケーション）の集計 ──
+  const doneDays = Object.keys(journey.done).filter((k) => journey.done[k].length);
+  const steps = doneDays.reduce((n, k) => n + journey.done[k].length, 0);
+  const hasBlood = Object.values(vals).some((v) => v !== undefined && v !== "");
+  const stat: JStat = { steps, days: doneDays.length, streak: streakOf(journey.done), hasBlood };
+  const chIdx = CHAPTERS.reduce((acc, c, i) => (steps >= c.need ? i : acc), 0);
+  const chapter = CHAPTERS[chIdx];
+  const nextCh = CHAPTERS[chIdx + 1];
+  const chProgress = nextCh ? Math.min(1, (steps - chapter.need) / (nextCh.need - chapter.need)) : 1;
+  const todayDone = journey.done[todayStr()] ?? [];
+  // 「今日の一歩」= 一般の一歩 + 血液のフラグに紐づく一歩（＝一連の体験の接続）
+  const todaySteps = DAILY_ACTIONS.filter((a) => a.cat === "general" || recCats.has(a.cat)).slice(0, 5);
 
   if (!ready) return null;
 
@@ -125,6 +204,75 @@ export default function MemberApp() {
         <button onClick={logout} className="text-[12px] text-[#6b7a66] hover:text-[#1f2a1d] underline underline-offset-2">ログアウト</button>
       </div>
       <div className="mb-8">{banner}</div>
+
+      {/* ⓪ あなたの歩み（一連の体験・ゲーミフィケーション） */}
+      <section className="mb-10">
+        <div className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-8">
+          <div className="flex items-center justify-between gap-4 mb-5">
+            <div>
+              <div className="text-[11px] tracking-[0.18em] text-[#85AB8B] font-semibold mb-1">YOUR RECOVERY JOURNEY</div>
+              <h2 className="text-[1.35rem]" style={HEAD}>第{chapter.n}章　{chapter.ja}</h2>
+              <p className="text-[12.5px] text-[#9FB0A0] mt-0.5">{chapter.desc}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <div className="text-[2rem] leading-none" style={HEAD}>{steps}</div>
+              <div className="text-[10px] text-[#9FB0A0] mt-1">歩み</div>
+            </div>
+          </div>
+
+          {/* 章の進行バー */}
+          <div className="mb-2 flex items-center justify-between text-[11px] text-[#9FB0A0]">
+            <span>第{chapter.n}章 {chapter.ja}</span>
+            {nextCh ? <span>次は「{nextCh.ja}」まで あと{Math.max(0, nextCh.need - steps)}歩</span> : <span>最終章</span>}
+          </div>
+          <div className="h-2 rounded-full bg-[#0f1a12] overflow-hidden">
+            <div className="h-full rounded-full bg-[#85AB8B] transition-all" style={{ width: `${Math.round(chProgress * 100)}%` }} />
+          </div>
+
+          {/* 継続（そっと。責めない） */}
+          <p className="mt-4 text-[12px] text-[#C9D2C4]">
+            {stat.streak > 0
+              ? <>いま <span className="font-bold text-[#EDF1E8]">{stat.streak}日</span> 続いています。できた日だけ、そっと。</>
+              : <>今日から、また一歩ずつ。続かない日があっても、大丈夫です。</>}
+          </p>
+
+          {/* 節目 */}
+          <div className="mt-5 flex flex-wrap gap-2">
+            {MILESTONES.map((m) => {
+              const got = m.test(stat);
+              return (
+                <span key={m.id} className={`text-[11px] px-2.5 py-1 rounded-full border ${got ? "border-[#85AB8B]/50 bg-[#85AB8B]/15 text-[#EDF1E8]" : "border-[#ffffff]/10 text-[#6f7d6c]"}`}>
+                  {got ? "◆" : "◇"} {m.label}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 今日の一歩（チェックで歩みが進む） */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-[13px] font-bold text-[#1f2a1d]">今日の、小さな一歩</h3>
+            <span className="text-[11px] text-[#6b7a66]">{todayDone.length} / {todaySteps.length} 完了</span>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-2">
+            {todaySteps.map((a) => {
+              const done = todayDone.includes(a.id);
+              return (
+                <button
+                  key={a.id}
+                  onClick={() => toggleAction(a.id)}
+                  className={`flex items-center gap-3 text-left rounded-[0.9rem] border px-4 py-3 transition-colors ${done ? "border-[#3d5638]/30 bg-[#eef3ea]" : "border-[#1f2a1d]/12 bg-white hover:border-[#3d5638]/40"}`}
+                >
+                  <span aria-hidden className={`w-5 h-5 rounded-full grid place-items-center text-[11px] shrink-0 ${done ? "bg-[#3d5638] text-white" : "border border-[#1f2a1d]/25 text-transparent"}`}>✓</span>
+                  <span className={`text-[13px] ${done ? "text-[#3d5638]" : "text-[#1f2a1d]"}`}>{a.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-[11px] text-[#9aa79a]">※ チェックすると「歩み」が増え、章が進みます。記録はこの端末内だけに残ります。</p>
+        </div>
+      </section>
 
       {/* ① 血液データ入力 */}
       <section className="mb-10">
