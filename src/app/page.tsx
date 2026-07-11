@@ -142,6 +142,7 @@ export default function HomePage() {
             <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#4b5b47]">
               <Link href="/manifesto" className="hover:text-[#1f2a1d] transition-colors">思想</Link>
               <Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">Library</Link>
+              <Link href="/member" className="hover:text-[#1f2a1d] transition-colors">会員ページ（β）</Link>
               <Link href="/partners" className="hover:text-[#1f2a1d] transition-colors">現場のプロの方へ</Link>
               <Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link>
             </nav>
