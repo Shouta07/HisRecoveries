@@ -1,20 +1,31 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import MemberApp from "@/components/MemberApp";
 import { site } from "@/lib/site";
+import { lineConfigured, MEMBER_COOKIE } from "@/lib/line";
 
 // 会員ページ（β・プロトタイプ）。
-// 血液検査データ＝要配慮個人情報のため、本番実装は
-// 安全な認証・暗号化・明示的同意を前提とする（docs/MEMBER_PLATFORM_SPEC.md）。
-// このデモは端末内 localStorage のみで完結し、外部送信しない。
+// 認証は LINE ログイン（LINE Login v2.1）。将来のコミュニケーションは
+// LINE ベースにするため、会員の入口を LINE に寄せる。チャネル未設定の間は
+// デモ（擬似ログイン）で動作する。
+// 血液検査データ等＝要配慮個人情報のため、本番は Accord 側で安全に扱う
+// （docs/ACCORD_PLATFORM_SPEC.md / MEMBER_PLATFORM_SPEC.md）。
 // 検索インデックスには載せない（noindex）。
 export const metadata: Metadata = {
   title: "会員ページ（β） | His Recoveries",
   description:
-    "血液検査データをもとにした行動のヒントと、あなたに合わせたECマーケットプレイス。※現在はプロトタイプ（デモ）です。",
+    "LINE ログインで使う会員ページ。あなたの物語（相談・来訪・記録）が Accord から映し出されます。※現在はプロトタイプ（デモ）です。",
   robots: { index: false, follow: false },
   alternates: { canonical: `${site.url}/member` },
 };
 
+type Session = { name: string; demo?: boolean } | null;
+
 export default function MemberPage() {
-  return <MemberApp />;
+  const raw = cookies().get(MEMBER_COOKIE)?.value;
+  let session: Session = null;
+  if (raw) {
+    try { session = JSON.parse(raw); } catch { session = null; }
+  }
+  return <MemberApp session={session} lineEnabled={lineConfigured()} />;
 }

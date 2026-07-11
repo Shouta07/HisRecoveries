@@ -10,7 +10,7 @@
 // 本番化には、セキュアなバックエンド・暗号化・要配慮個人情報の同意フロー等が別途必要
 // （docs/MEMBER_PLATFORM_SPEC.md 参照）。
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   type Bloods, type Marker, type Kind,
   MARKERS, markerScore, rankOf, overallOfBloods, FEED_ACTIVE, FEED_EMPTY,
@@ -50,33 +50,13 @@ const CHAPTERS = [
   { n: 4, ja: "自信", desc: "なりたい自分に、近づく" },
 ];
 
-const LS_AUTH = "hr_member_demo_auth";
+type Session = { name: string; demo?: boolean } | null;
 
-export default function MemberApp() {
-  const [ready, setReady] = useState(false);
-  const [authed, setAuthed] = useState(false);
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
+export default function MemberApp({ session, lineEnabled }: { session: Session; lineEnabled: boolean }) {
   const [tab, setTab] = useState<"osusume" | "all">("osusume");
   const [scenario, setScenario] = useState<"active" | "empty">("active");
 
-  useEffect(() => {
-    try { setAuthed(localStorage.getItem(LS_AUTH) === "1"); } catch { /* ignore */ }
-    setReady(true);
-  }, []);
-
-  function login(e: React.FormEvent) {
-    e.preventDefault();
-    if (!id.trim() || !pw.trim()) return;
-    localStorage.setItem(LS_AUTH, "1");
-    setAuthed(true);
-  }
-  function logout() {
-    localStorage.removeItem(LS_AUTH);
-    setAuthed(false);
-  }
-
-  if (!ready) return null;
+  const authed = !!session;
 
   const banner = (
     <div className="rounded-[1rem] border border-[#b8860b]/30 bg-[#fff8e6] px-4 py-3 text-[12px] text-[#7a5b00] leading-[1.8]">
@@ -85,24 +65,33 @@ export default function MemberApp() {
     </div>
   );
 
-  // ── ログイン画面 ──
+  // ── ログイン画面（LINE ログイン）──
   if (!authed) {
     return (
       <div className="mx-auto max-w-[420px] px-6 py-16">
         <div className="mb-6">{banner}</div>
         <h1 className="text-[1.7rem] text-[#1f2a1d] mb-2" style={HEAD}>会員ログイン <span className="text-[#85AB8B] text-[13px] font-mono align-middle">β</span></h1>
-        <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-6">
+        <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-7">
           あなたの物語が、そのまま映し出されるページ（試作）。入力は要りません。<br />
-          <span className="text-[#6b7a66]">デモのため、任意のIDとパスワードでログインできます。</span>
+          <span className="text-[#6b7a66]">LINE でログインすると、これからのご連絡も LINE でお届けします。</span>
         </p>
-        <form onSubmit={login} className="space-y-4">
-          <input value={id} onChange={(e) => setId(e.target.value)} placeholder="ID（任意）" className="w-full rounded-2xl border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[15px] outline-none focus:border-[#3d5638]" />
-          <input value={pw} onChange={(e) => setPw(e.target.value)} type="password" placeholder="パスワード（任意）" className="w-full rounded-2xl border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[15px] outline-none focus:border-[#3d5638]" />
-          <button type="submit" className="w-full rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[15px] font-semibold py-3.5 transition-colors">ログイン</button>
-        </form>
+        <a
+          href="/api/member/line/login"
+          className="flex items-center justify-center gap-2.5 w-full rounded-2xl bg-[#06C755] hover:bg-[#05b34c] text-white text-[15px] font-bold py-3.5 transition-colors"
+        >
+          <svg aria-hidden width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.69 2 10.23c0 4.07 3.55 7.48 8.35 8.13.32.07.77.21.88.49.1.25.07.64.03.9l-.14.85c-.04.25-.2.98.86.54 1.06-.45 5.7-3.36 7.78-5.75C21.3 13.77 22 12.09 22 10.23 22 5.69 17.52 2 12 2z"/></svg>
+          LINE でログイン
+        </a>
+        {!lineEnabled && (
+          <p className="mt-3 text-[11px] text-[#9aa79a] leading-[1.8]">
+            ※ デモ環境では LINE チャネル未接続のため、ボタンを押すと擬似ログインで会員ページを体験できます。本番では実際の LINE ログインになります。
+          </p>
+        )}
       </div>
     );
   }
+
+  const displayName = session?.name ?? "会員";
 
   // ── Accord フィードの読み取り（顧客は何も入力しない）──
   const feed = scenario === "active" ? FEED_ACTIVE : FEED_EMPTY;
@@ -159,8 +148,11 @@ export default function MemberApp() {
   return (
     <div className="mx-auto max-w-[980px] px-5 sm:px-8 py-10">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[1.5rem] text-[#1f2a1d]" style={HEAD}>マイページ <span className="text-[#85AB8B] text-[12px] font-mono align-middle">β</span></h1>
-        <button onClick={logout} className="text-[12px] text-[#6b7a66] hover:text-[#1f2a1d] underline underline-offset-2">ログアウト</button>
+        <div>
+          <h1 className="text-[1.5rem] text-[#1f2a1d]" style={HEAD}>マイページ <span className="text-[#85AB8B] text-[12px] font-mono align-middle">β</span></h1>
+          <p className="text-[12px] text-[#6b7a66] mt-0.5">{displayName} さん{session?.demo && <span className="ml-1 text-[10px] text-[#9aa79a]">（デモ）</span>}</p>
+        </div>
+        <a href="/api/member/line/logout" className="text-[12px] text-[#6b7a66] hover:text-[#1f2a1d] underline underline-offset-2">ログアウト</a>
       </div>
       <div className="mb-6">{banner}</div>
 
