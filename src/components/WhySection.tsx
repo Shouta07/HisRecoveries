@@ -29,16 +29,19 @@ export default function WhySection() {
                 でも——口に出さないだけで、同じ悩みを抱える人は、あなたが思うより、ずっと多い。
               </p>
               <p>
-                私たちも、当事者として同じ道を通ってきました。だから知っています。
+                その行き止まりを、私たちは自分の悩みで知っています。
+                夜中に検索して、閉じて、また検索した日のことも。
                 <br className="hidden sm:block" />
+                だから、<span className="text-[#EDF1E8] font-medium">自分が欲しかったものを作りました</span>。
                 コンプレックスは、性格でも甘えでもなく、<span className="text-[#EDF1E8] font-medium">仕組みで向き合えること</span>。
-                そして、<span className="text-[#EDF1E8] font-medium">一人では、続かないこと</span>。
+                そして、<span className="text-[#EDF1E8] font-medium">一人では、続かないこと</span>。それを知っているからです。
               </p>
               <p>
                 だから、<span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
-                匿名のまま、<span className="text-[#EDF1E8] font-medium">見た目の悩みを入口に、髪・肌・体・心まで</span>。
+                点をばらばらに解決して、終わりにもしません。
+                入口は匿名のまま、<span className="text-[#EDF1E8] font-medium">見た目の悩みを起点に、髪・肌・体・心まで</span>——
                 <br className="hidden sm:block" />
-                ただ、あなたの側に立って伴走します。それが、私たちの考えるメンズウェルネスです。
+                あなたの側に立って、一本の線として伴走します。それが、私たちの考えるメンズウェルネスです。
               </p>
             </div>
 
@@ -50,6 +53,10 @@ export default function WhySection() {
               <Link href="/manifesto" className="mt-4 inline-flex items-center gap-2 text-[12.5px] font-semibold text-[#85AB8B] hover:text-[#EDF1E8] transition-colors">
                 私たちの思想を読む・仲間を募っています <span aria-hidden>→</span>
               </Link>
+              <p className="mt-2.5 text-[12px] text-[#9FB0A0]">
+                現場で働くプロの方へ——
+                <Link href="/partners" className="ml-1 underline underline-offset-2 hover:text-[#EDF1E8] transition-colors">この線を、一緒につくりませんか</Link>
+              </p>
             </div>
           </div>
         </div>

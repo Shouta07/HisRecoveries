@@ -7,6 +7,7 @@ import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
 import FlowSection from "@/components/FlowSection";
 import WhySection from "@/components/WhySection";
+import TenToSenSection from "@/components/TenToSenSection";
 import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
 
@@ -95,7 +96,7 @@ export default function HomePage() {
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            メイク・服・写真。専属チームと過ごす一日で、第一印象をまるごと。完全匿名で。
+            メイク・服・写真。ばらばらだった悩みを、専属チームと過ごす一日でひとつに。相談は、匿名のままで。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -125,6 +126,9 @@ export default function HomePage() {
 
         {/* 当日の流れ */}
         <FlowSection />
+
+        {/* 点を、線に。（柱1＋柱4） */}
+        <TenToSenSection />
 
         {/* Why — なぜやるのか（共感・思想） */}
         <WhySection />
