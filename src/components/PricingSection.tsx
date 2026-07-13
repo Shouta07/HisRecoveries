@@ -3,7 +3,7 @@
 // 単価は目安。最終価格はヒアリングで確定。
 import Link from "next/link";
 import BookingCTA from "@/components/BookingCTA";
-import { packages, entryDiagnosis, giftOption, urgentNote } from "@/lib/packages";
+import { packages, entryDiagnosis, bloodCheck, giftOption, urgentNote } from "@/lib/packages";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -24,20 +24,30 @@ export default function PricingSection() {
             第一印象を、<span className="text-[#3d5638]">予約する。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
-            入口は、無料の匿名相談から。内容に合わせて、印象診断（パッケージお申し込みで全額充当）またはパッケージをご案内します。
+            入口は、無料の匿名相談から。まず現在地を知り（外側＝印象診断／内側＝血液）、旅程のはじまりに合わせて、パッケージをご案内します。印象診断は、パッケージお申し込みで全額充当。
           </p>
         </div>
 
         <div className="grid lg:grid-cols-[1fr_1.4fr_1fr] gap-4 items-stretch">
-          {/* ① 入口: 印象診断 */}
+          {/* ① 入口: 現在地を知る（外側＝印象診断／内側＝血液・準備中） */}
           <div className="rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-sm p-6 flex flex-col">
-            <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#6b7a66] mb-2">Step 01 — 入口</div>
-            <h3 className="text-[1.15rem] font-bold text-[#1f2a1d]" style={MINCHO}>{entryDiagnosis.name}</h3>
-            <div className="mt-1.5 text-[1.15rem] font-bold text-[#3d5638]" style={MINCHO}>{entryDiagnosis.price}</div>
-            <div className="text-[11.5px] text-[#6b7a66] mb-3">{entryDiagnosis.duration}</div>
-            <p className="text-[12.5px] text-[#4b5b47] leading-[1.85] flex-1">{entryDiagnosis.note}</p>
+            <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#6b7a66] mb-2">Step 01 — 現在地を知る</div>
+            <div className="text-[10px] tracking-[0.15em] text-[#3d5638] font-semibold">外側</div>
+            <h3 className="mt-0.5 text-[1.1rem] font-bold text-[#1f2a1d]" style={MINCHO}>{entryDiagnosis.name}</h3>
+            <div className="mt-1 flex items-baseline gap-2">
+              <span className="text-[1.1rem] font-bold text-[#3d5638]" style={MINCHO}>{entryDiagnosis.price}</span>
+              <span className="text-[11px] text-[#6b7a66]">{entryDiagnosis.duration}</span>
+            </div>
+            <p className="mt-1.5 text-[12px] text-[#4b5b47] leading-[1.8]">{entryDiagnosis.note}</p>
+            <div className="my-4 h-px bg-[#1f2a1d]/8" />
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] tracking-[0.15em] text-[#3d5638] font-semibold">内側</span>
+              <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-[#eef3ea] text-[#3d5638]">{bloodCheck.status}</span>
+            </div>
+            <h3 className="mt-0.5 text-[1.1rem] font-bold text-[#1f2a1d]" style={MINCHO}>{bloodCheck.name}</h3>
+            <p className="mt-1.5 text-[12px] text-[#4b5b47] leading-[1.8] flex-1">{bloodCheck.note}</p>
             <BookingCTA className="mt-5 w-full text-center bg-[#eef3ea] hover:bg-[#e3ecdd] text-[#1f2a1d] text-[13px] font-semibold px-5 py-3 rounded-full transition-colors">
-              診断を予約する
+              現在地から、はじめる
             </BookingCTA>
           </div>
 

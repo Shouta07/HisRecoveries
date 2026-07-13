@@ -156,6 +156,7 @@ export default function ApplyForm() {
           <option value="">選択してください（任意）</option>
           <option value="まずは相談だけ（無料）">まずは相談だけ（無料）</option>
           <option value="印象診断セッション（¥22,000）">印象診断セッション（¥22,000・パッケージ申込で全額充当）</option>
+          <option value="血液コンディション・チェックの案内（準備中）">血液コンディション・チェックの案内を受けたい（準備中）</option>
           <option value="第一印象改善パッケージ">第一印象改善パッケージ（目安 ¥150,000〜）</option>
           <option value="ギフト（大切な人へ贈る）">ギフト（大切な人へ贈る）</option>
         </select>
