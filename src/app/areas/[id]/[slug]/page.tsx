@@ -5,6 +5,7 @@ import { complexById } from "@/lib/complexes";
 import { clusters, getCluster, CLUSTER_UPDATED } from "@/lib/clusters";
 import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
+import QuietConsult from "@/components/QuietConsult";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -108,6 +109,9 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           {a.kind === "guide" && (
             <span className="inline-flex rounded-full bg-[#3d5638] text-white px-3 py-1 text-[11px] font-bold mb-4 ml-2">ガイド</span>
           )}
+          {a.kind === "choose" && (
+            <span className="inline-flex rounded-full bg-[#16241A] text-white px-3 py-1 text-[11px] font-bold mb-4 ml-2">選び方</span>
+          )}
           <h1 className="text-[1.8rem] sm:text-[2.3rem] leading-[1.35]" style={HEAD}>
             {a.title}
           </h1>
@@ -126,7 +130,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           )}
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{a.lead}</p>
           <div className="mt-4 flex items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">{a.kind === "guide" ? "実践ガイド" : "出典明記"}</span>
+            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">{a.kind === "guide" ? "実践ガイド" : a.kind === "choose" ? "選び方・向き合い方" : "出典明記"}</span>
             <span className="text-[11px] text-[#9aa79a]">最終更新: {CLUSTER_UPDATED}</span>
           </div>
         </header>
@@ -150,7 +154,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </ul>
         </div>
 
-        <InlineConsult />
+        {c.guide && <InlineConsult />}
 
         {/* 本文 */}
         <div className="space-y-8">
@@ -178,12 +182,19 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </dl>
         </section>
 
-        {/* 体験の提案（記事 → 体験の橋渡し） */}
-        <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} />
+        {/* 記事 → 次の一歩の橋渡し。ガイド（第一印象）は体験へ、
+            メカニズム／選び方は「静かな一本」CTA だけを置く（バナー乱立を避ける）。 */}
+        {c.guide ? (
+          <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} />
+        ) : (
+          <QuietConsult />
+        )}
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
           {a.kind === "guide"
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
+            : a.kind === "choose"
+            ? "※ 本記事は、選ぶときの観点を中立に整理したものです。特定の医療機関・製品・施術を推奨するものではなく、効果・有効性を示すものでも、診断・治療・受診勧奨を目的としたものでもありません。「今はやらない」も含め、選ぶのはあなたです。個別の判断は専門家にご相談ください。"
             : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
         </p>
 

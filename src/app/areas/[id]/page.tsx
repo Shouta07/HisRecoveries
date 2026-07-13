@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { complexes, complexById } from "@/lib/complexes";
 import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
-import { clustersByArea } from "@/lib/clusters";
+import { clustersByArea, chooseArticleByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
 import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
+import QuietConsult from "@/components/QuietConsult";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -46,8 +47,9 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
   const cites = citationsByComplex[c.id] ?? [];
   const all = clustersByArea(c.id);
-  const related = all.filter((r) => r.kind !== "interview");
+  const related = all.filter((r) => r.kind !== "interview" && r.kind !== "choose");
   const interviews = all.filter((r) => r.kind === "interview");
+  const chooseArticle = chooseArticleByArea(c.id);
   const voices = fieldVoicesByArea(c.id);
   const url = `${site.url}/areas/${c.id}`;
   const pillarTitle = area.titleOverride ?? `${c.ja}は、なぜ起きるのか — 原因と仕組み`;
@@ -148,7 +150,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </ul>
         </div>
 
-        <InlineConsult />
+        {c.guide && <InlineConsult />}
 
         {/* 原文（主） */}
         <div className="space-y-8">
@@ -170,6 +172,31 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </section>
         </div>
 
+        {/* 橋セクション — 仕組み（誰にでも）から、選び方（あなたの場合）へ。
+            メカニズム領域のみ。押さない、静かな導線。 */}
+        {!c.guide && chooseArticle && (
+          <section className="mt-12 rounded-[1.6rem] bg-[#16241A] text-[#EDF1E8] p-7 sm:p-9">
+            <p className="text-[14px] sm:text-[15px] leading-[2] text-[#C9D2C4]">
+              ここまでは、誰にでも当てはまる仕組みの話。
+              <br className="hidden sm:block" />
+              ここから先は、<span className="text-[#EDF1E8] font-medium">あなたの状態・優先順位・予算で、答えが変わります</span>。
+            </p>
+            <Link
+              href={`/areas/${c.id}/${chooseArticle.slug}`}
+              className="group mt-5 flex items-center justify-between gap-3 rounded-[1.1rem] border border-[#85AB8B]/40 bg-[#0f1a12]/40 px-5 py-4 hover:border-[#85AB8B] transition-colors"
+            >
+              <span className="min-w-0">
+                <span className="block text-[10px] tracking-[0.16em] text-[#85AB8B] font-semibold mb-1">選び方・向き合い方</span>
+                <span className="block text-[14px] font-semibold text-[#EDF1E8] leading-[1.5]">{chooseArticle.title}</span>
+              </span>
+              <span aria-hidden className="text-[#85AB8B] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+            </Link>
+            <p className="mt-4 text-[11.5px] text-[#9FB0A0] leading-[1.85]">
+              「行かない」「今はやらない」も、正当な選択です。急ぐ必要はありません。
+            </p>
+          </section>
+        )}
+
         {/* FAQ */}
         <section className="mt-12">
           <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
@@ -185,8 +212,8 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </dl>
         </section>
 
-        {/* 体験の提案（記事 → 体験の橋渡し） */}
-        <ExperienceInvite context={c.guide ? `${c.ja}を整えたいあなたへ` : `${c.ja}の「なぜ」を知ったあなたへ`} />
+        {/* 体験の提案 — ガイド（第一印象）のみ。メカニズムは末尾の静かな一本に集約。 */}
+        {c.guide && <ExperienceInvite context={`${c.ja}を整えたいあなたへ`} />}
 
         {/* 出典・参考（従）— メカニズム記事のみ */}
         {!c.guide && (
@@ -312,6 +339,9 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
             : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。出典・参考リンクは中立な医学情報源によります。特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
         </p>
+
+        {/* 静かな一本（メカニズム領域のみ・末尾に1つだけ） */}
+        {!c.guide && <QuietConsult />}
 
         <div className="mt-10 flex flex-wrap gap-3">
           <Link href="/areas" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">

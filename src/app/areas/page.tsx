@@ -43,13 +43,14 @@ export const metadata: Metadata = {
 };
 
 type Card = {
-  href: string; badge: "ガイド" | "取材" | "解説"; title: string; excerpt: string;
+  href: string; badge: "ガイド" | "取材" | "解説" | "選び方"; title: string; excerpt: string;
   date: string; accent: string; accentSoft: string; category: string;
 };
 
 function badgeStyle(b: Card["badge"]) {
   if (b === "取材") return "bg-[#3d5638] text-white";
   if (b === "ガイド") return "bg-[#eef3ea] text-[#3d5638]";
+  if (b === "選び方") return "bg-[#16241A] text-[#EDF1E8]";
   return "bg-[#f0f4ee] text-[#6b7a66]";
 }
 
@@ -85,7 +86,7 @@ export default function LibraryPage() {
       ...clustersByArea(c.id)
         .filter((a) => a.kind !== "interview")
         .map((a): Card => ({
-          href: `/areas/${c.id}/${a.slug}`, badge: a.kind === "guide" ? "ガイド" : "解説",
+          href: `/areas/${c.id}/${a.slug}`, badge: a.kind === "guide" ? "ガイド" : a.kind === "choose" ? "選び方" : "解説",
           title: a.title, excerpt: a.lead, date: CLUSTER_UPDATED, accent: c.accent, accentSoft: c.accentSoft, category: c.ja,
         })),
     ];
@@ -143,6 +144,8 @@ export default function LibraryPage() {
           </h1>
           <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
             なぜそうなるのかを、あなたの側から、中立に。
+            <br className="hidden sm:block" />
+            仕組みを知ることと、どう向き合うかを選ぶこと。その両方を、中立の立場で。
           </p>
         </header>
 
@@ -219,7 +222,8 @@ export default function LibraryPage() {
 
         <p className="mt-8 text-[11.5px] text-[#6b7a66] leading-[1.9]">
           ※ 記事は一般的に知られる情報や実践のヒントを、出典を明記して整理したものです。効果を保証するものではなく、
-          診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。
+          診断・治療・受診勧奨を目的としたものではありません。「選び方・向き合い方」の記事も、選ぶときの観点を中立に整理したもので、
+          特定の医療機関・製品・施術を推奨するものではありません。「今はやらない」も含め、選ぶのはあなたです。個別の判断は専門家にご相談ください。
         </p>
       </div>
     </div>
