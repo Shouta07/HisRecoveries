@@ -96,6 +96,66 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
           </div>
         </section>
 
+        {/* この一日で、持ち帰るもの — 診断で終わらせない（競合との構造差） */}
+        <section className="rounded-[1.6rem] bg-[#16241a] text-[#EDF1E8] p-7 sm:p-9 mb-10 overflow-hidden relative">
+          <div aria-hidden className="pointer-events-none absolute -top-16 -right-10 w-56 h-56 rounded-full bg-[#85AB8B]/12 blur-3xl" />
+          <div className="relative">
+            <div className="text-[11px] tracking-[0.18em] text-[#85AB8B] font-semibold mb-3">WHAT YOU KEEP ・ 持ち帰るもの</div>
+            <h2 className="text-[1.35rem] sm:text-[1.7rem] leading-[1.5]" style={HEAD}>
+              診断を受けて、終わりにしない。
+            </h2>
+            <p className="mt-4 text-[13.5px] sm:text-[14.5px] text-[#C9D2C4] leading-[2]">
+              その日に「似合う」が分かって終わり、ではありません。持ち帰るのは思い出ではなく、
+              <span className="text-[#EDF1E8] font-medium">明日からのあなたが使う、道具</span>です。
+            </p>
+            <ul className="mt-6 space-y-4">
+              {[
+                { t: "あなたの取扱説明書", d: "似合うの定義（色・形・理由）、自分で再現する手順、選ぶ基準。言葉にして、あなたのものとしてお渡しします。" },
+                { t: "整った状態の、記録", d: "その日の写真データ。所有権は、あなたにあります。" },
+                { t: "育っていく記録", d: "体験の中の対話や気づきは、あなたの同意のもと、あなたの記録として残ります。髪・肌・体・心の次の一歩は、この記録をもとに一緒に設計します。" },
+              ].map((x) => (
+                <li key={x.t} className="flex items-start gap-3">
+                  <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#85AB8B] shrink-0" />
+                  <span>
+                    <span className="block text-[14px] font-bold text-[#EDF1E8]" style={HEAD}>{x.t}</span>
+                    <span className="block mt-1 text-[12.5px] text-[#9FB0A0] leading-[1.9]">{x.d}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-[11.5px] text-[#9FB0A0] leading-[1.85]">
+              記録のお預かりは、ご本人の同意があるときだけ。やめたいときは、いつでもやめられます。
+            </p>
+          </div>
+        </section>
+
+        {/* こんな日の前に — 動機別の扉（商品は1つ、入口だけ増やす） */}
+        <section className="mb-10">
+          <h2 className="text-[1.2rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>
+            こんな日の、<span className="text-[#3d5638]">前に。</span>
+          </h2>
+          <p className="text-[13px] text-[#6b7a66] leading-[1.9] mb-5">
+            大事な一日が決まっているなら、そこから逆算して整えます。まずは、その日の準備を読むところから。
+          </p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {[
+              { t: "婚活・お見合いの写真の前に", href: "/areas/impression/omiai-fukusou-men" },
+              { t: "面接・大事な商談の前に", href: "/areas/impression/mensetsu-daiichiinsho" },
+              { t: "結婚式・二次会に呼ばれて", href: "/areas/impression/kekkonshiki-mijitaku-men" },
+              { t: "同窓会で「変わったね」と", href: "/areas/impression/dousoukai-mitame-junbi" },
+            ].map((s) => (
+              <Link
+                key={s.href}
+                href={s.href}
+                className="group flex items-center justify-between gap-3 rounded-[1.1rem] border border-[#1f2a1d]/10 bg-white px-5 py-4 hover:border-[#3d5638]/40 transition-colors"
+              >
+                <span className="text-[13.5px] font-semibold text-[#1f2a1d]">{s.t}</span>
+                <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* CTA */}
         <div className="flex flex-wrap gap-3">
           <BookingCTA className="bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
