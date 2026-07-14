@@ -1,22 +1,12 @@
 // サービス内容 ＝ 第一印象改善パッケージ「一日の体験」。
-// 実写の4ステップ（スタイリング/服選び/施術/撮影）を主役に。
+// 写真タイルは実写素材が用意できるまで置かない（プレースホルダのグラデ板は
+// わくわくを削ぐため削除）。当日の中身は A Day セクションが担う。
 // （構想中の「旅」ラインナップ／オンライン伴走は docs/_archive にアーカイブ）
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
 };
-
-// 各タイルは実写写真（/public/media/offline/*.jpg）を背景に敷く。
-// 写真が未配置でも、第2レイヤーのグラデが出るので“壊れた画像”にはならない。
-type Step = { no: string; t: string; s: string; img: string; fallback: string };
-
-const STEPS: Step[] = [
-  { no: "01", t: "似合うを、言葉にする", s: "カウンセリング", img: "/media/offline/counseling.jpg", fallback: "linear-gradient(150deg,#efeae2,#cdc2af)" },
-  { no: "02", t: "はじめてでも、できる", s: "完全初心者向けメイク", img: "/media/offline/makeup.jpg", fallback: "linear-gradient(150deg,#f1eae9,#d3bfc0)" },
-  { no: "03", t: "プロが選ぶ、一着", s: "服選び", img: "/media/offline/clothes.jpg", fallback: "linear-gradient(150deg,#eef3ea,#c2cfba)" },
-  { no: "04", t: "変わった自分を、写真で", s: "写真撮影", img: "/media/offline/photo.jpg", fallback: "linear-gradient(150deg,#eaefe9,#bcc8be)" },
-];
 
 export default function ServiceSection() {
   return (
@@ -37,25 +27,7 @@ export default function ServiceSection() {
           </p>
         </div>
 
-        {/* 一日の4ステップ（実写を主役に） */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {STEPS.map((x) => (
-            <div
-              key={x.no}
-              className="relative rounded-[1.4rem] overflow-hidden aspect-[3/4] shadow-sm"
-              style={{ backgroundImage: `url('${x.img}'), ${x.fallback}`, backgroundSize: "cover", backgroundPosition: "center" }}
-            >
-              <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(15,21,13,0) 38%, rgba(15,21,13,0.72) 100%)" }} />
-              <span className="absolute top-3 left-3.5 font-mono text-[11px] tracking-[0.18em] text-white/85">{x.no}</span>
-              <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-4">
-                <div className="text-[13px] sm:text-[15px] font-bold text-white leading-[1.4]" style={MINCHO}>{x.t}</div>
-                <div className="text-[10.5px] sm:text-[11.5px] text-white/75 mt-1 tracking-[0.04em]">{x.s}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <p className="on-media mt-4 text-[12px] text-[#6b7a66] leading-[1.8]">
+        <p className="on-media text-[12px] text-[#6b7a66] leading-[1.8]">
           すべて完全マンツーマンで。最後に、明日から自分で使える「あなたの取扱説明書」を持ち帰ります。
         </p>
       </div>
