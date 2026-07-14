@@ -34,8 +34,6 @@ export default function ServiceSection() {
             「似合う」は、一人ひとり違う。だから、あなた専属のプロが、
             あなたに合わせてパーソナルに。メイクも、服も、写真も——
             はじめてでも、一日で迷わず整えます。
-            <br className="hidden sm:block" />
-            この一日で持ち帰るのは、体験ではありません。<span className="text-[#1f2a1d] font-medium">明日からのあなたが使う、道具です。</span>
           </p>
         </div>
 
@@ -58,7 +56,7 @@ export default function ServiceSection() {
         </div>
 
         <p className="on-media mt-4 text-[12px] text-[#6b7a66] leading-[1.8]">
-          すべて完全マンツーマンで。最後に、似合うの定義（色・形・理由）・自分で再現する手順・選ぶ基準・整った状態の記録をまとめた「あなたの取扱説明書」を持ち帰ります。所有権は、あなたにあります。
+          すべて完全マンツーマンで。最後に、明日から自分で使える「あなたの取扱説明書」を持ち帰ります。
         </p>
       </div>
     </section>

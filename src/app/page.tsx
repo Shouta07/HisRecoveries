@@ -96,7 +96,7 @@ export default function HomePage() {
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            ばらばらに売られてきた悩みを、一本の回復の旅程に。はじまりは、第一印象を整える一日と、血液で現在地を知ることから。相談は、匿名のままで。
+            ばらばらだった悩みを、一本の回復の旅程に。相談は、匿名のままで。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
