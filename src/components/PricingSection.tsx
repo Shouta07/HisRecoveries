@@ -24,7 +24,7 @@ export default function PricingSection() {
             第一印象を、<span className="text-[#3d5638]">予約する。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
-            入口は、無料の匿名相談から。まず現在地を知り（外側＝印象診断／内側＝血液）、旅程のはじまりに合わせて、パッケージをご案内します。印象診断は、パッケージお申し込みで全額充当。
+            入口は、無料の匿名相談から。
           </p>
         </div>
 
@@ -98,7 +98,7 @@ export default function PricingSection() {
         </div>
 
         <p className="on-media mt-6 text-[12px] text-[#6b7a66] leading-[1.8]">
-          ※ 価格は目安です。最終価格は、パーソナルなヒアリングに基づいてご提示します。すべて完全匿名・完全守秘義務のもとで。
+          ※ 価格は目安。最終価格はヒアリングのうえご提示します。完全守秘義務のもとで。
         </p>
       </div>
     </section>

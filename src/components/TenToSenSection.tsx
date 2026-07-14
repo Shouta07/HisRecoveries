@@ -22,8 +22,6 @@ export default function TenToSenSection() {
           </h2>
           <p className="mt-4 text-[#4b5b47] text-[13.5px] sm:text-[15px] leading-[1.95]">
             悩みは、ばらばらに売られている。<span className="text-[#1f2a1d] font-medium">あなたは、ひとりしかいないのに。</span>
-            <br className="hidden sm:block" />
-            その点をつなぎ、一本の回復の旅程に。はじまりは、いまの自分を知ることから。
           </p>
         </div>
 
@@ -36,7 +34,7 @@ export default function TenToSenSection() {
             <div className="text-[10px] tracking-[0.18em] text-[#85AB8B] font-semibold mb-2">外側の現在地</div>
             <div className="text-[1.05rem] font-bold leading-[1.5]" style={MINCHO}>第一印象を整える、一日。</div>
             <p className="mt-2 text-[12px] text-[#9FB0A0] leading-[1.85]">
-              メイク・服・写真を、専属チームと過ごす一日で。持ち帰るのは「あなたの取扱説明書」。
+              メイク・服・写真を、プロと過ごす一日で。
             </p>
             <span className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#85AB8B] group-hover:text-[#EDF1E8] transition-colors">
               詳しく見る <span aria-hidden>→</span>

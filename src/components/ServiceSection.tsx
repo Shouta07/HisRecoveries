@@ -21,15 +21,16 @@ export default function ServiceSection() {
             第一印象を、<span className="text-[#3d5638]">まるごと整える。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
-            「似合う」は、一人ひとり違う。だから、あなた専属のプロが、
-            あなたに合わせてパーソナルに。メイクも、服も、写真も——
-            はじめてでも、一日で迷わず整えます。
+            「似合う」は、人それぞれ。専属のプロが、あなたに合わせて。
           </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {["1日完結", "完全マンツーマン", "完全初心者向け", "「取扱説明書」を持ち帰る"].map((t) => (
+              <span key={t} className="rounded-full bg-white/70 border border-[#1f2a1d]/12 px-3.5 py-1.5 text-[12px] font-semibold text-[#3d5638]">
+                {t}
+              </span>
+            ))}
+          </div>
         </div>
-
-        <p className="on-media text-[12px] text-[#6b7a66] leading-[1.8]">
-          すべて完全マンツーマンで。最後に、明日から自分で使える「あなたの取扱説明書」を持ち帰ります。
-        </p>
       </div>
     </section>
   );

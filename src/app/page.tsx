@@ -107,6 +107,25 @@ export default function HomePage() {
               サービスを見る
             </Link>
           </div>
+
+          {/* 悩みから入る（散文ゼロの自分ごと化） */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            {[
+              { t: "薄毛", href: "/areas/hair" },
+              { t: "ニキビ・肌", href: "/areas/skin" },
+              { t: "疲れて見える", href: "/areas/face" },
+              { t: "清潔感", href: "/areas/impression" },
+              { t: "写真が苦手", href: "/areas/impression/shashin-utsuri" },
+            ].map((w) => (
+              <Link
+                key={w.href}
+                href={w.href}
+                className="rounded-full border border-[#1f2a1d]/20 bg-white/45 backdrop-blur-sm px-3.5 py-1.5 text-[11.5px] font-medium text-[#3d5638] hover:border-[#1f2a1d] hover:text-[#1f2a1d] transition-colors"
+              >
+                {w.t}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

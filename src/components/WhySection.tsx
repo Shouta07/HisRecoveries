@@ -19,29 +19,19 @@ export default function WhySection() {
               <span className="text-[#85AB8B]">終わらせたくない。</span>
             </h2>
 
-            <div className="mt-7 space-y-6 text-[14px] sm:text-[15.5px] text-[#C9D2C4] leading-[2.1] max-w-[34rem]" style={{ lineBreak: "strict" }}>
+            <div className="mt-7 space-y-5 text-[14px] sm:text-[15.5px] text-[#C9D2C4] leading-[2.05] max-w-[34rem]" style={{ lineBreak: "strict" }}>
               <p>
-                男性のコンプレックスは、なかなか口にできない。
-                相談すれば「気にしすぎ」と流され、調べれば売り込みばかり。
+                相談すれば「気にしすぎ」。調べれば、売り込みばかり。
                 <br className="hidden sm:block" />
                 <span className="text-[#EDF1E8] font-medium">本当の味方は、どこにもいなかった。</span>
-                <br className="hidden sm:block" />
-                でも——口に出さないだけで、同じ悩みを抱える人は、あなたが思うより、ずっと多い。
               </p>
               <p>
-                その行き止まりを、私たちは自分の悩みで知っています。
-                夜中に検索して、閉じて、また検索した日のことも。
-                <br className="hidden sm:block" />
-                だから、<span className="text-[#EDF1E8] font-medium">自分が欲しかったものを作りました</span>。
-                コンプレックスは、性格でも甘えでもなく、<span className="text-[#EDF1E8] font-medium">仕組みで向き合えること</span>。
-                そして、<span className="text-[#EDF1E8] font-medium">一人では、続かないこと</span>。それを知っているからです。
+                口に出さないだけで、同じ悩みを抱える人は、思うよりずっと多い。
+                私たちも、その一人でした。だから、<span className="text-[#EDF1E8] font-medium">自分が欲しかったものを作りました</span>。
               </p>
               <p>
-                だから、<span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
-                点をばらばらに解決して、終わりにもしません。
-                入口は匿名のまま、<span className="text-[#EDF1E8] font-medium">見た目の悩みを起点に、髪・肌・体・心まで</span>——
-                <br className="hidden sm:block" />
-                あなたの側に立って、一本の線として伴走します。それが、私たちの考えるメンズウェルネスです。
+                <span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
+                匿名のまま、あなたの側に立って、<span className="text-[#EDF1E8] font-medium">一本の線として伴走します</span>。
               </p>
             </div>
 
