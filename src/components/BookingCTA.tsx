@@ -61,7 +61,7 @@ export default function BookingCTA({
               <div className="flex items-start justify-between gap-4 px-6 sm:px-8 pt-6 pb-4 border-b border-[#1f2a1d]/10">
                 <div>
                   <p className="text-[11px] tracking-[0.2em] text-[#3d5638] font-semibold">
-                    CONTACT · 完全匿名 · 完全守秘
+                    CONTACT · 匿名のまま · 完全守秘
                   </p>
                   <h2 className="text-[1.3rem] font-bold text-[#1f2a1d] mt-1.5">
                     無料で、相談する。
@@ -83,7 +83,7 @@ export default function BookingCTA({
               <div className="px-6 sm:px-8 py-6 max-h-[72vh] overflow-y-auto">
                 <p className="text-[14px] text-[#4b5b47] leading-[1.95] mb-7">
                   コンプレックスから自信への変化を、一緒に設計します。まずは対話から。すべて
-                  <strong className="font-bold text-[#1f2a1d]">完全匿名・完全守秘義務</strong>
+                  <strong className="font-bold text-[#1f2a1d]">匿名のまま（実名不要）・完全守秘義務</strong>
                   のもとで扱います。ご予約登録には、秘密保持への同意が必要です。
                 </p>
 

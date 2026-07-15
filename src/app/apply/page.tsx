@@ -24,7 +24,7 @@ export default function ApplyPage() {
       </div>
       <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
         <p className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">
-          CONTACT · 完全匿名 · 完全守秘
+          CONTACT · 匿名のまま · 完全守秘
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
           無料で、相談する。
@@ -32,7 +32,7 @@ export default function ApplyPage() {
         <p className="mt-4 text-[15px] font-semibold text-[#3d5638]">予約登録する。</p>
         <p className="mt-4 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
           流れは3つ。<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（このフォーム）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③第一印象改善パッケージ</strong>。
-          すべて<strong className="font-bold text-[#1f2a1d]">完全匿名・完全守秘義務</strong>のもとで扱います。
+          ご相談・印象診断は<strong className="font-bold text-[#1f2a1d]">匿名のまま（実名不要）・完全守秘義務</strong>のもとで扱います。
           実名・顔写真は不要です。ご予約登録には、秘密保持への同意が必要です。
         </p>
 

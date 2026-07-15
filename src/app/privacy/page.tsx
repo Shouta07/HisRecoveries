@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "プライバシーポリシー・免責事項",
   description:
-    "His Recoveries のプライバシーポリシーおよび免責事項です。本プログラムは完全匿名・完全守秘義務のもとで運営し、医療行為は行いません。診断・治療は連携する医療機関が行います。",
+    "His Recoveries のプライバシーポリシーおよび免責事項です。ご相談・印象診断は匿名のまま利用でき、完全守秘義務のもとで運営します。医療行為は行いません。診断・治療は連携する医療機関が行います。",
   alternates: { canonical: `${site.url}/privacy` },
   robots: { index: true, follow: true },
 };
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
             <p>
               His Recoveries（以下「本プログラム」）を運営するバイタリティデザイン合同会社
               （以下「当社」）は、本プログラムを利用するすべての方の個人情報および
-              プライバシーを尊重し、その保護に努めます。本プログラムは完全匿名・
+              プライバシーを尊重し、その保護に努めます。本プログラムは匿名のまま始められる設計・
               完全守秘義務のもとで運営し、ご本人を不必要に特定する情報を保持しないことを
               基本方針とします。
             </p>
