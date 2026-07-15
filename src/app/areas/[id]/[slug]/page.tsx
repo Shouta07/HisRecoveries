@@ -203,7 +203,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             {c.ja}の全体を見る <span aria-hidden>→</span>
           </Link>
           <Link href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
-            予約登録する <span aria-hidden>→</span>
+            相談する（無料） <span aria-hidden>→</span>
           </Link>
         </div>
       </div>

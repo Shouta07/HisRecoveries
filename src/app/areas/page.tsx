@@ -25,7 +25,7 @@ const ICONS: Record<string, React.ReactNode> = {
 export const metadata: Metadata = {
   title: "His Recoveries Library — 男性の見た目の悩みを、読む",
   description:
-    "男性の見た目の悩み（第一印象・清潔感・メンズメイク・薄毛・ニキビ/肌・顔の印象・髭/体毛）を、中立に解説する実践ガイド・記事・現場のプロへの取材。完全匿名で読める、出典明記のライブラリ。",
+    "男性の見た目の悩み（第一印象・清潔感・メンズメイク・薄毛・ニキビ/肌・顔の印象・髭/体毛）を、中立に解説する実践ガイド・記事・現場のプロへの取材。匿名のまま読める、出典明記のライブラリ。",
   keywords: [
     // 悩み・恥ベース（入口）
     "第一印象 改善", "メンズメイク 初心者", "清潔感 出し方", "男性 身だしなみ",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     type: "website",
     url: `${site.url}/areas`,
     title: "His Recoveries Library — 男性の見た目の悩みを、読む",
-    description: "男性の見た目の悩みを、中立に解説する実践ガイド・記事・取材。完全匿名で読めるライブラリ。",
+    description: "男性の見た目の悩みを、中立に解説する実践ガイド・記事・取材。匿名のまま読めるライブラリ。",
   },
 };
 
@@ -213,7 +213,7 @@ export default function LibraryPage() {
         {/* サービスは程々に：控えめな一行だけ */}
         <div className="mt-16 rounded-[1.3rem] border border-[#1f2a1d]/10 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-3">
           <p className="text-[13px] text-[#4b5b47] leading-[1.85] flex-1">
-            読むだけでも大丈夫。整えたくなったら、メイク・服・写真をプロと一日で。完全匿名で。
+            読むだけでも大丈夫。整えたくなったら、メイク・服・写真をプロと一日で。相談は匿名のままで。
           </p>
           <Link href="/packages/first-impression" className="shrink-0 inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[13px] font-semibold px-6 py-3 transition-colors">
             サービスを見る <span aria-hidden>→</span>

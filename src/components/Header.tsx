@@ -44,7 +44,7 @@ export default function Header() {
             href="/apply"
             className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[12px] sm:text-[13px] font-semibold px-4 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap"
           >
-            予約登録
+            相談する（無料）
           </Link>
         </div>
       </div>

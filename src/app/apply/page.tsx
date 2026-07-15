@@ -4,9 +4,9 @@ import ApplyForm from "@/components/ApplyForm";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "予約登録する — 完全匿名",
+  title: "相談・予約登録 — 匿名のまま",
   description:
-    "His Recoveries 第一印象改善パッケージの予約登録。完全匿名（実名・顔写真は不要）。ご予約登録には秘密保持への同意が必要です。",
+    "His Recoveries への相談・予約登録。相談・印象診断は匿名のまま（実名・顔写真は不要）。ご予約登録には秘密保持への同意が必要です。",
   alternates: { canonical: `${site.url}/apply` },
   robots: { index: true, follow: true },
 };

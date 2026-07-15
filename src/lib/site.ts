@@ -8,7 +8,7 @@ export const site = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",
   authorBio:
-    "男性のコンプレックスを当事者として経験した運営チームによる、完全匿名のウェルネス伴走サービス。実名・顔・実年齢は非公開で運営しています。",
+    "男性のコンプレックスを当事者として経験した運営チームによる、匿名で始められるウェルネス伴走サービス。運営チームの実名・顔・実年齢は非公開です。",
   handle: "@his_recoveries",
   email: "contact@vitality-design.jp",
   social: {

@@ -35,6 +35,8 @@ const nextConfig = {
       { source: "/areas/sweat/:slug*", destination: "/areas", permanent: true },
       { source: "/areas/self", destination: "/areas", permanent: true },
       { source: "/areas/self/:slug*", destination: "/areas", permanent: true },
+      // オンライン伴走ページは会員ページ(β)に統合（旧コピーがゼロ入力方針と矛盾のため削除）
+      { source: "/online", destination: "/member", permanent: true },
       { source: "/mechanism", destination: "/areas", permanent: true },
       { source: "/mechanism/:slug*", destination: "/areas", permanent: true },
       { source: "/interviews", destination: "/areas", permanent: true },

@@ -24,7 +24,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
         </h3>
         <p className="text-[13px] text-[#C9D2C4] leading-[1.95] max-w-[34rem] mb-4">
           読んで分かっても、自分に合う形にするのは難しいもの。His Recoveries は、
-          メイク・服・写真まで、専属チームがあなたに合わせて一日で整えます。はじめてでも、完全匿名で。
+          メイク・服・写真まで、専属チームがあなたに合わせて一日で整えます。相談は、匿名のままで。
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
@@ -46,7 +46,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
         </div>
 
         <p className="mt-4 text-[11px] text-[#9FB0A0] leading-[1.8]">
-          はじめの相談は無料・完全匿名。実名・顔写真は不要です。整えるかどうかは、読んでから決めて大丈夫。
+          はじめの相談は無料・匿名のまま。実名・顔写真は不要です。整えるかどうかは、読んでから決めて大丈夫。
         </p>
       </div>
     </aside>
@@ -58,7 +58,7 @@ export function InlineConsult() {
   return (
     <div className="my-9 flex flex-col sm:flex-row sm:items-center gap-3 rounded-[1.1rem] border border-[#3d5638]/20 bg-[#eef3ea]/70 px-5 py-4">
       <p className="text-[12.5px] text-[#3a423a] leading-[1.75] flex-1">
-        読むだけでも大丈夫。でも「自分に合う形」が知りたくなったら、完全匿名で相談できます。
+        読むだけでも大丈夫。でも「自分に合う形」が知りたくなったら、匿名のまま相談できます。
       </p>
       <Link href="/apply" className="shrink-0 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
         そっと相談する <span aria-hidden>→</span>
