@@ -46,7 +46,7 @@ export default function WhySection() {
               </p>
               <p className="mt-2 text-[12.5px] text-[#9FB0A0]">— それが、His Recoveries をやる理由です。</p>
               <Link href="/manifesto" className="mt-4 inline-flex items-center gap-2 text-[12.5px] font-semibold text-[#85AB8B] hover:text-[#EDF1E8] transition-colors">
-                私たちの思想を読む・仲間を募っています <span aria-hidden>→</span>
+                この続きを、思想として読む・仲間を募っています <span aria-hidden>→</span>
               </Link>
               <p className="mt-2.5 text-[12px] text-[#9FB0A0]">
                 現場で働くプロの方へ——

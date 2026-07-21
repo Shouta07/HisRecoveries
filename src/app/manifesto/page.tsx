@@ -11,16 +11,16 @@ const HEAD: React.CSSProperties = {
 };
 
 export const metadata: Metadata = {
-  title: "私たちの思想 — 男性のウェルネスを、まっとうな場所に",
+  title: "私たちの思想 —「気にするな」で、終わらせたくない。",
   description:
-    "His Recoveries の思想。当事者としての起点、医療・サロン・日々の習慣のどれもが大事だという信念、そして女性のウェルネスが広がる今、男性のウェルネスも前に進めたいという願い。共感してくれる仲間を募っています。",
+    "「気にするな」で終わらせたくない。男性のウェルネスを、まっとうな場所に。当事者としての起点、医療・サロン・日々の習慣のどれもが大事だという信念、そして女性のウェルネスが広がる今、男性のウェルネスも前に進めたいという願い。共感してくれる仲間を募っています。",
   alternates: { canonical: `${site.url}/manifesto` },
   openGraph: {
     type: "article",
     url: `${site.url}/manifesto`,
-    title: "私たちの思想 — 男性のウェルネスを、まっとうな場所に",
+    title: "私たちの思想 —「気にするな」で、終わらせたくない。",
     description:
-      "当事者としての起点、医療・サロン・習慣のどれもが大事だという信念、男性のウェルネスを前に進めたいという願い。仲間を募っています。",
+      "男性のウェルネスを、まっとうな場所に。当事者としての起点、医療・サロン・習慣のどれもが大事だという信念、男性のウェルネスを前に進めたいという願い。仲間を募っています。",
   },
 };
 
@@ -70,10 +70,13 @@ export default function ManifestoPage() {
             </span>
           </div>
           <h1 className="text-[2.1rem] sm:text-[3rem] leading-[1.28]" style={HEAD}>
-            男性のウェルネスを、<br />
-            <span className="text-[#3d5638]">まっとうな場所に。</span>
+            「気にするな」で、<br />
+            <span className="text-[#3d5638]">終わらせたくない。</span>
           </h1>
-          <p className="mt-6 text-[15px] sm:text-[16px] text-[#4b5b47] leading-[2] max-w-[38rem]">
+          <p className="mt-6 text-[1.2rem] sm:text-[1.5rem] leading-[1.6] text-[#1f2a1d]" style={HEAD}>
+            男性のウェルネスを、まっとうな場所に。
+          </p>
+          <p className="mt-5 text-[15px] sm:text-[16px] text-[#4b5b47] leading-[2] max-w-[38rem]">
             His Recoveries は、サービスであると同時に、一つの考え方です。
             なぜこれをやるのか。何を信じているのか。ここに書いておきます。
           </p>
