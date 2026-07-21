@@ -6,9 +6,7 @@ import BoomerangVideo from "@/components/BoomerangVideo";
 import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
 import WhySection from "@/components/WhySection";
-import ContinueSection from "@/components/ContinueSection";
 import ValueSection from "@/components/ValueSection";
-import PromiseSection from "@/components/PromiseSection";
 import FaqSection from "@/components/FaqSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
@@ -78,7 +76,7 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-6 text-[#4b5b47]">
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
             <span className="text-[11px] sm:text-sm tracking-[0.32em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
-              メンズウェルネスの、伴走者
+              男性のための、中立コンシェルジュ
             </span>
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
           </div>
@@ -129,14 +127,8 @@ export default function HomePage() {
         {/* What we do — 探す/恥/迷うの3つの負担を肩代わり（価値を一目で） */}
         <ValueSection />
 
-        {/* 現在地を知る → 道のりを選ぶ（Recover / Refine）を1セクションに */}
+        {/* 現在地を知る → 概算（Recover / Refine を1セクションに） */}
         <ServiceSection />
-
-        {/* Promise — 三つの約束（価格の透明性） */}
-        <PromiseSection />
-
-        {/* 進む（つづく） */}
-        <ContinueSection />
 
         {/* FAQ — 予約直前の不安を潰す */}
         <FaqSection />

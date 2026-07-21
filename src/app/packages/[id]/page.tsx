@@ -84,7 +84,7 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
             {p.name}の、<span className="text-[#3d5638]">付加価値。</span>
           </h2>
           <p className="text-[13px] text-[#6b7a66] leading-[1.9] mb-5">
-            His Recoveries は、業界で唯一“あなたの側”に立ちます。売らないから、あなたの最適だけを。
+            His Recoveries は、モノや施術を売りません。中立の立場で、あなたに合う選択肢だけを整理します。
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             {p.value.map((b) => (
@@ -102,17 +102,16 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
           <div className="relative">
             <div className="text-[11px] tracking-[0.18em] text-[#85AB8B] font-semibold mb-3">WHAT YOU KEEP ・ 持ち帰るもの</div>
             <h2 className="text-[1.35rem] sm:text-[1.7rem] leading-[1.5]" style={HEAD}>
-              診断を受けて、終わりにしない。
+              翌日から、自分で再現できる。
             </h2>
             <p className="mt-4 text-[13.5px] sm:text-[14.5px] text-[#C9D2C4] leading-[2]">
-              その日に「似合う」が分かって終わり、ではありません。持ち帰るのは思い出ではなく、
-              <span className="text-[#EDF1E8] font-medium">明日からのあなたが使う、道具</span>です。
+当日の成果を、翌日からご自身で再現できる形にしてお渡しします。
             </p>
             <ul className="mt-6 space-y-4">
               {[
-                { t: "あなたの取扱説明書", d: "似合うの定義（色・形・理由）、自分で再現する手順、選ぶ基準。言葉にして、あなたのものとしてお渡しします。" },
-                { t: "整った状態の、記録", d: "その日の写真データ。所有権は、あなたにあります。" },
-                { t: "育っていく記録", d: "体験の中の対話や気づきは、あなたの同意のもと、あなたの記録として残ります。髪・肌・体・心の次の一歩は、この記録をもとに一緒に設計します。" },
+                { t: "あなた専用のスタイルガイド", d: "似合う色・形とその理由、再現の手順、服やアイテムの選び方をまとめた資料をお渡しします。" },
+                { t: "当日の写真データ", d: "撮影した写真をお渡しします。データの所有権はあなたにあります。" },
+                { t: "その後の記録（任意）", d: "ご本人の同意があれば、相談内容を記録として残し、次回の相談に活用します。不要な場合は残しません。" },
               ].map((x) => (
                 <li key={x.t} className="flex items-start gap-3">
                   <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#85AB8B] shrink-0" />

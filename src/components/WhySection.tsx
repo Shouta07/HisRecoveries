@@ -26,7 +26,7 @@ export default function WhySection() {
               </p>
               <p>
                 だから、<span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
-                あなたの側に立って、一本の線として伴走します。
+                中立の立場で、あなたに合う選択肢だけを整理します。
               </p>
             </div>
 
