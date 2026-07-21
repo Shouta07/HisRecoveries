@@ -7,6 +7,7 @@ import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
 import WhySection from "@/components/WhySection";
 import ContinueSection from "@/components/ContinueSection";
+import ValueSection from "@/components/ValueSection";
 import PromiseSection from "@/components/PromiseSection";
 import FaqSection from "@/components/FaqSection";
 
@@ -95,7 +96,7 @@ export default function HomePage() {
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            ばらばらだった悩みを、一本の回復の旅程に。相談は、匿名のままで。
+            何が正解か、いくらかかるか。匿名のまま、中立に整理します。売り込みは、しません。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -124,6 +125,9 @@ export default function HomePage() {
 
         {/* Why（思想の引用・シンプル）— Step 01 の上に */}
         <WhySection />
+
+        {/* What we do — 探す/恥/迷うの3つの負担を肩代わり（価値を一目で） */}
+        <ValueSection />
 
         {/* 現在地を知る → 道のりを選ぶ（Recover / Refine）を1セクションに */}
         <ServiceSection />

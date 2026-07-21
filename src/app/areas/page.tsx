@@ -143,9 +143,9 @@ export default function LibraryPage() {
             見た目の悩みを、<span className="text-[#3d5638]">読むところから。</span>
           </h1>
           <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
-            なぜそうなるのかを、あなたの側から、中立に。
+            情報の海を、あなたの代わりに整理する。
             <br className="hidden sm:block" />
-            仕組みを知ることと、どう向き合うかを選ぶこと。その両方を、中立の立場で。
+            なぜそうなるのか、どう向き合うか。売り込まず、あなたの側から、中立に。
           </p>
         </header>
 

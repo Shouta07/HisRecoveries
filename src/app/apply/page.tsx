@@ -27,13 +27,14 @@ export default function ApplyPage() {
           CONTACT · 匿名のまま · 完全守秘
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
-          無料で、相談する。
+          ひとりで抱えず、<br />まず匿名で相談する。
         </h1>
-        <p className="mt-4 text-[15px] font-semibold text-[#3d5638]">予約登録する。</p>
-        <p className="mt-4 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
-          流れは3つ。<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（このフォーム）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③第一印象改善パッケージ</strong>。
-          ご相談・印象診断は<strong className="font-bold text-[#1f2a1d]">匿名のまま（実名不要）・完全守秘義務</strong>のもとで扱います。
-          実名・顔写真は不要です。ご予約登録には、秘密保持への同意が必要です。
+        <p className="mt-5 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
+          何が正解か、いくらかかるか。<strong className="font-bold text-[#1f2a1d]">売り込まず、中立に一緒に整理します。</strong>
+          気になることは、いくつでも。実名・顔写真は不要です。
+          <br />
+          流れは、<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（このフォーム）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③体験</strong>。
+          相談・印象診断は<strong className="font-bold text-[#1f2a1d]">匿名のまま・完全守秘義務</strong>のもとで。
           現在は先行予約の受付です。準備が整い次第、登録順にご案内します。
         </p>
 
