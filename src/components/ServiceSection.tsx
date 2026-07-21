@@ -21,7 +21,7 @@ export default function ServiceSection() {
         <div className="on-media max-w-2xl mb-7">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service — 現在地を知る</span>
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service — はじめかた</span>
           </div>
           <h2 className="text-[1.4rem] sm:text-[1.8rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
             はじめに、現在地を把握します。
@@ -71,15 +71,11 @@ export default function ServiceSection() {
           </p>
         </div>
 
-        {/* オーダーメイドの概算例（Recover / Refine を「向き」の例として） */}
-        <div className="on-media max-w-2xl mb-7">
-          <div className="flex items-center gap-3 mb-3">
-            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Estimate — 概算の目安</span>
-          </div>
-          <h2 className="text-[1.4rem] sm:text-[1.85rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
+        {/* 概算の目安（同じ Service セクション内の続き。見出しは従属化して1セクションに） */}
+        <div className="on-media max-w-2xl mb-7 pt-2 mt-2 border-t border-[#1f2a1d]/10">
+          <h3 className="mt-6 text-[1.2rem] sm:text-[1.4rem] font-bold leading-[1.45]" style={MINCHO}>
             費用は、あなたに合わせて。<span className="text-[#3d5638]">まずは、概算を。</span>
-          </h2>
+          </h3>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.9]">
             あなたに合わせて組む、オーダーメイドのコンシェルジュです。だから費用は内容によります。
             それでも目安として、代表的なふたつの向き——<span className="text-[#1f2a1d] font-medium">取り戻す（Recover）と、深める（Refine）</span>——の概算を。
