@@ -56,6 +56,21 @@ export default function ServiceSection() {
           </Link>
         </div>
 
+        {/* 気になることは、いくつでも（複数選択して始められる） */}
+        <div className="on-media mb-12 rounded-[1.4rem] border border-[#1f2a1d]/10 bg-white/60 p-6 sm:p-7">
+          <div className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>気になることは、いくつでも。</div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {["薄毛", "ニキビ・肌", "疲れて見える", "清潔感", "写真が苦手", "自信・パートナーシップ", "そのほか"].map((t) => (
+              <span key={t} className="rounded-full border border-[#3d5638]/25 bg-[#eef3ea] px-3.5 py-1.5 text-[12px] font-medium text-[#3d5638]">
+                {t}
+              </span>
+            ))}
+          </div>
+          <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
+            ひとつに絞らなくて大丈夫。<span className="text-[#1f2a1d] font-medium">Recover でも Refine でも、複数の悩みをまとめて、ひとつの窓口で</span>始められます。何から手をつけるかは、一緒に決めます。
+          </p>
+        </div>
+
         {/* Step 02 — 道のりを選ぶ */}
         <div className="on-media max-w-2xl mb-7">
           <div className="flex items-center gap-3 mb-3">

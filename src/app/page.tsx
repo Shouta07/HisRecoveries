@@ -100,37 +100,14 @@ export default function HomePage() {
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
             <BookingCTA className="rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold px-8 py-3.5 transition-colors shadow-[0_18px_40px_-20px_rgba(20,32,26,0.8)]">
-              匿名で相談する
+              先行予約受付中
             </BookingCTA>
             <Link href="/#service" className="rounded-full border border-[#1f2a1d]/25 hover:border-[#1f2a1d] text-[#1f2a1d] text-[14px] font-semibold px-8 py-3.5 transition-colors bg-white/40 backdrop-blur-sm">
               サービスを見る
             </Link>
           </div>
 
-          <p className="mt-4 text-[11.5px] text-[#4b5b47]">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/30 bg-white/50 px-3 py-1 font-semibold text-[#3d5638]">先行予約 受付中</span>
-            <span className="ml-2">準備が整い次第、登録順にご案内します。</span>
-          </p>
 
-          {/* 悩みから入る（散文ゼロの自分ごと化） */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-            {[
-              { t: "薄毛", href: "/areas/hair" },
-              { t: "ニキビ・肌", href: "/areas/skin" },
-              { t: "疲れて見える", href: "/areas/face" },
-              { t: "清潔感", href: "/areas/impression" },
-              { t: "写真が苦手", href: "/areas/impression/shashin-utsuri" },
-              { t: "自信・パートナーシップ", href: "/areas/confidence" },
-            ].map((w) => (
-              <Link
-                key={w.href}
-                href={w.href}
-                className="rounded-full border border-[#1f2a1d]/20 bg-white/45 backdrop-blur-sm px-3.5 py-1.5 text-[11.5px] font-medium text-[#3d5638] hover:border-[#1f2a1d] hover:text-[#1f2a1d] transition-colors"
-              >
-                {w.t}
-              </Link>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -145,6 +122,9 @@ export default function HomePage() {
         />
 
 
+        {/* Why（思想の引用・シンプル）— Step 01 の上に */}
+        <WhySection />
+
         {/* 現在地を知る → 道のりを選ぶ（Recover / Refine）を1セクションに */}
         <ServiceSection />
 
@@ -153,9 +133,6 @@ export default function HomePage() {
 
         {/* 進む（つづく） */}
         <ContinueSection />
-
-        {/* Why — なぜやるのか（共感・思想） */}
-        <WhySection />
 
         {/* FAQ — 予約直前の不安を潰す */}
         <FaqSection />
