@@ -1,7 +1,11 @@
-// Stage 2 — 道のりを選ぶ。
-// 二つの向き(Recover|取り戻す / Refine|深める)を提示。どちらも専属チーム貸切・
-// 目安 ¥150,000〜。CTA はすべて既存の「匿名相談」導線(BookingCTA)に接続する。
+// Service — 一本の線を1セクションに集約。
+// Step 01 現在地を知る（外側=印象診断¥22,000 / 内側=血液・準備中）
+// Step 02 道のりを選ぶ（Recover|取り戻す / Refine|深める）
+// ギフトは独立させず、両プランに「贈れる」とさりげなく（守秘設計は維持）。
+// 急ぎ（緊急枠）は脚注に。CTA はすべて既存の匿名相談導線。
+import Link from "next/link";
 import BookingCTA from "@/components/BookingCTA";
+import { entryDiagnosis, bloodCheck, urgentNote } from "@/lib/packages";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -12,12 +16,53 @@ export default function ServiceSection() {
   return (
     <section id="service" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-10 sm:pt-16 pb-6">
-        <div className="on-media max-w-2xl mb-8">
+
+        {/* Step 01 — 現在地を知る */}
+        <div className="on-media max-w-2xl mb-7">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service</span>
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Step 01 — 現在地を知る</span>
           </div>
-          <h2 className="text-[1.5rem] sm:text-[1.9rem] md:text-[2.4rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
+          <h2 className="text-[1.4rem] sm:text-[1.8rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
+            まず、いまの自分を知ることから。
+          </h2>
+          <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.95]">
+            取り戻したいものがあるのか、もう一段深めたいのか。
+            <br className="hidden sm:block" />
+            どちらも、現在地を知ることから始まります。
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-12">
+          {/* 外側の現在地 — 印象診断 */}
+          <Link href="/apply" className="group rounded-[1.4rem] bg-white border border-[#1f2a1d]/12 p-6 sm:p-7 hover:border-[#3d5638]/50 transition-colors">
+            <div className="text-[10px] tracking-[0.18em] text-[#3d5638] font-semibold mb-2">外側の現在地</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-[1.05rem] font-bold text-[#1f2a1d]" style={MINCHO}>{entryDiagnosis.name}</span>
+              <span className="text-[13px] font-bold text-[#3d5638]">{entryDiagnosis.price}</span>
+            </div>
+            <p className="mt-2 text-[12px] text-[#4b5b47] leading-[1.85]">{entryDiagnosis.note}</p>
+            <span className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#3d5638] group-hover:gap-2.5 transition-all">匿名で相談する <span aria-hidden>→</span></span>
+          </Link>
+          {/* 内側の現在地 — 血液（準備中） */}
+          <Link href="/apply" className="group rounded-[1.4rem] bg-white border border-[#1f2a1d]/12 p-6 sm:p-7 hover:border-[#3d5638]/50 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[10px] tracking-[0.18em] text-[#3d5638] font-semibold">内側の現在地</span>
+              <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-[#eef3ea] text-[#3d5638]">{bloodCheck.status}</span>
+            </div>
+            <div className="text-[1.05rem] font-bold text-[#1f2a1d]" style={MINCHO}>{bloodCheck.name}</div>
+            <p className="mt-2 text-[12px] text-[#4b5b47] leading-[1.85]">{bloodCheck.note}</p>
+            <span className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#3d5638] group-hover:gap-2.5 transition-all">ご案内は、匿名相談から <span aria-hidden>→</span></span>
+          </Link>
+        </div>
+
+        {/* Step 02 — 道のりを選ぶ */}
+        <div className="on-media max-w-2xl mb-7">
+          <div className="flex items-center gap-3 mb-3">
+            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Step 02 — 道のりを選ぶ</span>
+          </div>
+          <h2 className="text-[1.5rem] sm:text-[1.9rem] md:text-[2.2rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
             向きは、2つ。<span className="text-[#3d5638]">どちらも、整える。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.9]">
@@ -67,9 +112,11 @@ export default function ServiceSection() {
           </div>
         </div>
 
-        <p className="on-media mt-5 text-[12.5px] text-[#6b7a66] leading-[1.85]">
-          どちらも「取扱説明書」として、その後もあなたの記録として育てられます。
-        </p>
+        <div className="on-media mt-5 space-y-1.5 text-[12px] text-[#6b7a66] leading-[1.85]">
+          <p>どちらも「取扱説明書」として、その後もあなたの記録として育てられます。</p>
+          <p>どちらも、ご自身にも、大切な人へのギフトとして贈ることもできます。贈られた方は匿名で選べ、内容は贈り主に開示されません。</p>
+          <p className="text-[#9aa79a]">※ {urgentNote}</p>
+        </div>
       </div>
     </section>
   );

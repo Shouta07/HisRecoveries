@@ -8,8 +8,6 @@ import ServiceSection from "@/components/ServiceSection";
 import WhySection from "@/components/WhySection";
 import ContinueSection from "@/components/ContinueSection";
 import PromiseSection from "@/components/PromiseSection";
-import TenToSenSection from "@/components/TenToSenSection";
-import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
@@ -147,20 +145,14 @@ export default function HomePage() {
         />
 
 
-        {/* Stage 1 — 現在地を知る（外側＝印象診断／内側＝血液） */}
-        <TenToSenSection />
-
-        {/* Stage 2 — 道のりを選ぶ（Recover / Refine） */}
+        {/* 現在地を知る → 道のりを選ぶ（Recover / Refine）を1セクションに */}
         <ServiceSection />
-
-        {/* Stage 3 — 進む（つづく） */}
-        <ContinueSection />
-
-        {/* 贈る／急ぐ（ギフト・緊急枠） */}
-        <PricingSection />
 
         {/* Promise — 三つの約束（価格の透明性） */}
         <PromiseSection />
+
+        {/* 進む（つづく） */}
+        <ContinueSection />
 
         {/* Why — なぜやるのか（共感・思想） */}
         <WhySection />
