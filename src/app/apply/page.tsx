@@ -34,6 +34,7 @@ export default function ApplyPage() {
           流れは3つ。<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（このフォーム）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③第一印象改善パッケージ</strong>。
           ご相談・印象診断は<strong className="font-bold text-[#1f2a1d]">匿名のまま（実名不要）・完全守秘義務</strong>のもとで扱います。
           実名・顔写真は不要です。ご予約登録には、秘密保持への同意が必要です。
+          現在は先行予約の受付です。準備が整い次第、登録順にご案内します。
         </p>
 
         <ApplyForm />

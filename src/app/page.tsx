@@ -7,6 +7,7 @@ import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
 import WhySection from "@/components/WhySection";
 import ContinueSection from "@/components/ContinueSection";
+import PromiseSection from "@/components/PromiseSection";
 import TenToSenSection from "@/components/TenToSenSection";
 import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
@@ -108,6 +109,11 @@ export default function HomePage() {
             </Link>
           </div>
 
+          <p className="mt-4 text-[11.5px] text-[#4b5b47]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/30 bg-white/50 px-3 py-1 font-semibold text-[#3d5638]">先行予約 受付中</span>
+            <span className="ml-2">準備が整い次第、登録順にご案内します。</span>
+          </p>
+
           {/* 悩みから入る（散文ゼロの自分ごと化） */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
             {[
@@ -152,6 +158,9 @@ export default function HomePage() {
 
         {/* 贈る／急ぐ（ギフト・緊急枠） */}
         <PricingSection />
+
+        {/* Promise — 三つの約束（価格の透明性） */}
+        <PromiseSection />
 
         {/* Why — なぜやるのか（共感・思想） */}
         <WhySection />
