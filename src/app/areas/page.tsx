@@ -156,6 +156,9 @@ export default function LibraryPage() {
               {c.ja}
             </a>
           ))}
+          <a href="/areas/confidence" className="inline-flex items-center gap-1.5 rounded-full border border-[#16241A]/30 bg-[#16241A] px-3.5 py-1.5 text-[12.5px] font-medium text-[#EDF1E8] hover:bg-[#1c2e21] transition-colors">
+            自信・パートナーシップ
+          </a>
           <a href="#cat-interview" className="inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
             インタビュー
           </a>

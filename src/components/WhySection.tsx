@@ -26,12 +26,17 @@ export default function WhySection() {
                 <span className="text-[#EDF1E8] font-medium">本当の味方は、どこにもいなかった。</span>
               </p>
               <p>
+                見た目の話だと思われがちだけれど、本当はもっと奥のこと——<span className="text-[#EDF1E8] font-medium">自信や、誰かとの関係のこと</span>だと、私たちは知っています。
+              </p>
+              <p>
                 口に出さないだけで、同じ悩みを抱える人は、思うよりずっと多い。
                 私たちも、その一人でした。だから、<span className="text-[#EDF1E8] font-medium">自分が欲しかったものを作りました</span>。
               </p>
               <p>
                 <span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
-                匿名のまま、あなたの側に立って、<span className="text-[#EDF1E8] font-medium">一本の線として伴走します</span>。
+                要らないものは、要らないと。<span className="text-[#EDF1E8] font-medium">紹介料を受け取りません。</span>
+                <br className="hidden sm:block" />
+                匿名のまま、あなたの側に立って、一本の線として伴走します。
               </p>
             </div>
 

@@ -1,0 +1,79 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { site } from "@/lib/site";
+
+// 「自信・パートナーシップ」— 言葉にしにくい悩み（自信・関係・性のこと）を、
+// 抽象度を保ったまま「回復の一部」として匿名で扱う、静かなランディング。
+// ガードレール: 具体的な症状名・施術名は出さない。ここまでの抽象度で止める。
+// 静的ルートのため /areas/[id] の「なぜ起きるのか」テンプレートには乗らない。
+const HEAD: React.CSSProperties = {
+  fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+  fontWeight: 800,
+  letterSpacing: "0.01em",
+  fontFeatureSettings: '"palt" 1',
+};
+
+export const metadata: Metadata = {
+  title: "自信・パートナーシップ — 言葉にしにくい悩みも、回復の一部として",
+  description:
+    "見た目を整える理由の奥に、たいてい「誰かの前でどうありたいか」がある。自信、関係、性のこと。それも回復の一部として、匿名のまま扱います。茶化さず、急かさず。",
+  alternates: { canonical: `${site.url}/areas/confidence` },
+  openGraph: {
+    type: "article",
+    url: `${site.url}/areas/confidence`,
+    title: "自信・パートナーシップ | His Recoveries",
+    description: "言葉にしにくい悩みも、回復の一部として、匿名のまま。茶化さず、急かさず。",
+  },
+};
+
+export default function ConfidencePage() {
+  return (
+    <div className="bg-[#16241a] text-[#EDF1E8] min-h-screen">
+      <div className="mx-auto max-w-[720px] px-6 sm:px-10 pt-20 sm:pt-28 pb-24">
+        <nav aria-label="パンくず" className="text-[12px] text-[#9FB0A0] mb-10">
+          <Link href="/" className="hover:text-[#EDF1E8]">ホーム</Link>
+          <span className="mx-1.5">/</span>
+          <Link href="/areas" className="hover:text-[#EDF1E8]">Library</Link>
+          <span className="mx-1.5">/</span>
+          <span className="text-[#EDF1E8]">自信・パートナーシップ</span>
+        </nav>
+
+        <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#85AB8B] mb-5">Confidence &amp; Partnership</div>
+        <h1 className="text-[1.9rem] sm:text-[2.5rem] leading-[1.4]" style={HEAD}>
+          自信・パートナーシップ
+        </h1>
+
+        <div className="mt-8 space-y-5 text-[15px] sm:text-[16px] text-[#C9D2C4] leading-[2.1] max-w-[34rem]">
+          <p>見た目を整える理由の奥に、たいてい「誰かの前でどうありたいか」がある。</p>
+          <p>言葉にしにくい悩み——自信、関係、性のこと。</p>
+          <p>
+            ここでは、それも<span className="text-[#EDF1E8] font-medium">回復の一部</span>として、匿名のまま扱います。
+            <br className="hidden sm:block" />
+            茶化さず、急かさず。
+          </p>
+          <p className="text-[#EDF1E8] font-medium">相談は、匿名で。</p>
+        </div>
+
+        <div className="mt-10">
+          <Link
+            href="/apply"
+            className="inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241a] text-[14px] font-semibold px-7 py-3.5 transition-colors"
+          >
+            匿名で相談する <span aria-hidden>→</span>
+          </Link>
+        </div>
+
+        <p className="mt-12 text-[11.5px] text-[#6f7d6c] leading-[1.9]">
+          ※ His Recoveries は医療行為を行いません。診断・治療は連携する医療機関が行います。
+          特定の医療機関・商品を推奨・斡旋しません。ご相談は匿名のまま、完全守秘義務のもとで。
+        </p>
+
+        <div className="mt-8">
+          <Link href="/areas" className="text-[13px] text-[#85AB8B] font-semibold hover:text-[#EDF1E8] transition-colors">
+            ← Library に戻る
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}

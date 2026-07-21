@@ -5,8 +5,8 @@ import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
-import FlowSection from "@/components/FlowSection";
 import WhySection from "@/components/WhySection";
+import ContinueSection from "@/components/ContinueSection";
 import TenToSenSection from "@/components/TenToSenSection";
 import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
@@ -116,6 +116,7 @@ export default function HomePage() {
               { t: "疲れて見える", href: "/areas/face" },
               { t: "清潔感", href: "/areas/impression" },
               { t: "写真が苦手", href: "/areas/impression/shashin-utsuri" },
+              { t: "自信・パートナーシップ", href: "/areas/confidence" },
             ].map((w) => (
               <Link
                 key={w.href}
@@ -140,20 +141,20 @@ export default function HomePage() {
         />
 
 
-        {/* 点を、線に。＝ 事業の軸（回復の旅程＋ふたつの現在地） */}
+        {/* Stage 1 — 現在地を知る（外側＝印象診断／内側＝血液） */}
         <TenToSenSection />
 
-        {/* サービス内容（第一印象の一日 ＝ 外側の現在地の詳細） */}
+        {/* Stage 2 — 道のりを選ぶ（Recover / Refine） */}
         <ServiceSection />
 
-        {/* 当日の流れ */}
-        <FlowSection />
+        {/* Stage 3 — 進む（つづく） */}
+        <ContinueSection />
+
+        {/* 贈る／急ぐ（ギフト・緊急枠） */}
+        <PricingSection />
 
         {/* Why — なぜやるのか（共感・思想） */}
         <WhySection />
-
-        {/* 予約（商品ラダー） */}
-        <PricingSection />
 
         {/* FAQ — 予約直前の不安を潰す */}
         <FaqSection />
