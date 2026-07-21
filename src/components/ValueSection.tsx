@@ -1,6 +1,8 @@
-// Value — 「何をしてくれる会社か」を一目で。
-// バーニングニーズ＝探す/恥/迷うの3つの負担。それを肩代わりするのがHRの価値。
-// 静かで短く。売らない・中立・匿名・二度説明させない、を機能として言い切る。
+// What we do ＋ Why を1セクションに合体。
+// 上：何をしてくれる会社か（探す/恥/迷うの3つの負担を肩代わり）
+// 下：なぜやるのか（思想の引用・manifesto へ）
+import Link from "next/link";
+
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
@@ -15,7 +17,7 @@ const BURDENS = [
   {
     k: "恥",
     t: "言えなかったことも、匿名のまま。",
-    d: "誰にも打ち明けられない悩みも、そっと。同じ説明を、二度させません。",
+    d: "誰にも打ち明けられない悩みも、匿名で受け止めます。同じ説明を、二度させません。",
   },
   {
     k: "迷う",
@@ -28,6 +30,7 @@ export default function ValueSection() {
   return (
     <section id="value" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-6">
+        {/* What we do */}
         <div className="on-media max-w-2xl mb-8">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
@@ -51,6 +54,31 @@ export default function ValueSection() {
               <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">{b.d}</p>
             </div>
           ))}
+        </div>
+
+        {/* Why — なぜ、やるのか（同じセクションに合体） */}
+        <div className="mt-10 rounded-[2rem] bg-[#16241a] text-[#EDF1E8] p-8 sm:p-12 overflow-hidden relative">
+          <div aria-hidden className="absolute -top-20 -right-12 w-80 h-80 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.16)" }} />
+          <div className="relative">
+            <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#85AB8B] mb-4">Why — なぜ、やるのか</div>
+            <h2 className="text-[#EDF1E8] text-[1.4rem] sm:text-[2rem] leading-[1.5]" style={{ ...MINCHO, fontWeight: 800, lineBreak: "strict" }}>
+              「気にするな」で、<br />
+              <span className="text-[#85AB8B]">終わらせたくない。</span>
+            </h2>
+            <div className="mt-6 space-y-4 text-[14px] sm:text-[15.5px] text-[#C9D2C4] leading-[2.05] max-w-[34rem]" style={{ lineBreak: "strict" }}>
+              <p>
+                相談すれば「気にしすぎ」。調べれば、売り込みばかり。
+                <span className="text-[#EDF1E8] font-medium">本当の味方は、どこにもいなかった。</span>
+              </p>
+              <p>
+                だから、<span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
+                中立の立場で、あなたに合う選択肢だけを整理します。
+              </p>
+            </div>
+            <Link href="/manifesto" className="mt-7 inline-flex items-center gap-2 text-[12.5px] font-semibold text-[#85AB8B] hover:text-[#EDF1E8] transition-colors">
+              この続きを、思想として読む <span aria-hidden>→</span>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

@@ -1,11 +1,8 @@
 // Service — 一本の線を1セクションに集約。
 // Step 01 現在地を知る（外側=印象診断¥22,000 / 内側=血液・準備中）
-// Step 02 道のりを選ぶ（Recover|取り戻す / Refine|深める）
-// ギフトは独立させず、両プランに「贈れる」とさりげなく（守秘設計は維持）。
-// 急ぎ（緊急枠）は脚注に。CTA はすべて既存の匿名相談導線。
+// CTA はすべて既存の匿名相談導線（/apply）。
 import Link from "next/link";
-import BookingCTA from "@/components/BookingCTA";
-import { entryDiagnosis, bloodCheck, urgentNote } from "@/lib/packages";
+import { entryDiagnosis, bloodCheck } from "@/lib/packages";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -71,63 +68,6 @@ export default function ServiceSection() {
           </p>
         </div>
 
-        {/* 概算の目安（同じ Service セクション内の続き。見出しは従属化して1セクションに） */}
-        <div className="on-media max-w-2xl mb-7 pt-2 mt-2 border-t border-[#1f2a1d]/10">
-          <h3 className="mt-6 text-[1.2rem] sm:text-[1.4rem] font-bold leading-[1.45]" style={MINCHO}>
-            費用は、あなたに合わせて。<span className="text-[#3d5638]">まずは、概算を。</span>
-          </h3>
-          <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.9]">
-            あなたに合わせて組む、オーダーメイドのコンシェルジュです。だから費用は内容によります。
-            それでも目安として、代表的なふたつの向き——<span className="text-[#1f2a1d] font-medium">取り戻す（Recover）と、深める（Refine）</span>——の概算を。
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-3 sm:gap-4 items-stretch">
-          {/* Plan 01 — Recover｜取り戻す */}
-          <div className="rounded-[1.8rem] bg-[#16241a] text-[#EDF1E8] border border-[#85AB8B]/40 shadow-[0_24px_50px_-26px_rgba(20,32,26,0.7)] p-7 sm:p-8 flex flex-col relative overflow-hidden">
-            <div aria-hidden className="absolute -top-16 -right-10 w-64 h-64 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.16)" }} />
-            <div className="relative flex flex-col h-full">
-              <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B] mb-2">Plan 01</div>
-              <h3 className="text-[1.4rem] sm:text-[1.6rem] font-bold text-[#EDF1E8] leading-[1.35]" style={MINCHO}>
-                Recover<span className="text-[#85AB8B] text-[1.05rem] font-normal ml-2">｜取り戻す</span>
-              </h3>
-              <div className="mt-2 text-[12px] text-[#9FB0A0]">概算 ¥150,000〜 ・ 専属チーム貸切</div>
-              <p className="mt-4 text-[13px] text-[#C9D2C4] leading-[2]">
-                誰にも言えなかった悩みや、複数の悩みをまとめて相談したい方へ。
-                カウンセリングで優先順位を整理し、メイク・服・写真などを一日で。匿名のまま進められます。
-              </p>
-              <div className="mt-auto pt-6">
-                <BookingCTA className="w-full text-center bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-6 py-3.5 rounded-full transition-colors">
-                  Recover を相談する（匿名）
-                </BookingCTA>
-              </div>
-            </div>
-          </div>
-
-          {/* Plan 02 — Refine｜深める */}
-          <div className="rounded-[1.8rem] bg-white border border-[#1f2a1d]/12 p-7 sm:p-8 flex flex-col">
-            <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#6b7a66] mb-2">Plan 02</div>
-            <h3 className="text-[1.4rem] sm:text-[1.6rem] font-bold text-[#1f2a1d] leading-[1.35]" style={MINCHO}>
-              Refine<span className="text-[#3d5638] text-[1.05rem] font-normal ml-2">｜深める</span>
-            </h3>
-            <div className="mt-2 text-[12px] text-[#6b7a66]">概算 ¥150,000〜 ・ 専属チーム貸切</div>
-            <p className="mt-4 text-[13px] text-[#4b5b47] leading-[2]">
-              困りごとはないが、もう一段深めたい方へ。
-              すでに整った印象と自信に、意図を通すための一日です。
-            </p>
-            <div className="mt-auto pt-6">
-              <BookingCTA className="w-full text-center bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-6 py-3.5 rounded-full transition-colors">
-                Refine を相談する
-              </BookingCTA>
-            </div>
-          </div>
-        </div>
-
-        <div className="on-media mt-5 space-y-1.5 text-[12px] text-[#6b7a66] leading-[1.85]">
-          <p>どちらも「取扱説明書」として、その後もあなたの記録として育てられます。</p>
-          <p>どちらも、ご自身にも、大切な人へのギフトとして贈ることもできます。贈られた方は匿名で選べ、内容は贈り主に開示されません。</p>
-          <p className="text-[#9aa79a]">※ {urgentNote}</p>
-        </div>
       </div>
     </section>
   );

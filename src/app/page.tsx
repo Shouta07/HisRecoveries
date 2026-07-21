@@ -5,7 +5,6 @@ import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
-import WhySection from "@/components/WhySection";
 import ValueSection from "@/components/ValueSection";
 import FaqSection from "@/components/FaqSection";
 
@@ -121,10 +120,7 @@ export default function HomePage() {
         />
 
 
-        {/* Why（思想の引用・シンプル）— Step 01 の上に */}
-        <WhySection />
-
-        {/* What we do — 探す/恥/迷うの3つの負担を肩代わり（価値を一目で） */}
+        {/* What we do ＋ Why を1セクションに合体 */}
         <ValueSection />
 
         {/* 現在地を知る → 概算（Recover / Refine を1セクションに） */}
