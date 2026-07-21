@@ -16,8 +16,8 @@ export default function EmpathyLead({ worry }: { worry: string }) {
           {worry}——そう感じているなら。
         </p>
         <p className="mt-3 text-[13px] sm:text-[13.5px] text-[#4b5b47] leading-[1.95] max-w-[34rem]">
-          ひとりじゃないし、性格のせいでもありません。口に出さないだけで、同じ悩みを抱える人は、あなたが思うより多い。
-          まずは「なぜそうなるのか」から、いっしょに。<span className="text-[#1f2a1d] font-medium">はじめてでも、大丈夫です。</span>
+          その悩みは、性格や気の持ちようの問題ではありません。口に出さないだけで、同じ悩みを抱える人は大勢います。
+          まずは「なぜそうなるのか」を、<span className="text-[#1f2a1d] font-medium">中立に整理していきます。</span>
         </p>
       </div>
     </div>
