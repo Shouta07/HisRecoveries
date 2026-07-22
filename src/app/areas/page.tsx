@@ -155,25 +155,20 @@ export default function LibraryPage() {
         </header>
 
         {/* カテゴリのクイックナビ — モバイルは横スクロール、スクロール時は上部に固定。
-            右端に常時見える相談CTA（読んでいる途中、いつでも聞ける状態を保つ）。 */}
+            相談CTAはヘッダーが常時出しているので、ここはチップだけに絞る。 */}
         <div className="sticky top-[62px] sm:top-[72px] z-30 -mx-5 sm:mx-0 mb-11 border-b border-[#1f2a1d]/10 bg-[#f4f6f2]/92 backdrop-blur-sm">
-          <div className="flex items-center gap-2 py-3.5 pl-5 sm:pl-0">
-            <div className="flex sm:flex-wrap gap-2 overflow-x-auto sm:overflow-visible min-w-0 flex-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {categories.map((c) => (
-                <a key={c.id} href={`#cat-${c.id}`} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
-                  {c.ja}
-                </a>
-              ))}
-              <a href="/areas/confidence" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
-                自信・パートナーシップ
+          <div className="flex sm:flex-wrap gap-2 overflow-x-auto sm:overflow-visible px-5 sm:px-0 py-3.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {categories.map((c) => (
+              <a key={c.id} href={`#cat-${c.id}`} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
+                {c.ja}
               </a>
-              <a href="#cat-interview" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
-                インタビュー
-              </a>
-            </div>
-            <Link href="/apply" className="shrink-0 mr-5 sm:mr-0 inline-flex items-center gap-1.5 rounded-full bg-[#16241A] hover:bg-[#1c2e21] px-4 py-1.5 text-[12.5px] font-bold text-[#EDF1E8] transition-colors shadow-[0_10px_22px_-12px_rgba(20,32,26,0.6)]">
-              相談<span className="hidden sm:inline">する</span>（無料）
-            </Link>
+            ))}
+            <a href="/areas/confidence" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
+              自信・パートナーシップ
+            </a>
+            <a href="#cat-interview" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
+              インタビュー
+            </a>
           </div>
         </div>
 
