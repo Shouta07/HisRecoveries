@@ -1,8 +1,8 @@
 "use client";
 
-// A CTA button that opens the booking/contact form *in place* as a modal,
-// so submission completes within the site (no page navigation). Renders via
-// a portal to <body> to stay above the fixed nav / boomerang video.
+// 無料相談 CTA。
+// - LINE が設定されていれば、クリックで直接 LINE へ遷移する（Oh my teeth 型）。
+// - 未設定なら、その場でモーダル（LINE ボタン＋メールフォーム）を開く。
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import ConsultEntry from "@/components/ConsultEntry";
@@ -13,6 +13,30 @@ export default function BookingCTA({
   children,
 }: {
   className?: string;
+  children: React.ReactNode;
+}) {
+  // LINE 設定あり → CTA は直接 LINE 遷移（フックを使わないので早期 return で安全）。
+  if (site.line.addFriendUrl) {
+    return (
+      <a
+        href={site.line.addFriendUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {children}
+      </a>
+    );
+  }
+  return <BookingModalButton className={className}>{children}</BookingModalButton>;
+}
+
+// LINE 未設定時のフォールバック：その場でフォームモーダルを開く。
+function BookingModalButton({
+  className,
+  children,
+}: {
+  className: string;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -54,7 +78,7 @@ export default function BookingCTA({
             <div
               role="dialog"
               aria-modal="true"
-              aria-label="予約登録フォーム"
+              aria-label="相談フォーム"
               className="relative z-[1] w-full max-w-[560px] my-6 sm:my-8 rounded-[1.6rem] bg-[#f7f8f5] shadow-[0_40px_90px_-30px_rgba(14,21,13,0.7)]"
             >
               {/* header */}

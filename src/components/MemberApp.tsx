@@ -11,6 +11,7 @@
 // （docs/MEMBER_PLATFORM_SPEC.md 参照）。
 
 import { useState } from "react";
+import ConsultLink from "@/components/ConsultLink";
 import {
   type Bloods, type Marker, type Kind,
   MARKERS, markerScore, rankOf, overallOfBloods, FEED_ACTIVE, FEED_EMPTY,
@@ -172,7 +173,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
           <p className="text-[13px] text-[#C9D2C4] leading-[1.9] mb-6 max-w-[460px] mx-auto">
             一度お話しすれば、あとは私たちが整えます。検査の予約も、結果も、次の一歩も、すべてここに自動で流れてきます。あなたは、何も入力しません。
           </p>
-          <a href="/apply" className="inline-block rounded-full bg-[#EDF1E8] text-[#16241a] text-[14px] font-bold px-7 py-3 hover:bg-white transition-colors">まず、そっと相談する</a>
+          <ConsultLink className="inline-block rounded-full bg-[#EDF1E8] text-[#16241a] text-[14px] font-bold px-7 py-3 hover:bg-white transition-colors">まず、そっと相談する</ConsultLink>
         </section>
       ) : (
         <>

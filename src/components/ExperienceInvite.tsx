@@ -3,6 +3,7 @@
 // 煽らず・断定せず・寄り添う。価格は前に出さず、まず"相談"の関係から。
 import Link from "next/link";
 import BookingCTA from "@/components/BookingCTA";
+import ConsultLink from "@/components/ConsultLink";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -60,9 +61,9 @@ export function InlineConsult() {
       <p className="text-[12.5px] text-[#3a423a] leading-[1.75] flex-1">
         読むだけでも大丈夫。でも「自分に合う形」が知りたくなったら、匿名のまま相談できます。
       </p>
-      <Link href="/apply" className="shrink-0 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
+      <ConsultLink className="shrink-0 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
         匿名で相談する <span aria-hidden>→</span>
-      </Link>
+      </ConsultLink>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 // 「静かな一本」CTA（Mechanism Library 用）。
 // 押さない。読み終えた人が、望むなら進める扉があるだけ、という佇まい。
 // バナー乱立・ポップアップ・追従・人工的な緊急性は禁止。1ページに1つだけ。
-import Link from "next/link";
+import ConsultLink from "@/components/ConsultLink";
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -19,12 +19,9 @@ export default function QuietConsult() {
         ここから先は、人によって違います。急ぐ必要はありません。
         匿名のまま、無料で相談できます。
       </p>
-      <Link
-        href="/apply"
-        className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#16241A]/25 hover:border-[#16241A] text-[#16241A] text-[13.5px] font-semibold px-6 py-3 transition-colors"
-      >
+      <ConsultLink className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#16241A]/25 hover:border-[#16241A] text-[#16241A] text-[13.5px] font-semibold px-6 py-3 transition-colors">
         匿名で相談する <span aria-hidden>→</span>
-      </Link>
+      </ConsultLink>
     </aside>
   );
 }

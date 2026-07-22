@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ConsultLink from "@/components/ConsultLink";
 import { site } from "@/lib/site";
 
 // 「自信・パートナーシップ」— 言葉にしにくい悩み（自信・関係・性のこと）を、
@@ -55,12 +56,9 @@ export default function ConfidencePage() {
         </div>
 
         <div className="mt-10">
-          <Link
-            href="/apply"
-            className="inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241a] text-[14px] font-semibold px-7 py-3.5 transition-colors"
-          >
+          <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241a] text-[14px] font-semibold px-7 py-3.5 transition-colors">
             匿名で相談する <span aria-hidden>→</span>
-          </Link>
+          </ConsultLink>
         </div>
 
         <p className="mt-12 text-[11.5px] text-[#6f7d6c] leading-[1.9]">

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import ConsultLink from "@/components/ConsultLink";
 import { site } from "@/lib/site";
 
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
@@ -40,12 +41,9 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <Link
-            href="/apply"
-            className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[12px] sm:text-[13px] font-semibold px-4 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap"
-          >
+          <ConsultLink className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[12px] sm:text-[13px] font-semibold px-4 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap">
             相談する（無料）
-          </Link>
+          </ConsultLink>
         </div>
       </div>
     </header>

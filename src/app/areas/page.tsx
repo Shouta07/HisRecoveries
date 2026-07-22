@@ -3,6 +3,7 @@ import Link from "next/link";
 import { complexes } from "@/lib/complexes";
 import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
+import ConsultLink from "@/components/ConsultLink";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -201,9 +202,9 @@ export default function LibraryPage() {
                     <p className="text-[14.5px] font-bold leading-[1.6]">調べ続けるより、10分の相談が早いこともあります。</p>
                     <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]">何から始めるか、いくらかかるか。匿名のまま、無料で。</p>
                   </div>
-                  <Link href="/apply" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-3 transition-colors">
+                  <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-3 transition-colors">
                     匿名で相談する（無料） <span aria-hidden>→</span>
-                  </Link>
+                  </ConsultLink>
                 </div>
               )}
             </section>
@@ -242,9 +243,9 @@ export default function LibraryPage() {
             読むだけでも大丈夫。聞きたくなったら、匿名のまま無料で相談できます。
           </p>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-            <Link href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[13px] font-bold px-6 py-3 transition-colors">
+            <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[13px] font-bold px-6 py-3 transition-colors">
               匿名で相談する（無料） <span aria-hidden>→</span>
-            </Link>
+            </ConsultLink>
             <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[13px] font-semibold px-6 py-3 transition-colors">
               サービスを見る
             </Link>
