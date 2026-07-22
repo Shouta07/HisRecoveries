@@ -109,12 +109,11 @@ export default function RecoverPage() {
         <section className="pt-12 sm:pt-14">
           <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-6 sm:p-8">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-[12px] text-[#6b7a66]">最低</span>
-              <span className="text-[1.6rem] font-bold text-[#16241A]" style={MINCHO}>目安 ¥150,000〜</span>
-              <span className="text-[12px] text-[#9aa79a]">・専属チーム貸切・1日完結</span>
+              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、要相談。</span>
+              <span className="text-[12px] text-[#9aa79a]">・オーダーメイド／専属チーム貸切</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">
-              入口は印象診断 ¥22,000（90分）。パッケージお申し込みで全額充当します。
+              内容によって変わるため、一律の価格は掲げません。入口の印象診断（90分・¥22,000／パッケージお申し込みで全額充当）で内容を伺い、総額の目安と内訳を、契約の前に必ずお伝えします。
             </p>
             <ul className="mt-4 grid sm:grid-cols-3 gap-2.5">
               {["紹介料を受け取らない", "総額と内訳を、契約の前に", "合意した予算を超えない"].map((p) => (

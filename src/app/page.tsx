@@ -76,7 +76,7 @@ export default function HomePage() {
               {[0, 1].map((n) => (
                 <div key={n} className="flex gap-8 sm:gap-12">
                   {VOICES_A.map((v) => (
-                    <span key={v} className="text-[12px] sm:text-[13px] text-[#85AB8B]/60 tracking-[0.04em]" style={MINCHO}>
+                    <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/85 tracking-[0.04em]" style={MINCHO}>
                       「{v}」
                     </span>
                   ))}
@@ -87,20 +87,13 @@ export default function HomePage() {
               {[0, 1].map((n) => (
                 <div key={n} className="flex gap-8 sm:gap-12">
                   {VOICES_B.map((v) => (
-                    <span key={v} className="text-[12px] sm:text-[13px] text-[#85AB8B]/45 tracking-[0.04em]" style={MINCHO}>
+                    <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/65 tracking-[0.04em]" style={MINCHO}>
                       「{v}」
                     </span>
                   ))}
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* 小さなブランド・エディトリアルなアイブロウ */}
-          <div className="flex items-center gap-3 mb-5 sm:mb-6">
-            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/55" />
-            <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.28em] text-[#85AB8B] font-medium">MEN&apos;S WELLNESS CONCIERGE</span>
-            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/55" />
           </div>
 
           {/* 主役はタグライン（His Recoveries は左上のロゴのみ） */}

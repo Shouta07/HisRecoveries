@@ -37,8 +37,8 @@ const PLANS: Plan[] = [
       "必要に応じて、医療連携・内側のケア",
     ],
     custom: "要る・要らないは一緒に。あなたの悩みに合わせて、オーダーメイドで組みます。",
-    from: "目安 ¥150,000〜",
-    entry: "入口は印象診断 ¥22,000（お申し込みで全額充当）",
+    from: "要相談",
+    entry: "入口は印象診断 ¥22,000（お申し込みで全額充当）・オーダーメイド",
     href: "/recover",
     cta: "Recover を詳しく見る",
     line: false,
@@ -55,8 +55,8 @@ const PLANS: Plan[] = [
       "続けて深める、継続の設計",
     ],
     custom: "目的に合わせて、オーダーメイドで。何から深めるかは、地図を見ながら。",
-    from: "目安 ¥150,000〜",
-    entry: "まずは無料相談から",
+    from: "要相談",
+    entry: "オーダーメイド・まずは無料相談から",
     href: "/refine",
     cta: "Refine を詳しく見る",
     line: false,
@@ -111,7 +111,7 @@ export default function ExperiencesSection() {
 
               <div className="mt-auto pt-4 border-t border-[#1f2a1d]/10">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-[11px] text-[#6b7a66]">最低</span>
+                  <span className="text-[11px] text-[#6b7a66]">費用</span>
                   <span className="text-[1.05rem] font-bold text-[#16241A]">{p.from}</span>
                   <span className="text-[10.5px] text-[#9aa79a]">・専属チーム貸切</span>
                 </div>
