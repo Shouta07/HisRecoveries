@@ -40,6 +40,11 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
 
   const url = `${site.url}/areas/${a.areaId}/${a.slug}`;
 
+  // あわせて読む（related slug → 記事解決。存在しない slug は無視）
+  const relatedArticles = (a.related ?? [])
+    .map((s) => clusters.find((c) => c.slug === s))
+    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -181,6 +186,26 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             ))}
           </dl>
         </section>
+
+        {/* あわせて読む — 内部リンク網（潜在→仕組み→選び方の導線） */}
+        {relatedArticles.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>あわせて読む</h2>
+            <ul className="space-y-2">
+              {relatedArticles.map((r) => (
+                <li key={r.slug}>
+                  <Link
+                    href={`/areas/${r.areaId}/${r.slug}`}
+                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#1f2a1d]/10 bg-white px-4 py-3.5 hover:border-[#3d5638]/40 transition-colors"
+                  >
+                    <span className="text-[13.5px] font-semibold text-[#1f2a1d] leading-[1.6]">{r.title}</span>
+                    <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* 記事 → 次の一歩の橋渡し。ガイド（第一印象）は体験へ、
             メカニズム／選び方は「静かな一本」CTA だけを置く（バナー乱立を避ける）。 */}
