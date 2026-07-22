@@ -31,7 +31,9 @@ export default function GlassNav() {
       <div className="flex items-center justify-between gap-3 px-4 sm:px-6 md:px-10 py-3.5 sm:py-4">
         <Link
           href="/"
-          className="logo-type text-base sm:text-xl tracking-tight font-semibold text-[#1f2a1d] shrink-0"
+          className={`logo-type text-base sm:text-xl tracking-tight font-semibold shrink-0 transition-colors ${
+            scrolled ? "text-[#1f2a1d]" : "text-[#EDF1E8]"
+          }`}
         >
           His Recoveries
         </Link>
@@ -41,7 +43,9 @@ export default function GlassNav() {
             <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
               <Link
                 href={l.href}
-                className="text-[13px] sm:text-[14px] font-medium text-[#3d5638] hover:text-[#1f2a1d] transition-colors whitespace-nowrap"
+                className={`text-[13px] sm:text-[14px] font-medium transition-colors whitespace-nowrap ${
+                  scrolled ? "text-[#3d5638] hover:text-[#1f2a1d]" : "text-[#EDF1E8]/85 hover:text-[#EDF1E8]"
+                }`}
               >
                 {l.label}
               </Link>
