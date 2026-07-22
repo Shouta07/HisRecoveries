@@ -1,51 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Cormorant_Garamond,
-  Noto_Sans_JP,
-  Shippori_Mincho_B1,
-  Zen_Kaku_Gothic_New,
-  Inter,
-} from "next/font/google";
+// Self-hosted fonts via fontsource (no build-time Google Fonts fetch → no
+// more transient CI deploy failures). CSS vars are set in globals.css.
+import "@fontsource/cormorant-garamond/400.css";
+import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/cormorant-garamond/700.css";
+import "@fontsource/noto-sans-jp/400.css";
+import "@fontsource/noto-sans-jp/500.css";
+import "@fontsource/noto-sans-jp/700.css";
+import "@fontsource/shippori-mincho-b1/500.css";
+import "@fontsource/shippori-mincho-b1/600.css";
+import "@fontsource/shippori-mincho-b1/700.css";
+import "@fontsource/shippori-mincho-b1/800.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
 import { site, socialSameAs } from "@/lib/site";
 import "./globals.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const notoSansJp = Noto_Sans_JP({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-noto-sans-jp",
-  display: "swap",
-});
-
-const shipporiMincho = Shippori_Mincho_B1({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-shippori",
-  display: "swap",
-});
-
-const zenKaku = Zen_Kaku_Gothic_New({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-  variable: "--font-zen",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -165,10 +136,7 @@ export default function RootLayout({
   };
 
   return (
-    <html
-      lang="ja"
-      className={`${cormorant.variable} ${notoSansJp.variable} ${shipporiMincho.variable} ${zenKaku.variable} ${inter.variable}`}
-    >
+    <html lang="ja">
       <body className="min-h-screen flex flex-col">
         <script
           type="application/ld+json"

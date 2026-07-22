@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 :root {
+  /* Self-hosted font families (fontsource). Replaces next/font/google vars. */
+  --font-shippori: "Shippori Mincho B1";
+  --font-noto-sans-jp: "Noto Sans JP";
+  --font-cormorant: "Cormorant Garamond";
+
   /* Chic dark sophisticated palette — high-end men register */
   --cream: #f2ead9;
   --cream-deep: #e6dbc4;
