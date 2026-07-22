@@ -20,6 +20,15 @@ export type ExperienceModule = {
   axis: "outer" | "inner";
   /** カード上の軸ラベル */
   axisLabel: string;
+  /**
+   * どの層への入口か（表には出さない設計タグ）。
+   * now = 顕在層（いま困っている・動いているが迷子）
+   * ahead = 潜在層（今は困っていないが、そろそろ／先手・予防）
+   * 新モジュールは必ずどちらかを設定する。
+   */
+  layer: "now" | "ahead";
+  /** カード冒頭の「誰へのものか」1行（layer を言葉にしたもの） */
+  hook: string;
   /** 体験名（カード見出し） */
   name: string;
   /** ひとことで「何が受けられるか」 */
@@ -41,6 +50,8 @@ export const experiences: ExperienceModule[] = [
     areaId: "impression",
     axis: "outer",
     axisLabel: "外側から",
+    layer: "now",
+    hook: "「何から始めればいいか、分からない」——いま動きたい人に。",
     name: "第一印象パッケージ",
     summary:
       "メイク・服・写真のプロチームが、あなたの第一印象を一日で。入口は印象診断（¥22,000・お申し込みで全額充当）から。",
@@ -55,6 +66,8 @@ export const experiences: ExperienceModule[] = [
     areaId: "mind",
     axis: "inner",
     axisLabel: "内側から",
+    layer: "ahead",
+    hook: "「今は困っていない。でも、そろそろ」——先手を打ちたい人に。",
     name: "血液コンディション・チェック",
     summary:
       "悪いところ探しではなく、現在地を知る検査。数値の解釈は医師が、その後の伴走を私たちが。ご案内は匿名の無料相談から。",
@@ -66,10 +79,11 @@ export const experiences: ExperienceModule[] = [
 
   // ── 拡張の予約枠（status: "planned"。UI 非表示）──────────────
   // 体験化が決まったら status を preparing → available に上げるだけ。
-  { id: "hair", areaId: "hair", axis: "outer", axisLabel: "外側から", name: "髪の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
-  { id: "skin", areaId: "skin", axis: "outer", axisLabel: "外側から", name: "肌の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
-  { id: "body", areaId: "body-hair", axis: "outer", axisLabel: "外側から", name: "体の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
-  { id: "mind", areaId: "mind", axis: "inner", axisLabel: "内側から", name: "心・習慣の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
+  // layer（now=顕在/ahead=潜在）と hook は提供決定時に確定させる。
+  { id: "hair", areaId: "hair", axis: "outer", axisLabel: "外側から", layer: "now", hook: "", name: "髪の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
+  { id: "skin", areaId: "skin", axis: "outer", axisLabel: "外側から", layer: "ahead", hook: "", name: "肌の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
+  { id: "body", areaId: "body-hair", axis: "outer", axisLabel: "外側から", layer: "now", hook: "", name: "体の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
+  { id: "mind", areaId: "mind", axis: "inner", axisLabel: "内側から", layer: "ahead", hook: "", name: "心・習慣の体験", summary: "", status: "planned", statusLabel: "構想中", href: "/apply", cta: "相談する" },
 ];
 
 /** Service セクション等で描画してよい体験（提供中・準備中）。 */

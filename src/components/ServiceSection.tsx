@@ -21,12 +21,12 @@ export default function ServiceSection() {
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service — できること</span>
           </div>
           <h2 className="text-[1.4rem] sm:text-[1.8rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
-            プロチームが、第一印象を一日で整える。
+            いま動きたい人にも、そろそろの人にも。
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.95]">
-            メイク・スタイリスト・カメラマンの専属チームが、あなた一人のために一日を設計します。第一印象は、最初の一歩。
+            「何から始めればいいか分からない」も、「今は困ってないけど、そろそろ」も。
             <br className="hidden sm:block" />
-            血液で内側を知ることから、髪・肌・体・心へと領域を広げていきます。どの体験も、悩みを聞く匿名相談から始まります。
+            外側（見た目）と内側（コンディション）から、あなたに合う一歩を。どの体験も、悩みを聞く匿名相談から始まります。
           </p>
         </div>
 
@@ -42,7 +42,8 @@ export default function ServiceSection() {
                 <span className="text-[1.05rem] font-bold text-[#1f2a1d]" style={MINCHO}>{e.name}</span>
                 {e.price && <span className="text-[13px] font-bold text-[#3d5638]">{e.price}</span>}
               </div>
-              <p className="mt-2 text-[12px] text-[#4b5b47] leading-[1.85]">{e.summary}</p>
+              {e.hook && <p className="mt-1.5 text-[12px] font-semibold text-[#3d5638] leading-[1.7]">{e.hook}</p>}
+              <p className="mt-1.5 text-[12px] text-[#4b5b47] leading-[1.85]">{e.summary}</p>
               <span className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#3d5638] group-hover:gap-2.5 transition-all">{e.cta} <span aria-hidden>→</span></span>
             </Link>
           ))}
@@ -59,7 +60,7 @@ export default function ServiceSection() {
             ))}
           </div>
           <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
-            ひとつに絞らなくて大丈夫。<span className="text-[#1f2a1d] font-medium">Recover でも Refine でも、複数の悩みをまとめて、ひとつの窓口で</span>始められます。何から手をつけるかは、一緒に決めます。
+            ひとつに絞らなくて大丈夫。<span className="text-[#1f2a1d] font-medium">複数の悩みをまとめて、ひとつの窓口で</span>始められます。何から手をつけるかは、一緒に決めます。
           </p>
         </div>
 
