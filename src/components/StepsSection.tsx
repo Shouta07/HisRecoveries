@@ -1,0 +1,62 @@
+// はじめかたの流れ（Oh my teeth 型の「N ステップ」ファネル）。
+// 無料相談（匿名・LINE）を入口に、記録・継続までの一本を見せる。
+// 末尾に常設の相談CTA（BookingCTA = LINE + フォームのモーダル）。
+import BookingCTA from "@/components/BookingCTA";
+
+const MINCHO: React.CSSProperties = {
+  fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+  fontFeatureSettings: '"palt" 1',
+};
+
+const STEPS = [
+  { n: "01", t: "LINEで、無料相談", d: "匿名のままでOK。実名・顔写真は不要。気になることを、いくつでも。" },
+  { n: "02", t: "現在地を知る", d: "外側は印象診断（¥22,000）、内側は血液（準備中）で。悪いところ探しではなく、いまの自分を。" },
+  { n: "03", t: "プランを、一緒に", d: "費用は先に説明します。合意した予算を超える提案はしません。売り込みなし。" },
+  { n: "04", t: "体験する", d: "メイク・服・写真のプロチームと。あなたのペースで、一歩ずつ。" },
+  { n: "05", t: "記録が、残る", d: "相談も変化も、LINEで続く。記録はあなたのもの——いつでも見返せ、消せます。" },
+];
+
+export default function StepsSection() {
+  return (
+    <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 sm:pt-14 pb-6">
+        <div className="on-media max-w-2xl mb-7">
+          <div className="flex items-center gap-3 mb-3">
+            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">How it works — はじめかた</span>
+          </div>
+          <h2 className="text-[1.5rem] sm:text-[1.9rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
+            匿名のLINE相談から、<span className="text-[#3d5638]">5ステップ。</span>
+          </h2>
+        </div>
+
+        {/* 縦タイムライン（モバイル最適・線でつなぐ） */}
+        <ol className="relative border-l-2 border-[#85AB8B]/35 ml-4 sm:ml-5 space-y-6 mb-9">
+          {STEPS.map((s) => (
+            <li key={s.n} className="relative pl-6 sm:pl-7">
+              <span
+                aria-hidden
+                className="absolute -left-[13px] top-0 grid place-items-center w-6 h-6 rounded-full bg-[#16241A] text-[#EDF1E8] text-[10px] font-bold font-mono"
+              >
+                {s.n}
+              </span>
+              <div className="text-[14.5px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.5]" style={MINCHO}>{s.t}</div>
+              <p className="mt-1 text-[12.5px] text-[#4b5b47] leading-[1.9]">{s.d}</p>
+            </li>
+          ))}
+        </ol>
+
+        {/* 常設CTA — LINE（あれば）＋フォームのモーダル */}
+        <div className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1">
+            <p className="text-[15px] font-bold leading-[1.6]">まずは、匿名で聞いてみる。</p>
+            <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.85]">無料・匿名のまま。何から始めるかは、一緒に決めます。</p>
+          </div>
+          <BookingCTA className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13.5px] font-bold px-7 py-3.5 transition-colors">
+            無料相談を始める
+          </BookingCTA>
+        </div>
+      </div>
+    </section>
+  );
+}
