@@ -54,7 +54,7 @@ function badgeStyle(b: Card["badge"]) {
   return "bg-[#f0f4ee] text-[#6b7a66]";
 }
 
-function ArticleCard({ c, carousel = false }: { c: Card; carousel?: boolean }) {
+function ArticleCard({ c, carousel = false, starter = false }: { c: Card; carousel?: boolean; starter?: boolean }) {
   return (
     <Link
       href={c.href}
@@ -63,7 +63,11 @@ function ArticleCard({ c, carousel = false }: { c: Card; carousel?: boolean }) {
     >
       <div className="flex items-center gap-2 mb-2">
         <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold ${badgeStyle(c.badge)}`}>{c.badge}</span>
-        <span className="ml-auto text-[10.5px] text-[#9aa79a]">{c.date}</span>
+        {starter && (
+          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#16241A] text-[#EDF1E8] px-2 py-0.5 text-[9.5px] font-bold tracking-[0.04em]">
+            <span aria-hidden>★</span>はじめの1本
+          </span>
+        )}
       </div>
       <h3 className="text-[15px] font-bold text-[#1f2a1d] leading-[1.55] group-hover:text-[#3d5638] transition-colors" style={HEAD}>{c.title}</h3>
       <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.85] line-clamp-2 sm:line-clamp-3 flex-1">{c.excerpt}</p>
@@ -150,20 +154,26 @@ export default function LibraryPage() {
           </p>
         </header>
 
-        {/* カテゴリのクイックナビ — モバイルは横スクロール、スクロール時は上部に固定 */}
+        {/* カテゴリのクイックナビ — モバイルは横スクロール、スクロール時は上部に固定。
+            右端に常時見える相談CTA（読んでいる途中、いつでも聞ける状態を保つ）。 */}
         <div className="sticky top-[62px] sm:top-[72px] z-30 -mx-5 sm:mx-0 mb-11 border-b border-[#1f2a1d]/10 bg-[#f4f6f2]/92 backdrop-blur-sm">
-          <div className="flex sm:flex-wrap gap-2 overflow-x-auto sm:overflow-visible px-5 sm:px-0 py-3.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {categories.map((c) => (
-              <a key={c.id} href={`#cat-${c.id}`} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
-                {c.ja}
+          <div className="flex items-center gap-2 py-3.5 pl-5 sm:pl-0">
+            <div className="flex sm:flex-wrap gap-2 overflow-x-auto sm:overflow-visible min-w-0 flex-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {categories.map((c) => (
+                <a key={c.id} href={`#cat-${c.id}`} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
+                  {c.ja}
+                </a>
+              ))}
+              <a href="/areas/confidence" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
+                自信・パートナーシップ
               </a>
-            ))}
-            <a href="/areas/confidence" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#16241A]/30 bg-[#16241A] px-3.5 py-1.5 text-[12.5px] font-medium text-[#EDF1E8] hover:bg-[#1c2e21] transition-colors">
-              自信・パートナーシップ
-            </a>
-            <a href="#cat-interview" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
-              インタビュー
-            </a>
+              <a href="#cat-interview" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
+                インタビュー
+              </a>
+            </div>
+            <Link href="/apply" className="shrink-0 mr-5 sm:mr-0 inline-flex items-center gap-1.5 rounded-full bg-[#16241A] hover:bg-[#1c2e21] px-4 py-1.5 text-[12.5px] font-bold text-[#EDF1E8] transition-colors shadow-[0_10px_22px_-12px_rgba(20,32,26,0.6)]">
+              相談<span className="hidden sm:inline">する</span>（無料）
+            </Link>
           </div>
         </div>
 
@@ -183,10 +193,23 @@ export default function LibraryPage() {
                 </Link>
               </div>
               <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-pl-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                {c.cards.map((card) => <ArticleCard key={card.href} c={card} carousel />)}
+                {c.cards.map((card, i) => <ArticleCard key={card.href} c={card} carousel starter={i === 0} />)}
               </div>
               {c.cards.length > 1 && (
                 <p className="sm:hidden mt-2.5 text-[11px] text-[#9aa79a]">← 横にスクロール（{c.cards.length}件）</p>
+              )}
+
+              {/* 最大カテゴリの直後に、静かな相談バンドを1つだけ（中間CVRポイント） */}
+              {c.id === "impression" && (
+                <div className="mt-8 rounded-[1.3rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="flex-1">
+                    <p className="text-[14.5px] font-bold leading-[1.6]">調べ続けるより、10分の相談が早いこともあります。</p>
+                    <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]">何から始めるか、いくらかかるか。匿名のまま、無料で。</p>
+                  </div>
+                  <Link href="/apply" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-3 transition-colors">
+                    匿名で相談する（無料） <span aria-hidden>→</span>
+                  </Link>
+                </div>
               )}
             </section>
           ))}
@@ -219,14 +242,19 @@ export default function LibraryPage() {
           </section>
         </div>
 
-        {/* サービスは程々に：控えめな一行だけ */}
-        <div className="mt-16 rounded-[1.3rem] border border-[#1f2a1d]/10 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-3">
+        {/* 読み終わりの受け皿：相談（無料・匿名）を主導線に、サービスは従 */}
+        <div className="mt-16 rounded-[1.3rem] border border-[#1f2a1d]/10 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
           <p className="text-[13px] text-[#4b5b47] leading-[1.85] flex-1">
-            読むだけでも大丈夫。整えたくなったら、メイク・服・写真をプロと一日で。相談は匿名のままで。
+            読むだけでも大丈夫。聞きたくなったら、匿名のまま無料で相談できます。
           </p>
-          <Link href="/packages/first-impression" className="shrink-0 inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[13px] font-semibold px-6 py-3 transition-colors">
-            サービスを見る <span aria-hidden>→</span>
-          </Link>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <Link href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[13px] font-bold px-6 py-3 transition-colors">
+              匿名で相談する（無料） <span aria-hidden>→</span>
+            </Link>
+            <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[13px] font-semibold px-6 py-3 transition-colors">
+              サービスを見る
+            </Link>
+          </div>
         </div>
 
         <p className="mt-8 text-[11.5px] text-[#6b7a66] leading-[1.9]">
