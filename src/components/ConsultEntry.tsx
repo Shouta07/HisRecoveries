@@ -26,12 +26,12 @@ export default function ConsultEntry() {
         <svg aria-hidden width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 3C6.5 3 2 6.7 2 11.2c0 4 3.4 7.3 8 7.9v2.4c0 .4.4.6.7.4l3.3-2.2c4.6-.3 8-3.6 8-8.5C22 6.7 17.5 3 12 3z" />
         </svg>
-        LINEで無料相談を始める
+        LINEで友だち追加して始める
       </a>
       <p className="mt-3 text-[12.5px] text-[#4b5b47] leading-[1.9] text-center">
-        いちばん早く始められます。<strong className="font-bold text-[#1f2a1d]">匿名のままでOK</strong>・通知は必要なときだけ。
+        友だち追加のあと、<strong className="font-bold text-[#1f2a1d]">相互の秘密保持契約（NDA）にご同意いただいてからスタート</strong>。
         <br />
-        相談・診断結果・その後の記録まで、すべて LINE で。
+        話した内容も、あなたのことも外に出しません。相談は無料・通知は必要なときだけ。
       </p>
 
       {!showForm ? (

@@ -27,15 +27,15 @@ export default function ApplyPage() {
           CONTACT · 匿名のまま · 完全守秘
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
-          ひとりで抱えず、<br />まず匿名で相談する。
+          ひとりで抱えず、<br />LINEで、相談する。
         </h1>
         <p className="mt-5 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
           何が正解か、いくらかかるか。<strong className="font-bold text-[#1f2a1d]">遠回りせず、あなたのペースで一緒に整理します。</strong>
-          気になることは、いくつでも。実名・顔写真は不要です。
+          気になることは、いくつでも。
           <br />
-          流れは、<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（LINE）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③体験</strong>。
-          相談・印象診断は<strong className="font-bold text-[#1f2a1d]">匿名のまま・完全守秘義務</strong>のもとで。
-          現在は無料相談を受付中です。匿名のまま、今日から始められます。
+          流れは、<strong className="font-bold text-[#1f2a1d]">①LINEで友だち追加 → ②相互の秘密保持契約（NDA）に同意 → ③無料相談・印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ④体験</strong>。
+          話した内容も、あなたのことも<strong className="font-bold text-[#1f2a1d]">外に出しません（完全守秘）</strong>。
+          現在は無料相談を受付中です。今日から始められます。
         </p>
 
         <ConsultEntry />

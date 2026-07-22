@@ -106,9 +106,9 @@ function BookingModalButton({
               {/* body (scrolls if tall) */}
               <div className="px-6 sm:px-8 py-6 max-h-[72vh] overflow-y-auto">
                 <p className="text-[14px] text-[#4b5b47] leading-[1.95] mb-7">
-                  コンプレックスから自信への変化を、一緒に設計します。まずは対話から。すべて
-                  <strong className="font-bold text-[#1f2a1d]">匿名のまま（実名不要）・完全守秘義務</strong>
-                  のもとで扱います。
+                  コンプレックスから自信への変化を、一緒に設計します。まずは対話から。話す前に
+                  <strong className="font-bold text-[#1f2a1d]">相互の秘密保持契約（NDA）</strong>
+                  に同意いただき、<strong className="font-bold text-[#1f2a1d]">完全守秘義務</strong>のもとで扱います。
                 </p>
 
                 <ConsultEntry />
