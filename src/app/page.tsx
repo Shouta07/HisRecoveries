@@ -72,14 +72,6 @@ export default function HomePage() {
 
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-screen px-4 sm:px-6 pt-20 pb-16 on-media">
-          <div className="flex items-center gap-3 mb-6 text-[#4b5b47]">
-            <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
-            <span className="text-[11px] sm:text-sm tracking-[0.32em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
-              男性ウェルネスの、コンシェルジュ。
-            </span>
-            <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
-          </div>
-
           {/* ブランドを中心に */}
           <h1 className="logo-type text-[#1f2a1d] text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.25rem] leading-[1.05] tracking-[0.01em]">
             His <span className="text-[#3d5638]">Recoveries</span>
@@ -93,7 +85,7 @@ export default function HomePage() {
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            His Recoveries は、男性の健康・美容・活力を整えるウェルネスサービスです。相談は匿名のまま、費用も先に。
+            男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は匿名のまま、費用も先に。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
