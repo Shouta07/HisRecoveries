@@ -1,8 +1,6 @@
 // はじめかたの流れ（Oh my teeth 型の「N ステップ」ファネル）。
 // 無料相談（LINE・相互NDA）を入口に、記録・継続までの一本を見せる。
-// 末尾に常設の相談CTA（BookingCTA = LINE + フォームのモーダル）。
-import BookingCTA from "@/components/BookingCTA";
-
+// CTA は下部追従バー（StickyConsultBar）に集約。
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
@@ -45,17 +43,6 @@ export default function StepsSection() {
             </li>
           ))}
         </ol>
-
-        {/* 常設CTA — LINE（あれば）＋フォームのモーダル */}
-        <div className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex-1">
-            <p className="text-[15px] font-bold leading-[1.6]">まずは、聞いてみる。</p>
-            <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.85]">無料・完全守秘のまま。何から始めるかは、一緒に決めます。</p>
-          </div>
-          <BookingCTA className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13.5px] font-bold px-7 py-3.5 transition-colors">
-            無料相談を始める
-          </BookingCTA>
-        </div>
       </div>
     </section>
   );

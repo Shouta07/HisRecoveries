@@ -3,7 +3,6 @@ import { join } from "node:path";
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
-import ValueSection from "@/components/ValueSection";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import LibraryStrip from "@/components/LibraryStrip";
@@ -22,6 +21,18 @@ const HERO_HEAD: React.CSSProperties = {
   WebkitFontSmoothing: "antialiased",
   textRendering: "optimizeLegibility",
 };
+
+const MINCHO: React.CSSProperties = {
+  fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+  fontFeatureSettings: '"palt" 1',
+};
+
+// ヒーロー直下の価値3カラム（手間・恥・損）。Oh my teeth のヒーロー下フィーチャー行と同じ配置。
+const BURDENS = [
+  { k: "手間", t: "調べなくていい。", d: "広告も口コミも、こちらで整理。" },
+  { k: "恥", t: "知られない。", d: "実名不要・NDAで守秘。" },
+  { k: "損", t: "ぼったくられない。", d: "費用は先に・売り込みなし。" },
+];
 
 // 背景: ウェルネス体験コラージュ写真（public/media/hero/wellness-collage.png）を
 // 配置するとビルド時に自動で写真背景へ切り替わる。無い間は既存の動画のまま。
@@ -90,6 +101,17 @@ export default function HomePage() {
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
             男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は無料・完全守秘、費用も先に。
           </p>
+
+          {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
+          <div className="mt-8 w-full max-w-[600px] grid grid-cols-3 rounded-[1.4rem] bg-white/95 backdrop-blur-sm border border-[#1f2a1d]/10 divide-x divide-[#1f2a1d]/10 overflow-hidden shadow-[0_20px_48px_-26px_rgba(20,32,26,0.5)]">
+            {BURDENS.map((b) => (
+              <div key={b.k} className="flex flex-col items-center text-center px-1.5 sm:px-4 py-4 sm:py-6">
+                <span className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[10px] sm:text-[11.5px] font-bold tracking-[0.06em]">{b.k}</span>
+                <div className="mt-2 sm:mt-3 text-[12px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.4]" style={MINCHO}>{b.t}</div>
+                <p className="mt-1 text-[9.5px] sm:text-[11.5px] text-[#6b7a66] leading-[1.55]">{b.d}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -103,9 +125,6 @@ export default function HomePage() {
           style={{ background: "linear-gradient(180deg, rgba(245,247,242,0.2) 0%, rgba(240,244,238,0.12) 40%, rgba(238,243,237,0.16) 100%)" }}
         />
 
-
-        {/* 価値 — 私たちの価値（手間・恥・損をなくす） */}
-        <ValueSection />
 
         {/* はじめかた — 無料LINE相談から記録まで5ステップ（Oh my teeth 型） */}
         <StepsSection />
