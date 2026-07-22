@@ -456,3 +456,15 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .hr-marquee { animation: none; }
 }
+
+/* 2本目のマーキー（逆方向・右へ流れる） */
+@keyframes hr-marquee-rev {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.hr-marquee-rev {
+  animation: hr-marquee-rev 46s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hr-marquee-rev { animation: none; }
+}
