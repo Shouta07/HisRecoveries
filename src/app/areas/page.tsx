@@ -229,8 +229,7 @@ export default function LibraryPage() {
             ) : (
               <div className="rounded-[1.3rem] border border-dashed border-[#1f2a1d]/15 bg-white/50 p-8 text-center">
                 <p className="text-[13px] text-[#6b7a66] leading-[1.9]">
-                  取材記事を、これから掲載していきます。<br className="hidden sm:block" />
-                  現場のプロの方は <Link href="/partners" className="text-[#3d5638] font-semibold hover:opacity-70">こちら →</Link>
+                  取材記事を、これから掲載していきます。
                 </p>
               </div>
             )}

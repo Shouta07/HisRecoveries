@@ -137,7 +137,6 @@ export default function HomePage() {
               <Link href="/manifesto" className="hover:text-[#1f2a1d] transition-colors">思想</Link>
               <Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">Library</Link>
               <Link href="/member" className="hover:text-[#1f2a1d] transition-colors">会員ページ（β）</Link>
-              <Link href="/partners" className="hover:text-[#1f2a1d] transition-colors">現場のプロの方へ</Link>
               <Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link>
             </nav>
             <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries</span>
