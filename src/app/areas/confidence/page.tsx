@@ -40,7 +40,7 @@ export default function ConfidencePage() {
         </nav>
 
         <div className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#85AB8B] mb-5">Confidence &amp; Partnership</div>
-        <h1 className="text-[1.9rem] sm:text-[2.5rem] leading-[1.4]" style={HEAD}>
+        <h1 className="text-[#EDF1E8] text-[1.9rem] sm:text-[2.5rem] leading-[1.4]" style={HEAD}>
           自信・パートナーシップ
         </h1>
 

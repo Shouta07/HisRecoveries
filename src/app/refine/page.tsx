@@ -61,7 +61,7 @@ export default function RefinePage() {
             <span className="text-[#EDF1E8]">Refine｜深める</span>
           </nav>
           <div className="font-mono text-[11px] tracking-[0.28em] text-[#85AB8B] mb-4">REFINE — 深める</div>
-          <h1 className="text-[1.9rem] sm:text-[2.7rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
+          <h1 className="text-[#EDF1E8] text-[1.9rem] sm:text-[2.7rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
             整っているからこそ、<br />
             <span className="text-[#85AB8B]">もう一段。</span>
           </h1>

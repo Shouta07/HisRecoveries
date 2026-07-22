@@ -61,7 +61,7 @@ export default function RecoverPage() {
             <span className="text-[#EDF1E8]">Recover｜取り戻す</span>
           </nav>
           <div className="font-mono text-[11px] tracking-[0.28em] text-[#85AB8B] mb-4">RECOVER — 取り戻す</div>
-          <h1 className="text-[1.9rem] sm:text-[2.7rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
+          <h1 className="text-[#EDF1E8] text-[1.9rem] sm:text-[2.7rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
             誰にも言えなかった悩みを、<br />
             <span className="text-[#85AB8B]">ゼロに戻す。</span>
           </h1>

@@ -169,7 +169,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
         // 相談前（Accordにまだ何もない）
         <section className="mb-12 rounded-[1.6rem] bg-gradient-to-br from-[#16241a] to-[#0f1a12] text-[#EDF1E8] p-8 sm:p-10 text-center">
           <div className="text-[11px] tracking-[0.22em] text-[#85AB8B] font-semibold mb-3">YOUR STORY STARTS HERE</div>
-          <h2 className="text-[1.5rem] leading-[1.6] mb-3" style={HEAD}>物語は、相談から始まります。</h2>
+          <h2 className="text-[#EDF1E8] text-[1.5rem] leading-[1.6] mb-3" style={HEAD}>物語は、相談から始まります。</h2>
           <p className="text-[13px] text-[#C9D2C4] leading-[1.9] mb-6 max-w-[460px] mx-auto">
             一度お話しすれば、あとは私たちが整えます。検査の予約も、結果も、次の一歩も、すべてここに自動で流れてきます。あなたは、何も入力しません。
           </p>
