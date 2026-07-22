@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
@@ -94,6 +95,20 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* 人物画（マーキーと見出しの間・レスポンシブ） */}
+          <div className="relative w-[128px] h-[164px] sm:w-[168px] sm:h-[214px] mb-6 sm:mb-7 rounded-[1.5rem] overflow-hidden ring-1 ring-[#85AB8B]/25 shadow-[0_30px_64px_-26px_rgba(0,0,0,0.7)]">
+            <Image
+              src="/media/hero/portrait.png"
+              alt=""
+              fill
+              priority
+              sizes="(max-width: 640px) 128px, 168px"
+              className="object-cover object-top"
+            />
+            {/* 深緑に馴染ませる下端のフェード */}
+            <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3" style={{ background: "linear-gradient(180deg, transparent, rgba(15,26,16,0.55))" }} />
           </div>
 
           {/* 主役はタグライン（His Recoveries は左上のロゴのみ） */}
