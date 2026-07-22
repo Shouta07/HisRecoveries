@@ -141,12 +141,12 @@ export default function LibraryPage() {
             <span className="font-mono text-[11.5px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">His Recoveries Library</span>
           </div>
           <h1 className="text-[1.9rem] sm:text-[2.5rem] leading-[1.26]" style={HEAD}>
-            見た目の悩みを、<span className="text-[#3d5638]">読むところから。</span>
+            男の「<span className="text-[#3d5638]">よくなる</span>」を、まとめています。
           </h1>
           <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
-            情報の海を、あなたの代わりに整理する。
+            清潔感・薄毛・肌・顔・体毛・第一印象。ばらばらに語られてきた「よくなる」を、一か所に。
             <br className="hidden sm:block" />
-            なぜそうなるのか、どう向き合うか。売り込まず、遠回りせず、あなたの側から。
+            売らない・紹介料0・出典つきだから、あなたの側から選べる。匿名のまま、読むだけでいい。
           </p>
         </header>
 
