@@ -39,8 +39,8 @@ const PLANS: Plan[] = [
     custom: "要る・要らないは一緒に。あなたの悩みに合わせて、オーダーメイドで組みます。",
     from: "目安 ¥150,000〜",
     entry: "入口は印象診断 ¥22,000（お申し込みで全額充当）",
-    href: "/packages/first-impression",
-    cta: "詳しく見る",
+    href: "/recover",
+    cta: "Recover を詳しく見る",
     line: false,
   },
   {
@@ -57,9 +57,9 @@ const PLANS: Plan[] = [
     custom: "目的に合わせて、オーダーメイドで。何から深めるかは、地図を見ながら。",
     from: "目安 ¥150,000〜",
     entry: "まずは無料相談から",
-    href: "/apply",
-    cta: "無料相談から",
-    line: true,
+    href: "/refine",
+    cta: "Refine を詳しく見る",
+    line: false,
   },
 ];
 
@@ -130,10 +130,6 @@ export default function ExperiencesSection() {
           ))}
         </div>
 
-        {/* 拡張 */}
-        <p className="mt-5 text-[12.5px] text-[#4b5b47] leading-[1.9]">
-          この先、<span className="text-[#1f2a1d] font-medium">髪・肌・体・心へと領域を広げていきます</span>（準備中）。ひとつに絞らなくて大丈夫。準備中の領域も、気になることは無料相談で受け付けます。
-        </p>
       </div>
     </section>
   );

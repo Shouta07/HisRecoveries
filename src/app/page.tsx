@@ -24,6 +24,19 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
+// 男性の内なる声（ヒーロー上部を静かに流れる・共感の代弁）
+const VOICES = [
+  "清潔感がない、って言われた",
+  "鏡の自分に、自信がない",
+  "何から始めればいいか、分からない",
+  "調べるほど、分からなくなる",
+  "写真の自分が、嫌いだ",
+  "誰にも、相談できずにいる",
+  "このままじゃ、まずい気がする",
+  "ぼったくられるのが、怖い",
+  "老けたね、って言われたくない",
+];
+
 // ヒーロー直下の推し3カラム（Oh my teeth の 通院不要/短期間/リーズナブル に相当）。
 // ポジティブな機能ラベルで、見出し「最短距離」を支える3本柱。
 const BURDENS = [
@@ -54,6 +67,21 @@ export default function HomePage() {
 
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-24 pb-10">
+          {/* 男性の内なる声 — 静かに横へ流れる（アイブロウの上） */}
+          <div aria-hidden className="w-screen overflow-hidden mb-6 sm:mb-8 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+            <div className="hr-marquee flex w-max gap-8 sm:gap-12 whitespace-nowrap">
+              {[0, 1].map((n) => (
+                <div key={n} className="flex gap-8 sm:gap-12">
+                  {VOICES.map((v) => (
+                    <span key={v} className="text-[12px] sm:text-[13px] text-[#85AB8B]/60 tracking-[0.04em]" style={MINCHO}>
+                      「{v}」
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* 小さなブランド・エディトリアルなアイブロウ */}
           <div className="flex items-center gap-3 mb-5 sm:mb-6">
             <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/55" />

@@ -444,3 +444,15 @@ html {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Hero marquee — 男性の内なる声が静かに横へ流れる。 */
+@keyframes hr-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.hr-marquee {
+  animation: hr-marquee 42s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hr-marquee { animation: none; }
+}
