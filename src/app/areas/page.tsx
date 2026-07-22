@@ -54,18 +54,19 @@ function badgeStyle(b: Card["badge"]) {
   return "bg-[#f0f4ee] text-[#6b7a66]";
 }
 
-function ArticleCard({ c }: { c: Card }) {
+function ArticleCard({ c, carousel = false }: { c: Card; carousel?: boolean }) {
   return (
     <Link
       href={c.href}
-      className="group flex flex-col rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5 hover:border-[#3d5638]/40 hover:shadow-[0_18px_38px_-24px_rgba(20,32,26,0.5)] hover:-translate-y-0.5 transition-all"
+      style={{ borderLeftColor: c.accent, borderLeftWidth: 3 }}
+      className={`group flex flex-col rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 p-5 hover:border-[#3d5638]/40 hover:shadow-[0_18px_38px_-24px_rgba(20,32,26,0.5)] hover:-translate-y-0.5 transition-all${carousel ? " snap-start shrink-0 w-[78%] sm:w-auto" : ""}`}
     >
       <div className="flex items-center gap-2 mb-2">
         <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold ${badgeStyle(c.badge)}`}>{c.badge}</span>
         <span className="ml-auto text-[10.5px] text-[#9aa79a]">{c.date}</span>
       </div>
       <h3 className="text-[15px] font-bold text-[#1f2a1d] leading-[1.55] group-hover:text-[#3d5638] transition-colors" style={HEAD}>{c.title}</h3>
-      <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.85] line-clamp-3 flex-1">{c.excerpt}</p>
+      <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.85] line-clamp-2 sm:line-clamp-3 flex-1">{c.excerpt}</p>
       <span className="mt-3 text-[12px] font-semibold text-[#3d5638] inline-flex items-center gap-1 group-hover:gap-1.5 transition-all">読む <span aria-hidden>→</span></span>
     </Link>
   );
@@ -149,25 +150,27 @@ export default function LibraryPage() {
           </p>
         </header>
 
-        {/* カテゴリのクイックナビ */}
-        <div className="flex flex-wrap gap-2 mb-11 pb-6 border-b border-[#1f2a1d]/10">
-          {categories.map((c) => (
-            <a key={c.id} href={`#cat-${c.id}`} className="inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
-              {c.ja}
+        {/* カテゴリのクイックナビ — モバイルは横スクロール、スクロール時は上部に固定 */}
+        <div className="sticky top-[62px] sm:top-[72px] z-30 -mx-5 sm:mx-0 mb-11 border-b border-[#1f2a1d]/10 bg-[#f4f6f2]/92 backdrop-blur-sm">
+          <div className="flex sm:flex-wrap gap-2 overflow-x-auto sm:overflow-visible px-5 sm:px-0 py-3.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {categories.map((c) => (
+              <a key={c.id} href={`#cat-${c.id}`} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
+                {c.ja}
+              </a>
+            ))}
+            <a href="/areas/confidence" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#16241A]/30 bg-[#16241A] px-3.5 py-1.5 text-[12.5px] font-medium text-[#EDF1E8] hover:bg-[#1c2e21] transition-colors">
+              自信・パートナーシップ
             </a>
-          ))}
-          <a href="/areas/confidence" className="inline-flex items-center gap-1.5 rounded-full border border-[#16241A]/30 bg-[#16241A] px-3.5 py-1.5 text-[12.5px] font-medium text-[#EDF1E8] hover:bg-[#1c2e21] transition-colors">
-            自信・パートナーシップ
-          </a>
-          <a href="#cat-interview" className="inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
-            インタビュー
-          </a>
+            <a href="#cat-interview" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
+              インタビュー
+            </a>
+          </div>
         </div>
 
         {/* カテゴリ別・記事一覧（読みもの本体） */}
         <div className="space-y-12">
           {categories.map((c) => (
-            <section key={c.id} id={`cat-${c.id}`} className="scroll-mt-24">
+            <section key={c.id} id={`cat-${c.id}`} className="scroll-mt-[128px]">
               <div className="flex items-center gap-2.5 mb-5">
                 <span aria-hidden className="grid place-items-center w-8 h-8 rounded-full shrink-0" style={{ backgroundColor: c.accentSoft }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c.accent} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -179,14 +182,17 @@ export default function LibraryPage() {
                   まとめて見る →
                 </Link>
               </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {c.cards.map((card) => <ArticleCard key={card.href} c={card} />)}
+              <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-pl-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {c.cards.map((card) => <ArticleCard key={card.href} c={card} carousel />)}
               </div>
+              {c.cards.length > 1 && (
+                <p className="sm:hidden mt-2.5 text-[11px] text-[#9aa79a]">← 横にスクロール（{c.cards.length}件）</p>
+              )}
             </section>
           ))}
 
           {/* インタビュー */}
-          <section id="cat-interview" className="scroll-mt-24">
+          <section id="cat-interview" className="scroll-mt-[128px]">
             <div className="flex items-center gap-3 mb-2">
               <span aria-hidden className="grid place-items-center w-9 h-9 rounded-full shrink-0 bg-[#3d5638]/10">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3d5638" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -199,8 +205,8 @@ export default function LibraryPage() {
               現場の第一線で働くプロ（メイク・スタイリスト・撮影ほか）に、His Recoveries が直接聞く一次情報。
             </p>
             {interviews.length > 0 ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {interviews.map((card) => <ArticleCard key={card.href} c={card} />)}
+              <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-pl-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {interviews.map((card) => <ArticleCard key={card.href} c={card} carousel />)}
               </div>
             ) : (
               <div className="rounded-[1.3rem] border border-dashed border-[#1f2a1d]/15 bg-white/50 p-8 text-center">

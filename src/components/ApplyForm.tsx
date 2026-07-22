@@ -84,7 +84,7 @@ export default function ApplyForm() {
   }
 
   const field =
-    "w-full rounded-2xl border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[15px] text-[#1f2a1d] outline-none focus:border-[#3d5638] transition-colors";
+    "w-full rounded-2xl border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[16px] text-[#1f2a1d] outline-none focus:border-[#3d5638] transition-colors";
   const label = "block text-[13px] font-semibold text-[#1f2a1d] mb-2";
 
   // ── Success state — completes entirely on-site ──
