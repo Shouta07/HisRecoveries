@@ -97,28 +97,30 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* 人物画を見出しの背景に敷く（テキストをオーバーレイ・レスポンシブ） */}
-          <div className="relative w-[86vw] max-w-[380px] sm:max-w-[440px] aspect-[4/5] mb-7 sm:mb-8 rounded-[1.9rem] overflow-hidden ring-1 ring-[#85AB8B]/20 shadow-[0_44px_88px_-30px_rgba(0,0,0,0.8)]">
+          {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
+          <div className="relative w-screen h-[58vh] sm:h-[64vh] mb-7 sm:mb-8 overflow-hidden">
             <Image
               src="/media/hero/portrait.png"
               alt=""
               fill
               priority
-              sizes="(max-width: 640px) 86vw, 440px"
-              className="object-cover object-center"
+              sizes="100vw"
+              className="object-cover object-[50%_30%]"
             />
-            {/* 可読性のためのスクリム（下ほど濃い深緑） */}
+            {/* 上下スクリム：上は深緑へ馴染ませ、下は見出しの可読性を確保 */}
             <div
               aria-hidden
               className="absolute inset-0"
-              style={{ background: "linear-gradient(180deg, rgba(15,26,16,0.12) 0%, rgba(15,26,16,0.05) 38%, rgba(15,26,16,0.55) 72%, rgba(15,26,16,0.93) 100%)" }}
+              style={{ background: "linear-gradient(180deg, rgba(15,26,16,0.72) 0%, rgba(15,26,16,0.12) 22%, rgba(15,26,16,0.08) 46%, rgba(15,26,16,0.6) 76%, rgba(15,26,16,0.97) 100%)" }}
             />
             {/* 見出しを画像の上に */}
             <h1
-              className="absolute inset-x-0 bottom-0 px-5 pb-6 text-center text-[#EDF1E8] text-[1.9rem] sm:text-[2.6rem] leading-[1.28]"
+              className="absolute inset-x-0 bottom-0 px-5 pb-8 text-center text-[#EDF1E8] text-[2.1rem] sm:text-[3.2rem] leading-[1.25]"
               style={{ ...HERO_HEAD, fontWeight: 800 }}
             >
-              もっといい男を、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
+              <span className="block max-w-[640px] mx-auto">
+                もっといい男を、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
+              </span>
             </h1>
           </div>
 
