@@ -6,6 +6,7 @@ import BoomerangVideo from "@/components/BoomerangVideo";
 import BookingCTA from "@/components/BookingCTA";
 import ServiceSection from "@/components/ServiceSection";
 import ValueSection from "@/components/ValueSection";
+import LibraryStrip from "@/components/LibraryStrip";
 import FaqSection from "@/components/FaqSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
@@ -112,10 +113,13 @@ export default function HomePage() {
         />
 
 
-        {/* What we do ＋ Why を1セクションに合体 */}
+        {/* What we do */}
         <ValueSection />
 
-        {/* 現在地を知る → 概算（Recover / Refine を1セクションに） */}
+        {/* メディア導線 — /areas の記事を横に流す */}
+        <LibraryStrip />
+
+        {/* 体験モジュール（顕在/潜在の2層に声かけ） */}
         <ServiceSection />
 
         {/* FAQ — 予約直前の不安を潰す */}
