@@ -6,6 +6,28 @@
 export type ClusterSection = { h: string; body: string };
 export type ClusterFaq = { q: string; a: string };
 
+// ── 普遍的欲求レイヤー ────────────────────────────────────────────
+// 個別の悩み（薄毛・ニキビ…）の上位にある、男性の普遍的な欲求。
+// 各記事はいずれかの欲求からブレイクダウンされる形で冒頭に表示され、
+// SEO（共感・滞在）と GEO（AIが「欲求→悩み→答え」の連鎖で引用しやすい）に効かせる。
+// hook は静かなトーン厳守：煽らない・保証しない。
+export type DesireKey =
+  | "erabaretai"   // 選ばれたい（恋愛・出会い）
+  | "shinrai"      // 信頼されたい（仕事・対人）
+  | "wakasa"       // 若くいたい（衰えに抗う）
+  | "jishin"       // 自信を持ちたい（鏡の自分）
+  | "son"          // 損したくない（後悔したくない）
+  | "sonae";       // 先手を打ちたい（備えたい）
+
+export const DESIRES: Record<DesireKey, { label: string; hook: string }> = {
+  erabaretai: { label: "選ばれたい", hook: "出会いの場面で、選ばれる側に回りたい。その入口は、減点をなくすことから。" },
+  shinrai: { label: "信頼されたい", hook: "仕事や人前で、軽く見られたくない。印象は、整えられる技術です。" },
+  wakasa: { label: "若くいたい", hook: "実年齢より老けて見られたくない。多くは衰えではなく、手入れで動く部分です。" },
+  jishin: { label: "自信を持ちたい", hook: "鏡の自分に、OKを出したい。自信は生まれつきではなく、整えた状態の積み重ねです。" },
+  son: { label: "損したくない", hook: "ぼられたくない、後悔したくない。決める前に、見方と聞き方を。" },
+  sonae: { label: "先手を打ちたい", hook: "気づいたときには遅い、を避けたい。現在地を知ることが、いちばんの備えです。" },
+};
+
 export type ClusterArticle = {
   /** 親 complex / area の id */
   areaId: string;
@@ -28,6 +50,8 @@ export type ClusterArticle = {
    */
   kind?: "interview" | "guide" | "choose";
   interviewee?: { name: string; role: string; link?: string };
+  /** この記事の上位にある普遍的欲求（冒頭のブレイクダウン表示に使用） */
+  desire?: DesireKey;
   /**
    * あわせて読む（内部リンク網）。他記事の slug を列挙（領域をまたいでよい）。
    * 設計: 潜在（恋愛・シーン）→ 仕組み → 選び方・費用 → 相談、の方向へ
@@ -43,6 +67,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mens-makeup-hajimete",
+    desire: "jishin",
     kind: "guide",
     title: "メンズメイクは何から？ はじめての基本",
     lead: "メイク＝盛る、ではありません。気になる部分をほんの少し抑えて、清潔感を底上げする「引き算」から。初心者が失敗しない順番と、最小限の道具を整理します。",
@@ -85,6 +110,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "seiketsukan-tsukurikata",
+    desire: "jishin",
     kind: "guide",
     title: "清潔感は「作れる」— 要素で分解する",
     lead: "「清潔感がない」と言われても、何を直せばいいか分からないもの。清潔感は才能ではなく、いくつかの要素の積み上げです。変えられる部分に分解して、効く順に整理します。",
@@ -127,6 +153,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "shashin-utsuri",
+    desire: "erabaretai",
     kind: "guide",
     title: "写真写りをよくする — 撮られ方のコツ",
     lead: "「実物より写真が悪い」と感じる人へ。写真写りは、顔立ちよりも光・角度・表情でほとんど決まります。今日からできるコツと、大事な一枚の考え方を整理します。",
@@ -169,6 +196,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "omiai-fukusou-men",
+    desire: "erabaretai",
     kind: "guide",
     title: "お見合い・婚活写真の服装（男性）",
     lead: "婚活の一枚は、服装で印象が大きく変わります。奇をてらわず、清潔感とサイズ感で「外さない」。定番の型と、避けたいポイントまで具体的に整理します。",
@@ -211,6 +239,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mayu-totonoe",
+    desire: "jishin",
     kind: "guide",
     title: "眉を整えるだけで、印象は変わる",
     lead: "顔の印象を、最も少ない手間で動かせるのが眉。整えすぎず、清潔感が出る範囲で。自分でやる手順と、失敗しないための考え方を整理します。",
@@ -249,6 +278,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "otoko-jibunmigaki-hajimekata",
+    desire: "jishin",
     kind: "guide",
     title: "自分磨きは、何から？ 男の始め方",
     lead: "「自分磨き」で検索しても、情報が多すぎて動けない。才能ではなく順番の問題です。挫折しにくい始め方を、効く順に整理します。",
@@ -286,6 +316,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "men-akanuke-junban",
+    desire: "jishin",
     kind: "guide",
     title: "垢抜けたい、と思ったら — 変えると効く順番",
     lead: "「垢抜け」は生まれつきの顔ではなく、要素の入れ替えです。何を変えると印象が動くのか、効く順に整理します。",
@@ -324,6 +355,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "date-zenjitsu-mijitaku",
+    desire: "erabaretai",
     kind: "guide",
     title: "デート前日に、できること — 印象の整え方",
     lead: "大事なデートの前日。何を準備すればいいか、そわそわするもの。前日〜当日にできる、印象を落とさないための最低限を整理します。",
@@ -362,6 +394,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "30dai-seiketsukan",
+    desire: "shinrai",
     kind: "guide",
     title: "30代からの、清潔感の作り方",
     lead: "20代の頃と同じでは、なんとなく野暮ったい。30代は「若作り」でも「諦め」でもなく、年齢に合った清潔感が効きます。何を変えると効くかを整理します。",
@@ -399,6 +432,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mens-hairstyle-seiketsukan",
+    desire: "jishin",
     kind: "guide",
     title: "清潔感のある髪型とは — 男の第一印象は、髪で大きく動く",
     lead: "第一印象で、顔の次に見られているのが髪です。カッコよさより「清潔感」。伸ばしっぱなし・整っていないを避けるだけで、印象は大きく変わります。",
@@ -437,6 +471,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "fuku-size-silhouette",
+    desire: "jishin",
     kind: "guide",
     title: "服は『サイズ感』がすべて — 高い服より、合った服",
     lead: "おしゃれに見えないのは、センスの問題ではなくサイズが合っていないだけ、ということがよくあります。第一印象で効くのは、ブランドより『体に合っているか』です。",
@@ -475,6 +510,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mensetsu-daiichiinsho",
+    desire: "shinrai",
     kind: "guide",
     title: "面接・就活の第一印象 — 見た目で損をしないために",
     lead: "面接は、話す前に見た目で印象が決まり始めます。中身で勝負したいからこそ、見た目で減点されない状態を整えておく。準備できることを整理します。",
@@ -512,6 +548,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "hyoujou-egao-tsukurikata",
+    desire: "shinrai",
     kind: "guide",
     title: "表情と笑顔の作り方 — 『怖い』『不機嫌そう』を変える",
     lead: "同じ顔でも、表情ひとつで印象は正反対になります。『怖い』『何を考えているか分からない』と言われがちな人へ。作り笑いではない、自然な表情の整え方を。",
@@ -549,6 +586,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "machikon-gokon-midashinami",
+    desire: "erabaretai",
     kind: "guide",
     title: "街コン・合コンの前に — 減点されない身だしなみの準備",
     lead: "初対面の印象が、その日の会話量を決めます。狙うのは目立つことではなく、減点されないこと。前日までにできる準備を、順番に整理します。",
@@ -587,6 +625,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "matching-app-shashin",
+    desire: "erabaretai",
     kind: "guide",
     title: "マッチングアプリの写真で、損しない — 盛らずに整える",
     lead: "会えば感じがいいのに、写真で落とされる。アプリは写真が入口だから、ここで損をしている人はとても多い。加工で盛るのではなく、実物を整えて写す考え方を。",
@@ -625,6 +664,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "hatsu-date-fukusou",
+    desire: "erabaretai",
     kind: "guide",
     title: "初デートの服装、何が正解か — 迷わない考え方",
     lead: "気合いを入れすぎても、手を抜いても外す。初デートの服選びは、実はシンプルな原則で決まります。前夜に迷わないための考え方を。",
@@ -663,6 +703,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kanojo-dekinai-mitame",
+    desire: "erabaretai",
     kind: "guide",
     title: "「彼女ができない」を、見た目のせいにする前に",
     lead: "うまくいかない理由を、顔や身長のせいにしてしまう夜がある。でも、変えられない部分と、変えられる部分は分けられます。責めるためではなく、次の一手のための整理を。",
@@ -701,6 +742,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "seiketsukan-shoutai-5",
+    desire: "erabaretai",
     kind: "guide",
     title: "デートで見られる「清潔感」の正体 — 分解すると5つ",
     lead: "「結局、清潔感」とよく言われるのに、その中身は誰も教えてくれない。曖昧な言葉を5つの要素に分解すれば、今日から手をつけられます。",
@@ -739,6 +781,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "shisei-insho-neko-ze",
+    desire: "shinrai",
     kind: "guide",
     title: "姿勢で、印象は変わる — 猫背が『自信なさげ』に見える理由",
     lead: "同じ服・同じ顔でも、姿勢ひとつで印象は変わります。猫背は自信なさげ・老けて見えがち。お金をかけずに今日から効く、第一印象の土台です。",
@@ -776,6 +819,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "rinkaku-betsu-kamigata",
+    desire: "jishin",
     kind: "guide",
     title: "輪郭別・似合う髪型 — 丸顔・面長・エラ・逆三角の考え方",
     lead: "同じ髪型でも似合う人と浮く人がいるのは、輪郭が違うからです。丸顔・面長・エラ張り・逆三角。それぞれ「どこを補うか」を知ると、髪型選びの迷いが減ります。",
@@ -813,6 +857,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kusege-ikasu-kamigata",
+    desire: "jishin",
     kind: "guide",
     title: "くせ毛を活かす — 抑えるより、味方にする髪型",
     lead: "くせ毛は、無理に抑え込もうとすると逆に扱いにくくなります。うねりや広がりを『活かす』方向に変えると、むしろ動きのある清潔感になります。",
@@ -850,6 +895,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "shiraga-bokashi",
+    desire: "wakasa",
     kind: "guide",
     title: "白髪は、隠すより『ぼかす』 — 若見えと自然さの両立",
     lead: "白髪が気になり始めたとき、真っ黒に染めると不自然になりがちです。全部を隠すのではなく、白髪を目立たなくする『ぼかし』という選択を整理します。",
@@ -887,6 +933,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kokkaku-ni-awaseru",
+    desire: "jishin",
     kind: "guide",
     title: "骨格に合わせる — 体型に似合う服が、自分でわかるようになる",
     lead: "似合う服は、身長や体重より『骨格（体の質感・重心）』で決まる部分があります。ストレート・ウェーブ・ナチュラルの考え方を知ると、買い物の失敗が減ります。",
@@ -924,6 +971,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kekkonshiki-mijitaku-men",
+    desire: "shinrai",
     kind: "guide",
     title: "結婚式・二次会に呼ばれたら — 浮かない第一印象の準備",
     lead: "友人の結婚式や二次会。写真に残るし、久しぶりに会う人も多い。派手さより「きちんと感」。前日までにできる準備を、順番に整理します。",
@@ -961,6 +1009,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "dousoukai-mitame-junbi",
+    desire: "shinrai",
     kind: "guide",
     title: "同窓会で「変わったね」と言われる準備 — 老け見えを避ける",
     lead: "何年かぶりの同窓会。昔を知る人に会うからこそ、「老けたな」ではなく「変わったね（いい意味で）」と思われたい。等身大で好印象を作る準備を。",
@@ -998,6 +1047,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "eigyou-business-daiichiinsho",
+    desire: "shinrai",
     kind: "guide",
     title: "営業・ビジネスの第一印象 — 信頼される見た目の土台",
     lead: "商談や初対面の打ち合わせは、話す前に見た目で「信頼できそうか」が判断され始めます。清潔感は、ビジネスにおける最低限の準備です。",
@@ -1035,6 +1085,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "nioi-taishu-care-seiketsukan",
+    desire: "shinrai",
     kind: "guide",
     title: "清潔感は、匂いも含む — 体臭ケアの基本",
     lead: "見た目を整えても、匂いで損をしていることがあります。自分では気づきにくいのが匂い。責めるためでなく、清潔感の一部として整える基本を。",
@@ -1075,6 +1126,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-early-signs",
+    desire: "wakasa",
     title: "AGAの初期症状 — 最初のサインと見分け方",
     lead: "AGA（男性型脱毛症）は進行性です。初期のサインを知っておくと、早い段階で選択肢を持てます。",
     summary: [
@@ -1119,6 +1171,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-self-check",
+    desire: "wakasa",
     title: "AGAセルフチェック — 自分で気づくための見方",
     lead: "病院に行く前に、自分で変化の傾向をつかむための見方を整理します。診断ではなく、気づくための目安です。",
     summary: [
@@ -1162,6 +1215,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-online-nagare",
+    desire: "wakasa",
     title: "AGAのオンライン診療 — 一般的な流れと、確認しておきたいこと",
     lead: "薄毛の相談は、対面だけでなくオンライン診療でも行える場合があります。どんな流れで、何を確認しておくと安心か。仕組みの側から中立に整理します。",
     summary: [
@@ -1200,6 +1254,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-kensa-wakaru",
+    desire: "wakasa",
     title: "薄毛で何を調べる？ — 検査でわかること",
     lead: "薄毛の背景には、AGA以外の要因が隠れていることもあります。医療機関でどんなことを調べ、何がわかるのか。現在地を知るための検査を、中立に整理します。",
     summary: [
@@ -1238,6 +1293,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-counseling-kakunin",
+    desire: "son",
     kind: "choose",
     title: "AGAクリニックに行く前に — 初回カウンセリングで確認したい10のこと",
     lead: "仕組みが分かっても、いざクリニックとなると身構えるもの。行くと決めた人も、迷っている人も。初回カウンセリングで落ち着いて確認しておきたい観点を、中立に整理します。まだ行かない、という選択も含めて。",
@@ -1291,6 +1347,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-hiyou-kangae",
+    desire: "son",
     kind: "choose",
     title: "AGA治療の費用の考え方 — 月額ではなく、総額と内訳で見る",
     lead: "「月々いくら」の表示だけでは、実際にかかるお金は分かりません。相場を断定する代わりに、どの医療機関でも使える「費用の見方」を整理します。数字はあなたの目で、契約の前に確かめるために。",
@@ -1330,6 +1387,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "datsumou-hiyou-kangae",
+    desire: "son",
     kind: "choose",
     title: "脱毛の費用の考え方 — 回数・総額・やめるときまで",
     lead: "「◯回コースでいくら」の先にあるお金の話。相場の断定はせず、サロンでも医療でも使える「費用の見方」を整理します。契約の前に、あなたの目で確かめるために。",
@@ -1371,6 +1429,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "nikibiato-genin",
+    desire: "jishin",
     title: "ニキビ跡が消えにくい理由 — 種類ごとに考える",
     lead: "ニキビ跡は、炎症のあとに残ります。種類によって考え方が違うため、まず分けて理解します。",
     summary: [
@@ -1410,6 +1469,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "otona-nikibi-genin",
+    desire: "jishin",
     title: "大人ニキビの原因 — 思春期ニキビとの違い",
     lead: "大人になってからのニキビは、思春期とは要因のバランスが違うことがあります。",
     summary: [
@@ -1450,6 +1510,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "mens-skincare-junban",
+    desire: "jishin",
     kind: "guide",
     title: "メンズスキンケアの順番 — 何を、どの順で",
     lead: "スキンケアを始めたいが、種類が多すぎて順番が分からない。まずは最小限の3ステップから。難しく考えず、続けられる形を整理します。",
@@ -1488,6 +1549,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "otoko-kansou-inner-dry",
+    desire: "jishin",
     kind: "guide",
     title: "皮脂は多いのに、乾く — 男の「インナードライ」の考え方",
     lead: "テカるのに、部分的にはカサつく。皮脂が多いはずなのに乾燥する。この一見矛盾した状態は珍しくありません。まず仕組みを分けて、やりがちな逆効果を避ける考え方を。",
@@ -1526,6 +1588,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "hifuka-biyou-self-seiri",
+    desire: "son",
     kind: "choose",
     title: "皮膚科・美容皮膚科・セルフケア — 自分はどれから考えるかの整理",
     lead: "ニキビや肌の悩みで、どこに行けばいいか分からない。皮膚科と美容皮膚科は何が違うのか、まずセルフケアでいいのか。選ぶための観点を、中立に整理します。どれが正解ということはありません。",
@@ -1576,6 +1639,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "fuke-mie-genin",
+    desire: "wakasa",
     title: "老けて見える原因 — 変えられる要素から整える",
     lead: "「老けて見える」は一つの原因ではありません。要素に分解すると、変えられる部分から手をつけられます。",
     summary: [
@@ -1615,6 +1679,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "tsukare-gao-kuma",
+    desire: "wakasa",
     kind: "guide",
     title: "疲れて見える顔を、どうにかしたい — 変えられる要素から",
     lead: "「疲れてる？」とよく聞かれる。実際より不健康・不機嫌に見える顔は、要素に分ければ整えられます。変えやすいところから。",
@@ -1654,6 +1719,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "kaerareru-yousso-junban",
+    desire: "wakasa",
     kind: "choose",
     title: "変えられる要素・変えにくい要素 — 顔の印象、手をつける順番の考え方",
     lead: "顔の印象を変えたいと思っても、何からやればいいか分からない。まず、変えやすいものと変えにくいものを分けると、手をつける順番が見えてきます。焦らず、できるところから。",
@@ -1703,6 +1769,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "mukumi-gao-asa",
+    desire: "wakasa",
     kind: "guide",
     title: "朝の顔が、むくんでいる — 原因と、その日のうちに整える基本",
     lead: "大事な日に限って、朝の顔がパンパン。まぶたが重く、輪郭がぼやける。むくみの仕組みと、前夜からできる備え・当日の整え方を、シンプルに。",
@@ -1741,6 +1808,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "hourei-sen-kininaru",
+    desire: "wakasa",
     kind: "guide",
     title: "ほうれい線が、気になり始めたら — 慌てる前の整理",
     lead: "ふと写真で見た自分の口元に、線が。30代あたりから気になり始める人が多い場所です。慌てて何かを買う前に、何がそう見せているのかを分けて考えます。",
@@ -1781,6 +1849,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "taimou-koi-genin",
+    desire: "jishin",
     title: "体毛が濃い原因 — 体質とホルモンの話",
     lead: "体毛の濃さは体質であり、だらしなさではありません。仕組みを知ると、選び方も整理できます。",
     summary: [
@@ -1821,6 +1890,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "totonoeru-herasu-erabu",
+    desire: "son",
     kind: "choose",
     title: "「整える・整えない・減らす」を選ぶ前に — 後悔しないための考え方",
     lead: "髭や体毛を、整えるのか、減らすのか、そのままにするのか。人によって答えが違う領域です。選ぶ前に持っておきたい観点を、サロンと医療の違いも含めて中立に整理します。「そのまま」も、立派な選択です。",
@@ -1870,6 +1940,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "aohige-genin-taisho",
+    desire: "jishin",
     title: "青ヒゲが気になる — 原因と、目立たせない考え方",
     lead: "しっかり剃っても、口まわりや顎が青く見える。清潔にしているのに不潔っぽく見られる気がする。青ヒゲの仕組みと、目立たせないための考え方を、中立に整理します。",
     summary: [
@@ -1907,6 +1978,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "sunege-udege-totonoe",
+    desire: "jishin",
     kind: "guide",
     title: "すね毛・腕毛の「整え方」— 剃らずに、自然に薄く見せる",
     lead: "全部剃るのは不自然な気がする。でも、濃いままも気になる。その中間にあるのが「整える」という選択です。自然に見える長さと量のつくり方を。",
@@ -1947,6 +2019,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "sleep-totonoe",
+    desire: "sonae",
     kind: "guide",
     title: "疲れが取れないと感じたら — 睡眠を整える基本",
     lead: "寝ても疲れが取れない、朝がつらい。見た目にも気分にも効くのに、後回しにされがちなのが睡眠です。特別な道具のいらない、整え方の基本を。",
@@ -1985,6 +2058,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "shukan-shikumi",
+    desire: "sonae",
     kind: "guide",
     title: "習慣は、意志でなく仕組み — 小さく続けるコツ",
     lead: "続かないのは、意志が弱いからではありません。続く人は、続く仕組みを作っているだけ。自分磨きや生活改善を、三日坊主で終わらせないための考え方を。",
@@ -2022,6 +2096,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "mitame-jishin",
+    desire: "jishin",
     kind: "guide",
     title: "見た目を整えると、なぜ自信がつくのか",
     lead: "「中身が大事」と言うけれど、見た目を整えると、なぜか気持ちまで軽くなる。外見と自信のつながりを、整理します。",
@@ -2060,6 +2135,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "tsukare-ketsueki-genchi",
+    desire: "sonae",
     kind: "guide",
     title: "「なんとなく疲れる」を、数字で見る — 現在地を知るという発想",
     lead: "気合いや根性の前に、体は数字でも語ります。鉄・ビタミンD・亜鉛など、疲れやすさに関わるとされる項目を知ると、闇雲に頑張らずに済むことがあります。",
@@ -2098,6 +2174,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "kenkou-shindan-genchi",
+    desire: "sonae",
     kind: "guide",
     title: "健康診断の結果を、放置しない — 数字を「現在地」に変える見方",
     lead: "毎年もらう健康診断の結果。封を開けて、少し不安になって、そのまま引き出しへ——になっていませんか。悪いところ探しではなく、いまの自分の現在地を知る道具として使う見方を。",
@@ -2136,6 +2213,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "tsukare-yasusa-toshi",
+    desire: "sonae",
     kind: "guide",
     title: "「最近、疲れやすい」を、年齢のせいにする前に",
     lead: "30代・40代で、以前より疲れが抜けにくい。回復が遅い。つい「歳だから」で片づけがちですが、その前に見直せることと、現在地を知るという発想を。",
@@ -2174,6 +2252,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "jiko-toushi-doko-kara",
+    desire: "sonae",
     kind: "guide",
     title: "自分への投資、どこから？ — 見た目・体・習慣の順番",
     lead: "「自己投資」と言われても、英会話？筋トレ？と迷いがち。まず効くのは、意外と地味な「現在地を整える」こと。見た目・体・習慣の、始めやすい順番を。",

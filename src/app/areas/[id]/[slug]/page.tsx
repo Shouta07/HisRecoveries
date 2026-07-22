@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
-import { clusters, getCluster, CLUSTER_UPDATED } from "@/lib/clusters";
+import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
 import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
 import QuietConsult from "@/components/QuietConsult";
@@ -139,6 +139,16 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             <span className="text-[11px] text-[#9aa79a]">最終更新: {CLUSTER_UPDATED}</span>
           </div>
         </header>
+
+        {/* 欲求→悩みのブレイクダウン（普遍的欲求レイヤー。SEO/GEOの共感接点） */}
+        {a.desire && DESIRES[a.desire] && (
+          <div className="mb-5 flex items-start gap-2.5">
+            <span className="shrink-0 inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[11px] font-bold tracking-[0.06em]">
+              {DESIRES[a.desire].label}
+            </span>
+            <p className="text-[12.5px] text-[#4b5b47] leading-[1.9] pt-0.5">{DESIRES[a.desire].hook}</p>
+          </div>
+        )}
 
         {/* 共感リード（心理を正面に・正常化・安心） */}
         <EmpathyLead worry={`「${c.worry}」`} />
