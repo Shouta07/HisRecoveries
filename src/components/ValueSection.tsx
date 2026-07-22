@@ -13,17 +13,17 @@ const BURDENS = [
   {
     k: "手間",
     t: "調べなくていい。",
-    d: "広告と口コミだらけの情報は、こちらで整理します。あなたは選ぶだけ。",
+    d: "広告も口コミも、こちらで整理。",
   },
   {
     k: "恥",
-    t: "誰にも知られない。",
-    d: "実名は不要（LINEの表示名でOK）。相互の秘密保持契約で、話した内容もあなたのことも外に出しません。",
+    t: "知られない。",
+    d: "実名不要・NDAで守秘。",
   },
   {
     k: "損",
     t: "ぼったくられない。",
-    d: "費用は先に説明します。売り込みなし。紹介料も受け取りません。",
+    d: "費用は先に・売り込みなし。",
   },
 ];
 
@@ -47,12 +47,13 @@ export default function ValueSection() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
+        {/* Oh my teeth 型：3カラム（スマホも横並び）・中央寄せ・細い縦罫で区切る */}
+        <div className="grid grid-cols-3 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 divide-x divide-[#1f2a1d]/10 overflow-hidden">
           {BURDENS.map((b) => (
-            <div key={b.k} className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 border-t-[3px] border-t-[#16241A] p-5 sm:p-6">
-              <div className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 py-0.5 text-[10.5px] font-bold tracking-[0.08em]">{b.k}</div>
-              <div className="mt-3 text-[15.5px] font-bold text-[#1f2a1d] leading-[1.5] tracking-[-0.005em]">{b.t}</div>
-              <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">{b.d}</p>
+            <div key={b.k} className="flex flex-col items-center text-center px-1.5 sm:px-5 py-5 sm:py-8">
+              <span className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[10px] sm:text-[11.5px] font-bold tracking-[0.06em]">{b.k}</span>
+              <div className="mt-2.5 sm:mt-4 text-[12.5px] sm:text-[16.5px] font-bold text-[#1f2a1d] leading-[1.4]" style={MINCHO}>{b.t}</div>
+              <p className="mt-1.5 sm:mt-2 text-[10px] sm:text-[12.5px] text-[#6b7a66] leading-[1.6]">{b.d}</p>
             </div>
           ))}
         </div>
