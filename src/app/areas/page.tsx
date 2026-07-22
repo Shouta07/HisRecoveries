@@ -144,9 +144,9 @@ export default function LibraryPage() {
             男の「<span className="text-[#3d5638]">よくなる</span>」を、まとめています。
           </h1>
           <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
-            清潔感・薄毛・肌・顔・体毛・第一印象。男の見た目の悩みを、まとめて調べられます。
+            清潔感・薄毛・肌・顔・体毛・第一印象。ぜんぶまとめて調べられます。
             <br className="hidden sm:block" />
-            何から始めるか、何が本当か、いくらかかるか。私たちは何も売らないので、広告ぬきの答えだけ。匿名のまま、読むだけでいい。
+            何も売らないから、広告ぬきの答えだけ。匿名で、読むだけ。
           </p>
         </header>
 
