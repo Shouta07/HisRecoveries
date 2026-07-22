@@ -90,7 +90,7 @@ export default function HomePage() {
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
             <BookingCTA className="rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold px-8 py-3.5 transition-colors shadow-[0_18px_40px_-20px_rgba(20,32,26,0.8)]">
-              先行予約受付中
+              無料相談受付中
             </BookingCTA>
             <Link href="/#service" className="rounded-full border border-[#1f2a1d]/25 hover:border-[#1f2a1d] text-[#1f2a1d] text-[14px] font-semibold px-8 py-3.5 transition-colors bg-white/40 backdrop-blur-sm">
               サービスを見る

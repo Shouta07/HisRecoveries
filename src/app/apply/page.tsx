@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ApplyForm from "@/components/ApplyForm";
+import LineEntry from "@/components/LineEntry";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -35,8 +36,10 @@ export default function ApplyPage() {
           <br />
           流れは、<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（このフォーム）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③体験</strong>。
           相談・印象診断は<strong className="font-bold text-[#1f2a1d]">匿名のまま・完全守秘義務</strong>のもとで。
-          現在は先行予約の受付です。準備が整い次第、登録順にご案内します。
+          現在は無料相談を受付中です。匿名のまま、今日から始められます。
         </p>
+
+        <LineEntry />
 
         <ApplyForm />
 

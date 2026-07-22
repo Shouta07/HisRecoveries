@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import ApplyForm from "@/components/ApplyForm";
+import LineEntry from "@/components/LineEntry";
 import { site } from "@/lib/site";
 
 export default function BookingCTA({
@@ -86,6 +87,8 @@ export default function BookingCTA({
                   <strong className="font-bold text-[#1f2a1d]">匿名のまま（実名不要）・完全守秘義務</strong>
                   のもとで扱います。ご予約登録には、秘密保持への同意が必要です。
                 </p>
+
+                <LineEntry />
 
                 <ApplyForm />
 
