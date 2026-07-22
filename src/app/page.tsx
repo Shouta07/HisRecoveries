@@ -5,6 +5,7 @@ import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import ValueSection from "@/components/ValueSection";
 import StepsSection from "@/components/StepsSection";
+import ExperiencesSection from "@/components/ExperiencesSection";
 import LibraryStrip from "@/components/LibraryStrip";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
@@ -103,11 +104,14 @@ export default function HomePage() {
         />
 
 
-        {/* 価値 → できること（体験）を1セクションに統合 */}
+        {/* 価値 — 私たちの価値（手間・恥・損をなくす） */}
         <ValueSection />
 
         {/* はじめかた — 無料LINE相談から記録まで5ステップ（Oh my teeth 型） */}
         <StepsSection />
+
+        {/* できること — 5ステップの③〜④の具体（体験）。はじめかたの後に置く */}
+        <ExperiencesSection />
 
         {/* メディア導線 — /areas の記事を横に流す */}
         <LibraryStrip />
