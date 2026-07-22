@@ -18,15 +18,15 @@ export default function ServiceSection() {
         <div className="on-media max-w-2xl mb-6">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service — はじめかた</span>
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service — できること</span>
           </div>
           <h2 className="text-[1.4rem] sm:text-[1.8rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
-            はじめに、現在地を把握します。
+            プロチームが、第一印象を一日で整える。
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.95]">
-            取り戻すのか（Recover）、さらに深めるのか（Refine）。
+            メイク・スタイリスト・カメラマンの専属チームが、あなた一人のために一日を設計します。
             <br className="hidden sm:block" />
-            まずは現在地を、外側（第一印象）と内側（血液）から把握します。
+            始まりは、匿名の相談と現在地の把握（外側＝印象診断／内側＝血液）から。
           </p>
         </div>
 

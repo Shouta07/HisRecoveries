@@ -93,7 +93,7 @@ export default function HomePage() {
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            調べれば広告、聞けば売り込み。ここは、違う。相談は匿名のまま、費用も先に。
+            メイク・服・写真のプロが、あなたの第一印象を一日で整える。相談は匿名のまま、費用も先に。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
