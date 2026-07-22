@@ -10,19 +10,19 @@ const MINCHO: React.CSSProperties = {
 
 const BURDENS = [
   {
-    k: "探す",
-    t: "情報の海を、代わりに整理する。",
-    d: "広告と口コミのノイズを、代わりに。迷う時間を、なくします。",
+    k: "手間",
+    t: "調べなくていい。",
+    d: "広告と口コミだらけの情報は、こちらで整理します。あなたは選ぶだけ。",
   },
   {
     k: "恥",
-    t: "言えなかったことも、匿名のまま。",
-    d: "誰にも打ち明けられない悩みも、匿名で受け止めます。同じ説明を、二度させません。",
+    t: "誰にも知られない。",
+    d: "匿名のまま相談できます。実名・顔写真は不要。同じ説明を、二度させません。",
   },
   {
-    k: "迷う",
-    t: "何が正解か、いくらかかるか。",
-    d: "売り込みません。紹介料も受け取りません。あなたの最適だけを、一緒に。",
+    k: "損",
+    t: "ぼったくられない。",
+    d: "費用は先に説明します。売り込みなし。紹介料も受け取りません。",
   },
 ];
 
@@ -62,16 +62,16 @@ export default function ValueSection() {
             もう、ひとりで<span className="text-[#3d5638]">抱えなくていい。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.9]">
-            His Recoveries は、男の自己投資から遠回りをなくす、相談窓口です。
+            髪・肌・体・心。気になることを、まとめて相談できるコンシェルジュです。
             <br className="hidden sm:block" />
-            今の自分から理想まで、「探す・恥・迷う」の3つの負担を、私たちが引き受けます。
+            面倒なこと、恥ずかしいこと、迷うこと——ぜんぶ、こちらで引き受けます。
           </p>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
           {BURDENS.map((b) => (
             <div key={b.k} className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 border-t-[3px] border-t-[#16241A] p-5 sm:p-6">
-              <div className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 py-0.5 text-[10.5px] font-bold tracking-[0.08em]">{b.k}の負担</div>
+              <div className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 py-0.5 text-[10.5px] font-bold tracking-[0.08em]">{b.k}</div>
               <div className="mt-3 text-[15.5px] font-bold text-[#1f2a1d] leading-[1.5] tracking-[-0.005em]">{b.t}</div>
               <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">{b.d}</p>
             </div>

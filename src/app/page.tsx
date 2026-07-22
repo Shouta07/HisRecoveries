@@ -75,7 +75,7 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-6 text-[#4b5b47]">
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
             <span className="text-[11px] sm:text-sm tracking-[0.32em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
-              男の自己投資に、遠回りをなくす。
+              男性ウェルネスの、コンシェルジュ。
             </span>
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
           </div>
@@ -89,11 +89,11 @@ export default function HomePage() {
             className="mt-6 sm:mt-8 text-[#2d4228] text-[1.05rem] sm:text-[1.4rem] md:text-[1.6rem] leading-[1.5]"
             style={{ ...HERO_HEAD, fontWeight: 800 }}
           >
-            誰にも言えなかった悩みを、<wbr />「<span className="text-[#3d5638]">変われるもの</span>」に。
+            もっと、いい男へ。<wbr />もっと、<span className="text-[#3d5638]">自分らしく</span>。
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            メイク・服・写真のプロが、あなたの第一印象を一日で整える。相談は匿名のまま、費用も先に。
+            His Recoveries は、男性の健康・美容・活力を整えるウェルネスサービスです。相談は匿名のまま、費用も先に。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
