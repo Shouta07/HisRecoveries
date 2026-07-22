@@ -48,7 +48,7 @@ export default function HomePage() {
       <GlassNav />
 
       {/* ============ Hero ============ */}
-      <section className="relative z-10 w-full min-h-screen sm:h-screen overflow-hidden">
+      <section className="relative z-10 w-full min-h-[72vh] sm:min-h-[80vh] overflow-hidden">
         {/* Bottom scrim — desktop uses a dark scrim under white copy. */}
         <div
           aria-hidden
@@ -73,7 +73,7 @@ export default function HomePage() {
         />
 
         {/* Hero copy — vertically centered in the viewport */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-screen px-4 sm:px-6 pt-20 pb-16 on-media">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-24 pb-10 on-media">
           {/* ブランドを中心に */}
           <h1 className="logo-type text-[#1f2a1d] text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.25rem] leading-[1.05] tracking-[0.01em]">
             His <span className="text-[#3d5638]">Recoveries</span>
