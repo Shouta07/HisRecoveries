@@ -5,8 +5,7 @@
 // a portal to <body> to stay above the fixed nav / boomerang video.
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import ApplyForm from "@/components/ApplyForm";
-import LineEntry from "@/components/LineEntry";
+import ConsultEntry from "@/components/ConsultEntry";
 import { site } from "@/lib/site";
 
 export default function BookingCTA({
@@ -85,12 +84,10 @@ export default function BookingCTA({
                 <p className="text-[14px] text-[#4b5b47] leading-[1.95] mb-7">
                   コンプレックスから自信への変化を、一緒に設計します。まずは対話から。すべて
                   <strong className="font-bold text-[#1f2a1d]">匿名のまま（実名不要）・完全守秘義務</strong>
-                  のもとで扱います。ご予約登録には、秘密保持への同意が必要です。
+                  のもとで扱います。
                 </p>
 
-                <LineEntry />
-
-                <ApplyForm />
+                <ConsultEntry />
 
                 <div className="mt-7 flex items-start gap-2.5 text-[12.5px] text-[#4b5b47] leading-[1.9]">
                   <span aria-hidden className="text-[#85AB8B] mt-px">→</span>

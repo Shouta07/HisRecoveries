@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import ApplyForm from "@/components/ApplyForm";
-import LineEntry from "@/components/LineEntry";
+import ConsultEntry from "@/components/ConsultEntry";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -34,14 +33,12 @@ export default function ApplyPage() {
           何が正解か、いくらかかるか。<strong className="font-bold text-[#1f2a1d]">遠回りせず、あなたのペースで一緒に整理します。</strong>
           気になることは、いくつでも。実名・顔写真は不要です。
           <br />
-          流れは、<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（このフォーム）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③体験</strong>。
+          流れは、<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（LINE）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③体験</strong>。
           相談・印象診断は<strong className="font-bold text-[#1f2a1d]">匿名のまま・完全守秘義務</strong>のもとで。
           現在は無料相談を受付中です。匿名のまま、今日から始められます。
         </p>
 
-        <LineEntry />
-
-        <ApplyForm />
+        <ConsultEntry />
 
         <div className="mt-8 flex items-start gap-2.5 text-[13px] text-[#4b5b47] leading-[1.9]">
           <span aria-hidden className="text-[#85AB8B] mt-px">→</span>
