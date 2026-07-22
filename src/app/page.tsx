@@ -53,19 +53,22 @@ export default function HomePage() {
 
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-24 pb-10">
-          {/* ブランドを中心に */}
-          <h1 className="logo-type text-[#EDF1E8] text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.25rem] leading-[1.05] tracking-[0.01em]">
-            His <span className="text-[#85AB8B]">Recoveries</span>
-          </h1>
+          {/* 小さなブランド・エディトリアルなアイブロウ */}
+          <div className="flex items-center gap-3 mb-5 sm:mb-6">
+            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/55" />
+            <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.28em] text-[#85AB8B] font-medium">MEN&apos;S WELLNESS CONCIERGE</span>
+            <span aria-hidden className="block w-7 sm:w-9 h-px bg-[#85AB8B]/55" />
+          </div>
 
-          <p
-            className="mt-6 sm:mt-8 text-[#EDF1E8] text-[1.05rem] sm:text-[1.4rem] md:text-[1.6rem] leading-[1.5]"
+          {/* 主役はタグライン（His Recoveries は左上のロゴのみ） */}
+          <h1
+            className="text-[#EDF1E8] text-[1.95rem] sm:text-[3.1rem] md:text-[3.7rem] leading-[1.32]"
             style={{ ...HERO_HEAD, fontWeight: 800 }}
           >
-            もっと、いい男へ。<wbr />もっと、<span className="text-[#85AB8B]">自分らしく</span>。
-          </p>
+            もっと、いい男へ。<br />もっと、<span className="text-[#85AB8B]">自分らしく</span>。
+          </h1>
 
-          <p className="mt-5 text-[#C9D2C4] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
+          <p className="mt-6 text-[#C9D2C4] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
             男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は無料・完全守秘、費用も先に。
           </p>
 
