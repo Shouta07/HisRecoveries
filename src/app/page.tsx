@@ -6,6 +6,7 @@ import BoomerangVideo from "@/components/BoomerangVideo";
 import ValueSection from "@/components/ValueSection";
 import StepsSection from "@/components/StepsSection";
 import LibraryStrip from "@/components/LibraryStrip";
+import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
 
@@ -110,6 +111,9 @@ export default function HomePage() {
 
         {/* メディア導線 — /areas の記事を横に流す */}
         <LibraryStrip />
+
+        {/* His Recoveries の特徴 — 機能価値を2×2で（Oh my teeth 型） */}
+        <FeaturesSection />
 
         {/* FAQ — 予約直前の不安を潰す */}
         <FaqSection />
