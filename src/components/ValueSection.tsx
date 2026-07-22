@@ -26,10 +26,32 @@ const BURDENS = [
   },
 ];
 
+// 男性が「証拠」を探す位置に、症例なしで効く構造的信頼を3つ。
+const TRUST = [
+  { t: "当事者が、運営している。", d: "同じ悩みを経験した側から。" },
+  { t: "紹介料は、受け取らない。", d: "どの院・どの商品にも寄らない（中立）。" },
+  { t: "総額を、先に説明する。", d: "契約前に目安と内訳。予算は超えない。" },
+];
+
 export default function ValueSection() {
   return (
     <section id="value" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-6">
+        {/* 証拠バー — ヒーロー直下、男性が最初にスキャンする位置に構造的信頼を置く */}
+        <div className="on-media grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#1f2a1d]/12 rounded-[1.1rem] overflow-hidden border border-[#1f2a1d]/12 mb-9">
+          {TRUST.map((x) => (
+            <div key={x.t} className="bg-[#f7f9f4] px-5 py-4 flex items-start gap-3">
+              <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16241A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <div>
+                <div className="text-[13px] font-bold tracking-[0.01em] text-[#16241A] leading-[1.4]">{x.t}</div>
+                <div className="mt-0.5 text-[11.5px] text-[#4b5b47] leading-[1.65]">{x.d}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* What we do */}
         <div className="on-media max-w-2xl mb-8">
           <div className="flex items-center gap-3 mb-3">
@@ -48,9 +70,9 @@ export default function ValueSection() {
 
         <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
           {BURDENS.map((b) => (
-            <div key={b.k} className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-6">
-              <div className="inline-flex items-center rounded-full bg-[#eef3ea] text-[#3d5638] px-2.5 py-0.5 text-[10.5px] font-bold tracking-[0.08em]">{b.k}の負担</div>
-              <div className="mt-3 text-[15px] font-bold text-[#1f2a1d] leading-[1.55]" style={MINCHO}>{b.t}</div>
+            <div key={b.k} className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 border-t-[3px] border-t-[#16241A] p-6">
+              <div className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 py-0.5 text-[10.5px] font-bold tracking-[0.08em]">{b.k}の負担</div>
+              <div className="mt-3 text-[15.5px] font-bold text-[#1f2a1d] leading-[1.5] tracking-[-0.005em]">{b.t}</div>
               <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">{b.d}</p>
             </div>
           ))}
