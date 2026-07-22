@@ -21,7 +21,8 @@ export const site = {
   // addFriendUrl が空の間は、UI は「準備中」表示になる（壊れない）。
   // 値が入った瞬間に Hero / Screen result / Letter から自動で出る。
   line: {
-    addFriendUrl: process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ?? "",
+    addFriendUrl:
+      process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ?? "https://lin.ee/ULaB95aI",
     liffUrl: process.env.NEXT_PUBLIC_LINE_LIFF_URL ?? "",
   },
   locale: "ja_JP",
