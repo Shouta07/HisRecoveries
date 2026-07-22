@@ -145,7 +145,7 @@ export default function LibraryPage() {
           <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
             情報の海を、あなたの代わりに整理する。
             <br className="hidden sm:block" />
-            なぜそうなるのか、どう向き合うか。売り込まず、あなたの側から、中立に。
+            なぜそうなるのか、どう向き合うか。売り込まず、遠回りせず、あなたの側から。
           </p>
         </header>
 

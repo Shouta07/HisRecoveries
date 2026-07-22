@@ -30,7 +30,7 @@ export default function ApplyPage() {
           ひとりで抱えず、<br />まず匿名で相談する。
         </h1>
         <p className="mt-5 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
-          何が正解か、いくらかかるか。<strong className="font-bold text-[#1f2a1d]">売り込まず、中立に一緒に整理します。</strong>
+          何が正解か、いくらかかるか。<strong className="font-bold text-[#1f2a1d]">遠回りせず、あなたのペースで一緒に整理します。</strong>
           気になることは、いくつでも。実名・顔写真は不要です。
           <br />
           流れは、<strong className="font-bold text-[#1f2a1d]">①無料の匿名相談（このフォーム）→ ②印象診断（90分・¥22,000。パッケージお申し込みで全額充当）→ ③体験</strong>。

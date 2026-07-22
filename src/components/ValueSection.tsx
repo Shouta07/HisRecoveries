@@ -12,7 +12,7 @@ const BURDENS = [
   {
     k: "探す",
     t: "情報の海を、代わりに整理する。",
-    d: "広告と口コミのノイズを、中立に。何が本当かを、あなたの側から。",
+    d: "広告と口コミのノイズを、代わりに。迷う時間を、なくします。",
   },
   {
     k: "恥",
@@ -40,9 +40,9 @@ export default function ValueSection() {
             もう、ひとりで<span className="text-[#3d5638]">抱えなくていい。</span>
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.9]">
-            His Recoveries は、男性のコンプレックスを匿名のまま整えるための、中立の相談窓口です。
+            His Recoveries は、男の自己投資から遠回りをなくす、相談窓口です。
             <br className="hidden sm:block" />
-            自己投資につきものの「探す・恥・迷う」——その3つの負担を、私たちが肩代わりします。
+            今の自分から理想まで、「探す・恥・迷う」の3つの負担を、私たちが引き受けます。
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function ValueSection() {
               </p>
               <p>
                 だから、<span className="text-[#85AB8B] font-semibold">モノや施術は、売りません</span>。
-                中立の立場で、あなたに合う選択肢だけを整理します。
+                あなたのペースで、遠回りのない道だけを整理します。
               </p>
             </div>
             <Link href="/manifesto" className="mt-7 inline-flex items-center gap-2 text-[12.5px] font-semibold text-[#85AB8B] hover:text-[#EDF1E8] transition-colors">

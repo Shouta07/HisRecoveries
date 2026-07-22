@@ -84,7 +84,7 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
             {p.name}の、<span className="text-[#3d5638]">付加価値。</span>
           </h2>
           <p className="text-[13px] text-[#6b7a66] leading-[1.9] mb-5">
-            His Recoveries は、モノや施術を売りません。中立の立場で、あなたに合う選択肢だけを整理します。
+            His Recoveries は、モノや施術を売りません。あなたのペースで、遠回りのない道だけを整理します。
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             {p.value.map((b) => (

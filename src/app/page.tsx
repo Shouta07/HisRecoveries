@@ -75,7 +75,7 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-6 text-[#4b5b47]">
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
             <span className="text-[11px] sm:text-sm tracking-[0.32em] font-medium" style={{ fontFeatureSettings: '"palt" 1' }}>
-              男性のための、中立コンシェルジュ
+              男の自己投資に、遠回りをなくす。
             </span>
             <span aria-hidden className="block w-8 sm:w-10 h-px bg-[#85AB8B]/70" />
           </div>
@@ -93,7 +93,7 @@ export default function HomePage() {
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            何が正解か、いくらかかるか。匿名のまま、中立に整理します。売り込みは、しません。
+            今の自分から、なりたい自分まで。遠回りとぼったくりを、なくす。相談は匿名のまま、費用も先にご説明します。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">

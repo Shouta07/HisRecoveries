@@ -1,9 +1,9 @@
 export const site = {
   name: "His Recoveries",
   tagline: "From Complex to Confidence",
-  promise: "もう、ひとりで探さなくていい。中立の相談窓口。",
+  promise: "男の自己投資に、遠回りをなくす。",
   description:
-    "男性のコンプレックスを、匿名のまま整えるための中立の相談窓口。何が正解か・いくらかかるか・どこへ行けば安心か——自己投資につきものの「探す・恥・迷う」の負担を、私たちが肩代わりします。モノや施術は売らず、紹介料も受け取りません。あなたの最適だけを、ひとつの窓口で。",
+    "男の自己投資から、遠回りをなくす相談窓口。今の自分から理想まで、何が正解か・いくらかかるか・どこへ行けば安心か——「探す・恥・迷う」の負担を私たちが引き受けます。モノや施術は売らず、紹介料も受け取りません。あなたのペースで、遠回りのない道だけを。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",
