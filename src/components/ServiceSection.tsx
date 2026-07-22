@@ -12,10 +12,10 @@ const MINCHO: React.CSSProperties = {
 export default function ServiceSection() {
   return (
     <section id="service" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
-      <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-10 sm:pt-16 pb-6">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 sm:pt-16 pb-6">
 
         {/* Step 01 — 現在地を知る */}
-        <div className="on-media max-w-2xl mb-7">
+        <div className="on-media max-w-2xl mb-6">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">Service — はじめかた</span>
@@ -30,9 +30,9 @@ export default function ServiceSection() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-12">
+        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
           {/* 外側の現在地 — 印象診断 */}
-          <Link href="/apply" className="group rounded-[1.4rem] bg-white border border-[#1f2a1d]/12 p-6 sm:p-7 hover:border-[#3d5638]/50 transition-colors">
+          <Link href="/apply" className="group rounded-[1.4rem] bg-white border border-[#1f2a1d]/12 p-5 sm:p-7 hover:border-[#3d5638]/50 transition-colors">
             <div className="text-[10px] tracking-[0.18em] text-[#3d5638] font-semibold mb-2">外側の現在地</div>
             <div className="flex items-baseline gap-2">
               <span className="text-[1.05rem] font-bold text-[#1f2a1d]" style={MINCHO}>{entryDiagnosis.name}</span>
@@ -42,7 +42,7 @@ export default function ServiceSection() {
             <span className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#3d5638] group-hover:gap-2.5 transition-all">匿名で相談する <span aria-hidden>→</span></span>
           </Link>
           {/* 内側の現在地 — 血液（準備中） */}
-          <Link href="/apply" className="group rounded-[1.4rem] bg-white border border-[#1f2a1d]/12 p-6 sm:p-7 hover:border-[#3d5638]/50 transition-colors">
+          <Link href="/apply" className="group rounded-[1.4rem] bg-white border border-[#1f2a1d]/12 p-5 sm:p-7 hover:border-[#3d5638]/50 transition-colors">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-[10px] tracking-[0.18em] text-[#3d5638] font-semibold">内側の現在地</span>
               <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-[#eef3ea] text-[#3d5638]">{bloodCheck.status}</span>
@@ -54,7 +54,7 @@ export default function ServiceSection() {
         </div>
 
         {/* 気になることは、いくつでも（複数選択して始められる） */}
-        <div className="on-media mb-12 rounded-[1.4rem] border border-[#1f2a1d]/10 bg-white/60 p-6 sm:p-7">
+        <div className="on-media mb-8 rounded-[1.4rem] border border-[#1f2a1d]/10 bg-white/60 p-5 sm:p-7">
           <div className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>気になることは、いくつでも。</div>
           <div className="flex flex-wrap gap-2 mb-4">
             {["薄毛", "ニキビ・肌", "疲れて見える", "清潔感", "写真が苦手", "自信・パートナーシップ", "そのほか"].map((t) => (

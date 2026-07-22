@@ -31,8 +31,8 @@ export default function FaqSection() {
   return (
     <section id="faq" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
-      <div className="max-w-[860px] mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-8">
-        <div className="on-media mb-6">
+      <div className="max-w-[860px] mx-auto px-5 sm:px-8 pt-7 sm:pt-14 pb-8">
+        <div className="on-media mb-5">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">FAQ</span>
@@ -42,14 +42,18 @@ export default function FaqSection() {
           </h2>
         </div>
 
-        <dl className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 px-6 sm:px-8 divide-y divide-[#1f2a1d]/10">
-          {FAQ.map((f) => (
-            <div key={f.q} className="py-5">
-              <dt className="text-[14px] font-bold text-[#1f2a1d] mb-1.5">{f.q}</dt>
-              <dd className="text-[13px] text-[#4b5b47] leading-[1.95]">{f.a}</dd>
-            </div>
+        {/* アコーディオン：初期は畳んで縦を抑える（native details・JS不要・schema維持） */}
+        <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 px-5 sm:px-8 divide-y divide-[#1f2a1d]/10">
+          {FAQ.map((f, i) => (
+            <details key={f.q} className="group py-4 sm:py-[18px]" {...(i === 0 ? { open: true } : {})}>
+              <summary className="flex items-start justify-between gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[13.5px] sm:text-[14px] font-bold text-[#1f2a1d] leading-[1.65]">
+                <span>{f.q}</span>
+                <span aria-hidden className="mt-0.5 shrink-0 text-[#85AB8B] text-[19px] leading-none transition-transform duration-200 group-open:rotate-45">+</span>
+              </summary>
+              <p className="mt-2.5 text-[13px] text-[#4b5b47] leading-[1.95]">{f.a}</p>
+            </details>
           ))}
-        </dl>
+        </div>
       </div>
     </section>
   );
