@@ -101,7 +101,7 @@ export default function ApplyForm() {
         </h2>
         <p className="text-[14px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
           いただいた内容を確認のうえ、3営業日を目処にご連絡先へ日程調整のご案内をお送りします。
-          ご相談・印象診断は匿名のまま。すべて完全守秘義務のもとで扱います。
+          ご相談は秘密保持契約と完全守秘義務のもとで扱います。
         </p>
         <p className="mt-5 text-[12px] text-[#6b7a66]">
           ※ 本パッケージは医療行為を含みません。

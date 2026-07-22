@@ -45,7 +45,7 @@ export default function ConsultEntry() {
       ) : (
         <div className="mt-7 pt-7 border-t border-[#1f2a1d]/10">
           <p className="text-[12.5px] text-[#6b7a66] leading-[1.85] mb-5">
-            メールでのご相談も承ります。匿名のまま・完全守秘義務のもとで扱います。
+            メールでのご相談も承ります。完全守秘義務のもとで扱います（相互NDA）。
           </p>
           <ApplyForm />
         </div>

@@ -85,7 +85,7 @@ function BookingModalButton({
               <div className="flex items-start justify-between gap-4 px-6 sm:px-8 pt-6 pb-4 border-b border-[#1f2a1d]/10">
                 <div>
                   <p className="text-[11px] tracking-[0.2em] text-[#3d5638] font-semibold">
-                    CONTACT · 匿名のまま · 完全守秘
+                    CONTACT · 秘密保持契約 · 完全守秘
                   </p>
                   <h2 className="text-[1.3rem] font-bold text-[#1f2a1d] mt-1.5">
                     無料で、相談する。

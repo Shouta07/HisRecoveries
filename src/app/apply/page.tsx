@@ -4,9 +4,9 @@ import ConsultEntry from "@/components/ConsultEntry";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "相談・予約登録 — 匿名のまま",
+  title: "相談・予約登録 — 秘密は守ります",
   description:
-    "His Recoveries への相談・予約登録。相談・印象診断は匿名のまま（実名・顔写真は不要）。ご予約登録には秘密保持への同意が必要です。",
+    "His Recoveries への相談・予約登録。相談は実名不要（LINEの表示名でOK）。相互の秘密保持契約（NDA）と完全守秘のもとで。",
   alternates: { canonical: `${site.url}/apply` },
   robots: { index: true, follow: true },
 };
@@ -24,7 +24,7 @@ export default function ApplyPage() {
       </div>
       <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
         <p className="text-xs tracking-[0.22em] text-[#3d5638] font-semibold mb-4">
-          CONTACT · 匿名のまま · 完全守秘
+          CONTACT · 秘密保持契約 · 完全守秘
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
           ひとりで抱えず、<br />LINEで、相談する。

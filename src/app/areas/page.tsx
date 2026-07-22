@@ -200,10 +200,10 @@ export default function LibraryPage() {
                 <div className="mt-8 rounded-[1.3rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="flex-1">
                     <p className="text-[14.5px] font-bold leading-[1.6]">調べ続けるより、10分の相談が早いこともあります。</p>
-                    <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]">何から始めるか、いくらかかるか。匿名のまま、無料で。</p>
+                    <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]">何から始めるか、いくらかかるか。無料・完全守秘で。</p>
                   </div>
                   <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-3 transition-colors">
-                    匿名で相談する（無料） <span aria-hidden>→</span>
+                    LINEで相談する（無料） <span aria-hidden>→</span>
                   </ConsultLink>
                 </div>
               )}
@@ -240,11 +240,11 @@ export default function LibraryPage() {
         {/* 読み終わりの受け皿：相談（無料・匿名）を主導線に、サービスは従 */}
         <div className="mt-16 rounded-[1.3rem] border border-[#1f2a1d]/10 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
           <p className="text-[13px] text-[#4b5b47] leading-[1.85] flex-1">
-            読むだけでも大丈夫。聞きたくなったら、匿名のまま無料で相談できます。
+            読むだけでも大丈夫。聞きたくなったら、無料で相談できます（完全守秘）。
           </p>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[13px] font-bold px-6 py-3 transition-colors">
-              匿名で相談する（無料） <span aria-hidden>→</span>
+              LINEで相談する（無料） <span aria-hidden>→</span>
             </ConsultLink>
             <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[13px] font-semibold px-6 py-3 transition-colors">
               サービスを見る

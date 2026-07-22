@@ -86,7 +86,7 @@ export default function HomePage() {
           </p>
 
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は匿名のまま、費用も先に。
+            男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は無料・完全守秘、費用も先に。
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">

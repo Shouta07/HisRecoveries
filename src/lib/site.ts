@@ -3,12 +3,12 @@ export const site = {
   tagline: "From Complex to Confidence",
   promise: "もっと、いい男へ。もっと、自分らしく。",
   description:
-    "男性の健康・美容・活力を整えるウェルネスサービス（コンシェルジュ）。髪・肌・体・心、気になることをまとめて相談できます。相談は匿名のまま、費用は先に説明。モノや施術は売らず、紹介料も受け取りません。",
+    "男性の健康・美容・活力を整えるウェルネスサービス（コンシェルジュ）。髪・肌・体・心、気になることをまとめて相談できます。相談は無料・完全守秘、費用は先に説明。モノや施術は売らず、紹介料も受け取りません。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",
   authorBio:
-    "男性のコンプレックスを当事者として経験した運営チームによる、匿名で始められるウェルネス伴走サービス。運営チームの実名・顔・実年齢は非公開です。",
+    "男性のコンプレックスを当事者として経験した運営チームによる、秘密保持契約のもとで始められるウェルネス伴走サービス。運営チームの実名・顔・実年齢は非公開です。",
   handle: "@his_recoveries",
   email: "contact@vitality-design.jp",
   social: {

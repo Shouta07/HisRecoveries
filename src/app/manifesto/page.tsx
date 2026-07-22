@@ -121,7 +121,7 @@ export default function ManifestoPage() {
 
             <ul className="grid sm:grid-cols-3 gap-4 mb-9">
               {[
-                { t: "変わりたい人", d: "まずは、匿名で相談から。あなたのペースで。" },
+                { t: "変わりたい人", d: "まずは、LINEで相談から。あなたのペースで。" },
                 { t: "現場のプロ", d: "メイク・スタイリスト・撮影・医療。取材や協業で。" },
                 { t: "共感する人", d: "男性のウェルネスを、一緒に当たり前にしたい人。" },
               ].map((x) => (
@@ -134,7 +134,7 @@ export default function ManifestoPage() {
 
             <div className="flex flex-wrap gap-3">
               <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-                匿名で相談する
+                LINEで相談する
               </BookingCTA>
               <Link href="/#packages" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-7 py-3.5 transition-colors">
                 サービスを見る <span aria-hidden>→</span>
@@ -145,7 +145,7 @@ export default function ManifestoPage() {
 
         <p className="mt-10 text-[12px] text-[#6b7a66] leading-[1.9]">
           ※ His Recoveries は医療行為を行いません。診断・治療は連携する医療機関が行います。
-          特定の医療機関・商品を推奨・斡旋しません（中立）。ご相談・印象診断は匿名のまま。すべて完全守秘義務のもとで運営します。
+          特定の医療機関・商品を推奨・斡旋しません（中立）。ご相談は相互の秘密保持契約と完全守秘義務のもとで運営します。
         </p>
       </div>
     </div>

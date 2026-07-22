@@ -17,10 +17,10 @@ export default function QuietConsult() {
       </p>
       <p className="mt-2.5 text-[13px] text-[#4b5b47] leading-[1.95]">
         ここから先は、人によって違います。急ぐ必要はありません。
-        匿名のまま、無料で相談できます。
+        無料で相談できます。秘密は守ります。
       </p>
       <ConsultLink className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#16241A]/25 hover:border-[#16241A] text-[#16241A] text-[13.5px] font-semibold px-6 py-3 transition-colors">
-        匿名で相談する <span aria-hidden>→</span>
+        LINEで相談する <span aria-hidden>→</span>
       </ConsultLink>
     </aside>
   );

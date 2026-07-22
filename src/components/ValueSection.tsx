@@ -18,7 +18,7 @@ const BURDENS = [
   {
     k: "恥",
     t: "誰にも知られない。",
-    d: "匿名のまま相談できます。実名・顔写真は不要。同じ説明を、二度させません。",
+    d: "実名は不要（LINEの表示名でOK）。相互の秘密保持契約で、話した内容もあなたのことも外に出しません。",
   },
   {
     k: "損",
@@ -71,7 +71,7 @@ export default function ValueSection() {
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.95]">
             「何から始めればいいか分からない」も、「今は困ってないけど、そろそろ」も。
             <br className="hidden sm:block" />
-            外側（見た目）と内側（コンディション）から、あなたに合う一歩を。どの体験も、悩みを聞く匿名相談から始まります。
+            外側（見た目）と内側（コンディション）から、あなたに合う一歩を。どの体験も、悩みを聞く無料相談から始まります。
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export default function ValueSection() {
 
         {/* 拡張と「まとめて相談できる」を1行で */}
         <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
-          この先、<span className="text-[#1f2a1d] font-medium">髪・肌・体・心へと領域を広げていきます</span>（準備中）。ひとつに絞らなくて大丈夫。準備中の領域も、いま気になることは匿名相談で受け付けます。
+          この先、<span className="text-[#1f2a1d] font-medium">髪・肌・体・心へと領域を広げていきます</span>（準備中）。ひとつに絞らなくて大丈夫。準備中の領域も、気になることは無料相談で受け付けます。
         </p>
       </div>
     </section>

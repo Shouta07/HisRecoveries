@@ -25,7 +25,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
         </h3>
         <p className="text-[13px] text-[#C9D2C4] leading-[1.95] max-w-[34rem] mb-4">
           読んで分かっても、自分に合う形にするのは難しいもの。His Recoveries は、
-          メイク・服・写真まで、専属チームがあなたに合わせて一日で整えます。相談は、匿名のままで。
+          メイク・服・写真まで、専属チームがあなたに合わせて一日で整えます。相談は、秘密保持のもとで。
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
@@ -39,7 +39,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
 
         <div className="flex flex-wrap items-center gap-3">
           <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-            匿名で相談する
+            LINEで相談する
           </BookingCTA>
           <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
             パッケージを見る <span aria-hidden>→</span>
@@ -47,7 +47,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
         </div>
 
         <p className="mt-4 text-[11px] text-[#9FB0A0] leading-[1.8]">
-          はじめの相談は無料・匿名のまま。実名・顔写真は不要です。整えるかどうかは、読んでから決めていただけます。
+          はじめの相談は無料・完全守秘（相互NDA）。実名・顔写真は不要です。整えるかどうかは、読んでから決めていただけます。
         </p>
       </div>
     </aside>
@@ -59,10 +59,10 @@ export function InlineConsult() {
   return (
     <div className="my-9 flex flex-col sm:flex-row sm:items-center gap-3 rounded-[1.1rem] border border-[#3d5638]/20 bg-[#eef3ea]/70 px-5 py-4">
       <p className="text-[12.5px] text-[#3a423a] leading-[1.75] flex-1">
-        読むだけでも大丈夫。でも「自分に合う形」が知りたくなったら、匿名のまま相談できます。
+        読むだけでも大丈夫。でも「自分に合う形」が知りたくなったら、いつでも無料で相談できます。
       </p>
       <ConsultLink className="shrink-0 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
-        匿名で相談する <span aria-hidden>→</span>
+        LINEで相談する <span aria-hidden>→</span>
       </ConsultLink>
     </div>
   );

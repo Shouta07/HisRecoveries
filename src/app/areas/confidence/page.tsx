@@ -17,13 +17,13 @@ const HEAD: React.CSSProperties = {
 export const metadata: Metadata = {
   title: "自信・パートナーシップ — 言葉にしにくい悩みも、回復の一部として",
   description:
-    "見た目を整える理由の奥に、たいてい「誰かの前でどうありたいか」がある。自信、関係、性のこと。それも回復の一部として、匿名のまま扱います。茶化さず、急かさず。",
+    "見た目を整える理由の奥に、たいてい「誰かの前でどうありたいか」がある。自信、関係、性のこと。それも回復の一部として、守秘のもとで扱います。茶化さず、急かさず。",
   alternates: { canonical: `${site.url}/areas/confidence` },
   openGraph: {
     type: "article",
     url: `${site.url}/areas/confidence`,
     title: "自信・パートナーシップ | His Recoveries",
-    description: "言葉にしにくい悩みも、回復の一部として、匿名のまま。茶化さず、急かさず。",
+    description: "言葉にしにくい悩みも、回復の一部として、守秘のもとで。茶化さず、急かさず。",
   },
 };
 
@@ -48,22 +48,22 @@ export default function ConfidencePage() {
           <p>見た目を整える理由の奥に、たいてい「誰かの前でどうありたいか」がある。</p>
           <p>言葉にしにくい悩み——自信、関係、性のこと。</p>
           <p>
-            ここでは、それも<span className="text-[#EDF1E8] font-medium">回復の一部</span>として、匿名のまま扱います。
+            ここでは、それも<span className="text-[#EDF1E8] font-medium">回復の一部</span>として、守秘のもとで扱います。
             <br className="hidden sm:block" />
             茶化さず、急かさず。
           </p>
-          <p className="text-[#EDF1E8] font-medium">相談は、匿名で。</p>
+          <p className="text-[#EDF1E8] font-medium">相談は、守秘のもとで。</p>
         </div>
 
         <div className="mt-10">
           <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241a] text-[14px] font-semibold px-7 py-3.5 transition-colors">
-            匿名で相談する <span aria-hidden>→</span>
+            LINEで相談する <span aria-hidden>→</span>
           </ConsultLink>
         </div>
 
         <p className="mt-12 text-[11.5px] text-[#6f7d6c] leading-[1.9]">
           ※ His Recoveries は医療行為を行いません。診断・治療は連携する医療機関が行います。
-          特定の医療機関・商品を推奨・斡旋しません。ご相談は匿名のまま、完全守秘義務のもとで。
+          特定の医療機関・商品を推奨・斡旋しません。ご相談は完全守秘義務のもとで。
         </p>
 
         <div className="mt-8">
