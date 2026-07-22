@@ -97,29 +97,32 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* 人物画（マーキーと見出しの間・大きく主役級・レスポンシブ） */}
-          <div className="relative w-[72vw] max-w-[300px] sm:max-w-[360px] aspect-[4/5] mb-7 sm:mb-9 rounded-[1.8rem] overflow-hidden ring-1 ring-[#85AB8B]/25 shadow-[0_44px_88px_-30px_rgba(0,0,0,0.78)]">
+          {/* 人物画を見出しの背景に敷く（テキストをオーバーレイ・レスポンシブ） */}
+          <div className="relative w-[86vw] max-w-[380px] sm:max-w-[440px] aspect-[4/5] mb-7 sm:mb-8 rounded-[1.9rem] overflow-hidden ring-1 ring-[#85AB8B]/20 shadow-[0_44px_88px_-30px_rgba(0,0,0,0.8)]">
             <Image
               src="/media/hero/portrait.png"
               alt=""
               fill
               priority
-              sizes="(max-width: 640px) 72vw, 360px"
+              sizes="(max-width: 640px) 86vw, 440px"
               className="object-cover object-center"
             />
-            {/* 深緑に馴染ませる下端のフェード */}
-            <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3" style={{ background: "linear-gradient(180deg, transparent, rgba(15,26,16,0.5))" }} />
+            {/* 可読性のためのスクリム（下ほど濃い深緑） */}
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(180deg, rgba(15,26,16,0.12) 0%, rgba(15,26,16,0.05) 38%, rgba(15,26,16,0.55) 72%, rgba(15,26,16,0.93) 100%)" }}
+            />
+            {/* 見出しを画像の上に */}
+            <h1
+              className="absolute inset-x-0 bottom-0 px-5 pb-6 text-center text-[#EDF1E8] text-[1.9rem] sm:text-[2.6rem] leading-[1.28]"
+              style={{ ...HERO_HEAD, fontWeight: 800 }}
+            >
+              もっといい男を、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
+            </h1>
           </div>
 
-          {/* 主役はタグライン（His Recoveries は左上のロゴのみ） */}
-          <h1
-            className="text-[#EDF1E8] text-[1.95rem] sm:text-[3.1rem] md:text-[3.7rem] leading-[1.32]"
-            style={{ ...HERO_HEAD, fontWeight: 800 }}
-          >
-            もっといい男を、<br /><span className="text-[#85AB8B]">最短距離</span>で。
-          </h1>
-
-          <p className="mt-6 text-[#C9D2C4] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
+          <p className="text-[#C9D2C4] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
             男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は無料・完全守秘、費用も先に。
           </p>
 
