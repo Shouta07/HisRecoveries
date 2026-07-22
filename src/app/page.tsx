@@ -24,11 +24,12 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-// ヒーロー直下の価値3カラム（手間・恥・損）。Oh my teeth のヒーロー下フィーチャー行と同じ配置。
+// ヒーロー直下の推し3カラム（Oh my teeth の 通院不要/短期間/リーズナブル に相当）。
+// ポジティブな機能ラベルで、見出し「最短距離」を支える3本柱。
 const BURDENS = [
-  { k: "手間", t: "調べなくていい。", d: "広告も口コミも、こちらで整理。" },
-  { k: "恥", t: "知られない。", d: "実名不要・NDAで守秘。" },
-  { k: "損", t: "ぼったくられない。", d: "費用は先に・売り込みなし。" },
+  { k: "まとめて", t: "ひとつの窓口。", d: "髪・肌・体・心を、まとめて相談。" },
+  { k: "完全守秘", t: "知られない。", d: "実名不要・相互NDAで。" },
+  { k: "明朗会計", t: "売り込まれない。", d: "売らない・中立。費用は先に。" },
 ];
 
 export default function HomePage() {
@@ -65,7 +66,7 @@ export default function HomePage() {
             className="text-[#EDF1E8] text-[1.95rem] sm:text-[3.1rem] md:text-[3.7rem] leading-[1.32]"
             style={{ ...HERO_HEAD, fontWeight: 800 }}
           >
-            もっと、いい男へ。<br />もっと、<span className="text-[#85AB8B]">自分らしく</span>。
+            もっといい男を、<br /><span className="text-[#85AB8B]">最短距離</span>で。
           </h1>
 
           <p className="mt-6 text-[#C9D2C4] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
