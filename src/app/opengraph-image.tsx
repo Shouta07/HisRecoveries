@@ -6,6 +6,7 @@ export const alt = `${site.name} — ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+// 深緑のブランドカラーデザイン（サイトのヒーローと同じ register）。
 export default async function Image() {
   return new ImageResponse(
     (
@@ -13,7 +14,8 @@ export default async function Image() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#F2EAD9",
+          background:
+            "radial-gradient(circle at 50% 22%, #263a2c 0%, #16241A 58%, #0f1a12 100%)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -25,35 +27,38 @@ export default async function Image() {
         <div
           style={{
             position: "absolute",
-            top: 60,
-            left: 80,
-            fontSize: 22,
-            color: "#7A6B57",
-            letterSpacing: "0.2em",
+            top: 64,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            fontSize: 20,
+            color: "#85AB8B",
+            letterSpacing: "0.28em",
             textTransform: "uppercase",
           }}
         >
-          since 2026
+          Men&apos;s Wellness Concierge
         </div>
 
         <div
           style={{
-            fontSize: 96,
-            color: "#221A11",
-            letterSpacing: "0.05em",
-            fontWeight: 300,
+            fontSize: 104,
+            color: "#EDF1E8",
+            letterSpacing: "0.04em",
+            fontWeight: 400,
             lineHeight: 1,
             display: "flex",
           }}
         >
-          {site.name}
+          His <span style={{ color: "#85AB8B", marginLeft: 24 }}>Recoveries</span>
         </div>
 
         <div
           style={{
-            marginTop: 32,
+            marginTop: 34,
             fontSize: 30,
-            color: "#7A6B57",
+            color: "#C9D2C4",
             letterSpacing: "0.05em",
             display: "flex",
           }}
@@ -71,7 +76,7 @@ export default async function Image() {
             justifyContent: "space-between",
             alignItems: "center",
             fontSize: 18,
-            color: "#8E6A36",
+            color: "#7f9a84",
             letterSpacing: "0.2em",
           }}
         >
