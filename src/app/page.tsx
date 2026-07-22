@@ -4,7 +4,6 @@ import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
 import BookingCTA from "@/components/BookingCTA";
-import ServiceSection from "@/components/ServiceSection";
 import ValueSection from "@/components/ValueSection";
 import LibraryStrip from "@/components/LibraryStrip";
 import FaqSection from "@/components/FaqSection";
@@ -113,14 +112,11 @@ export default function HomePage() {
         />
 
 
-        {/* What we do */}
+        {/* 価値 → できること（体験）を1セクションに統合 */}
         <ValueSection />
 
         {/* メディア導線 — /areas の記事を横に流す */}
         <LibraryStrip />
-
-        {/* 体験モジュール（顕在/潜在の2層に声かけ） */}
-        <ServiceSection />
 
         {/* FAQ — 予約直前の不安を潰す */}
         <FaqSection />
