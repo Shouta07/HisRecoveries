@@ -3,11 +3,11 @@ import { join } from "node:path";
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
 import BoomerangVideo from "@/components/BoomerangVideo";
-import BookingCTA from "@/components/BookingCTA";
 import ValueSection from "@/components/ValueSection";
 import StepsSection from "@/components/StepsSection";
 import LibraryStrip from "@/components/LibraryStrip";
 import FaqSection from "@/components/FaqSection";
+import StickyConsultBar from "@/components/StickyConsultBar";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -88,17 +88,6 @@ export default function HomePage() {
           <p className="mt-5 text-[#4b5b47] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
             男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は無料・完全守秘、費用も先に。
           </p>
-
-          <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
-            <BookingCTA className="rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[14px] font-semibold px-8 py-3.5 transition-colors shadow-[0_18px_40px_-20px_rgba(20,32,26,0.8)]">
-              無料相談受付中
-            </BookingCTA>
-            <Link href="/#service" className="rounded-full border border-[#1f2a1d]/25 hover:border-[#1f2a1d] text-[#1f2a1d] text-[14px] font-semibold px-8 py-3.5 transition-colors bg-white/40 backdrop-blur-sm">
-              サービスを見る
-            </Link>
-          </div>
-
-
         </div>
       </section>
 
@@ -137,8 +126,13 @@ export default function HomePage() {
             </nav>
             <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries</span>
           </div>
+          {/* 追従バーが最下部で内容を隠さないための余白 */}
+          <div aria-hidden className="h-20" />
         </footer>
       </div>
+
+      {/* スクロール追従の下部固定CTA（Oh my teeth 型） */}
+      <StickyConsultBar />
     </div>
   );
 }

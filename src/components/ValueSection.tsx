@@ -31,19 +31,17 @@ export default function ValueSection() {
   return (
     <section id="service" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 sm:pt-14 pb-6">
-        {/* ── 価値：コンシェルジュは何をしてくれるのか ── */}
-        <div className="on-media max-w-2xl mb-6">
-          <div className="flex items-center gap-3 mb-3">
+        {/* ── 価値：コンシェルジュは何をしてくれるのか（端的に） ── */}
+        <div className="on-media max-w-2xl mb-5">
+          <div className="flex items-center gap-3 mb-2.5">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">What we do — 私たちの価値</span>
           </div>
-          <h2 className="text-[1.5rem] sm:text-[1.9rem] md:text-[2.2rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
+          <h2 className="text-[1.5rem] sm:text-[1.9rem] md:text-[2.2rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
             もう、ひとりで<span className="text-[#3d5638]">抱えなくていい。</span>
           </h2>
-          <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.9]">
-            髪・肌・体・心。気になることを、まとめて相談できる、男性ウェルネスのコンシェルジュです。
-            <br className="hidden sm:block" />
-            面倒なこと、恥ずかしいこと、迷うこと——ぜんぶ、こちらで引き受けます。
+          <p className="mt-2.5 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.85]">
+            髪・肌・体・心。気になることをまとめて相談できる、男性ウェルネスのコンシェルジュ。面倒・恥ずかしい・迷う——ぜんぶ、こちらで。
           </p>
         </div>
 
