@@ -45,6 +45,21 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
     .map((s) => clusters.find((c) => c.slug === s))
     .filter((x): x is NonNullable<typeof x> => Boolean(x));
 
+  // 袋小路をなくす：related が3本未満なら同カテゴリで補完（回遊/PV）。
+  // 補完順は「選び方 → ガイド → 解説」——下流（相談に近い）記事へ自然に流す。
+  if (relatedArticles.length < 3) {
+    const seen = new Set([a.slug, ...relatedArticles.map((r) => r.slug)]);
+    const rank = (x: (typeof clusters)[number]) =>
+      x.kind === "choose" ? 0 : x.kind === "guide" ? 1 : 2;
+    const fill = clusters
+      .filter((x) => x.areaId === a.areaId && x.kind !== "interview" && !seen.has(x.slug))
+      .sort((p, q) => rank(p) - rank(q));
+    for (const x of fill) {
+      if (relatedArticles.length >= 3) break;
+      relatedArticles.push(x);
+    }
+  }
+
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -201,15 +216,18 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {relatedArticles.length > 0 && (
           <section className="mt-12">
             <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>あわせて読む</h2>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {relatedArticles.map((r) => (
                 <li key={r.slug}>
                   <Link
                     href={`/areas/${r.areaId}/${r.slug}`}
-                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#1f2a1d]/10 bg-white px-4 py-3.5 hover:border-[#3d5638]/40 transition-colors"
+                    className="group flex items-start justify-between gap-3 rounded-[1rem] border border-[#1f2a1d]/10 bg-white px-4 py-3.5 hover:border-[#3d5638]/40 hover:shadow-[0_14px_30px_-22px_rgba(20,32,26,0.5)] transition-all"
                   >
-                    <span className="text-[13.5px] font-semibold text-[#1f2a1d] leading-[1.6]">{r.title}</span>
-                    <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+                    <span className="min-w-0">
+                      <span className="block text-[13.5px] font-semibold text-[#1f2a1d] leading-[1.6] group-hover:text-[#3d5638] transition-colors">{r.title}</span>
+                      <span className="mt-0.5 block text-[12px] text-[#6b7a66] leading-[1.7] line-clamp-1">{r.lead}</span>
+                    </span>
+                    <span aria-hidden className="text-[#3d5638] shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
               ))}
