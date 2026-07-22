@@ -57,16 +57,17 @@ export default function ValueSection() {
           ))}
         </div>
 
-        {/* ── できること：価値を「体験」として具体化 ── */}
+        {/* ── できること：価値を「体験」として具体化（同一セクションのサブブロック）── */}
         <span id="packages" aria-hidden className="block h-px scroll-mt-24" />
-        <div className="on-media max-w-2xl mt-12 mb-6">
-          <div className="flex items-center gap-3 mb-3">
-            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
+        <div className="on-media max-w-2xl mt-10 pt-9 border-t border-[#1f2a1d]/10 mb-6">
+          <div className="flex items-center gap-2.5 mb-2">
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">できること</span>
+            <span aria-hidden className="text-[#c3ccbf]">—</span>
+            <span className="text-[11.5px] text-[#6b7a66]">いま動きたい人にも、そろそろの人にも</span>
           </div>
-          <h2 className="text-[1.4rem] sm:text-[1.8rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
-            いま動きたい人にも、そろそろの人にも。
-          </h2>
+          <h3 className="text-[1.15rem] sm:text-[1.35rem] leading-[1.45]" style={{ ...MINCHO, fontWeight: 800 }}>
+            価値を、<span className="text-[#3d5638]">体験に。</span>
+          </h3>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.95]">
             「何から始めればいいか分からない」も、「今は困ってないけど、そろそろ」も。
             <br className="hidden sm:block" />
