@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
+import ConsultLink from "@/components/ConsultLink";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import LibraryStrip from "@/components/LibraryStrip";
@@ -71,8 +72,14 @@ export default function HomePage() {
 
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-24 pb-10">
+          {/* 何のサービスか、を最初のひと言で */}
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[11.5px] sm:text-[12.5px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
+            <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
+            男性ウェルネス・コンシェルジュ
+          </span>
+
           {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
-          <div className="relative w-screen h-[58vh] sm:h-[64vh] mb-7 sm:mb-8 overflow-hidden">
+          <div className="relative w-screen h-[44vh] sm:h-[52vh] mt-5 mb-6 overflow-hidden">
             <Image
               src="/media/hero/portrait.png"
               alt=""
@@ -89,7 +96,7 @@ export default function HomePage() {
             />
             {/* 見出しを画像の上に */}
             <h1
-              className="absolute inset-x-0 bottom-0 px-5 pb-8 text-center text-[#EDF1E8] text-[2.1rem] sm:text-[3.2rem] leading-[1.25]"
+              className="absolute inset-x-0 bottom-0 px-5 pb-7 text-center text-[#EDF1E8] text-[2.1rem] sm:text-[3.2rem] leading-[1.25]"
               style={{ ...HERO_HEAD, fontWeight: 800 }}
             >
               <span className="block max-w-[640px] mx-auto">
@@ -98,9 +105,30 @@ export default function HomePage() {
             </h1>
           </div>
 
-          <p className="text-[#C9D2C4] text-[12.5px] sm:text-[14px] leading-[1.9] max-w-[30rem]">
-            男性の健康・美容・活力を整える、ウェルネス・コンシェルジュ。相談は無料・完全守秘、費用も先に。
+          {/* サービスの中身＝「診断→設計→接続」を明確に（改行は文節単位で自然に） */}
+          <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
+            <span className="inline-block">「変わりたい」と思ったら、まずここへ。</span>{" "}
+            <span className="inline-block">悩みを<span className="font-semibold text-[#EDF1E8]">診断</span>し、</span>
+            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">整える順番</span>を設計。</span>
+            <span className="inline-block">最適なプロ・施設へ<span className="font-semibold text-[#EDF1E8]">接続</span>します。</span>
           </p>
+
+          {/* メカニズムを3ステップでスキャンできるように */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[11.5px] sm:text-[13px] font-semibold">
+            {["診断", "整える順番を設計", "最適な所へ接続"].map((s, i) => (
+              <div key={s} className="flex items-center gap-2">
+                <span className="rounded-full bg-white/[0.07] border border-white/12 px-3 py-1.5 text-[#C9D2C4]">
+                  <span className="text-[#9ec4a3] font-bold mr-1">{i + 1}</span>{s}
+                </span>
+                {i < 2 && <span aria-hidden className="text-[#85AB8B]">→</span>}
+              </div>
+            ))}
+          </div>
+
+          {/* 一次CTA（ファーストビューで行動できるように） */}
+          <ConsultLink className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-8 py-3.5 transition-colors">
+            無料で相談する <span aria-hidden>→</span>
+          </ConsultLink>
 
           {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
           <div className="mt-8 w-full max-w-[600px] grid grid-cols-3 rounded-[1.4rem] bg-white/95 backdrop-blur-sm border border-[#1f2a1d]/10 divide-x divide-[#1f2a1d]/10 overflow-hidden shadow-[0_20px_48px_-26px_rgba(20,32,26,0.5)]">

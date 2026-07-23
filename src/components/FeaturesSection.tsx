@@ -71,6 +71,9 @@ export default function FeaturesSection() {
             His Recoveries の特徴
           </h2>
         </div>
+        <p className="text-center text-[13px] sm:text-[14px] text-[#4b5b47] leading-[1.9] max-w-[30rem] mx-auto mb-8 sm:mb-10 -mt-3 sm:-mt-4">
+          なぜ、ここを選ぶのか。あなたが得するポイントを、4つに。
+        </p>
 
         {/* 2×2（スマホも2カラム） */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4">

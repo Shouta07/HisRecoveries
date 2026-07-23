@@ -166,7 +166,7 @@ export default function PartnerApplyForm() {
         {status === "submitting" ? "送信中…" : "無料で提携を申し込む"}
       </button>
       <p className="text-[11.5px] text-[#6b7a66] leading-[1.8] text-center">
-        送信いただいても、掲載が確約されるものではありません。空き状況をご案内します。
+        まずは、ご相談から。エリアの空き状況をご案内します。無理な勧誘は一切ありません。
       </p>
       {status === "error" && (
         <p className="text-[12.5px] text-[#b4453c] text-center">送信に問題が発生しました。お手数ですが {site.company.email} まで直接お送りください。</p>

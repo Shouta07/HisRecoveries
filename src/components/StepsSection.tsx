@@ -26,6 +26,9 @@ export default function StepsSection() {
           <h2 className="text-[1.5rem] sm:text-[1.9rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
             匿名15分の相談から、<span className="text-[#3d5638]">5ステップ。</span>
           </h2>
+          <p className="mt-3 text-[13px] sm:text-[14px] text-[#4b5b47] leading-[1.9]">
+            何から始めればいいか、迷わせません。相談から記録まで、順番にご案内します。
+          </p>
         </div>
 
         {/* 縦タイムライン（モバイル最適・線でつなぐ） */}

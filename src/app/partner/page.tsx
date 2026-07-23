@@ -47,10 +47,10 @@ const PRO_CHIPS = ["メイク", "スタイリスト", "フォトグラファー"
 const FACILITY_CHIPS = ["美容皮膚科", "AGA", "医療脱毛", "脱毛サロン", "眉毛サロン", "メンズエステ", "ジム"];
 
 const BENEFITS = [
-  { t: "「設計」してから、接続する。", d: "迷っている人ではなく、次にやることが決まった男性が届く。順番も、タイミングも整った状態で。" },
-  { t: "集客も、事務も、HRが持つ。", d: "予約・与信・段取りはこちらで。あなたは、腕と施術だけに集中できる。" },
-  { t: "固定費リスクは、ない。", d: "掲載・初期・月額は無料。プロは業務委託の報酬、施設は成果に応じてのみ。" },
-  { t: "中立・売らない設計。", d: "順路として信頼されるから、あなたのブランドも守られる。安売りにも巻き込まれない。" },
+  { t: "意欲の高い男性が、届く。", d: "やることも順番も決まった状態で。あなたは、来てくれた人にベストを尽くすだけ。" },
+  { t: "集客も事務も、こちらで。", d: "予約・与信・段取りは引き受けます。あなたは、腕と施術に集中できます。" },
+  { t: "固定費リスクは、ありません。", d: "掲載・初期・月額は無料。プロは業務委託の報酬、施設は成果が出てからだけ。" },
+  { t: "取材で、発信も後押し。", d: "記事やインタビューで、あなたの強みを世に。中立設計だから、信頼も守られます。" },
 ];
 
 const STEPS = [
@@ -164,7 +164,7 @@ export default function PartnerPage() {
           </div>
 
           <p className="mt-12 text-center text-[13.5px] sm:text-[15px] text-[#3d5638] font-semibold leading-[1.9]">
-            だから届くのは、<span className="text-[#16241A]">迷っている人ではなく、次が決まった男性</span>。
+            だからあなたに届くのは、<span className="text-[#16241A]">やることが決まった、意欲の高い男性</span>。
           </p>
         </div>
       </section>
@@ -207,10 +207,13 @@ export default function PartnerPage() {
       <section className="border-t border-[#1f2a1d]/8 bg-[#16241A] text-[#EDF1E8]">
         <div className="max-w-[1000px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
           <div className="text-center">
-            <Eyebrow dark>Why Join</Eyebrow>
+            <Eyebrow dark>Why Join — 組むと、何がいいか</Eyebrow>
             <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#EDF1E8]" style={HEAD}>
-              選ばれるのを、<span className="text-[#9ec4a3]">待たない。</span>
+              あなたは、<span className="text-[#9ec4a3]">腕だけでいい。</span>
             </h2>
+            <p className="mt-6 text-[15px] leading-[1.95] text-[#C9D2C4]">
+              面倒なことは、こちらで引き受けます。あなたの得意に、集中してください。
+            </p>
           </div>
           <div className="mt-14 grid sm:grid-cols-2 gap-4">
             {BENEFITS.map((b, i) => (
@@ -302,10 +305,10 @@ export default function PartnerPage() {
           <div className="text-center mb-10">
             <Eyebrow>Apply</Eyebrow>
             <h2 className="mt-6 text-[1.8rem] sm:text-[2.4rem] leading-[1.3] font-[800] text-[#16241A]" style={HEAD}>
-              枠には、<br className="sm:hidden" />限りがあります。
+              まずは、<br className="sm:hidden" />話を聞かせてください。
             </h2>
             <p className="mt-6 text-[14px] sm:text-[15px] leading-[1.95] text-[#4b5b47]">
-              エリア・カテゴリごとに、提携先を厳選しています。まずは、空き状況の確認から。
+              エリア・カテゴリを絞っているので、あなたが埋もれることはありません。合うかどうかも含めて、気軽にご相談ください。
             </p>
           </div>
 
