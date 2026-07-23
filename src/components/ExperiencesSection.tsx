@@ -78,9 +78,15 @@ export default function ExperiencesSection() {
           </h2>
           <p className="mt-3 text-[#4b5b47] text-[13px] sm:text-[14.5px] leading-[1.95]">
             「取り戻す（Recover）」も、「深める（Refine）」も。あなたに合わせて、オーダーメイドで組みます。
-            <br className="hidden sm:block" />
             どちらも、悩みを聞く無料相談から始まります。
           </p>
+
+          {/* ④ 価格アンカー — 唯一の具体価格を前面に（全部「要相談」で離脱を防ぐ） */}
+          <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1rem] bg-white border border-[#1f2a1d]/12 px-4 py-3">
+            <span className="text-[11px] font-bold tracking-[0.08em] text-[#3d5638]">入口はここから</span>
+            <span className="text-[15px] font-bold text-[#16241A]" style={MINCHO}>印象診断 ¥22,000</span>
+            <span className="text-[11.5px] text-[#6b7a66]">お申込みで全額充当・90分</span>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-3 sm:gap-4">

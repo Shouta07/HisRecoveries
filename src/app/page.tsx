@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import ConsultLink from "@/components/ConsultLink";
+import QuickDiagnosis from "@/components/QuickDiagnosis";
+import WorryCards from "@/components/WorryCards";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import LibraryStrip from "@/components/LibraryStrip";
@@ -129,6 +131,10 @@ export default function HomePage() {
           <ConsultLink className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-8 py-3.5 transition-colors">
             無料で相談する <span aria-hidden>→</span>
           </ConsultLink>
+          {/* サイトを道具に：診断ツールへの導線 */}
+          <a href="#diagnosis" className="mt-3 text-[12.5px] font-semibold text-[#9ec4a3] underline underline-offset-4 decoration-[#85AB8B]/40 hover:text-[#C9D2C4] transition-colors">
+            または、30秒で「整える順番」を見る →
+          </a>
 
           {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
           <div className="mt-8 w-full max-w-[600px] grid grid-cols-3 rounded-[1.4rem] bg-white/95 backdrop-blur-sm border border-[#1f2a1d]/10 divide-x divide-[#1f2a1d]/10 overflow-hidden shadow-[0_20px_48px_-26px_rgba(20,32,26,0.5)]">
@@ -176,6 +182,28 @@ export default function HomePage() {
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
+        {/* ② 実績ストリップ — 誇れる"いま真実であること"だけを静かに（NEWTのNo.1帯に相当） */}
+        <div className="border-y border-[#1f2a1d]/8 bg-[#eef1ea]">
+          <div className="max-w-[1000px] mx-auto px-5 sm:px-8 py-5 grid grid-cols-3 divide-x divide-[#1f2a1d]/10 text-center">
+            {[
+              { n: "57本", d: "専門記事・すべて出典明記" },
+              { n: "¥0", d: "相談無料・完全守秘" },
+              { n: "中立", d: "売らない・紹介料を取らない" },
+            ].map((s) => (
+              <div key={s.n} className="px-2">
+                <div className="text-[1.3rem] sm:text-[1.8rem] font-[800] text-[#16241A] leading-none" style={MINCHO}>{s.n}</div>
+                <div className="mt-1.5 text-[10px] sm:text-[12px] text-[#4b5b47] leading-[1.4]">{s.d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ① 診断の入口 — サイトを"道具"にする中核。まず最初に触れる。 */}
+        <QuickDiagnosis />
+
+        {/* ③ 悩みカード — 診断を使わない人向けの直接ブラウズ動線 */}
+        <WorryCards />
+
         {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
         <StepsSection />
 
@@ -191,17 +219,55 @@ export default function HomePage() {
         {/* FAQ — 予約直前の不安を潰す */}
         <FaqSection />
 
-        {/* ===== Footer (simple) ===== */}
+        {/* ===== Footer — ⑤ リンク網（SEO＋回遊）。悩み別・コンテンツ・運営で整理 ===== */}
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
-          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-            <Link href="/" className="logo-type text-xl font-semibold tracking-tight text-[#1f2a1d]">His Recoveries</Link>
-            <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#4b5b47]">
-              <Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">記事</Link>
-              <Link href="/member" className="hover:text-[#1f2a1d] transition-colors">会員ページ（β）</Link>
-              <Link href="/partner" className="hover:text-[#1f2a1d] transition-colors">提携パートナー募集</Link>
-              <Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link>
-            </nav>
-            <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries</span>
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-12 pb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-8">
+              {/* 悩みから探す */}
+              <div className="col-span-2 sm:col-span-2">
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">悩みから探す</div>
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-[13px] text-[#4b5b47]">
+                  {[
+                    ["impression", "清潔感・第一印象"],
+                    ["hair", "薄毛・髪"],
+                    ["skin", "肌・ニキビ"],
+                    ["face", "老け見え・疲れ顔"],
+                    ["body-hair", "ヒゲ・体毛"],
+                    ["mind", "睡眠・気分・習慣"],
+                  ].map(([id, label]) => (
+                    <li key={id}>
+                      <Link href={`/areas/${id}`} className="hover:text-[#1f2a1d] transition-colors">{label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* サービス */}
+              <div>
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">サービス</div>
+                <ul className="space-y-2 text-[13px] text-[#4b5b47]">
+                  <li><a href="#diagnosis" className="hover:text-[#1f2a1d] transition-colors">整える順番を診断</a></li>
+                  <li><Link href="/recover" className="hover:text-[#1f2a1d] transition-colors">Recover｜取り戻す</Link></li>
+                  <li><Link href="/refine" className="hover:text-[#1f2a1d] transition-colors">Refine｜深める</Link></li>
+                  <li><Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">記事をすべて見る</Link></li>
+                </ul>
+              </div>
+
+              {/* His Recoveries */}
+              <div>
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">His Recoveries</div>
+                <ul className="space-y-2 text-[13px] text-[#4b5b47]">
+                  <li><Link href="/member" className="hover:text-[#1f2a1d] transition-colors">会員ページ（β）</Link></li>
+                  <li><Link href="/partner" className="hover:text-[#1f2a1d] transition-colors">提携パートナー募集</Link></li>
+                  <li><Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link></li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-10 pt-6 border-t border-[#1f2a1d]/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <Link href="/" className="logo-type text-xl font-semibold tracking-tight text-[#1f2a1d]">His Recoveries</Link>
+              <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries — 男性ウェルネスサービス</span>
+            </div>
           </div>
           {/* 追従バーが最下部で内容を隠さないための余白 */}
           <div aria-hidden className="h-20" />

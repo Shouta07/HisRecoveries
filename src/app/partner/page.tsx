@@ -38,6 +38,12 @@ function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?:
   );
 }
 
+// 文節を inline-block で包み、スマホでも改行を自然な区切り（、。）で起こすためのヘルパー。
+// （global の word-break:keep-all + overflow-wrap:anywhere による中途半端な改行を防ぐ）
+function W({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <span className={`inline-block ${className}`}>{children}</span>;
+}
+
 // NEWT式・繰り返しCTA。全セクションで同じ文言＝迷ったらいつでも押せる。
 function SectionCta({ dark = false }: { dark?: boolean }) {
   return (
@@ -111,11 +117,12 @@ export default function PartnerPage() {
         <div className="relative max-w-[1000px] mx-auto px-6 sm:px-8 pt-20 sm:pt-28 pb-16 sm:pb-24 text-center">
           <Eyebrow>For Partners — 提携パートナー募集</Eyebrow>
           <h1 className="mt-6 text-[2.1rem] sm:text-[3.4rem] leading-[1.3] font-[800] text-[#16241A]" style={HEAD}>
-            意欲の高い男性のお客さまを、<br className="hidden sm:block" />
-            <span className="text-[#3d5638]">あなたへ。</span>
+            <W>意欲の高い</W><W>男性のお客さまを、</W><W className="text-[#3d5638]">あなたへ。</W>
           </h1>
           <p className="mt-7 mx-auto max-w-[33rem] text-[15px] sm:text-[16.5px] leading-[1.95] text-[#4b5b47]">
-            His Recoveries は、男性ウェルネスの相談窓口。悩みを診断し、改善の順番を決めてから、その人に合うプロ・施設へご紹介します。
+            <W>His Recoveries は、</W><W>男性ウェルネスの相談窓口。</W>
+            <W>悩みを診断し、</W><W>改善の順番を決めてから、</W>
+            <W>その人に合うプロ・施設へ</W><W>ご紹介します。</W>
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="#apply" className="w-full sm:w-auto rounded-full bg-[#16241A] hover:bg-[#22331f] text-[#EDF1E8] text-[15px] font-semibold px-9 py-4 transition-colors">
@@ -139,11 +146,11 @@ export default function PartnerPage() {
       <section className="border-t border-[#1f2a1d]/8">
         <div className="max-w-[760px] mx-auto px-6 sm:px-8 py-20 sm:py-28 text-center">
           <h2 className="text-[1.7rem] sm:text-[2.5rem] leading-[1.4] font-[800] text-[#1f2a1d]" style={HEAD}>
-            男性は、何から始めればいいか<br className="hidden sm:block" />分からない。
+            <W>男性は、</W><W>何から始めればいいか</W><W>分からない。</W>
           </h2>
           <p className="mt-6 text-[15px] sm:text-[16px] leading-[1.95] text-[#4b5b47]">
-            だから調べて終わり、お店に来ない。<br className="hidden sm:block" />
-            その男性の迷いを私たちがほどいて、あなたにご紹介します。
+            <W>だから調べて終わり、</W><W>お店に来ない。</W>
+            <W>その男性の迷いを私たちがほどいて、</W><W>あなたにご紹介します。</W>
           </p>
         </div>
       </section>
@@ -198,7 +205,7 @@ export default function PartnerPage() {
           </div>
 
           <p className="mt-12 text-center text-[13.5px] sm:text-[15px] text-[#3d5638] font-semibold leading-[1.9]">
-            だから届くのは、<span className="text-[#16241A]">やることが決まった、意欲の高い男性</span>だけ。
+            <W>だから届くのは、</W><W className="text-[#16241A]">やることが決まった、</W><W className="text-[#16241A]">意欲の高い男性</W><W>だけ。</W>
           </p>
 
           <SectionCta />
