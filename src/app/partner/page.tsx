@@ -22,13 +22,13 @@ const HEAD: React.CSSProperties = {
 export const metadata: Metadata = {
   title: "提携パートナー募集 — 意欲の高い男性のお客さまを、あなたへ",
   description:
-    "His Recoveries は男性ウェルネスの相談窓口。悩みを診断し、改善の順番を決めてから、最適なプロ・施設へご紹介します。掲載無料・初期費用無料・月額無料。申込は1分で完了。",
+    "His Recoveries は男性ウェルネスの相談窓口。悩みを診断し、改善の順番を決めてから、あなたに合うプロ・施設へご紹介します。初期費用・掲載料は無料。申込は1分で完了。",
   alternates: { canonical: `${site.url}/partner` },
   openGraph: {
     type: "website",
     url: `${site.url}/partner`,
     title: "提携パートナー募集 — His Recoveries",
-    description: "意欲の高い男性のお客さまを、あなたへ。掲載無料・申込は1分。",
+    description: "意欲の高い男性のお客さまを、あなたへ。初期費用・掲載料は無料、申込は1分。",
   },
 };
 
@@ -52,7 +52,7 @@ function SectionCta({ dark = false }: { dark?: boolean }) {
       >
         無料で提携をはじめる <span aria-hidden>→</span>
       </a>
-      <p className={`mt-3 text-[11.5px] ${dark ? "text-[#9FB0A0]" : "text-[#8a9686]"}`}>申込は1分・費用はかかりません</p>
+      <p className={`mt-3 text-[11.5px] ${dark ? "text-[#9FB0A0]" : "text-[#8a9686]"}`}>申込は1分・掲載は無料です</p>
     </div>
   );
 }
@@ -78,7 +78,7 @@ const STEPS = [
 const FAQ = [
   {
     q: "費用はかかりますか？",
-    a: "掲載・初期・月額はすべて無料です。プロの方には、お仕事ごとに報酬をお支払いします。サロン・ジムなどの施設は、ご成約が生まれたときだけの成果報酬。医療機関は法令に配慮し、成果に連動しない月額定額です（成果連動の紹介料は受け取りません）。",
+    a: "初期費用・掲載料は、どなたも無料です。そのあとは種類で異なります。プロの方は支払いなし（お仕事ごとに報酬を受け取る側です）。サロン・ジムはご成約が生まれたときだけの成果報酬。医療機関（自由診療）は月額定額のみで、ご紹介に連動した紹介料は一切受け取りません。",
   },
   {
     q: "どんなお客さまが紹介されますか？",
@@ -115,7 +115,7 @@ export default function PartnerPage() {
             <span className="text-[#3d5638]">あなたへ。</span>
           </h1>
           <p className="mt-7 mx-auto max-w-[33rem] text-[15px] sm:text-[16.5px] leading-[1.95] text-[#4b5b47]">
-            His Recoveries は、男性ウェルネスの相談窓口。悩みを診断し、改善の順番を決めてから、最適なプロ・施設へご紹介します。
+            His Recoveries は、男性ウェルネスの相談窓口。悩みを診断し、改善の順番を決めてから、その人に合うプロ・施設へご紹介します。
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="#apply" className="w-full sm:w-auto rounded-full bg-[#16241A] hover:bg-[#22331f] text-[#EDF1E8] text-[15px] font-semibold px-9 py-4 transition-colors">
@@ -126,7 +126,7 @@ export default function PartnerPage() {
             </a>
           </div>
           <p className="mt-8 font-mono text-[11.5px] tracking-[0.14em] text-[#6b7a66]">
-            掲載無料　・　初期費用無料　・　月額無料　・　申込は1分
+            掲載無料　・　初期費用無料　・　申込は1分
           </p>
         </div>
       </section>
@@ -259,48 +259,59 @@ export default function PartnerPage() {
         </div>
       </section>
 
-      {/* ============ ⑥ 費用（固定費ゼロを主役に） ============ */}
+      {/* ============ ⑥ 費用（種別ごとに独立カード。自分の欄だけで完結） ============ */}
+      {/* 法令配慮: 医療は成果連動なし・自由診療限定を明示。全種別共通で無料なのは
+          初期費用と掲載料のみ（「月額無料」の一律表記は医療の定額と矛盾するため使わない）。 */}
       <section className="border-t border-[#1f2a1d]/8 bg-white">
         <div className="max-w-[1000px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
           <div className="text-center">
             <Eyebrow>Pricing — 費用について</Eyebrow>
             <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#1f2a1d]" style={HEAD}>
-              はじめる費用は、<span className="text-[#3d5638]">かかりません。</span>
+              初期費用・掲載料は、<span className="text-[#3d5638]">どなたも無料。</span>
             </h2>
             <p className="mt-6 mx-auto max-w-[30rem] text-[15px] leading-[1.95] text-[#4b5b47]">
-              初期費用・月額・掲載料はいただきません。だから、はじめやすく、続けやすい。
+              そのあとの費用は、パートナーの種類で異なります。あなたの欄だけ、ご覧ください。
             </p>
           </div>
 
-          {/* 3つの ¥0 タイル */}
-          <div className="mt-14 grid grid-cols-3 gap-3 sm:gap-4 max-w-[680px] mx-auto">
-            {["初期費用", "月額", "掲載料"].map((k) => (
-              <div key={k} className="rounded-[1.4rem] border border-[#1f2a1d]/8 bg-[#f6f8f4] px-3 py-7 sm:py-9 text-center">
-                <div className="text-[2.4rem] sm:text-[3.2rem] font-[800] text-[#16241A] leading-none" style={HEAD}>¥0</div>
-                <div className="mt-3 text-[12px] sm:text-[13px] font-semibold text-[#6b7a66]">{k}</div>
+          {/* 種別ごとの料金カード（お金の向きを明示） */}
+          <div className="mt-14 grid md:grid-cols-3 gap-4 max-w-[960px] mx-auto">
+            {[
+              {
+                who: "体験を届けるプロ",
+                flow: "受け取る",
+                big: "支払いは、ありません。",
+                lines: ["むしろ受け取る側です。", "お仕事ごとに、報酬をお支払いします。"],
+              },
+              {
+                who: "サロン・ジムなどの施設",
+                flow: "成果のときだけ支払う",
+                big: "月額0円。成果報酬だけ。",
+                lines: ["ご成約が生まれたときだけ、事前に合意した料率でお支払い。", "お客さまが来なければ、費用はかかりません。"],
+              },
+              {
+                who: "医療機関（自由診療）",
+                flow: "定額のみ支払う",
+                big: "月額定額だけ。",
+                lines: ["患者さまのご紹介に連動した成果報酬・紹介料は、一切受け取りません（医療法・医療広告ガイドラインに配慮）。", "対象は自由診療の医療機関です。"],
+              },
+            ].map((c) => (
+              <div key={c.who} className="rounded-[1.5rem] border border-[#1f2a1d]/8 bg-[#f6f8f4] p-6 sm:p-7 flex flex-col">
+                <div className="text-[13.5px] font-bold text-[#1f2a1d]">{c.who}</div>
+                <span className="mt-2 self-start rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[10.5px] font-bold tracking-[0.04em]">あなたは {c.flow}</span>
+                <div className="mt-4 text-[1.15rem] font-[800] text-[#16241A] leading-[1.4]" style={HEAD}>{c.big}</div>
+                <div className="mt-3 space-y-1.5">
+                  {c.lines.map((l) => (
+                    <p key={l} className="text-[12px] text-[#4b5b47] leading-[1.8]">{l}</p>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
 
-          {/* お金が動くのはいつか（3ケースを平易に） */}
-          <div className="mt-8 max-w-[680px] mx-auto rounded-[1.4rem] border border-[#1f2a1d]/8 overflow-hidden">
-            <div className="px-5 sm:px-7 py-3.5 bg-[#16241A] text-[#EDF1E8] font-mono text-[10.5px] tracking-[0.2em] uppercase">
-              お金が動くのは、こんなとき
-            </div>
-            {[
-              { k: "体験を届けるプロ", v: "お仕事ごとに報酬をお支払い", note: "受け取る側です。持ち出しはありません" },
-              { k: "サロン・ジムなどの施設", v: "ご成約が生まれたときだけ", note: "成果報酬のみ。空振りに費用はかかりません" },
-              { k: "医療機関", v: "月額定額（紹介料は受け取りません）", note: "医療広告の法令に配慮した設計です" },
-            ].map((row) => (
-              <div key={row.k} className="flex items-center justify-between gap-3 px-5 sm:px-7 py-4 bg-white border-t border-[#1f2a1d]/8 first:border-t-0">
-                <div className="min-w-0">
-                  <div className="text-[13px] sm:text-[14px] font-bold text-[#1f2a1d]">{row.k}</div>
-                  <div className="text-[11px] text-[#9aa79a] leading-[1.5] mt-0.5">{row.note}</div>
-                </div>
-                <div className="shrink-0 text-[12.5px] sm:text-[13.5px] font-bold text-[#3d5638] text-right">{row.v}</div>
-              </div>
-            ))}
-          </div>
+          <p className="mt-6 text-center text-[12px] text-[#6b7a66] leading-[1.8]">
+            共通：初期費用・掲載料は無料。最低契約期間の縛りはなく、いつでも停止できます。条件は契約前に書面で明示します。
+          </p>
 
           <SectionCta />
         </div>
