@@ -170,6 +170,7 @@ export default function HomePage() {
             <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#4b5b47]">
               <Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">記事</Link>
               <Link href="/member" className="hover:text-[#1f2a1d] transition-colors">会員ページ（β）</Link>
+              <Link href="/partner" className="hover:text-[#1f2a1d] transition-colors">提携パートナー募集</Link>
               <Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link>
             </nav>
             <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries</span>

@@ -4,14 +4,14 @@ import PartnerApplyForm from "@/components/PartnerApplyForm";
 import { site } from "@/lib/site";
 
 // ============================================================
-// /partner — 提携先募集 LP（B2B・決裁者向け）
+// /partner — 提携先募集 LP（B2B・決裁者向け）v2「そぎ落とし版」
 // デザイン思想: Stripe / Linear / Notion / NEWT
 //  ・余白を大きく、文字は少なく、図解中心、1スクロール1メッセージ
-//  ・広告臭さを消し、静かな高級ブランドのトーンで
-// 目的: 冷たいアウトリーチで開いた30秒で「掲載したい」と思わせる
+//  ・重複を削る: メリット/質は Hero と図に畳み、独立セクションにしない
+// 構成: ①Hero ②問題(1行) ③仕組み図(+質) ④導入フロー ⑤申込(FAQ内包)
+// 料金は二段: 非医療=成果報酬 / 医療=成果連動でない定額（中立・法令配慮）
 // ============================================================
 
-// 見出し用（サイト全体ゴシックのため var(--font-shippori) = Noto Sans JP）
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Sans', system-ui, sans-serif",
   fontFeatureSettings: '"palt" 1',
@@ -21,86 +21,48 @@ const HEAD: React.CSSProperties = {
 export const metadata: Metadata = {
   title: "提携パートナー募集 — 改善を決めた男性を、あなたのもとへ",
   description:
-    "His Recoveries は男性ウェルネスの入口。AI診断と改善ロードマップで目的が明確になった、意欲の高い男性を最適な提携先へ送客します。掲載無料・初期費用無料・月額無料・成果報酬のみ。",
+    "His Recoveries は男性ウェルネスの入口。AI診断と改善ロードマップで目的が明確になった、意欲の高い男性を最適な提携先へ送客します。掲載無料・初期費用無料・月額無料、固定費リスクなし。",
   alternates: { canonical: `${site.url}/partner` },
   openGraph: {
     type: "website",
     url: `${site.url}/partner`,
     title: "提携パートナー募集 — His Recoveries",
-    description: "改善を決めた男性を、あなたのもとへ。掲載無料・成果報酬のみ。",
+    description: "改善を決めた男性を、あなたのもとへ。掲載無料・固定費リスクなし。",
   },
 };
 
-// 小さな行ラベル（Liner/Stripe 風の mono eyebrow）
-function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
+function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`font-mono text-[11px] tracking-[0.28em] uppercase ${dark ? "text-[#85AB8B]" : "text-[#3d5638]"}`}>
-      {children}
-    </div>
+    <div className="font-mono text-[11px] tracking-[0.28em] uppercase text-[#3d5638]">{children}</div>
   );
 }
 
-// メリット4枚のアイコン（線画・Linear風）
-const MERIT_ICONS: Record<string, React.ReactNode> = {
-  掲載無料: (
-    <>
-      <rect x="4" y="5" width="16" height="14" rx="2" />
-      <path d="M4 9h16" />
-      <path d="M8 14h5" />
-    </>
-  ),
-  初期費用無料: (
-    <>
-      <path d="M12 3v18" />
-      <path d="M16.5 7.5c-.8-1.2-2.4-2-4.5-2-2.8 0-4.5 1.3-4.5 3.2 0 4.5 9 2 9 6.4 0 2-1.9 3.4-4.9 3.4-2.3 0-4-.9-4.8-2.2" />
-    </>
-  ),
-  月額無料: (
-    <>
-      <rect x="4" y="5" width="16" height="16" rx="2" />
-      <path d="M4 10h16M8 3v4M16 3v4" />
-      <path d="M9 15.5l2 2 4-4" />
-    </>
-  ),
-  成果報酬のみ: (
-    <>
-      <path d="M3 17l5-5 4 3 8-8" />
-      <path d="M17 4h4v4" />
-    </>
-  ),
-};
-
-const MERITS = [
-  { t: "掲載無料", d: "掲載そのものに費用はかかりません。" },
-  { t: "初期費用無料", d: "導入にあたっての初期投資は不要です。" },
-  { t: "月額無料", d: "固定の月額・掲載料はいただきません。" },
-  { t: "成果報酬のみ", d: "実際に来院・成約が生まれたときだけ。" },
-];
-
-const PATIENTS = [
-  { t: "改善意欲が高い", d: "「変わりたい」と決めた人だけが、次に進みます。冷やかしは通りません。" },
-  { t: "AI診断済み", d: "肌・髪・印象を診断で可視化。現在地を理解した状態でつなぎます。" },
-  { t: "目的が明確", d: "何を、なぜ、どの順で。ロードマップで迷いが解けています。" },
-];
-
 const STEPS = [
-  { n: "01", t: "申込", d: "このページのフォームから。2営業日以内にご連絡します。" },
+  { n: "01", t: "申込", d: "このページから。2営業日以内にご連絡します。" },
   { n: "02", t: "掲載", d: "エリア・カテゴリを確認し、提携先として掲載。初期費用は不要。" },
-  { n: "03", t: "送客開始", d: "診断を終えた男性を、あなたのもとへ。成果が出たときだけ費用。" },
+  { n: "03", t: "送客開始", d: "診断を終えた男性を、あなたのもとへ。" },
 ];
 
+// FAQ は費用・質・エリアの3点だけ。費用は業種で二段。
 const FAQ = [
-  { q: "費用はいつ発生しますか？", a: "掲載・初期・月額はすべて無料です。実際に来院や成約が生まれたときの成果報酬のみ。固定費リスクはありません。" },
-  { q: "契約や解約の条件は？", a: "最低契約期間の縛りは設けていません。合わないと感じたら、いつでも掲載を停止できます。条件は書面で明示します。" },
-  { q: "どんなユーザーが送客されますか？", a: "AI診断とロードマップを終え、目的が明確な男性です。意欲の低い層をむやみに流すことはしません。質を優先します。" },
-  { q: "エリアの制限はありますか？", a: "エリア・カテゴリごとに提携数を絞っています。競合が飽和しないよう、掲載枠には限りがあります。" },
-  { q: "掲載の条件は？", a: "男性を丁寧に扱える体制があること。過度な売り込みをしないこと。詳細は申し込み後にご案内します。" },
+  {
+    q: "費用はいつ発生しますか？",
+    a: "掲載・初期・月額はすべて無料です。非医療（脱毛サロン・眉毛・ジム等）は成果報酬のみ。医療（クリニック）は法令に配慮し、成果連動ではない定額の掲載料でご案内します。いずれも固定費リスクはありません。",
+  },
+  {
+    q: "どんなユーザーが送客されますか？",
+    a: "AI診断とロードマップを終え、目的が明確な男性です。意欲の低い層をむやみに流すことはしません。質を優先します。",
+  },
+  {
+    q: "エリアの制限はありますか？",
+    a: "エリア・カテゴリごとに提携数を絞っています。競合が飽和しないよう、掲載枠には限りがあります。",
+  },
 ];
 
 export default function PartnerPage() {
   return (
     <div className="bg-[#f6f8f4] text-[#1f2a1d]" style={{ fontFeatureSettings: '"palt" 1' }}>
-      {/* ── 専用のスリムなトップバー（消費者向けHeaderは /partner で非表示） ── */}
+      {/* ── 専用スリムトップバー（消費者向けHeaderは /partner で非表示） ── */}
       <div className="sticky top-0 z-50 border-b border-[#1f2a1d]/8 bg-[#f6f8f4]/85 backdrop-blur">
         <div className="max-w-[1100px] mx-auto flex items-center justify-between px-6 sm:px-8 py-3.5">
           <Link href="/" className="logo-type text-[17px] font-semibold tracking-[0.04em] text-[#16241A]">
@@ -116,8 +78,7 @@ export default function PartnerPage() {
       </div>
 
       {/* ============ ① Hero ============ */}
-      {/* 目的: 30秒で「送りたい相手＝良質な男性患者」を一撃で理解させる。
-          心理: 決裁者は"手間・コスト・リスク"を無意識に警戒 → 先に「無料・成果報酬のみ」で警戒を解く。 */}
+      {/* 目的: 30秒で「送られる相手＝良質な男性患者」を理解させ、コスト警戒を先に解く。 */}
       <section className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, #eef3ea 0%, #f6f8f4 60%)" }} />
         <div className="relative max-w-[1000px] mx-auto px-6 sm:px-8 pt-20 sm:pt-28 pb-16 sm:pb-24 text-center">
@@ -126,59 +87,49 @@ export default function PartnerPage() {
             改善を決めた男性を、<br className="hidden sm:block" />
             <span className="text-[#3d5638]">あなたのもとへ。</span>
           </h1>
-          <p className="mt-7 mx-auto max-w-[34rem] text-[15px] sm:text-[17px] leading-[1.95] text-[#4b5b47]">
-            His Recoveries は、男性ウェルネスの入口。<br className="hidden sm:block" />
-            診断とロードマップで目的が明確になった人だけを、最適な一院へ。
+          <p className="mt-7 mx-auto max-w-[32rem] text-[15px] sm:text-[17px] leading-[1.95] text-[#4b5b47]">
+            診断とロードマップで目的が明確になった男性だけを、最適な一院へ。
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="#apply" className="w-full sm:w-auto rounded-full bg-[#16241A] hover:bg-[#22331f] text-[#EDF1E8] text-[15px] font-semibold px-9 py-4 transition-colors">
               提携を申し込む
             </a>
-            <a href="#merits" className="w-full sm:w-auto rounded-full border border-[#1f2a1d]/15 hover:border-[#3d5638]/50 text-[#1f2a1d] text-[15px] font-semibold px-9 py-4 transition-colors">
-              掲載条件を見る
+            <a href="#how" className="w-full sm:w-auto rounded-full border border-[#1f2a1d]/15 hover:border-[#3d5638]/50 text-[#1f2a1d] text-[15px] font-semibold px-9 py-4 transition-colors">
+              仕組みを見る
             </a>
           </div>
           <p className="mt-8 font-mono text-[11.5px] tracking-[0.14em] text-[#6b7a66]">
-            掲載無料　・　初期費用無料　・　月額無料　・　成果報酬のみ
+            掲載無料　・　初期費用無料　・　月額無料　・　固定費リスクなし
           </p>
         </div>
       </section>
 
-      {/* ============ ② 問題提起 ============ */}
-      {/* 目的: 「あなたの潜在患者は、たどり着けていないだけ」と気づかせる。
-          心理: 自院の集客課題を、HRが言語化してくれる安心感。責めない。 */}
+      {/* ============ ② 問題提起（1行） ============ */}
+      {/* 目的: 自院を責めず「たどり着けていないだけ」と代弁。 */}
       <section className="border-t border-[#1f2a1d]/8">
-        <div className="max-w-[820px] mx-auto px-6 sm:px-8 py-20 sm:py-28 text-center">
-          <Eyebrow>The Problem</Eyebrow>
-          <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#1f2a1d]" style={HEAD}>
-            男性は、何から<br className="sm:hidden" />始めればいいか<br className="hidden sm:block" />
-            分からない。
+        <div className="max-w-[760px] mx-auto px-6 sm:px-8 py-20 sm:py-28 text-center">
+          <h2 className="text-[1.7rem] sm:text-[2.5rem] leading-[1.4] font-[800] text-[#1f2a1d]" style={HEAD}>
+            男性は、何から始めればいいか<br className="hidden sm:block" />分からない。
           </h2>
-          <p className="mt-7 mx-auto max-w-[30rem] text-[15px] sm:text-[16px] leading-[2] text-[#4b5b47]">
-            だから、調べて終わる。来院しない。<br />
-            需要はあるのに、あなたの一歩手前でつまずいている。
+          <p className="mt-6 text-[15px] sm:text-[16px] leading-[1.95] text-[#4b5b47]">
+            だから調べて終わり、来院しない。需要は、あなたの一歩手前にある。
           </p>
         </div>
       </section>
 
-      {/* ============ ③ 仕組み（図中心） ============ */}
-      {/* 目的: HRが"迷い→来院"の変換装置だと図で理解させる。
-          心理: 送客の質が担保される仕組みを、言葉でなく構造で信頼させる。 */}
-      <section className="border-t border-[#1f2a1d]/8 bg-white">
+      {/* ============ ③ 仕組み（図中心）＋ 送客の質を1行で ============ */}
+      {/* 目的: HRが"迷い→来院"の変換装置だと構造で信頼させ、質を約束。 */}
+      <section id="how" className="border-t border-[#1f2a1d]/8 bg-white scroll-mt-16">
         <div className="max-w-[1000px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
           <div className="text-center">
             <Eyebrow>How It Works</Eyebrow>
             <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#1f2a1d]" style={HEAD}>
               迷いを、来院に変える。
             </h2>
-            <p className="mt-6 mx-auto max-w-[30rem] text-[15px] leading-[1.95] text-[#4b5b47]">
-              私たちは施設を持ちません。需要を束ね、改善の順路を設計し、最適な提携先へおつなぎします。
-            </p>
           </div>
 
           {/* フロー図: 男性 → HR(診断→ロードマップ) → 提携先 */}
           <div className="mt-14 flex flex-col sm:flex-row items-stretch justify-center gap-4 sm:gap-3">
-            {/* Node 1 */}
             <FlowNode
               tone="light"
               icon={<><circle cx="12" cy="8" r="3.4" /><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6" /></>}
@@ -186,7 +137,6 @@ export default function PartnerPage() {
               sub="何から始めればいいか分からない"
             />
             <FlowArrow />
-            {/* Node 2 — HR（中核） */}
             <div className="flex-1 rounded-[1.5rem] bg-[#16241A] text-[#EDF1E8] p-6 sm:p-7 flex flex-col justify-center">
               <div className="font-mono text-[10px] tracking-[0.24em] uppercase text-[#85AB8B]">His Recoveries</div>
               <div className="mt-3 space-y-2.5">
@@ -201,7 +151,6 @@ export default function PartnerPage() {
               </div>
             </div>
             <FlowArrow />
-            {/* Node 3 */}
             <FlowNode
               tone="accent"
               icon={<><path d="M4 20V9l8-5 8 5v11" /><path d="M9 20v-6h6v6" /><path d="M4 20h16" /></>}
@@ -210,78 +159,15 @@ export default function PartnerPage() {
             />
           </div>
 
-          {/* ブランドの等式 */}
-          <div className="mt-14 flex items-center justify-center gap-3 sm:gap-5 text-center">
-            {["Supply", "Intelligence", "Design"].map((w, i) => (
-              <div key={w} className="flex items-center gap-3 sm:gap-5">
-                <span className="text-[13px] sm:text-[15px] font-semibold text-[#3d5638] tracking-[0.02em]">{w}</span>
-                {i < 2 && <span className="text-[#9aa79a]">×</span>}
-              </div>
-            ))}
-          </div>
-          <p className="mt-3 text-center text-[12px] text-[#6b7a66]">供給を束ね、知性で設計し、体験を整える。</p>
+          {/* 送客の質（旧⑤セクションを1行に凝縮） */}
+          <p className="mt-12 text-center text-[13.5px] sm:text-[15px] text-[#3d5638] font-semibold leading-[1.9]">
+            送るのは、<span className="text-[#16241A]">改善意欲が高く・AI診断済み・目的が明確</span>な男性だけ。
+          </p>
         </div>
       </section>
 
-      {/* ============ ④ 提携メリット ============ */}
-      {/* 目的: リスクゼロを4枚で。決裁の最大障壁＝コストを先に消す。
-          心理: 「試して損がない」→ 稟議を通しやすい。 */}
-      <section id="merits" className="border-t border-[#1f2a1d]/8">
-        <div className="max-w-[1000px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
-          <div className="text-center">
-            <Eyebrow>Why Partner</Eyebrow>
-            <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#1f2a1d]" style={HEAD}>
-              リスクは、ゼロ。
-            </h2>
-            <p className="mt-6 text-[15px] leading-[1.95] text-[#4b5b47]">
-              固定費はいただきません。成果が出たときだけ、費用が生まれます。
-            </p>
-          </div>
-          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            {MERITS.map((m) => (
-              <div key={m.t} className="rounded-[1.4rem] border border-[#1f2a1d]/8 bg-white px-5 py-7 sm:py-8 text-center">
-                <span aria-hidden className="mx-auto grid place-items-center w-12 h-12 rounded-full bg-[#eef3ea] mb-5">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3d5638" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                    {MERIT_ICONS[m.t]}
-                  </svg>
-                </span>
-                <div className="text-[15px] sm:text-[16px] font-bold text-[#16241A]" style={HEAD}>{m.t}</div>
-                <p className="mt-2 text-[11.5px] sm:text-[12.5px] text-[#6b7a66] leading-[1.7]">{m.d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ ⑤ 紹介されるユーザー ============ */}
-      {/* 目的: 送客の"質"を約束。量ではなく質で決裁者を動かす。
-          心理: 冷やかしを掴まされる不安を、事前診断で払拭。 */}
-      <section className="border-t border-[#1f2a1d]/8 bg-[#16241A] text-[#EDF1E8]">
-        <div className="max-w-[1000px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
-          <div className="text-center">
-            <Eyebrow dark>The Patients</Eyebrow>
-            <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#EDF1E8]" style={HEAD}>
-              送るのは、<span className="text-[#9ec4a3]">決めた男性</span>だけ。
-            </h2>
-            <p className="mt-6 text-[15px] leading-[1.95] text-[#C9D2C4]">
-              数で押しません。次の一歩を探している人を、丁寧に。
-            </p>
-          </div>
-          <div className="mt-14 grid sm:grid-cols-3 gap-4">
-            {PATIENTS.map((p, i) => (
-              <div key={p.t} className="rounded-[1.4rem] bg-white/[0.06] border border-white/10 p-6 sm:p-7">
-                <div className="font-mono text-[11px] text-[#85AB8B]">{String(i + 1).padStart(2, "0")}</div>
-                <div className="mt-3 text-[16px] font-bold text-[#EDF1E8]" style={HEAD}>{p.t}</div>
-                <p className="mt-2.5 text-[12.5px] text-[#C9D2C4] leading-[1.85]">{p.d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ ⑥ 導入フロー ============ */}
-      {/* 目的: 始めるのは3手だけ、と軽さを伝える。
-          心理: 導入の"面倒くささ"の予感を消す。 */}
+      {/* ============ ④ 導入フロー ============ */}
+      {/* 目的: 始めるのは3手だけ、と軽さを伝える。 */}
       <section className="border-t border-[#1f2a1d]/8">
         <div className="max-w-[1000px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
           <div className="text-center">
@@ -302,34 +188,8 @@ export default function PartnerPage() {
         </div>
       </section>
 
-      {/* ============ ⑦ FAQ ============ */}
-      {/* 目的: 決裁前の最後の不安（費用・契約・質・エリア・条件）を潰す。 */}
-      <section className="border-t border-[#1f2a1d]/8 bg-white">
-        <div className="max-w-[760px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
-          <div className="text-center mb-12">
-            <Eyebrow>FAQ</Eyebrow>
-            <h2 className="mt-6 text-[1.7rem] sm:text-[2.3rem] leading-[1.35] font-[800] text-[#1f2a1d]" style={HEAD}>
-              よくあるご質問
-            </h2>
-          </div>
-          <div className="divide-y divide-[#1f2a1d]/8 border-y border-[#1f2a1d]/8">
-            {FAQ.map((f) => (
-              <details key={f.q} className="group py-5">
-                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
-                  <span className="text-[14.5px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.6]">{f.q}</span>
-                  <span aria-hidden className="shrink-0 text-[#3d5638] transition-transform group-open:rotate-45">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-                  </span>
-                </summary>
-                <p className="mt-3 text-[13px] sm:text-[13.5px] text-[#4b5b47] leading-[1.95] pr-8">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ ⑧ CTA / 申し込み ============ */}
-      {/* 目的: 希少性（枠に限り）で決断を後押ししつつ、静かに締める。 */}
+      {/* ============ ⑤ 申込（FAQ内包） ============ */}
+      {/* 目的: 希少性で背中を押しつつ、最後の不安3点だけ潰して静かに締める。 */}
       <section id="apply" className="border-t border-[#1f2a1d]/8 scroll-mt-16">
         <div className="max-w-[640px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
           <div className="text-center mb-10">
@@ -338,10 +198,25 @@ export default function PartnerPage() {
               掲載枠には、<br className="sm:hidden" />限りがあります。
             </h2>
             <p className="mt-6 text-[14px] sm:text-[15px] leading-[1.95] text-[#4b5b47]">
-              エリア・カテゴリごとに提携先を厳選しています。<br className="hidden sm:block" />
-              まずは、空き状況の確認から。
+              エリア・カテゴリごとに提携先を厳選しています。まずは、空き状況の確認から。
             </p>
           </div>
+
+          {/* 最後の不安3点（FAQ） */}
+          <div className="mb-10 divide-y divide-[#1f2a1d]/8 border-y border-[#1f2a1d]/8">
+            {FAQ.map((f) => (
+              <details key={f.q} className="group py-4">
+                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
+                  <span className="text-[14px] font-bold text-[#1f2a1d] leading-[1.6]">{f.q}</span>
+                  <span aria-hidden className="shrink-0 text-[#3d5638] transition-transform group-open:rotate-45">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+                  </span>
+                </summary>
+                <p className="mt-2.5 text-[12.5px] text-[#4b5b47] leading-[1.9] pr-8">{f.a}</p>
+              </details>
+            ))}
+          </div>
+
           <PartnerApplyForm />
           <p className="mt-8 text-[11px] text-[#8a9686] leading-[1.85] text-center">
             His Recoveries は医療機関ではなく、施術・診療を行いません。医療が関わる送客は、医療広告に関する法令・ガイドラインを遵守した形でのみ行います。

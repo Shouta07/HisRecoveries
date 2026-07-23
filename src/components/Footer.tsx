@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 
 const LINKS = [
+  { href: "/partner", label: "提携パートナー募集" },
   { href: "/privacy", label: "プライバシー・免責事項" },
 ];
 
