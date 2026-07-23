@@ -122,7 +122,7 @@ export default function LibraryPage() {
     "@context": "https://schema.org", "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "ホーム", item: site.url },
-      { "@type": "ListItem", position: 2, name: "Library", item: url },
+      { "@type": "ListItem", position: 2, name: "記事", item: url },
     ],
   };
 
@@ -136,7 +136,7 @@ export default function LibraryPage() {
         <nav aria-label="パンくず" className="text-[12px] text-[#6b7a66] mb-7">
           <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <span className="text-[#1f2a1d]">Library</span>
+          <span className="text-[#1f2a1d]">記事</span>
         </nav>
 
         {/* ヘッダー — 読みものサイトの顔。簡潔に。 */}

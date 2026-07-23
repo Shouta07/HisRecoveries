@@ -6,7 +6,7 @@ import ConsultLink from "@/components/ConsultLink";
 import { site } from "@/lib/site";
 
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/areas", label: "Library" },
+  { href: "/areas", label: "記事" },
   { href: "/#service", label: "Service" },
 ];
 
