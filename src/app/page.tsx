@@ -2,13 +2,25 @@ import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import QuickDiagnosis from "@/components/QuickDiagnosis";
-import WorryCards from "@/components/WorryCards";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import LibraryStrip from "@/components/LibraryStrip";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
+import { clusters } from "@/lib/clusters";
+
+// 診断ツールに渡す、領域ごとの記事（重い clusters は server 側で軽い形に畳んでから props で渡す）。
+const DIAG_AREAS = ["impression", "hair", "skin", "face", "body-hair", "mind"] as const;
+const diagnosisArticles: Record<string, { slug: string; title: string }[]> = Object.fromEntries(
+  DIAG_AREAS.map((area) => [
+    area,
+    clusters
+      .filter((c) => c.areaId === area && c.kind !== "interview")
+      .slice(0, 3)
+      .map((c) => ({ slug: c.slug, title: c.title })),
+  ]),
+);
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -193,11 +205,9 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ① 診断の入口 — サイトを"道具"にする中核。まず最初に触れる。 */}
-        <QuickDiagnosis />
-
-        {/* ③ 悩みカード — 診断を使わない人向けの直接ブラウズ動線 */}
-        <WorryCards />
+        {/* ① 診断の入口 — サイトを"道具"にする中核。悩み選択→ステップ別の記事＋
+            進め方のロードマップ→相談でパーソナライズ。悩みブラウズもここに内包。 */}
+        <QuickDiagnosis articles={diagnosisArticles} />
 
         {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
         <StepsSection />

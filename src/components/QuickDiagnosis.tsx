@@ -1,8 +1,10 @@
 "use client";
 
-// ① 診断の入口 — 「サイトを道具にする」中核。NEWTの検索ボックスに相当。
-// 匿名・タップだけで、選んだ悩みを HR の「整える順番」に並べ替えて即返す。
-// 返ってくる価値＝仮の順路マップ → 無料相談への心理的距離を縮める。
+// ① 診断の入口 — 「サイトを道具にする」中核。
+// 単なる順番の羅列ではなく、選んだ悩みを HR の「整える順番」に並べ、
+// 各ステップに「どう進めるか（アクション）」と「そのステップの記事」を添えて
+// 実用的なロードマップとして返す。相談・体験を経て、これをパーソナライズする建付け。
+// 記事データは重いので server（page.tsx）で組み立て、props で受け取る。
 import { useState } from "react";
 import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
@@ -13,19 +15,21 @@ const HEAD: React.CSSProperties = {
   letterSpacing: "-0.01em",
 };
 
-type Worry = { key: string; label: string; area: string; why: string };
+export type DiagArticle = { slug: string; title: string };
+
+type Worry = { key: string; label: string; area: string; action: string; why: string };
 
 // 表示順＝HR の「整える順番」（土台の清潔感 → 個別 → 内側）。結果はこの順に並ぶ。
 const WORRIES: Worry[] = [
-  { key: "impression", label: "清潔感・第一印象", area: "impression", why: "すべての土台。ここが整うと、他の努力も効きはじめます。" },
-  { key: "hair", label: "薄毛・髪", area: "hair", why: "進行性のため、早く現在地を知るほど選べる幅が広がります。" },
-  { key: "skin", label: "肌・ニキビ", area: "skin", why: "炎症・乾燥・摩擦から。跡は新しいものと分けて考えます。" },
-  { key: "face", label: "老け見え・疲れ顔", area: "face", why: "睡眠・むくみ・表情から。今日から動かせる部分が多い。" },
-  { key: "bodyhair", label: "ヒゲ・体毛", area: "body-hair", why: "整える・減らす・そのまま。目的から手段を選びます。" },
-  { key: "mind", label: "睡眠・気分・習慣", area: "mind", why: "内側が整うと、同じ見た目でも生き生きして見えます。" },
+  { key: "impression", label: "清潔感・第一印象", area: "impression", action: "土台づくり。清潔感を要素に分けて、効く順に整える。", why: "ここが整うと、他の努力も効きはじめます。" },
+  { key: "hair", label: "薄毛・髪", area: "hair", action: "まず現在地を知る。セルフチェックし、必要なら医療で診断を。", why: "進行性のため、早く知るほど選べる幅が広がります。" },
+  { key: "skin", label: "肌・ニキビ", area: "skin", action: "原因を分ける。炎症・乾燥・摩擦でケアを変える。", why: "跡は、新しいものと分けて考えます。" },
+  { key: "face", label: "老け見え・疲れ顔", area: "face", action: "今日から動かす。睡眠・むくみ・表情から。", why: "変えやすい要素が多く、手応えが早い。" },
+  { key: "bodyhair", label: "ヒゲ・体毛", area: "body-hair", action: "方針を決める。整える／減らす／そのままを、目的から。", why: "正解はひとつではありません。目的から選びます。" },
+  { key: "mind", label: "睡眠・気分・習慣", area: "mind", action: "内側を整える。睡眠を一定に、習慣は仕組みで。", why: "内側が整うと、同じ見た目でも生き生きして見えます。" },
 ];
 
-export default function QuickDiagnosis() {
+export default function QuickDiagnosis({ articles }: { articles: Record<string, DiagArticle[]> }) {
   const [picked, setPicked] = useState<string[]>([]);
   const [done, setDone] = useState(false);
 
@@ -38,16 +42,16 @@ export default function QuickDiagnosis() {
 
   return (
     <section id="diagnosis" className="relative z-10 scroll-mt-20 bg-[#f4f6f2]">
-      <div className="max-w-[860px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-4">
+      <div className="max-w-[880px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-4">
         <div className="rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
           {/* ヘッダー */}
           <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
             <div className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#85AB8B]">30秒・無料・匿名</div>
             <h2 className="mt-2.5 text-[1.35rem] sm:text-[1.7rem] font-[800] leading-[1.4]" style={HEAD}>
-              何から整える？ <span className="text-[#9ec4a3]">順番を、その場で。</span>
+              何から整える？ <span className="text-[#9ec4a3]">順番と、読みものを。</span>
             </h2>
             <p className="mt-2 text-[12.5px] sm:text-[13.5px] text-[#C9D2C4] leading-[1.8]">
-              気になるものを選ぶだけ。あなたに合わせた「整える順番」を、すぐにお見せします。
+              気になるものを選ぶだけ。整える順番と、各ステップの記事・進め方のロードマップを、すぐにお見せします。
             </p>
           </div>
 
@@ -90,39 +94,61 @@ export default function QuickDiagnosis() {
                 className="mt-7 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full text-white text-[14.5px] font-bold px-8 py-3.5 transition-colors disabled:cursor-not-allowed"
                 style={{ backgroundColor: picked.length ? "#16241A" : "#9aa79a" }}
               >
-                整える順番を見る <span aria-hidden>→</span>
+                ロードマップを見る <span aria-hidden>→</span>
               </button>
               <p className="mt-3 text-[11px] text-[#9aa79a]">※ 登録不要。誰にも知られず、まず知りたいだけでも大丈夫です。</p>
             </div>
           ) : (
             <div className="px-6 sm:px-9 py-7 sm:py-8">
-              <div className="flex items-center gap-2 text-[12px] font-bold tracking-[0.06em] text-[#3d5638] mb-4">
+              <div className="flex items-center gap-2 text-[12px] font-bold tracking-[0.06em] text-[#3d5638] mb-5">
                 <span aria-hidden className="grid place-items-center w-5 h-5 rounded-full bg-[#16241A] text-[#EDF1E8]">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                 </span>
-                あなたの場合、この順番で整えるのがおすすめです
+                あなたの、整える順番のロードマップ
               </div>
 
-              <ol className="relative border-l-2 border-[#85AB8B]/35 ml-3 space-y-4">
-                {roadmap.map((w, i) => (
-                  <li key={w.key} className="relative pl-6">
-                    <span aria-hidden className="absolute -left-[11px] top-0 grid place-items-center w-5 h-5 rounded-full bg-[#16241A] text-[#EDF1E8] text-[10px] font-bold font-mono">{i + 1}</span>
-                    <Link href={`/areas/${w.area}`} className="group block rounded-[1rem] border border-[#1f2a1d]/10 bg-[#f6f8f4] hover:border-[#3d5638]/40 px-4 py-3 transition-colors">
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[14px] font-bold text-[#1f2a1d] group-hover:text-[#3d5638] transition-colors" style={HEAD}>{w.label}</span>
-                        <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+              <ol className="relative border-l-2 border-[#85AB8B]/35 ml-3 space-y-5">
+                {roadmap.map((w, i) => {
+                  const arts = (articles[w.area] ?? []).slice(0, 3);
+                  return (
+                    <li key={w.key} className="relative pl-6">
+                      <span aria-hidden className="absolute -left-[12px] top-0 grid place-items-center w-6 h-6 rounded-full bg-[#16241A] text-[#EDF1E8] text-[11px] font-bold font-mono">{i + 1}</span>
+                      <div className="rounded-[1.1rem] border border-[#1f2a1d]/10 bg-[#f6f8f4] overflow-hidden">
+                        {/* ステップの見出し＋やること */}
+                        <div className="px-4 py-3.5 border-b border-[#1f2a1d]/8">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[14.5px] font-bold text-[#1f2a1d]" style={HEAD}>{w.label}</span>
+                            <Link href={`/areas/${w.area}`} className="text-[11px] font-semibold text-[#3d5638] hover:opacity-70 shrink-0 transition-opacity">領域を見る →</Link>
+                          </div>
+                          <p className="mt-1 text-[12px] font-semibold text-[#3d5638] leading-[1.7]">{w.action}</p>
+                          <p className="mt-0.5 text-[11px] text-[#9aa79a] leading-[1.6]">{w.why}</p>
+                        </div>
+                        {/* そのステップの読みもの */}
+                        {arts.length > 0 && (
+                          <ul className="divide-y divide-[#1f2a1d]/8 bg-white">
+                            {arts.map((a) => (
+                              <li key={a.slug}>
+                                <Link href={`/areas/${w.area}/${a.slug}`} className="group flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-[#f6f8f4] transition-colors">
+                                  <span className="text-[12.5px] text-[#3a423a] group-hover:text-[#16241A] leading-[1.5] transition-colors">{a.title}</span>
+                                  <span aria-hidden className="text-[#85AB8B] shrink-0 text-[12px] group-hover:translate-x-0.5 transition-transform">読む →</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
-                      <p className="mt-1 text-[11.5px] text-[#6b7a66] leading-[1.7]">{w.why}</p>
-                    </Link>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ol>
 
-              {/* 接続へ */}
+              {/* 接続＝パーソナライズへ */}
               <div className="mt-6 rounded-[1.2rem] bg-[#eef3ea] border border-[#85AB8B]/30 p-5">
-                <p className="text-[12.5px] text-[#3a423a] leading-[1.85]">
-                  この順番に沿って、<span className="font-semibold text-[#16241A]">あなたに合うプロ・施設へおつなぎ</span>します。
-                  詳しい進め方と費用は、無料の相談で。売り込みはありません。
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#3d5638] mb-2">Next</div>
+                <p className="text-[12.5px] text-[#3a423a] leading-[1.9]">
+                  これは、よくある順路の<span className="font-semibold text-[#16241A]">下書き</span>です。
+                  無料相談で、あなたの現在地に合わせて<span className="font-semibold text-[#16241A]">専用のロードマップに設計し直し</span>、
+                  合うプロ・施設へおつなぎします（体験を経て、さらにパーソナライズ）。売り込みはありません。
                 </p>
                 <ConsultLink className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#22331f] text-[#EDF1E8] text-[14px] font-bold px-7 py-3 transition-colors">
                   この順番で、無料相談する <span aria-hidden>→</span>
