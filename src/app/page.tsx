@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
-import ConsultLink from "@/components/ConsultLink";
 import QuickDiagnosis from "@/components/QuickDiagnosis";
 import WorryCards from "@/components/WorryCards";
 import StepsSection from "@/components/StepsSection";
@@ -127,13 +126,9 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* 一次CTA（ファーストビューで行動できるように） */}
-          <ConsultLink className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-8 py-3.5 transition-colors">
-            無料で相談する <span aria-hidden>→</span>
-          </ConsultLink>
-          {/* サイトを道具に：診断ツールへの導線 */}
-          <a href="#diagnosis" className="mt-3 text-[12.5px] font-semibold text-[#9ec4a3] underline underline-offset-4 decoration-[#85AB8B]/40 hover:text-[#C9D2C4] transition-colors">
-            または、30秒で「整える順番」を見る →
+          {/* 一次CTA＝診断ツールへ（相談は下部の追従バーに集約） */}
+          <a href="#diagnosis" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
+            30秒で「整える順番」を見る <span aria-hidden>→</span>
           </a>
 
           {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
