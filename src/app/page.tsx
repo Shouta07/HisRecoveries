@@ -4,7 +4,6 @@ import GlassNav from "@/components/GlassNav";
 import QuickDiagnosis from "@/components/QuickDiagnosis";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
-import LibraryStrip from "@/components/LibraryStrip";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
@@ -214,9 +213,6 @@ export default function HomePage() {
 
         {/* できること — 5ステップの③〜④の具体（体験）。はじめかたの後に置く */}
         <ExperiencesSection />
-
-        {/* メディア導線 — /areas の記事を横に流す */}
-        <LibraryStrip />
 
         {/* His Recoveries の特徴 — 機能価値を2×2で（Oh my teeth 型） */}
         <FeaturesSection />

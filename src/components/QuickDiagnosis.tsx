@@ -62,7 +62,7 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
           {/* ヘッダー */}
           <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
             <div className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#85AB8B]">30秒・無料・匿名</div>
-            <h2 className="mt-2.5 text-[1.35rem] sm:text-[1.7rem] font-[800] leading-[1.4]" style={HEAD}>
+            <h2 className="mt-2.5 text-[1.35rem] sm:text-[1.7rem] font-[800] leading-[1.4] text-[#EDF1E8]" style={HEAD}>
               何から整える？ <span className="text-[#9ec4a3]">順番と、読みものを。</span>
             </h2>
             <p className="mt-2 text-[12.5px] sm:text-[13.5px] text-[#C9D2C4] leading-[1.8]">
