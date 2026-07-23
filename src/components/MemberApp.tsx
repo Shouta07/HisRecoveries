@@ -33,16 +33,6 @@ function statusOf(m: Marker, v: Bloods): "low" | "high" | "ok" | "none" {
   return "ok";
 }
 
-type Product = { name: string; cat: string; price: string; note: string };
-const PRODUCTS: Product[] = [
-  { name: "亜鉛＋マルチミネラル", cat: "zinc", price: "¥2,480", note: "肌・髪・味覚が気になる方へ" },
-  { name: "鉄分（ヘム鉄）サプリ", cat: "iron", price: "¥1,980", note: "疲れやすさが気になる方へ" },
-  { name: "ビタミンD3", cat: "vitd", price: "¥1,280", note: "屋内で過ごす時間が長い方へ" },
-  { name: "ホエイプロテイン", cat: "vitality", price: "¥3,980", note: "運動・体づくりの土台に" },
-  { name: "睡眠サポート（テアニン）", cat: "general", price: "¥2,180", note: "夜の切り替えに" },
-  { name: "メンズスキンケア 3点セット", cat: "general", price: "¥4,400", note: "洗顔・化粧水・保湿の基本" },
-];
-
 // 章 = From Complex to Confidence の道のり。行き先へ近づく段階。
 const CHAPTERS = [
   { n: 1, ja: "気づく", desc: "行き先を、見つける" },
@@ -54,23 +44,20 @@ const CHAPTERS = [
 type Session = { name: string; demo?: boolean } | null;
 
 export default function MemberApp({ session, lineEnabled }: { session: Session; lineEnabled: boolean }) {
-  const [tab, setTab] = useState<"osusume" | "all">("osusume");
   const [scenario, setScenario] = useState<"active" | "empty">("active");
 
   const authed = !!session;
 
-  const banner = (
-    <div className="rounded-[1rem] border border-[#b8860b]/30 bg-[#fff8e6] px-4 py-3 text-[12px] text-[#7a5b00] leading-[1.8]">
-      <strong className="font-bold">プロトタイプ（デモ）です。</strong>
-      あなたは何も入力しません。相談・検査・施術の記録や数値は、すべて His Recoveries for Business（運営のコーディネーション基盤）から自動で連携されます。本機能は医療行為ではなく、数値の解釈・診断は医師が行います。
-    </div>
+  const disclaimer = (
+    <p className="text-[11px] text-[#9aa79a] leading-[1.9]">
+      ※ 表示データは His Recoveries for Business から自動で連携され、ご自身の入力は不要です。数値の解釈・診断は医師が行います（本機能は医療行為ではありません）。{session?.demo ? "これはデモ表示です。" : ""}
+    </p>
   );
 
   // ── ログイン画面（LINE ログイン）──
   if (!authed) {
     return (
       <div className="mx-auto max-w-[420px] px-6 py-16">
-        <div className="mb-6">{banner}</div>
         <h1 className="text-[1.7rem] text-[#1f2a1d] mb-2" style={HEAD}>会員ログイン <span className="text-[#85AB8B] text-[13px] font-mono align-middle">β</span></h1>
         <p className="text-[13px] text-[#4b5b47] leading-[1.9] mb-7">
           あなたの物語が、そのまま映し出されるページ（試作）。入力は要りません。<br />
@@ -88,6 +75,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
             ※ デモ環境では LINE チャネル未接続のため、ボタンを押すと擬似ログインで会員ページを体験できます。本番では実際の LINE ログインになります。
           </p>
         )}
+        <div className="mt-6 pt-5 border-t border-[#1f2a1d]/8">{disclaimer}</div>
       </div>
     );
   }
@@ -114,11 +102,8 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
   const chapter = CHAPTERS[chIdx];
   const storyProgress = feed.visits.length > 0 ? doneVisits.length / feed.visits.length : 0;
 
-  // 行動のヒント & EC（最新の検査値から。すべて His Recoveries for Business 由来）
+  // 行動のヒント（最新の検査値から。すべて His Recoveries for Business 由来）
   const flagged = MARKERS.filter((m) => statusOf(m, latestBloods) === "low" || statusOf(m, latestBloods) === "high");
-  const recCats = new Set<string>(flagged.map((m) => m.cat));
-  recCats.add("general");
-  const recommended = PRODUCTS.filter((p) => recCats.has(p.cat));
 
   // レーダー
   const RC = { cx: 120, cy: 106, R: 80 };
@@ -155,14 +140,13 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
         </div>
         <a href="/api/member/line/logout" className="text-[12px] text-[#6b7a66] hover:text-[#1f2a1d] underline underline-offset-2">ログアウト</a>
       </div>
-      <div className="mb-6">{banner}</div>
 
-      {/* His Recoveries for Business連携の表示 */}
+      {/* 連携ステータス（控えめに） */}
       <div className="mb-8 flex items-center gap-2 text-[11px] text-[#6b7a66]">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eef3ea] text-[#3d5638] font-semibold px-2.5 py-1">
-          <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#3d5638]" />His Recoveries for Business 連携
+          <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#3d5638]" />連携中
         </span>
-        {goalSet ? <span>最終更新 {feed.updatedAt} ・ {feed.coordinator}</span> : <span>まだ連携データはありません</span>}
+        {goalSet ? <span>最終更新 {feed.updatedAt} ・ 担当 {feed.coordinator}</span> : <span>まだ連携データはありません</span>}
       </div>
 
       {!goalSet ? (
@@ -355,37 +339,11 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
             </section>
           )}
 
-          {/* ECマーケットプレイス（最新の検査値に沿って自動で） */}
-          {hasBlood && (
-            <section className="mb-10">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="flex items-center gap-2.5 text-[1.15rem] font-bold text-[#1f2a1d]" style={HEAD}>
-                  <span aria-hidden className="w-1 h-5 rounded-full bg-[#85AB8B]" />あなたに合わせた品
-                </h2>
-                <div className="flex gap-1 text-[12px]">
-                  <button onClick={() => setTab("osusume")} className={`px-3 py-1 rounded-full font-semibold ${tab === "osusume" ? "bg-[#1f2a1d] text-white" : "text-[#6b7a66]"}`}>あなたへ</button>
-                  <button onClick={() => setTab("all")} className={`px-3 py-1 rounded-full font-semibold ${tab === "all" ? "bg-[#1f2a1d] text-white" : "text-[#6b7a66]"}`}>すべて</button>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                {(tab === "osusume" ? recommended : PRODUCTS).map((p) => (
-                  <div key={p.name} className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 p-4 flex flex-col">
-                    <div aria-hidden className="h-20 rounded-lg mb-3" style={{ background: "linear-gradient(150deg,#eef3ea,#d9e4d6)" }} />
-                    <div className="text-[12.5px] font-bold text-[#1f2a1d] leading-[1.4]">{p.name}</div>
-                    <div className="text-[11px] text-[#6b7a66] mt-0.5 flex-1">{p.note}</div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="text-[13px] font-bold text-[#3d5638]">{p.price}</span>
-                      <span className="text-[10px] text-[#9aa79a]">提携ストア</span>
-                    </div>
-                    <button className="mt-2 w-full rounded-full bg-[#eef3ea] text-[#3d5638] text-[11px] font-semibold py-2 cursor-not-allowed" title="デモのため購入はできません">詳しく見る（デモ）</button>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-4 text-[11px] text-[#9aa79a] leading-[1.8]">※ 検査結果に沿って、中立に自動で並びます。実際の決済は行いません。</p>
-            </section>
-          )}
         </>
       )}
+
+      {/* 免責（控えめに・最下部） */}
+      <div className="mt-12">{disclaimer}</div>
 
       {/* デモ表示の切替（※実サービスには存在しない。顧客は入力しない） */}
       <section className="mt-14 rounded-[1rem] border border-dashed border-[#1f2a1d]/15 bg-[#f7f8f5] p-4">
