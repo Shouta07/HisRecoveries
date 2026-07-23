@@ -71,32 +71,6 @@ export default function HomePage() {
 
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-24 pb-10">
-          {/* 男性の内なる声 — 2本のマーキー（上=左へ / 下=右へ） */}
-          <div aria-hidden className="w-screen overflow-hidden mb-6 sm:mb-8 space-y-2.5 sm:space-y-3 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
-            <div className="hr-marquee flex w-max gap-8 sm:gap-12 whitespace-nowrap">
-              {[0, 1].map((n) => (
-                <div key={n} className="flex gap-8 sm:gap-12">
-                  {VOICES_A.map((v) => (
-                    <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/85 tracking-[0.04em]" style={MINCHO}>
-                      「{v}」
-                    </span>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <div className="hr-marquee-rev flex w-max gap-8 sm:gap-12 whitespace-nowrap">
-              {[0, 1].map((n) => (
-                <div key={n} className="flex gap-8 sm:gap-12">
-                  {VOICES_B.map((v) => (
-                    <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/65 tracking-[0.04em]" style={MINCHO}>
-                      「{v}」
-                    </span>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
           <div className="relative w-screen h-[58vh] sm:h-[64vh] mb-7 sm:mb-8 overflow-hidden">
             <Image
@@ -137,6 +111,37 @@ export default function HomePage() {
                 <p className="mt-1 text-[9.5px] sm:text-[11.5px] text-[#6b7a66] leading-[1.55]">{b.d}</p>
               </div>
             ))}
+          </div>
+
+          {/* こんなお悩み、ないですか？ — 男性の内なる声（2本のマーキー） */}
+          <div className="mt-11 sm:mt-14 w-full">
+            <p className="text-[#9ec4a3] text-[13px] sm:text-[14px] font-medium tracking-[0.04em] mb-4 sm:mb-5" style={MINCHO}>
+              こんなお悩み、ないですか？
+            </p>
+            <div aria-hidden className="w-screen overflow-hidden space-y-2.5 sm:space-y-3 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+              <div className="hr-marquee flex w-max gap-8 sm:gap-12 whitespace-nowrap">
+                {[0, 1].map((n) => (
+                  <div key={n} className="flex gap-8 sm:gap-12">
+                    {VOICES_A.map((v) => (
+                      <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/85 tracking-[0.04em]" style={MINCHO}>
+                        「{v}」
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+              <div className="hr-marquee-rev flex w-max gap-8 sm:gap-12 whitespace-nowrap">
+                {[0, 1].map((n) => (
+                  <div key={n} className="flex gap-8 sm:gap-12">
+                    {VOICES_B.map((v) => (
+                      <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/65 tracking-[0.04em]" style={MINCHO}>
+                        「{v}」
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
