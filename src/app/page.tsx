@@ -93,7 +93,7 @@ export default function HomePage() {
               style={{ ...HERO_HEAD, fontWeight: 800 }}
             >
               <span className="block max-w-[640px] mx-auto">
-                もっといい男を、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
+                もっといい男に、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
               </span>
             </h1>
           </div>
