@@ -116,6 +116,10 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
   const overall = hasBlood ? Math.round(radar.reduce((n, a) => n + a.sc, 0) / radar.length) : 0;
   const prevOverall = prev ? overallOfBloods(prev.bloods!) : null;
   const overallDelta = prevOverall === null ? null : overall - prevOverall;
+  // 次のランクまで（レベルアップの緊張感）
+  const RANK_TIERS = [{ v: 30, r: "D" }, { v: 45, r: "C" }, { v: 60, r: "B" }, { v: 75, r: "A" }, { v: 90, r: "S" }] as const;
+  const nextTier = RANK_TIERS.find((t) => t.v > overall);
+  const toNext = nextTier ? nextTier.v - overall : 0;
   const ptFor = (sc: number, ang: number) => { const r = (RC.R * sc) / 100; return `${(RC.cx + r * Math.cos(ang)).toFixed(1)},${(RC.cy + r * Math.sin(ang)).toFixed(1)}`; };
   const polyPts = radar.map((a) => ptFor(a.sc, a.ang)).join(" ");
   const prevPolyPts = prev ? radar.map((a) => ptFor(a.prev ?? 0, a.ang)).join(" ") : "";
@@ -184,10 +188,14 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
                     <div className="h-full rounded-full bg-gradient-to-r from-[#85AB8B] to-[#A9CBAE] transition-all duration-500" style={{ width: `${Math.round(storyProgress * 100)}%` }} />
                   </div>
                   <p className="mt-2.5 text-[11px] text-[#9FB0A0] leading-[1.8]">物語は、通院・来店という現実の一歩で前に進みます。予約も記録も、私たちが整えます。あなたは、来るだけ。</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-5 flex items-center gap-2 mb-2.5">
+                    <span className="text-[10px] tracking-[0.16em] text-[#85AB8B] font-semibold">TROPHIES</span>
+                    <span className="text-[11px] text-[#9FB0A0]">獲得 <span className="text-[#EDF1E8] font-bold">{MILESTONES.filter((m) => m.got).length}</span>/{MILESTONES.length}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
                     {MILESTONES.map((m) => (
-                      <span key={m.label} className={`text-[11px] px-2.5 py-1 rounded-full border ${m.got ? "border-[#85AB8B]/50 bg-[#85AB8B]/15 text-[#EDF1E8]" : "border-[#ffffff]/10 text-[#6f7d6c]"}`}>
-                        {m.got ? "◆" : "◇"} {m.label}
+                      <span key={m.label} className={`inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border ${m.got ? "border-[#caa24a]/45 bg-[#caa24a]/12 text-[#EDF1E8] shadow-[0_0_16px_-6px_rgba(202,162,74,0.7)]" : "border-[#ffffff]/10 text-[#6f7d6c]"}`}>
+                        <span aria-hidden className={m.got ? "text-[#e0bd6b]" : "text-[#4d5a4a]"}>{m.got ? "★" : "☆"}</span>{m.label}
                       </span>
                     ))}
                   </div>
@@ -239,19 +247,38 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
                   )}
                 </div>
                 <div>
-                  <div className="flex items-end gap-3 mb-4">
+                  {/* パワーレベル（キャラクターシートのヒーロー） */}
+                  <div className="flex items-center gap-4 mb-4">
+                    {/* ランク・ジェム */}
+                    <div className="relative shrink-0 grid place-items-center w-[64px] h-[64px]">
+                      <span aria-hidden className="absolute inset-1.5 rounded-[0.9rem] rotate-45 bg-gradient-to-br from-[#A9CBAE] to-[#3d5638] shadow-[0_0_28px_-4px_rgba(169,203,174,0.6)]" />
+                      <span className="relative text-[#0f1a12] text-[1.9rem] font-black leading-none" style={HEAD}>{rankOf(overall)}</span>
+                    </div>
                     <div>
-                      <div className="text-[11px] tracking-[0.15em] text-[#85AB8B] font-semibold">CONDITION</div>
-                      <div className="flex items-baseline gap-2 flex-wrap">
-                        <span className="text-[2.6rem] leading-none" style={HEAD}>{overall}</span>
+                      <div className="text-[10px] tracking-[0.18em] text-[#85AB8B] font-semibold">CONDITION</div>
+                      <div className="flex items-baseline gap-1.5 flex-wrap">
+                        <span className="text-[3.2rem] leading-none text-[#F3F6EF]" style={{ ...HEAD, textShadow: "0 0 26px rgba(169,203,174,0.35)" }}>{overall}</span>
                         <span className="text-[13px] text-[#9FB0A0]">/100</span>
-                        <span className="text-[1.4rem] font-black text-[#A9CBAE] ml-1" style={HEAD}>ランク {rankOf(overall)}</span>
                         {overallDelta !== null && overallDelta !== 0 && (
-                          <span className={`text-[13px] font-bold ml-1 ${overallDelta > 0 ? "text-[#A9CBAE]" : "text-[#d3a08f]"}`}>前回比 {overallDelta > 0 ? "▲+" : "▼"}{overallDelta > 0 ? overallDelta : Math.abs(overallDelta)}</span>
+                          <span className={`text-[12px] font-bold ml-1 ${overallDelta > 0 ? "text-[#A9CBAE]" : "text-[#d3a08f]"}`}>{overallDelta > 0 ? `▲ +${overallDelta} パワーアップ` : `▼ ${Math.abs(overallDelta)}`}</span>
                         )}
                       </div>
                     </div>
                   </div>
+
+                  {/* 次のランクまで（あと少しで上がる、の緊張感） */}
+                  {nextTier && (
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between text-[11px] mb-1.5">
+                        <span className="text-[#9FB0A0]">次のランク <span className="text-[#A9CBAE] font-black" style={HEAD}>{nextTier.r}</span> まで</span>
+                        <span className="text-[#EDF1E8] font-bold">あと <span className="text-[1.05rem]" style={HEAD}>{toNext}</span> pt</span>
+                      </div>
+                      <div className="h-2.5 rounded-full bg-[#0f1a12] overflow-hidden">
+                        <div className="h-full rounded-full bg-gradient-to-r from-[#3d5638] via-[#85AB8B] to-[#A9CBAE] transition-all duration-700" style={{ width: `${Math.round((overall / nextTier.v) * 100)}%` }} />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     {radar.map((a) => (
                       <div key={a.i} className="flex items-center gap-3">
