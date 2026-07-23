@@ -1,14 +1,14 @@
-// ── Accord 契約（Accord → 会員ビュー）───────────────────────────────
-// Accord = His Recoveries / バイタリティデザインのコーディネーション基盤
+// ── His Recoveries for Business 契約（His Recoveries for Business → 会員ビュー）───────────────────────────────
+// His Recoveries for Business = His Recoveries / バイタリティデザインのコーディネーション基盤
 // （システム・オブ・レコード）。相談・検査・施術・担当メモ・クリニックの
-// 検査値などは、すべて Accord 側で発生する。会員アプリ(/member)は、この
+// 検査値などは、すべて His Recoveries for Business 側で発生する。会員アプリ(/member)は、この
 // `Feed` を読み取って表示するだけ。顧客はここへ一切書き込まない。
 //
-// このファイルは「Accord が配信するデータの形」を型として固定する。
-// 本番では下の FEED_* をモックではなく Accord API のレスポンスに差し替える
-// （GET /api/member/feed → Feed）。設計は docs/ACCORD_PLATFORM_SPEC.md。
+// このファイルは「His Recoveries for Business が配信するデータの形」を型として固定する。
+// 本番では下の FEED_* をモックではなく His Recoveries for Business API のレスポンスに差し替える
+// （GET /api/member/feed → Feed）。設計は docs/HRB_PLATFORM_SPEC.md。
 
-// 検査値（クリニック → Accord → 会員ビュー）。キーは Marker.key。
+// 検査値（クリニック → His Recoveries for Business → 会員ビュー）。キーは Marker.key。
 export type Bloods = Record<string, string>;
 
 // dir: "up" = 範囲内で高いほどステータス高 / "down" = 低いほど高。
@@ -25,7 +25,7 @@ export type Marker = {
   cat: string;
 };
 
-// Accord が扱う検査項目の定義（＝クリニック連携で取り込む血液マーカー）。
+// His Recoveries for Business が扱う検査項目の定義（＝クリニック連携で取り込む血液マーカー）。
 export const MARKERS: Marker[] = [
   { key: "testosterone", label: "テストステロン", short: "活力", unit: "ng/dL", low: 250, high: 1100, dir: "up", hint: "活力・意欲に関わるとされる。睡眠・運動・体重管理が土台。", cat: "vitality" },
   { key: "ferritin", label: "フェリチン（鉄）", short: "鉄", unit: "ng/mL", low: 30, high: 300, dir: "up", hint: "低いと疲れやすさに関わることがある。鉄を含む食事を意識。", cat: "iron" },
@@ -37,10 +37,10 @@ export const MARKERS: Marker[] = [
 
 // 来訪の種類。物語（章）は、この来訪が完了することでのみ前に進む。
 // 「オンライン診療」は提携クリニックの医師が HR プラットフォーム上で行う遠隔診療
-// （HRは医療行為をしない＝場と仕組みだけを提供）。詳細は docs/ACCORD_PLATFORM_SPEC.md §5。
+// （HRは医療行為をしない＝場と仕組みだけを提供）。詳細は docs/HRB_PLATFORM_SPEC.md §5。
 export type Kind = "相談" | "検査" | "診断" | "施術" | "メンテ" | "オンライン診療";
 
-// 一回の来訪。Accord 側で、予約→実施→記録の流れの中で埋まっていく。
+// 一回の来訪。His Recoveries for Business 側で、予約→実施→記録の流れの中で埋まっていく。
 export type Visit = {
   id: string;
   kind: Kind;
@@ -50,13 +50,13 @@ export type Visit = {
   status: "done" | "scheduled";
   by?: string;                  // クリニック / サロン / 担当
   note?: string;                // 担当（コーディネーター）からの一言
-  bloods?: Bloods;              // 検査で得た数値（クリニック → Accord）
+  bloods?: Bloods;              // 検査で得た数値（クリニック → His Recoveries for Business）
 };
 
-// 会員一人分の配信データ（Accord → /member）。
+// 会員一人分の配信データ（His Recoveries for Business → /member）。
 export type Feed = {
   goal: string;                 // 相談で把握した「なりたい自分」
-  updatedAt: string;            // Accord 側の最終更新
+  updatedAt: string;            // His Recoveries for Business 側の最終更新
   coordinator: string;          // 担当コーディネーター
   visits: Visit[];             // 時系列（古い→新しい）。done と scheduled が混在
 };
@@ -78,7 +78,7 @@ export function overallOfBloods(v: Bloods): number {
   return Math.round(scores.reduce((a, b) => a + b, 0) / MARKERS.length);
 }
 
-// ── デモ用モック（本番では Accord API のレスポンスに差し替える）──────
+// ── デモ用モック（本番では His Recoveries for Business API のレスポンスに差し替える）──────
 // 進行中の会員（相談→検査→診断→施術→2回目検査 まで完了、次はメンテ予定）。
 export const FEED_ACTIVE: Feed = {
   goal: "自信を持って、人と会えるように",
@@ -94,5 +94,5 @@ export const FEED_ACTIVE: Feed = {
   ],
 };
 
-// まだ Accord に何も無い状態（相談前）。
+// まだ His Recoveries for Business に何も無い状態（相談前）。
 export const FEED_EMPTY: Feed = { goal: "", updatedAt: "—", coordinator: "", visits: [] };

@@ -6,8 +6,8 @@
 // - LIFF ID 未設定／取得失敗時：従来の cookie セッション（デモ/サーバーLINEログイン）に
 //   フォールバックする（壊れない）。
 //
-// ※ 表示データ（Accord フィード）は現状デモ。実データは lineUserId を鍵に
-//    バックエンド（Accord API）から取得する設計（別途）。ここでは認証の配線までを担う。
+// ※ 表示データ（His Recoveries for Business フィード）は現状デモ。実データは lineUserId を鍵に
+//    バックエンド（His Recoveries for Business API）から取得する設計（別途）。ここでは認証の配線までを担う。
 import { useEffect, useState } from "react";
 import liff from "@line/liff";
 import MemberApp from "@/components/MemberApp";

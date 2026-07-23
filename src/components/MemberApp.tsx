@@ -2,10 +2,10 @@
 
 // ⚠️ プロトタイプ（デモ）。実サービスではありません。
 // 設計思想：顧客は一切の入力をしない。血液値・目標・来訪履歴などは
-// すべて Accord（HR/VDのコーディネーション基盤）から自動で連携され、
+// すべて His Recoveries for Business（運営のコーディネーション基盤）から自動で連携され、
 // 会員は「整えられていく自分」を受け取って眺めるだけ。ここは読み取り専用ビュー。
 // - ログインはデモ（任意のID/パスワードで入れる）。本物の認証ではない。
-// - 表示データはデモ用のモック（Accord連携の再現）。外部送信なし。
+// - 表示データはデモ用のモック（His Recoveries for Business連携の再現）。外部送信なし。
 // - 医療行為ではない。数値の解釈・診断は医師が行う。提案は一般的な生活のヒント。
 // 本番化には、セキュアなバックエンド・暗号化・要配慮個人情報の同意フロー等が別途必要
 // （docs/MEMBER_PLATFORM_SPEC.md 参照）。
@@ -15,7 +15,7 @@ import ConsultLink from "@/components/ConsultLink";
 import {
   type Bloods, type Marker, type Kind,
   MARKERS, markerScore, rankOf, overallOfBloods, FEED_ACTIVE, FEED_EMPTY,
-} from "@/lib/accord";
+} from "@/lib/hrb";
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -62,7 +62,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
   const banner = (
     <div className="rounded-[1rem] border border-[#b8860b]/30 bg-[#fff8e6] px-4 py-3 text-[12px] text-[#7a5b00] leading-[1.8]">
       <strong className="font-bold">プロトタイプ（デモ）です。</strong>
-      あなたは何も入力しません。相談・検査・施術の記録や数値は、すべて Accord（HRのコーディネーション基盤）から自動で連携されます。本機能は医療行為ではなく、数値の解釈・診断は医師が行います。
+      あなたは何も入力しません。相談・検査・施術の記録や数値は、すべて His Recoveries for Business（運営のコーディネーション基盤）から自動で連携されます。本機能は医療行為ではなく、数値の解釈・診断は医師が行います。
     </div>
   );
 
@@ -94,7 +94,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
 
   const displayName = session?.name ?? "会員";
 
-  // ── Accord フィードの読み取り（顧客は何も入力しない）──
+  // ── His Recoveries for Business フィードの読み取り（顧客は何も入力しない）──
   const feed = scenario === "active" ? FEED_ACTIVE : FEED_EMPTY;
   const goal = feed.goal;
   const goalSet = goal.trim().length > 0;
@@ -114,7 +114,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
   const chapter = CHAPTERS[chIdx];
   const storyProgress = feed.visits.length > 0 ? doneVisits.length / feed.visits.length : 0;
 
-  // 行動のヒント & EC（最新の検査値から。すべて Accord 由来）
+  // 行動のヒント & EC（最新の検査値から。すべて His Recoveries for Business 由来）
   const flagged = MARKERS.filter((m) => statusOf(m, latestBloods) === "low" || statusOf(m, latestBloods) === "high");
   const recCats = new Set<string>(flagged.map((m) => m.cat));
   recCats.add("general");
@@ -157,16 +157,16 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
       </div>
       <div className="mb-6">{banner}</div>
 
-      {/* Accord連携の表示 */}
+      {/* His Recoveries for Business連携の表示 */}
       <div className="mb-8 flex items-center gap-2 text-[11px] text-[#6b7a66]">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eef3ea] text-[#3d5638] font-semibold px-2.5 py-1">
-          <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#3d5638]" />Accord 連携
+          <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#3d5638]" />His Recoveries for Business 連携
         </span>
         {goalSet ? <span>最終更新 {feed.updatedAt} ・ {feed.coordinator}</span> : <span>まだ連携データはありません</span>}
       </div>
 
       {!goalSet ? (
-        // 相談前（Accordにまだ何もない）
+        // 相談前（His Recoveries for Businessにまだ何もない）
         <section className="mb-12 rounded-[1.6rem] bg-gradient-to-br from-[#16241a] to-[#0f1a12] text-[#EDF1E8] p-8 sm:p-10 text-center">
           <div className="text-[11px] tracking-[0.22em] text-[#85AB8B] font-semibold mb-3">YOUR STORY STARTS HERE</div>
           <h2 className="text-[#EDF1E8] text-[1.5rem] leading-[1.6] mb-3" style={HEAD}>物語は、相談から始まります。</h2>
@@ -177,7 +177,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
         </section>
       ) : (
         <>
-          {/* ⓪ なりたい自分（Accordが把握している行き先） */}
+          {/* ⓪ なりたい自分（His Recoveries for Businessが把握している行き先） */}
           <section className="mb-6">
             <div className="relative overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-[#16241a] via-[#1b2c1f] to-[#0f1a12] text-[#EDF1E8] p-7 sm:p-10">
               <div aria-hidden className="pointer-events-none absolute -top-16 -right-10 w-52 h-52 rounded-full bg-[#85AB8B]/10 blur-3xl" />
@@ -212,7 +212,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
             </div>
           </section>
 
-          {/* 次の予定（Accordが調整済み） */}
+          {/* 次の予定（His Recoveries for Businessが調整済み） */}
           {nextVisit && (
             <section className="mb-10 rounded-[1.3rem] border border-[#3d5638]/20 bg-[#f5f8f2] p-6 sm:p-7">
               <div className="flex items-center gap-2 mb-2.5 flex-wrap">
@@ -230,13 +230,13 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
             </section>
           )}
 
-          {/* ステータス（レーダー＝RPGのキャラシート。Accordの検査値から） */}
+          {/* ステータス（レーダー＝RPGのキャラシート。His Recoveries for Businessの検査値から） */}
           {hasBlood && (
             <section className="mb-10">
               <h2 className="flex items-center gap-2.5 text-[1.15rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>
                 <span aria-hidden className="w-1 h-5 rounded-full bg-[#85AB8B]" />あなたのステータス
               </h2>
-              <p className="text-[12px] text-[#6b7a66] mb-4">クリニックの検査値を、6つのステータスとして可視化。検査に行くたび Accord が更新し、育っていきます（診断ではありません）。</p>
+              <p className="text-[12px] text-[#6b7a66] mb-4">クリニックの検査値を、6つのステータスとして可視化。検査に行くたび His Recoveries for Business が更新し、育っていきます（診断ではありません）。</p>
               <div className="rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-8 grid md:grid-cols-[240px_1fr] gap-6 items-center">
                 <div className="relative mx-auto">
                   <svg viewBox="0 0 240 205" width="240" height="205" style={{ overflow: "visible" }} aria-label="ステータスのレーダーチャート">
@@ -307,7 +307,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
             </section>
           )}
 
-          {/* これまでの道のり（Accordの来訪記録） */}
+          {/* これまでの道のり（His Recoveries for Businessの来訪記録） */}
           <section className="mb-10">
             <h2 className="flex items-center gap-2.5 text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
               <span aria-hidden className="w-1 h-5 rounded-full bg-[#85AB8B]" />これまでの道のり
@@ -389,7 +389,7 @@ export default function MemberApp({ session, lineEnabled }: { session: Session; 
 
       {/* デモ表示の切替（※実サービスには存在しない。顧客は入力しない） */}
       <section className="mt-14 rounded-[1rem] border border-dashed border-[#1f2a1d]/15 bg-[#f7f8f5] p-4">
-        <div className="text-[11px] font-bold text-[#6b7a66] mb-2">※ デモ表示の切替（Accord連携の再現用。実際の会員には表示されません）</div>
+        <div className="text-[11px] font-bold text-[#6b7a66] mb-2">※ デモ表示の切替（His Recoveries for Business連携の再現用。実際の会員には表示されません）</div>
         <div className="flex gap-2">
           <button onClick={() => setScenario("active")} className={`text-[12px] rounded-full px-4 py-1.5 font-semibold ${scenario === "active" ? "bg-[#1f2a1d] text-white" : "bg-white border border-[#1f2a1d]/15 text-[#4b5b47]"}`}>進行中の会員</button>
           <button onClick={() => setScenario("empty")} className={`text-[12px] rounded-full px-4 py-1.5 font-semibold ${scenario === "empty" ? "bg-[#1f2a1d] text-white" : "bg-white border border-[#1f2a1d]/15 text-[#4b5b47]"}`}>相談前（データなし）</button>
