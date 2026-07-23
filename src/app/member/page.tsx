@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import MemberApp from "@/components/MemberApp";
+import MemberGate from "@/components/MemberGate";
 import { site } from "@/lib/site";
 import { lineConfigured, MEMBER_COOKIE } from "@/lib/line";
 
@@ -27,5 +27,5 @@ export default function MemberPage() {
   if (raw) {
     try { session = JSON.parse(raw); } catch { session = null; }
   }
-  return <MemberApp session={session} lineEnabled={lineConfigured()} />;
+  return <MemberGate session={session} lineEnabled={lineConfigured()} />;
 }
