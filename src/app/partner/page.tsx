@@ -245,7 +245,58 @@ export default function PartnerPage() {
         </div>
       </section>
 
-      {/* ============ ⑥ 申込（FAQ内包） ============ */}
+      {/* ============ ⑥ 費用（NEWT型: 固定費ゼロを主役に） ============ */}
+      {/* 目的: 決裁の最大障壁＝コスト不安を「はじめやすく・続けやすい」で先に溶かす。
+          手数料の話は控えめに、"動くのは成果が出てから"を静かに伝える。 */}
+      <section className="border-t border-[#1f2a1d]/8 bg-white">
+        <div className="max-w-[1000px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
+          <div className="text-center">
+            <Eyebrow>Pricing — 費用について</Eyebrow>
+            <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#1f2a1d]" style={HEAD}>
+              はじめる費用は、<span className="text-[#3d5638]">かかりません。</span>
+            </h2>
+            <p className="mt-6 mx-auto max-w-[30rem] text-[15px] leading-[1.95] text-[#4b5b47]">
+              初期費用・月額・掲載料はいただきません。動くのは、成果が出てから。だから、はじめやすく、続けやすい。
+            </p>
+          </div>
+
+          {/* 3つの ¥0 タイル */}
+          <div className="mt-14 grid grid-cols-3 gap-3 sm:gap-4 max-w-[680px] mx-auto">
+            {["初期費用", "月額", "掲載料"].map((k) => (
+              <div key={k} className="rounded-[1.4rem] border border-[#1f2a1d]/8 bg-[#f6f8f4] px-3 py-7 sm:py-9 text-center">
+                <div className="text-[2.4rem] sm:text-[3.2rem] font-[800] text-[#16241A] leading-none" style={HEAD}>¥0</div>
+                <div className="mt-3 text-[12px] sm:text-[13px] font-semibold text-[#6b7a66]">{k}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* その先＝成果が出てからの費用（3ケースを静かに） */}
+          <div className="mt-8 max-w-[680px] mx-auto rounded-[1.4rem] border border-[#1f2a1d]/8 overflow-hidden">
+            <div className="px-5 sm:px-7 py-3.5 bg-[#16241A] text-[#EDF1E8] font-mono text-[10.5px] tracking-[0.2em] uppercase">
+              成果が出てから、はじめて
+            </div>
+            {[
+              { k: "体験を届けるプロ", v: "報酬を受け取る（業務委託）", note: "お仕事としてお支払いします" },
+              { k: "提携施設・非医療", v: "成果報酬のみ", note: "来院・成約が生まれたときだけ" },
+              { k: "提携施設・医療", v: "成果連動ではない定額", note: "医療広告の法令に配慮した設計" },
+            ].map((row) => (
+              <div key={row.k} className="flex items-center justify-between gap-3 px-5 sm:px-7 py-4 bg-white border-t border-[#1f2a1d]/8 first:border-t-0">
+                <div className="min-w-0">
+                  <div className="text-[13px] sm:text-[14px] font-bold text-[#1f2a1d]">{row.k}</div>
+                  <div className="text-[11px] text-[#9aa79a] leading-[1.5] mt-0.5">{row.note}</div>
+                </div>
+                <div className="shrink-0 text-[12.5px] sm:text-[13.5px] font-bold text-[#3d5638] text-right">{row.v}</div>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-8 text-center text-[13.5px] sm:text-[15px] text-[#16241A] font-bold" style={HEAD}>
+            リスクは、成果が出るまでゼロ。
+          </p>
+        </div>
+      </section>
+
+      {/* ============ ⑦ 申込（FAQ内包） ============ */}
       <section id="apply" className="border-t border-[#1f2a1d]/8 scroll-mt-16">
         <div className="max-w-[640px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
           <div className="text-center mb-10">
