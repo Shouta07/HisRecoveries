@@ -117,17 +117,18 @@ export default function HomePage() {
             </h1>
           </div>
 
-          {/* サービスの中身＝「診断→設計→接続」を明確に（改行は文節単位で自然に） */}
+          {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
             <span className="inline-block">「変わりたい」と思ったら、まずここへ。</span>{" "}
-            <span className="inline-block">悩みを<span className="font-semibold text-[#EDF1E8]">診断</span>し、</span>
+            <span className="inline-block">同じ悩みを知る人間が、</span>
             <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">整える順番</span>を設計。</span>
-            <span className="inline-block">最適なプロ・施設へ<span className="font-semibold text-[#EDF1E8]">接続</span>します。</span>
+            <span className="inline-block">合うプロ・施設へつなぎ、</span>
+            <span className="inline-block">そのあとも<span className="font-semibold text-[#EDF1E8]">伴走</span>します。</span>
           </p>
 
           {/* メカニズムを3ステップでスキャンできるように */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[11.5px] sm:text-[13px] font-semibold">
-            {["診断", "整える順番を設計", "最適な所へ接続"].map((s, i) => (
+            {["診断", "整える順番を設計", "つないで、伴走"].map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <span className="rounded-full bg-white/[0.07] border border-white/12 px-3 py-1.5 text-[#C9D2C4]">
                   <span className="text-[#9ec4a3] font-bold mr-1">{i + 1}</span>{s}
@@ -242,6 +243,7 @@ export default function HomePage() {
               <div>
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">His Recoveries</div>
                 <ul className="space-y-2 text-[13px] text-[#4b5b47]">
+                  <li><Link href="/why" className="hover:text-[#1f2a1d] transition-colors">なぜ、やるのか</Link></li>
                   <li><Link href="/partner" className="hover:text-[#1f2a1d] transition-colors">提携パートナー募集</Link></li>
                   <li><Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link></li>
                 </ul>
