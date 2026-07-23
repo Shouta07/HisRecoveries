@@ -10,8 +10,9 @@ const LINKS = [
 
 export default function Footer() {
   const pathname = usePathname();
-  // The home ("/") ships its own footer; /apply is a focused form page.
-  if (pathname === "/" || pathname === "/apply") return null;
+  // The home ("/") ships its own footer; /apply and /partner are focused pages
+  // that carry their own footer.
+  if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
   const year = new Date().getFullYear();
 
   return (

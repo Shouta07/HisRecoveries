@@ -13,8 +13,9 @@ const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
 export default function Header() {
   const pathname = usePathname();
 
-  // The home ("/") ships its own glass navbar; /apply is a focused form page.
-  if (pathname === "/" || pathname === "/apply") return null;
+  // The home ("/") ships its own glass navbar; /apply and /partner are focused
+  // pages that carry their own top bar.
+  if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
 
   return (
     <header className="w-full bg-white/90 backdrop-blur text-zinc-900 sticky top-0 z-50 border-b border-zinc-100">
