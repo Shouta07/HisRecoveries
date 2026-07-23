@@ -188,22 +188,6 @@ export default function HomePage() {
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
-        {/* ② 実績ストリップ — 誇れる"いま真実であること"だけを静かに（NEWTのNo.1帯に相当） */}
-        <div className="border-y border-[#1f2a1d]/8 bg-[#eef1ea]">
-          <div className="max-w-[1000px] mx-auto px-5 sm:px-8 py-5 grid grid-cols-3 divide-x divide-[#1f2a1d]/10 text-center">
-            {[
-              { n: "57本", d: "専門記事・すべて出典明記" },
-              { n: "¥0", d: "相談無料・完全守秘" },
-              { n: "中立", d: "売らない・紹介料を取らない" },
-            ].map((s) => (
-              <div key={s.n} className="px-2">
-                <div className="text-[1.3rem] sm:text-[1.8rem] font-[800] text-[#16241A] leading-none" style={MINCHO}>{s.n}</div>
-                <div className="mt-1.5 text-[10px] sm:text-[12px] text-[#4b5b47] leading-[1.4]">{s.d}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* ① 診断の入口 — サイトを"道具"にする中核。悩み選択→ステップ別の記事＋
             進め方のロードマップ→相談でパーソナライズ。悩みブラウズもここに内包。 */}
         <QuickDiagnosis articles={diagnosisArticles} />
