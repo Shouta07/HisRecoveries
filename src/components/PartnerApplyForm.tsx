@@ -11,7 +11,18 @@ const ENDPOINT = FORMSPREE_ID ? `https://formspree.io/f/${FORMSPREE_ID}` : "";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-const CATEGORIES = [
+// パートナー種別は2系統: 体験を届けるプロ / 送客を受ける提携施設。
+const PRO_ROLES = [
+  "メイクアップアーティスト",
+  "スタイリスト",
+  "フォトグラファー",
+  "美容師・バーバー",
+  "トレーナー・パーソナル",
+  "栄養士・食事指導",
+  "カウンセラー・メンタル",
+  "その他（プロ）",
+];
+const FACILITY_TYPES = [
   "美容皮膚科",
   "AGA・薄毛クリニック",
   "医療脱毛",
@@ -19,12 +30,11 @@ const CATEGORIES = [
   "眉毛・アイブロウ",
   "メンズ美容・エステ",
   "ジム・トレーニング",
-  "その他",
+  "その他（施設）",
 ];
 
 export default function PartnerApplyForm() {
   const [facility, setFacility] = useState("");
-  const [person, setPerson] = useState("");
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [category, setCategory] = useState("");
@@ -33,19 +43,18 @@ export default function PartnerApplyForm() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
-  const canSubmit = !!(facility.trim() && person.trim() && email.trim()) && status !== "submitting";
+  const canSubmit = !!(facility.trim() && email.trim()) && status !== "submitting";
 
   function mailtoFallback() {
     const subject = encodeURIComponent("提携申し込み — His Recoveries Partner");
     const body = encodeURIComponent(
       [
-        `施設名: ${facility}`,
-        `ご担当者: ${person}`,
-        `役職: ${role || "（未記入）"}`,
+        `お名前・屋号・施設名: ${facility}`,
         `メール: ${email}`,
-        `カテゴリ: ${category || "未選択"}`,
+        `パートナー種別: ${category || "未選択"}`,
+        `役職・肩書き: ${role || "（未記入）"}`,
         `エリア: ${area || "（未記入）"}`,
-        `施設URL: ${url || "（未記入）"}`,
+        `サイト・SNS: ${url || "（未記入）"}`,
         "",
         "メッセージ:",
         message || "（未記入）",
@@ -67,13 +76,12 @@ export default function PartnerApplyForm() {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          施設名: facility,
-          ご担当者: person,
-          役職: role || "（未記入）",
+          "お名前・屋号・施設名": facility,
           email,
-          カテゴリ: category || "未選択",
+          パートナー種別: category || "未選択",
+          "役職・肩書き": role || "（未記入）",
           エリア: area || "（未記入）",
-          施設URL: url || "（未記入）",
+          "サイト・SNS": url || "（未記入）",
           メッセージ: message || "（未記入）",
           _subject: "提携申し込み — His Recoveries Partner",
         }),
@@ -108,40 +116,41 @@ export default function PartnerApplyForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
-          <label className={label} htmlFor="pa-facility">施設名 <span className="text-[#3d5638]">*</span></label>
-          <input id="pa-facility" className={field} value={facility} onChange={(e) => setFacility(e.target.value)} placeholder="◯◯クリニック / ◯◯サロン" required />
-        </div>
-        <div>
-          <label className={label} htmlFor="pa-person">ご担当者名 <span className="text-[#3d5638]">*</span></label>
-          <input id="pa-person" className={field} value={person} onChange={(e) => setPerson(e.target.value)} placeholder="山田 太郎" required />
-        </div>
-      </div>
-      <div className="grid sm:grid-cols-2 gap-5">
-        <div>
-          <label className={label} htmlFor="pa-role">役職</label>
-          <input id="pa-role" className={field} value={role} onChange={(e) => setRole(e.target.value)} placeholder="院長 / 決裁ご担当" />
+          <label className={label} htmlFor="pa-facility">お名前・屋号・施設名 <span className="text-[#3d5638]">*</span></label>
+          <input id="pa-facility" className={field} value={facility} onChange={(e) => setFacility(e.target.value)} placeholder="活動名・屋号・施設名でも可" required />
         </div>
         <div>
           <label className={label} htmlFor="pa-email">メール <span className="text-[#3d5638]">*</span></label>
-          <input id="pa-email" type="email" className={field} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@clinic.jp" required />
+          <input id="pa-email" type="email" className={field} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.jp" required />
         </div>
       </div>
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
-          <label className={label} htmlFor="pa-category">カテゴリ</label>
+          <label className={label} htmlFor="pa-category">パートナー種別</label>
           <select id="pa-category" className={field} value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="">選択してください</option>
-            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            <optgroup label="体験を届けるプロ">
+              {PRO_ROLES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </optgroup>
+            <optgroup label="提携する施設">
+              {FACILITY_TYPES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </optgroup>
           </select>
         </div>
+        <div>
+          <label className={label} htmlFor="pa-role">役職・肩書き</label>
+          <input id="pa-role" className={field} value={role} onChange={(e) => setRole(e.target.value)} placeholder="院長 / 代表 / フリーランス 等" />
+        </div>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-5">
         <div>
           <label className={label} htmlFor="pa-area">エリア</label>
           <input id="pa-area" className={field} value={area} onChange={(e) => setArea(e.target.value)} placeholder="東京都渋谷区 など" />
         </div>
-      </div>
-      <div>
-        <label className={label} htmlFor="pa-url">施設サイトURL</label>
-        <input id="pa-url" className={field} value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://..." />
+        <div>
+          <label className={label} htmlFor="pa-url">サイト・SNS・ポートフォリオ</label>
+          <input id="pa-url" className={field} value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://..." />
+        </div>
       </div>
       <div>
         <label className={label} htmlFor="pa-message">ひとこと（任意）</label>
