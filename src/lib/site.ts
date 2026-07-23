@@ -20,9 +20,10 @@ export const site = {
   // LINE は SaaS モード（LINE Login + LIFF + 詳細診断）の入口。
   // addFriendUrl が空の間は、UI は「準備中」表示になる（壊れない）。
   // 値が入った瞬間に Hero / Screen result / Letter から自動で出る。
+  // LINE は公開サイトに貼らない。体験フェーズ（相談→NDAの後）の会員のみ、
+  // 別途・非公開で友だち追加する設計。公開導線は /reserve（匿名Web相談）に統一。
   line: {
-    addFriendUrl:
-      process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ?? "https://lin.ee/ULaB95aI",
+    addFriendUrl: "",
     liffUrl: process.env.NEXT_PUBLIC_LINE_LIFF_URL ?? "",
   },
   locale: "ja_JP",

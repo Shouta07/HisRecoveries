@@ -177,7 +177,7 @@ export default function RecoverPage() {
               ゼロに戻す一歩を、<span className="text-[#85AB8B]">今日から。</span>
             </h2>
             <p className="text-[13px] text-[#C9D2C4] leading-[1.95] mb-6">
-              LINEで友だち追加 → 秘密保持契約に同意 → 30分の相談で、地図づくりから。無料です。
+              日程を選ぶ → 匿名でWeb相談（15分） → 秘密保持契約に同意 → 地図づくりから。無料です。
             </p>
             <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-8 py-3.5 transition-colors">
               今の悩みを相談してみる <span aria-hidden>→</span>

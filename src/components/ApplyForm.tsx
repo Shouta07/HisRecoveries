@@ -131,7 +131,7 @@ export default function ApplyForm() {
 
       <div>
         <label className={label} htmlFor="ap-contact">
-          ご連絡先（メール / LINE 等） <span style={{ color: ACCENT }}>*</span>
+          ご連絡先（メール等） <span style={{ color: ACCENT }}>*</span>
         </label>
         <input
           id="ap-contact"

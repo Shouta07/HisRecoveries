@@ -70,7 +70,7 @@ export default function ReservePage() {
             <div className="rounded-[1.4rem] border border-dashed border-[#1f2a1d]/20 bg-white/70 p-6 sm:p-7 mb-8">
               <p className="text-[13.5px] font-bold text-[#1f2a1d] mb-1.5" style={MINCHO}>日程調整（Web相談）は、まもなく公開します。</p>
               <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
-                いまは LINE またはメールで受け付けています。ご希望の時間帯を添えていただければ、こちらから日程をご案内します。
+                いまはメールで受け付けています。ご希望の時間帯を添えていただければ、こちらから日程をご案内します。
               </p>
             </div>
             <ConsultEntry />

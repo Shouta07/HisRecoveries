@@ -12,7 +12,7 @@ const MINCHO: React.CSSProperties = {
 export const metadata: Metadata = {
   title: "よくある質問",
   description:
-    "His Recoveries へのお問い合わせの多い質問をまとめました。秘密保持・料金・はじめかた・体験について。ここにない内容は、LINEでお気軽にご質問ください。",
+    "His Recoveries へのお問い合わせの多い質問をまとめました。秘密保持・料金・はじめかた・体験について。ここにない内容は、無料相談でお気軽にご質問ください。",
   alternates: { canonical: `${site.url}/faq` },
 };
 
@@ -54,7 +54,7 @@ export default function FaqPage() {
           <br className="sm:hidden" />
           ここにない内容は、お気軽に{" "}
           <ConsultLink className="font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4 hover:decoration-[#3d5638] transition-colors">
-            LINEでご質問
+            無料相談でご質問
           </ConsultLink>
           ください。
         </p>
@@ -94,13 +94,13 @@ export default function FaqPage() {
           ))}
         </div>
 
-        {/* 締めのLINE導線 */}
+        {/* 締めの相談導線 */}
         <div className="mt-14 rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
           <p className="text-[13.5px] leading-[1.9] flex-1">
-            解決しないことは、LINEで直接どうぞ。<span className="text-[#C9D2C4]">無料・秘密保持のもとで。</span>
+            解決しないことは、無料相談で直接どうぞ。<span className="text-[#C9D2C4]">匿名・秘密保持のもとで。</span>
           </p>
           <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13.5px] font-bold px-7 py-3.5 transition-colors">
-            LINEで質問する <span aria-hidden>→</span>
+            無料で相談する <span aria-hidden>→</span>
           </ConsultLink>
         </div>
       </div>

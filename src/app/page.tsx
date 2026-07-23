@@ -148,7 +148,7 @@ export default function HomePage() {
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
-        {/* はじめかた — 無料LINE相談から記録まで5ステップ（Oh my teeth 型） */}
+        {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
         <StepsSection />
 
         {/* できること — 5ステップの③〜④の具体（体験）。はじめかたの後に置く */}
