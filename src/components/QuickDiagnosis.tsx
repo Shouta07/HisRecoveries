@@ -40,6 +40,21 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
   // 選んだ悩みを「整える順番」（WORRIES の並び）にソートして返す。
   const roadmap = WORRIES.filter((w) => picked.includes(w.key));
 
+  // 複数選択時の「束ね方」— 即効の土台(清潔感)→現在地把握(薄毛)→継続ケア→内側、
+  // という HR の考え方で、選ばれた組み合わせから一文を合成する（設計してもらえた感）。
+  const has = (k: string) => picked.includes(k);
+  const careList = [
+    has("skin") && "肌",
+    has("face") && "顔まわり",
+    has("bodyhair") && "ヒゲ・体毛",
+  ].filter(Boolean) as string[];
+  const synthParts: string[] = [];
+  if (has("impression")) synthParts.push("まず清潔感で「今すぐ」の印象を底上げ");
+  if (has("hair")) synthParts.push("薄毛は並行して現在地の把握から（早いほど選べる幅が広い）");
+  if (careList.length) synthParts.push(`${careList.join("・")}は原因を分けて一つずつ`);
+  if (has("mind")) synthParts.push("睡眠・習慣は土台として並行で");
+  const synthesis = picked.length >= 2 ? synthParts.join("、") + "。" : null;
+
   return (
     <section id="diagnosis" className="relative z-10 scroll-mt-20 bg-[#f4f6f2]">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-4">
@@ -106,6 +121,14 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
                 </span>
                 あなたの、整える順番のロードマップ
               </div>
+
+              {/* 束ね方 — 複数選択を一つの戦略にまとめる一文 */}
+              {synthesis && (
+                <div className="mb-5 rounded-[1.1rem] bg-[#16241A] text-[#EDF1E8] px-5 py-4">
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-1.5">束ね方</div>
+                  <p className="text-[13px] leading-[1.9] font-medium">{synthesis}</p>
+                </div>
+              )}
 
               <ol className="relative border-l-2 border-[#85AB8B]/35 ml-3 space-y-5">
                 {roadmap.map((w, i) => {
