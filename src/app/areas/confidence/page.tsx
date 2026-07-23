@@ -57,7 +57,7 @@ export default function ConfidencePage() {
 
         <div className="mt-10">
           <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241a] text-[14px] font-semibold px-7 py-3.5 transition-colors">
-            LINEで相談する <span aria-hidden>→</span>
+            無料で相談する <span aria-hidden>→</span>
           </ConsultLink>
         </div>
 

@@ -1,7 +1,6 @@
-// 無料相談リンク（アンカー型）。
-// LINE 設定あり → 直接 LINE 遷移（別タブ）。未設定 → /apply にフォールバック。
-// クリック型の CTA は BookingCTA、テキスト/インラインのリンクはこちらを使う。
-import { site } from "@/lib/site";
+// 無料相談リンク。相談の入口は「匿名Web相談の予約」= /reserve に集約。
+// （/reserve が TimeRex 埋め込み or LINE/フォームのフォールバックを出し分ける）
+import Link from "next/link";
 
 export default function ConsultLink({
   className = "",
@@ -10,17 +9,9 @@ export default function ConsultLink({
   className?: string;
   children: React.ReactNode;
 }) {
-  const line = site.line.addFriendUrl;
-  if (line) {
-    return (
-      <a href={line} target="_blank" rel="noopener noreferrer" className={className}>
-        {children}
-      </a>
-    );
-  }
   return (
-    <a href="/apply" className={className}>
+    <Link href="/reserve" className={className}>
       {children}
-    </a>
+    </Link>
   );
 }

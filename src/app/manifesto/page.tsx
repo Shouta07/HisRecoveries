@@ -121,7 +121,7 @@ export default function ManifestoPage() {
 
             <ul className="grid sm:grid-cols-3 gap-4 mb-9">
               {[
-                { t: "変わりたい人", d: "まずは、LINEで相談から。あなたのペースで。" },
+                { t: "変わりたい人", d: "まずは、無料相談から。あなたのペースで。" },
                 { t: "現場のプロ", d: "メイク・スタイリスト・撮影・医療。取材や協業で。" },
                 { t: "共感する人", d: "男性のウェルネスを、一緒に当たり前にしたい人。" },
               ].map((x) => (
@@ -134,7 +134,7 @@ export default function ManifestoPage() {
 
             <div className="flex flex-wrap gap-3">
               <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-                LINEで相談する
+                無料で相談する
               </BookingCTA>
               <Link href="/#packages" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-7 py-3.5 transition-colors">
                 サービスを見る <span aria-hidden>→</span>

@@ -39,7 +39,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
 
         <div className="flex flex-wrap items-center gap-3">
           <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
-            LINEで相談する
+            無料で相談する
           </BookingCTA>
           <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
             パッケージを見る <span aria-hidden>→</span>
@@ -62,7 +62,7 @@ export function InlineConsult() {
         読むだけでも大丈夫。でも「自分に合う形」が知りたくなったら、いつでも無料で相談できます。
       </p>
       <ConsultLink className="shrink-0 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
-        LINEで相談する <span aria-hidden>→</span>
+        無料で相談する <span aria-hidden>→</span>
       </ConsultLink>
     </div>
   );

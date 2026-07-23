@@ -203,7 +203,7 @@ export default function LibraryPage() {
                     <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]">何から始めるか、いくらかかるか。無料・完全守秘で。</p>
                   </div>
                   <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-3 transition-colors">
-                    LINEで相談する（無料） <span aria-hidden>→</span>
+                    無料で相談する（無料） <span aria-hidden>→</span>
                   </ConsultLink>
                 </div>
               )}
@@ -244,7 +244,7 @@ export default function LibraryPage() {
           </p>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[13px] font-bold px-6 py-3 transition-colors">
-              LINEで相談する（無料） <span aria-hidden>→</span>
+              無料で相談する（無料） <span aria-hidden>→</span>
             </ConsultLink>
             <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[13px] font-semibold px-6 py-3 transition-colors">
               サービスを見る

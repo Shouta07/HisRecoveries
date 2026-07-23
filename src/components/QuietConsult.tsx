@@ -20,7 +20,7 @@ export default function QuietConsult() {
         無料で相談できます。秘密は守ります。
       </p>
       <ConsultLink className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#16241A]/25 hover:border-[#16241A] text-[#16241A] text-[13.5px] font-semibold px-6 py-3 transition-colors">
-        LINEで相談する <span aria-hidden>→</span>
+        無料で相談する <span aria-hidden>→</span>
       </ConsultLink>
     </aside>
   );
