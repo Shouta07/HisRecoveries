@@ -128,6 +128,10 @@ export default function PartnerPage() {
           <p className="mt-8 font-mono text-[11.5px] tracking-[0.14em] text-[#6b7a66]">
             掲載無料　・　初期費用無料　・　申込は1分
           </p>
+          {/* 冷リンクで開いた相手への実在性の証明（メディアを見れば本気度が分かる） */}
+          <Link href="/areas" className="mt-4 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[#3d5638] underline underline-offset-4 decoration-[#85AB8B]/50 hover:opacity-70 transition-opacity">
+            男性向けの専門記事を50本以上発信中 — メディアを見る <span aria-hidden>→</span>
+          </Link>
         </div>
       </section>
 
@@ -373,9 +377,27 @@ export default function PartnerPage() {
         </div>
       </section>
 
-      {/* ── フッター ── */}
+      {/* ── フッター（B2B: 運営会社を明示。冷リンクの信頼性はここで決まる） ── */}
       <footer className="border-t border-[#1f2a1d]/8 bg-[#eef1ea]">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 pt-10 pb-4">
+          <div className="rounded-[1.4rem] bg-white/70 border border-[#1f2a1d]/8 p-6 sm:p-7">
+            <div className="font-mono text-[10px] tracking-[0.24em] uppercase text-[#85AB8B] mb-4">Company — 運営会社</div>
+            <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-[13px]">
+              {[
+                ["社名", `${site.company.name}（${site.company.nameEn}）`],
+                ["事業内容", "男性ウェルネスサービス「His Recoveries」の企画・運営"],
+                ["所在地", `${site.company.postalCode} ${site.company.address}`],
+                ["お問い合わせ", site.company.email],
+              ].map(([k, v]) => (
+                <div key={k} className="flex gap-4">
+                  <dt className="shrink-0 w-[5.5em] text-[#9aa79a] font-semibold">{k}</dt>
+                  <dd className="text-[#3a423a] leading-[1.7]">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 pb-10 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <Link href="/" className="logo-type text-[17px] font-semibold text-[#16241A]">His Recoveries</Link>
           <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-[#4b5b47]">
             <Link href="/" className="hover:text-[#16241A] transition-colors">ホーム</Link>
