@@ -13,6 +13,12 @@ const HEAD: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
+// 文節を inline-block で包み、スマホの改行を「、。」の区切りで自然に起こすヘルパー。
+// （global の word-break:keep-all + overflow-wrap:anywhere による中途半端な改行を防ぐ）
+function W({ children }: { children: React.ReactNode }) {
+  return <span className="inline-block">{children}</span>;
+}
+
 // カテゴリ見出しの小アイコン
 const ICONS: Record<string, React.ReactNode> = {
   impression: <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z" />,
@@ -146,12 +152,11 @@ export default function LibraryPage() {
             <span className="font-mono text-[11.5px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">His Recoveries Library</span>
           </div>
           <h1 className="text-[1.9rem] sm:text-[2.5rem] leading-[1.26]" style={HEAD}>
-            男の「<span className="text-[#3d5638]">よくなる</span>」を、まとめています。
+            <W>男の「<span className="text-[#3d5638]">よくなる</span>」を、</W><W>まとめています。</W>
           </h1>
           <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
-            清潔感・薄毛・肌・顔・体毛・第一印象。ぜんぶまとめて調べられます。
-            <br className="hidden sm:block" />
-            何も売らないから、広告ぬきの答えだけ。匿名で、読むだけ。
+            <W>清潔感・薄毛・肌・顔・体毛・第一印象。</W><W>ぜんぶまとめて調べられます。</W>{" "}
+            <W>何も売らないから、広告ぬきの答えだけ。</W><W>匿名で、読むだけ。</W>
           </p>
         </header>
 
@@ -199,8 +204,8 @@ export default function LibraryPage() {
               {c.id === "impression" && (
                 <div className="mt-8 rounded-[1.3rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="flex-1">
-                    <p className="text-[14.5px] font-bold leading-[1.6]">調べ続けるより、10分の相談が早いこともあります。</p>
-                    <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]">何から始めるか、いくらかかるか。無料・完全守秘で。</p>
+                    <p className="text-[14.5px] font-bold leading-[1.6]"><W>調べ続けるより、</W><W>10分の相談が早いこともあります。</W></p>
+                    <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]"><W>何から始めるか、いくらかかるか。</W><W>無料・完全守秘で。</W></p>
                   </div>
                   <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-3 transition-colors">
                     無料で相談する（無料） <span aria-hidden>→</span>
@@ -221,7 +226,7 @@ export default function LibraryPage() {
               <h2 className="text-[1.3rem] font-bold text-[#1f2a1d]" style={HEAD}>インタビュー</h2>
             </div>
             <p className="text-[12.5px] text-[#6b7a66] leading-[1.9] mb-5">
-              現場の第一線で働くプロ（メイク・スタイリスト・撮影ほか）に、His Recoveries が直接聞く一次情報。
+              <W>現場の第一線で働くプロ</W><W>（メイク・スタイリスト・撮影ほか）に、</W><W>His Recoveries が直接聞く一次情報。</W>
             </p>
             {interviews.length > 0 ? (
               <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-pl-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -240,7 +245,7 @@ export default function LibraryPage() {
         {/* 読み終わりの受け皿：相談（無料・匿名）を主導線に、サービスは従 */}
         <div className="mt-16 rounded-[1.3rem] border border-[#1f2a1d]/10 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
           <p className="text-[13px] text-[#4b5b47] leading-[1.85] flex-1">
-            読むだけでも大丈夫。聞きたくなったら、無料で相談できます（完全守秘）。
+            <W>読むだけでも大丈夫。</W><W>聞きたくなったら、無料で相談できます（完全守秘）。</W>
           </p>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[13px] font-bold px-6 py-3 transition-colors">

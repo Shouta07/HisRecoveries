@@ -3,7 +3,7 @@ export const site = {
   tagline: "From Complex to Confidence",
   promise: "もっと、いい男へ。もっと、自分らしく。",
   description:
-    "男性の健康・美容・活力を整える、男性ウェルネスの伴走コンシェルジュ。悩みを診断し、整える順番を設計。あなたに合うプロ・施設へつなぎ、そのあとも伴走します。相談は無料・完全守秘、費用は先に説明。押し売りはせず、医療機関から紹介料は受け取りません。",
+    "男の「変わりたい」に、伴走する。髪・肌・体・心を、診断→整える順番の設計→あなたに合うプロ・施設へおつなぎし、そのあとも伴走します。相談は無料・完全守秘、費用は先に説明。押し売りはせず、医療機関から紹介料は受け取りません。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",

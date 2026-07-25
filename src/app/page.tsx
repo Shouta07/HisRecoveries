@@ -87,7 +87,7 @@ export default function HomePage() {
           {/* 何のサービスか、を最初のひと言で */}
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[11.5px] sm:text-[12.5px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
             <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
-            男性ウェルネスの伴走コンシェルジュ
+            男の「変わりたい」に、伴走する。
           </span>
 
           {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
@@ -252,7 +252,7 @@ export default function HomePage() {
 
             <div className="mt-10 pt-6 border-t border-[#1f2a1d]/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <Link href="/" className="logo-type text-xl font-semibold tracking-tight text-[#1f2a1d]">His Recoveries</Link>
-              <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries — 男性ウェルネスの伴走コンシェルジュ</span>
+              <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries — 男の「変わりたい」に、伴走する。</span>
             </div>
           </div>
           {/* 追従バーが最下部で内容を隠さないための余白 */}
