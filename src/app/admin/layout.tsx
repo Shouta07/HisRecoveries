@@ -6,18 +6,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// 上のバーは最小構成（Studio 中心）。Insights/Data/GSC/GA/Drive は Studio の中から、
+// その他ツール（Checks/Asks/Guides/Certified/Eval/Letter）は Studio 下部の「その他」から。
 const tabs = [
   { href: "/admin/studio", label: "Studio" },
-  { href: "/admin/insights", label: "Insights" },
-  { href: "/admin/data", label: "Data" },
-  { href: "/admin/checks", label: "Checks" },
-  { href: "/admin/asks", label: "Asks" },
-  { href: "/admin/guides", label: "Guides" },
-  { href: "/admin/network", label: "Certified" },
   { href: "/admin/articles", label: "Articles" },
   { href: "/admin/media", label: "Media" },
-  { href: "/admin/tools/eval-thread", label: "Eval" },
-  { href: "/admin/tools/letter", label: "Letter" },
 ];
 
 export default function AdminLayout({

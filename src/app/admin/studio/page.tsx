@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { buildStudioData, readThreadsSnapshot } from "@/lib/studio";
+import {
+  buildStudioData,
+  readThreadsSnapshot,
+  CHANNELS,
+  CHANNEL_LABELS,
+  STAGE_LABELS,
+  DRIVE_ROOT,
+  EXTERNAL_LINKS,
+} from "@/lib/studio";
 
 export const metadata: Metadata = {
   title: "Studio — Admin",
@@ -177,35 +185,86 @@ export default function StudioPage() {
         </div>
       </div>
 
-      {/* 動画ライブラリ（シンプルなリスト） */}
-      <div className="mb-8">
-        <p className="mb-3 text-[13px] text-ink">動画ライブラリ</p>
-        <ul className="divide-y divide-hair-line/70 border-y border-hair-line/70">
-          {d.rows
-            .filter((r) => r.video)
-            .map((r) => (
-              <li
-                key={r.video!.compositionId}
-                className="flex items-center justify-between gap-3 py-3"
-              >
-                <div className="min-w-0">
-                  <p className="text-[13px] text-ink truncate">{r.video!.title}</p>
-                  <Link
-                    href={r.href}
-                    className="text-[11px] text-sub-gray hover:text-brand truncate block"
-                  >
-                    {r.title}
-                  </Link>
-                </div>
-                <span className="shrink-0 text-[11px] text-sub-gray tabular-nums">
-                  {r.video!.seconds}s ·{" "}
-                  {r.video!.status === "rendered" ? "書き出し済み" : "下書き"}
-                </span>
-              </li>
-            ))}
-        </ul>
+      {/* 動画 × 配信ステータス */}
+      <div className="mb-8 overflow-x-auto">
+        <div className="mb-3 flex items-baseline justify-between gap-3">
+          <p className="text-[13px] text-ink">動画と配信</p>
+          <a
+            href={DRIVE_ROOT}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[12px] text-brand hover:underline"
+          >
+            Drive 保管庫 →
+          </a>
+        </div>
+        <table className="w-full min-w-[640px] text-[13px]">
+          <thead>
+            <tr className="text-left text-[11px] text-sub-gray">
+              <th className="py-1.5 pr-4 font-normal">動画</th>
+              <th className="py-1.5 pr-3 font-normal">状態</th>
+              {CHANNELS.map((c) => (
+                <th key={c} className="py-1.5 px-2 font-normal text-center">
+                  {CHANNEL_LABELS[c]}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {d.rows
+              .filter((r) => r.video)
+              .map((r) => {
+                const v = r.video!;
+                const stage = v.stage ?? "producing";
+                return (
+                  <tr key={v.compositionId} className="border-t border-hair-line/60 align-top">
+                    <td className="py-2.5 pr-4">
+                      <p className="text-ink">{v.title}</p>
+                      <Link
+                        href={r.href}
+                        className="text-[11px] text-sub-gray hover:text-brand"
+                      >
+                        {v.seconds}s · 元記事
+                      </Link>
+                    </td>
+                    <td className="py-2.5 pr-3">
+                      <span className="rounded-full border border-hair-line px-2 py-0.5 text-[11px] text-sub-gray whitespace-nowrap">
+                        {STAGE_LABELS[stage]}
+                      </span>
+                    </td>
+                    {CHANNELS.map((c) => {
+                      const rec = v.distributed?.[c];
+                      return (
+                        <td key={c} className="py-2.5 px-2 text-center text-[11px] tabular-nums">
+                          {rec ? (
+                            rec.url ? (
+                              <a
+                                href={rec.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-brand hover:underline"
+                              >
+                                {rec.date.slice(5)}
+                              </a>
+                            ) : (
+                              <span className="text-ink">{rec.date.slice(5)}</span>
+                            )
+                          ) : (
+                            <span className="text-hair-line">—</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
         <p className="mt-3 text-[11px] text-sub-gray">
-          書き出し: <code className="text-[11px]">npm run render:&lt;id&gt; -w @hr/video</code>
+          配信したら <code className="text-[11px]">src/lib/studio.ts</code> の該当動画に
+          <code className="text-[11px]"> distributed</code> と{" "}
+          <code className="text-[11px]">stage</code> を記入。書き出しは{" "}
+          <code className="text-[11px]">npm run render:&lt;id&gt; -w @hr/video</code>。
         </p>
       </div>
 
@@ -236,18 +295,64 @@ export default function StudioPage() {
         </table>
       </div>
 
-      {/* フッター — 数字の導線を1行に */}
-      <footer className="mt-14 border-t border-hair-line pt-5 text-[12px] text-sub-gray">
-        数字：
-        <Link href="/admin/insights" className="text-ink hover:text-brand mx-1">
-          Insights
-        </Link>
-        ·
-        <Link href="/admin/data" className="text-ink hover:text-brand mx-1">
-          Data
-        </Link>
-        · Threads の閲覧数・承認は{" "}
-        <code className="text-[11px]">apps/threads/admin</code>。
+      {/* 数字・ツール */}
+      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-brand uppercase">
+        数字・ツール
+      </h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {[
+          { href: EXTERNAL_LINKS.searchConsole, label: "Search Console", sub: "検索の表示回数・クリック・順位", ext: true },
+          { href: EXTERNAL_LINKS.analytics, label: "Google Analytics", sub: "流入・行動・コンバージョン", ext: true },
+          { href: DRIVE_ROOT, label: "Drive 保管庫", sub: "完成動画のマスター", ext: true },
+          { href: "/admin/insights", label: "Insights", sub: "サイト内ファネル（自前計測）", ext: false },
+          { href: "/admin/data", label: "Data", sub: "生ログ・エクスポート", ext: false },
+        ].map((it) =>
+          it.ext ? (
+            <a
+              key={it.label}
+              href={it.href}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-hair-line bg-paper/40 px-4 py-3 hover:border-brand transition-colors"
+            >
+              <p className="text-[13px] text-brand">{it.label} ↗</p>
+              <p className="mt-1 text-[11px] text-sub-gray leading-[1.6]">{it.sub}</p>
+            </a>
+          ) : (
+            <Link
+              key={it.label}
+              href={it.href}
+              className="rounded-xl border border-hair-line bg-paper/40 px-4 py-3 hover:border-brand transition-colors"
+            >
+              <p className="text-[13px] text-brand">{it.label}</p>
+              <p className="mt-1 text-[11px] text-sub-gray leading-[1.6]">{it.sub}</p>
+            </Link>
+          ),
+        )}
+      </div>
+
+      {/* その他ツール（ナビから外したものの逃がし先） */}
+      <div className="mt-12 border-t border-hair-line pt-5">
+        <p className="text-[11px] text-sub-gray mb-2">その他ツール</p>
+        <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[12px]">
+          {[
+            { href: "/admin/checks", label: "Checks" },
+            { href: "/admin/asks", label: "Asks" },
+            { href: "/admin/guides", label: "Guides" },
+            { href: "/admin/network", label: "Certified" },
+            { href: "/admin/tools/eval-thread", label: "Eval" },
+            { href: "/admin/tools/letter", label: "Letter" },
+          ].map((it) => (
+            <Link key={it.href} href={it.href} className="text-ink hover:text-brand">
+              {it.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      <footer className="mt-8 text-[12px] text-sub-gray leading-[1.9]">
+        Threads の閲覧数・承認は <code className="text-[11px]">apps/threads/admin</code>。
+        GA4 / Search Console は画面内埋め込み不可のため外部リンク（ライブ数値の取り込みは API 連携で対応可）。
       </footer>
     </div>
   );
