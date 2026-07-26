@@ -2,8 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { complexes } from "@/lib/complexes";
 import { getArea, AREA_UPDATED } from "@/lib/areas";
-import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
+import {
+  clusters,
+  clustersByArea,
+  clustersByDesire,
+  CLUSTER_UPDATED,
+  DESIRES,
+  type DesireKey,
+} from "@/lib/clusters";
 import ConsultLink from "@/components/ConsultLink";
+import DesireBrowser from "@/components/DesireBrowser";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -83,8 +91,32 @@ function ArticleCard({ c, carousel = false, starter = false }: { c: Card; carous
   );
 }
 
-export default function LibraryPage() {
+export default function LibraryPage({
+  searchParams,
+}: {
+  searchParams?: { desire?: string };
+}) {
   const url = `${site.url}/areas`;
+
+  // 目的（desire）での絞り込み。?desire=<key> が有効なら該当記事を上部に出す。
+  const rawDesire = searchParams?.desire;
+  const activeDesire: DesireKey | undefined =
+    rawDesire && rawDesire in DESIRES ? (rawDesire as DesireKey) : undefined;
+  const desireCards: Card[] = activeDesire
+    ? clustersByDesire(activeDesire).map((a) => {
+        const cx = complexes.find((x) => x.id === a.areaId);
+        return {
+          href: `/areas/${a.areaId}/${a.slug}`,
+          badge: a.kind === "guide" ? "ガイド" : a.kind === "choose" ? "選び方" : "解説",
+          title: a.title,
+          excerpt: a.lead,
+          date: CLUSTER_UPDATED,
+          accent: cx?.accent ?? "#3d5638",
+          accentSoft: cx?.accentSoft ?? "#eef3ea",
+          category: cx?.ja ?? "",
+        };
+      })
+    : [];
 
   // カテゴリ別に整理（ピラー＋クラスタ）。取材は横断で別カテゴリに集約。
   const categories = complexes.map((c) => {
@@ -159,6 +191,39 @@ export default function LibraryPage() {
             <W>何も売らないから、広告ぬきの答えだけ。</W><W>匿名で、読むだけ。</W>
           </p>
         </header>
+
+        {/* 目的から探す（あなたは、何を叶えたい？）— 悩み名がわからなくても探せる入口 */}
+        <div className="mb-12">
+          <DesireBrowser activeDesire={activeDesire} />
+
+          {activeDesire && (
+            <div className="mt-6">
+              <div className="flex items-center gap-3 mb-4">
+                <h3 className="text-[1.05rem] font-bold text-[#1f2a1d]" style={HEAD}>
+                  「{DESIRES[activeDesire].label}」に効く記事
+                  <span className="ml-2 text-[12px] font-normal text-[#6b7a66]">
+                    {desireCards.length}本
+                  </span>
+                </h3>
+                <Link
+                  href="/areas#mokuteki"
+                  className="ml-auto text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap"
+                >
+                  × 絞り込みを解除
+                </Link>
+              </div>
+              {desireCards.length > 0 ? (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {desireCards.map((card) => (
+                    <ArticleCard key={card.href} c={card} />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[13px] text-[#4b5b47]">この目的の記事は準備中です。</p>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* カテゴリのクイックナビ — モバイルは横スクロール、スクロール時は上部に固定。
             相談CTAはヘッダーが常時出しているので、ここはチップだけに絞る。 */}

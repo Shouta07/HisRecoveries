@@ -2358,6 +2358,21 @@ export function clustersByArea(areaId: string): ClusterArticle[] {
   return clusters.filter((c) => c.areaId === areaId);
 }
 
+/** 目的（普遍的欲求）別の記事。取材は除いて実用記事のみ。 */
+export function clustersByDesire(desire: DesireKey): ClusterArticle[] {
+  return clusters.filter((c) => c.desire === desire && c.kind !== "interview");
+}
+
+/** DESIRES の表示順（記事本数の多い順に近い、自然な並び）。 */
+export const DESIRE_ORDER: DesireKey[] = [
+  "jishin",
+  "erabaretai",
+  "shinrai",
+  "wakasa",
+  "sonae",
+  "son",
+];
+
 /** そのエリアの「選び方・向き合い方」記事（あれば） */
 export function chooseArticleByArea(areaId: string): ClusterArticle | undefined {
   return clusters.find((c) => c.areaId === areaId && c.kind === "choose");
