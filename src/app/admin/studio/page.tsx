@@ -17,325 +17,198 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-// ── 小さな部品 ──────────────────────────────────────────────────
-function Kpi({ label, value, sub }: { label: string; value: string; sub?: string }) {
-  return (
-    <div className="py-1">
-      <p className="font-mincho text-4xl text-brand leading-none">{value}</p>
-      <p className="mt-2 text-[12px] text-ink">{label}</p>
-      {sub ? <p className="mt-0.5 text-[11px] text-sub-gray">{sub}</p> : null}
-    </div>
-  );
-}
-
-function Card({
-  title,
-  count,
-  children,
-}: {
-  title: string;
-  count: number;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-2xl border border-hair-line bg-paper/50 p-6">
-      <div className="flex items-baseline justify-between">
-        <h2 className="font-mincho text-lg text-brand">{title}</h2>
-        <span className="text-[13px] font-medium text-brand tabular-nums">{count}件</span>
-      </div>
-      <div className="mt-4">{children}</div>
-    </section>
-  );
-}
-
+// 深緑ベースの1画面ダッシュボード。文字はクリーム/セージ。スクロール最小。
 export default function StudioPage() {
   const d = buildStudioData();
   const t = readThreadsSnapshot();
 
-  const pendingShown = t.pending.slice(0, 3);
-  const nextShown = d.refineWithoutVideo.slice(0, 6);
+  const pendingShown = t.pending.slice(0, 2);
+  const nextShown = d.refineWithoutVideo.slice(0, 5);
   const rPct = Math.round(
     (d.track.recover / Math.max(d.track.recover + d.track.refine, 1)) * 100,
   );
+  const videoRows = d.rows.filter((r) => r.video);
+
+  const kpis = [
+    { v: String(d.totals.articles), l: "記事" },
+    { v: String(d.totals.videos), l: "動画" },
+    { v: `${d.totals.coveragePct}%`, l: "動画化率" },
+    { v: `${d.track.recover}:${d.track.refine}`, l: "Recover:Refine" },
+  ];
 
   return (
-    <div className="mx-auto max-w-[960px] px-6 sm:px-10 pt-12 sm:pt-16 pb-24">
-      <header className="mb-10">
-        <span className="inline-flex items-center rounded-full bg-brand px-3 py-1 text-[10px] tracking-[0.18em] text-brand-cream uppercase">
-          Studio
-        </span>
-        <h1 className="mt-4 font-mincho text-3xl sm:text-4xl text-brand leading-[1.4]">
-          スタジオ
-        </h1>
-        <p className="mt-3 text-[13px] text-sub-gray">
-          記事と動画の在庫を見て、次に作るものを決める場所。
-        </p>
-      </header>
-
-      {/* KPI — 罫線区切りの静かな行 */}
-      <section className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-hair-line border-y border-hair-line">
-        <div className="px-1 sm:px-6 py-5 sm:pl-0">
-          <Kpi label="記事" value={String(d.totals.articles)} />
-        </div>
-        <div className="px-1 sm:px-6 py-5">
-          <Kpi
-            label="動画"
-            value={String(d.totals.videos)}
-            sub={`書き出し済み ${d.totals.videosRendered}`}
-          />
-        </div>
-        <div className="px-1 sm:px-6 py-5">
-          <Kpi
-            label="動画カバレッジ"
-            value={`${d.totals.coveragePct}%`}
-          />
-        </div>
-        <div className="px-1 sm:px-6 py-5">
-          <Kpi
-            label="Recover : Refine"
-            value={`${d.track.recover}:${d.track.refine}`}
-          />
-        </div>
-      </section>
-
-      {/* いま やること — 2つの行動だけを前面に */}
-      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-brand uppercase">
-        いま やること
-      </h2>
-      <div className="grid md:grid-cols-2 gap-4">
-        {/* 承認待ち */}
-        <Card title="承認する（Threads）" count={t.available ? t.queue.pending : 0}>
-          {!t.available || t.pending.length === 0 ? (
-            <p className="text-[13px] text-sub-gray">
-              承認待ちはありません。
+    <div className="bg-brand text-brand-cream min-h-[calc(100vh-49px)]">
+      <div className="mx-auto max-w-[1180px] px-5 sm:px-8 py-7">
+        {/* ヘッダー + KPI を1バンドに */}
+        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <div>
+            <span className="inline-flex items-center rounded-full bg-sage-bright px-3 py-0.5 text-[10px] tracking-[0.18em] text-brand uppercase font-semibold">
+              Studio
+            </span>
+            <h1 className="mt-2 font-mincho text-2xl sm:text-3xl leading-tight text-brand-cream">
+              スタジオ
+            </h1>
+            <p className="mt-1 text-[12px] text-brand-cream/55">
+              在庫を見て、次に作るものを決める場所。
             </p>
-          ) : (
-            <ul className="space-y-3">
-              {pendingShown.map((it) => (
-                <li key={it.id} className="border-b border-hair-line/60 pb-3 last:border-0 last:pb-0">
-                  <p className="text-[13px] text-ink leading-[1.7] line-clamp-2">
-                    {it.preview}…
-                  </p>
-                  <p className="mt-1 text-[11px] text-sub-gray">
-                    {it.createdAt ? it.createdAt.slice(5, 16).replace("T", " ") : it.id}
-                    {it.isThread ? " · 連投" : ""}
-                  </p>
-                </li>
-              ))}
-              {t.pending.length > pendingShown.length ? (
-                <li className="text-[12px] text-sub-gray">
-                  ほか {t.pending.length - pendingShown.length} 件
-                </li>
-              ) : null}
-            </ul>
-          )}
-          <p className="mt-4 text-[11px] text-sub-gray leading-[1.8]">
-            承認は apps/threads 側で。承認後、次の cron で投稿されます。
-          </p>
-        </Card>
-
-        {/* 次に作る動画 */}
-        <Card title="次に作る動画" count={d.refineWithoutVideo.length}>
-          {d.refineWithoutVideo.length === 0 ? (
-            <p className="text-[13px] text-ink">
-              Refine 記事はすべて動画化済み。
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {nextShown.map((r) => (
-                <li key={r.href} className="flex items-baseline gap-2">
-                  <span className="text-[10px] text-sub-gray shrink-0 w-14 truncate">
-                    {r.areaId}
-                  </span>
-                  <Link
-                    href={r.href}
-                    className="text-[13px] text-ink hover:text-brand truncate"
-                  >
-                    {r.title}
-                  </Link>
-                </li>
-              ))}
-              {d.refineWithoutVideo.length > nextShown.length ? (
-                <li className="text-[12px] text-sub-gray">
-                  ほか {d.refineWithoutVideo.length - nextShown.length} 件
-                </li>
-              ) : null}
-            </ul>
-          )}
-          <p className="mt-4 text-[11px] text-sub-gray leading-[1.8]">
-            潜在（Refine）は動画で育てる。上から順に作れば偏りが埋まります。
-          </p>
-        </Card>
-      </div>
-
-      {/* 在庫 — 参照用。軽く */}
-      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-brand uppercase">
-        在庫
-      </h2>
-
-      {/* トラックの偏り（1行バー） */}
-      <div className="mb-8">
-        <div className="flex h-2.5 w-full overflow-hidden rounded-full">
-          <div className="bg-brand" style={{ width: `${rPct}%` }} />
-          <div className="bg-sage" style={{ width: `${100 - rPct}%` }} />
-        </div>
-        <div className="mt-2 flex justify-between text-[12px] text-sub-gray">
-          <span>Recover {d.track.recover}（顕在／SEO）</span>
-          <span>Refine {d.track.refine}（潜在／動画）</span>
-        </div>
-      </div>
-
-      {/* 動画 × 配信ステータス */}
-      <div className="mb-8 overflow-x-auto">
-        <div className="mb-3 flex items-baseline justify-between gap-3">
-          <p className="text-[13px] text-ink">動画と配信</p>
-          <a
-            href={DRIVE_ROOT}
-            target="_blank"
-            rel="noreferrer"
-            className="text-[12px] text-brand hover:underline"
-          >
-            Drive 保管庫 →
-          </a>
-        </div>
-        <table className="w-full min-w-[640px] text-[13px]">
-          <thead>
-            <tr className="text-left text-[11px] text-sub-gray">
-              <th className="py-1.5 pr-4 font-normal">動画</th>
-              <th className="py-1.5 pr-3 font-normal">状態</th>
-              {CHANNELS.map((c) => (
-                <th key={c} className="py-1.5 px-2 font-normal text-center">
-                  {CHANNEL_LABELS[c]}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {d.rows
-              .filter((r) => r.video)
-              .map((r) => {
-                const v = r.video!;
-                const stage = v.stage ?? "producing";
-                return (
-                  <tr key={v.compositionId} className="border-t border-hair-line/60 align-top">
-                    <td className="py-2.5 pr-4">
-                      <p className="text-ink">{v.title}</p>
-                      <Link
-                        href={r.href}
-                        className="text-[11px] text-sub-gray hover:text-brand"
-                      >
-                        {v.seconds}s · 元記事
-                      </Link>
-                    </td>
-                    <td className="py-2.5 pr-3">
-                      <span className="rounded-full border border-hair-line px-2 py-0.5 text-[11px] text-sub-gray whitespace-nowrap">
-                        {STAGE_LABELS[stage]}
-                      </span>
-                    </td>
-                    {CHANNELS.map((c) => {
-                      const rec = v.distributed?.[c];
-                      return (
-                        <td key={c} className="py-2.5 px-2 text-center text-[11px] tabular-nums">
-                          {rec ? (
-                            rec.url ? (
-                              <a
-                                href={rec.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-brand hover:underline"
-                              >
-                                {rec.date.slice(5)}
-                              </a>
-                            ) : (
-                              <span className="text-ink">{rec.date.slice(5)}</span>
-                            )
-                          ) : (
-                            <span className="text-hair-line">—</span>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
-        <p className="mt-3 text-[11px] text-sub-gray">
-          配信したら <code className="text-[11px]">src/lib/studio.ts</code> の該当動画に
-          <code className="text-[11px]"> distributed</code> と{" "}
-          <code className="text-[11px]">stage</code> を記入。書き出しは{" "}
-          <code className="text-[11px]">npm run render:&lt;id&gt; -w @hr/video</code>。
-        </p>
-      </div>
-
-      {/* エリア別（コンパクト表） */}
-      <div className="overflow-x-auto">
-        <p className="mb-3 text-[13px] text-ink">エリア別</p>
-        <table className="w-full min-w-[480px] text-[13px]">
-          <thead>
-            <tr className="text-left text-[11px] text-sub-gray">
-              <th className="py-1.5 pr-4 font-normal">エリア</th>
-              <th className="py-1.5 pr-4 font-normal tabular-nums">記事</th>
-              <th className="py-1.5 pr-4 font-normal tabular-nums">Recover</th>
-              <th className="py-1.5 pr-4 font-normal tabular-nums">Refine</th>
-              <th className="py-1.5 pr-4 font-normal tabular-nums">動画</th>
-            </tr>
-          </thead>
-          <tbody className="text-sub-gray">
-            {d.byArea.map((a) => (
-              <tr key={a.areaId} className="border-t border-hair-line/60">
-                <td className="py-2.5 pr-4 text-ink">{a.label}</td>
-                <td className="py-2.5 pr-4 tabular-nums">{a.articles}</td>
-                <td className="py-2.5 pr-4 tabular-nums">{a.recover}</td>
-                <td className="py-2.5 pr-4 tabular-nums">{a.refine}</td>
-                <td className="py-2.5 pr-4 tabular-nums">{a.videos}</td>
-              </tr>
+          </div>
+          <div className="flex gap-6 sm:gap-9">
+            {kpis.map((k) => (
+              <div key={k.l}>
+                <p className="font-mincho text-3xl leading-none">{k.v}</p>
+                <p className="mt-1.5 text-[11px] text-sage">{k.l}</p>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </div>
 
-      {/* 数字・ツール */}
-      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-brand uppercase">
-        数字・ツール
-      </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {[
-          { href: EXTERNAL_LINKS.searchConsole, label: "Search Console", sub: "検索の表示回数・クリック・順位", ext: true },
-          { href: EXTERNAL_LINKS.analytics, label: "Google Analytics", sub: "流入・行動・コンバージョン", ext: true },
-          { href: DRIVE_ROOT, label: "Drive 保管庫", sub: "完成動画のマスター", ext: true },
-          { href: "/admin/insights", label: "Insights", sub: "サイト内ファネル（自前計測）", ext: false },
-          { href: "/admin/data", label: "Data", sub: "生ログ・エクスポート", ext: false },
-        ].map((it) =>
-          it.ext ? (
-            <a
-              key={it.label}
-              href={it.href}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-xl border border-hair-line bg-paper/40 px-4 py-3 hover:border-brand transition-colors"
-            >
-              <p className="text-[13px] text-brand">{it.label} ↗</p>
-              <p className="mt-1 text-[11px] text-sub-gray leading-[1.6]">{it.sub}</p>
-            </a>
-          ) : (
-            <Link
-              key={it.label}
-              href={it.href}
-              className="rounded-xl border border-hair-line bg-paper/40 px-4 py-3 hover:border-brand transition-colors"
-            >
-              <p className="text-[13px] text-brand">{it.label}</p>
-              <p className="mt-1 text-[11px] text-sub-gray leading-[1.6]">{it.sub}</p>
-            </Link>
-          ),
-        )}
-      </div>
+        {/* トラックバー（細） */}
+        <div className="mt-6">
+          <div className="flex h-2 w-full overflow-hidden rounded-full bg-brand-cream/10">
+            <div className="bg-brand-cream/35" style={{ width: `${rPct}%` }} />
+            <div className="bg-sage-bright" style={{ width: `${100 - rPct}%` }} />
+          </div>
+          <div className="mt-1.5 flex justify-between text-[11px] text-brand-cream/55">
+            <span>Recover {d.track.recover}（顕在／SEO）</span>
+            <span>Refine {d.track.refine}（潜在／動画）</span>
+          </div>
+        </div>
 
-      {/* その他ツール（ナビから外したものの逃がし先） */}
-      <div className="mt-12 border-t border-hair-line pt-5">
-        <p className="text-[11px] text-sub-gray mb-2">その他ツール</p>
-        <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[12px]">
+        {/* メイン: 3カラム（やること2 + 配信1） */}
+        <div className="mt-6 grid lg:grid-cols-3 gap-4">
+          {/* 承認 */}
+          <Panel title="承認する（Threads）" badge={`${t.available ? t.queue.pending : 0}`}>
+            {!t.available || t.pending.length === 0 ? (
+              <p className="text-[12px] text-brand-cream/55">承認待ちはありません。</p>
+            ) : (
+              <ul className="space-y-2.5">
+                {pendingShown.map((it) => (
+                  <li key={it.id} className="text-[12px] leading-[1.6]">
+                    <p className="line-clamp-2">{it.preview}…</p>
+                    <p className="mt-0.5 text-[10px] text-brand-cream/45">
+                      {it.createdAt ? it.createdAt.slice(5, 16).replace("T", " ") : it.id}
+                      {it.isThread ? " · 連投" : ""}
+                    </p>
+                  </li>
+                ))}
+                {t.pending.length > pendingShown.length ? (
+                  <li className="text-[11px] text-brand-cream/55">
+                    ほか {t.pending.length - pendingShown.length} 件
+                  </li>
+                ) : null}
+              </ul>
+            )}
+          </Panel>
+
+          {/* 次に作る動画 */}
+          <Panel title="次に作る動画" badge={`${d.refineWithoutVideo.length}`}>
+            {d.refineWithoutVideo.length === 0 ? (
+              <p className="text-[12px] text-brand-cream/55">Refine はすべて動画化済み。</p>
+            ) : (
+              <ul className="space-y-1.5">
+                {nextShown.map((r) => (
+                  <li key={r.href} className="flex items-baseline gap-2 text-[12px]">
+                    <span className="w-14 shrink-0 truncate text-[10px] text-sage">
+                      {r.areaId}
+                    </span>
+                    <Link href={r.href} className="truncate hover:text-sage-bright">
+                      {r.title}
+                    </Link>
+                  </li>
+                ))}
+                {d.refineWithoutVideo.length > nextShown.length ? (
+                  <li className="text-[11px] text-brand-cream/55">
+                    ほか {d.refineWithoutVideo.length - nextShown.length} 件
+                  </li>
+                ) : null}
+              </ul>
+            )}
+          </Panel>
+
+          {/* 配信ステータス */}
+          <Panel
+            title="動画と配信"
+            action={
+              <a
+                href={DRIVE_ROOT}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[11px] text-sage hover:text-sage-bright"
+              >
+                Drive →
+              </a>
+            }
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px]">
+                <thead>
+                  <tr className="text-brand-cream/45">
+                    <th className="pb-1 pr-2 text-left font-normal">動画</th>
+                    {CHANNELS.map((c) => (
+                      <th key={c} className="pb-1 px-1 text-center font-normal">
+                        {CHANNEL_LABELS[c]}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {videoRows.map((r) => {
+                    const v = r.video!;
+                    return (
+                      <tr key={v.compositionId} className="border-t border-brand-cream/10">
+                        <td className="py-1.5 pr-2">
+                          <span className="block max-w-[7.5rem] truncate">{v.title}</span>
+                          <span className="text-[9px] text-brand-cream/40">
+                            {STAGE_LABELS[v.stage ?? "producing"]}
+                          </span>
+                        </td>
+                        {CHANNELS.map((c) => {
+                          const rec = v.distributed?.[c];
+                          return (
+                            <td key={c} className="py-1.5 px-1 text-center tabular-nums">
+                              {rec ? (
+                                <span className="text-sage-bright">{rec.date.slice(5)}</span>
+                              ) : (
+                                <span className="text-brand-cream/25">—</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Panel>
+        </div>
+
+        {/* 数字・ツール（1行） */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px]">
+          <span className="text-[10px] tracking-[0.2em] text-sage uppercase">数字</span>
+          <a href={EXTERNAL_LINKS.searchConsole} target="_blank" rel="noreferrer" className="hover:text-sage-bright">
+            Search Console ↗
+          </a>
+          <a href={EXTERNAL_LINKS.analytics} target="_blank" rel="noreferrer" className="hover:text-sage-bright">
+            Analytics ↗
+          </a>
+          <a href={DRIVE_ROOT} target="_blank" rel="noreferrer" className="hover:text-sage-bright">
+            Drive ↗
+          </a>
+          <Link href="/admin/insights" className="hover:text-sage-bright">
+            Insights
+          </Link>
+          <Link href="/admin/data" className="hover:text-sage-bright">
+            Data
+          </Link>
+        </div>
+
+        {/* その他ツール（1行・小） */}
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-brand-cream/55">
+          <span className="text-[10px] tracking-[0.2em] uppercase">その他</span>
           {[
+            { href: "/admin/articles", label: "Articles" },
+            { href: "/admin/media", label: "Media" },
             { href: "/admin/checks", label: "Checks" },
             { href: "/admin/asks", label: "Asks" },
             { href: "/admin/guides", label: "Guides" },
@@ -343,17 +216,43 @@ export default function StudioPage() {
             { href: "/admin/tools/eval-thread", label: "Eval" },
             { href: "/admin/tools/letter", label: "Letter" },
           ].map((it) => (
-            <Link key={it.href} href={it.href} className="text-ink hover:text-brand">
+            <Link key={it.href} href={it.href} className="hover:text-sage-bright">
               {it.label}
             </Link>
           ))}
-        </nav>
-      </div>
+        </div>
 
-      <footer className="mt-8 text-[12px] text-sub-gray leading-[1.9]">
-        Threads の閲覧数・承認は <code className="text-[11px]">apps/threads/admin</code>。
-        GA4 / Search Console は画面内埋め込み不可のため外部リンク（ライブ数値の取り込みは API 連携で対応可）。
-      </footer>
+        <p className="mt-5 text-[10px] text-brand-cream/40 leading-[1.7]">
+          配信したら studio.ts の該当動画に distributed / stage を記入。GA4・Search Console は
+          埋め込み不可のため外部リンク（数字の画面内表示は API 連携で対応可）。
+        </p>
+      </div>
     </div>
+  );
+}
+
+// ── パネル（深緑上の薄いカード） ─────────────────────────────────
+function Panel({
+  title,
+  badge,
+  action,
+  children,
+}: {
+  title: string;
+  badge?: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-xl border border-brand-cream/12 bg-brand-cream/[0.04] p-4">
+      <div className="mb-3 flex items-baseline justify-between gap-2">
+        <h2 className="font-mincho text-[15px] text-brand-cream">{title}</h2>
+        {badge !== undefined ? (
+          <span className="text-[12px] text-sage tabular-nums">{badge}件</span>
+        ) : null}
+        {action}
+      </div>
+      {children}
+    </section>
   );
 }
