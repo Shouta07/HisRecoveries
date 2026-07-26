@@ -7,7 +7,7 @@
 //   ・各ステップの読みもの（記事）
 // をその場で組んで返す。相談・体験を経て、これをパーソナライズする建付け。
 // 記事データは重いので server（page.tsx）で組み立て、props で受け取る。
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
 import {
@@ -18,6 +18,7 @@ import {
   prefecturesByRegion,
   type PlanInput,
 } from "@/lib/planner";
+import { occasionById, type OccasionId } from "@/lib/occasions";
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Sans', system-ui, sans-serif",
@@ -36,25 +37,56 @@ const AREA_LABEL: Record<string, string> = {
   mind: "睡眠・気分・習慣",
 };
 
-export default function PackagePlanner({ articles }: { articles: Record<string, DiagArticle[]> }) {
+export default function PackagePlanner({
+  articles,
+  occasionId = null,
+  onClearOccasion,
+}: {
+  articles: Record<string, DiagArticle[]>;
+  /** 上の OccasionGrid で選ばれた人生シーン */
+  occasionId?: OccasionId | null;
+  onClearOccasion?: () => void;
+}) {
   const [pref, setPref] = useState("");
   const [age, setAge] = useState("");
   const [picked, setPicked] = useState<string[]>([]);
   const [text, setText] = useState("");
+  const [date, setDate] = useState("");
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const regions = useMemo(() => prefecturesByRegion(), []);
-  const ready = pref !== "" && age !== "" && (picked.length > 0 || text.trim().length > 0);
+  const occasion = occasionById(occasionId);
+
+  // シーンが選ばれたら「やりたいこと」を先に埋めておく（ゼロから選ばせない）。
+  // 埋めたあとはユーザーが自由に外せる — 押し付けにはしない。
+  useEffect(() => {
+    if (!occasion) return;
+    setPicked(occasion.goalKeys);
+    setDone(false);
+  }, [occasion?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // シーンを選んでいれば、それだけで組める（住まいと年齢のみ必須）。
+  const ready = pref !== "" && age !== "" && (picked.length > 0 || text.trim().length > 0 || Boolean(occasion));
 
   const input: PlanInput = {
     prefectureId: pref,
     age: Number(age),
     goalKeys: picked,
     text,
+    occasion: occasion
+      ? { label: occasion.headline, modules: occasion.modules, flowLead: occasion.flowLead }
+      : undefined,
+    targetDate: date || undefined,
   };
   // 入力が揃うまでは計算しない（初期表示のコストをゼロに）。
-  const plan = useMemo(() => (done ? composePlan(input) : null), [done, pref, age, picked, text]); // eslint-disable-line react-hooks/exhaustive-deps
+  const plan = useMemo(
+    () => (done ? composePlan(input) : null),
+    [done, pref, age, picked, text, date, occasion?.id], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  // 日付入力の下限＝今日（過去日を選ばせない）。
+  const todayISO = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   function toggle(key: string) {
     setPicked((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
@@ -94,6 +126,53 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
           {!done || !plan ? (
             /* ══════════ 入力 ══════════ */
             <div className="px-6 sm:px-9 py-7 sm:py-8">
+              {/* 選ばれた人生シーン — 何のために組んでいるかを、入力中ずっと見せておく */}
+              {occasion && (
+                <div className="mb-6 rounded-[1.1rem] bg-[#eef3ea] border border-[#85AB8B]/35 px-4 py-3.5">
+                  <div className="flex items-start gap-3">
+                    <span aria-hidden className="mt-0.5 font-mono text-[10.5px] tracking-[0.14em] text-[#85AB8B] shrink-0">
+                      {occasion.no}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="text-[13px] font-bold text-[#16241A] leading-[1.5]">
+                        {occasion.job}
+                      </div>
+                      <p className="mt-0.5 text-[11.5px] text-[#4b5b47] leading-[1.7]">
+                        「{occasion.purpose}」から逆算して組みます。
+                      </p>
+                    </div>
+                    {onClearOccasion && (
+                      <button
+                        type="button"
+                        onClick={onClearOccasion}
+                        className="ml-auto shrink-0 text-[11px] font-semibold text-[#6b7a66] underline underline-offset-4 hover:text-[#3d5638] transition-colors"
+                      >
+                        変える
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 現在の障害 — Job と診断のあいだ。ここで初めて「悩み」が出てくるが、
+                      自分で認めるのではなく、こちらが先に言い当てる形にする。 */}
+                  <div className="mt-3 pt-3 border-t border-[#85AB8B]/30">
+                    <div className="text-[10.5px] font-bold tracking-[0.08em] text-[#3d5638] mb-2">
+                      ここで、よく壁になるもの
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {occasion.obstacles.map((o) => (
+                        <span key={o} className="rounded-full bg-white/80 border border-[#85AB8B]/30 px-2.5 py-1 text-[11px] text-[#3a423a]">
+                          {o}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-[11px] text-[#6b7a66] leading-[1.7]">
+                      当てはまるかは、下の入力から判断します。
+                      <span className="font-semibold text-[#3d5638]">全部やる必要はありません。</span>
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* ①都道府県 ②年齢 */}
               <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 sm:gap-5">
                 <div>
@@ -169,6 +248,28 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                   })}
                 </div>
 
+                {/* ④その日（締切がある シーンだけ）— 逆算の起点 */}
+                {occasion?.dated && (
+                  <div className="mt-5">
+                    <label htmlFor="planner-date" className="block text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-2">
+                      ④ {occasion.dateLabel ?? "その日は、いつですか"}
+                    </label>
+                    <input
+                      id="planner-date"
+                      type="date"
+                      min={todayISO}
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full sm:w-[16rem] rounded-[0.9rem] border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[14px] text-[#1f2a1d] focus:border-[#3d5638] focus:outline-none"
+                    />
+                    <p className="mt-2 text-[11px] text-[#9aa79a] leading-[1.7]">
+                      日付を入れると、その日から逆算した進め方と、
+                      <span className="font-semibold text-[#6b7a66]">間に合わないものは「間に合わない」と</span>
+                      お伝えします。
+                    </p>
+                  </div>
+                )}
+
                 <label htmlFor="planner-text" className="block mt-5 text-[12px] font-semibold text-[#6b7a66] mb-2">
                   言葉で書いてもOK（外せない場面・期限など）
                 </label>
@@ -219,6 +320,11 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                 {plan.occasions.map((o) => (
                   <span key={o} className="rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[11.5px] font-semibold">{o}</span>
                 ))}
+                {plan.deadline && (
+                  <span className="rounded-full bg-[#3d5638] text-[#EDF1E8] px-3 py-1 text-[11.5px] font-bold">
+                    {plan.deadline.label}
+                  </span>
+                )}
               </div>
 
               {/* 束ね方 */}
@@ -227,6 +333,44 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                   <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-1.5">束ね方</div>
                   <p className="text-[13px] leading-[1.9] font-medium">{plan.synthesis}</p>
                   <p className="mt-2 text-[12px] leading-[1.9] text-[#C9D2C4]">{plan.band.label}のあなたへ：{plan.band.emphasis}</p>
+                </div>
+              )}
+
+              {/* ── その日からの逆算（日付を入れたときだけ） ── */}
+              {plan.deadline && (
+                <div className="mt-5 rounded-[1.1rem] border border-[#85AB8B]/40 bg-white overflow-hidden">
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3.5 bg-[#eef3ea] border-b border-[#85AB8B]/25">
+                    <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#3d5638]">Countdown</span>
+                    <span className="text-[14.5px] font-bold text-[#16241A]" style={HEAD}>{plan.deadline.label}</span>
+                  </div>
+
+                  <ol className="divide-y divide-[#1f2a1d]/8">
+                    {plan.deadline.milestones.map((m, i) => (
+                      <li key={`${m.when}-${i}`} className="flex items-start gap-3 px-5 py-3">
+                        <span aria-hidden className="mt-0.5 shrink-0 grid place-items-center w-5 h-5 rounded-full bg-[#16241A] text-[#EDF1E8] font-mono text-[10px] font-bold">
+                          {i + 1}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="text-[12px] font-bold text-[#3d5638] leading-[1.6]">{m.when}</div>
+                          <p className="text-[12.5px] text-[#3a423a] leading-[1.75]">{m.what}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+
+                  {/* 間に合わないものは、黙って混ぜずに先に言い切る */}
+                  {plan.deadline.warnings.length > 0 && (
+                    <div className="px-5 py-4 bg-[#fbf7ee] border-t border-[#d8c9a8]">
+                      <div className="text-[11px] font-bold tracking-[0.06em] text-[#8a6d3b] mb-2">
+                        その日には、間に合わないもの
+                      </div>
+                      <ul className="space-y-2">
+                        {plan.deadline.warnings.map((w) => (
+                          <li key={w} className="text-[12px] text-[#6b5a37] leading-[1.85]">・{w}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
 

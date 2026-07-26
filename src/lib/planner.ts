@@ -18,16 +18,18 @@ export type Hub = {
   city: string;
   /** 編成のリードタイム（正直に出す） */
   lead: string;
+  /** 同じリードタイムの日数表現（「その日」からの逆算に使う） */
+  leadDays: number;
 };
 
 export const hubs: Record<HubId, Hub> = {
-  tokyo: { id: "tokyo", city: "東京", lead: "常設。最短2週間で編成できます。" },
-  osaka: { id: "osaka", city: "大阪", lead: "編成に約3週間いただきます。" },
-  nagoya: { id: "nagoya", city: "名古屋", lead: "編成に約3週間いただきます。" },
-  fukuoka: { id: "fukuoka", city: "福岡", lead: "編成に約3週間いただきます。" },
-  sapporo: { id: "sapporo", city: "札幌", lead: "出張チームでの編成。約4週間いただきます。" },
-  sendai: { id: "sendai", city: "仙台", lead: "出張チームでの編成。約4週間いただきます。" },
-  hiroshima: { id: "hiroshima", city: "広島", lead: "出張チームでの編成。約4週間いただきます。" },
+  tokyo: { id: "tokyo", city: "東京", lead: "常設。最短2週間で編成できます。", leadDays: 14 },
+  osaka: { id: "osaka", city: "大阪", lead: "編成に約3週間いただきます。", leadDays: 21 },
+  nagoya: { id: "nagoya", city: "名古屋", lead: "編成に約3週間いただきます。", leadDays: 21 },
+  fukuoka: { id: "fukuoka", city: "福岡", lead: "編成に約3週間いただきます。", leadDays: 21 },
+  sapporo: { id: "sapporo", city: "札幌", lead: "出張チームでの編成。約4週間いただきます。", leadDays: 28 },
+  sendai: { id: "sendai", city: "仙台", lead: "出張チームでの編成。約4週間いただきます。", leadDays: 28 },
+  hiroshima: { id: "hiroshima", city: "広島", lead: "出張チームでの編成。約4週間いただきます。", leadDays: 28 },
 };
 
 /* ────────────────────────── 都道府県 ────────────────────────── */
@@ -150,6 +152,14 @@ export type PlanModule = {
   medical?: boolean;
   /** オンラインで完結できる */
   online?: boolean;
+  /**
+   * 効果が出るまでに要る日数の目安。「その日」が決まっているとき、
+   * 間に合うか／間に合わないかを正直に切り分けるために使う。
+   * 未設定＝当日その場で効くもの（服・撮影など）。
+   */
+  leadDays?: number;
+  /** 間に合わないときに、代わりに何ができるか */
+  ifLate?: string;
 };
 
 // 配列の順序＝当日の並び順。「土台 → 個別 → 仕上げ（撮影）」。
@@ -189,6 +199,8 @@ export const planModules: PlanModule[] = [
     why: "進行性なので、当日の前に現在地だけ先に押さえます。",
     flow: "薄毛の現在地を、先に押さえる",
     medical: true,
+    leadDays: 120,
+    ifLate: "薄毛の治療は、効果が見えるまでに3〜6ヶ月かかります。その日には間に合いません。当日は髪型と分け目で対応し、治療は当日の後から始めるのが現実的です。",
   },
   {
     id: "skin-medical",
@@ -202,6 +214,8 @@ export const planModules: PlanModule[] = [
     why: "跡と新しいものは分けて考えます。ケアの前に切り分けを。",
     flow: "肌は、医療が要る部分だけ切り分ける",
     medical: true,
+    leadDays: 60,
+    ifLate: "肌のターンオーバーは1周期およそ1ヶ月。その日までに質感を変えるには足りません。当日は下地づくりとメイクで整えます。",
   },
   {
     id: "hair-style",
@@ -243,6 +257,8 @@ export const planModules: PlanModule[] = [
     phase: "day",
     minutes: 45,
     price: 15000,
+    leadDays: 150,
+    ifLate: "脱毛は複数回の照射が要るため、その日までに完了しません。当日は形を整えるところまでで、減らすのは当日の後から。",
     what: "整える／減らす／そのまま——目的から方針を決め、必要なら提携先の選択肢も中立に。",
     why: "正解はひとつではないので、目的から先に決めます。",
     flow: "ヒゲ・体毛は、目的から方針を決める",
@@ -437,6 +453,29 @@ export type PlanInput = {
   goalKeys: string[];
   /** やりたいこと（自由記述） */
   text?: string;
+  /**
+   * 人生シーン（lib/occasions.ts で選ばれたもの）を、素のデータで受け取る。
+   * planner は occasions を import しない（依存を一方向に保つ）。
+   */
+  occasion?: { label: string; modules: string[]; flowLead: string };
+  /** 「その日」。YYYY-MM-DD。締切からの逆算に使う */
+  targetDate?: string;
+  /** 逆算の基準日（テスト用。省略時は今日） */
+  today?: Date;
+};
+
+/** 「その日」が決まっているときの、間に合う／間に合わないの判定 */
+export type Deadline = {
+  /** 残り日数 */
+  days: number;
+  /** 表示用（例：「結婚式まで、あと164日」） */
+  label: string;
+  /** 編成のリードタイムに対して足りているか */
+  bookable: boolean;
+  /** 間に合わないものについての、正直な申し送り */
+  warnings: string[];
+  /** 逆算で「いつまでに何を」 */
+  milestones: { when: string; what: string }[];
 };
 
 export type Plan = {
@@ -450,6 +489,8 @@ export type Plan = {
   synthesis: string;
   /** 読み取った場面 */
   occasions: string[];
+  /** 「その日」が入力されたときだけ */
+  deadline?: Deadline;
   modules: PlanModule[];
   days: PlanDay[];
   /** 当日の合計（分） */
@@ -501,6 +542,61 @@ function layoutDay(mods: PlanModule[], startMin: number): PlanSlot[] {
   return slots;
 }
 
+/**
+ * 「その日」からの逆算。
+ *
+ * ここでの姿勢は、他の注記（提供範囲外は黙って落とさない）と同じ。
+ * 間に合わないものを黙って構成に混ぜず、「間に合いません。代わりにこうします」と
+ * 先に言い切る。売上より、当日に裏切らないことを優先する。
+ */
+function computeDeadline(
+  input: PlanInput,
+  modules: PlanModule[],
+  hub: Hub,
+  occasionLabel: string | undefined,
+): Deadline | undefined {
+  if (!input.targetDate) return undefined;
+  const target = new Date(`${input.targetDate}T00:00:00`);
+  if (Number.isNaN(target.getTime())) return undefined;
+
+  const base = input.today ?? new Date();
+  const today = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+  const days = Math.round((target.getTime() - today.getTime()) / 86_400_000);
+  if (days < 0) return undefined;
+
+  const what = occasionLabel ?? "その日";
+  const label = days === 0 ? `${what}は、今日です` : `${what}まで、あと${days}日`;
+
+  const warnings: string[] = [];
+  const bookable = days >= hub.leadDays;
+  if (!bookable) {
+    warnings.push(
+      `${hub.city}での編成には${hub.leadDays}日ほどいただきます。あと${days}日だと、当日の枠をお約束できないことがあります。無料相談で、最短の日程と「間に合う構成」に組み直します。`,
+    );
+  }
+  for (const m of modules) {
+    if (m.leadDays && days < m.leadDays && m.ifLate && !warnings.includes(m.ifLate)) {
+      warnings.push(m.ifLate);
+    }
+  }
+
+  // 逆算の節目。構成に入っているものだけを並べる。
+  const milestones: { when: string; what: string }[] = [];
+  milestones.push({ when: "今日から", what: "オンラインで現在地を確定（無料相談・印象カウンセリング）" });
+  for (const m of modules) {
+    if (!m.leadDays) continue;
+    if (days >= m.leadDays) {
+      milestones.push({ when: `その日の${m.leadDays}日前までに`, what: `${m.name}を開始` });
+    }
+  }
+  if (modules.some((m) => m.phase === "day")) {
+    milestones.push({ when: "その日の2〜4週間前", what: "当日パッケージ（髪・肌・服・撮影）" });
+    milestones.push({ when: "その日の3〜7日前", what: "髪型・眉の最終調整（直前すぎると馴染みません）" });
+  }
+
+  return { days, label, bookable, warnings, milestones };
+}
+
 export function composePlan(input: PlanInput): Plan {
   const prefecture =
     prefectures.find((p) => p.id === input.prefectureId) ?? prefectures.find((p) => p.id === "tokyo")!;
@@ -519,6 +615,13 @@ export function composePlan(input: PlanInput): Plan {
 
   const occasions: string[] = [];
   const notes: string[] = [];
+
+  // シーンは自由記述より優先。先頭に置くことで、構成名の見出しになる。
+  if (input.occasion) {
+    input.occasion.modules.forEach((id) => picked.add(id));
+    occasions.push(input.occasion.label);
+  }
+
   if (text) {
     for (const rule of TEXT_RULES) {
       if (!rule.re.test(text)) continue;
@@ -651,13 +754,19 @@ export function composePlan(input: PlanInput): Plan {
   const priceFrom = modules.reduce((s, m) => s + m.price, 0);
 
   // モジュール順（＝整える順番）そのままを一文にする。
+  // シーンが選ばれていれば、その一文を頭に置く（なぜこの順なのかが目的から説明される）。
   const parts = modules.map((m) => m.flow).filter((f): f is string => Boolean(f));
-  const synthesis =
+  const flowBody =
     parts.length >= 2
       ? `${parts.join(" → ")}。この順番で組みました。土台から順に積むと、後の一手がよく効きます。`
       : parts.length === 1
         ? `まずは「${parts[0]}」に絞って組みました。あれもこれも、はやりません。`
         : "";
+  const synthesis = input.occasion ? `${input.occasion.flowLead}${flowBody ? ` ${flowBody}` : ""}` : flowBody;
+
+  /* ── 「その日」からの逆算 ── */
+  // warnings は専用ブロックで見せるので、notes には混ぜない（同じ文言を二度出さない）。
+  const deadline = computeDeadline(input, modules, hub, occasions[0]);
 
   const suggestions = band.suggest
     .filter((id) => !picked.has(id))
@@ -691,6 +800,7 @@ export function composePlan(input: PlanInput): Plan {
     title,
     synthesis,
     occasions,
+    deadline,
     modules,
     days,
     dayMinutes,
@@ -705,6 +815,8 @@ export function composePlan(input: PlanInput): Plan {
 export function planToText(plan: Plan, input: PlanInput): string {
   const lines: string[] = [];
   lines.push(`【${plan.title}】`);
+  if (input.occasion) lines.push(`目的：${input.occasion.label}`);
+  if (plan.deadline) lines.push(`その日：${input.targetDate}（${plan.deadline.label}）`);
   lines.push(`お住まい：${plan.prefecture.name} ／ 年齢：${input.age}歳 ／ 開催拠点：${plan.hub.city}`);
   const goalLabels = goals.filter((g) => input.goalKeys.includes(g.key)).map((g) => g.label);
   if (goalLabels.length) lines.push(`やりたいこと：${goalLabels.join("、")}`);
@@ -721,5 +833,15 @@ export function planToText(plan: Plan, input: PlanInput): string {
     lines.push(`[${d.label}｜${d.place}]`);
     d.slots.forEach((s) => lines.push(`  ${s.time ? `${s.time} ` : ""}${s.title}${s.dur ? `（${s.dur}）` : ""}`));
   });
+  if (plan.deadline) {
+    lines.push("");
+    lines.push(`■ 逆算（${plan.deadline.label}）`);
+    plan.deadline.milestones.forEach((m) => lines.push(`・${m.when}：${m.what}`));
+    if (plan.deadline.warnings.length) {
+      lines.push("");
+      lines.push("■ その日には、間に合わないもの");
+      plan.deadline.warnings.forEach((w) => lines.push(`・${w}`));
+    }
+  }
   return lines.join("\n");
 }

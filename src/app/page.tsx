@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
-import PackagePlanner from "@/components/PackagePlanner";
+import SceneFlow from "@/components/SceneFlow";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -112,7 +112,7 @@ export default function HomePage() {
               style={{ ...HERO_HEAD, fontWeight: 800 }}
             >
               <span className="block max-w-[640px] mx-auto">
-                もっといい男に、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
+                理想の男に、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
               </span>
             </h1>
           </div>
@@ -120,9 +120,9 @@ export default function HomePage() {
           {/* サービスの定義＝「悩み」ではなく「なりたい姿」から逆算するコンシェルジュ。
               改行は文節単位（inline-block）で、狭い画面でも語の途中で折れないようにする。 */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
-            <span className="inline-block">恋愛、仕事、人生の大切な瞬間。</span>{" "}
-            <span className="inline-block">あなたが<span className="font-semibold text-[#EDF1E8]">なりたい姿から逆算</span>し、</span>{" "}
-            <span className="inline-block">整える順番と必要なプロを設計する</span>{" "}
+            <span className="inline-block">恋愛、仕事、人生の節目。</span>{" "}
+            <span className="inline-block">あなたが<span className="font-semibold text-[#EDF1E8]">叶えたい未来から逆算</span>し、</span>{" "}
+            <span className="inline-block">必要な変化の順番を設計する</span>{" "}
             <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">男性ウェルネスコンシェルジュ</span>。</span>
           </p>
 
@@ -139,7 +139,7 @@ export default function HomePage() {
           </div>
 
           {/* 一次CTA＝診断ツールへ（相談は下部の追従バーに集約） */}
-          <a href="#diagnosis" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
+          <a href="#occasions" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
             30秒で「あなたのパッケージ」を組む <span aria-hidden>→</span>
           </a>
 
@@ -189,9 +189,10 @@ export default function HomePage() {
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
-        {/* ① 診断の入口 — サイトを"道具"にする中核。都道府県・年齢・やりたいこと→
-            パッケージ編成＋立地に合わせた日程プラン＋各ステップの記事→相談でパーソナライズ。 */}
-        <PackagePlanner articles={diagnosisArticles} />
+        {/* ① 入口 — 人生シーン（目的）→ パッケージ編成 の一続き。
+            悩みではなく「何のために整えるか」から入り、住まい・年齢・（締切）を足して
+            構成＋日程プラン＋各ステップの記事をその場で返す。相談でパーソナライズ。 */}
+        <SceneFlow articles={diagnosisArticles} />
 
         {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
         <StepsSection />
@@ -232,6 +233,7 @@ export default function HomePage() {
               <div>
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">サービス</div>
                 <ul className="space-y-2 text-[13px] text-[#4b5b47]">
+                  <li><a href="#occasions" className="hover:text-[#1f2a1d] transition-colors">目的から始める</a></li>
                   <li><a href="#diagnosis" className="hover:text-[#1f2a1d] transition-colors">パッケージを組む（無料）</a></li>
                   <li><Link href="/recover" className="hover:text-[#1f2a1d] transition-colors">Recover｜取り戻す</Link></li>
                   <li><Link href="/refine" className="hover:text-[#1f2a1d] transition-colors">Refine｜深める</Link></li>
