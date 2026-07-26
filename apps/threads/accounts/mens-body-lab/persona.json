@@ -106,7 +106,8 @@
       "automated": {
         "description": "AI生成の連投。機会別(誕生日/記念日/結婚式/転職/父の日)にギフトとして勧める。",
         "frequency": "毎日1本(連投)",
-        "automation": "生成→自動連投",
+        "automation": "生成→承認→投稿",
+        "immediate_posting_forbidden": true,
         "preferred_time": ["21:00"]
       }
     }

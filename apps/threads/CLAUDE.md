@@ -50,6 +50,21 @@ select_hypothesis に allowed_types として渡る。スロット対象が全�
 **URLは誘導の1本だけ・必ず最後**）。`persona.posting.source_post_ratio`（現在0.5）の確率で
 在庫から単発1本を消費し、在庫切れなら連投へフォールバック。`writer.generate_source_post` が実装。
 
+## 2.5 承認ゲート（生成 → 人間の承認 → 投稿）
+
+`persona.posting.posting_types.automated.immediate_posting_forbidden = true` の間、
+`run_post_cycle` は**投稿せず承認キュー(`approvals.json`)に積む**。人間が承認した
+ものだけを `post-approved` が投稿する。実装: `core/approvals.py`（キューの状態機械）＋
+`core/main.py`（ゲート挿入 + `run_approved_cycle`）。`poster.check_approval_required`
+がフラグを読む。CLI:
+```
+python -m core.main post <acct> --mock       # 生成→承認キューへ（投稿しない）
+python -m core.main queue <acct>             # 承認待ち一覧（id確認）
+python -m core.main approve <acct> <id>      # 承認（却下は reject）
+python -m core.main post-approved <acct>     # 承認済みだけ投稿（cron想定）
+```
+※ cron を復活させる場合は「post=生成」「post-approved=投稿」の2本立てにする。
+
 ## 3. 主要ファイル地図
 
 ```

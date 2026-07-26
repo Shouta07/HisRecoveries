@@ -23,7 +23,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from core import supervisor, researcher, writer, poster, analyst, fetcher
+from core import supervisor, researcher, writer, poster, analyst, fetcher, approvals
 from core.monetize import (
     load_monetize_config,
     record_post_with_cta,
@@ -82,10 +82,108 @@ def _cleanup_old_logs() -> None:
         pass
 
 
-def run_post_cycle(
+def _payload_from_result(post_result: dict) -> dict:
+    """承認キューに積む/後で投稿するために必要な生成結果だけを抽出。"""
+    keys = (
+        "text", "posts", "is_thread", "link", "cta_used",
+        "hypothesis_id", "hypothesis_name", "topic_slug",
+        "buzz_score", "source_type",
+    )
+    payload = {k: post_result.get(k) for k in keys}
+    product = post_result.get("product")
+    payload["product"] = product.get("name") if isinstance(product, dict) else product
+    return payload
+
+
+def _publish_payload(
+    account_id: str, persona: dict, payload: dict, dry_run: bool = False,
+) -> dict | None:
+    """承認済み(または即時)の生成物を Threads へ投稿し、履歴用 result を返す。"""
+    logger = logging.getLogger(__name__)
+    is_thread = payload.get("is_thread", False)
+    thread_posts = payload.get("posts", []) or []
+    post_text = payload.get("text", "")
+    if dry_run:
+        logger.info("[DRY RUN] Would publish approved item (thread=%s)", is_thread)
+        result = {"thread_id": "dry_run", "dry_run": True}
+    else:
+        user_id = poster.get_user_id(account_id=account_id)
+        if is_thread:
+            result = poster.create_thread_chain(
+                user_id=user_id, posts=thread_posts, account_id=account_id,
+                persona=persona, link_attachment_last=payload.get("link") or None,
+            )
+        else:
+            result = poster.create_thread_post(
+                user_id=user_id, text=post_text, account_id=account_id,
+            )
+        if not result:
+            return None
+    result["text"] = post_text
+    result["cta_used"] = payload.get("cta_used")
+    result["product"] = payload.get("product")
+    result["buzz_score"] = payload.get("buzz_score", 0)
+    result["source_type"] = payload.get("source_type", "original")
+    result["hypothesis_id"] = payload.get("hypothesis_id")
+    result["hypothesis_name"] = payload.get("hypothesis_name")
+    result["topic_slug"] = payload.get("topic_slug")
+    result["link"] = payload.get("link") or payload.get("cta_used")
+    result["is_thread"] = is_thread
+    if is_thread:
+        result["post_count"] = len(thread_posts)
+    result["posted_at"] = result.get("posted_at") or datetime.now().isoformat()
+    return result
+
+
+def run_approved_cycle(
     account_id: str, dry_run: bool = False, mock: bool = False,
 ) -> bool:
-    """1回の投稿サイクルを実行（マネタイズ対応）"""
+    """承認済み(approved)の生成物だけを投稿する（cron 想定）。"""
+    logger = logging.getLogger(__name__)
+    try:
+        config = load_account_config(account_id)
+    except FileNotFoundError as e:
+        logger.error("Account config error: %s", e)
+        return False
+    account_dir = config["account_dir"]
+    persona = config["persona"]
+    poster.set_current_account(account_id)
+
+    pending_approved = approvals.list_items(account_dir, status="approved")
+    if not pending_approved:
+        logger.info("No approved items to post.")
+        return True
+
+    posted = 0
+    for item in pending_approved:
+        try:
+            result = _publish_payload(account_id, persona, item["payload"], dry_run=dry_run)
+        except Exception as e:  # noqa: BLE001 — 1件の失敗で全体を止めない
+            supervisor.record_error("poster", str(e))
+            logger.error("Publishing approved item %s failed: %s", item["id"], e)
+            continue
+        if not result:
+            logger.error("Publishing approved item %s returned no result.", item["id"])
+            continue
+        if not dry_run:
+            writer.save_to_history(account_dir, result)
+            approvals.set_status(account_dir, item["id"], "posted")
+            record_post_with_cta(result, result.get("cta_used"), None)
+        posted += 1
+        logger.info("Posted approved item %s: %s", item["id"], result["text"][:50])
+    logger.info("Approved cycle done: %d posted.", posted)
+    return True
+
+
+def run_post_cycle(
+    account_id: str, dry_run: bool = False, mock: bool = False,
+    approval_required: bool | None = None,
+) -> bool:
+    """1回の投稿サイクルを実行（マネタイズ対応）。
+
+    approval_required が True（または persona で immediate_posting_forbidden）なら、
+    生成物を投稿せず承認キューに積んで終了する（人間の承認を挟む）。
+    """
     logger = logging.getLogger(__name__)
 
     # アカウント設定を一括読み込み
@@ -185,6 +283,20 @@ def run_post_cycle(
     if not supervisor.preflight_check(account_id, history_path):
         logger.warning("Final check failed. Aborting.")
         return False
+
+    # 5.5 承認ゲート: 承認制なら投稿せずキューに積んで終了（人間の承認を挟む）
+    require_approval = (
+        approval_required if approval_required is not None
+        else poster.check_approval_required(persona)
+    )
+    if require_approval and not dry_run:
+        payload = _payload_from_result(post_result)
+        item_id = approvals.enqueue(account_dir, payload, account_id=account_id)
+        logger.info(
+            "=== Approval required: queued (id=%s), NOT posted. "
+            "承認後に `post-approved` で投稿されます ===", item_id,
+        )
+        return True
 
     # 6. Poster: 投稿
     logger.info("=== [6/8] Poster: publishing to Threads ===")
@@ -286,8 +398,50 @@ def cmd_post(args) -> int:
     else:
         logger.info("Starting post cycle for: %s", args.account)
 
-    success = run_post_cycle(args.account, dry_run=dry, mock=mock)
+    approval_required = True if getattr(args, "require_approval", False) else None
+    success = run_post_cycle(
+        args.account, dry_run=dry, mock=mock, approval_required=approval_required,
+    )
     return 0 if success else 1
+
+
+def cmd_queue(args) -> int:
+    """queue サブコマンド: 承認キューの一覧表示。"""
+    account_dir = load_account_config(args.account)["account_dir"]
+    status = getattr(args, "status", None)
+    items = approvals.list_items(account_dir, status=status)
+    if not items:
+        print("(承認キューは空です)")
+        return 0
+    for it in items:
+        txt = (it["payload"].get("text") or "").replace("\n", " ")[:60]
+        print(f'[{it["status"]:8}] {it["id"]}  {txt}')
+    return 0
+
+
+def cmd_approve(args) -> int:
+    """approve サブコマンド: 承認キューの1件を承認。"""
+    account_dir = load_account_config(args.account)["account_dir"]
+    ok = approvals.approve(account_dir, args.id, by=getattr(args, "by", None))
+    print("承認しました。post-approved で投稿されます。" if ok else "該当IDが見つかりません")
+    return 0 if ok else 1
+
+
+def cmd_reject(args) -> int:
+    """reject サブコマンド: 承認キューの1件を却下。"""
+    account_dir = load_account_config(args.account)["account_dir"]
+    ok = approvals.reject(account_dir, args.id, by=getattr(args, "by", None))
+    print("却下しました。" if ok else "該当IDが見つかりません")
+    return 0 if ok else 1
+
+
+def cmd_post_approved(args) -> int:
+    """post-approved サブコマンド: 承認済みだけを投稿（cron 想定）。"""
+    setup_logging(args.account, getattr(args, "verbose", False))
+    ok = run_approved_cycle(
+        args.account, dry_run=args.dry_run, mock=getattr(args, "mock", False),
+    )
+    return 0 if ok else 1
 
 
 def cmd_schedule(args) -> int:
@@ -805,9 +959,36 @@ def build_parser() -> argparse.ArgumentParser:
     p_post = sub.add_parser("post", help="1回の投稿サイクルを実行")
     p_post.add_argument("account", nargs="?", default="mens-body-lab")
     p_post.add_argument("--dry-run", action="store_true", help="実際には投稿しない")
+    p_post.add_argument("--require-approval", action="store_true",
+                        help="投稿せず承認キューに積む（人間の承認を挟む）")
     p_post.add_argument("--mock", action="store_true",
                         help="APIキーなしでパイプライン全体をテスト")
     p_post.set_defaults(func=cmd_post)
+
+    # 承認キュー: 一覧 / 承認 / 却下 / 承認済みを投稿
+    p_queue = sub.add_parser("queue", help="承認キューを一覧表示")
+    p_queue.add_argument("account", help="アカウントID")
+    p_queue.add_argument("--status", choices=list(approvals.STATUSES),
+                         help="状態で絞り込み（pending/approved/rejected/posted）")
+    p_queue.set_defaults(func=cmd_queue)
+
+    p_approve = sub.add_parser("approve", help="承認キューの1件を承認")
+    p_approve.add_argument("account", help="アカウントID")
+    p_approve.add_argument("id", help="承認する item id")
+    p_approve.add_argument("--by", help="承認者名（任意）")
+    p_approve.set_defaults(func=cmd_approve)
+
+    p_reject = sub.add_parser("reject", help="承認キューの1件を却下")
+    p_reject.add_argument("account", help="アカウントID")
+    p_reject.add_argument("id", help="却下する item id")
+    p_reject.add_argument("--by", help="却下者名（任意）")
+    p_reject.set_defaults(func=cmd_reject)
+
+    p_papproved = sub.add_parser("post-approved", help="承認済みだけを投稿（cron想定）")
+    p_papproved.add_argument("account", help="アカウントID")
+    p_papproved.add_argument("--dry-run", action="store_true", help="実際には投稿しない")
+    p_papproved.add_argument("--mock", action="store_true", help="モック（互換用）")
+    p_papproved.set_defaults(func=cmd_post_approved)
 
     # schedule
     p_sched = sub.add_parser("schedule", help="スケジューラを起動")
