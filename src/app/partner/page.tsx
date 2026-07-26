@@ -200,7 +200,7 @@ export default function PartnerPage() {
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3d5638" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V9l8-5 8 5v11" /><path d="M9 20v-6h6v6" /><path d="M4 20h16" /></svg>
               </span>
               <div className="text-[14.5px] font-bold text-[#1f2a1d]" style={HEAD}>あなたへ、ご紹介</div>
-              <p className="mt-1.5 text-[11.5px] text-[#4b5b47] leading-[1.65]">順番が来た人を、<br />ベストなタイミングで。</p>
+              <p className="mt-1.5 text-[11.5px] text-[#4b5b47] leading-[1.65]">準備が整った人を、<br />ベストなタイミングで。</p>
             </div>
           </div>
 
