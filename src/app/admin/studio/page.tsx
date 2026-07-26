@@ -51,6 +51,14 @@ export default function StudioPage() {
             <p className="mt-1 text-[12px] text-brand-cream/55">
               在庫を見て、次に作るものを決める場所。
             </p>
+            <div className="mt-2 flex gap-4 text-[12px]">
+              <Link href="/admin/strategy" className="text-sage hover:text-sage-bright">
+                マーケ戦略 →
+              </Link>
+              <Link href="/admin/threads" className="text-sage hover:text-sage-bright">
+                Threads 予定 →
+              </Link>
+            </div>
           </div>
           <div className="flex gap-6 sm:gap-9">
             {kpis.map((k) => (
