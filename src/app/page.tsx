@@ -117,13 +117,13 @@ export default function HomePage() {
             </h1>
           </div>
 
-          {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
+          {/* サービスの定義＝「悩み」ではなく「なりたい姿」から逆算するコンシェルジュ。
+              改行は文節単位（inline-block）で、狭い画面でも語の途中で折れないようにする。 */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
-            <span className="inline-block">「変わりたい」と思ったら、まずここへ。</span>{" "}
-            <span className="inline-block">同じ悩みを知る人間が、</span>
-            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">整える順番</span>を設計。</span>
-            <span className="inline-block">合うプロ・施設へつなぎ、</span>
-            <span className="inline-block">そのあとも<span className="font-semibold text-[#EDF1E8]">伴走</span>します。</span>
+            <span className="inline-block">恋愛、仕事、人生の大切な瞬間。</span>{" "}
+            <span className="inline-block">あなたが<span className="font-semibold text-[#EDF1E8]">なりたい姿から逆算</span>し、</span>{" "}
+            <span className="inline-block">整える順番と必要なプロを設計する</span>{" "}
+            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">男性ウェルネスコンシェルジュ</span>。</span>
           </p>
 
           {/* メカニズムを3ステップでスキャンできるように */}
