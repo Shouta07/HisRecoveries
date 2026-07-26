@@ -88,7 +88,7 @@ const FAQ = [
   },
   {
     q: "どんなお客さまが紹介されますか？",
-    a: "診断と改善プランを終えて、目的がはっきりした男性です。冷やかしや、意欲の低い方をむやみにお送りすることはありません。",
+    a: "診断と改善プランを終えて、目的がはっきりした男性です。目的の定まらない方をむやみにお送りすることはありません。",
   },
   {
     q: "途中でやめられますか？",
@@ -218,14 +218,14 @@ export default function PartnerPage() {
           <div className="text-center">
             <Eyebrow>Who We Work With — 募集パートナー</Eyebrow>
             <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#1f2a1d]" style={HEAD}>
-              男を「整える」プロ、すべてと。
+              男性を「整える」プロ、すべてと。
             </h2>
           </div>
           <div className="mt-14 grid md:grid-cols-2 gap-4">
             <TrackCard
               tag="Team — 一緒に体験をつくる"
               title="体験を届けるプロ"
-              desc="集客・予約・段取りは、すべてこちらで。あなたは腕をふるうだけ。お仕事ごとに報酬をお支払いし、取材記事であなたの発信も後押しします。"
+              desc="集客・予約・段取りは、すべてこちらで。あなたは、腕をふるうことに集中できます。お仕事ごとに報酬をお支払いし、取材記事であなたの発信も後押しします。"
               chips={PRO_CHIPS}
               money="お仕事ごとに報酬をお支払い"
               icon={<><circle cx="9" cy="8" r="3" /><circle cx="16.5" cy="9.2" r="2.2" /><path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" /><path d="M15 19.5c0-2 1.1-3.5 2.9-3.7" /></>}
@@ -250,10 +250,10 @@ export default function PartnerPage() {
           <div className="text-center">
             <Eyebrow dark>Why Join — 組むと、何がいいか</Eyebrow>
             <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#EDF1E8]" style={HEAD}>
-              あなたは、<span className="text-[#9ec4a3]">本業だけでいい。</span>
+              あなたは、<span className="text-[#9ec4a3]">得意に集中できる。</span>
             </h2>
             <p className="mt-6 text-[15px] leading-[1.95] text-[#C9D2C4]">
-              面倒なことは、こちらで引き受けます。あなたの得意に、集中してください。
+              集客も、予約も、事務も。面倒なことは、ぜんぶこちらで引き受けます。
             </p>
           </div>
           <div className="mt-14 grid sm:grid-cols-2 gap-4">
