@@ -433,6 +433,8 @@ export type PlanSlot = {
   note: string;
   /** 所要ラベル */
   dur?: string;
+  /** 所要（分）。日ごとの合計を出すために持つ */
+  minutes?: number;
   medical?: boolean;
   online?: boolean;
 };
@@ -526,7 +528,7 @@ function layoutDay(mods: PlanModule[], startMin: number): PlanSlot[] {
   let lunched = false;
   for (const m of mods) {
     if (!lunched && cursor >= 12 * 60 && cursor < 14 * 60) {
-      slots.push({ time: fmtTime(cursor), title: "昼休憩", note: "詰め込みません。ここで一度、力を抜きます。", dur: "60分" });
+      slots.push({ time: fmtTime(cursor), title: "昼休憩", note: "詰め込みません。ここで一度、力を抜きます。", dur: "60分", minutes: 60 });
       cursor += 60;
       lunched = true;
     }
@@ -535,6 +537,7 @@ function layoutDay(mods: PlanModule[], startMin: number): PlanSlot[] {
       title: m.name,
       note: m.what,
       dur: durLabel(m.minutes),
+      minutes: m.minutes,
       medical: m.medical,
     });
     cursor += m.minutes;
@@ -679,6 +682,7 @@ export function composePlan(input: PlanInput): Plan {
       title: m.name,
       note: m.what,
       dur: m.minutes ? durLabel(m.minutes) : "随時",
+      minutes: m.minutes,
       medical: m.medical,
       online: m.online,
     })),
@@ -745,6 +749,7 @@ export function composePlan(input: PlanInput): Plan {
         title: m.name,
         note: m.what,
         dur: durLabel(m.minutes),
+        minutes: m.minutes,
         online: m.online,
       })),
     ],

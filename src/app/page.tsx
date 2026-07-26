@@ -39,12 +39,12 @@ const VOICES_B = [
   "変わりたい、とは思ってる",
 ];
 
-// ヒーロー直下の推し3カラム（Oh my teeth の 通院不要/短期間/リーズナブル に相当）。
-// ポジティブな機能ラベルで、見出し「最短距離」を支える3本柱。
+// ヒーロー直下の推し3カラム。コンシェルジュとしての提供価値を、
+// 「〜ない」＝ユーザーがしなくて済むこと、で3本立てにする。
 const BURDENS = [
-  { k: "まとめて", t: "ひとつの窓口。", d: "髪・肌・体・心を、まとめて相談。" },
-  { k: "完全守秘", t: "知られない。", d: "実名不要・相互NDAで。" },
-  { k: "明朗会計", t: "売り込まれない。", d: "必要な分だけ・中立。費用は先に。" },
+  { k: "迷わない", d: "あなたに必要な改善の順番を設計します。" },
+  { k: "探さない", d: "信頼できる専門家・施設までつなぎます。" },
+  { k: "知られない", d: "匿名相談・守秘で安心して向き合えます。" },
 ];
 
 export default function HomePage() {
@@ -115,8 +115,7 @@ export default function HomePage() {
             {BURDENS.map((b) => (
               <div key={b.k} className="flex flex-col items-center text-center px-1.5 sm:px-4 py-4 sm:py-6">
                 <span className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[10px] sm:text-[11.5px] font-bold tracking-[0.06em]">{b.k}</span>
-                <div className="mt-2 sm:mt-3 text-[12px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.4]" style={MINCHO}>{b.t}</div>
-                <p className="mt-1 text-[9.5px] sm:text-[11.5px] text-[#6b7a66] leading-[1.55]">{b.d}</p>
+                <p className="mt-2 sm:mt-3 text-[10px] sm:text-[12.5px] text-[#3a423a] leading-[1.65]">{b.d}</p>
               </div>
             ))}
           </div>

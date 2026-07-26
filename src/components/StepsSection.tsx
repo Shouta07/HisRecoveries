@@ -14,7 +14,38 @@ const STEPS = [
   { n: "05", t: "いい男に、なる。", d: "気づけば、鏡の自分が変わっている。その状態を、続けられるかたちで。記録はあなたのもの。" },
 ];
 
-export default function StepsSection() {
+export default function StepsSection({ compact = false }: { compact?: boolean }) {
+  // compact＝結果ページ用。プランを見に来た人の主目的は判断であって手順の
+  // 通読ではないので、畳んで置く。JS なしで開閉できる details を使う。
+  if (compact) {
+    return (
+      <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+        <div className="max-w-[880px] mx-auto px-5 sm:px-9 pt-2 pb-6">
+          <details className="group rounded-[1.1rem] border border-[#1f2a1d]/10 bg-white overflow-hidden">
+            <summary className="flex items-center justify-between gap-3 px-4 py-3.5 cursor-pointer list-none">
+              <span className="text-[12.5px] font-bold text-[#1f2a1d]">
+                このあと、どう進みますか？
+                <span className="ml-2 font-normal text-[11.5px] text-[#6b7a66]">匿名15分の相談から、5ステップ</span>
+              </span>
+              <span aria-hidden className="shrink-0 text-[#9aa79a] text-[11px] group-open:rotate-180 transition-transform">▾</span>
+            </summary>
+            <ol className="px-4 pb-4 divide-y divide-[#1f2a1d]/8">
+              {STEPS.map((s) => (
+                <li key={s.n} className="flex items-baseline gap-3 py-2.5">
+                  <span aria-hidden className="shrink-0 font-mono text-[10.5px] font-bold text-[#85AB8B]">{s.n}</span>
+                  <div className="min-w-0">
+                    <div className="text-[12.5px] font-bold text-[#1f2a1d] leading-[1.5]">{s.t}</div>
+                    <p className="mt-0.5 text-[11.5px] text-[#6b7a66] leading-[1.8]">{s.d}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </details>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 sm:pt-14 pb-6">
