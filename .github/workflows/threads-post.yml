@@ -1,11 +1,13 @@
-name: HR Auto Post
+name: Threads Post (generate → queue)
+
+# monorepo のルートに置く稼働ワークフロー。実体は apps/threads。
+# 通常運用は Gemini 生成 → 承認ゲートにより approvals.json へ積むだけ（投稿しない）。
+# 実投稿は threads-post-approved.yml が承認済みを拾って行う。
 
 on:
   schedule:
-    # 毎日 09:00 JST = 00:00 UTC（朝）
-    - cron: "0 0 * * *"
-    # 毎日 21:00 JST = 12:00 UTC（夜）
-    - cron: "0 12 * * *"
+    - cron: "0 0 * * *"   # 09:00 JST
+    - cron: "0 12 * * *"  # 21:00 JST
   workflow_dispatch:
     inputs:
       dry_run:
@@ -16,6 +18,13 @@ on:
         description: "Mock mode (use template, no AI)"
         default: false
         type: boolean
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: apps/threads
 
 jobs:
   post:
@@ -47,11 +56,9 @@ jobs:
         env:
           GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
           GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
-        run: |
-          # スプレッドシートの編集を投稿前に取り込む（未設定なら何もしない）
-          python -m core.main sheets-sync pull mens-body-lab || true
+        run: python -m core.main sheets-sync pull mens-body-lab || true
 
-      - name: Post to Threads
+      - name: Generate (Gemini) → approval queue
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: "gemini-2.0-flash"
@@ -61,22 +68,19 @@ jobs:
           THREADS_KEYWORD_SEARCH_APPROVED: ${{ secrets.THREADS_KEYWORD_SEARCH_APPROVED }}
         run: |
           FLAGS=""
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
-            FLAGS="$FLAGS --dry-run"
-          fi
-          if [ "${{ inputs.mock }}" = "true" ]; then
-            FLAGS="$FLAGS --mock"
-          fi
-          python -m core.main post mens-body-lab --mock $FLAGS
+          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAGS="$FLAGS --dry-run"; fi
+          if [ "${{ inputs.mock }}" = "true" ]; then FLAGS="$FLAGS --mock"; fi
+          # 通常運用は --mock なし＝Gemini生成。承認ゲートONのため投稿はされない。
+          python -m core.main post mens-body-lab $FLAGS
 
-      - name: Save history
+      - name: Save queue + history
         if: success()
         run: |
           git config user.name "hisrecoveries-bot"
           git config user.email "hisrecoveries-bot@users.noreply.github.com"
-          # 履歴＋シートpullで更新された設定/テンプレも保存
           git add accounts/*/history.json accounts/*/experiments.json \
                   accounts/*/thread_templates.json accounts/*/content_sources.json \
-                  accounts/*/hypotheses.json accounts/*/persona.json data/ || true
-          git diff --cached --quiet || git commit -m "auto: update from sheet + history [skip ci]"
+                  accounts/*/hypotheses.json accounts/*/persona.json \
+                  accounts/*/approvals.json data/ || true
+          git diff --cached --quiet || git commit -m "auto: generate + queue [skip ci]"
           git push || true

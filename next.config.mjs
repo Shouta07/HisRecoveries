@@ -8,6 +8,16 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  experimental: {
+    // /admin/studio が apps/threads のスナップショット(承認キュー・履歴)を
+    // サーバー側で fs 読みするため、Vercel の関数バンドルに同梱する。
+    outputFileTracingIncludes: {
+      "/admin/studio": [
+        "./apps/threads/accounts/mens-body-lab/approvals.json",
+        "./apps/threads/accounts/mens-body-lab/history.json",
+      ],
+    },
+  },
   turbopack: {
     root: __dirname,
   },

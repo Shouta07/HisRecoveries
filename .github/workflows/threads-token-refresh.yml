@@ -1,11 +1,17 @@
-name: Token Auto Refresh
+name: Threads Token Auto Refresh
 
 on:
   schedule:
-    # 45日ごと（毎月1日と16日 UTC 00:00）に実行
-    # Threadsトークンは60日有効。余裕を持って45日周期で更新
+    # 45日周期（トークン60日有効、余裕を持って更新）
     - cron: "0 0 1,16 * *"
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: apps/threads
 
 jobs:
   refresh:
@@ -33,7 +39,6 @@ jobs:
           new_token = refresh_existing_long_lived_token()
           if new_token:
               print('::notice::Token refreshed successfully')
-              # GitHub Actions output for next step
               with open('$GITHUB_OUTPUT', 'a') as f:
                   f.write(f'new_token={new_token}\n')
                   f.write('refreshed=true\n')

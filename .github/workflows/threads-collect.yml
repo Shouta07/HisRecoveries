@@ -1,10 +1,16 @@
-name: Collect Metrics
+name: Threads Collect Metrics
 
 on:
   schedule:
-    # 毎朝 09:00 JST = 00:00 UTC
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *"  # 09:00 JST
   workflow_dispatch:
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: apps/threads
 
 jobs:
   collect:
@@ -32,7 +38,6 @@ jobs:
           GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
           GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
         run: |
-          # 過去投稿(手動分含む)をAPIから取り込み → 既存投稿の数値を更新
           python -m core.main import-history mens-body-lab --max-pages 5 || true
           python -m core.main collect mens-body-lab --days 3
 

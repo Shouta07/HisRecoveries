@@ -90,11 +90,14 @@ admin/
   server.py    管理ページ本体(標準ライブラリ)。dispatch()をlocal http.server と Vercelで共用
   storage.py   LocalStorage / GitHubStorage(環境変数で自動切替)
   README.md    起動・Vercelデプロイ手順
-.github/workflows/
-  post.yml       毎日22:30 JST 連投1本(mock)。KILL_SWITCHで停止可
-  collect.yml    毎朝 import-history + collect(数値取得)
-  token-refresh.yml 長命トークンの更新
-KILL_SWITCH      このファイルがあると post.yml は投稿しない(存在=停止中)
+../../.github/workflows/   ← 稼働ワークフローは monorepo ルートに置く（GitHubはルートのみ実行）
+  threads-post.yml          朝09/夜21 JST 生成→承認キュー(approvals.json)。※mock卒業済(Gemini生成)
+  threads-post-approved.yml 承認済みだけを投稿(3hおき)。承認が無ければ何もしない
+  threads-collect.yml       毎朝 import-history + collect(数値取得)
+  threads-token-refresh.yml 長命トークンの更新(45日周期)
+  （いずれも working-directory: apps/threads で実行）
+apps/threads/.github/workflows/  ← 休眠(参考): ci.yml / sheets-sync.yml / check-connection.yml
+KILL_SWITCH      このファイルがあると threads-post / post-approved は投稿しない(存在=停止中)
 pyproject.toml   [tool.vercel] entrypoint = "admin.server:Handler"
 vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 ```

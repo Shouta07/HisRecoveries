@@ -1,0 +1,64 @@
+name: Threads Post Approved (publish)
+
+# 承認済み(approved)の下書きだけを投稿する。承認が無ければ何もしない（安全）。
+
+on:
+  schedule:
+    - cron: "30 1,4,7,10,13 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (no actual post)"
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: apps/threads
+
+jobs:
+  post-approved:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: threads-post
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install python-dotenv gspread
+
+      - name: Check KILL_SWITCH
+        run: |
+          if [ -f KILL_SWITCH ]; then
+            echo "::warning::KILL_SWITCH is active. Skipping post-approved."
+            exit 0
+          fi
+
+      - name: Post approved items
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_APP_SECRET: ${{ secrets.THREADS_APP_SECRET }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+        run: |
+          FLAGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAGS="$FLAGS --dry-run"; fi
+          python -m core.main post-approved mens-body-lab $FLAGS
+
+      - name: Save queue + history
+        if: success()
+        run: |
+          git config user.name "hisrecoveries-bot"
+          git config user.email "hisrecoveries-bot@users.noreply.github.com"
+          git add accounts/*/approvals.json accounts/*/history.json || true
+          git diff --cached --quiet || git commit -m "auto: post approved + update queue/history [skip ci]"
+          git push || true
