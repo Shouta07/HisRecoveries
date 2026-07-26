@@ -42,3 +42,4 @@ packages/video/out/
 
 # VOICEVOX で生成するナレーション音声（大きいのでローカル生成・非コミット）
 packages/video/public/audio/
+packages/video/public/broll/

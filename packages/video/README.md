@@ -44,6 +44,21 @@ npm run voice -w @hr/video skincare        # speaker 既定=13(青山龍星)
 音声(`public/audio/`)は容量が大きいので gitignore（ローカル生成）。CI で音声付き
 書き出しをするなら、synth ステップを足すか wav を artifact 化する。
 
+## Playwright（サムネイル・素材キャプチャ）
+
+プリインストール Chromium を `playwright-core` で使う（ブラウザDLなし）。
+
+```bash
+# サムネイル(1280x720 PNG・YouTube/OGP)。文言は thumbnails.json。
+npm run thumb -w @hr/video skincare      # or all → out/thumb/<slug>.png
+
+# 素材キャプチャ(b-roll)。URLを縦画面でスクショ → public/broll/<name>.png
+npm run broll -w @hr/video https://www.hisrecoveries.com/areas/skin areas-skin
+```
+
+Chromeの実行ファイルは既定 `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`
+（`PW_CHROME` で上書き可）。`out/thumb`・`public/broll` は生成物なので gitignore。
+
 ## 構成
 
 | ファイル | 役割 |
