@@ -14,7 +14,15 @@ export type ConversionEvent =
   | "article_cta_click" // クリック: 記事下 CTA
   | "story_start" // 開始: Story 投稿フォーム
   | "story_submitted" // 完了: Story 投稿
-  | "membership_subscribe_click"; // クリック: Recovery Letters 購読
+  | "membership_subscribe_click" // クリック: Recovery Letters 購読
+  // ── Job（叶えたいこと）ファネル。どのJobが売れるかを判別するための一式。
+  //    どれも props.job に occasion / track の id を必ず載せる。
+  | "occasion_cta_click" // クリック: Job別LP → プランナー
+  | "job_select" // 選択: LP の Job カード／Recover・Refine
+  | "plan_submit" // 送信: 「パッケージを組む」
+  | "plan_view" // 表示: /plan（構成が組まれた）
+  | "plan_tab_view" // 切替: 構成／日程／読みもの
+  | "plan_consult_click"; // クリック: 結果ページから無料相談へ
 
 type Props = Record<string, string | number | boolean | undefined>;
 

@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import OccasionGrid from "@/components/OccasionGrid";
 import PackagePlanner from "@/components/PackagePlanner";
 import { occasions, tracks, type OccasionId } from "@/lib/occasions";
+import { track } from "@/lib/analytics";
 
 export default function SceneFlow() {
   const [occasionId, setOccasionId] = useState<OccasionId | null>(null);
@@ -26,6 +27,7 @@ export default function SceneFlow() {
 
   function pick(id: OccasionId) {
     setOccasionId(id);
+    track("job_select", { job: id });
     // 選んだら、そのまま組むところまで連れていく（選んで終わり、にしない）。
     if (typeof document !== "undefined") {
       document.getElementById("diagnosis")?.scrollIntoView({ behavior: "smooth", block: "start" });

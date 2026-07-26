@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { goals, prefecturesByRegion } from "@/lib/planner";
 import { occasionById, type OccasionId } from "@/lib/occasions";
 import { planQuery } from "@/lib/planQuery";
+import { track } from "@/lib/analytics";
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Sans', system-ui, sans-serif",
@@ -56,6 +57,14 @@ export default function PackagePlanner({
 
   function submit() {
     if (!ready) return;
+    track("plan_submit", {
+      job: occasion?.id ?? "none",
+      pref,
+      age: Number(age),
+      goals: picked.length,
+      has_date: Boolean(date),
+      has_text: text.trim().length > 0,
+    });
     router.push(
       `/plan?${planQuery({
         pref,

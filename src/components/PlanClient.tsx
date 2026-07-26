@@ -12,6 +12,7 @@ import PlanResult, { type DiagArticle } from "@/components/PlanResult";
 import { composePlan, type PlanInput } from "@/lib/planner";
 import { occasionById } from "@/lib/occasions";
 import { parsePlanQuery } from "@/lib/planQuery";
+import { track } from "@/lib/analytics";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -40,6 +41,19 @@ export default function PlanClient({ articles }: { articles: Record<string, Diag
 
   const plan = useMemo(() => (input ? composePlan(input) : null), [input]);
 
+  // 組み上がったら1回だけ計測。ここが「Jobごとに、実際にプランまで
+  // 到達した人」の母数になる（plan_submit は押した数、plan_view は着いた数）。
+  const jobId = occasionById(parsePlanQuery(search ?? "").occasion)?.id;
+  useEffect(() => {
+    if (!plan) return;
+    track("plan_view", {
+      job: jobId ?? "none",
+      price_from: plan.priceFrom,
+      shape: plan.shape,
+      days_left: plan.deadline?.days,
+    });
+  }, [plan, jobId]);
+
   if (search === null) {
     return <div className="min-h-[40vh] grid place-items-center text-[13px] text-[#6b7a66]">読み込んでいます…</div>;
   }
@@ -64,5 +78,5 @@ export default function PlanClient({ articles }: { articles: Record<string, Diag
     );
   }
 
-  return <PlanResult plan={plan} input={input} articles={articles} onReset={() => history.back()} />;
+  return <PlanResult plan={plan} input={input} articles={articles} job={jobId ?? "none"} onReset={() => history.back()} />;
 }

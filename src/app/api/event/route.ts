@@ -14,6 +14,14 @@ const ALLOWED_EVENTS = new Set([
   "article_cta_click",
   "story_start",
   "story_submitted",
+  "membership_subscribe_click",
+  // Job（叶えたいこと）ファネル
+  "occasion_cta_click",
+  "job_select",
+  "plan_submit",
+  "plan_view",
+  "plan_tab_view",
+  "plan_consult_click",
 ]);
 
 export async function POST(req: NextRequest) {

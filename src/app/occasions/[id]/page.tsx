@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ConsultLink from "@/components/ConsultLink";
+import TrackedCTA from "@/components/TrackedCTA";
 import { occasions, occasionById } from "@/lib/occasions";
 import { composePlan, formatYen } from "@/lib/planner";
 import { site } from "@/lib/site";
@@ -112,12 +113,14 @@ export default function OccasionPage({ params }: { params: { id: string } }) {
             ))}
           </div>
 
-          <Link
+          <TrackedCTA
             href={`/?occasion=${o.id}#diagnosis`}
+            event="occasion_cta_click"
+            eventProps={{ job: o.id, placement: "hero" }}
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-8 py-3.5 transition-colors"
           >
             30秒で、あなたの構成を組む <span aria-hidden>→</span>
-          </Link>
+          </TrackedCTA>
           <p className="mt-3 text-[11.5px] text-[#9FB0A0]">無料・匿名・登録不要／相互の秘密保持契約のもとで</p>
         </div>
       </section>
@@ -317,13 +320,19 @@ export default function OccasionPage({ params }: { params: { id: string } }) {
               登録不要・売り込みなしです。
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link
+              <TrackedCTA
                 href={`/?occasion=${o.id}#diagnosis`}
+                event="occasion_cta_click"
+                eventProps={{ job: o.id, placement: "footer" }}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-8 py-3.5 transition-colors"
               >
                 30秒で、構成を組む <span aria-hidden>→</span>
-              </Link>
-              <ConsultLink className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 hover:bg-white/[0.08] text-[#EDF1E8] text-[14px] font-bold px-8 py-3.5 transition-colors">
+              </TrackedCTA>
+              <ConsultLink
+                event="plan_consult_click"
+                eventProps={{ job: o.id, placement: "occasion_lp" }}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 hover:bg-white/[0.08] text-[#EDF1E8] text-[14px] font-bold px-8 py-3.5 transition-colors"
+              >
                 無料で相談する <span aria-hidden>→</span>
               </ConsultLink>
             </div>

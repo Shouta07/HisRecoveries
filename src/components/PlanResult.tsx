@@ -18,6 +18,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
+import { track } from "@/lib/analytics";
 import {
   formatYen,
   planToText,
@@ -61,11 +62,14 @@ export default function PlanResult({
   plan,
   input,
   articles,
+  job,
   onReset,
 }: {
   plan: Plan;
   input: PlanInput;
   articles: Record<string, DiagArticle[]>;
+  /** どの Job から来たか（計測用） */
+  job: string;
   /** 入力し直す（戻り先は呼び出し側が決める） */
   onReset: () => void;
 }) {
@@ -76,6 +80,7 @@ export default function PlanResult({
   // 下の内容だけが入れ替わって、切り替わったことに気づけない。
   function selectTab(next: Tab) {
     setTab(next);
+    track("plan_tab_view", { job, tab: next });
     tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   const [openModule, setOpenModule] = useState<string | null>(null);
@@ -435,7 +440,11 @@ export default function PlanResult({
               {formatYen(plan.priceFrom)}〜
             </div>
           </div>
-          <ConsultLink className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-5 py-2.5 transition-colors">
+          <ConsultLink
+            event="plan_consult_click"
+            eventProps={{ job, price_from: plan.priceFrom, days_left: plan.deadline?.days }}
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-5 py-2.5 transition-colors"
+          >
             無料相談 <span aria-hidden>→</span>
           </ConsultLink>
         </div>
