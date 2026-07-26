@@ -28,6 +28,22 @@ npm run render:all              # 全部まとめて
 3. Web の Studio に出すなら `src/lib/studio.ts` の `VIDEO_REGISTRY` にも1行。
 4. `npm run render:xxx`（`package.json` に1行足す）。
 
+## ナレーション（VOICEVOX）
+
+無音でも成立するが、VOICEVOX で音声を載せられる（`Audio` 対応済み）。
+
+```bash
+# 1) ローカルで VOICEVOX を起動（エンジンが http://127.0.0.1:50021 で待受）
+# 2) 台本 narration/<slug>.txt（1行1文）を合成 → public/audio/<slug>.wav
+npm run voice -w @hr/video skincare        # speaker 既定=13(青山龍星)
+#   話者変更: npm run voice -w @hr/video skincare 11
+# 3) data/<slug>.ts に  audioSrc: "audio/<slug>.wav"  を足す
+# 4) npm run render:skincare
+```
+
+音声(`public/audio/`)は容量が大きいので gitignore（ローカル生成）。CI で音声付き
+書き出しをするなら、synth ステップを足すか wav を artifact 化する。
+
 ## 構成
 
 | ファイル | 役割 |

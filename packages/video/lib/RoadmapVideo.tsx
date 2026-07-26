@@ -1,7 +1,9 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Audio,
   Sequence,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
   interpolate,
@@ -26,6 +28,11 @@ export type RoadmapData = {
   steps: RoadmapStep[];
   close: { lead: Line[]; punch: Line[] };
   tagline?: string; // 既定: 男の「変わりたい」に、伴走する。
+  /**
+   * ナレーション音声（VOICEVOX）。public/ からの相対パス（例 "audio/skincare.wav"）。
+   * scripts/voicevox.mjs で生成してから設定する。未設定なら無音。
+   */
+  audioSrc?: string;
 };
 
 // シーンの尺（フレーム）
@@ -210,6 +217,9 @@ export const RoadmapVideo: React.FC<{ data: RoadmapData }> = ({ data }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.bg }}>
       <Background />
+
+      {/* ナレーション（VOICEVOX）。audioSrc がある動画だけ音声を載せる。 */}
+      {data.audioSrc ? <Audio src={staticFile(data.audioSrc)} /> : null}
 
       {/* ① フック */}
       <Sequence durationInFrames={HOOK}>

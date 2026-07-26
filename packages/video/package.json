@@ -10,6 +10,7 @@
     "render:akanuke": "remotion render index.ts Akanuke out/akanuke.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",
     "render:skincare": "remotion render index.ts Skincare out/skincare.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",
     "render:shukan": "remotion render index.ts Shukan out/shukan.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",
-    "render:all": "npm run render:jibunmigaki && npm run render:akanuke && npm run render:skincare && npm run render:shukan"
+    "render:all": "npm run render:jibunmigaki && npm run render:akanuke && npm run render:skincare && npm run render:shukan",
+    "voice": "node scripts/voicevox.mjs"
   }
 }
