@@ -1,9 +1,9 @@
 export const site = {
   name: "His Recoveries",
   tagline: "From Complex to Confidence",
-  promise: "もっと、いい男へ。もっと、自分らしく。",
+  promise: "理想の男に、最短距離で。",
   description:
-    "男の「変わりたい」に、伴走する。髪・肌・体・心を、診断→整える順番の設計→あなたに合うプロ・施設へおつなぎし、そのあとも伴走します。相談は無料・完全守秘、費用は先に説明。押し売りはせず、医療機関から紹介料は受け取りません。",
+    "理想の男に、最短距離で。恋愛、仕事、人生の節目——あなたが叶えたい未来から逆算し、必要な変化の順番を設計する男性ウェルネスコンシェルジュ。髪・肌・体・心をまとめて診断し、合うプロ・施設へおつなぎして、そのあとも伴走します。相談は無料・完全守秘、費用は先に説明。押し売りはせず、医療機関から紹介料は受け取りません。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",
