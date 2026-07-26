@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "video:studio": "remotion studio remotion/index.ts",
-    "video:render": "remotion render remotion/index.ts Jibunmigaki out/jibunmigaki.mp4 --browser-executable=/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
+    "video:studio": "npm -w @hr/video run studio"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
@@ -39,5 +38,9 @@
     "remotion": "^4.0.499",
     "tailwindcss": "^3.4.6",
     "typescript": "^5.5.3"
-  }
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }
