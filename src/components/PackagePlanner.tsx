@@ -7,7 +7,7 @@
 //   ・各ステップの読みもの（記事）
 // をその場で組んで返す。相談・体験を経て、これをパーソナライズする建付け。
 // 記事データは重いので server（page.tsx）で組み立て、props で受け取る。
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
 import {
@@ -43,6 +43,8 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
+  // 結果に切り替わったとき、カードの頭まで戻す（押した位置に取り残さない）。
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const regions = useMemo(() => prefecturesByRegion(), []);
   const ready = pref !== "" && age !== "" && (picked.length > 0 || text.trim().length > 0);
@@ -60,9 +62,27 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
     setPicked((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   }
 
+  // カードの頭まで戻す。祖先に overflow-hidden があるため scrollIntoView は
+  // そこで吸われてしまう（window が動かない）。絶対座標で window を動かす。
+  function scrollToCard() {
+    requestAnimationFrame(() => {
+      const el = cardRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 80; // 固定ナビのぶん
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
+  }
+
+  function submit() {
+    setDone(true);
+    setCopied(false);
+    scrollToCard();
+  }
+
   function reset() {
     setDone(false);
     setCopied(false);
+    scrollToCard();
   }
 
   async function copyPlan() {
@@ -79,7 +99,7 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
   return (
     <section id="diagnosis" className="relative z-10 scroll-mt-20 bg-[#f4f6f2]">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-4">
-        <div className="rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
+        <div ref={cardRef} className="scroll-mt-20 rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
           {/* ヘッダー */}
           <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
             <div className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#85AB8B]">30秒・無料・匿名</div>
@@ -129,7 +149,7 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                       max={99}
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
-                      placeholder="34"
+                      placeholder="例：34"
                       className="w-full sm:w-[7.5rem] rounded-[0.9rem] border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[14px] text-[#1f2a1d] focus:border-[#3d5638] focus:outline-none"
                     />
                     <span className="text-[13px] text-[#6b7a66] shrink-0">歳</span>
@@ -140,7 +160,8 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
               {/* ③やりたいこと */}
               <div className="mt-6">
                 <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">③ やりたいこと（複数OK）</div>
-                <div className="flex flex-wrap gap-2.5">
+                {/* モバイルは2列グリッド。10個を縦一列に積むと、それだけで1画面を使ってしまう。 */}
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
                   {goals.map((g) => {
                     const on = picked.includes(g.key);
                     return (
@@ -149,7 +170,7 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                         type="button"
                         onClick={() => toggle(g.key)}
                         aria-pressed={on}
-                        className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] sm:text-[13.5px] font-semibold transition-colors ${
+                        className={`flex items-center gap-2 text-left rounded-[1.1rem] sm:rounded-full border px-3.5 sm:px-4 py-2.5 transition-colors ${
                           on
                             ? "bg-[#16241A] border-[#16241A] text-[#EDF1E8]"
                             : "bg-white border-[#1f2a1d]/15 text-[#3a423a] hover:border-[#3d5638]/50"
@@ -157,20 +178,21 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                       >
                         <span
                           aria-hidden
-                          className={`grid place-items-center w-4 h-4 rounded-full border ${on ? "border-[#9ec4a3] bg-[#9ec4a3]" : "border-[#1f2a1d]/25"}`}
+                          className={`shrink-0 grid place-items-center w-4 h-4 rounded-full border ${on ? "border-[#9ec4a3] bg-[#9ec4a3]" : "border-[#1f2a1d]/25"}`}
                         >
                           {on && (
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16241A" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                           )}
                         </span>
-                        {g.label}
+                        {/* 探すためのラベルなので名詞で短く。会話体はサイト全体のコピーで担う。 */}
+                        <span className="min-w-0 text-[13px] sm:text-[13.5px] font-bold leading-[1.45]">{g.short}</span>
                       </button>
                     );
                   })}
                 </div>
 
                 <label htmlFor="planner-text" className="block mt-5 text-[12px] font-semibold text-[#6b7a66] mb-2">
-                  言葉で書いてもOK（外せない場面・期限など）
+                  言葉で書いてもOK<span className="ml-1.5 font-normal text-[#9aa79a]">任意・外せない場面や期限など</span>
                 </label>
                 <textarea
                   id="planner-text"
@@ -185,7 +207,7 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
               <button
                 type="button"
                 disabled={!ready}
-                onClick={() => { setDone(true); setCopied(false); }}
+                onClick={submit}
                 className="mt-7 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full text-white text-[14.5px] font-bold px-8 py-3.5 transition-colors disabled:cursor-not-allowed"
                 style={{ backgroundColor: ready ? "#16241A" : "#9aa79a" }}
               >
@@ -206,20 +228,28 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
               <h3 className="text-[1.15rem] sm:text-[1.4rem] font-[800] leading-[1.5] text-[#1f2a1d]" style={HEAD}>
                 {plan.title}
               </h3>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                <span className="rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1 text-[11.5px] font-semibold">
-                  開催：{plan.hub.city}
-                </span>
-                <span className="rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1 text-[11.5px] font-semibold">
-                  {plan.shape === "two-day" ? "2日構成" : plan.shape === "stay-over" ? "1日完結（前泊推奨）" : "1日完結"}
-                </span>
-                <span className="rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1 text-[11.5px] font-semibold">
-                  費用の目安 {formatYen(plan.priceFrom)}〜
-                </span>
-                {plan.occasions.map((o) => (
-                  <span key={o} className="rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[11.5px] font-semibold">{o}</span>
+              {plan.occasions.length > 0 && (
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  {plan.occasions.map((o) => (
+                    <span key={o} className="rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[11.5px] font-semibold">{o}</span>
+                  ))}
+                </div>
+              )}
+
+              {/* 3点サマリー — 「どこで・何日・いくら」を最初に。ここだけ読めば分かる。 */}
+              <dl className="mt-4 grid grid-cols-3 rounded-[1.2rem] border border-[#1f2a1d]/10 bg-[#f6f8f4] divide-x divide-[#1f2a1d]/10 overflow-hidden">
+                {[
+                  { k: "どこで", v: plan.hub.city, sub: plan.prefecture.travel === 0 ? "移動なし" : `片道 約${Math.round(plan.prefecture.travel / 60 * 10) / 10}時間` },
+                  { k: "何日で", v: plan.shape === "two-day" ? "2日" : "1日", sub: plan.shape === "two-day" ? "詰めれば1日も可" : plan.shape === "stay-over" ? "前泊がおすすめ" : "完結します" },
+                  { k: "いくら", v: `${formatYen(plan.priceFrom)}〜`, sub: "目安・相談で確定" },
+                ].map((s) => (
+                  <div key={s.k} className="px-3 py-3.5 text-center">
+                    <dt className="text-[10.5px] font-bold tracking-[0.1em] text-[#9aa79a]">{s.k}</dt>
+                    <dd className="mt-1.5 text-[15px] sm:text-[17px] font-[800] text-[#16241A] leading-[1.3]" style={HEAD}>{s.v}</dd>
+                    <dd className="mt-1 text-[10.5px] text-[#6b7a66] leading-[1.5]">{s.sub}</dd>
+                  </div>
                 ))}
-              </div>
+              </dl>
 
               {/* 束ね方 */}
               {plan.synthesis && (
@@ -230,41 +260,7 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                 </div>
               )}
 
-              {/* ── 構成（含まれるもの・費用） ── */}
-              <div className="mt-6">
-                <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">この構成に含まれるもの</div>
-                <ul className="rounded-[1.1rem] border border-[#1f2a1d]/10 bg-[#f6f8f4] divide-y divide-[#1f2a1d]/8 overflow-hidden">
-                  {plan.modules.map((m) => (
-                    <li key={m.id} className="px-4 py-3.5">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="text-[13.5px] font-bold text-[#1f2a1d] leading-[1.6]" style={HEAD}>
-                            {m.name}
-                            {m.medical && (
-                              <span className="ml-2 align-middle rounded-full bg-[#e5f0ef] text-[#0f766e] px-2 py-0.5 text-[10px] font-bold">中立紹介</span>
-                            )}
-                            {m.online && (
-                              <span className="ml-2 align-middle rounded-full bg-white border border-[#1f2a1d]/12 text-[#6b7a66] px-2 py-0.5 text-[10px] font-bold">オンライン</span>
-                            )}
-                          </div>
-                          <p className="mt-1 text-[12px] text-[#3a423a] leading-[1.8]">{m.what}</p>
-                          <p className="mt-0.5 text-[11px] text-[#9aa79a] leading-[1.7]">{m.why}</p>
-                        </div>
-                        <div className="shrink-0 text-right">
-                          <div className="text-[12.5px] font-bold text-[#3d5638]">{m.price ? formatYen(m.price) : "無料"}</div>
-                          {m.priceNote && <div className="mt-0.5 text-[10px] text-[#9aa79a] max-w-[9rem] leading-[1.5]">{m.priceNote}</div>}
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                  <li className="px-4 py-3.5 bg-white flex items-center justify-between gap-3">
-                    <span className="text-[12.5px] font-bold text-[#1f2a1d]">合計の目安</span>
-                    <span className="text-[15px] font-[800] text-[#16241A]">{formatYen(plan.priceFrom)}〜</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* ── 日程プラン ── */}
+              {/* ── 日程プラン（何をするかの説明は、ここに一度だけ置く） ── */}
               <div className="mt-7">
                 <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">
                   {plan.prefecture.name}から動く、日程プラン
@@ -290,6 +286,9 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                               <div className="min-w-0">
                                 <div className="text-[12.5px] font-semibold text-[#1f2a1d] leading-[1.6]">
                                   {s.title}
+                                  {s.medical && (
+                                    <span className="ml-1.5 align-middle rounded-full bg-[#e5f0ef] text-[#0f766e] px-2 py-0.5 text-[10px] font-bold">中立紹介</span>
+                                  )}
                                   {s.dur && <span className="ml-2 text-[11px] font-normal text-[#9aa79a]">{s.dur}</span>}
                                 </div>
                                 <p className="mt-0.5 text-[11.5px] text-[#6b7a66] leading-[1.8]">{s.note}</p>
@@ -301,6 +300,28 @@ export default function PackagePlanner({ articles }: { articles: Record<string, 
                     </li>
                   ))}
                 </ol>
+              </div>
+
+              {/* ── 費用の内訳（項目名と金額だけ。説明は日程プラン側に一度だけ） ── */}
+              <div className="mt-7">
+                <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">費用の内訳（目安）</div>
+                <ul className="rounded-[1.1rem] border border-[#1f2a1d]/10 bg-[#f6f8f4] divide-y divide-[#1f2a1d]/8 overflow-hidden">
+                  {plan.modules.map((m) => (
+                    <li key={m.id} className="flex items-baseline justify-between gap-3 px-4 py-2.5">
+                      <span className="text-[12.5px] text-[#3a423a] leading-[1.6]">
+                        {m.name}
+                        {m.priceNote && <span className="block text-[10.5px] text-[#9aa79a] leading-[1.5]">{m.priceNote}</span>}
+                      </span>
+                      <span className="shrink-0 text-[12.5px] font-bold text-[#3d5638] tabular-nums">
+                        {m.price ? formatYen(m.price) : "無料"}
+                      </span>
+                    </li>
+                  ))}
+                  <li className="flex items-center justify-between gap-3 px-4 py-3.5 bg-white">
+                    <span className="text-[12.5px] font-bold text-[#1f2a1d]">合計の目安</span>
+                    <span className="text-[16px] font-[800] text-[#16241A] tabular-nums">{formatYen(plan.priceFrom)}〜</span>
+                  </li>
+                </ul>
               </div>
 
               {/* ── 年代からの提案 ── */}

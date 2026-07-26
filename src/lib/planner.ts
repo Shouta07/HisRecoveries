@@ -310,7 +310,7 @@ export type Goal = {
 };
 
 export const goals: Goal[] = [
-  { key: "clean", label: "清潔感を、底上げしたい", short: "清潔感の底上げ", modules: ["hair-style", "styling"] },
+  { key: "clean", label: "清潔感を、底上げしたい", short: "清潔感", modules: ["hair-style", "styling"] },
   { key: "photo", label: "写真・プロフィールをよくしたい", short: "写真・プロフィール", modules: ["hair-style", "makeup", "styling", "photo"] },
   { key: "hair", label: "髪・薄毛が気になる", short: "髪・薄毛", modules: ["hair-medical", "hair-style"] },
   { key: "skin", label: "肌・ニキビを整えたい", short: "肌・ニキビ", modules: ["skin-medical", "skincare"] },
