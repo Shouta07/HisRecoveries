@@ -180,6 +180,8 @@ export type ThreadsQueueItem = {
   createdAt: string | null;
   isThread: boolean;
   preview: string;
+  /** 連投の全文（各ポスト）。事前プレビュー用。 */
+  posts: string[];
 };
 
 export type ThreadsSnapshot = {
@@ -241,12 +243,19 @@ export function readThreadsSnapshot(): ThreadsSnapshot {
     if (status in queue) queue[status] += 1;
     if (status === "pending") {
       const { text, isThread } = previewOf(it.payload);
+      const pl = (it.payload ?? {}) as Record<string, unknown>;
+      const posts = Array.isArray(pl.posts)
+        ? (pl.posts as unknown[]).map((x) => String(x))
+        : typeof pl.text === "string"
+          ? [pl.text]
+          : [];
       pending.push({
         id: String(it.id ?? ""),
         status,
         createdAt: (it.created_at as string) ?? null,
         isThread,
         preview: text,
+        posts,
       });
     }
   }

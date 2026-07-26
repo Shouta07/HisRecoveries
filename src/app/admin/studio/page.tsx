@@ -77,7 +77,15 @@ export default function StudioPage() {
         {/* メイン: 3カラム（やること2 + 配信1） */}
         <div className="mt-6 grid lg:grid-cols-3 gap-4">
           {/* 承認 */}
-          <Panel title="承認する（Threads）" badge={`${t.available ? t.queue.pending : 0}`}>
+          <Panel
+            title="承認する（Threads）"
+            badge={`${t.available ? t.queue.pending : 0}`}
+            action={
+              <Link href="/admin/threads" className="text-[11px] text-sage hover:text-sage-bright">
+                予定 →
+              </Link>
+            }
+          >
             {!t.available || t.pending.length === 0 ? (
               <p className="text-[12px] text-brand-cream/55">承認待ちはありません。</p>
             ) : (
@@ -245,10 +253,12 @@ function Panel({
     <section className="rounded-xl border border-brand-cream/12 bg-brand-cream/[0.04] p-4">
       <div className="mb-3 flex items-baseline justify-between gap-2">
         <h2 className="font-mincho text-[15px] text-brand-cream">{title}</h2>
-        {badge !== undefined ? (
-          <span className="text-[12px] text-sage tabular-nums">{badge}件</span>
-        ) : null}
-        {action}
+        <div className="flex items-baseline gap-3">
+          {badge !== undefined ? (
+            <span className="text-[12px] text-sage tabular-nums">{badge}件</span>
+          ) : null}
+          {action}
+        </div>
       </div>
       {children}
     </section>
