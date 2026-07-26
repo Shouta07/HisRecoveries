@@ -6,6 +6,9 @@ import { validateRoadmapData, validateBrandReelData } from "./lib/validate";
 import { VIDEO } from "./lib/theme";
 import { REEL } from "./lib/brand";
 import { reelBrand } from "./data/reel-brand";
+import { Film } from "./lib/cinema/Film";
+import { FRAME } from "./lib/cinema/theme";
+import { awareness30 } from "./data/films/awareness-30";
 import { jibunmigaki } from "./data/jibunmigaki";
 import { akanuke } from "./data/akanuke";
 import { skincare } from "./data/skincare";
@@ -41,6 +44,17 @@ for (const { id, data } of VIDEOS) {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* ブランドフィルム。1本 = data/films/*.ts のカット表1つ。 */}
+      <Composition
+        id="Awareness30"
+        component={Film}
+        durationInFrames={awareness30.durationInFrames}
+        fps={FRAME.fps}
+        width={FRAME.width}
+        height={FRAME.height}
+        defaultProps={{ film: awareness30 }}
+      />
+
       <Composition
         id="BrandReel"
         component={BrandReel}

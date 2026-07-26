@@ -6,6 +6,9 @@
   "scripts": {
     "studio": "remotion studio index.ts",
     "render": "remotion render index.ts",
+    "render:film": "remotion render index.ts Awareness30 out/awareness-30.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",
+    "still:film": "remotion still index.ts Awareness30 out/awareness-still.png --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",
+    "ambient": "node scripts/ambient.mjs",
     "render:reel": "remotion render index.ts BrandReel out/brand-reel.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",
     "still:reel": "remotion still index.ts BrandReel out/reel-still.png --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",
     "render:jibunmigaki": "remotion render index.ts Jibunmigaki out/jibunmigaki.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell",

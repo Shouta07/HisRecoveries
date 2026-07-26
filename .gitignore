@@ -41,5 +41,9 @@ next-env.d.ts
 packages/video/out/
 
 # VOICEVOX で生成するナレーション音声（大きいのでローカル生成・非コミット）
-packages/video/public/audio/
+# （ディレクトリごとではなく中身を無視する。そうしないと下の再include が効かない）
+packages/video/public/audio/*
+# ただしアンビエントは小さく、無いと render:film が落ちるのでコミットする
+# （scripts/ambient.mjs が生成するプレースホルダ。公開前に権利処理済みの曲へ差し替え）
+!packages/video/public/audio/ambient-*.mp3
 packages/video/public/broll/

@@ -2,10 +2,16 @@
 
 2系統ある。
 
-| 系統 | 用途 | 実装 |
-|---|---|---|
-| **BrandReel** | ブランド認知（Instagram リール・30秒） | `lib/BrandReel.tsx` + `lib/reel/*` |
-| **RoadmapVideo** | 記事 → 縦動画の量産（18〜20秒） | `lib/RoadmapVideo.tsx` |
+| 系統 | 用途 | 実装 | 詳細 |
+|---|---|---|---|
+| **Cinema** | ブランドフィルム（実写・30秒・映像作品） | `lib/cinema/*` + `data/films/*` | [CINEMA.md](./CINEMA.md) |
+| **BrandReel** | ブランド認知（文字主体のリール・30秒） | `lib/BrandReel.tsx` + `lib/reel/*` | 下記 |
+| **RoadmapVideo** | 記事 → 縦動画の量産（18〜20秒） | `lib/RoadmapVideo.tsx` | 下記 |
+
+```bash
+npm run render:film -w @hr/video    # Cinema → out/awareness-30.mp4
+npm run render:reel -w @hr/video    # BrandReel → out/brand-reel.mp4
+```
 
 記事量産のほう（`docs/AI_MARKETING_ENGINE.md` §3-⑤）は下の「新しい動画を1本足す」を参照。
 
