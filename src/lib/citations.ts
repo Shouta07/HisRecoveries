@@ -46,4 +46,32 @@ export const citationsByComplex: Record<string, Citation[]> = {
       note: "多毛（体毛が濃くなる）の原因",
     },
   ],
+  ed: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/21-%E7%94%B7%E6%80%A7%E3%81%AE%E5%81%A5%E5%BA%B7%E4%B8%8A%E3%81%AE%E5%95%8F%E9%A1%8C/%E7%94%B7%E6%80%A7%E3%81%AE%E6%80%A7%E6%A9%9F%E8%83%BD%E3%81%8A%E3%82%88%E3%81%B3%E6%80%A7%E6%A9%9F%E8%83%BD%E9%9A%9C%E5%AE%B3/%E5%8B%83%E8%B5%B7%E9%9A%9C%E5%AE%B3-ed",
+      note: "勃起障害（ED）の原因・評価・生活習慣との関わり",
+    },
+  ],
+  phimosis: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/21-%E7%94%B7%E6%80%A7%E3%81%AE%E5%81%A5%E5%BA%B7%E4%B8%8A%E3%81%AE%E5%95%8F%E9%A1%8C/%E9%99%B0%E8%8C%8E%E3%81%A8%E7%B2%BE%E5%B7%A3%E3%81%AE%E7%97%85%E6%B0%97/%E5%8C%85%E8%8C%8E%E3%81%A8%E5%B5%8C%E9%A0%93%E5%8C%85%E8%8C%8E",
+      note: "包茎と嵌頓包茎の違い・注意点",
+    },
+  ],
+  libido: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/21-%E7%94%B7%E6%80%A7%E3%81%AE%E5%81%A5%E5%BA%B7%E4%B8%8A%E3%81%AE%E5%95%8F%E9%A1%8C/%E7%94%B7%E6%80%A7%E3%81%AE%E6%80%A7%E6%A9%9F%E8%83%BD%E3%81%8A%E3%82%88%E3%81%B3%E6%80%A7%E6%A9%9F%E8%83%BD%E9%9A%9C%E5%AE%B3/%E7%94%B7%E6%80%A7%E3%81%AE%E6%80%A7%E6%AC%B2%E6%B8%9B%E9%80%80",
+      note: "男性の性欲減退の原因（ホルモン・心理・薬など）",
+    },
+  ],
+  fertility: [
+    {
+      source: MSD,
+      url: "https://www.msdmanuals.com/ja-jp/home/22-%E5%A5%B3%E6%80%A7%E3%81%AE%E5%81%A5%E5%BA%B7%E4%B8%8A%E3%81%AE%E5%95%8F%E9%A1%8C/%E4%B8%8D%E5%A6%8A%E7%97%87%E3%81%8A%E3%82%88%E3%81%B3%E5%8F%8D%E5%BE%A9%E6%B5%81%E7%94%A3/%E7%B2%BE%E5%AD%90%E3%81%AE%E5%95%8F%E9%A1%8C",
+      note: "精子の問題（男性不妊の要因）と検査・治療の考え方",
+    },
+  ],
 };
