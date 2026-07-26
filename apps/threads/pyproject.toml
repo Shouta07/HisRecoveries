@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "threads-ceo"
+version = "1.0.0"
+description = "Threads CEO - 完全自動SNS収益化システム"
+requires-python = ">=3.10"
+dependencies = [
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[project.scripts]
+threads-ceo = "core.main:main"
+
+[tool.setuptools.packages.find]
+include = ["core*"]
+
+# Vercel: 投稿管理ページ(admin)のエントリポイント。
+# admin/server.py の Handler(BaseHTTPRequestHandler) をサーバーレス関数として配信する。
+[tool.vercel]
+entrypoint = "admin.server:Handler"

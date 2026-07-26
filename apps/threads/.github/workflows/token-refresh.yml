@@ -1,0 +1,51 @@
+name: Token Auto Refresh
+
+on:
+  schedule:
+    # 45日ごと（毎月1日と16日 UTC 00:00）に実行
+    # Threadsトークンは60日有効。余裕を持って45日周期で更新
+    - cron: "0 0 1,16 * *"
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install python-dotenv
+
+      - name: Refresh token
+        id: refresh
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_APP_SECRET: ${{ secrets.THREADS_APP_SECRET }}
+        run: |
+          python -c "
+          from core.poster import refresh_existing_long_lived_token
+          new_token = refresh_existing_long_lived_token()
+          if new_token:
+              print('::notice::Token refreshed successfully')
+              # GitHub Actions output for next step
+              with open('$GITHUB_OUTPUT', 'a') as f:
+                  f.write(f'new_token={new_token}\n')
+                  f.write('refreshed=true\n')
+          else:
+              print('::error::Token refresh failed!')
+              raise SystemExit(1)
+          "
+
+      - name: Update secret
+        if: steps.refresh.outputs.refreshed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          echo "${{ steps.refresh.outputs.new_token }}" | gh secret set THREADS_ACCESS_TOKEN
+          echo "::notice::THREADS_ACCESS_TOKEN secret updated"

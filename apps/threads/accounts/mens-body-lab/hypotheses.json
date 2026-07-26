@@ -1,0 +1,315 @@
+{
+  "hypotheses": [
+    {
+      "id": "gift-birthday",
+      "type": "gift",
+      "name": "誕生日に自信を贈る",
+      "slug": "gift-birthday",
+      "topics": ["誕生日", "贈り物", "自信"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "gift-anniversary",
+      "type": "gift",
+      "name": "記念日・プロポーズ前に贈る",
+      "slug": "gift-anniversary",
+      "topics": ["記念日", "プロポーズ", "節目"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "gift-wedding",
+      "type": "gift",
+      "name": "結婚式に向けて贈る",
+      "slug": "gift-wedding",
+      "topics": ["結婚式", "友人", "節目"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "gift-career",
+      "type": "gift",
+      "name": "転職・昇進・就活に贈る",
+      "slug": "gift-career",
+      "topics": ["転職", "昇進", "就活", "面接"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "gift-fathersday",
+      "type": "gift",
+      "name": "父の日・クリスマスに贈る",
+      "slug": "gift-fathersday",
+      "topics": ["父の日", "クリスマス", "家族"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+
+    {
+      "id": "areas-hair",
+      "type": "areas",
+      "name": "薄毛・AGA（/areasへ）",
+      "slug": "hair",
+      "topics": ["薄毛", "AGA", "抜け毛"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "areas-sweat",
+      "type": "areas",
+      "name": "汗・におい（/areasへ）",
+      "slug": "sweat",
+      "topics": ["ワキガ", "多汗症", "におい"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "areas-skin",
+      "type": "areas",
+      "name": "肌・ニキビ（/areasへ）",
+      "slug": "skin",
+      "topics": ["ニキビ", "ニキビ跡", "肌"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "areas-face",
+      "type": "areas",
+      "name": "顔の印象（/areasへ）",
+      "slug": "face",
+      "topics": ["顔", "印象", "クマ"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "areas-body-hair",
+      "type": "areas",
+      "name": "髭・体毛（/areasへ）",
+      "slug": "body-hair",
+      "topics": ["ヒゲ", "体毛", "脱毛"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "areas-self",
+      "type": "areas",
+      "name": "自意識・自信（/areasへ）",
+      "slug": "self",
+      "topics": ["自意識", "自信", "人の目"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+
+    {
+      "id": "mother-teen-skin",
+      "type": "mother",
+      "name": "母: 思春期の息子の肌",
+      "slug": "mother-teen-skin",
+      "topics": ["息子", "肌", "思春期", "母"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "mother-confidence",
+      "type": "mother",
+      "name": "母: 自信を失くした息子",
+      "slug": "mother-confidence",
+      "topics": ["息子", "自信", "母", "見守る"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "mother-shukatsu",
+      "type": "mother",
+      "name": "母: 就活を控えた息子",
+      "slug": "mother-shukatsu",
+      "topics": ["息子", "就活", "面接", "母"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+
+    {
+      "id": "urgent-wedding",
+      "type": "urgent",
+      "name": "本人: 結婚式が近い",
+      "slug": "urgent-wedding",
+      "topics": ["結婚式", "期日", "写真"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "urgent-interview",
+      "type": "urgent",
+      "name": "本人: 面接・転職が近い",
+      "slug": "urgent-interview",
+      "topics": ["面接", "転職", "第一印象"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "urgent-tonight",
+      "type": "urgent",
+      "name": "本人: このままじゃだめだと思った夜",
+      "slug": "urgent-tonight",
+      "topics": ["夜", "決意", "自信"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+
+    {
+      "id": "biz-a-neutral",
+      "type": "biz",
+      "name": "仮説A/D2: 中立=探さなくていい安心に価値",
+      "slug": "biz-a-neutral",
+      "topics": ["中立", "探し疲れ", "売らない"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "biz-b-chain",
+      "type": "biz",
+      "name": "仮説B: 悩みの連鎖(点を線に)",
+      "slug": "biz-b-chain",
+      "topics": ["悩みの連鎖", "継続", "横断"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "biz-e-honest",
+      "type": "biz",
+      "name": "仮説E: 買わなくていいと言える誠実さ",
+      "slug": "biz-e-honest",
+      "topics": ["誠実", "逆張り", "煽らない"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+
+    {
+      "id": "b2b-adcost",
+      "type": "b2b",
+      "name": "仮説D1: 施術者の広告費の痛み→中立送客",
+      "slug": "b2b-adcost",
+      "topics": ["施術者", "広告費", "送客"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "b2b-neutral-referral",
+      "type": "b2b",
+      "name": "仮説C: 中立の送客を受け入れるか",
+      "slug": "b2b-neutral-referral",
+      "topics": ["施術者", "中立", "提携"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "b2b-quality",
+      "type": "b2b",
+      "name": "仮説C: 埋もれる技術特化を巻き込む",
+      "slug": "b2b-quality",
+      "topics": ["施術者", "技術特化", "埋もれ"],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+
+    {
+      "id": "fan-midnight",
+      "type": "fan",
+      "name": "ファン化: 深夜の検索あるある（共感型・リンク無し）",
+      "slug": "fan-midnight",
+      "topics": ["深夜", "検索", "共感"],
+      "status": "active",
+      "no_link": true,
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "fan-question",
+      "type": "fan",
+      "name": "ファン化: 清潔感どこから？（質問参加型・リンク無し）",
+      "slug": "fan-question",
+      "topics": ["清潔感", "質問", "参加型"],
+      "status": "active",
+      "no_link": true,
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "fan-reversal",
+      "type": "fan",
+      "name": "ファン化: 気にするのは浅くない（逆説型・リンク無し）",
+      "slug": "fan-reversal",
+      "topics": ["逆説", "自意識", "肯定"],
+      "status": "active",
+      "no_link": true,
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "fan-record",
+      "type": "fan",
+      "name": "ファン化: 小さな習慣の記録（数字型・リンク無し）",
+      "slug": "fan-record",
+      "topics": ["記録", "習慣", "数字"],
+      "status": "active",
+      "no_link": true,
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    }
+  ],
+
+  "link_config": {
+    "note": "gift=パートナーの贈り物→/apply。mother=息子を想う母→/apply。urgent=期日が迫る本人→/apply。areas=悩み共感→/areas(SEO/GEO増幅)。CTAは最終投稿に1つだけ。",
+    "link_ratio_by_type": {
+      "gift": 1.0,
+      "areas": 1.0,
+      "mother": 1.0,
+      "urgent": 1.0,
+      "biz": 1.0,
+      "b2b": 1.0
+    },
+    "base_urls": {
+      "apply": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign={slug}",
+      "gift": "https://hisrecoveries.com/gift?utm_source=threads&utm_medium=social&utm_campaign={slug}",
+      "areas": "https://hisrecoveries.com/areas/{slug}?utm_source=threads&utm_medium=social&utm_campaign=areas-{slug}",
+      "partner": "https://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign={slug}"
+    }
+  },
+
+  "discovery_questions": [
+    "大切な人の節目に、モノ以外で何を贈りましたか。",
+    "パートナーへの贈り物、毎年どう選んでいますか。"
+  ],
+
+  "experiment_config": {
+    "posts_per_day": 1,
+    "discovery_questions_per_week": 0,
+    "evaluation_threshold_posts": 10,
+    "top_n_to_double_down": 2,
+    "phase": "explore"
+  }
+}

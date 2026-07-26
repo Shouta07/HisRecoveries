@@ -1,0 +1,42 @@
+{
+  "enabled": true,
+  "model": "viral_engine",
+  "model_description": "Threadsはバイラルエンジン。共感で人を集め、プロフ経由でLoveMane/note/オウンドメディアに送るだけ。Threads上での直接収益化はしない",
+
+  "profile_link": "https://linktr.ee/ryota_mensbodylab",
+  "profile_link_note": "linktree等でLoveMane・note・ブログを束ねる",
+
+  "cta_insertion_rate": 0.0,
+  "cta_insertion_note": "通常投稿にCTAは入れない。日曜のプロフ誘導投稿のみ、投稿本文の中で自然に触れる",
+
+  "cta_templates": [
+    {
+      "text": "管理どうしてるって聞かれたからプロフに書いといた",
+      "weight": 5
+    },
+    {
+      "text": "同時進行の管理で使ってるやつ、プロフに貼ってる",
+      "weight": 4
+    },
+    {
+      "text": "プロフから見れる",
+      "weight": 3
+    }
+  ],
+
+  "revenue_model": {
+    "threads": "収益ゼロ。バイラルエンジン。#PRなし",
+    "lovemane": "純粋な無料ツール。広告なし。ユーザー体験だけ",
+    "note": "マチアプ攻略記事。記事内でアフィリンク（マチアプ・美容・書籍）",
+    "owned_media": "SEO記事。アフィリンク（マチアプ・婚活相談所・自己投資系）",
+    "note_on_revenue": "収益はnoteとオウンドメディアで発生。Threadsとアプリは集客装置"
+  },
+
+  "safety": {
+    "pr_tag_required_on_threads": false,
+    "pr_tag_note": "Threads投稿にアフィリンクは一切含まない→#PR不要",
+    "similarity_threshold": 0.6,
+    "similarity_window": 100,
+    "rate_limit_per_hour": 5
+  }
+}

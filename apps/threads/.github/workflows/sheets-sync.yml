@@ -1,0 +1,40 @@
+name: Sheets Sync (manual)
+
+# スプレッドシートと投稿内容を手動同期する。
+# push: JSON → シート（初期化・現状反映） / pull: シート → JSON（編集を取り込む）
+# 事前に GOOGLE_SHEETS_ID と GOOGLE_SHEETS_CREDENTIALS_JSON をSecretsに設定。
+
+on:
+  workflow_dispatch:
+    inputs:
+      direction:
+        description: "push=JSON→シート / pull=シート→JSON"
+        default: "push"
+        type: choice
+        options: ["push", "pull"]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install python-dotenv gspread
+      - name: Sync
+        env:
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+          GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
+        run: python -m core.main sheets-sync ${{ inputs.direction }} mens-body-lab
+      - name: Save pulled changes
+        if: ${{ inputs.direction == 'pull' }}
+        run: |
+          git config user.name "hisrecoveries-bot"
+          git config user.email "hisrecoveries-bot@users.noreply.github.com"
+          git add accounts/*/thread_templates.json accounts/*/content_sources.json \
+                  accounts/*/hypotheses.json accounts/*/persona.json || true
+          git diff --cached --quiet || git commit -m "sheets: pull edits [skip ci]"
+          git push || true

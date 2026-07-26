@@ -1,0 +1,23 @@
+[Unit]
+Description=Threads CEO - 自動SNS収益化スケジューラ
+After=network.target
+
+[Service]
+Type=simple
+User=threads
+Group=threads
+WorkingDirectory=/opt/threads-ceo
+ExecStart=/opt/threads-ceo/venv/bin/python -m core.main daemon all
+Restart=on-failure
+RestartSec=60
+EnvironmentFile=/opt/threads-ceo/.env
+
+# セキュリティ設定
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/threads-ceo/data /opt/threads-ceo/logs /opt/threads-ceo/accounts
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,23 +1,46 @@
 # apps/
 
-モノレポのアプリ層。npm workspaces（ルート `package.json` の `workspaces`）で管理。
+モノレポのアプリ層（ポリグロット：JS/Python 混在）。
 
-> 注：メインの Web サイト（Next.js）は、Vercel のデプロイ設定（Root Directory =
-> リポジトリのルート）を壊さないため、**当面リポジトリのルートに置いたまま**にしている。
-> 将来 `apps/web` へ移す場合は、Vercel ダッシュボードで Root Directory を `apps/web`
-> に変更する必要がある（コードだけでは切り替わらない）。
+> npm の `workspaces` は `packages/*` のみ（JSパッケージ）。`apps/` 配下は
+> 言語を問わずアプリを置く場所で、npm workspace ではない。
+> メインの Web サイト（Next.js）は Vercel 設定（Root Directory = ルート）を
+> 壊さないため、当面リポジトリのルートに置いたまま。
 
-## Shouta07/threads をここへ統合する
+## apps/threads — Threads 自動投稿（Python / "threads-ceo"）
 
-`apps/threads` に、履歴を保ったまま取り込む（ローカルのクローンで実行）:
+HisRecoveries の Threads（@hisrecoveries_jp）自動投稿・分析システム。
+8エージェント構成（Supervisor / Researcher / Monetize / Writer / Validator /
+Poster / Analyst / Fetcher）。詳細は `apps/threads/README.md`・`SYSTEM_DESIGN.md`。
+
+- **位置づけ**：AI Marketing Engine（`docs/AI_MARKETING_ENGINE.md`）の
+  「Distribution（配信）」層＝Refine Marketing（SNSで育てる）。
+- **コンプラ**：`core/validator.py` が薬機法/景表法/NG表現/文字数を公開前にチェック
+  （＝ドキュメント §5-1/5-3 のガードレールが実装済み）。
+
+### ⚠️ 取り込んだが、まだ"動いていない"
+
+GitHub Actions は**リポジトリ直下の `.github/workflows/` しか実行しない**。
+threads 側のワークフローは `apps/threads/.github/workflows/` にあり、この階層では
+**発火しない**（参照用として保持）。自動投稿を monorepo で動かすには次が必要：
+
+1. **ワークフローをルートへ移設＋改修**：`apps/threads/.github/workflows/*.yml` を
+   ルート `.github/workflows/` に置き、各ジョブに `working-directory: apps/threads`
+   と `paths: [apps/threads/**]` を付ける（既存の `deploy-vercel.yml` と名前衝突しない）。
+2. **Secrets を hisrecoveries リポジトリに設定**（`.env.example` 参照）：
+   `THREADS_APP_ID` / `THREADS_APP_SECRET` / `THREADS_ACCESS_TOKEN` /
+   `THREADS_USER_ID` / `GEMINI_API_KEY` ほか。※リポジトリ管理者の操作が必要。
+3. **admin ページ**（`admin/server.py`）を別途動かす場合は、その Vercel/ホスティング
+   設定も別管理（メインサイトの Vercel プロジェクトとは分ける）。
+
+1 は私（Claude）が用意できる。2 はあなたの操作（Secrets登録）。1→2 の順で。
+
+### ローカル実行（参考）
 
 ```bash
-git remote add threads https://github.com/Shouta07/threads.git
-git fetch threads
-git subtree add --prefix=apps/threads threads main   # 既定ブランチが master なら main→master
-git push origin main
+cd apps/threads
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # 値を実際のトークンに
+python -m core.main    # or run.sh
 ```
-
-取り込んだあと、`apps/threads/package.json` の `name` を `@hr/threads` 等にすると
-ワークスペースとして一括管理できる（依存も一括 install）。以後の追従は
-`git subtree pull --prefix=apps/threads threads main`。

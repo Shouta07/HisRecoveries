@@ -1,0 +1,24 @@
+# Nagi / Quiet Grooming - crontab設定例
+# crontab -e で編集
+#
+# 使い方: YOUR_ACCOUNT を実際のアカウントID（例: nagi-recovery）に置換
+#   sed 's/YOUR_ACCOUNT/nagi-recovery/g' deploy/crontab.example | crontab -
+#
+# 投稿頻度: 1日2-3本、週7-9本上限
+# 即時投稿禁止: 自動化投稿は24h以上前にストック→人間レビュー→承認後に投稿
+
+# === 投稿スケジュール ===
+# 朝投稿 07:30（観察・哲学系。本人投稿）
+30 7 * * * cd /opt/threads-ceo && /opt/threads-ceo/venv/bin/python -m core.main post YOUR_ACCOUNT >> /opt/threads-ceo/logs/cron.log 2>&1
+
+# 夜投稿 22:30（当事者の語り。最優先帯。本人投稿）
+30 22 * * * cd /opt/threads-ceo && /opt/threads-ceo/venv/bin/python -m core.main post YOUR_ACCOUNT >> /opt/threads-ceo/logs/cron.log 2>&1
+
+# 深夜投稿 00:30（任意。情報・リマインド系。自動化）
+# 30 0 * * * cd /opt/threads-ceo && /opt/threads-ceo/venv/bin/python -m core.main post YOUR_ACCOUNT >> /opt/threads-ceo/logs/cron.log 2>&1
+
+# === トークン更新（月1回） ===
+0 3 1 * * cd /opt/threads-ceo && /opt/threads-ceo/venv/bin/python -m core.main token-refresh refresh >> /opt/threads-ceo/logs/token.log 2>&1
+
+# === ログローテーション（週1回） ===
+0 4 * * 0 find /opt/threads-ceo/logs -name "*.log" -mtime +7 -delete
