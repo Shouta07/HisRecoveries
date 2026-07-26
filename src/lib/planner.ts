@@ -443,6 +443,8 @@ export type PlanDay = {
   key: string;
   /** 「事前」「当日」など */
   label: string;
+  /** 候補日（例「8月2日（土）」）。input.today を渡したときだけ入る */
+  date?: string;
   /** 「オンライン」「東京」など */
   place: string;
   caption: string;
@@ -519,6 +521,30 @@ function durLabel(minutes: number): string {
   if (minutes >= 60 && minutes % 60 === 0) return `${minutes / 60}時間`;
   if (minutes > 60) return `${Math.floor(minutes / 60)}時間${minutes % 60}分`;
   return `${minutes}分`;
+}
+
+const WEEKDAY_JA = ["日", "月", "火", "水", "木", "金", "土"];
+
+function fmtDate(d: Date): string {
+  return `${d.getMonth() + 1}月${d.getDate()}日（${WEEKDAY_JA[d.getDay()]}）`;
+}
+
+/**
+ * 体験は土日に組む。平日に半休・全休を取らせないための意図的な制約で、
+ * 「行けるかどうか」で迷わせないほうが実際に動いてもらえる。
+ *
+ * 起点は「今日＋拠点の編成リードタイム」以降で最初に来る土曜。
+ * 2日構成のときは、その土日を続けて使う。
+ */
+function pickWeekend(today: Date, leadDays: number): { sat: Date; sun: Date; fri: Date } {
+  const start = new Date(today.getFullYear(), today.getMonth(), today.getDate() + leadDays);
+  const sat = new Date(start);
+  sat.setDate(sat.getDate() + ((6 - sat.getDay() + 7) % 7));
+  const sun = new Date(sat);
+  sun.setDate(sun.getDate() + 1);
+  const fri = new Date(sat);
+  fri.setDate(fri.getDate() - 1);
+  return { sat, sun, fri };
 }
 
 /** 当日枠を時刻に落とす（4時間を超えたら昼休憩を挟む） */
@@ -670,6 +696,9 @@ export function composePlan(input: PlanInput): Plan {
   const startMin = prefecture.travel < 60 ? 10 * 60 : 11 * 60;
 
   /* ── ③ 日程を組む ── */
+  // 候補日は input.today が渡されたときだけ出す。ビルド時に評価される
+  // 静的ページ（/occasions/*）で日付を焼き込むと、時間が経つほど嘘になるため。
+  const weekend = input.today ? pickWeekend(input.today, hub.leadDays) : null;
   const days: PlanDay[] = [];
 
   const preMods = modules.filter((m) => m.phase === "pre");
@@ -693,6 +722,7 @@ export function composePlan(input: PlanInput): Plan {
     days.push({
       key: "eve",
       label: "前日",
+      date: weekend ? fmtDate(weekend.fri) : undefined,
       place: `${hub.city}へ移動`,
       caption: prefecture.air
         ? `${prefecture.name}からは空路で。前泊すると、当日を朝から使えます（宿泊はご自身で手配／ご希望なら候補をお渡しします）。`
@@ -711,6 +741,7 @@ export function composePlan(input: PlanInput): Plan {
     days.push({
       key: "day1",
       label: "1日目",
+      date: weekend ? fmtDate(weekend.sat) : undefined,
       place: `${hub.city}（専属チーム）`,
       caption: "土台から。ここで髪・肌の質感まで整えます。",
       slots: layoutDay(d1, startMin),
@@ -718,6 +749,7 @@ export function composePlan(input: PlanInput): Plan {
     days.push({
       key: "day2",
       label: "2日目",
+      date: weekend ? fmtDate(weekend.sun) : undefined,
       place: `${hub.city}（専属チーム）`,
       caption: "整った状態から、服と撮影へ。1日に詰めることもできます（相談で調整）。",
       slots: layoutDay(d2, 10 * 60),
@@ -726,6 +758,7 @@ export function composePlan(input: PlanInput): Plan {
     days.push({
       key: "day",
       label: "当日",
+      date: weekend ? fmtDate(weekend.sat) : undefined,
       place: `${hub.city}（専属チーム貸切）`,
       caption:
         shape === "same-day"
@@ -787,6 +820,11 @@ export function composePlan(input: PlanInput): Plan {
       `${prefecture.name}から${hub.city}までの交通費・宿泊費はお客さま負担です。${hub.city}以外での出張開催をご希望の場合は、無料相談で個別にお見積りします。`,
     );
   }
+  notes.push(
+    shape === "two-day"
+      ? "体験は土日に組みます（土・日の連日）。平日や、土日を分けての実施をご希望の場合は、無料相談で調整します。"
+      : "体験は土日に組みます。平日をご希望の場合は、無料相談で調整します。",
+  );
   notes.push("価格・所要はすべて目安です。無料相談で構成を確定してから、正式なお見積りをお出しします。");
   if (modules.some((m) => m.medical)) {
     notes.push("His Recoveries は医療行為を行いません。診断・治療が要る部分は、売らない・中立の立場で提携先の選択肢をお伝えします。");
@@ -835,7 +873,7 @@ export function planToText(plan: Plan, input: PlanInput): string {
   lines.push("");
   lines.push("■ 日程プラン");
   plan.days.forEach((d) => {
-    lines.push(`[${d.label}｜${d.place}]`);
+    lines.push(`[${d.label}${d.date ? ` ${d.date}` : ""}｜${d.place}]`);
     d.slots.forEach((s) => lines.push(`  ${s.time ? `${s.time} ` : ""}${s.title}${s.dur ? `（${s.dur}）` : ""}`));
   });
   if (plan.deadline) {

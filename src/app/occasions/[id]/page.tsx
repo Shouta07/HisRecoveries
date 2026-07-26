@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ConsultLink from "@/components/ConsultLink";
 import TrackedCTA from "@/components/TrackedCTA";
-import { occasions, occasionById } from "@/lib/occasions";
+import { allOccasions, occasionById } from "@/lib/occasions";
 import { composePlan, formatYen } from "@/lib/planner";
 import { site } from "@/lib/site";
 
@@ -22,7 +22,7 @@ const MINCHO: React.CSSProperties = {
 const SAMPLE = { prefectureId: "tokyo", age: 35 };
 
 export function generateStaticParams() {
-  return occasions.map((o) => ({ id: o.id }));
+  return allOccasions.map((o) => ({ id: o.id }));
 }
 
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
@@ -342,7 +342,7 @@ export default function OccasionPage({ params }: { params: { id: string } }) {
           <div className="mt-8">
             <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">ほかの「叶えたいこと」</div>
             <ul className="flex flex-wrap gap-2">
-              {occasions
+              {allOccasions
                 .filter((x) => x.id !== o.id)
                 .map((x) => (
                   <li key={x.id}>

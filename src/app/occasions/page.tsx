@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { occasions } from "@/lib/occasions";
+import { allOccasions } from "@/lib/occasions";
 import { site } from "@/lib/site";
 
 // Job（叶えたいこと）の一覧。/occasions/{id} の親であり、
@@ -12,7 +12,7 @@ const MINCHO: React.CSSProperties = {
 };
 
 const DESC =
-  "恋愛、大切な日、仕事、家族、自己再起。叶えたいことから逆算して、整える順番を設計し、合うプロ・施設へつなぎます。相談は無料・匿名。";
+  "恋愛、大切な日、仕事、家族、自己再起、そして大切な人への贈りもの。叶えたいことから逆算して、整える順番を設計し、合うプロ・施設へつなぎます。相談は無料・匿名。";
 
 export const metadata: Metadata = {
   title: "叶えたいことから — 大切な場面で、自信を持てる自分へ",
@@ -67,7 +67,7 @@ export default function OccasionsIndexPage() {
 
       <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-          {occasions.map((o) => (
+          {allOccasions.map((o) => (
             <Link
               key={o.id}
               href={`/occasions/${o.id}`}
@@ -100,7 +100,7 @@ export default function OccasionsIndexPage() {
             決まっていなくても、大丈夫です
           </div>
           <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">
-            お住まいと年齢だけでも、構成は組めます。悩みから探したい方は、
+            年齢だけでも、構成は組めます。悩みから探したい方は、
             <Link href="/areas" className="font-semibold text-[#3d5638] underline underline-offset-4 hover:opacity-70">
               悩み別のライブラリ
             </Link>

@@ -12,7 +12,7 @@
 //   提供価値 … あなたに必要な変化の順番を設計する。（このセクション本文〜診断）
 
 import Link from "next/link";
-import { occasions, tracks, type OccasionId } from "@/lib/occasions";
+import { allOccasions, tracks, type OccasionId } from "@/lib/occasions";
 
 const MINCHO: React.CSSProperties = {
   fontFamily:
@@ -59,7 +59,7 @@ export default function OccasionGrid({
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {occasions.map((o) => {
+          {allOccasions.map((o) => {
             const on = selected === o.id;
             return (
               <div key={o.id} className="relative flex">

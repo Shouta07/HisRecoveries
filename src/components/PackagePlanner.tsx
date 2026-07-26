@@ -1,13 +1,13 @@
 "use client";
 
 // ① 入口のフォーム — 「サイトを道具にする」中核。
-// 都道府県・年齢・やりたいこと（選択＋自由記述）＋（締切）を受け取り、
+// 年齢・やりたいこと（選択＋自由記述）＋（締切）を受け取り、
 // 結果は /plan へ遷移して出す（条件は query に載せる）。
 // 結果を別ページにしているのは、スクロールの長い結果を LP に埋めると
 // 下の節が読まれなくなるため、および URL で見返し・共有ができるため。
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { goals, prefecturesByRegion } from "@/lib/planner";
+import { goals } from "@/lib/planner";
 import { occasionById, type OccasionId } from "@/lib/occasions";
 import { planQuery } from "@/lib/planQuery";
 import { track } from "@/lib/analytics";
@@ -29,13 +29,13 @@ export default function PackagePlanner({
   onClearOccasion?: () => void;
 }) {
   const router = useRouter();
-  const [pref, setPref] = useState("");
+  // 開催地は東京のみ（選ばせない＝迷わせない）。他エリアを開けるときはここを戻す。
+  const pref = "tokyo";
   const [age, setAge] = useState("");
   const [picked, setPicked] = useState<string[]>([]);
   const [text, setText] = useState("");
   const [date, setDate] = useState("");
 
-  const regions = useMemo(() => prefecturesByRegion(), []);
   const occasion = occasionById(occasionId);
 
   // シーンが選ばれたら「やりたいこと」を先に埋めておく（ゼロから選ばせない）。
@@ -46,7 +46,7 @@ export default function PackagePlanner({
   }, [occasion?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // シーンを選んでいれば、それだけで組める（住まいと年齢のみ必須）。
-  const ready = pref !== "" && age !== "" && (picked.length > 0 || text.trim().length > 0 || Boolean(occasion));
+  const ready = age !== "" && (picked.length > 0 || text.trim().length > 0 || Boolean(occasion));
 
   // 日付入力の下限＝今日（過去日を選ばせない）。
   const todayISO = useMemo(() => new Date().toISOString().slice(0, 10), []);
@@ -88,7 +88,7 @@ export default function PackagePlanner({
               何から整える？ <span className="text-[#9ec4a3]">パッケージと、日程で。</span>
             </h2>
             <p className="mt-2 text-[12.5px] sm:text-[13.5px] text-[#C9D2C4] leading-[1.8]">
-              お住まい・年齢・やりたいことを書くだけ。あなた用の構成と、その立地に合わせた日程プラン、各ステップの読みものを、すぐにお見せします。
+              年齢とやりたいことを選ぶだけ。あなた用の構成と、土日で組んだ日程プラン、各ステップの読みものを、すぐにお見せします。
             </p>
           </div>
 
@@ -107,6 +107,7 @@ export default function PackagePlanner({
                     </div>
                     <p className="mt-0.5 text-[11.5px] text-[#4b5b47] leading-[1.7]">
                       「{occasion.purpose}」から逆算して組みます。
+                      {occasion.forOther && "決めるのはご本人です。押しつけない形で組みます。"}
                     </p>
                   </div>
                   {onClearOccasion && (
@@ -124,7 +125,7 @@ export default function PackagePlanner({
                     自分で認めるのではなく、こちらが先に言い当てる形にする。 */}
                 <div className="mt-3 pt-3 border-t border-[#85AB8B]/30">
                   <div className="text-[10.5px] font-bold tracking-[0.08em] text-[#3d5638] mb-2">
-                    ここで、よく壁になるもの
+                    {occasion.forOther ? "贈るときに、よく壁になるもの" : "ここで、よく壁になるもの"}
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {occasion.obstacles.map((o) => (
@@ -141,31 +142,21 @@ export default function PackagePlanner({
               </div>
             )}
 
-            {/* ①都道府県 ②年齢 */}
+            {/* ①開催地（現在は東京のみ） ②年齢 */}
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 sm:gap-5">
               <div>
-                <label htmlFor="planner-pref" className="block text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-2">
-                  ① お住まい（都道府県）
-                </label>
-                <select
-                  id="planner-pref"
-                  value={pref}
-                  onChange={(e) => setPref(e.target.value)}
-                  className="w-full rounded-[0.9rem] border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[14px] text-[#1f2a1d] focus:border-[#3d5638] focus:outline-none"
-                >
-                  <option value="">選択してください</option>
-                  {regions.map((r) => (
-                    <optgroup key={r.region} label={r.region}>
-                      {r.items.map((p) => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
+                <div className="block text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-2">① 開催地</div>
+                <div className="flex items-baseline gap-2.5 rounded-[0.9rem] border border-[#1f2a1d]/15 bg-[#f6f8f4] px-4 py-3">
+                  <span className="text-[14px] font-bold text-[#1f2a1d]">東京</span>
+                  <span className="text-[11.5px] text-[#6b7a66]">専属チーム貸切</span>
+                </div>
+                <p className="mt-2 text-[11px] text-[#9aa79a] leading-[1.7]">
+                  現在は東京のみで開催しています。他エリアは順次。
+                </p>
               </div>
               <div>
                 <label htmlFor="planner-age" className="block text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-2">
-                  ② 年齢
+                  ② {occasion?.forOther ? "贈る相手の年齢" : "年齢"}
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -186,7 +177,9 @@ export default function PackagePlanner({
 
             {/* ③やりたいこと */}
             <div className="mt-6">
-              <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">③ やりたいこと（複数OK）</div>
+              <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">
+                ③ {occasion?.forOther ? "その人に、してあげたいこと（複数OK）" : "やりたいこと（複数OK）"}
+              </div>
               <div className="flex flex-wrap gap-2.5">
                 {goals.map((g) => {
                   const on = picked.includes(g.key);

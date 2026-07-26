@@ -3,7 +3,7 @@ import { site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
 import { clusters } from "@/lib/clusters";
 import { packages } from "@/lib/packages";
-import { occasions } from "@/lib/occasions";
+import { allOccasions } from "@/lib/occasions";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -37,7 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Job別ランディング。広告・検索の着地先なので、記事より高い優先度で出す。
-  const occasionPaths: MetadataRoute.Sitemap = occasions.map((o) => ({
+  const occasionPaths: MetadataRoute.Sitemap = allOccasions.map((o) => ({
     url: `${site.url}/occasions/${o.id}`,
     lastModified: now,
     changeFrequency: "monthly",

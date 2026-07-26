@@ -36,6 +36,8 @@ export default function PlanClient({ articles }: { articles: Record<string, Diag
       text: q.text,
       occasion: o ? { label: o.headline, modules: o.modules, flowLead: o.flowLead } : undefined,
       targetDate: q.date || undefined,
+      // 候補日（土日）を出すための基準日。client でしか渡さない。
+      today: new Date(),
     };
   }, [search]);
 

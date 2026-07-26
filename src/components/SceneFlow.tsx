@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import OccasionGrid from "@/components/OccasionGrid";
 import PackagePlanner from "@/components/PackagePlanner";
-import { occasions, tracks, type OccasionId } from "@/lib/occasions";
+import { allOccasions, tracks, type OccasionId } from "@/lib/occasions";
 import { track } from "@/lib/analytics";
 
 export default function SceneFlow() {
@@ -22,7 +22,7 @@ export default function SceneFlow() {
   // （useSearchParams は Suspense 境界を要求し、ページを動的にしてしまう）。
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("occasion");
-    if (q && [...occasions, ...tracks].some((o) => o.id === q)) setOccasionId(q as OccasionId);
+    if (q && [...allOccasions, ...tracks].some((o) => o.id === q)) setOccasionId(q as OccasionId);
   }, []);
 
   function pick(id: OccasionId) {

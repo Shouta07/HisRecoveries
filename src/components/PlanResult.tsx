@@ -280,7 +280,10 @@ export default function PlanResult({
             <ol className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1">
               {plan.days.map((d, i) => (
                 <li key={d.key} className="flex items-center gap-1.5 shrink-0">
-                  <span className="rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1.5 text-[11.5px] font-bold">{d.label}</span>
+                  <span className="rounded-full bg-[#eef3ea] text-[#3d5638] px-3 py-1.5 text-[11.5px] font-bold">
+                    {d.label}
+                    {d.date && <span className="ml-1 font-normal text-[#6b7a66]">{d.date}</span>}
+                  </span>
                   {i < plan.days.length - 1 && (
                     <span aria-hidden className="text-[#85AB8B] text-[11px]">
                       →
@@ -311,6 +314,7 @@ export default function PlanResult({
                     <div className="flex items-baseline justify-between gap-3 px-4 py-2.5 bg-[#16241A] text-[#EDF1E8]">
                       <span className="text-[12.5px] font-bold">
                         {d.label}
+                        {d.date && <span className="ml-2 text-[11.5px] font-bold text-[#9ec4a3]">{d.date}</span>}
                         <span className="ml-2 text-[11px] font-normal text-[#9FB0A0]">{d.place}</span>
                       </span>
                       {total && <span className="shrink-0 text-[11px] text-[#9ec4a3] font-semibold">{total}</span>}
