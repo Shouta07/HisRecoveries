@@ -16,6 +16,13 @@ const nextConfig = {
         "./apps/threads/accounts/mens-body-lab/approvals.json",
         "./apps/threads/accounts/mens-body-lab/history.json",
       ],
+      "/admin/threads": [
+        "./apps/threads/accounts/mens-body-lab/approvals.json",
+        "./apps/threads/accounts/mens-body-lab/history.json",
+        "./apps/threads/accounts/mens-body-lab/persona.json",
+        "./apps/threads/accounts/mens-body-lab/hypotheses.json",
+        "./apps/threads/accounts/mens-body-lab/thread_templates.json",
+      ],
     },
   },
   turbopack: {
