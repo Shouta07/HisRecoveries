@@ -83,15 +83,9 @@ export default function HomePage() {
         />
 
         {/* Hero copy — vertically centered in the viewport */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-24 pb-10">
-          {/* 何のサービスか、を最初のひと言で */}
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[11.5px] sm:text-[12.5px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
-            <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
-            男の「変わりたい」に、伴走する。
-          </span>
-
+        <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-16 pb-10">
           {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
-          <div className="relative w-screen h-[44vh] sm:h-[52vh] mt-5 mb-6 overflow-hidden">
+          <div className="relative w-screen h-[44vh] sm:h-[52vh] mb-6 overflow-hidden">
             <Image
               src="/media/hero/portrait.png"
               alt=""
@@ -125,18 +119,6 @@ export default function HomePage() {
             <span className="inline-block">必要な変化の順番を設計する</span>{" "}
             <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">男性ウェルネスコンシェルジュ</span>。</span>
           </p>
-
-          {/* メカニズムを3ステップでスキャンできるように */}
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[11.5px] sm:text-[13px] font-semibold">
-            {["診断", "整える順番を設計", "つないで、伴走"].map((s, i) => (
-              <div key={s} className="flex items-center gap-2">
-                <span className="rounded-full bg-white/[0.07] border border-white/12 px-3 py-1.5 text-[#C9D2C4]">
-                  <span className="text-[#9ec4a3] font-bold mr-1">{i + 1}</span>{s}
-                </span>
-                {i < 2 && <span aria-hidden className="text-[#85AB8B]">→</span>}
-              </div>
-            ))}
-          </div>
 
           {/* 一次CTA＝診断ツールへ（相談は下部の追従バーに集約） */}
           <a href="#occasions" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
