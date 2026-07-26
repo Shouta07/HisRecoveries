@@ -6,6 +6,8 @@
 // できないため、ここに **手動レジストリ** を持つ。packages/video/Root.tsx の
 // VIDEOS に1行足したら、ここにも1行足す（source = 元記事の areaId/slug）。
 
+import fs from "node:fs";
+import path from "node:path";
 import { clusters, type ClusterArticle } from "./clusters";
 
 // ── /areas のエリア表示名（clusters の areaId 用） ──────────────────
@@ -101,6 +103,104 @@ export type StudioData = {
   /** 動画が無い Refine 記事（＝次に動画化すべき候補） */
   refineWithoutVideo: StudioRow[];
 };
+
+// ── Threads スナップショット（apps/threads の JSON をサーバー側で読む） ──
+// これは「リポジトリの最終スナップショット」であってライブ数値ではない。
+// リアルタイムは apps/threads の admin（別システム）を見る。
+const THREADS_ACCOUNT_DIR =
+  "apps/threads/accounts/mens-body-lab";
+
+export type ApprovalStatus = "pending" | "approved" | "rejected" | "posted";
+
+export type ThreadsQueueItem = {
+  id: string;
+  status: ApprovalStatus;
+  createdAt: string | null;
+  isThread: boolean;
+  preview: string;
+};
+
+export type ThreadsSnapshot = {
+  available: boolean;
+  queue: Record<ApprovalStatus, number>;
+  pending: ThreadsQueueItem[];
+  posts: number;
+  lastPostedAt: string | null;
+};
+
+function readJson(rel: string): unknown {
+  try {
+    const p = path.join(process.cwd(), rel);
+    return JSON.parse(fs.readFileSync(p, "utf-8"));
+  } catch {
+    return null;
+  }
+}
+
+function previewOf(payload: unknown): { text: string; isThread: boolean } {
+  const pl = (payload ?? {}) as Record<string, unknown>;
+  const posts = Array.isArray(pl.posts) ? (pl.posts as unknown[]) : [];
+  const text =
+    typeof pl.text === "string" && pl.text
+      ? pl.text
+      : posts.map((x) => String(x)).join(" / ");
+  return { text: text.slice(0, 120), isThread: Boolean(pl.is_thread) };
+}
+
+export function readThreadsSnapshot(): ThreadsSnapshot {
+  const queue: Record<ApprovalStatus, number> = {
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    posted: 0,
+  };
+  const empty: ThreadsSnapshot = {
+    available: false,
+    queue,
+    pending: [],
+    posts: 0,
+    lastPostedAt: null,
+  };
+
+  const approvals = readJson(`${THREADS_ACCOUNT_DIR}/approvals.json`) as
+    | { items?: unknown[] }
+    | null;
+  const history = readJson(`${THREADS_ACCOUNT_DIR}/history.json`) as
+    | { posts?: unknown[]; last_posted_at?: string | null; total_count?: number }
+    | null;
+
+  if (!approvals && !history) return empty;
+
+  const pending: ThreadsQueueItem[] = [];
+  const items = Array.isArray(approvals?.items) ? approvals!.items : [];
+  for (const raw of items) {
+    const it = (raw ?? {}) as Record<string, unknown>;
+    const status = (it.status as ApprovalStatus) ?? "pending";
+    if (status in queue) queue[status] += 1;
+    if (status === "pending") {
+      const { text, isThread } = previewOf(it.payload);
+      pending.push({
+        id: String(it.id ?? ""),
+        status,
+        createdAt: (it.created_at as string) ?? null,
+        isThread,
+        preview: text,
+      });
+    }
+  }
+
+  const posts = Array.isArray(history?.posts)
+    ? history!.posts!.length
+    : history?.total_count ?? 0;
+
+  return {
+    available: true,
+    queue,
+    pending,
+    posts,
+    lastPostedAt: history?.last_posted_at ?? null,
+  };
+}
 
 function keyOf(areaId: string, slug: string): string {
   return `${areaId}/${slug}`;

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { buildStudioData } from "@/lib/studio";
+import { buildStudioData, readThreadsSnapshot } from "@/lib/studio";
 
 export const metadata: Metadata = {
   title: "Studio — Admin",
@@ -67,6 +67,7 @@ function TrackBar({
 
 export default function StudioPage() {
   const d = buildStudioData();
+  const t = readThreadsSnapshot();
 
   return (
     <div className="mx-auto max-w-[1100px] px-6 sm:px-10 pt-12 sm:pt-16 pb-24">
@@ -242,6 +243,68 @@ export default function StudioPage() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      {/* Threads snapshot */}
+      <section className="mt-14">
+        <div className="flex items-end justify-between gap-4">
+          <h2 className="font-mincho text-xl text-ink">Threads（自動投稿）</h2>
+          <span className="text-[12px] text-sub-gray">
+            リポジトリの最終スナップショット
+          </span>
+        </div>
+        {!t.available ? (
+          <p className="mt-4 text-[13px] text-sub-gray">
+            まだ承認キュー・履歴のデータがありません（生成が走ると表示されます）。
+          </p>
+        ) : (
+          <>
+            <div className="mt-5 grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
+              <Stat label="承認待ち" value={String(t.queue.pending)} />
+              <Stat label="承認済み" value={String(t.queue.approved)} sub="次のcronで投稿" />
+              <Stat label="却下" value={String(t.queue.rejected)} />
+              <Stat label="投稿済み(キュー)" value={String(t.queue.posted)} />
+              <Stat
+                label="総投稿"
+                value={String(t.posts)}
+                sub={t.lastPostedAt ? `最終 ${t.lastPostedAt.slice(0, 10)}` : "未投稿"}
+              />
+            </div>
+
+            <h3 className="mt-8 mb-3 text-[13px] text-ink">
+              承認待ちの下書き（{t.pending.length}件）
+            </h3>
+            {t.pending.length === 0 ? (
+              <p className="text-[13px] text-sub-gray">承認待ちはありません。</p>
+            ) : (
+              <ul className="space-y-2">
+                {t.pending.map((it) => (
+                  <li
+                    key={it.id}
+                    className="rounded-lg border border-hair-line bg-paper/40 px-4 py-3 text-[13px]"
+                  >
+                    <div className="flex items-center gap-2 text-[11px] text-sub-gray">
+                      <span>{it.createdAt ? it.createdAt.slice(0, 16).replace("T", " ") : it.id}</span>
+                      {it.isThread ? (
+                        <span className="rounded-full border border-hair-line px-2 py-0.5">
+                          連投
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="mt-1 text-ink leading-[1.7]">{it.preview}…</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="mt-4 text-[12px] text-sub-gray leading-[1.9]">
+              承認・却下は現状 CLI（
+              <code className="text-[11px]">python -m core.main approve mens-body-lab &lt;id&gt;</code>
+              ）または apps/threads の admin。承認すると次回 post-approved cron
+              で投稿される。ここはコミット済みスナップショットのため、最新は
+              apps/threads 側で確認する。
+            </p>
+          </>
+        )}
       </section>
 
       {/* Numbers pointers */}

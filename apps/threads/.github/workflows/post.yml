@@ -67,7 +67,10 @@ jobs:
           if [ "${{ inputs.mock }}" = "true" ]; then
             FLAGS="$FLAGS --mock"
           fi
-          python -m core.main post mens-body-lab --mock $FLAGS
+          # 通常運用は Gemini 生成（--mock なし）。承認ゲートが ON の間は
+          # 生成物は投稿されず approvals.json に積まれる（人が承認するまで出ない）。
+          # 手動実行で mock=true を選んだときだけ FLAGS 経由で --mock が付く。
+          python -m core.main post mens-body-lab $FLAGS
 
       - name: Save history
         if: success()
@@ -75,8 +78,11 @@ jobs:
           git config user.name "hisrecoveries-bot"
           git config user.email "hisrecoveries-bot@users.noreply.github.com"
           # 履歴＋シートpullで更新された設定/テンプレも保存
+          # approvals.json（承認キュー）も保存しないと、生成した下書きが
+          # ランナー破棄で消える。承認画面で拾えるようコミットに含める。
           git add accounts/*/history.json accounts/*/experiments.json \
                   accounts/*/thread_templates.json accounts/*/content_sources.json \
-                  accounts/*/hypotheses.json accounts/*/persona.json data/ || true
+                  accounts/*/hypotheses.json accounts/*/persona.json \
+                  accounts/*/approvals.json data/ || true
           git diff --cached --quiet || git commit -m "auto: update from sheet + history [skip ci]"
           git push || true
