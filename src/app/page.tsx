@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
-import QuickDiagnosis from "@/components/QuickDiagnosis";
+import PackagePlanner from "@/components/PackagePlanner";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -9,7 +9,7 @@ import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
 import { clusters } from "@/lib/clusters";
 
-// 診断ツールに渡す、領域ごとの記事（重い clusters は server 側で軽い形に畳んでから props で渡す）。
+// パッケージ編成ツールに渡す、領域ごとの記事（重い clusters は server 側で軽い形に畳んでから props で渡す）。
 const DIAG_AREAS = ["impression", "hair", "skin", "face", "body-hair", "mind"] as const;
 const diagnosisArticles: Record<string, { slug: string; title: string }[]> = Object.fromEntries(
   DIAG_AREAS.map((area) => [
@@ -140,7 +140,7 @@ export default function HomePage() {
 
           {/* 一次CTA＝診断ツールへ（相談は下部の追従バーに集約） */}
           <a href="#diagnosis" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
-            30秒で「整える順番」を見る <span aria-hidden>→</span>
+            30秒で「あなたのパッケージ」を組む <span aria-hidden>→</span>
           </a>
 
           {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
@@ -189,9 +189,9 @@ export default function HomePage() {
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
-        {/* ① 診断の入口 — サイトを"道具"にする中核。悩み選択→ステップ別の記事＋
-            進め方のロードマップ→相談でパーソナライズ。悩みブラウズもここに内包。 */}
-        <QuickDiagnosis articles={diagnosisArticles} />
+        {/* ① 診断の入口 — サイトを"道具"にする中核。都道府県・年齢・やりたいこと→
+            パッケージ編成＋立地に合わせた日程プラン＋各ステップの記事→相談でパーソナライズ。 */}
+        <PackagePlanner articles={diagnosisArticles} />
 
         {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
         <StepsSection />
@@ -232,7 +232,7 @@ export default function HomePage() {
               <div>
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">サービス</div>
                 <ul className="space-y-2 text-[13px] text-[#4b5b47]">
-                  <li><a href="#diagnosis" className="hover:text-[#1f2a1d] transition-colors">整える順番を診断</a></li>
+                  <li><a href="#diagnosis" className="hover:text-[#1f2a1d] transition-colors">パッケージを組む（無料）</a></li>
                   <li><Link href="/recover" className="hover:text-[#1f2a1d] transition-colors">Recover｜取り戻す</Link></li>
                   <li><Link href="/refine" className="hover:text-[#1f2a1d] transition-colors">Refine｜深める</Link></li>
                   <li><Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">記事をすべて見る</Link></li>

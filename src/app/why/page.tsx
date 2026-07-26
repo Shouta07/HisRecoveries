@@ -89,11 +89,11 @@ export default function WhyPage() {
             まず、あなたの<span className="text-[#85AB8B]">「整える順番」</span>を。
           </h2>
           <p className="text-[13px] text-[#C9D2C4] leading-[1.95] mb-6">
-            30秒・無料・匿名。気になるものを選ぶだけで、順番と読みものをお見せします。相談は、そのあとで大丈夫です。
+            30秒・無料・匿名。お住まい・年齢・やりたいことを書くだけで、あなた用のパッケージと日程プラン、読みものをお見せします。相談は、そのあとで大丈夫です。
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/#diagnosis" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-7 py-3.5 transition-colors">
-              整える順番を見る <span aria-hidden>→</span>
+              パッケージを組んでみる <span aria-hidden>→</span>
             </Link>
             <ConsultLink className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 hover:bg-white/10 text-[#EDF1E8] text-[14px] font-semibold px-7 py-3.5 transition-colors">
               無料で相談する <span aria-hidden>→</span>
