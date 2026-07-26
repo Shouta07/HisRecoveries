@@ -13,7 +13,9 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-const TRACK_DESIRES: DesireKey[] = ["jishin", "erabaretai", "son"];
+// 記事は track="recover"（今困っている＝顕在）で絞り、欲求別に並べる。
+// 空の欲求は描画時に落ちるので、記事が増えても自動で追随する。
+const TRACK_DESIRES: DesireKey[] = ["jishin", "erabaretai", "son", "shinrai", "wakasa", "sonae"];
 
 export const metadata: Metadata = {
   title: "Recover｜取り戻す — 誰にも言えなかった悩みから",
@@ -142,7 +144,7 @@ export default function RecoverPage() {
           <div className="space-y-9">
             {TRACK_DESIRES.map((key) => {
               const d = DESIRES[key];
-              const articles = clusters.filter((a) => a.desire === key && a.kind !== "interview").slice(0, 4);
+              const articles = clusters.filter((a) => a.track === "recover" && a.desire === key && a.kind !== "interview").slice(0, 4);
               if (articles.length === 0) return null;
               return (
                 <div key={key}>

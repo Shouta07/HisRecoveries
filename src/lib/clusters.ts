@@ -53,6 +53,15 @@ export type ClusterArticle = {
   /** この記事の上位にある普遍的欲求（冒頭のブレイクダウン表示に使用） */
   desire?: DesireKey;
   /**
+   * マーケティング・トラック（docs/AI_MARKETING_ENGINE.md §2）。
+   * "recover" = 今困っている（顕在）。減点の解消・差し迫った場面・費用/選び方。
+   *             検索で刈り取る（SEO / GEO）。
+   * "refine"  = もっと良くなりたい（潜在）。始め方・スキル獲得・習慣・内側・備え。
+   *             SNSで育てる（Threads / Instagram / Shorts）。
+   * /recover・/refine の記事出し分けと、配信チャネルの判断に使う。
+   */
+  track?: "recover" | "refine";
+  /**
    * あわせて読む（内部リンク網）。他記事の slug を列挙（領域をまたいでよい）。
    * 設計: 潜在（恋愛・シーン）→ 仕組み → 選び方・費用 → 相談、の方向へ
    * リンクエクイティを流す（docs/SEO_TWO_LAYER_KEYWORDS.md）。
@@ -67,6 +76,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mens-makeup-hajimete",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "メンズメイクは何から？ はじめての基本",
@@ -110,6 +120,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "seiketsukan-tsukurikata",
+    track: "recover",
     desire: "jishin",
     kind: "guide",
     title: "清潔感は「作れる」— 要素で分解する",
@@ -153,6 +164,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "shashin-utsuri",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "写真写りをよくする — 撮られ方のコツ",
@@ -196,6 +208,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "omiai-fukusou-men",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "お見合い・婚活写真の服装（男性）",
@@ -239,6 +252,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mayu-totonoe",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "眉を整えるだけで、印象は変わる",
@@ -278,6 +292,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "otoko-jibunmigaki-hajimekata",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "自分磨きは、何から？ 男の始め方",
@@ -316,6 +331,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "men-akanuke-junban",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "垢抜けたい、と思ったら — 変えると効く順番",
@@ -355,6 +371,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "date-zenjitsu-mijitaku",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "デート前日に、できること — 印象の整え方",
@@ -394,6 +411,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "30dai-seiketsukan",
+    track: "refine",
     desire: "shinrai",
     kind: "guide",
     title: "30代からの、清潔感の作り方",
@@ -432,6 +450,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mens-hairstyle-seiketsukan",
+    track: "recover",
     desire: "jishin",
     kind: "guide",
     title: "清潔感のある髪型とは — 男の第一印象は、髪で大きく動く",
@@ -471,6 +490,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "fuku-size-silhouette",
+    track: "recover",
     desire: "jishin",
     kind: "guide",
     title: "服は『サイズ感』がすべて — 高い服より、合った服",
@@ -510,6 +530,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "mensetsu-daiichiinsho",
+    track: "recover",
     desire: "shinrai",
     kind: "guide",
     title: "面接・就活の第一印象 — 見た目で損をしないために",
@@ -548,6 +569,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "hyoujou-egao-tsukurikata",
+    track: "recover",
     desire: "shinrai",
     kind: "guide",
     title: "表情と笑顔の作り方 — 『怖い』『不機嫌そう』を変える",
@@ -586,6 +608,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "machikon-gokon-midashinami",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "街コン・合コンの前に — 減点されない身だしなみの準備",
@@ -625,6 +648,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "matching-app-shashin",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "マッチングアプリの写真で、損しない — 盛らずに整える",
@@ -664,6 +688,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "hatsu-date-fukusou",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "初デートの服装、何が正解か — 迷わない考え方",
@@ -703,6 +728,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kanojo-dekinai-mitame",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "「彼女ができない」を、見た目のせいにする前に",
@@ -742,6 +768,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "seiketsukan-shoutai-5",
+    track: "recover",
     desire: "erabaretai",
     kind: "guide",
     title: "デートで見られる「清潔感」の正体 — 分解すると5つ",
@@ -781,6 +808,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "shisei-insho-neko-ze",
+    track: "recover",
     desire: "shinrai",
     kind: "guide",
     title: "姿勢で、印象は変わる — 猫背が『自信なさげ』に見える理由",
@@ -819,6 +847,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "rinkaku-betsu-kamigata",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "輪郭別・似合う髪型 — 丸顔・面長・エラ・逆三角の考え方",
@@ -857,6 +886,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kusege-ikasu-kamigata",
+    track: "recover",
     desire: "jishin",
     kind: "guide",
     title: "くせ毛を活かす — 抑えるより、味方にする髪型",
@@ -895,6 +925,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "shiraga-bokashi",
+    track: "recover",
     desire: "wakasa",
     kind: "guide",
     title: "白髪は、隠すより『ぼかす』 — 若見えと自然さの両立",
@@ -933,6 +964,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kokkaku-ni-awaseru",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "骨格に合わせる — 体型に似合う服が、自分でわかるようになる",
@@ -971,6 +1003,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "kekkonshiki-mijitaku-men",
+    track: "recover",
     desire: "shinrai",
     kind: "guide",
     title: "結婚式・二次会に呼ばれたら — 浮かない第一印象の準備",
@@ -1009,6 +1042,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "dousoukai-mitame-junbi",
+    track: "recover",
     desire: "shinrai",
     kind: "guide",
     title: "同窓会で「変わったね」と言われる準備 — 老け見えを避ける",
@@ -1047,6 +1081,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "eigyou-business-daiichiinsho",
+    track: "refine",
     desire: "shinrai",
     kind: "guide",
     title: "営業・ビジネスの第一印象 — 信頼される見た目の土台",
@@ -1085,6 +1120,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "impression",
     slug: "nioi-taishu-care-seiketsukan",
+    track: "recover",
     desire: "shinrai",
     kind: "guide",
     title: "清潔感は、匂いも含む — 体臭ケアの基本",
@@ -1126,6 +1162,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-early-signs",
+    track: "recover",
     desire: "wakasa",
     title: "AGAの初期症状 — 最初のサインと見分け方",
     lead: "AGA（男性型脱毛症）は進行性です。初期のサインを知っておくと、早い段階で選択肢を持てます。",
@@ -1171,6 +1208,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-self-check",
+    track: "recover",
     desire: "wakasa",
     title: "AGAセルフチェック — 自分で気づくための見方",
     lead: "病院に行く前に、自分で変化の傾向をつかむための見方があります。診断ではなく、気づくための目安として。",
@@ -1215,6 +1253,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-online-nagare",
+    track: "recover",
     desire: "wakasa",
     title: "AGAのオンライン診療 — 一般的な流れと、確認しておきたいこと",
     lead: "薄毛の相談は、対面だけでなくオンライン診療でも行える場合があります。どんな流れで、何を確認しておくと安心か。仕組みの側から、順を追って。",
@@ -1254,6 +1293,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-kensa-wakaru",
+    track: "recover",
     desire: "wakasa",
     title: "薄毛で何を調べる？ — 検査でわかること",
     lead: "薄毛の背景には、AGA以外の要因が隠れていることもあります。医療機関でどんなことを調べ、何がわかるのか。現在地を知るための検査を、中立の目で。",
@@ -1293,6 +1333,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-counseling-kakunin",
+    track: "recover",
     desire: "son",
     kind: "choose",
     title: "AGAクリニックに行く前に — 初回カウンセリングで確認したい10のこと",
@@ -1347,6 +1388,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "hair",
     slug: "aga-hiyou-kangae",
+    track: "recover",
     desire: "son",
     kind: "choose",
     title: "AGA治療の費用の考え方 — 月額ではなく、総額と内訳で見る",
@@ -1387,6 +1429,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "datsumou-hiyou-kangae",
+    track: "recover",
     desire: "son",
     kind: "choose",
     title: "脱毛の費用の考え方 — 回数・総額・やめるときまで",
@@ -1429,6 +1472,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "nikibiato-genin",
+    track: "recover",
     desire: "jishin",
     title: "ニキビ跡が消えにくい理由 — 種類ごとに考える",
     lead: "ニキビ跡は、炎症のあとに残ります。種類によって考え方が違うため、まず分けて理解します。",
@@ -1469,6 +1513,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "otona-nikibi-genin",
+    track: "recover",
     desire: "jishin",
     title: "大人ニキビの原因 — 思春期ニキビとの違い",
     lead: "大人になってからのニキビは、思春期とは要因のバランスが違うことがあります。",
@@ -1510,6 +1555,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "mens-skincare-junban",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "メンズスキンケアの順番 — 何を、どの順で",
@@ -1549,6 +1595,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "otoko-kansou-inner-dry",
+    track: "recover",
     desire: "jishin",
     kind: "guide",
     title: "皮脂は多いのに、乾く — 男の「インナードライ」の考え方",
@@ -1588,6 +1635,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "skin",
     slug: "hifuka-biyou-self-seiri",
+    track: "recover",
     desire: "son",
     kind: "choose",
     title: "皮膚科・美容皮膚科・セルフケア — 自分はどれから考えるかの整理",
@@ -1639,6 +1687,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "fuke-mie-genin",
+    track: "recover",
     desire: "wakasa",
     title: "老けて見える原因 — 変えられる要素から整える",
     lead: "「老けて見える」は一つの原因ではありません。要素に分解すると、変えられる部分から手をつけられます。",
@@ -1679,6 +1728,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "tsukare-gao-kuma",
+    track: "recover",
     desire: "wakasa",
     kind: "guide",
     title: "疲れて見える顔を、どうにかしたい — 変えられる要素から",
@@ -1719,6 +1769,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "kaerareru-yousso-junban",
+    track: "recover",
     desire: "wakasa",
     kind: "choose",
     title: "変えられる要素・変えにくい要素 — 顔の印象、手をつける順番の考え方",
@@ -1769,6 +1820,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "mukumi-gao-asa",
+    track: "recover",
     desire: "wakasa",
     kind: "guide",
     title: "朝の顔が、むくんでいる — 原因と、その日のうちに整える基本",
@@ -1808,6 +1860,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "face",
     slug: "hourei-sen-kininaru",
+    track: "recover",
     desire: "wakasa",
     kind: "guide",
     title: "ほうれい線が、気になり始めたら — 慌てる前の整理",
@@ -1849,6 +1902,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "taimou-koi-genin",
+    track: "recover",
     desire: "jishin",
     title: "体毛が濃い原因 — 体質とホルモンの話",
     lead: "体毛の濃さは体質であり、だらしなさではありません。仕組みを知ると、選び方も整理できます。",
@@ -1890,6 +1944,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "totonoeru-herasu-erabu",
+    track: "recover",
     desire: "son",
     kind: "choose",
     title: "「整える・整えない・減らす」を選ぶ前に — 後悔しないための考え方",
@@ -1940,6 +1995,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "aohige-genin-taisho",
+    track: "recover",
     desire: "jishin",
     title: "青ヒゲが気になる — 原因と、目立たせない考え方",
     lead: "しっかり剃っても、口まわりや顎が青く見える。清潔にしているのに不潔っぽく見られる気がする。青く見えるのは、毛そのものより肌の下に残る影から。",
@@ -1978,6 +2034,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "body-hair",
     slug: "sunege-udege-totonoe",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "すね毛・腕毛の「整え方」— 剃らずに、自然に薄く見せる",
@@ -2019,6 +2076,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "sleep-totonoe",
+    track: "refine",
     desire: "sonae",
     kind: "guide",
     title: "疲れが取れないと感じたら — 睡眠を整える基本",
@@ -2058,6 +2116,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "shukan-shikumi",
+    track: "refine",
     desire: "sonae",
     kind: "guide",
     title: "習慣は、意志でなく仕組み — 小さく続けるコツ",
@@ -2096,6 +2155,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "mitame-jishin",
+    track: "refine",
     desire: "jishin",
     kind: "guide",
     title: "見た目を整えると、なぜ自信がつくのか",
@@ -2135,6 +2195,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "tsukare-ketsueki-genchi",
+    track: "refine",
     desire: "sonae",
     kind: "guide",
     title: "「なんとなく疲れる」を、数字で見る — 現在地を知るという発想",
@@ -2174,6 +2235,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "kenkou-shindan-genchi",
+    track: "refine",
     desire: "sonae",
     kind: "guide",
     title: "健康診断の結果を、放置しない — 数字を「現在地」に変える見方",
@@ -2213,6 +2275,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "tsukare-yasusa-toshi",
+    track: "refine",
     desire: "sonae",
     kind: "guide",
     title: "「最近、疲れやすい」を、年齢のせいにする前に",
@@ -2252,6 +2315,7 @@ export const clusters: ClusterArticle[] = [
   {
     areaId: "mind",
     slug: "jiko-toushi-doko-kara",
+    track: "refine",
     desire: "sonae",
     kind: "guide",
     title: "自分への投資、どこから？ — 見た目・体・習慣の順番",

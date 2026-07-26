@@ -13,7 +13,9 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-const TRACK_DESIRES: DesireKey[] = ["wakasa", "shinrai", "sonae"];
+// 記事は track="refine"（もっと良くなりたい＝潜在）で絞り、欲求別に並べる。
+// 空の欲求は描画時に落ちるので、記事が増えても自動で追随する。
+const TRACK_DESIRES: DesireKey[] = ["sonae", "jishin", "shinrai", "wakasa", "erabaretai", "son"];
 
 export const metadata: Metadata = {
   title: "Refine｜深める — すでに整っている人が、もう一段",
@@ -142,7 +144,7 @@ export default function RefinePage() {
           <div className="space-y-9">
             {TRACK_DESIRES.map((key) => {
               const d = DESIRES[key];
-              const articles = clusters.filter((a) => a.desire === key && a.kind !== "interview").slice(0, 4);
+              const articles = clusters.filter((a) => a.track === "refine" && a.desire === key && a.kind !== "interview").slice(0, 4);
               if (articles.length === 0) return null;
               return (
                 <div key={key}>
