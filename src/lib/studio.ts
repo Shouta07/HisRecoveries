@@ -24,6 +24,42 @@ export function areaLabel(areaId: string): string {
   return AREA_LABELS[areaId] ?? areaId;
 }
 
+// ── Google Drive（完成動画のマスター保管庫） ──────────────────────
+// 「HR動画（Shorts）」親フォルダ。状態は 01_制作中/02_配信OK/03_配信済み。
+export const DRIVE_ROOT =
+  "https://drive.google.com/drive/folders/1xThBT2L4-ImeEIYTyWVx6qMpRmYmcEZ3";
+
+// ── 外部ツール（数字を見る先）───────────────────────────────────────
+// GA4 / Search Console は iframe 埋め込み不可（X-Frame-Options）。ここは
+// 「ワンクリックで正しいレポートへ飛ぶ」ディープリンク集。ライブ数値の
+// 画面内表示は API 連携（GA4 Data API / Search Console API）が必要。
+export const EXTERNAL_LINKS = {
+  searchConsole:
+    "https://search.google.com/u/5/search-console?resource_id=https%3A%2F%2Fhisrecoveries.com%2F",
+  analytics:
+    "https://analytics.google.com/analytics/web/?authuser=5#/a396283552p539570437/reports/intelligenthome",
+  drive: "https://drive.google.com/drive/folders/1xThBT2L4-ImeEIYTyWVx6qMpRmYmcEZ3",
+};
+
+// ── 配信チャネル ───────────────────────────────────────────────────
+export const CHANNELS = ["youtube", "instagram", "threads", "note", "substack"] as const;
+export type Channel = (typeof CHANNELS)[number];
+export const CHANNEL_LABELS: Record<Channel, string> = {
+  youtube: "YT",
+  instagram: "IG",
+  threads: "Threads",
+  note: "note",
+  substack: "substack",
+};
+
+// 制作パイプラインの状態（Drive のフォルダと対応）
+export type Stage = "producing" | "ready" | "published";
+export const STAGE_LABELS: Record<Stage, string> = {
+  producing: "制作中",
+  ready: "配信OK",
+  published: "配信済み",
+};
+
 // ── 生成済み動画レジストリ（packages/video を反映） ─────────────────
 export type VideoStatus = "rendered" | "draft";
 
@@ -42,6 +78,12 @@ export type VideoEntry = {
   /** レンダリングコマンド（packages/video で実行） */
   renderScript: string;
   format: "short"; // 9:16 縦（Threads/Reels/Shorts）
+  /** 制作パイプラインの状態（既定 producing）。 */
+  stage?: Stage;
+  /** この動画の Drive フォルダ URL（無ければ親フォルダを見る）。 */
+  driveUrl?: string;
+  /** 媒体別の配信記録（配信日 + 任意のURL）。 */
+  distributed?: Partial<Record<Channel, { date: string; url?: string }>>;
 };
 
 export const VIDEO_REGISTRY: VideoEntry[] = [
