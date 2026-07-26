@@ -207,8 +207,6 @@ export default function StudioPage() {
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-brand-cream/55">
           <span className="text-[10px] tracking-[0.2em] uppercase">その他</span>
           {[
-            { href: "/admin/articles", label: "Articles" },
-            { href: "/admin/media", label: "Media" },
             { href: "/admin/checks", label: "Checks" },
             { href: "/admin/asks", label: "Asks" },
             { href: "/admin/guides", label: "Guides" },
