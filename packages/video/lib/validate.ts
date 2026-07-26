@@ -100,3 +100,83 @@ export function validateRoadmapData(data: RoadmapData): string[] {
 
   return errors;
 }
+
+// ============================================================
+// BrandReel（30秒リール）用。RoadmapVideo とは版面が違うので上限も別。
+// 幅 768px(1080 - 左右156) に収まる1行の文字数目安。
+// ============================================================
+
+export const REEL_LIMITS = {
+  /** 見出し 76px */
+  headlineChars: 10,
+  /** 小見出し 58px */
+  headlineSmChars: 13,
+  /** 本文 34px */
+  bodyChars: 20,
+  /** 悩みラベル（肌 / 体 / 清潔感） */
+  itemLabelChars: 5,
+  /** 悩みの一言 29px */
+  itemNoteChars: 15,
+  concerns: 3,
+} as const;
+
+/** BrandReelData を検証。空配列なら合格。 */
+export function validateBrandReelData(data: {
+  eyebrow?: string;
+  desire?: { headline?: Line[]; note?: Line[] };
+  concerns?: { lead?: Line[]; items?: { label: string; note: string }[]; punch?: Line[] };
+  brand?: { lead?: Line[]; body?: Line[] };
+  confidence?: { headline?: Line[]; body?: Line[] };
+  cta?: { lead?: Line[]; cta?: Line[]; url?: string; handle?: string };
+}): string[] {
+  const errors: string[] = [];
+  if (!data || typeof data !== "object") return ["data がオブジェクトではありません"];
+
+  if (!data.eyebrow) errors.push("eyebrow がありません");
+
+  checkLines(data.desire?.headline, "desire.headline", REEL_LIMITS.headlineChars, errors);
+  checkLines(data.desire?.note, "desire.note", REEL_LIMITS.bodyChars, errors);
+
+  checkLines(data.concerns?.lead, "concerns.lead", REEL_LIMITS.bodyChars, errors);
+  checkLines(data.concerns?.punch, "concerns.punch", REEL_LIMITS.headlineSmChars, errors);
+
+  const items = data.concerns?.items ?? [];
+  if (items.length !== REEL_LIMITS.concerns) {
+    errors.push(`concerns.items は ${REEL_LIMITS.concerns} 個（肌/体/清潔感）。現在 ${items.length}`);
+  }
+  items.forEach((it, i) => {
+    if (!it?.label) errors.push(`concerns.items[${i}].label がありません`);
+    else if (it.label.length > REEL_LIMITS.itemLabelChars)
+      errors.push(`concerns.items[${i}].label 長すぎ(${it.label.length}>${REEL_LIMITS.itemLabelChars})`);
+    if (!it?.note) errors.push(`concerns.items[${i}].note がありません`);
+    else if (it.note.length > REEL_LIMITS.itemNoteChars)
+      errors.push(`concerns.items[${i}].note 長すぎ(${it.note.length}>${REEL_LIMITS.itemNoteChars})`);
+  });
+
+  checkLines(data.brand?.lead, "brand.lead", REEL_LIMITS.headlineSmChars, errors);
+  checkLines(data.brand?.body, "brand.body", REEL_LIMITS.bodyChars, errors);
+
+  checkLines(data.confidence?.headline, "confidence.headline", REEL_LIMITS.headlineChars, errors);
+  checkLines(data.confidence?.body, "confidence.body", REEL_LIMITS.bodyChars, errors);
+
+  checkLines(data.cta?.lead, "cta.lead", REEL_LIMITS.bodyChars, errors);
+  checkLines(data.cta?.cta, "cta.cta", REEL_LIMITS.headlineSmChars, errors);
+  if (!data.cta?.url) errors.push("cta.url がありません");
+
+  const allText: string[] = [
+    ...(data.desire?.headline ?? []).map((l) => l.text ?? ""),
+    ...(data.desire?.note ?? []).map((l) => l.text ?? ""),
+    ...(data.concerns?.lead ?? []).map((l) => l.text ?? ""),
+    ...(data.concerns?.punch ?? []).map((l) => l.text ?? ""),
+    ...items.flatMap((it) => [it?.label ?? "", it?.note ?? ""]),
+    ...(data.brand?.lead ?? []).map((l) => l.text ?? ""),
+    ...(data.brand?.body ?? []).map((l) => l.text ?? ""),
+    ...(data.confidence?.headline ?? []).map((l) => l.text ?? ""),
+    ...(data.confidence?.body ?? []).map((l) => l.text ?? ""),
+    ...(data.cta?.lead ?? []).map((l) => l.text ?? ""),
+    ...(data.cta?.cta ?? []).map((l) => l.text ?? ""),
+  ];
+  allText.forEach((t, i) => scanForbidden(t, `reel text#${i}`, errors));
+
+  return errors;
+}
