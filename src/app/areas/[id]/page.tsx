@@ -10,6 +10,7 @@ import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
 import QuietConsult from "@/components/QuietConsult";
 import ConsultLink from "@/components/ConsultLink";
+import Citations from "@/components/Citations";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -73,6 +74,10 @@ export default function AreaPage({ params }: { params: { id: string } }) {
       url: site.url,
       logo: { "@type": "ImageObject", url: `${site.url}/icon` },
     },
+    // 参照した情報源を構造化データにも出す。AI検索が出典を辿れるようにする（GEO）。
+    ...(cites.length > 0 && {
+      citation: cites.map((q) => ({ "@type": "CreativeWork", name: q.source, url: q.url })),
+    }),
   };
   const faqLd = {
     "@context": "https://schema.org",
@@ -217,46 +222,17 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {c.guide && <ExperienceInvite context={`${c.ja}を整えたいあなたへ`} />}
 
         {/* 出典・参考（従）— メカニズム記事のみ */}
-        {!c.guide && (
-        <section className="mt-12">
-          <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
-            出典・参考リンク
-          </h2>
-          {cites.length > 0 ? (
-            <ul className="space-y-3">
-              {cites.map((q, i) => (
-                <li key={i} className="rounded-[1rem] border border-[#1f2a1d]/10 bg-white p-4">
-                  {q.quote ? (
-                    <blockquote className="border-l-2 border-[#85AB8B] pl-3">
-                      <p className="text-[13.5px] text-[#1f2a1d] leading-[1.95]">「{q.quote}」</p>
-                      <footer className="mt-2 text-[12px] text-[#6b7a66]">
-                        — {q.source}
-                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="ml-2 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
-                          原文を読む↗
-                        </a>
-                      </footer>
-                    </blockquote>
-                  ) : (
-                    <div className="flex items-start gap-2">
-                      <span className="text-[#85AB8B] mt-px" aria-hidden>›</span>
-                      <p className="text-[13px] text-[#3a423a] leading-[1.85]">
-                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
-                          {q.source}↗
-                        </a>
-                        {q.note && <span className="text-[#6b7a66]"> — {q.note}</span>}
-                      </p>
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
+        {!c.guide &&
+          (cites.length > 0 ? (
+            <Citations items={cites} />
           ) : (
-            <p className="text-[13px] text-[#9aa79a] leading-[1.9]">
-              出典は順次追加していきます。
-            </p>
-          )}
-        </section>
-        )}
+            <section className="mt-12">
+              <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+                出典・参考リンク
+              </h2>
+              <p className="text-[13px] text-[#9aa79a] leading-[1.9]">出典は順次追加していきます。</p>
+            </section>
+          ))}
 
         {/* 取材記事 — 現場第一線のプロへのインタビュー（一次情報） */}
         {interviews.length > 0 && (

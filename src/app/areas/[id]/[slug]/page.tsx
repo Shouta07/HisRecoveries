@@ -7,6 +7,8 @@ import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
 import QuietConsult from "@/components/QuietConsult";
 import ConsultLink from "@/components/ConsultLink";
+import Citations from "@/components/Citations";
+import { citationsForCluster } from "@/lib/citations";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -40,6 +42,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
   if (!a || !c) notFound();
 
   const url = `${site.url}/areas/${a.areaId}/${a.slug}`;
+  // 出典（従）。記事固有が無ければ領域のものにフォールバック。
+  const cites = citationsForCluster(a.areaId, a.slug);
 
   // あわせて読む（related slug → 記事解決。存在しない slug は無視）
   const relatedArticles = (a.related ?? [])
@@ -78,6 +82,10 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
       url: site.url,
       logo: { "@type": "ImageObject", url: `${site.url}/icon` },
     },
+    // 参照した情報源を構造化データにも出す。AI検索が出典を辿れるようにする（GEO）。
+    ...(cites.length > 0 && {
+      citation: cites.map((q) => ({ "@type": "CreativeWork", name: q.source, url: q.url })),
+    }),
   };
   const faqLd = {
     "@context": "https://schema.org",
@@ -151,7 +159,19 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           )}
           <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{a.lead}</p>
           <div className="mt-4 flex items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">{a.kind === "guide" ? "実践ガイド" : a.kind === "choose" ? "選び方・向き合い方" : "出典明記"}</span>
+            {/* 「出典明記」は、実際に出典があるときだけ掲げる（表示と中身を一致させる） */}
+            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">
+              {a.kind === "guide"
+                ? "実践ガイド"
+                : a.kind === "choose"
+                ? "選び方・向き合い方"
+                : cites.length > 0
+                ? "出典明記"
+                : "解説"}
+            </span>
+            {a.kind !== "guide" && cites.length > 0 && a.kind === "choose" && (
+              <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[11px] font-bold">出典明記</span>
+            )}
             <span className="text-[11px] text-[#9aa79a]">最終更新: {CLUSTER_UPDATED}</span>
           </div>
         </header>
@@ -212,6 +232,10 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             ))}
           </dl>
         </section>
+
+        {/* 出典・参考（従）— 記事単位で辿れるようにする。
+            ガイド（実践・第一印象）は医学的な出典を前提としないため出さない。 */}
+        {a.kind !== "guide" && <Citations items={cites} />}
 
         {/* あわせて読む — 内部リンク網（潜在→仕組み→選び方の導線） */}
         {relatedArticles.length > 0 && (

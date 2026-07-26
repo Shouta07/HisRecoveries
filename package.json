@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "video:studio": "npm -w @hr/video run studio"
+    "video:studio": "npm -w @hr/video run studio",
+    "check:citations": "node scripts/check-citations.mjs"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
