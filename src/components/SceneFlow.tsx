@@ -8,13 +8,21 @@
 // page.tsx は server component のままにしておきたいので、
 // 状態を持つのはこの薄いクライアント層だけに閉じる。
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OccasionGrid from "@/components/OccasionGrid";
 import PackagePlanner, { type DiagArticle } from "@/components/PackagePlanner";
-import type { OccasionId } from "@/lib/occasions";
+import { occasions, type OccasionId } from "@/lib/occasions";
 
 export default function SceneFlow({ articles }: { articles: Record<string, DiagArticle[]> }) {
   const [occasionId, setOccasionId] = useState<OccasionId | null>(null);
+
+  // /?occasion=bigday#diagnosis で、Job別LP・広告からそのまま流れてこられる。
+  // useSearchParams ではなく location を読むのは、この LP を静的なまま保つため
+  // （useSearchParams は Suspense 境界を要求し、ページを動的にしてしまう）。
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("occasion");
+    if (q && occasions.some((o) => o.id === q)) setOccasionId(q as OccasionId);
+  }, []);
 
   function pick(id: OccasionId) {
     setOccasionId(id);

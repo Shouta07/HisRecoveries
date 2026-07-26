@@ -210,6 +210,24 @@ export default function HomePage() {
         <footer className="relative z-10 border-t border-[#1f2a1d]/10 bg-[#eef1ea]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-12 pb-8">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-8">
+              {/* 叶えたいことから探す — Job別ランディングへ */}
+              <div className="col-span-2 sm:col-span-2">
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">叶えたいことから探す</div>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-[13px] text-[#4b5b47] mb-8">
+                  {[
+                    ["romance", "恋愛で、選ばれる自分になりたい"],
+                    ["bigday", "大切な日に、最高の自分でいたい"],
+                    ["work", "仕事で、信頼されたい"],
+                    ["family", "家族に、誇られる存在でいたい"],
+                    ["restart", "もう一度、自分を好きになりたい"],
+                  ].map(([id, label]) => (
+                    <li key={id}>
+                      <Link href={`/occasions/${id}`} className="hover:text-[#1f2a1d] transition-colors">{label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               {/* 悩みから探す */}
               <div className="col-span-2 sm:col-span-2">
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">悩みから探す</div>

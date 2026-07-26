@@ -3,11 +3,12 @@ import { site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
 import { clusters } from "@/lib/clusters";
 import { packages } from "@/lib/packages";
+import { occasions } from "@/lib/occasions";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const staticPaths: MetadataRoute.Sitemap = ["", "/reserve", "/apply", "/areas", "/areas/confidence", "/recover", "/refine", "/faq", "/privacy"].map((p) => ({
+  const staticPaths: MetadataRoute.Sitemap = ["", "/reserve", "/apply", "/occasions", "/areas", "/areas/confidence", "/recover", "/refine", "/faq", "/privacy"].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: now,
     changeFrequency: "monthly",
@@ -35,5 +36,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...staticPaths, ...areaPaths, ...clusterPaths, ...packagePaths];
+  // Job別ランディング。広告・検索の着地先なので、記事より高い優先度で出す。
+  const occasionPaths: MetadataRoute.Sitemap = occasions.map((o) => ({
+    url: `${site.url}/occasions/${o.id}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: o.focus ? 0.95 : 0.9,
+  }));
+
+  return [...staticPaths, ...occasionPaths, ...areaPaths, ...clusterPaths, ...packagePaths];
 }
