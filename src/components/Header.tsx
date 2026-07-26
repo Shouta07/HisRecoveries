@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
   { href: "/why", label: "想い" },
-  { href: "/#service", label: "Service" },
+  { href: "/#occasions", label: "Service" },
 ];
 
 export default function Header() {

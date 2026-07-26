@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import SceneFlow from "@/components/SceneFlow";
-import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
@@ -161,9 +160,6 @@ export default function HomePage() {
             悩みではなく「何のために整えるか」から入り、住まい・年齢・（締切）を足して
             構成＋日程プラン＋各ステップの記事をその場で返す。相談でパーソナライズ。 */}
         <SceneFlow />
-
-        {/* できること — 5ステップの③〜④の具体（体験）。はじめかたの後に置く */}
-        <ExperiencesSection />
 
         {/* His Recoveries の特徴 — 機能価値を2×2で（Oh my teeth 型） */}
         <FeaturesSection />

@@ -40,7 +40,7 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
         <nav aria-label="パンくず" className="text-[12px] text-[#6b7a66] mb-6">
           <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/#service" className="hover:text-[#1f2a1d]">Service</Link>
+          <Link href="/occasions" className="hover:text-[#1f2a1d]">Service</Link>
           <span className="mx-1.5">/</span>
           <span className="text-[#1f2a1d]">{p.name}</span>
         </nav>
@@ -171,7 +171,7 @@ export default function PackageDetailPage({ params }: { params: { id: string } }
         </p>
 
         <div className="mt-8">
-          <Link href="/#packages" className="text-[13px] text-[#3d5638] font-semibold hover:opacity-70 transition-opacity">
+          <Link href="/occasions" className="text-[13px] text-[#3d5638] font-semibold hover:opacity-70 transition-opacity">
             ← すべてのはじめ方
           </Link>
         </div>
