@@ -1,11 +1,9 @@
-name: HR Post Approved
+name: Threads Post Approved (publish)
 
-# 承認済み(approved)の下書きだけを投稿する。生成は post.yml、承認は人間（admin/CLI）、
-# 投稿はこのワークフロー、の3段。承認されたものが無ければ何もしない（安全）。
+# 承認済み(approved)の下書きだけを投稿する。承認が無ければ何もしない（安全）。
 
 on:
   schedule:
-    # 3時間おきにキューを確認して、承認済みがあれば投稿する（JST 目安）
     - cron: "30 1,4,7,10,13 * * *"
   workflow_dispatch:
     inputs:
@@ -13,6 +11,13 @@ on:
         description: "Dry run (no actual post)"
         default: false
         type: boolean
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: apps/threads
 
 jobs:
   post-approved:
@@ -46,9 +51,7 @@ jobs:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
         run: |
           FLAGS=""
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
-            FLAGS="$FLAGS --dry-run"
-          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAGS="$FLAGS --dry-run"; fi
           python -m core.main post-approved mens-body-lab $FLAGS
 
       - name: Save queue + history
@@ -56,7 +59,6 @@ jobs:
         run: |
           git config user.name "hisrecoveries-bot"
           git config user.email "hisrecoveries-bot@users.noreply.github.com"
-          # 投稿で posted に変わったキューと履歴を保存
           git add accounts/*/approvals.json accounts/*/history.json || true
           git diff --cached --quiet || git commit -m "auto: post approved + update queue/history [skip ci]"
           git push || true
