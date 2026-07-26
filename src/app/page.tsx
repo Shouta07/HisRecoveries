@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import QuickDiagnosis from "@/components/QuickDiagnosis";
+import DesireBrowser from "@/components/DesireBrowser";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -192,6 +193,11 @@ export default function HomePage() {
         {/* ① 診断の入口 — サイトを"道具"にする中核。悩み選択→ステップ別の記事＋
             進め方のロードマップ→相談でパーソナライズ。悩みブラウズもここに内包。 */}
         <QuickDiagnosis articles={diagnosisArticles} />
+
+        {/* 目的から探す — 「あなたは、何を叶えたい？」で記事に入る（悩み別と並ぶ入口） */}
+        <section className="mx-auto max-w-[1080px] px-5 sm:px-8 py-14 sm:py-20">
+          <DesireBrowser />
+        </section>
 
         {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
         <StepsSection />
