@@ -2,24 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import SceneFlow from "@/components/SceneFlow";
-import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
-import { clusters } from "@/lib/clusters";
-
-// パッケージ編成ツールに渡す、領域ごとの記事（重い clusters は server 側で軽い形に畳んでから props で渡す）。
-const DIAG_AREAS = ["impression", "hair", "skin", "face", "body-hair", "mind"] as const;
-const diagnosisArticles: Record<string, { slug: string; title: string }[]> = Object.fromEntries(
-  DIAG_AREAS.map((area) => [
-    area,
-    clusters
-      .filter((c) => c.areaId === area && c.kind !== "interview")
-      .slice(0, 3)
-      .map((c) => ({ slug: c.slug, title: c.title })),
-  ]),
-);
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -115,7 +101,7 @@ export default function HomePage() {
               改行は文節単位（inline-block）で、狭い画面でも語の途中で折れないようにする。 */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
             <span className="inline-block">恋愛、仕事、人生の節目。</span>{" "}
-            <span className="inline-block">あなたが<span className="font-semibold text-[#EDF1E8]">叶えたい未来から逆算</span>し、</span>{" "}
+            <span className="inline-block">あなたが<span className="font-semibold text-[#EDF1E8]">叶えたい理想から逆算</span>し、</span>{" "}
             <span className="inline-block">必要な変化の順番を設計する</span>{" "}
             <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">男性ウェルネスコンシェルジュ</span>。</span>
           </p>
@@ -174,10 +160,7 @@ export default function HomePage() {
         {/* ① 入口 — 人生シーン（目的）→ パッケージ編成 の一続き。
             悩みではなく「何のために整えるか」から入り、住まい・年齢・（締切）を足して
             構成＋日程プラン＋各ステップの記事をその場で返す。相談でパーソナライズ。 */}
-        <SceneFlow articles={diagnosisArticles} />
-
-        {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
-        <StepsSection />
+        <SceneFlow />
 
         {/* できること — 5ステップの③〜④の具体（体験）。はじめかたの後に置く */}
         <ExperiencesSection />

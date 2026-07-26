@@ -10,10 +10,10 @@
 
 import { useEffect, useState } from "react";
 import OccasionGrid from "@/components/OccasionGrid";
-import PackagePlanner, { type DiagArticle } from "@/components/PackagePlanner";
-import { occasions, type OccasionId } from "@/lib/occasions";
+import PackagePlanner from "@/components/PackagePlanner";
+import { occasions, tracks, type OccasionId } from "@/lib/occasions";
 
-export default function SceneFlow({ articles }: { articles: Record<string, DiagArticle[]> }) {
+export default function SceneFlow() {
   const [occasionId, setOccasionId] = useState<OccasionId | null>(null);
 
   // /?occasion=bigday#diagnosis で、Job別LP・広告からそのまま流れてこられる。
@@ -21,7 +21,7 @@ export default function SceneFlow({ articles }: { articles: Record<string, DiagA
   // （useSearchParams は Suspense 境界を要求し、ページを動的にしてしまう）。
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("occasion");
-    if (q && occasions.some((o) => o.id === q)) setOccasionId(q as OccasionId);
+    if (q && [...occasions, ...tracks].some((o) => o.id === q)) setOccasionId(q as OccasionId);
   }, []);
 
   function pick(id: OccasionId) {
@@ -42,7 +42,7 @@ export default function SceneFlow({ articles }: { articles: Record<string, DiagA
   return (
     <>
       <OccasionGrid selected={occasionId} onSelect={pick} />
-      <PackagePlanner articles={articles} occasionId={occasionId} onClearOccasion={clear} />
+      <PackagePlanner occasionId={occasionId} onClearOccasion={clear} />
     </>
   );
 }

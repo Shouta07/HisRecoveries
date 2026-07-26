@@ -14,7 +14,15 @@
 // シーンが planner に渡すのは goalKeys / modules / ラベルという素のデータだけで、
 // 依存の向きは occasions → planner の一方向に保つ（循環させない）。
 
-export type OccasionId = "romance" | "bigday" | "work" | "family" | "restart";
+export type OccasionId =
+  | "romance"
+  | "bigday"
+  | "work"
+  | "family"
+  | "restart"
+  /** Job が定まらない人のための、もうひとつの入口（tracks を参照） */
+  | "recover"
+  | "refine";
 
 export type Occasion = {
   id: OccasionId;
@@ -180,7 +188,62 @@ export const occasions: Occasion[] = [
   },
 ];
 
+/**
+ * Recover / Refine — Job が定まらない人のための入口。
+ *
+ * 「叶えたいこと」が5つのどれにも当てはまらない人を、選ばせずに素通りさせると
+ * 結局ゼロから悩みを選ぶことになる。そこで、自己評価ではなく
+ * 「締切があるか」だけで分岐できる2択を置く。これなら誰でも正しく答えられる。
+ *
+ *   Recover ＝ いま、間に合わせる（締切がある／もう待てない）
+ *   Refine  ＝ この先、崩れない（締切はない／維持を仕組みにする）
+ *
+ * 実体は Occasion と同じなので、プランナー側の配線はそのまま使える。
+ */
+export const tracks: Occasion[] = [
+  {
+    id: "recover",
+    no: "R",
+    purpose: "いま、間に合わせたい",
+    job: "もう先送りにしたくない。効くものだけ、すぐに始めたい。",
+    obstacles: ["清潔感", "髪", "肌", "服"],
+    title: "Recover｜取り戻す",
+    lead: "大事な日が決まっている。あるいは、もう待てない。そういうときは、効くものだけをやります。",
+    examples: ["もう先送りしたくない", "近いうちに人と会う", "転職・再スタート", "何から始めるか決めたい"],
+    goalKeys: ["clean", "face"],
+    modules: ["hair-style", "styling"],
+    headline: "取り戻す（Recover）",
+    flowLead: "全部はやりません。いま効くものから順に、間に合う形で組みます。",
+    dated: true,
+    dateLabel: "期日があれば（任意）",
+    metaDescription: "いま、間に合わせる。効くものだけを、間に合う順に。",
+    keywords: [],
+    partners: [],
+    faqs: [],
+  },
+  {
+    id: "refine",
+    no: "F",
+    purpose: "この先、崩れないようにしたい",
+    job: "一度整えた状態を、考えなくても維持できるようにしたい。",
+    obstacles: ["老け見え", "疲れ顔", "習慣", "維持"],
+    title: "Refine｜深める",
+    lead: "締切はない。けれど、5年後の自分は今日の積み重ねでできています。",
+    examples: ["維持を仕組みにしたい", "老けの先手を打ちたい", "年単位で設計したい", "一度整えたが続かない"],
+    goalKeys: ["face", "mind"],
+    modules: ["hair-style", "skincare", "styling"],
+    headline: "深める（Refine）",
+    flowLead: "現状維持は、ゆるやかな後退。伸ばす一点と先手を打つ一点を決めて、維持を仕組みにします。",
+    dated: false,
+    metaDescription: "この先、崩れない。維持を、仕組みに。",
+    keywords: [],
+    partners: [],
+    faqs: [],
+  },
+];
+
+/** Job・トラックのどちらでも引ける（プランナーは両者を区別しない）。 */
 export function occasionById(id: string | null | undefined): Occasion | undefined {
   if (!id) return undefined;
-  return occasions.find((o) => o.id === id);
+  return [...occasions, ...tracks].find((o) => o.id === id);
 }

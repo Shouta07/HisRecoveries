@@ -12,7 +12,7 @@
 //   提供価値 … あなたに必要な変化の順番を設計する。（このセクション本文〜診断）
 
 import Link from "next/link";
-import { occasions, type OccasionId } from "@/lib/occasions";
+import { occasions, tracks, type OccasionId } from "@/lib/occasions";
 
 const MINCHO: React.CSSProperties = {
   fontFamily:
@@ -148,24 +148,52 @@ export default function OccasionGrid({
             );
           })}
 
-          {/* 6枚目＝当てはまらない人の受け皿。選ばせずに、そのまま下へ流す。 */}
-          <div className="flex flex-col justify-center rounded-[1.4rem] border border-dashed border-[#1f2a1d]/18 bg-[#f6f8f4] p-5 sm:p-6">
-            <div
-              className="text-[13.5px] font-bold text-[#1f2a1d] leading-[1.5]"
-              style={MINCHO}
-            >
+          {/* 6枚目＝当てはまらない人の受け皿。
+              素通りさせると結局ゼロから悩みを選ぶことになるので、
+              自己評価ではなく「締切があるか」だけで答えられる2択を置く。 */}
+          <div className="flex flex-col rounded-[1.4rem] border border-dashed border-[#1f2a1d]/18 bg-[#f6f8f4] p-5 sm:p-6">
+            <div className="text-[13.5px] font-bold text-[#1f2a1d] leading-[1.5]" style={MINCHO}>
               当てはまるものが、ない
             </div>
             <p className="mt-2 text-[12px] text-[#4b5b47] leading-[1.8]">
-              決まっていなくても大丈夫です。選ばずに、そのまま下のフォームへ。
-              住まいと年齢だけでも、組めます。
+              決まっていなくて大丈夫です。
+              <span className="font-semibold text-[#3d5638]">期日があるかどうか</span>だけで選べます。
             </p>
-            <a
-              href="#diagnosis"
-              className="mt-4 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#3d5638] hover:opacity-70 transition-opacity"
-            >
-              選ばずに進む <span aria-hidden>→</span>
-            </a>
+
+            <div className="mt-4 space-y-2">
+              {tracks.map((t) => {
+                const on = selected === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => onSelect(t.id)}
+                    aria-pressed={on}
+                    className={`w-full text-left rounded-[1rem] border px-4 py-3 transition-colors ${
+                      on
+                        ? "bg-[#16241A] border-[#16241A] text-[#EDF1E8]"
+                        : "bg-white border-[#1f2a1d]/12 hover:border-[#3d5638]/45"
+                    }`}
+                  >
+                    <div className={`text-[12.5px] font-bold leading-[1.5] ${on ? "text-[#EDF1E8]" : "text-[#1f2a1d]"}`}>
+                      {t.title}
+                    </div>
+                    <p className={`mt-0.5 text-[11px] leading-[1.7] ${on ? "text-[#C9D2C4]" : "text-[#6b7a66]"}`}>
+                      {t.id === "recover" ? "いま、間に合わせる。期日がある／もう待てない。" : "この先、崩れない。期日はない／維持を仕組みに。"}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+              <Link href="/recover" className="text-[11px] font-semibold text-[#6b7a66] underline underline-offset-4 hover:text-[#3d5638] transition-colors">
+                Recover を詳しく
+              </Link>
+              <Link href="/refine" className="text-[11px] font-semibold text-[#6b7a66] underline underline-offset-4 hover:text-[#3d5638] transition-colors">
+                Refine を詳しく
+              </Link>
+            </div>
           </div>
         </div>
       </div>
