@@ -65,6 +65,26 @@ export const VIDEO_REGISTRY: VideoEntry[] = [
     renderScript: "npm run render:akanuke -w @hr/video",
     format: "short",
   },
+  {
+    compositionId: "Skincare",
+    title: "スキンケアは、順番",
+    areaId: "skin",
+    slug: "mens-skincare-junban",
+    seconds: 20,
+    status: "rendered",
+    renderScript: "npm run render:skincare -w @hr/video",
+    format: "short",
+  },
+  {
+    compositionId: "Shukan",
+    title: "習慣は、仕組みで続ける",
+    areaId: "mind",
+    slug: "shukan-shikumi",
+    seconds: 20,
+    status: "rendered",
+    renderScript: "npm run render:shukan -w @hr/video",
+    format: "short",
+  },
 ];
 
 // ── 突き合わせ ─────────────────────────────────────────────────────
