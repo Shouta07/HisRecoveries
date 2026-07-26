@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "video:studio": "remotion studio remotion/index.ts",
+    "video:render": "remotion render remotion/index.ts Jibunmigaki out/jibunmigaki.mp4 --browser-executable=/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
@@ -25,6 +27,8 @@
     "remark-html": "^16.0.1"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.499",
+    "@remotion/renderer": "^4.0.499",
     "@types/node": "^20.12.7",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -32,6 +36,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.15",
     "postcss": "^8.4.39",
+    "remotion": "^4.0.499",
     "tailwindcss": "^3.4.6",
     "typescript": "^5.5.3"
   }
