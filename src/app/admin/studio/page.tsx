@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 function Kpi({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="py-1">
-      <p className="font-mincho text-4xl text-ink leading-none">{value}</p>
+      <p className="font-mincho text-4xl text-brand leading-none">{value}</p>
       <p className="mt-2 text-[12px] text-ink">{label}</p>
       {sub ? <p className="mt-0.5 text-[11px] text-sub-gray">{sub}</p> : null}
     </div>
@@ -30,10 +30,10 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-hair-line bg-paper/30 p-6">
+    <section className="rounded-2xl border border-hair-line bg-paper/50 p-6">
       <div className="flex items-baseline justify-between">
-        <h2 className="font-mincho text-lg text-ink">{title}</h2>
-        <span className="text-[13px] text-sub-gray tabular-nums">{count}件</span>
+        <h2 className="font-mincho text-lg text-brand">{title}</h2>
+        <span className="text-[13px] font-medium text-brand tabular-nums">{count}件</span>
       </div>
       <div className="mt-4">{children}</div>
     </section>
@@ -53,7 +53,10 @@ export default function StudioPage() {
   return (
     <div className="mx-auto max-w-[960px] px-6 sm:px-10 pt-12 sm:pt-16 pb-24">
       <header className="mb-10">
-        <h1 className="font-mincho text-3xl sm:text-4xl text-ink leading-[1.4]">
+        <span className="inline-flex items-center rounded-full bg-brand px-3 py-1 text-[10px] tracking-[0.18em] text-brand-cream uppercase">
+          Studio
+        </span>
+        <h1 className="mt-4 font-mincho text-3xl sm:text-4xl text-brand leading-[1.4]">
           スタジオ
         </h1>
         <p className="mt-3 text-[13px] text-sub-gray">
@@ -88,7 +91,7 @@ export default function StudioPage() {
       </section>
 
       {/* いま やること — 2つの行動だけを前面に */}
-      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-sub-gray uppercase">
+      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-brand uppercase">
         いま やること
       </h2>
       <div className="grid md:grid-cols-2 gap-4">
@@ -138,7 +141,7 @@ export default function StudioPage() {
                   </span>
                   <Link
                     href={r.href}
-                    className="text-[13px] text-ink hover:text-gold truncate"
+                    className="text-[13px] text-ink hover:text-brand truncate"
                   >
                     {r.title}
                   </Link>
@@ -158,15 +161,15 @@ export default function StudioPage() {
       </div>
 
       {/* 在庫 — 参照用。軽く */}
-      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-sub-gray uppercase">
+      <h2 className="mt-14 mb-4 text-[11px] tracking-[0.25em] text-brand uppercase">
         在庫
       </h2>
 
       {/* トラックの偏り（1行バー） */}
       <div className="mb-8">
         <div className="flex h-2.5 w-full overflow-hidden rounded-full">
-          <div className="bg-ink/70" style={{ width: `${rPct}%` }} />
-          <div className="bg-gold/60" style={{ width: `${100 - rPct}%` }} />
+          <div className="bg-brand" style={{ width: `${rPct}%` }} />
+          <div className="bg-sage" style={{ width: `${100 - rPct}%` }} />
         </div>
         <div className="mt-2 flex justify-between text-[12px] text-sub-gray">
           <span>Recover {d.track.recover}（顕在／SEO）</span>
@@ -189,7 +192,7 @@ export default function StudioPage() {
                   <p className="text-[13px] text-ink truncate">{r.video!.title}</p>
                   <Link
                     href={r.href}
-                    className="text-[11px] text-sub-gray hover:text-gold truncate block"
+                    className="text-[11px] text-sub-gray hover:text-brand truncate block"
                   >
                     {r.title}
                   </Link>
@@ -236,11 +239,11 @@ export default function StudioPage() {
       {/* フッター — 数字の導線を1行に */}
       <footer className="mt-14 border-t border-hair-line pt-5 text-[12px] text-sub-gray">
         数字：
-        <Link href="/admin/insights" className="text-ink hover:text-gold mx-1">
+        <Link href="/admin/insights" className="text-ink hover:text-brand mx-1">
           Insights
         </Link>
         ·
-        <Link href="/admin/data" className="text-ink hover:text-gold mx-1">
+        <Link href="/admin/data" className="text-ink hover:text-brand mx-1">
           Data
         </Link>
         · Threads の閲覧数・承認は{" "}

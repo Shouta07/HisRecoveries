@@ -22,6 +22,11 @@ const config: Config = {
         "navy-deep": "#15100B",
         gold: "#8E6A36",
         "gold-bright": "#A6824A",
+        // Brand green register (hero / logo mark / videos). Deep green + sage.
+        brand: "#16241A",
+        "brand-cream": "#EDF1E8",
+        sage: "#85AB8B",
+        "sage-bright": "#9EC4A3",
         // Legacy aliases
         "off-white": "#F2EAD9",
         "quiet-brass": "#8E6A36",
