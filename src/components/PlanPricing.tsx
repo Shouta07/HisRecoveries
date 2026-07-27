@@ -16,7 +16,7 @@ const INCLUDED = [
   { t: "専門家・施設の選定と手配", d: "中立に選び、予約まで。探す手間はかかりません。" },
   { t: "LINEでの相談", d: "迷ったその場で聞けます。判断を持ち帰らせません。" },
   { t: "進捗管理", d: "締切を置き、遅れたら声をかけます。放置しません。" },
-  { t: "当日までの伴走", d: "終わるまで見届けます。やり切ることが成果です。" },
+  { t: "当日までの伴走", d: "終わるまで見届けます。手が止まったら、声をかけます。" },
 ];
 
 export default function PlanPricing() {
@@ -78,13 +78,32 @@ export default function PlanPricing() {
           </div>
         </div>
 
-        {/* なぜ価格が発生するか */}
+        {/* 価値分解 — 何にお金を払っているのかを、機能ではなく"消えるコスト"で示す */}
         <div className="mt-6 rounded-[1.4rem] bg-[#eef3ea] px-6 sm:px-8 py-6">
           <p className="text-[14.5px] sm:text-[15.5px] font-bold text-[#1f2a1d] leading-[1.7]" style={MINCHO}>
             商品を買うのではありません。<br className="sm:hidden" />
-            迷う時間と、失敗する可能性を減らします。
+            この6つのコストが、あなたから消えます。
           </p>
-          <p className="mt-3 text-[12.5px] text-[#4b5b47] leading-[1.95]">
+          <ul className="mt-4 grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
+            {[
+              ["判断コスト", "「どれが自分に必要か」を、もう考えなくていい"],
+              ["失敗コスト", "順番を間違えて、時間と費用を捨てるリスクが下がる"],
+              ["時間コスト", "調べる・比べる・予約する時間が、ほぼゼロになる"],
+              ["選定コスト", "どの専門家が合うかを、中立に選んでもらえる"],
+              ["管理コスト", "締切と進捗を、自分で管理しなくてよくなる"],
+              ["心理コスト", "一人で抱えず、迷ったその場で聞ける相手がいる"],
+            ].map(([t, d]) => (
+              <li key={t} className="flex gap-2.5">
+                <span aria-hidden className="text-[#3d5638] text-[12px] leading-[1.9] shrink-0">✓</span>
+                <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
+                  <span className="font-bold text-[#1f2a1d]">{t}</span>
+                  <span className="mx-1.5 text-[#c9d3c4]">|</span>
+                  {d}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-[12.5px] text-[#4b5b47] leading-[1.95] border-t border-[#1f2a1d]/10 pt-4">
             自分で調べ、比べ、選び、間違え、やり直す。その時間と費用を合計すると、
             多くの場合これを上回ります。しかも大事な日は、やり直しがききません。
             ここで払っているのは、施術ではなく<span className="font-semibold text-[#1f2a1d]">判断と段取り</span>です。

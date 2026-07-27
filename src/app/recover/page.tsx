@@ -20,13 +20,13 @@ const TRACK_DESIRES: DesireKey[] = ["jishin", "erabaretai", "son", "shinrai", "w
 export const metadata: Metadata = {
   title: "Recover｜取り戻す — 誰にも言えなかった悩みから",
   description:
-    "薄毛・肌・清潔感・写真が苦手——誰にも言えなかった悩みを、ゼロに戻す。印象診断で地図を創り、プロ専属チームの体験で最短距離を。相談は無料・秘密保持のもとで。目安 ¥150,000〜。",
+    "薄毛・肌・清潔感・写真が苦手——誰にも言えなかった悩みを、ゼロに戻す。印象診断で地図を創り、プロ専属チームの体験へ。やる順番を決めて、遠回りを減らします。相談は無料・秘密保持のもとで。目安 ¥150,000〜。",
   alternates: { canonical: `${site.url}/recover` },
   openGraph: {
     type: "website",
     url: `${site.url}/recover`,
     title: "Recover｜取り戻す — 誰にも言えなかった悩みから",
-    description: "誰にも言えなかった悩みを、ゼロに戻す。地図を創り、最短距離で。",
+    description: "誰にも言えなかった悩みを、ゼロに戻す。地図を創り、やる順番を決める。",
   },
 };
 
@@ -70,7 +70,7 @@ export default function RecoverPage() {
           <p className="mt-5 text-[14px] sm:text-[15px] text-[#C9D2C4] leading-[2] max-w-[36rem]">
             相談すれば「気にしすぎ」。調べれば、売り込みばかり。
             ここでは、悩みを笑わず、煽らず、地図にします。
-            マイナスをゼロへ——最短距離で。
+            マイナスをゼロへ。やる順番を決めて、遠回りを減らします。
           </p>
           {/* 悩みチップ */}
           <div className="mt-7 flex flex-wrap gap-2">

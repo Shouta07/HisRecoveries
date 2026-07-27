@@ -11,6 +11,7 @@ import StickyConsultBar from "@/components/StickyConsultBar";
 import OrderFailureSection from "@/components/OrderFailureSection";
 import PlanPricing from "@/components/PlanPricing";
 import TrustSection from "@/components/TrustSection";
+import ScopeSection from "@/components/ScopeSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -46,7 +47,7 @@ const VOICES_B = [
 ];
 
 // ヒーロー直下の推し3カラム（Oh my teeth の 通院不要/短期間/リーズナブル に相当）。
-// ポジティブな機能ラベルで、見出し「最短距離」を支える3本柱。
+// 見出し「間に合わせる」を支える3本柱。
 // 売っているのは施術ではなく「判断の代行・順番設計・期限管理」。
 const BURDENS = [
   { k: "判断を代行", t: "もう、選ばなくていい。", d: "調べる・比べる・決めるを、こちらが引き受けます。" },
@@ -192,7 +193,11 @@ export default function HomePage() {
         {/* 体験の具体 — 何をしてもらえるのか */}
         <ExperiencesSection />
 
-        {/* ⑥ 価格 — 隠さない。何にいくら払うのか、なぜ発生するのか。 */}
+        {/* ④⑤⑦⑧ 提供範囲・提供しないこと・期待できる／できない変化・顧客の役割
+            ＝期待値調整。価格の直前に置き、買う前に境界線を見せる（クレーム予防）。 */}
+        <ScopeSection />
+
+        {/* ⑥ 価格 — 隠さない。何にいくら払うのか、価値分解で示す。 */}
         <PlanPricing />
 
         {/* ⑦ 信頼 — 誰がやるか・どう進めるか・つなぐ相手・実際の記録 */}
