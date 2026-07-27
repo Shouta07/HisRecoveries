@@ -22,7 +22,15 @@ export type ConversionEvent =
   | "plan_submit" // 送信: 「パッケージを組む」
   | "plan_view" // 表示: /plan（構成が組まれた）
   | "plan_tab_view" // 切替: 構成／日程／読みもの
-  | "plan_consult_click"; // クリック: 結果ページから無料相談へ
+  | "plan_consult_click" // クリック: 結果ページから無料相談へ
+  // ── 記事ファネル。記事を「読むもの」から「1ステップ」に変えたぶんの計測。
+  //    どれも props.goal（目的）と props.slug（記事）を持たせる。
+  | "article_roadmap_view" // 表示: ロードマップ上の位置が解決できた
+  | "article_task_done" // 完了: 実践タスクの「できた」＝読者→実行者の転換
+  | "article_task_later" // 保留: 「あとでやる」＝再接触の母数
+  | "article_next_click" // クリック: 次に読む
+  | "article_goal_set" // 回答: 目的の取得UI
+  | "article_roadmap_cta"; // クリック: 記事 → プランナー
 
 type Props = Record<string, string | number | boolean | undefined>;
 

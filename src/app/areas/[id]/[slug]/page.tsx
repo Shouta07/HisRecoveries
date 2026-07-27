@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
 import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
-import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
+import ExperienceInvite from "@/components/ExperienceInvite";
+import ArticleNext, { type NextArticle } from "@/components/ArticleNext";
 import EmpathyLead from "@/components/EmpathyLead";
 import QuietConsult from "@/components/QuietConsult";
-import ConsultLink from "@/components/ConsultLink";
+import { defaultGoalFor, roadmapsContaining } from "@/lib/roadmaps";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -48,6 +49,21 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
 
   // 袋小路をなくす：related が3本未満なら同カテゴリで補完（回遊/PV）。
   // 補完順は「選び方 → ガイド → 解説」——下流（相談に近い）記事へ自然に流す。
+  // ロードマップ上の位置は client（ArticleNext）で文脈から解決するが、
+  // 既定の目的と、次に読む記事のタイトルは server 側で用意しておく。
+  const defaultGoal = defaultGoalFor(a.slug);
+  const roadmapArticles: NextArticle[] = Array.from(
+    new Map(
+      roadmapsContaining(a.slug)
+        .flatMap((r) => r.steps)
+        .map((st) => {
+          const art = clusters.find((x) => x.slug === st.slug);
+          return art ? ([art.slug, { slug: art.slug, areaId: art.areaId, title: art.title }] as const) : null;
+        })
+        .filter((x): x is readonly [string, NextArticle] => Boolean(x)),
+    ).values(),
+  );
+
   if (relatedArticles.length < 3) {
     const seen = new Set([a.slug, ...relatedArticles.map((r) => r.slug)]);
     const rank = (x: (typeof clusters)[number]) =>
@@ -185,7 +201,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </ul>
         </div>
 
-        {c.guide && <InlineConsult />}
+        {/* 本文前に相談CTAは置かない。まだ何も理解していない段階で商談を
+            求めると読了率が落ちる。行動は記事末尾で、1つだけ渡す。 */}
 
         {/* 本文 */}
         <div className="space-y-8">
@@ -236,13 +253,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </section>
         )}
 
-        {/* 記事 → 次の一歩の橋渡し。ガイド（第一印象）は体験へ、
-            メカニズム／選び方は「静かな一本」CTA だけを置く（バナー乱立を避ける）。 */}
-        {c.guide ? (
-          <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} />
-        ) : (
-          <QuietConsult />
-        )}
+        {/* 記事の終わりを、プロジェクトの一区切りにする。
+            承認 → 進捗 → 次にやること（1つ）→ 次に読む → CTA の順で固定。 */}
+        <ArticleNext slug={a.slug} defaultGoal={defaultGoal} articles={roadmapArticles} />
+
+        {/* ロードマップ未整備の記事だけ、従来の橋渡しを残す（受け皿を空にしない） */}
+        {!defaultGoal &&
+          (c.guide ? <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} /> : <QuietConsult />)}
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
           {a.kind === "guide"
@@ -252,13 +269,11 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
         </p>
 
+        {/* CTA は ArticleNext に集約したので、ここは回遊リンクだけ残す */}
         <div className="mt-10 flex flex-wrap gap-3">
           <Link href={`/areas/${c.id}`} className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
             {c.ja}の全体を見る <span aria-hidden>→</span>
           </Link>
-          <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
-            相談する（無料） <span aria-hidden>→</span>
-          </ConsultLink>
         </div>
       </div>
     </div>

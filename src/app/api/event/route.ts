@@ -22,6 +22,13 @@ const ALLOWED_EVENTS = new Set([
   "plan_view",
   "plan_tab_view",
   "plan_consult_click",
+  // 記事ファネル
+  "article_roadmap_view",
+  "article_task_done",
+  "article_task_later",
+  "article_next_click",
+  "article_goal_set",
+  "article_roadmap_cta",
 ]);
 
 export async function POST(req: NextRequest) {

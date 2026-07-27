@@ -6,7 +6,7 @@ import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
 import { clustersByArea, chooseArticleByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
-import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
+import ExperienceInvite from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
 import QuietConsult from "@/components/QuietConsult";
 import ConsultLink from "@/components/ConsultLink";
@@ -151,7 +151,8 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </ul>
         </div>
 
-        {c.guide && <InlineConsult />}
+        {/* 本文前に相談CTAは置かない（記事詳細と同じ方針）。末尾の
+            ExperienceInvite / QuietConsult で受ける。 */}
 
         {/* 原文（主） */}
         <div className="space-y-8">
