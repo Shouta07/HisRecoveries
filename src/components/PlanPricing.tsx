@@ -44,7 +44,7 @@ export default function PlanPricing() {
               <span className="text-[1.9rem] sm:text-[2.3rem] font-bold" style={MINCHO}>
                 ¥50,000
               </span>
-              <span className="text-[1.05rem] text-[#C9D2C4]">／ 30日</span>
+              <span className="text-[1.05rem] text-[#C9D2C4]">税込 ／ 30日</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#C9D2C4] leading-[1.85]">
               いまはこの1本だけです。第一印象に絞っています。
@@ -122,7 +122,7 @@ export default function PlanPricing() {
                 <li>・順番と締切は、こちらで管理</li>
               </ul>
               <p className="mt-4 pt-3 border-t border-[#1f2a1d]/10 text-[13px] text-[#1f2a1d]">
-                <span className="font-bold text-[1.15rem]" style={MINCHO}>¥50,000</span>
+                <span className="font-bold text-[1.15rem]" style={MINCHO}>¥50,000</span><span className="ml-1 text-[11px] text-[#6b7a66]">税込</span>
                 <span className="ml-2 text-[11.5px] text-[#6b7a66]">＋ 服・化粧品の実費だけ</span>
               </p>
             </div>
@@ -175,7 +175,7 @@ export default function PlanPricing() {
               まず現在地だけ知りたい方へ
             </span>
             <span className="text-[14.5px] font-bold text-[#3d5638]" style={MINCHO}>
-              印象診断 ¥22,000
+              印象診断 ¥22,000（税込）
             </span>
           </div>
           <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">
