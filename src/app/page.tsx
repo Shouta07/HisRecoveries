@@ -13,6 +13,7 @@ import PlanPricing from "@/components/PlanPricing";
 import TrustSection from "@/components/TrustSection";
 import ScopeSection from "@/components/ScopeSection";
 import ForWhomSection from "@/components/ForWhomSection";
+import MomentSection from "@/components/MomentSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -185,6 +186,10 @@ export default function HomePage() {
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
+        {/* ② 自己同定 — 条件ではなく「瞬間」で「これは自分のことだ」を起こす。
+            論理（問題提起）より前に置く。 */}
+        <MomentSection />
+
         {/* ③ 問題提起 — 真の競合は「自己流の迷走」。順番の失敗を名指しする。 */}
         <OrderFailureSection />
 
