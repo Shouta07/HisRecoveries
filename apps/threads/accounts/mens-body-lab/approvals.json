@@ -55,6 +55,28 @@
         "source_type": "mother_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260727140305691045",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-07-27T14:03:05.691063",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "出張先のホテルで、洗面所の鏡を見て思わず声が出た。\n「うわ、疲れてる」って。\n寝たはずなのに、なんでこんな顔なんだろう。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-face-tired",
+        "hypothesis_name": "引用リソース src-face-tired",
+        "topic_slug": "src-face-tired",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }

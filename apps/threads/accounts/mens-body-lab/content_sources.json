@@ -1,6 +1,12 @@
 {
   "note": "引用リソース（投稿の素）。型の仕様は CONTENT_SOURCES.md。1リソース=14投稿の在庫。URLはctaの1本だけ。トーン: ポエム調にしない。体言止め・比喩の多用を避け、実際に会話で言う言葉で書く。",
-  "distribution": { "empathy": 4, "insight": 4, "question": 3, "fact": 2, "cta": 1 },
+  "distribution": {
+    "empathy": 4,
+    "insight": 4,
+    "question": 3,
+    "fact": 2,
+    "cta": 1
+  },
   "sources": [
     {
       "id": "src-face-tired",
@@ -10,7 +16,10 @@
         "persona": "30歳前後、出張や残業が続く会社員",
         "inner_voice": "疲れてるのが顔に出てるって、自分でもわかる",
         "scene": "出張先のホテル、夜。洗面所で自分の顔を見た直後",
-        "search_words": ["顔 疲れ すぐ 治す", "顔 疲れて見える 原因"]
+        "search_words": [
+          "顔 疲れ すぐ 治す",
+          "顔 疲れて見える 原因"
+        ]
       },
       "entry_line": "出張先のホテルで鏡を見て、「うわ、疲れてる」って声が出た夜がある。",
       "min_action": {
@@ -44,7 +53,7 @@
         "core": "疲れた顔は、放置するものじゃなく、1分で持ち直せるもの。その仕組みと手順を、中立にまとめた。"
       },
       "status": "active",
-      "used_count": 0
+      "used_count": 1
     }
   ]
 }
