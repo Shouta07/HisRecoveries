@@ -115,7 +115,7 @@ export default function HomePage() {
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
             <span className="inline-block">婚活・結婚式・転職。</span>{" "}
             <span className="inline-block">その日までに<span className="font-semibold text-[#EDF1E8]">何をいつやるか</span>を設計し、</span>{" "}
-            <span className="inline-block">専門家の選定と進行管理まで引き受けます。</span>{" "}
+            <span className="inline-block">候補の整理と進行管理まで引き受けます。</span>{" "}
             <span className="inline-block">自己流でつまずくのは、努力ではなく順番のせいです。</span>
           </p>
 
@@ -245,7 +245,7 @@ export default function HomePage() {
               <div>
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">サービス</div>
                 <ul className="space-y-2 text-[13px] text-[#4b5b47]">
-                  <li><a href="#diagnosis" className="hover:text-[#1f2a1d] transition-colors">整える順番を診断</a></li>
+                  <li><a href="#plan" className="hover:text-[#1f2a1d] transition-colors">自分専用プランを見る</a></li>
                   <li><Link href="/recover" className="hover:text-[#1f2a1d] transition-colors">Recover｜取り戻す</Link></li>
                   <li><Link href="/refine" className="hover:text-[#1f2a1d] transition-colors">Refine｜深める</Link></li>
                   <li><Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">記事をすべて見る</Link></li>
