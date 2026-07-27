@@ -80,8 +80,9 @@ export default function PlanPricing() {
             {/* 施術費は別、を明示（不信を生まないため） */}
             <p className="mt-6 text-[12px] text-[#6b7a66] leading-[1.9] border-t border-[#1f2a1d]/10 pt-5">
               ※ 体験は<span className="text-[#1f2a1d] font-semibold">東京都内・土日</span>のみの実施です（所要は1日）。
-              交通費はご本人のご負担になります。
-              体験（眉・メイク・服選び・髪型提案・撮影）の費用は含まれます。
+              体験（眉・メイク・服選び・髪型提案・撮影）と<span className="text-[#1f2a1d] font-semibold">会場の費用は含まれます</span>。
+              交通費はご本人のご負担です。
+              <span className="text-[#1f2a1d] font-semibold">お支払い後のキャンセル・返金はお受けできません</span>（実施者の日程を確保するため）。
               購入する服・化粧品などの実費、美容室でのカット代はご本人のご負担です。
               提携先からの手数料は受け取らないので、必要のないものは「やらなくていい」と伝えます。
             </p>

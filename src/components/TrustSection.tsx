@@ -132,18 +132,20 @@ export default function TrustSection() {
                 <li>・30日 ¥50,000（税込）の1本です（いまは他のプランを設けていません）</li>
                 <li>・期間を延ばす場合のみ、着手前にご相談します</li>
                 <li>・表示価格はすべて税込です。追加費用はありません</li>
+                <li>・会場（レンタルスペース等）の費用は、こちらで負担します</li>
                 <li>・服・化粧品・カット代・交通費は、実費としてご本人のご負担です</li>
                 <li>・提携先からの紹介料は受け取っていません</li>
               </ul>
             </div>
             <div className="rounded-[1rem] bg-white border border-[#1f2a1d]/10 px-5 py-4">
               <p className="text-[13px] font-bold text-[#1f2a1d] mb-2" style={MINCHO}>
-                返金・キャンセル
+                キャンセルについて
               </p>
               <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
-                <li>・着手から2週間以内に合わないと感じた場合、全額返金します</li>
-                <li>・以降の中断は、実施済みの工程分のみのご負担です</li>
-                <li>・施術・商品の実費は、各事業者の規定に従います</li>
+                <li>・<span className="text-[#1f2a1d] font-semibold">お支払い後のキャンセル・返金はお受けできません</span></li>
+                <li>・実施者の土日と場所を確保するため、この形にしています</li>
+                <li>・日程の変更は、実施日の1週間前まで承ります</li>
+                <li>・迷われている場合は、お申し込みの前に必ずご相談ください</li>
               </ul>
             </div>
           </div>
