@@ -111,7 +111,7 @@ export default function RecoverPage() {
         <section className="pt-12 sm:pt-14">
           <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-6 sm:p-8">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、¥200,000（90日）。</span>
+              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、¥298,000〜（90日）。</span>
               <span className="text-[12px] text-[#9aa79a]">・オーダーメイド／専属チーム貸切</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">

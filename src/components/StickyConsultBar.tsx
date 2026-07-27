@@ -2,11 +2,10 @@
 
 // スクロール追従の下部固定CTA。
 //
-// 方針: 相談を前に出さない。まず自分でプランを進められる状態を作り、
-// プランナーを読み終えたあたりから初めて現れる（困ったら相談、の順番）。
-// 文言も「悩み相談」ではなく、ゴール（理想の日）に寄せる。
+// 方針: 入口を1つに絞る（診断 → 相談 → 契約）。追従バーも相談ではなく診断へ送る。
+// プランナーを読み終えたあたりから現れ、読了後にもう一度入口を差し出す。
 import { useEffect, useState } from "react";
-import ConsultLink from "@/components/ConsultLink";
+import Link from "next/link";
 
 export default function StickyConsultBar() {
   const [show, setShow] = useState(false);
@@ -36,13 +35,14 @@ export default function StickyConsultBar() {
       }`}
       aria-hidden={!show}
     >
-      <ConsultLink
+      <Link
+        href="/#plan"
         className={`mx-auto flex max-w-[560px] items-center justify-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[15px] font-bold px-6 py-4 shadow-[0_18px_44px_-14px_rgba(20,32,26,0.75)] transition-colors ${
           show ? "pointer-events-auto" : "pointer-events-none"
         }`}
       >
-        プランを、一緒に詰める <span aria-hidden>→</span>
-      </ConsultLink>
+        30秒で、自分に必要な改善プランを見る <span aria-hidden>→</span>
+      </Link>
     </div>
   );
 }
