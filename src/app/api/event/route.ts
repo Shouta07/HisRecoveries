@@ -14,6 +14,10 @@ const ALLOWED_EVENTS = new Set([
   "article_cta_click",
   "story_start",
   "story_submitted",
+  // 市場検証（props.market = 領域ID）
+  "market_select",
+  "market_view",
+  "market_consult_click",
 ]);
 
 export async function POST(req: NextRequest) {

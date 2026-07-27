@@ -52,6 +52,9 @@ export default function StudioPage() {
               在庫を見て、次に作るものを決める場所。
             </p>
             <div className="mt-2 flex gap-4 text-[12px]">
+              <Link href="/admin/markets" className="text-sage hover:text-sage-bright">
+                勝てる市場 →
+              </Link>
               <Link href="/admin/strategy" className="text-sage hover:text-sage-bright">
                 マーケ戦略 →
               </Link>

@@ -8,6 +8,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
+import { track } from "@/lib/analytics";
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Sans', system-ui, sans-serif",
@@ -34,6 +35,13 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
   const [done, setDone] = useState(false);
 
   function toggle(key: string) {
+    // 需要シグナル: 「選んだ」ときだけ記録（外したときは記録しない）。
+    // どの領域に悩みが集まるか＝勝てる市場の見極めに使う（/admin/markets）。
+    // ※ setState の updater 内では副作用を起こさない（StrictMode で二重発火するため）。
+    if (!picked.includes(key)) {
+      const area = WORRIES.find((w) => w.key === key)?.area;
+      if (area) track("market_select", { market: area });
+    }
     setPicked((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   }
 

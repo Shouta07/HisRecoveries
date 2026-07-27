@@ -14,7 +14,12 @@ export type ConversionEvent =
   | "article_cta_click" // クリック: 記事下 CTA
   | "story_start" // 開始: Story 投稿フォーム
   | "story_submitted" // 完了: Story 投稿
-  | "membership_subscribe_click"; // クリック: Recovery Letters 購読
+  | "membership_subscribe_click" // クリック: Recovery Letters 購読
+  // ── 市場検証（6領域のどれが勝てるかを見極めるための3点計測） ──
+  // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
+  | "market_select" // 需要: 診断で「この悩みがある」と選ばれた
+  | "market_view" // 関心: その領域の記事・ピラーを読んだ
+  | "market_consult_click"; // 意向: その領域の文脈から相談へ進んだ
 
 type Props = Record<string, string | number | boolean | undefined>;
 
