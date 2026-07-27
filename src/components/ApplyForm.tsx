@@ -171,9 +171,10 @@ export default function ApplyForm() {
           onChange={(e) => setTiming(e.target.value)}
         >
           <option value="">選択してください（任意）</option>
-          <option value="急ぎ（7日以内）">急ぎ（7日以内・大事な日が近い）</option>
-          <option value="1ヶ月以内">1ヶ月以内</option>
-          <option value="時期は未定">時期は未定・まず相談したい</option>
+          <option value="1ヶ月後に、大事な日がある">1ヶ月後に、大事な日がある</option>
+          <option value="2〜3ヶ月後に、大事な日がある">2〜3ヶ月後に、大事な日がある</option>
+          <option value="特に予定はないが、整えたい">特に予定はないが、整えたい</option>
+          <option value="時期は未定・まず相談したい">時期は未定・まず相談したい</option>
         </select>
       </div>
 
