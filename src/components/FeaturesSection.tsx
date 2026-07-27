@@ -7,11 +7,12 @@ const MINCHO: React.CSSProperties = {
 
 type Feature = { t: string; d: string; icon: React.ReactNode };
 
-// 機能的価値＝「なぜ使うべきか」を4つで。情緒ではなく"何が得か"。
+// 体験の流れ＝「使うと、どう進むか」。機能の羅列（他社も言える）ではなく、
+// 迷わない→逆算→終わらせる→迎える、という当日までの進み方そのものを見せる。
 const FEATURES: Feature[] = [
   {
-    t: "探す手間が、ゼロ。",
-    d: "調べる・比べる・予約する。ぜんぶ、こちらで代行。あなたは選んで、来るだけ。",
+    t: "何をすればいいか、迷わない。",
+    d: "調べる・比べる・選ぶを、こちらで引き受ける。あなたは、目の前の一つに集中するだけ。",
     icon: (
       <>
         <rect x="5.5" y="4" width="13" height="17" rx="2" />
@@ -21,8 +22,8 @@ const FEATURES: Feature[] = [
     ),
   },
   {
-    t: "遠回りしない。",
-    d: "現在地→理想の地図で、最短ルート。効かないものに、時間もお金も使わせない。",
+    t: "期限から、逆算する。",
+    d: "迎えたい日を決めれば、順番は決まる。いつ何をやるかが、その日から逆算で並びます。",
     icon: (
       <>
         <path d="M4 20L17 7" />
@@ -32,8 +33,8 @@ const FEATURES: Feature[] = [
     ),
   },
   {
-    t: "当事者が、つくっている。",
-    d: "同じ悩みを経験した人間が設計。だから、笑わない・急かさない・見栄で盛らない。分かってもらえる、を最初から。",
+    t: "一つずつ、終わらせる。",
+    d: "全部を一度にやらない。今週の一つを終えて、チェックを付ける。それだけで進みます。",
     icon: (
       <>
         <circle cx="9" cy="8" r="3" />
@@ -44,8 +45,8 @@ const FEATURES: Feature[] = [
     ),
   },
   {
-    t: "必要な分だけ、正直に。",
-    d: "「やらなくていい」も、はっきり言う。費用は先に提示、予算は超えない。特定の一社に縛られないから、助言も歪みません。",
+    t: "理想の日を、迎える。",
+    d: "当日、自信を持って立てること。そこがゴール。同じ悩みを知る人間が、最後まで伴走します。",
     icon: (
       <>
         <path d="M12 3v18" />
@@ -68,17 +69,20 @@ export default function FeaturesSection() {
           <span aria-hidden className="absolute left-0 bottom-0 w-4 h-4 border-l-2 border-b-2 border-[#85AB8B]" />
           <span aria-hidden className="absolute right-0 bottom-0 w-4 h-4 border-r-2 border-b-2 border-[#85AB8B]" />
           <h2 className="text-[1.4rem] sm:text-[2rem] text-center leading-[1.3]" style={{ ...MINCHO, fontWeight: 800 }}>
-            His Recoveries の特徴
+            当日までの、進み方
           </h2>
         </div>
         <p className="text-center text-[13px] sm:text-[14px] text-[#4b5b47] leading-[1.9] max-w-[30rem] mx-auto mb-8 sm:mb-10 -mt-3 sm:-mt-4">
-          なぜ、ここを選ぶのか。あなたが得するポイントを、4つに。
+          機能ではなく、体験で。迎えたい日まで、この4つを繰り返すだけです。
         </p>
 
-        {/* 2×2（スマホも2カラム） */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {FEATURES.map((f) => (
-            <div key={f.t} className="flex flex-col items-center text-center rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 px-3 sm:px-6 py-6 sm:py-8">
+        {/* 体験の流れ（→ でつなぐ）。機能の羅列ではなく、順番そのものを見せる。 */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {FEATURES.map((f, i) => (
+            <div key={f.t} className="relative flex flex-col items-center text-center rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 px-3 sm:px-6 py-6 sm:py-8">
+              <span className="font-mono text-[10.5px] tracking-[0.2em] text-[#85AB8B] mb-2">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               <h3 className="text-[13.5px] sm:text-[1.05rem] font-bold text-[#1f2a1d] leading-[1.45]" style={MINCHO}>{f.t}</h3>
               <span aria-hidden className="block w-8 h-px bg-[#1f2a1d]/15 my-3 sm:my-4" />
               <span aria-hidden className="grid place-items-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#eef3ea] mb-3 sm:mb-4">
@@ -87,6 +91,9 @@ export default function FeaturesSection() {
                 </svg>
               </span>
               <p className="text-[11px] sm:text-[12.5px] text-[#4b5b47] leading-[1.7]">{f.d}</p>
+              {i < FEATURES.length - 1 && (
+                <span aria-hidden className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 text-[#85AB8B] text-[15px]">→</span>
+              )}
             </div>
           ))}
         </div>

@@ -18,6 +18,9 @@ const ALLOWED_EVENTS = new Set([
   "market_select",
   "market_view",
   "market_consult_click",
+  // ゴール起点
+  "goal_select",
+  "goal_step_done",
 ]);
 
 export async function POST(req: NextRequest) {

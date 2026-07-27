@@ -1,26 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
-import QuickDiagnosis from "@/components/QuickDiagnosis";
+import GoalPlanner from "@/components/GoalPlanner";
 import DesireBrowser from "@/components/DesireBrowser";
 import StepsSection from "@/components/StepsSection";
 import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
-import { clusters } from "@/lib/clusters";
-
-// 診断ツールに渡す、領域ごとの記事（重い clusters は server 側で軽い形に畳んでから props で渡す）。
-const DIAG_AREAS = ["impression", "hair", "skin", "face", "body-hair", "mind"] as const;
-const diagnosisArticles: Record<string, { slug: string; title: string }[]> = Object.fromEntries(
-  DIAG_AREAS.map((area) => [
-    area,
-    clusters
-      .filter((c) => c.areaId === area && c.kind !== "interview")
-      .slice(0, 3)
-      .map((c) => ({ slug: c.slug, title: c.title })),
-  ]),
-);
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -113,23 +100,22 @@ export default function HomePage() {
               style={{ ...HERO_HEAD, fontWeight: 800 }}
             >
               <span className="block max-w-[640px] mx-auto">
-                もっといい男に、<br /><span className="text-[#9ec4a3]">最短距離</span>で。
+                その日を、<br /><span className="text-[#9ec4a3]">最高の状態</span>で迎える。
               </span>
             </h1>
           </div>
 
           {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
-            <span className="inline-block">「変わりたい」と思ったら、まずここへ。</span>{" "}
-            <span className="inline-block">同じ悩みを知る人間が、</span>
-            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">整える順番</span>を設計。</span>
-            <span className="inline-block">合うプロ・施設へつなぎ、</span>
-            <span className="inline-block">そのあとも<span className="font-semibold text-[#EDF1E8]">伴走</span>します。</span>
+            <span className="inline-block">3か月後の婚活。結婚式。人生初の転職。</span>{" "}
+            <span className="inline-block">その日までにやることを、</span>
+            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">順番に、一緒に</span>進めます。</span>{" "}
+            <span className="inline-block">迷ったら相談。まずは自分で動けます。</span>
           </p>
 
           {/* メカニズムを3ステップでスキャンできるように */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[11.5px] sm:text-[13px] font-semibold">
-            {["診断", "整える順番を設計", "つないで、伴走"].map((s, i) => (
+            {["迎えたい日を選ぶ", "その日から逆算", "一つずつ終わらせる"].map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <span className="rounded-full bg-white/[0.07] border border-white/12 px-3 py-1.5 text-[#C9D2C4]">
                   <span className="text-[#9ec4a3] font-bold mr-1">{i + 1}</span>{s}
@@ -140,8 +126,8 @@ export default function HomePage() {
           </div>
 
           {/* 一次CTA＝診断ツールへ（相談は下部の追従バーに集約） */}
-          <a href="#diagnosis" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
-            30秒で「整える順番」を見る <span aria-hidden>→</span>
+          <a href="#plan" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
+            あなた専用の90日プランを作る <span aria-hidden>→</span>
           </a>
 
           {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
@@ -192,7 +178,7 @@ export default function HomePage() {
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
         {/* ① 診断の入口 — サイトを"道具"にする中核。悩み選択→ステップ別の記事＋
             進め方のロードマップ→相談でパーソナライズ。悩みブラウズもここに内包。 */}
-        <QuickDiagnosis articles={diagnosisArticles} />
+        <GoalPlanner />
 
         {/* 目的から探す — 「あなたは、何を叶えたい？」で記事に入る（悩み別と並ぶ入口） */}
         <section className="mx-auto max-w-[1080px] px-5 sm:px-8 py-14 sm:py-20">

@@ -19,7 +19,10 @@ export type ConversionEvent =
   // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
   | "market_select" // 需要: 診断で「この悩みがある」と選ばれた
   | "market_view" // 関心: その領域の記事・ピラーを読んだ
-  | "market_consult_click"; // 意向: その領域の文脈から相談へ進んだ
+  | "market_consult_click" // 意向: その領域の文脈から相談へ進んだ
+  // ── ゴール起点（どの「理想の日」が求められているか＝勝てる市場の直接指標） ──
+  | "goal_select" // 目的の日を選んだ（props: goal, days）
+  | "goal_step_done"; // ロードマップの1ステップを完了（props: goal, step）
 
 type Props = Record<string, string | number | boolean | undefined>;
 
