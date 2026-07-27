@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
+import { citationsByComplex } from "@/lib/citations";
 import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
 import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
@@ -26,6 +27,8 @@ export function generateMetadata({ params }: { params: { id: string; slug: strin
   const a = getCluster(params.id, params.slug);
   if (!a) return {};
   const url = `${site.url}/areas/${a.areaId}/${a.slug}`;
+  // 出典: 記事固有があればそれ、無ければエリア共通（lib/citations.ts の検証済みのみ）
+  const sources = a.sources ?? citationsByComplex[a.areaId] ?? [];
   return {
     title: a.title,
     description: a.lead,
@@ -42,6 +45,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
   if (!a || !c) notFound();
 
   const url = `${site.url}/areas/${a.areaId}/${a.slug}`;
+  // 出典: 記事固有があればそれ、無ければエリア共通（lib/citations.ts の検証済みのみ）
+  const sources = a.sources ?? citationsByComplex[a.areaId] ?? [];
 
   // あわせて読む（related slug → 記事解決。存在しない slug は無視）
   const relatedArticles = (a.related ?? [])
@@ -74,6 +79,19 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
     datePublished: "2026-06-01",
     dateModified: CLUSTER_UPDATED,
     author: { "@type": "Organization", name: site.name, url: site.url },
+    // 要点を machine-readable に（AI検索が抜き出しやすくする）
+    abstract: a.summary.join(" "),
+    keywords: a.keywords.join(", "),
+    // 出典を構造化データにも出す＝検証可能性を示す
+    ...(sources.length > 0
+      ? {
+          citation: sources.map((q) => ({
+            "@type": "CreativeWork",
+            name: q.source,
+            url: q.url,
+          })),
+        }
+      : {}),
     publisher: {
       "@type": "Organization",
       name: site.name,
@@ -248,6 +266,33 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} />
         ) : (
           <QuietConsult />
+        )}
+
+        {/* 出典 — 根拠を示すことで、読者にもAI検索にも検証可能にする */}
+        {sources.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-3" style={HEAD}>
+              参考にした情報源
+            </h2>
+            <ul className="space-y-2">
+              {sources.map((q) => (
+                <li key={q.url} className="flex items-start gap-2">
+                  <span aria-hidden className="text-[#85AB8B] mt-px">›</span>
+                  <p className="text-[13px] text-[#3a423a] leading-[1.85]">
+                    <a
+                      href={q.url}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]"
+                    >
+                      {q.source}↗
+                    </a>
+                    {q.note ? <span className="ml-1.5 text-[#6b7a66]">— {q.note}</span> : null}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
         <p className="mt-12 text-[12px] text-[#6b7a66] leading-[1.9]">
