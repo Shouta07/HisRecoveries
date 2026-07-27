@@ -8,6 +8,7 @@ import EmpathyLead from "@/components/EmpathyLead";
 import QuietConsult from "@/components/QuietConsult";
 import ConsultLink from "@/components/ConsultLink";
 import MarketView from "@/components/MarketView";
+import YourCaseCta from "@/components/YourCaseCta";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -238,8 +239,11 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </section>
         )}
 
-        {/* 記事 → 次の一歩の橋渡し。ガイド（第一印象）は体験へ、
-            メカニズム／選び方は「静かな一本」CTA だけを置く（バナー乱立を避ける）。 */}
+        {/* 記事 → 検討層への橋。「答えは渡す。ただし順番はあなた固有」で診断へ送る。
+            情報収集で満足して離脱するのを防ぐ、最初の一段。 */}
+        <YourCaseCta topic={c.ja} market={a.areaId} />
+
+        {/* 次の一歩。ガイド（第一印象）は体験へ、メカニズム／選び方は静かな一本CTA。 */}
         {c.guide ? (
           <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} />
         ) : (
@@ -258,9 +262,9 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           <Link href={`/areas/${c.id}`} className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
             {c.ja}の全体を見る <span aria-hidden>→</span>
           </Link>
-          <ConsultLink market={a.areaId} className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
-            相談する（無料） <span aria-hidden>→</span>
-          </ConsultLink>
+          <Link href="/#plan" className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
+            自分の順番を診断する（無料） <span aria-hidden>→</span>
+          </Link>
         </div>
       </div>
     </div>

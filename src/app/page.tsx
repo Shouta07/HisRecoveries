@@ -8,6 +8,9 @@ import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
+import OrderFailureSection from "@/components/OrderFailureSection";
+import PlanPricing from "@/components/PlanPricing";
+import TrustSection from "@/components/TrustSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -44,10 +47,11 @@ const VOICES_B = [
 
 // ヒーロー直下の推し3カラム（Oh my teeth の 通院不要/短期間/リーズナブル に相当）。
 // ポジティブな機能ラベルで、見出し「最短距離」を支える3本柱。
+// 売っているのは施術ではなく「判断の代行・順番設計・期限管理」。
 const BURDENS = [
-  { k: "まとめて", t: "ひとつの窓口。", d: "髪・肌・体・心を、まとめて相談。" },
-  { k: "完全守秘", t: "知られない。", d: "実名不要・相互NDAで。" },
-  { k: "明朗会計", t: "売り込まれない。", d: "必要な分だけ・中立。費用は先に。" },
+  { k: "判断を代行", t: "もう、選ばなくていい。", d: "調べる・比べる・決めるを、こちらが引き受けます。" },
+  { k: "順番を設計", t: "やる順を、間違えない。", d: "効く順に並べ替え。今やらなくていいことも言います。" },
+  { k: "期限を管理", t: "当日に、間に合わせる。", d: "逆算して締切を置き、終わるまで見届けます。" },
 ];
 
 export default function HomePage() {
@@ -75,7 +79,7 @@ export default function HomePage() {
           {/* 何のサービスか、を最初のひと言で */}
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[11.5px] sm:text-[12.5px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
             <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
-            男の「変わりたい」に、伴走する。
+            大事な日までの、段取りを引き受ける。
           </span>
 
           {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
@@ -100,22 +104,22 @@ export default function HomePage() {
               style={{ ...HERO_HEAD, fontWeight: 800 }}
             >
               <span className="block max-w-[640px] mx-auto">
-                その日を、<br /><span className="text-[#9ec4a3]">最高の状態</span>で迎える。
+                大事な日までに、<br /><span className="text-[#9ec4a3]">間に合わせる</span>。
               </span>
             </h1>
           </div>
 
           {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
-            <span className="inline-block">3か月後の婚活。結婚式。人生初の転職。</span>{" "}
-            <span className="inline-block">その日までにやることを、</span>
-            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">順番に、一緒に</span>進めます。</span>{" "}
-            <span className="inline-block">迷ったら相談。まずは自分で動けます。</span>
+            <span className="inline-block">婚活、結婚式、転職。</span>{" "}
+            <span className="inline-block">その日から逆算して、</span>
+            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">あなたに必要な変化だけ</span>を設計します。</span>{" "}
+            <span className="inline-block">自己流でつまずくのは、努力ではなく順番のせいです。</span>
           </p>
 
           {/* メカニズムを3ステップでスキャンできるように */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[11.5px] sm:text-[13px] font-semibold">
-            {["迎えたい日を選ぶ", "その日から逆算", "一つずつ終わらせる"].map((s, i) => (
+            {["何をやるか決める", "いつやるか決める", "終わるまで管理する"].map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <span className="rounded-full bg-white/[0.07] border border-white/12 px-3 py-1.5 text-[#C9D2C4]">
                   <span className="text-[#9ec4a3] font-bold mr-1">{i + 1}</span>{s}
@@ -127,7 +131,7 @@ export default function HomePage() {
 
           {/* 一次CTA＝診断ツールへ（相談は下部の追従バーに集約） */}
           <a href="#plan" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
-            あなた専用の90日プランを作る <span aria-hidden>→</span>
+            30秒で自分専用プランを見る <span aria-hidden>→</span>
           </a>
 
           {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
@@ -176,23 +180,31 @@ export default function HomePage() {
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
-        {/* ① 診断の入口 — サイトを"道具"にする中核。悩み選択→ステップ別の記事＋
-            進め方のロードマップ→相談でパーソナライズ。悩みブラウズもここに内包。 */}
+        {/* ③ 問題提起 — 真の競合は「自己流の迷走」。順番の失敗を名指しする。 */}
+        <OrderFailureSection />
+
+        {/* ④ 新しい解決方法 — 施術ではなく「その日までの計画」を渡す中核ツール。 */}
         <GoalPlanner />
 
-        {/* 目的から探す — 「あなたは、何を叶えたい？」で記事に入る（悩み別と並ぶ入口） */}
+        {/* ⑤ 体験フロー — 使うと、どう進むか（迷わない→逆算→終わらせる→迎える） */}
+        <FeaturesSection />
+
+        {/* 体験の具体 — 何をしてもらえるのか */}
+        <ExperiencesSection />
+
+        {/* ⑥ 価格 — 隠さない。何にいくら払うのか、なぜ発生するのか。 */}
+        <PlanPricing />
+
+        {/* ⑦ 信頼 — 誰がやるか・どう進めるか・つなぐ相手・実際の記録 */}
+        <TrustSection />
+
+        {/* はじめかた — 申し込み後の流れ */}
+        <StepsSection />
+
+        {/* 目的から探す — 情報収集で来た人の受け皿（記事へ） */}
         <section className="mx-auto max-w-[1080px] px-5 sm:px-8 py-14 sm:py-20">
           <DesireBrowser />
         </section>
-
-        {/* はじめかた — 匿名Web相談から記録まで5ステップ */}
-        <StepsSection />
-
-        {/* できること — 5ステップの③〜④の具体（体験）。はじめかたの後に置く */}
-        <ExperiencesSection />
-
-        {/* His Recoveries の特徴 — 機能価値を2×2で（Oh my teeth 型） */}
-        <FeaturesSection />
 
         {/* FAQ — 予約直前の不安を潰す */}
         <FaqSection />

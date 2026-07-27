@@ -350,7 +350,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           <Link href="/areas" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
             ほかの領域を見る <span aria-hidden>→</span>
           </Link>
-          <ConsultLink market={c.id} className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
+          <ConsultLink market={c.id} className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
             相談する（無料） <span aria-hidden>→</span>
           </ConsultLink>
         </div>
