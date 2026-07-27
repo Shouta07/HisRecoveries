@@ -13,6 +13,7 @@ import PlanPricing from "@/components/PlanPricing";
 import TrustSection from "@/components/TrustSection";
 import ScopeSection from "@/components/ScopeSection";
 import ContinuitySection from "@/components/ContinuitySection";
+import ForWhomSection from "@/components/ForWhomSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -113,10 +114,11 @@ export default function HomePage() {
 
           {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
+            <span className="inline-block">美容・服・習慣を別々に探す時代から、</span>{" "}
+            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">あなたに必要な順番を設計する</span>時代へ。</span>
+            <br className="hidden sm:block" />
             <span className="inline-block">婚活・結婚式・転職。</span>{" "}
-            <span className="inline-block">その日までに<span className="font-semibold text-[#EDF1E8]">何をいつやるか</span>を設計し、</span>{" "}
-            <span className="inline-block">候補の整理と進行管理まで引き受けます。</span>{" "}
-            <span className="inline-block">自己流でつまずくのは、努力ではなく順番のせいです。</span>
+            <span className="inline-block">その日まで逆算して、当日まで伴走します。</span>
           </p>
 
           {/* メカニズムを3ステップでスキャンできるように */}
@@ -188,27 +190,30 @@ export default function HomePage() {
         {/* ④ 新しい解決方法 — 施術ではなく「その日までの計画」を渡す中核ツール。 */}
         <GoalPlanner />
 
+        {/* 対象の明確化 — PMF検証期は「合う人だけを通す」。冷やかしを入口で外す。 */}
+        <ForWhomSection />
+
         {/* ⑤ 体験フロー — 使うと、どう進むか（迷わない→逆算→終わらせる→迎える） */}
         <FeaturesSection />
 
-        {/* 体験の具体 — 何をしてもらえるのか */}
-        <ExperiencesSection />
-
-        {/* ④⑤⑦⑧ 提供範囲・提供しないこと・期待できる／できない変化・顧客の役割
-            ＝期待値調整。価格の直前に置き、買う前に境界線を見せる（クレーム予防）。 */}
-        <ScopeSection />
-
-        {/* ⑥ 価格 — 隠さない。何にいくら払うのか、価値分解で示す。 */}
+        {/* ⑥ 価格 — Founder Program 1本。5ステップと価値分解で「何に払うか」を示す。 */}
         <PlanPricing />
 
-        {/* 継続 — 変わりたい → 維持したい → さらに良くしたい の受け皿 */}
-        <ContinuitySection />
+        {/* 期待値調整 — 提供する/しない・期待できる/できない・お断りする相談。
+            価格の直後に置き、申し込む前に境界線を読ませる（クレーム予防）。 */}
+        <ScopeSection />
 
         {/* ⑦ 信頼 — 誰がやるか・どう進めるか・料金基準とやめ方・実際の記録 */}
         <TrustSection />
 
         {/* はじめかた — 申し込み後の流れ */}
         <StepsSection />
+
+        {/* 継続（PMF後の本命。いまは後段に置き、主導線を邪魔しない） */}
+        <ContinuitySection />
+
+        {/* Recover / Refine の詳細（後段） */}
+        <ExperiencesSection />
 
         {/* 目的から探す — 情報収集で来た人の受け皿（記事へ） */}
         <section className="mx-auto max-w-[1080px] px-5 sm:px-8 py-14 sm:py-20">

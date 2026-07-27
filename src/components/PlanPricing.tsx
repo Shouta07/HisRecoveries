@@ -10,13 +10,13 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-const INCLUDED = [
-  { t: "現在地診断", d: "外側と習慣を要素に分解し、いまの位置を言語化します。" },
-  { t: "90日改善ロードマップ", d: "その日から逆算し、いつ何をやるかを一枚に。" },
-  { t: "候補と、聞くべき質問の用意", d: "比べる軸を作り、受診・来店前の質問リストをお渡しします。" },
-  { t: "LINEでの相談", d: "計画を進める中で、迷いや判断が必要なときに相談できます。" },
-  { t: "進捗管理", d: "締切を置き、遅れたら声をかけます。放置しません。" },
-  { t: "当日までの伴走", d: "終わるまで見届けます。手が止まったら、声をかけます。" },
+// 5ステップ＝商品の骨格。工程を見せることで「相談サービス」ではないと伝える。
+const STEPS = [
+  { n: "01", t: "現在地診断", d: "外側と習慣を要素に分解し、いまの位置を言語化します。" },
+  { n: "02", t: "改善ロードマップ作成", d: "その日から逆算し、いつ何をやるかを一枚にまとめます。" },
+  { n: "03", t: "必要サービスの選定", d: "候補と、比べる軸と、聞くべき質問をお渡しします。" },
+  { n: "04", t: "LINE伴走", d: "進める中で迷いや判断が必要なときに、その場で相談できます。" },
+  { n: "05", t: "当日までの進行管理", d: "締切を置き、手が止まったら声をかけます。放置しません。" },
 ];
 
 export default function PlanPricing() {
@@ -37,38 +37,43 @@ export default function PlanPricing() {
           {/* 本体プラン */}
           <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
             <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B]">
-              第一印象改善プラン（90日・伴走）
+              Founder Program — 第一印象改善プログラム
             </div>
             <div className="mt-2 flex items-baseline gap-2 flex-wrap">
               <span className="text-[1.9rem] sm:text-[2.3rem] font-bold" style={MINCHO}>
-                ¥200,000
+                ¥298,000
               </span>
-              <span className="text-[1.05rem] text-[#C9D2C4]">／ 90日</span>
+              <span className="text-[1.05rem] text-[#C9D2C4]">〜 ／ 90日</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#C9D2C4] leading-[1.85]">
-              いまはこの1本だけです。期間を延ばす場合のみ、着手前に総額をご相談します。
-              予算を超えることはありません。
+              いまはこの1本だけです。範囲や期間を広げる場合のみ、着手前に総額をご相談します。
+              予算を超えることはありません。同時にお受けできるのは、数名までです。
             </p>
           </div>
 
           {/* 含まれるもの */}
           <div className="px-6 sm:px-9 py-7">
             <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
-              含まれるもの
+              90日で、この5つを終わらせます
             </div>
-            <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
-              {INCLUDED.map((x) => (
-                <li key={x.t} className="flex gap-2.5">
-                  <span aria-hidden className="text-[#3d5638] text-[13px] leading-[1.7] shrink-0">
-                    ✓
-                  </span>
-                  <div>
+            <ol className="space-y-0">
+              {STEPS.map((x, i) => (
+                <li key={x.n} className="flex gap-3.5 pb-4 last:pb-0">
+                  <div className="flex flex-col items-center shrink-0">
+                    <span className="grid place-items-center w-7 h-7 rounded-full bg-[#16241A] text-[#EDF1E8] font-mono text-[10.5px]">
+                      {x.n}
+                    </span>
+                    {i < STEPS.length - 1 && (
+                      <span aria-hidden className="w-px flex-1 bg-[#dbe4d6] mt-1.5" />
+                    )}
+                  </div>
+                  <div className="pt-0.5">
                     <p className="text-[13.5px] font-bold text-[#1f2a1d] leading-[1.6]">{x.t}</p>
                     <p className="mt-0.5 text-[12px] text-[#5c6b58] leading-[1.8]">{x.d}</p>
                   </div>
                 </li>
               ))}
-            </ul>
+            </ol>
 
             {/* 施術費は別、を明示（不信を生まないため） */}
             <p className="mt-6 text-[12px] text-[#6b7a66] leading-[1.9] border-t border-[#1f2a1d]/10 pt-5">
