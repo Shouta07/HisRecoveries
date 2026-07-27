@@ -11,7 +11,9 @@ const HEAD = { fontFamily: "var(--font-shippori)" } as const;
 /**
  * 「あなたは、何を叶えたいですか？」— 目的（普遍的欲求）から記事を探す入口。
  * ホームと /areas の両方で使う。クリックで /areas?desire=<key> に絞り込み。
- * 明るいクリーム面（#f4f6f2 系）に載る前提のライトテーマ。
+ *
+ * デザインは診断カードの語彙に合わせる：濃緑のヘッダー帯・大きな角丸・
+ * 深いソフトシャドウ。カード内にCTA文言を繰り返さず、余白と級差で見せる。
  */
 export default function DesireBrowser({
   activeDesire,
@@ -22,64 +24,76 @@ export default function DesireBrowser({
 }) {
   return (
     <section id="mokuteki" className="scroll-mt-[128px]">
-      <div className="flex items-center gap-3 mb-2">
-        <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-        <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">
-          目的から探す
-        </span>
-      </div>
-      <h2 className="text-[1.35rem] sm:text-[1.6rem] leading-[1.3] text-[#1f2a1d]" style={HEAD}>
-        {heading}
-      </h2>
-      <p className="mt-2 text-[13px] text-[#4b5b47] leading-[1.85]">
-        悩みの名前がわからなくても、「どうなりたいか」から記事を探せます。
-      </p>
+      <div className="rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
+        {/* ヘッダー帯 — 診断カードと同じ濃緑のアンカー */}
+        <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
+          <div className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#85AB8B]">
+            目的から探す
+          </div>
+          <h2
+            className="mt-2.5 text-[1.35rem] sm:text-[1.7rem] font-[800] leading-[1.4] text-[#EDF1E8]"
+            style={HEAD}
+          >
+            {heading}
+          </h2>
+          <p className="mt-2 text-[12.5px] sm:text-[13.5px] text-[#C9D2C4] leading-[1.8]">
+            悩みの名前がわからなくても、「どうなりたいか」から選べます。
+          </p>
+        </div>
 
-      <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {DESIRE_ORDER.map((key) => {
-          const d = DESIRES[key];
-          const count = clustersByDesire(key).length;
-          const active = key === activeDesire;
-          return (
-            <Link
-              key={key}
-              href={`/areas?desire=${key}#mokuteki`}
-              aria-current={active ? "true" : undefined}
-              className={`group rounded-[1.2rem] border p-4 transition-all ${
-                active
-                  ? "border-[#3d5638] bg-[#16241A] text-[#EDF1E8] shadow-[0_18px_38px_-24px_rgba(20,32,26,0.6)]"
-                  : "border-[#1f2a1d]/10 bg-white text-[#1f2a1d] hover:border-[#3d5638]/40 hover:-translate-y-0.5"
-              }`}
-            >
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="text-[15px] font-bold" style={HEAD}>
-                  {d.label}
-                </span>
-                <span
-                  className={`text-[11px] tabular-nums ${
-                    active ? "text-[#9ec4a3]" : "text-[#6b7a66]"
+        {/* 目的のグリッド */}
+        <div className="p-5 sm:p-7">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {DESIRE_ORDER.map((key) => {
+              const d = DESIRES[key];
+              const count = clustersByDesire(key).length;
+              const active = key === activeDesire;
+              return (
+                <Link
+                  key={key}
+                  href={`/areas?desire=${key}#mokuteki`}
+                  aria-current={active ? "true" : undefined}
+                  className={`group relative rounded-[1.2rem] px-5 py-4 transition-all duration-200 ${
+                    active
+                      ? "bg-[#16241A] text-[#EDF1E8] shadow-[0_18px_40px_-26px_rgba(20,32,26,0.8)]"
+                      : "bg-[#f6f8f4] text-[#1f2a1d] hover:bg-white hover:shadow-[0_18px_40px_-28px_rgba(20,32,26,0.55)] hover:-translate-y-0.5"
                   }`}
                 >
-                  {count}本
-                </span>
-              </div>
-              <p
-                className={`mt-1.5 text-[12px] leading-[1.8] ${
-                  active ? "text-[#C9D2C4]" : "text-[#4b5b47]"
-                }`}
-              >
-                {d.hook}
-              </p>
-              <span
-                className={`mt-2.5 inline-flex items-center gap-1 text-[12px] font-semibold ${
-                  active ? "text-[#9ec4a3]" : "text-[#3d5638]"
-                }`}
-              >
-                {active ? "選択中" : "記事を見る"} <span aria-hidden>→</span>
-              </span>
-            </Link>
-          );
-        })}
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="text-[15.5px] font-bold leading-[1.5]" style={HEAD}>
+                      {d.label}
+                    </span>
+                    <span
+                      className={`shrink-0 font-mono text-[11px] tabular-nums pt-1 ${
+                        active ? "text-[#85AB8B]" : "text-[#9aa79a]"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </div>
+                  <p
+                    className={`mt-2 text-[12px] leading-[1.85] ${
+                      active ? "text-[#C9D2C4]" : "text-[#5c6b58]"
+                    }`}
+                  >
+                    {d.hook}
+                  </p>
+                  {/* 矢印はホバー時だけ。全カードにCTA文言を並べない */}
+                  <span
+                    aria-hidden
+                    className={`absolute right-4 bottom-3 text-[13px] transition-all duration-200 ${
+                      active
+                        ? "text-[#85AB8B] opacity-100"
+                        : "text-[#3d5638] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5"
+                    }`}
+                  >
+                    →
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );
