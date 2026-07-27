@@ -118,6 +118,41 @@ export default function TrustSection() {
           )}
         </div>
 
+        {/* 料金基準と、やめ方 — 高額ほど「止め方」が明示されていないと踏み切れない */}
+        <div className="mt-10">
+          <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
+            料金の決まり方と、やめ方
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="rounded-[1rem] bg-white border border-[#1f2a1d]/10 px-5 py-4">
+              <p className="text-[13px] font-bold text-[#1f2a1d] mb-2" style={MINCHO}>
+                料金の基準
+              </p>
+              <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
+                <li>・期間の長さ（30日／90日／180日）</li>
+                <li>・手配する専門家の数</li>
+                <li>・同行の有無</li>
+                <li>・総額と内訳は、着手前に必ず提示します</li>
+                <li>・提携先からの紹介料は受け取っていません</li>
+              </ul>
+            </div>
+            <div className="rounded-[1rem] bg-white border border-[#1f2a1d]/10 px-5 py-4">
+              <p className="text-[13px] font-bold text-[#1f2a1d] mb-2" style={MINCHO}>
+                返金・キャンセル
+              </p>
+              <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
+                <li>・着手から2週間以内に合わないと感じた場合、全額返金します</li>
+                <li>・以降の中断は、実施済みの工程分のみのご負担です</li>
+                <li>・専門家が合わない場合、1回まで無償で変更します</li>
+                <li>・施術・商品の実費は、各事業者の規定に従います</li>
+              </ul>
+            </div>
+          </div>
+          <p className="mt-3 text-[11.5px] text-[#6b7a66] leading-[1.85]">
+            ※ 正式な条件は契約書面でご確認いただきます。曖昧なままお金をいただくことはしません。
+          </p>
+        </div>
+
         {/* 匿名事例 */}
         <div className="mt-10">
           <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">

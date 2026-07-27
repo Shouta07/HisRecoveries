@@ -14,7 +14,7 @@ const INCLUDED = [
   { t: "現在地診断", d: "外側と習慣を要素に分解し、いまの位置を言語化します。" },
   { t: "90日改善ロードマップ", d: "その日から逆算し、いつ何をやるかを一枚に。" },
   { t: "専門家・施設の選定と手配", d: "中立に選び、予約まで。探す手間はかかりません。" },
-  { t: "LINEでの相談", d: "迷ったその場で聞けます。判断を持ち帰らせません。" },
+  { t: "LINEでの相談", d: "計画を進める中で、迷いや判断が必要なときに相談できます。" },
   { t: "進捗管理", d: "締切を置き、遅れたら声をかけます。放置しません。" },
   { t: "当日までの伴走", d: "終わるまで見届けます。手が止まったら、声をかけます。" },
 ];
@@ -80,9 +80,12 @@ export default function PlanPricing() {
 
         {/* 価値分解 — 何にお金を払っているのかを、機能ではなく"消えるコスト"で示す */}
         <div className="mt-6 rounded-[1.4rem] bg-[#eef3ea] px-6 sm:px-8 py-6">
+          <p className="text-[11.5px] font-bold tracking-[0.08em] text-[#3d5638] mb-1">
+            これは施術費ではありません
+          </p>
           <p className="text-[14.5px] sm:text-[15.5px] font-bold text-[#1f2a1d] leading-[1.7]" style={MINCHO}>
-            商品を買うのではありません。<br className="sm:hidden" />
-            この6つのコストが、あなたから消えます。
+            あなたが払っているのは、<br className="sm:hidden" />
+            この6つの負担が消えることです。
           </p>
           <ul className="mt-4 grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
             {[
