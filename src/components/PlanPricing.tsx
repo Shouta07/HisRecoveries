@@ -16,8 +16,8 @@ const STEPS = [
   { n: "01", t: "カウンセリング", d: "何が気になっているのかを、一緒に言葉にします。ここが起点です。" },
   { n: "02", t: "改善プランの作成", d: "何をやるか、何をやらないかを決めて、一枚にまとめます。" },
   { n: "03", t: "オフライン体験（1日）", d: "眉・メンズメイク・服選び・髪型の提案・写真撮影。東京都内・土日のみの実施です。" },
-  { n: "04", t: "再現できるまで伴走", d: "その場限りにしない。自分でできるところまで、LINEで確認します。" },
-  { n: "05", t: "記録（Before / After）", d: "変化を写真で残します。掲載はご本人の許可があるときだけです。" },
+  { n: "04", t: "手順を、動画で残す", d: "メイクなどの手順を動画で納品。あとから何度でも見返して、自分で再現できます。" },
+  { n: "05", t: "再現できるまで伴走", d: "その場限りにしません。LINEで確認しながら、Before / After も記録します（掲載は許可があるときだけ）。" },
 ];
 
 export default function PlanPricing() {
@@ -173,15 +173,13 @@ export default function PlanPricing() {
         <div className="mt-6 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 px-6 sm:px-8 py-6">
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span className="text-[14.5px] font-bold text-[#1f2a1d]" style={MINCHO}>
-              まず現在地だけ知りたい方へ
-            </span>
-            <span className="text-[14.5px] font-bold text-[#3d5638]" style={MINCHO}>
-              印象診断 ¥22,000（税込）
+              いきなり申し込まなくて、大丈夫です
             </span>
           </div>
           <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">
-            90分。いまの位置と、最初にやるべき一手をお伝えします。
-            プランをお申し込みの場合は、全額を充当します。
+            まず無料でご相談ください。合わないと思えば、その場でお伝えします。
+            お支払い後のキャンセルはお受けしていないので、
+            <span className="text-[#1f2a1d] font-semibold">迷いが残っているうちは、お勧めしません</span>。
           </p>
           <div className="mt-4 flex flex-wrap gap-2.5">
             <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[13px] font-bold px-6 py-3 transition-colors">

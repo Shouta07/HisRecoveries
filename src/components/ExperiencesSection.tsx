@@ -32,7 +32,7 @@ const PLANS: Plan[] = [
     available: true,
     who: "誰にも言えなかった悩みから。いま動きたい人に。",
     includes: [
-      "印象診断で、現在地と地図づくり",
+      "カウンセリングで、現在地と地図づくり",
       "メイク・服・写真の第一印象パッケージ（プロ専属チーム）",
       "必要に応じて、医療連携・内側のケア",
     ],
@@ -85,7 +85,7 @@ export default function ExperiencesSection() {
           <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1rem] bg-white border border-[#1f2a1d]/12 px-4 py-3">
             <span className="text-[11px] font-bold tracking-[0.08em] text-[#3d5638]">費用の目安</span>
             <span className="text-[15px] font-bold text-[#16241A]" style={MINCHO}>¥50,000（30日）</span>
-            <span className="text-[11.5px] text-[#6b7a66]">入口の印象診断 ¥22,000 は全額充当</span>
+            <span className="text-[11.5px] text-[#6b7a66]">税込・会場費込み。相談は無料です</span>
           </div>
         </div>
 
