@@ -19,12 +19,16 @@ const DO = [
 ];
 
 const DONT = [
-  "施術そのもの（医療行為・美容施術は、提携する専門家が行います）",
-  "医学的な診断・治療方針の決定（医師の領域です）",
-  "効果や結果の保証（人により変わります）",
+  "医療判断（診断・治療方針の決定は、医師の領域です）",
+  "効果の保証・施術結果の保証",
+  "医師や施術者の代替",
   "本人に代わって実行すること（通うのも、続けるのも、ご本人です）",
   "外見以外の悩み全般の解決（恋愛・転職そのものの成否は範囲外です）",
 ];
+
+// 医療・美容を扱う以上、線引きは名詞で明示する（「紹介サービス」に見せない）。
+const MEDICAL_DO = ["現在地の整理", "選択肢の整理", "情報の整理", "比較軸の作成", "予約の補助", "進行の管理"];
+const MEDICAL_DONT = ["医療判断", "効果保証", "施術結果の保証", "医師の代替"];
 
 const CAN_EXPECT = [
   "何を、いつ、どの順でやるかが決まる",
@@ -98,6 +102,56 @@ export default function ScopeSection() {
           <List title="提供しないこと" items={DONT} tone="dont" />
           <List title="期待できる変化" items={CAN_EXPECT} tone="do" />
           <List title="期待できないこと" items={CANNOT_EXPECT} tone="dont" />
+        </div>
+
+        {/* 医療・美容の線引き — 「おすすめクリニック紹介」に見せないための中核 */}
+        <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
+          <p className="text-[13.5px] font-bold text-[#1f2a1d] mb-1" style={MINCHO}>
+            医療・美容を扱うときの、線引き
+          </p>
+          <p className="text-[12.5px] text-[#5c6b58] leading-[1.9]">
+            わたしたちは医療者ではありません。だから、次のように分けています。
+          </p>
+          <div className="mt-4 grid sm:grid-cols-2 gap-3">
+            <div className="rounded-[1rem] bg-[#f6f8f4] px-4 py-3.5">
+              <p className="text-[11.5px] font-bold tracking-[0.06em] text-[#3d5638] mb-2">
+                提供するもの
+              </p>
+              <ul className="flex flex-wrap gap-1.5">
+                {MEDICAL_DO.map((x) => (
+                  <li
+                    key={x}
+                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[11.5px] text-[#1f2a1d]"
+                  >
+                    {x}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-[1rem] bg-[#f6f8f4] px-4 py-3.5">
+              <p className="text-[11.5px] font-bold tracking-[0.06em] text-[#9aa79a] mb-2">
+                提供しないもの
+              </p>
+              <ul className="flex flex-wrap gap-1.5">
+                {MEDICAL_DONT.map((x) => (
+                  <li
+                    key={x}
+                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[11.5px] text-[#9aa79a] line-through decoration-[#c9a091]"
+                  >
+                    {x}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <p className="mt-4 text-[13.5px] font-bold text-[#1f2a1d] leading-[1.8]" style={MINCHO}>
+            施術を受けるかどうかを決めるのは、あなたです。<br className="hidden sm:block" />
+            私たちは、納得して選べる状態を作ります。
+          </p>
+          <p className="mt-2.5 text-[12px] text-[#6b7a66] leading-[1.9]">
+            特定の医療機関を「おすすめ」することはしません。候補と、比べるための軸と、
+            受診時に聞くべき質問をお渡しします。提携先からの紹介料は受け取っていません。
+          </p>
         </div>
 
         {/* 顧客自身の役割 — ここを曖昧にすると必ず揉める */}

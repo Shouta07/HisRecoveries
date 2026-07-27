@@ -11,12 +11,23 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-// 自己流でよく起きる順番（＝失敗しやすい並び）
+// 本当の競合は美容サービスではなく「自己流で迷走すること」。
+// だから比較対象として、自己流の道筋とHRの道筋を並べて見せる。
 const SELF_ORDER = [
-  { t: "とりあえず美容室", d: "情報が多い順に手をつけてしまう" },
-  { t: "服を買い替える", d: "土台が整う前に、足し算から入る" },
-  { t: "スキンケアを始める", d: "効果が出るまで時間がかかるのに、後回し" },
-  { t: "直前に写真を撮る", d: "間に合わないまま、当日を迎える" },
+  "調べる",
+  "流行っているものを試す",
+  "効果がわからない",
+  "別のものを探す",
+  "期限直前になる",
+  "焦る",
+];
+
+const HR_ORDER = [
+  "現在地を知る",
+  "必要な順番を決める",
+  "期限から逆算する",
+  "必要な選択だけする",
+  "当日を迎える",
 ];
 
 export default function OrderFailureSection() {
@@ -40,34 +51,51 @@ export default function OrderFailureSection() {
           それだけで、同じ努力が間に合わなくなります。
         </p>
 
-        {/* 自己流の順番 */}
-        <div className="mt-9 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
-          <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
-            自己流だと、だいたいこうなる
+        {/* 自己流 vs His Recoveries — 本当の競合を並べて見せる */}
+        <div className="mt-9 grid sm:grid-cols-2 gap-3 sm:gap-4">
+          {/* 自己流 */}
+          <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-6">
+            <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
+              自己流の場合
+            </div>
+            <ol className="space-y-0">
+              {SELF_ORDER.map((t, i) => (
+                <li key={t} className="flex gap-3 pb-3 last:pb-0">
+                  <div className="flex flex-col items-center shrink-0">
+                    <span aria-hidden className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#c9d3c4]" />
+                    {i < SELF_ORDER.length - 1 && (
+                      <span aria-hidden className="w-px flex-1 bg-[#e7ece4] mt-1" />
+                    )}
+                  </div>
+                  <p className="text-[13.5px] text-[#5c6b58] leading-[1.6]">{t}</p>
+                </li>
+              ))}
+            </ol>
           </div>
-          <ol className="grid sm:grid-cols-4 gap-3">
-            {SELF_ORDER.map((s, i) => (
-              <li key={s.t} className="relative rounded-[1rem] bg-[#f6f8f4] px-4 py-3.5">
-                <span className="font-mono text-[10.5px] text-[#9aa79a]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p className="mt-1 text-[13.5px] font-bold text-[#1f2a1d] leading-[1.5]" style={MINCHO}>
-                  {s.t}
-                </p>
-                <p className="mt-1 text-[11.5px] text-[#6b7a66] leading-[1.7]">{s.d}</p>
-                {i < SELF_ORDER.length - 1 && (
-                  <span
-                    aria-hidden
-                    className="hidden sm:block absolute -right-[11px] top-1/2 -translate-y-1/2 text-[#c9d3c4] text-[14px]"
-                  >
-                    →
-                  </span>
-                )}
-              </li>
-            ))}
-          </ol>
 
-          <div className="mt-5 flex items-start gap-2.5 rounded-[1rem] bg-[#16241A] text-[#EDF1E8] px-5 py-4">
+          {/* His Recoveries */}
+          <div className="rounded-[1.4rem] bg-[#16241A] text-[#EDF1E8] p-5 sm:p-6">
+            <div className="text-[12px] font-bold tracking-[0.08em] text-[#85AB8B] mb-4">
+              His Recoveries の場合
+            </div>
+            <ol className="space-y-0">
+              {HR_ORDER.map((t, i) => (
+                <li key={t} className="flex gap-3 pb-3 last:pb-0">
+                  <div className="flex flex-col items-center shrink-0">
+                    <span aria-hidden className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
+                    {i < HR_ORDER.length - 1 && (
+                      <span aria-hidden className="w-px flex-1 bg-[#9ec4a3]/30 mt-1" />
+                    )}
+                  </div>
+                  <p className="text-[13.5px] leading-[1.6]">{t}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
+          <div className="flex items-start gap-2.5 rounded-[1rem] bg-[#16241A] text-[#EDF1E8] px-5 py-4">
             <span aria-hidden className="text-[#9ec4a3] text-[15px] leading-none mt-0.5">
               →
             </span>

@@ -12,6 +12,7 @@ import OrderFailureSection from "@/components/OrderFailureSection";
 import PlanPricing from "@/components/PlanPricing";
 import TrustSection from "@/components/TrustSection";
 import ScopeSection from "@/components/ScopeSection";
+import ContinuitySection from "@/components/ContinuitySection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -80,7 +81,7 @@ export default function HomePage() {
           {/* 何のサービスか、を最初のひと言で */}
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[11.5px] sm:text-[12.5px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
             <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
-            大事な日までの、段取りを引き受ける。
+            男性向け・大事な日までの改善設計サービス
           </span>
 
           {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
@@ -112,9 +113,9 @@ export default function HomePage() {
 
           {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
-            <span className="inline-block">婚活、結婚式、転職。</span>{" "}
-            <span className="inline-block">その日から逆算して、</span>
-            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">あなたに必要な変化だけ</span>を設計します。</span>{" "}
+            <span className="inline-block">婚活・結婚式・転職。</span>{" "}
+            <span className="inline-block">その日までに<span className="font-semibold text-[#EDF1E8]">何をいつやるか</span>を設計し、</span>{" "}
+            <span className="inline-block">専門家の選定と進行管理まで引き受けます。</span>{" "}
             <span className="inline-block">自己流でつまずくのは、努力ではなく順番のせいです。</span>
           </p>
 
@@ -200,7 +201,10 @@ export default function HomePage() {
         {/* ⑥ 価格 — 隠さない。何にいくら払うのか、価値分解で示す。 */}
         <PlanPricing />
 
-        {/* ⑦ 信頼 — 誰がやるか・どう進めるか・つなぐ相手・実際の記録 */}
+        {/* 継続 — 変わりたい → 維持したい → さらに良くしたい の受け皿 */}
+        <ContinuitySection />
+
+        {/* ⑦ 信頼 — 誰がやるか・どう進めるか・料金基準とやめ方・実際の記録 */}
         <TrustSection />
 
         {/* はじめかた — 申し込み後の流れ */}
