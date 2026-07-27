@@ -11,12 +11,13 @@ const MINCHO: React.CSSProperties = {
 };
 
 // 5ステップ＝商品の骨格。工程を見せることで「相談サービス」ではないと伝える。
+// 第一印象改善に絞った30日。設計だけでなく「実行」まで含むのが中核。
 const STEPS = [
-  { n: "01", t: "現在地診断", d: "外側と習慣を要素に分解し、いまの位置を言語化します。" },
-  { n: "02", t: "改善ロードマップ作成", d: "その日から逆算し、いつ何をやるかを一枚にまとめます。" },
-  { n: "03", t: "必要サービスの選定", d: "候補と、比べる軸と、聞くべき質問をお渡しします。" },
-  { n: "04", t: "LINE伴走", d: "進める中で迷いや判断が必要なときに、その場で相談できます。" },
-  { n: "05", t: "当日までの進行管理", d: "締切を置き、手が止まったら声をかけます。放置しません。" },
+  { n: "01", t: "カウンセリング", d: "何が気になっているのかを、一緒に言葉にします。ここが起点です。" },
+  { n: "02", t: "改善プランの作成", d: "何をやるか、何をやらないかを決めて、一枚にまとめます。" },
+  { n: "03", t: "オフライン体験（1日）", d: "眉・メンズメイク・服選び・髪型の提案・写真撮影。実際に整えます。" },
+  { n: "04", t: "再現できるまで伴走", d: "その場限りにしない。自分でできるところまで、LINEで確認します。" },
+  { n: "05", t: "記録（Before / After）", d: "変化を写真で残します。掲載はご本人の許可があるときだけです。" },
 ];
 
 export default function PlanPricing() {
@@ -37,16 +38,16 @@ export default function PlanPricing() {
           {/* 本体プラン */}
           <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
             <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B]">
-              Founder Program — 第一印象改善プログラム
+              第一印象改善プラン
             </div>
             <div className="mt-2 flex items-baseline gap-2 flex-wrap">
               <span className="text-[1.9rem] sm:text-[2.3rem] font-bold" style={MINCHO}>
-                ¥98,000
+                ¥50,000
               </span>
-              <span className="text-[1.05rem] text-[#C9D2C4]">／ 90日</span>
+              <span className="text-[1.05rem] text-[#C9D2C4]">／ 30日</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#C9D2C4] leading-[1.85]">
-              いまはこの1本だけです。予算を超えることはありません。
+              いまはこの1本だけです。第一印象に絞っています。
               同時にお受けできるのは数名まで。
               <span className="text-[#9ec4a3]">実績を積む段階のため、この価格でお受けしています。</span>
             </p>
@@ -55,7 +56,7 @@ export default function PlanPricing() {
           {/* 含まれるもの */}
           <div className="px-6 sm:px-9 py-7">
             <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
-              90日で、この5つを終わらせます
+              30日で、この5つを終わらせます
             </div>
             <ol className="space-y-0">
               {STEPS.map((x, i) => (
@@ -78,8 +79,9 @@ export default function PlanPricing() {
 
             {/* 施術費は別、を明示（不信を生まないため） */}
             <p className="mt-6 text-[12px] text-[#6b7a66] leading-[1.9] border-t border-[#1f2a1d]/10 pt-5">
-              ※ 施術・商品の実費は含みません。中立に選ぶため、提携先からの手数料で
-              価格を歪めることはしません。必要のないものは「やらなくていい」と伝えます。
+              ※ 体験（眉・メイク・服選び・髪型提案・撮影）の費用は含まれます。
+              購入する服・化粧品などの実費、美容室でのカット代はご本人のご負担です。
+              提携先からの手数料は受け取らないので、必要のないものは「やらなくていい」と伝えます。
             </p>
           </div>
         </div>
@@ -113,12 +115,13 @@ export default function PlanPricing() {
               <p className="text-[12px] font-bold text-[#3d5638] mb-3">His Recoveries なら</p>
               <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
                 <li>・<span className="text-[#1f2a1d] font-semibold">必要なものだけ</span>に絞る</li>
+                <li>・眉・メイク・服・髪・撮影を<span className="text-[#1f2a1d] font-semibold">1日で</span></li>
                 <li>・やらなくていいものは、やらない</li>
                 <li>・順番と締切は、こちらで管理</li>
               </ul>
               <p className="mt-4 pt-3 border-t border-[#1f2a1d]/10 text-[13px] text-[#1f2a1d]">
-                <span className="font-bold text-[1.15rem]" style={MINCHO}>¥98,000</span>
-                <span className="ml-2 text-[11.5px] text-[#6b7a66]">＋ 絞り込んだ実費だけ</span>
+                <span className="font-bold text-[1.15rem]" style={MINCHO}>¥50,000</span>
+                <span className="ml-2 text-[11.5px] text-[#6b7a66]">＋ 服・化粧品の実費だけ</span>
               </p>
             </div>
           </div>

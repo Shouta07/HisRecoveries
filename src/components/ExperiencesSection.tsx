@@ -37,8 +37,8 @@ const PLANS: Plan[] = [
       "必要に応じて、医療連携・内側のケア",
     ],
     custom: "要る・要らないは一緒に。あなたの悩みに合わせて、オーダーメイドで組みます。",
-    from: "¥98,000",
-    entry: "90日の伴走。内訳と総額は着手前に提示（入口の印象診断 ¥22,000 は全額充当）",
+    from: "¥50,000",
+    entry: "30日。眉・メイク・服・髪・撮影の体験を含みます（服・化粧品の実費は別）",
     href: "/recover",
     cta: "Recover を詳しく見る",
     line: false,
@@ -55,7 +55,7 @@ const PLANS: Plan[] = [
       "続けて深める、継続の設計",
     ],
     custom: "目的に合わせて、オーダーメイドで。何から深めるかは、地図を見ながら。",
-    from: "¥98,000",
+    from: "¥50,000",
     entry: "目的に応じて設計。総額は着手前に提示します",
     href: "/refine",
     cta: "Refine を詳しく見る",
@@ -84,7 +84,7 @@ export default function ExperiencesSection() {
           {/* ④ 価格アンカー — 金額を隠さない。詳細は下部の価格ブロックへ。 */}
           <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1rem] bg-white border border-[#1f2a1d]/12 px-4 py-3">
             <span className="text-[11px] font-bold tracking-[0.08em] text-[#3d5638]">費用の目安</span>
-            <span className="text-[15px] font-bold text-[#16241A]" style={MINCHO}>¥98,000（90日）</span>
+            <span className="text-[15px] font-bold text-[#16241A]" style={MINCHO}>¥50,000（30日）</span>
             <span className="text-[11.5px] text-[#6b7a66]">入口の印象診断 ¥22,000 は全額充当</span>
           </div>
         </div>

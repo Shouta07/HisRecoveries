@@ -12,7 +12,6 @@ import OrderFailureSection from "@/components/OrderFailureSection";
 import PlanPricing from "@/components/PlanPricing";
 import TrustSection from "@/components/TrustSection";
 import ScopeSection from "@/components/ScopeSection";
-import ContinuitySection from "@/components/ContinuitySection";
 import ForWhomSection from "@/components/ForWhomSection";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
@@ -52,9 +51,9 @@ const VOICES_B = [
 // 見出し「間に合わせる」を支える3本柱。
 // 売っているのは施術ではなく「判断の代行・順番設計・期限管理」。
 const BURDENS = [
-  { k: "判断を代行", t: "もう、選ばなくていい。", d: "調べる・比べる・決めるを、こちらが引き受けます。" },
-  { k: "順番を設計", t: "やる順を、間違えない。", d: "効く順に並べ替え。今やらなくていいことも言います。" },
-  { k: "期限を管理", t: "当日に、間に合わせる。", d: "逆算して締切を置き、終わるまで見届けます。" },
+  { k: "決める", t: "もう、選ばなくていい。", d: "調べる・比べる・決めるを、こちらが引き受けます。" },
+  { k: "整える", t: "その場で、実際に。", d: "眉・メイク・服・髪・写真を、1日でまとめて。" },
+  { k: "続ける", t: "自分で、再現できる。", d: "その場限りにしません。できるまで見届けます。" },
 ];
 
 export default function HomePage() {
@@ -82,7 +81,7 @@ export default function HomePage() {
           {/* 何のサービスか、を最初のひと言で */}
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[11.5px] sm:text-[12.5px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
             <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
-            男性向け・大事な日までの改善設計サービス
+            男性の第一印象を、30日で整える
           </span>
 
           {/* 人物画を画面幅いっぱい（フルブリード）に敷き、見出しをオーバーレイ */}
@@ -114,16 +113,18 @@ export default function HomePage() {
 
           {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
           <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
-            <span className="inline-block">美容・服・習慣を別々に探す時代から、</span>{" "}
-            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">あなたに必要な順番を設計する</span>時代へ。</span>
+            <span className="inline-block">眉・髪型・服・メイク・写真。</span>{" "}
+            <span className="inline-block">別々に探す時代から、</span>
+            <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">まとめて整える</span>時代へ。</span>
             <br className="hidden sm:block" />
-            <span className="inline-block">婚活・結婚式・転職。</span>{" "}
-            <span className="inline-block">その日まで逆算して、当日まで伴走します。</span>
+            <span className="inline-block">何をやるかを決めて、</span>{" "}
+            <span className="inline-block">実際に整えて、</span>{" "}
+            <span className="inline-block">自分で再現できるまで見届けます。</span>
           </p>
 
           {/* メカニズムを3ステップでスキャンできるように */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[11.5px] sm:text-[13px] font-semibold">
-            {["何をやるか決める", "いつやるか決める", "終わるまで管理する"].map((s, i) => (
+            {["何をやるか決める", "実際に整える", "再現できるまで見届ける"].map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <span className="rounded-full bg-white/[0.07] border border-white/12 px-3 py-1.5 text-[#C9D2C4]">
                   <span className="text-[#9ec4a3] font-bold mr-1">{i + 1}</span>{s}
@@ -208,9 +209,6 @@ export default function HomePage() {
 
         {/* はじめかた — 申し込み後の流れ */}
         <StepsSection />
-
-        {/* 継続（PMF後の本命。いまは後段に置き、主導線を邪魔しない） */}
-        <ContinuitySection />
 
         {/* Recover / Refine の詳細（後段） */}
         <ExperiencesSection />
