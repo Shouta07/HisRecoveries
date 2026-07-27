@@ -111,11 +111,11 @@ export default function RefinePage() {
         <section className="pt-12 sm:pt-14">
           <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-6 sm:p-8">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、要相談。</span>
+              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、¥200,000〜500,000。</span>
               <span className="text-[12px] text-[#9aa79a]">・オーダーメイド／専属チーム貸切</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">
-              目的によって変わるため、一律の価格は掲げません。入口の印象診断（90分・¥22,000／パッケージお申し込みで全額充当）で内容を伺い、総額の目安と内訳を、契約の前に必ずお伝えします。
+              目的・期間・手配する専門家の数で変わります。入口の印象診断（90分・¥22,000／お申し込みで全額充当）で状況を伺い、総額と内訳を着手前に必ず提示します。予算を超えることはありません。施術・商品の実費は別です。
             </p>
             <ul className="mt-4 grid sm:grid-cols-3 gap-2.5">
               {["紹介料を受け取らない", "総額と内訳を、契約の前に", "合意した予算を超えない"].map((p) => (
