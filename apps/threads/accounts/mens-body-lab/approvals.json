@@ -26,6 +26,35 @@
         "source_type": "fan_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260727032354344821",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-07-27T03:23:54.344838",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "就活の証明写真を撮った日、\n息子が少し沈んで帰ってきた。\n\n———\n\nがんばれとは、もう十分言った。\nこれ以上の言葉は、たぶん重くなる。\n\n———\n\nだから、言葉の代わりに準備を贈ることにした。\nカウンセリングから、肌や髪、面接に立つ日の見せ方まで、\nプロが一緒に整えてくれるらしい。\n\n———\n\n完全守秘で、内容は本人しか知らない。\n使うかどうかも、本人しだい。\n\n———\n\n社会に出る前の息子に、\n自信をひとつ → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-shukatsu\n\n———\n\n就活中の子どもに、親ができることって\n何だと思いますか？",
+        "posts": [
+          "就活の証明写真を撮った日、\n息子が少し沈んで帰ってきた。",
+          "がんばれとは、もう十分言った。\nこれ以上の言葉は、たぶん重くなる。",
+          "だから、言葉の代わりに準備を贈ることにした。\nカウンセリングから、肌や髪、面接に立つ日の見せ方まで、\nプロが一緒に整えてくれるらしい。",
+          "完全守秘で、内容は本人しか知らない。\n使うかどうかも、本人しだい。",
+          "社会に出る前の息子に、\n自信をひとつ → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-shukatsu",
+          "就活中の子どもに、親ができることって\n何だと思いますか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-shukatsu",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-shukatsu",
+        "hypothesis_id": "mother-shukatsu",
+        "hypothesis_name": "母: 就活を控えた息子",
+        "topic_slug": "mother-shukatsu",
+        "buzz_score": 8,
+        "source_type": "mother_thread",
+        "product": null
+      }
     }
   ]
 }

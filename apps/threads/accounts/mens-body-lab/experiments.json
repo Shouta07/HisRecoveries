@@ -1,12 +1,13 @@
 {
   "hypothesis_post_counts": {
-    "fan-reversal": 1
+    "fan-reversal": 1,
+    "mother-shukatsu": 1
   },
   "cta_post_counts": {
-    "none": 1
+    "none": 2
   },
-  "total_posts": 1,
+  "total_posts": 2,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-07-26T12:49:31.748406"
+  "last_updated": "2026-07-27T03:23:54.343908"
 }
