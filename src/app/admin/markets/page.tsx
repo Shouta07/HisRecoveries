@@ -75,8 +75,34 @@ export default async function MarketsPage() {
           ))}
         </div>
 
+        {/* ゴール別（新しい軸の一次指標） */}
+        <h2 className="mt-9 mb-1 text-[11px] tracking-[0.25em] text-sage uppercase">
+          ゴール別（どの「理想の日」が求められているか）
+        </h2>
+        <p className="mb-3 text-[11px] text-brand-cream/45">
+          サイトの軸を「悩み」から「迎えたい日」に移したため、勝てる市場の一次指標はこちら。
+          選ばれた数だけでなく、<span className="text-brand-cream/70">実際に手が動いたか</span>（1選択あたりの完了ステップ）を見る。
+        </p>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {r.goals.map((g) => (
+            <div key={g.id} className="rounded-xl border border-brand-cream/12 bg-brand-cream/[0.04] p-4">
+              <p className="text-[13.5px] text-brand-cream">{g.label}</p>
+              <p className="mt-2 font-mincho text-3xl leading-none">{g.select}</p>
+              <p className="mt-1 text-[11px] text-brand-cream/50">選ばれた回数</p>
+              <p className="mt-2.5 text-[11.5px] text-sage">
+                完了 {g.stepDone}
+                {g.stepsPerSelect !== null ? (
+                  <span className="text-brand-cream/50">（1人あたり {g.stepsPerSelect}）</span>
+                ) : null}
+              </p>
+            </div>
+          ))}
+        </div>
+
         {/* 判定 */}
-        <h2 className="mt-9 mb-3 text-[11px] tracking-[0.25em] text-sage uppercase">判定</h2>
+        <h2 className="mt-9 mb-3 text-[11px] tracking-[0.25em] text-sage uppercase">
+          判定（領域別・意向転換率）
+        </h2>
         {r.ranked.length === 0 ? (
           <div className="rounded-xl border border-brand-cream/12 bg-brand-cream/[0.04] p-4 text-[12.5px] leading-[1.9]">
             <p className="text-brand-cream">まだ判定できません。</p>
