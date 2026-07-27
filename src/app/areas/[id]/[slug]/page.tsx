@@ -7,6 +7,7 @@ import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
 import EmpathyLead from "@/components/EmpathyLead";
 import QuietConsult from "@/components/QuietConsult";
 import ConsultLink from "@/components/ConsultLink";
+import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -101,6 +102,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
 
   return (
     <div className="bg-[#f4f6f2] text-[#1f2a1d]">
+      <MarketView market={a.areaId} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
@@ -256,7 +258,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           <Link href={`/areas/${c.id}`} className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
             {c.ja}の全体を見る <span aria-hidden>→</span>
           </Link>
-          <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
+          <ConsultLink market={a.areaId} className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
             相談する（無料） <span aria-hidden>→</span>
           </ConsultLink>
         </div>
