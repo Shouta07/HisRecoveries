@@ -155,7 +155,7 @@ export default function ApplyForm() {
         >
           <option value="">選択してください（任意）</option>
           <option value="まずは相談だけ（無料）">まずは相談だけ（無料）</option>
-          <option value="第一印象改善プラン（¥50,000 税込・30日）">第一印象改善プラン（¥50,000 税込・30日）</option>
+          <option value="第一印象改善プラン（¥49,800 税込・30日）">第一印象改善プラン（¥49,800 税込・30日／先着10名）</option>
           <option value="ギフト（大切な人へ贈る）">ギフト（大切な人へ贈る）</option>
         </select>
       </div>
