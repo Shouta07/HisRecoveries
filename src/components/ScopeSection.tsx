@@ -46,6 +46,14 @@ const CANNOT_EXPECT = [
   "短期間で、すべてが解決すること",
 ];
 
+// お断りするご相談。断れることが商品になる（サロンもクリニックも言えない）。
+// 医学的な断定はしない。「早くは難しい」「時間がかかる」に留める。
+const DECLINE = [
+  "短期間で、別人のように変わりたい",
+  "肌荒れを、施術だけで早く消したい",
+  "睡眠・食事・ストレスには手をつけたくない",
+];
+
 const YOUR_PART = [
   "決めた予約に、行くこと",
   "決めたことを、続けること（週に数分でも）",
@@ -151,6 +159,39 @@ export default function ScopeSection() {
           <p className="mt-2.5 text-[12px] text-[#6b7a66] leading-[1.9]">
             特定の医療機関を「おすすめ」することはしません。候補と、比べるための軸と、
             受診時に聞くべき質問をお渡しします。提携先からの紹介料は受け取っていません。
+          </p>
+        </div>
+
+        {/* お断りする場合 — 受けない判断を先に見せる。ここが最大のクレーム予防。 */}
+        <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
+          <p className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
+            こういうご相談は、お断りしています
+          </p>
+          <ul className="space-y-2">
+            {DECLINE.map((x) => (
+              <li key={x} className="flex gap-2.5 text-[12.5px] text-[#4b5b47] leading-[1.85]">
+                <span aria-hidden className="text-[#9aa79a] shrink-0 leading-[1.85]">—</span>
+                <span>{x}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-[12.5px] text-[#5c6b58] leading-[1.95]">
+            とくに肌は、施術だけで早く、というのが難しい部分です。睡眠・食事・ストレスが関わり、
+            年齢によってはホルモンの影響で避けにくい面もあります。医療にかかっても、
+            <span className="text-[#1f2a1d] font-semibold">1年で解決するとは限りません</span>。
+            期日が近いのに肌を主戦場にすると、間に合わないまま当日を迎えることになります。
+          </p>
+          <p className="mt-2.5 text-[12.5px] text-[#1f2a1d] leading-[1.95] font-semibold">
+            ただ、肌が完璧でなくても、第一印象は動きます。
+          </p>
+          <p className="mt-1.5 text-[12.5px] text-[#5c6b58] leading-[1.95]">
+            第一印象は、髪・眉・服のサイズ感・姿勢・表情・写真の撮られ方の総合点です。
+            肌はそのうちの一つで、十割ではありません。期日が近い場合は、
+            動かせる要素から整えます。肌は期日と切り離して、長く付き合う前提でお話しします。
+          </p>
+          <p className="mt-2.5 text-[12px] text-[#6b7a66] leading-[1.9]">
+            それでも「施術中心で、短期間に」をお望みの場合は、力になれません。
+            正直にお伝えして、お引き受けしません。
           </p>
         </div>
 
