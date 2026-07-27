@@ -129,9 +129,8 @@ export default function TrustSection() {
                 料金の基準
               </p>
               <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
-                <li>・期間の長さ（30日／90日／180日）</li>
-                <li>・手配する専門家の数</li>
-                <li>・同行の有無</li>
+                <li>・90日 ¥200,000 の1本です（いまは他のプランを設けていません）</li>
+                <li>・期間を延ばす場合のみ、着手前にご相談します</li>
                 <li>・総額と内訳は、着手前に必ず提示します</li>
                 <li>・提携先からの紹介料は受け取っていません</li>
               </ul>
@@ -143,7 +142,6 @@ export default function TrustSection() {
               <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
                 <li>・着手から2週間以内に合わないと感じた場合、全額返金します</li>
                 <li>・以降の中断は、実施済みの工程分のみのご負担です</li>
-                <li>・専門家が合わない場合、1回まで無償で変更します</li>
                 <li>・施術・商品の実費は、各事業者の規定に従います</li>
               </ul>
             </div>

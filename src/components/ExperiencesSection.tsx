@@ -84,7 +84,7 @@ export default function ExperiencesSection() {
           {/* ④ 価格アンカー — 金額を隠さない。詳細は下部の価格ブロックへ。 */}
           <div className="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1rem] bg-white border border-[#1f2a1d]/12 px-4 py-3">
             <span className="text-[11px] font-bold tracking-[0.08em] text-[#3d5638]">費用の目安</span>
-            <span className="text-[15px] font-bold text-[#16241A]" style={MINCHO}>¥200,000〜500,000</span>
+            <span className="text-[15px] font-bold text-[#16241A]" style={MINCHO}>¥200,000（90日）</span>
             <span className="text-[11.5px] text-[#6b7a66]">入口の印象診断 ¥22,000 は全額充当</span>
           </div>
         </div>
