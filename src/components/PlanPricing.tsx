@@ -41,13 +41,14 @@ export default function PlanPricing() {
             </div>
             <div className="mt-2 flex items-baseline gap-2 flex-wrap">
               <span className="text-[1.9rem] sm:text-[2.3rem] font-bold" style={MINCHO}>
-                ¥298,000
+                ¥98,000
               </span>
-              <span className="text-[1.05rem] text-[#C9D2C4]">〜 ／ 90日</span>
+              <span className="text-[1.05rem] text-[#C9D2C4]">／ 90日</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#C9D2C4] leading-[1.85]">
-              いまはこの1本だけです。範囲や期間を広げる場合のみ、着手前に総額をご相談します。
-              予算を超えることはありません。同時にお受けできるのは、数名までです。
+              いまはこの1本だけです。予算を超えることはありません。
+              同時にお受けできるのは数名まで。
+              <span className="text-[#9ec4a3]">実績を積む段階のため、この価格でお受けしています。</span>
             </p>
           </div>
 
@@ -81,6 +82,50 @@ export default function PlanPricing() {
               価格を歪めることはしません。必要のないものは「やらなくていい」と伝えます。
             </p>
           </div>
+        </div>
+
+        {/* 総額比較 — 同じ成果を、既存のやり方より安く。ここが「お得」の唯一の論理。 */}
+        <div className="mt-6 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 overflow-hidden">
+          <div className="px-6 sm:px-8 py-5 border-b border-[#1f2a1d]/10">
+            <p className="text-[11.5px] font-bold tracking-[0.08em] text-[#3d5638] mb-1">
+              同じ状態を目指すとき
+            </p>
+            <p className="text-[14.5px] sm:text-[15.5px] font-bold text-[#1f2a1d] leading-[1.7]" style={MINCHO}>
+              総額で、比べてください。
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#1f2a1d]/10">
+            <div className="px-6 sm:px-8 py-6">
+              <p className="text-[12px] font-bold text-[#9aa79a] mb-3">自分で、バラバラに揃える</p>
+              <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
+                <li>・スタイリストに同行を頼む</li>
+                <li>・写真を撮り直す</li>
+                <li>・肌の施術に通う</li>
+                <li>・脱毛を始める</li>
+                <li>・髪を見直す</li>
+              </ul>
+              <p className="mt-4 pt-3 border-t border-[#1f2a1d]/10 text-[13px] text-[#1f2a1d]">
+                <span className="font-bold text-[1.15rem]" style={MINCHO}>数十万円</span>
+                <span className="ml-2 text-[11.5px] text-[#6b7a66]">＋ 順番も予約も、自分で</span>
+              </p>
+            </div>
+            <div className="px-6 sm:px-8 py-6 bg-[#f6f8f4]">
+              <p className="text-[12px] font-bold text-[#3d5638] mb-3">His Recoveries なら</p>
+              <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
+                <li>・<span className="text-[#1f2a1d] font-semibold">必要なものだけ</span>に絞る</li>
+                <li>・やらなくていいものは、やらない</li>
+                <li>・順番と締切は、こちらで管理</li>
+              </ul>
+              <p className="mt-4 pt-3 border-t border-[#1f2a1d]/10 text-[13px] text-[#1f2a1d]">
+                <span className="font-bold text-[1.15rem]" style={MINCHO}>¥98,000</span>
+                <span className="ml-2 text-[11.5px] text-[#6b7a66]">＋ 絞り込んだ実費だけ</span>
+              </p>
+            </div>
+          </div>
+          <p className="px-6 sm:px-8 py-4 text-[11.5px] text-[#6b7a66] leading-[1.85] border-t border-[#1f2a1d]/10">
+            ※ 金額は一般的な目安で、内容・地域・回数により変わります。
+            あなたの場合の実費見込みは、着手前に一覧でお渡しします。
+          </p>
         </div>
 
         {/* 価値分解 — 何にお金を払っているのかを、機能ではなく"消えるコスト"で示す */}
