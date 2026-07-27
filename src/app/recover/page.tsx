@@ -20,7 +20,7 @@ const TRACK_DESIRES: DesireKey[] = ["jishin", "erabaretai", "son", "shinrai", "w
 export const metadata: Metadata = {
   title: "Recover｜取り戻す — 誰にも言えなかった悩みから",
   description:
-    "薄毛・肌・清潔感・写真が苦手——誰にも言えなかった悩みを、ゼロに戻す。カウンセリングで地図を創り、体験へ。やる順番を決めて、遠回りを減らします。相談は無料・秘密保持のもとで。¥50,000（税込・30日）。",
+    "薄毛・肌・清潔感・写真が苦手——誰にも言えなかった悩みを、ゼロに戻す。カウンセリングで地図を創り、体験へ。やる順番を決めて、遠回りを減らします。相談は無料・秘密保持のもとで。¥49,800（税込・30日／先着10名）。",
   alternates: { canonical: `${site.url}/recover` },
   openGraph: {
     type: "website",
@@ -111,7 +111,7 @@ export default function RecoverPage() {
         <section className="pt-12 sm:pt-14">
           <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-6 sm:p-8">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、¥50,000（30日）。</span>
+              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、¥49,800（30日）。</span>
               <span className="text-[12px] text-[#9aa79a]">・オーダーメイド／専属チーム貸切</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">

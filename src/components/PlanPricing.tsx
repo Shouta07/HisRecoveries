@@ -41,15 +41,22 @@ export default function PlanPricing() {
               第一印象改善プラン
             </div>
             <div className="mt-2 flex items-baseline gap-2 flex-wrap">
+              <span className="rounded-full bg-[#9ec4a3] px-2.5 py-0.5 text-[10.5px] font-bold text-[#16241A] tracking-[0.04em]">
+                先着10名
+              </span>
               <span className="text-[1.9rem] sm:text-[2.3rem] font-bold" style={MINCHO}>
-                ¥50,000
+                ¥49,800
               </span>
               <span className="text-[1.05rem] text-[#C9D2C4]">税込 ／ 30日</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#C9D2C4] leading-[1.85]">
-              いまはこの1本だけです。第一印象に絞っています。
-              同時にお受けできるのは数名まで。
-              <span className="text-[#9ec4a3]">実績を積む段階のため、この価格でお受けしています。</span>
+              事例をつくる段階のため、<span className="text-[#EDF1E8] font-semibold">はじめの10名さま</span>はこの価格でお受けします。
+              条件は、<span className="text-[#EDF1E8] font-semibold">記録（Before / After）の掲載にご協力いただけること</span>。
+              匿名・顔を出さない形でも構いません。
+            </p>
+            <p className="mt-2 text-[12px] text-[#9ec4a3] leading-[1.85]">
+              11名さま以降は ¥66,000（税込）でのご案内になります。
+              同時にお受けできるのは数名までです。
             </p>
           </div>
 
@@ -123,7 +130,7 @@ export default function PlanPricing() {
                 <li>・順番と締切は、こちらで管理</li>
               </ul>
               <p className="mt-4 pt-3 border-t border-[#1f2a1d]/10 text-[13px] text-[#1f2a1d]">
-                <span className="font-bold text-[1.15rem]" style={MINCHO}>¥50,000</span><span className="ml-1 text-[11px] text-[#6b7a66]">税込</span>
+                <span className="font-bold text-[1.15rem]" style={MINCHO}>¥49,800</span><span className="ml-1 text-[11px] text-[#6b7a66]">税込・先着10名</span>
                 <span className="ml-2 text-[11.5px] text-[#6b7a66]">＋ 服・化粧品の実費だけ</span>
               </p>
             </div>

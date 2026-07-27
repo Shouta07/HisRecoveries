@@ -20,7 +20,7 @@ const TRACK_DESIRES: DesireKey[] = ["sonae", "jishin", "shinrai", "wakasa", "era
 export const metadata: Metadata = {
   title: "Refine｜深める — すでに整っている人が、もう一段",
   description:
-    "老け見えの先手、仕事の第一印象の上積み。すでに整っている人が、もう一段深めるための伴走。相談は無料・秘密保持のもとで。¥50,000（税込・30日）。",
+    "老け見えの先手、仕事の第一印象の上積み。すでに整っている人が、もう一段深めるための伴走。相談は無料・秘密保持のもとで。¥49,800（税込・30日／先着10名）。",
   alternates: { canonical: `${site.url}/refine` },
   openGraph: {
     type: "website",
@@ -111,7 +111,7 @@ export default function RefinePage() {
         <section className="pt-12 sm:pt-14">
           <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-6 sm:p-8">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、¥50,000（30日）。</span>
+              <span className="text-[1.5rem] font-bold text-[#16241A]" style={MINCHO}>費用は、¥49,800（30日）。</span>
               <span className="text-[12px] text-[#9aa79a]">・オーダーメイド／専属チーム貸切</span>
             </div>
             <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.9]">
