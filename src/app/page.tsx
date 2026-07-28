@@ -104,6 +104,16 @@ export default function HomePage() {
                   "linear-gradient(100deg, rgba(30,42,32,0.46) 0%, rgba(30,42,32,0.14) 40%, rgba(243,240,234,0.10) 66%, rgba(243,240,234,0.55) 100%)",
               }}
             />
+            {/* 下端だけ、もう一枚。説明文が乗るあたりはテーブルの天板で
+                明るく、横方向のグラデだけだと白文字が飛ぶ。 */}
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-[42%]"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(24,34,26,0.72) 0%, rgba(24,34,26,0.42) 45%, rgba(24,34,26,0) 100%)",
+              }}
+            />
 
             {/* 縦組みの見出し。
                 天は固定値で開ける（ナビの下に潜らせない）。
@@ -119,13 +129,10 @@ export default function HomePage() {
             </h1>
 
             {/* 説明。写真の下部、明るい側に置く。縦組みの列に食い込まないよう幅を切る */}
-            <p className="absolute bottom-8 left-4 max-w-[calc(100%-6rem)] text-[13.5px] leading-[2] text-kinari sm:bottom-12 sm:left-10 sm:max-w-[30em] sm:text-[15px] sm:leading-[2.1]">
+            <p className="absolute bottom-8 left-4 max-w-[calc(100%-5rem)] text-[14px] leading-[1.95] text-kinari sm:bottom-12 sm:left-10 sm:max-w-[30em] sm:text-[15.5px] sm:leading-[2.1]">
               髪、肌、眠り、疲れ、体、パートナーとのこと。
               <br />
-              誰にも相談できないまま調べていることを、
-              <br />
-              <span className="font-semibold">実体験だけではなく、専門家への取材をもとに</span>
-              発信しています。
+              <span className="font-semibold">実体験と、専門家への取材をもとに。</span>
             </p>
           </>
         }
