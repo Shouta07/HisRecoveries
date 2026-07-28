@@ -135,7 +135,7 @@ export default function HomePage() {
       {/* ══════ 記事の索引 — このメディアの本体 ══════ */}
       <section
         id="index"
-        className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[96px] lg:pt-[120px] scroll-mt-20"
+        className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[44px] sm:pt-[64px] lg:pt-[80px] scroll-mt-[68px]"
       >
         <ArticleIndex />
       </section>
