@@ -77,9 +77,9 @@ export default function HomePage() {
             className="hr-tate absolute right-5 top-[13%] text-[30px] text-sumi sm:right-12 sm:text-[42px] lg:text-[50px]"
             style={{ ...MINCHO, fontWeight: 600 }}
           >
-            整えることは、
+            もっといい自分は、
             <br />
-            弱さじゃない。
+            つくれる。
           </h1>
 
           {/* 説明。写真の下部、明るい側に置く */}
@@ -89,7 +89,9 @@ export default function HomePage() {
               <br />
               誰にも相談できないまま調べていることを、
               <br />
-              編集部が調べて書いています。
+              <span className="font-semibold">実体験だけではなく、専門家への取材をもとに</span>
+              <br />
+              発信しています。
             </p>
             <p className="mt-6">
               <a
@@ -104,23 +106,16 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* ══════ このメディアが何をしているか ══════ */}
-      <section className="border-b border-shironezu">
-        <div className="mx-auto max-w-[1080px] px-5 py-[72px] sm:px-8 sm:py-[104px] lg:px-12">
-          <h2 className="max-w-[16em] text-[23px] leading-[1.55] sm:text-[30px]" style={{ ...MINCHO, fontWeight: 600 }}>
-            増やすのではなく、減った分を戻す。
-          </h2>
-          <p className="mt-7 max-w-[34em] text-[15px] leading-[2.05] text-keshizumi sm:text-[16px]">
-            AGA、肌、脱毛、睡眠、婚活。この分野の情報は、ほとんどを売る側が書いています。
-            だから「やったほうがいい」しか出てきません。
-            His Recoveries は提携先から紹介料を受け取っていないので、
-            <span className="font-semibold text-sumi">「いまはやらなくていい」とも書きます。</span>
-          </p>
-        </div>
+      {/* ══════ 記事の索引 — このメディアの本体 ══════ */}
+      <section
+        id="index"
+        className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[96px] lg:pt-[120px] scroll-mt-20"
+      >
+        <ArticleIndex />
       </section>
 
       {/* ══════ 最新記事 ══════ */}
-      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
+      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
         <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
           新しい記事
         </h2>
@@ -170,14 +165,6 @@ export default function HomePage() {
             <span aria-hidden>→</span>
           </a>
         </p>
-      </section>
-
-      {/* ══════ 記事の索引 — このメディアの本体 ══════ */}
-      <section
-        id="index"
-        className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px] scroll-mt-20"
-      >
-        <ArticleIndex />
       </section>
 
       {/* ══════ よく読まれている記事 ══════ */}

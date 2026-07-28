@@ -30,13 +30,22 @@ export default function GlassNav() {
       }`}
     >
       <div className="flex items-center justify-between gap-3 px-4 sm:px-6 md:px-10 py-3.5 sm:py-4">
-        <Link
-          href="/"
-          className={`logo-type text-base sm:text-xl tracking-tight font-semibold shrink-0 transition-colors ${
-            scrolled ? "text-sumi" : "text-kinari"
-          }`}
-        >
-          His Recoveries
+        {/* ロゴの下に肩書きを1行。何のサイトかを、ロゴの位置で言い切る。 */}
+        <Link href="/" className="shrink-0 leading-none">
+          <span
+            className={`logo-type block text-base font-semibold tracking-tight transition-colors sm:text-xl ${
+              scrolled ? "text-sumi" : "text-kinari"
+            }`}
+          >
+            His Recoveries
+          </span>
+          <span
+            className={`mt-1.5 block text-[10px] tracking-[0.12em] transition-colors sm:text-[11px] ${
+              scrolled ? "text-ainezu" : "text-kinari/70"
+            }`}
+          >
+            男性ウェルネスメディア
+          </span>
         </Link>
 
         <ul className="flex items-center gap-5 sm:gap-7">
