@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import ArticleIndex from "@/components/ArticleIndex";
 import { complexes } from "@/lib/complexes";
@@ -48,33 +49,75 @@ export default function HomePage() {
     <div className="bg-kinari text-sumi">
       <GlassNav />
 
-      {/* ══════ Hero — 何のメディアかを説明するだけ ══════ */}
-      <header className="border-b border-shironezu">
-        <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12 xl:px-16 pt-32 pb-24 sm:pt-40 sm:pb-32 lg:pt-44 lg:pb-36">
+      {/* ══════ Hero — 写真が主役。見出しは縦組みの明朝 ══════
+          参考にした誌面と同じ組み方。写真を全幅で敷き、その上に縦書きを置く。
+          横組みだけの画面と、ここで決定的に印象が変わる。 */}
+      <header className="relative w-full overflow-hidden bg-tokiwa">
+        <div className="relative h-[78vh] min-h-[520px] w-full sm:h-[86vh]">
+          <Image
+            src="/media/hero/portrait.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[42%_28%]"
+          />
+          {/* 文字を読ませるための、ごく薄いスクリム。写真を暗くしすぎない */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(100deg, rgba(30,42,32,0.42) 0%, rgba(30,42,32,0.12) 42%, rgba(243,240,234,0.10) 68%, rgba(243,240,234,0.55) 100%)",
+            }}
+          />
+
+          {/* 縦組みの見出し */}
           <h1
-            className="max-w-[20em] text-[27px] sm:text-[33px] lg:text-[38px] leading-[1.5]"
+            className="hr-tate absolute right-5 top-[13%] text-[30px] text-sumi sm:right-12 sm:text-[42px] lg:text-[50px]"
             style={{ ...MINCHO, fontWeight: 600 }}
           >
-            男性の美容・健康・恋愛を、
+            整えることは、
             <br />
-            編集部が調べて書いています。
+            弱さじゃない。
           </h1>
-          <p className="mt-8 max-w-[34em] text-[15px] sm:text-[16px] leading-[2.05] text-keshizumi">
-            AGA、肌、脱毛、睡眠、婚活。誰にも聞けないまま、
-            何から始めればいいか分からないことを、実体験と専門家への取材をもとにまとめています。
-            提携先から紹介料を受け取っていないので、「これはやらなくていい」とも書きます。
-          </p>
-          <p className="mt-10">
-            <a
-              href="#index"
-              className="inline-flex items-baseline gap-2 text-[16px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
-            >
-              記事を読む
-              <span aria-hidden>→</span>
-            </a>
-          </p>
+
+          {/* 説明。写真の下部、明るい側に置く */}
+          <div className="absolute bottom-8 left-5 max-w-[26em] sm:bottom-12 sm:left-10">
+            <p className="text-[14px] leading-[2.1] text-kinari sm:text-[15px]">
+              髪、肌、睡眠、疲れ、体、パートナーとのこと。
+              <br />
+              誰にも相談できないまま調べていることを、
+              <br />
+              編集部が調べて書いています。
+            </p>
+            <p className="mt-6">
+              <a
+                href="#index"
+                className="inline-flex items-baseline gap-2 text-[15px] font-semibold text-kinari underline decoration-kinari/40 underline-offset-[6px] transition-colors hover:decoration-kinari"
+              >
+                記事を読む
+                <span aria-hidden>→</span>
+              </a>
+            </p>
+          </div>
         </div>
       </header>
+
+      {/* ══════ このメディアが何をしているか ══════ */}
+      <section className="border-b border-shironezu">
+        <div className="mx-auto max-w-[1080px] px-5 py-[72px] sm:px-8 sm:py-[104px] lg:px-12">
+          <h2 className="max-w-[16em] text-[23px] leading-[1.55] sm:text-[30px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            増やすのではなく、減った分を戻す。
+          </h2>
+          <p className="mt-7 max-w-[34em] text-[15px] leading-[2.05] text-keshizumi sm:text-[16px]">
+            AGA、肌、脱毛、睡眠、婚活。この分野の情報は、ほとんどを売る側が書いています。
+            だから「やったほうがいい」しか出てきません。
+            His Recoveries は提携先から紹介料を受け取っていないので、
+            <span className="font-semibold text-sumi">「いまはやらなくていい」とも書きます。</span>
+          </p>
+        </div>
+      </section>
 
       {/* ══════ 最新記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
@@ -202,40 +245,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══════ ニュースレター — 囲まない ══════ */}
-      <section className="mx-auto max-w-[840px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
-        <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
-          新しい記事のお知らせ
-        </h2>
-        <p className="mt-4 max-w-[30em] text-[14px] leading-[1.95] text-keshizumi">
-          月に2〜3回、新しく公開した記事をお送りします。配信の停止はいつでもできます。
-        </p>
-        <form
-          action="https://hisrecoveries.substack.com/subscribe"
-          method="get"
-          target="_blank"
-          className="mt-6 flex max-w-[26rem] flex-col gap-3 sm:flex-row"
-        >
-          <label htmlFor="nl-email" className="sr-only">
-            メールアドレス
-          </label>
-          <input
-            id="nl-email"
-            name="email"
-            type="email"
-            required
-            placeholder="you@example.com"
-            className="h-12 flex-1 rounded-[2px] border border-shironezu bg-hakuji px-4 text-[16px] text-sumi outline-none transition-colors focus:border-dou"
-          />
-          <button
-            type="submit"
-            className="h-12 shrink-0 rounded-[2px] bg-konjo px-6 text-[15px] font-semibold text-kinari transition-colors hover:bg-[#2A3849]"
-          >
-            登録する
-          </button>
-        </form>
-      </section>
-
       {/* ══════ サービス — 最後。静かに ══════ */}
       <section className="border-t border-shironezu">
         <div className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
@@ -287,6 +296,16 @@ export default function HomePage() {
               <p className="text-[12.5px] text-ainezu">読みもの</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
                 <li><a href="/#index" className="hover:text-dou transition-colors">記事をさがす</a></li>
+                <li>
+                  <a
+                    href="https://substack.com/@hisrecoveries"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-dou transition-colors"
+                  >
+                    ニュースレター（Substack）<span aria-hidden className="text-ainezu"> ↗</span>
+                  </a>
+                </li>
               </ul>
             </div>
             <div>

@@ -23,8 +23,8 @@ export default function YourCaseCta({
   const subject = topic ? `「${topic}」` : "この記事の内容";
 
   return (
-    <aside className="mt-14 rounded-[1.4rem] bg-[#1E2A38] text-[#F3F0EA] px-6 sm:px-8 py-7">
-      <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#C28863]">
+    <aside className="mt-14 rounded-[1.4rem] bg-[#2C3A2E] text-[#F3F0EA] px-6 sm:px-8 py-7">
+      <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#B9A06B]">
         ただし、順番は人によって違います
       </p>
       <h2 className="mt-2.5 text-[1.15rem] sm:text-[1.4rem] leading-[1.5]" style={{ ...MINCHO, fontWeight: 800 }}>
@@ -32,7 +32,7 @@ export default function YourCaseCta({
         <br className="sm:hidden" />
         あなたの場合、何番目にやるべきか。
       </h2>
-      <p className="mt-3 text-[14px] sm:text-[14.5px] text-[#C6CAD0] leading-[1.95]">
+      <p className="mt-3 text-[14px] sm:text-[14.5px] text-[#CBCEC4] leading-[1.95]">
         同じ悩みでも、迎えたい日・現在地・かけられる時間で、最初の一手は変わります。
         効くまでに時間がかかるものを後回しにすると、間に合いません。
         30秒で、あなたの順番を並べ替えます。
@@ -41,7 +41,7 @@ export default function YourCaseCta({
       <div className="mt-5 flex flex-wrap gap-2.5">
         <Link
           href="/#plan"
-          className="inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#1E2A38] text-[14.5px] font-bold px-6 py-3 transition-colors"
+          className="inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#2C3A2E] text-[14.5px] font-bold px-6 py-3 transition-colors"
         >
           自分の順番を診断する（無料） <span aria-hidden>→</span>
         </Link>

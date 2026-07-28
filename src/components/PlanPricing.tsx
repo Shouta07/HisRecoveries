@@ -34,7 +34,7 @@ export default function PlanPricing() {
 
         <div className="mt-8 rounded-[1.6rem] bg-white border border-[#1F1E1B]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
           {/* 仕様 — 読まない人がここだけで判断できるように */}
-          <div className="bg-[#1E2A38] text-[#F3F0EA] px-6 sm:px-9 py-6 sm:py-7">
+          <div className="bg-[#2C3A2E] text-[#F3F0EA] px-6 sm:px-9 py-6 sm:py-7">
             <div className="hr-eyebrow hr-eyebrow-on-dark">{PLAN.name}</div>
             <dl className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-3">
               {[
@@ -44,14 +44,14 @@ export default function PlanPricing() {
                 ["費用", "個別のお見積り"],
               ].map(([k, v]) => (
                 <div key={k}>
-                  <dt className="text-[10.5px] tracking-[0.14em] uppercase text-[#8E979E]">{k}</dt>
-                  <dd className="hr-figure mt-1 text-[15px] sm:text-[16px] font-bold text-[#C28863]">
+                  <dt className="text-[10.5px] tracking-[0.14em] uppercase text-[#93A08F]">{k}</dt>
+                  <dd className="hr-figure mt-1 text-[15px] sm:text-[16px] font-bold text-[#B9A06B]">
                     {v}
                   </dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-4 pt-4 border-t border-[#C28863]/20 text-[14px] text-[#C6CAD0] leading-[1.9]">
+            <p className="mt-4 pt-4 border-t border-[#B9A06B]/20 text-[14px] text-[#CBCEC4] leading-[1.9]">
               内容は人によって変わります。何をやるかだけでなく
               <span className="hr-mark-dark">何をやらないかを決めるのが仕事</span>
               なので、一律の金額を先に出していません。ご相談のうえでお見積りをお出しします。
@@ -64,7 +64,7 @@ export default function PlanPricing() {
               {STEPS.map((x, i) => (
                 <li key={x.n} className="flex gap-3.5 pb-4 last:pb-0">
                   <div className="flex flex-col items-center shrink-0">
-                    <span className="grid place-items-center w-7 h-7 rounded-full bg-[#1E2A38] text-[#F3F0EA] font-mono text-[11px]">
+                    <span className="grid place-items-center w-7 h-7 rounded-full bg-[#2C3A2E] text-[#F3F0EA] font-mono text-[11px]">
                       {x.n}
                     </span>
                     {i < STEPS.length - 1 && (
@@ -82,7 +82,7 @@ export default function PlanPricing() {
 
           {/* 納品物 */}
           <div className="border-t border-[#1F1E1B]/10 bg-[#FAF8F4] px-6 sm:px-9 py-7">
-            <p className="text-[12.5px] font-bold tracking-[0.08em] text-[#97613F] mb-1.5">
+            <p className="text-[12.5px] font-bold tracking-[0.08em] text-[#8A6A3B] mb-1.5">
               その日で、終わらせないために
             </p>
             <p className="text-[16px] sm:text-[17px] font-bold text-[#1F1E1B] leading-[1.6]" style={MINCHO}>
@@ -93,7 +93,7 @@ export default function PlanPricing() {
                 <li key={d.t} className="flex gap-3">
                   <span
                     aria-hidden
-                    className="hr-figure shrink-0 text-[13px] font-bold text-[#97613F] pt-0.5"
+                    className="hr-figure shrink-0 text-[13px] font-bold text-[#8A6A3B] pt-0.5"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
@@ -115,7 +115,7 @@ export default function PlanPricing() {
 
         {/* 費用の決まり方 — 金額の代わりに、変数を開示する */}
         <div className="mt-6 rounded-[1.4rem] bg-white border border-[#1F1E1B]/10 px-6 sm:px-8 py-6">
-          <p className="text-[12.5px] font-bold tracking-[0.08em] text-[#97613F] mb-1.5">
+          <p className="text-[12.5px] font-bold tracking-[0.08em] text-[#8A6A3B] mb-1.5">
             費用について
           </p>
           <p className="text-[15.5px] font-bold text-[#1F1E1B] leading-[1.7]" style={MINCHO}>
@@ -126,7 +126,7 @@ export default function PlanPricing() {
               <li key={f} className="flex gap-2.5 text-[13.5px] text-[#45443E] leading-[1.85]">
                 <span
                   aria-hidden
-                  className="hr-figure shrink-0 text-[12px] font-bold text-[#97613F] pt-1"
+                  className="hr-figure shrink-0 text-[12px] font-bold text-[#8A6A3B] pt-1"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -136,7 +136,7 @@ export default function PlanPricing() {
           </ul>
           <dl className="mt-5 pt-4 border-t border-[#1F1E1B]/10 text-[13.5px] leading-[1.9]">
             <div className="flex gap-3">
-              <dt className="shrink-0 w-[5.5em] font-bold text-[#97613F]">含みます</dt>
+              <dt className="shrink-0 w-[5.5em] font-bold text-[#8A6A3B]">含みます</dt>
               <dd className="text-[#45443E]">
                 体験（眉・メイク・服選び・髪型提案・撮影）／会場費／上の納品物6点／
                 {SUPPORT.days}日間の質問窓口
@@ -155,18 +155,18 @@ export default function PlanPricing() {
         </div>
 
         {/* 入口 — CTAは相談ひとつだけ */}
-        <div className="mt-6 rounded-[1.4rem] bg-[#1E2A38] text-[#F3F0EA] px-6 sm:px-8 py-7">
+        <div className="mt-6 rounded-[1.4rem] bg-[#2C3A2E] text-[#F3F0EA] px-6 sm:px-8 py-7">
           <p className="text-[16px] sm:text-[17px] font-bold leading-[1.65]" style={MINCHO}>
             まず、合うかどうかを確かめてください。
           </p>
-          <p className="mt-3 text-[14px] text-[#C6CAD0] leading-[1.95] max-w-[34rem]">
+          <p className="mt-3 text-[14px] text-[#CBCEC4] leading-[1.95] max-w-[34rem]">
             ご相談は無料です。実名も顔写真も要りません。
             できること・できないことをお伝えして、
             <span className="hr-mark-dark">合わないと思えば、その場でそう言います</span>。
             そのうえで、必要ならお見積りをお出しします。
           </p>
           <div className="mt-6">
-            <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#C28863] hover:bg-[#D19C78] text-[#1E2A38] text-[15px] font-bold px-7 py-3.5 transition-colors">
+            <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#B9A06B] hover:bg-[#C9B183] text-[#2C3A2E] text-[15px] font-bold px-7 py-3.5 transition-colors">
               無料で相談する <span aria-hidden>→</span>
             </ConsultLink>
           </div>

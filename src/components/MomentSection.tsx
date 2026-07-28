@@ -49,7 +49,7 @@ export default function MomentSection() {
               key={m.when}
               className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-4 sm:px-5 py-4 sm:py-5"
             >
-              <p className="text-[11.5px] font-bold tracking-[0.06em] text-[#97613F]">
+              <p className="text-[11.5px] font-bold tracking-[0.06em] text-[#8A6A3B]">
                 {m.when}
               </p>
               <p className="mt-1.5 text-[13.5px] sm:text-[15px] text-[#1F1E1B] leading-[1.8]" style={MINCHO}>
@@ -59,11 +59,11 @@ export default function MomentSection() {
           ))}
         </ul>
 
-        <div className="mt-6 rounded-[1.3rem] bg-[#1E2A38] text-[#F3F0EA] px-6 sm:px-8 py-6">
+        <div className="mt-6 rounded-[1.3rem] bg-[#2C3A2E] text-[#F3F0EA] px-6 sm:px-8 py-6">
           <p className="text-[15px] sm:text-[16px] font-bold leading-[1.7]" style={MINCHO}>
             心当たりが、ひとつでもありましたか。
           </p>
-          <p className="mt-2.5 text-[14px] text-[#C6CAD0] leading-[1.95]">
+          <p className="mt-2.5 text-[14px] text-[#CBCEC4] leading-[1.95]">
             どれも、放っておいて直るものではありません。でも、
             <span className="hr-mark-dark">才能や生まれつきの話でもありません</span>。
             多くの場合、努力不足ではなく<span className="text-[#F3F0EA] font-semibold">順番</span>の問題です。
@@ -72,7 +72,7 @@ export default function MomentSection() {
           </p>
           <Link
             href="/#plan"
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#1E2A38] text-[14.5px] font-bold px-6 py-2.5 transition-colors"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#2C3A2E] text-[14.5px] font-bold px-6 py-2.5 transition-colors"
           >
             30秒で、自分に必要な改善プランを見る <span aria-hidden>→</span>
           </Link>

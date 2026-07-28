@@ -23,7 +23,7 @@ export default function ApplyPage() {
         </div>
       </div>
       <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
-        <p className="text-xs tracking-[0.22em] text-[#97613F] font-semibold mb-4">
+        <p className="text-xs tracking-[0.22em] text-[#8A6A3B] font-semibold mb-4">
           CONTACT · 無料 · 実名不要 · 完全守秘
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
@@ -33,7 +33,7 @@ export default function ApplyPage() {
           何が正解か、いくらかかるか。<strong className="font-bold text-[#1F1E1B]">遠回りせず、あなたのペースで一緒に整理します。</strong>
           気になることは、いくつでも。実名・顔写真は不要です。
           <br />
-          お取り扱いは<Link href="/plan" className="font-bold text-[#97613F] underline decoration-[#C28863]/60 underline-offset-4">第一印象改善プラン（30日）</Link>の1本だけ。
+          お取り扱いは<Link href="/plan" className="font-bold text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-4">第一印象改善プラン（30日）</Link>の1本だけ。
           このフォームからのご相談は無料で、3営業日を目処にご返信します。
           話した内容も、あなたのことも<strong className="font-bold text-[#1F1E1B]">外に出しません（完全守秘）</strong>。
         </p>
@@ -41,12 +41,12 @@ export default function ApplyPage() {
         <ConsultEntry />
 
         <div className="mt-8 flex items-start gap-2.5 text-[14.5px] text-[#45443E] leading-[1.9]">
-          <span aria-hidden className="text-[#C28863] mt-px">→</span>
+          <span aria-hidden className="text-[#B9A06B] mt-px">→</span>
           <p>
             送信いただいた内容は{" "}
             <a
               href={`mailto:${site.email}`}
-              className="text-[#97613F] underline decoration-[#C28863]/60 underline-offset-4 hover:decoration-[#97613F] transition-colors"
+              className="text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-4 hover:decoration-[#8A6A3B] transition-colors"
             >
               {site.email}
             </a>{" "}

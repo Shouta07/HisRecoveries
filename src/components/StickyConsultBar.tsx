@@ -55,7 +55,7 @@ export default function StickyConsultBar() {
     >
       <Link
         href={consult ? "/reserve" : "/#plan"}
-        className={`mx-auto flex max-w-[560px] items-center justify-between gap-3 rounded-full bg-[#1E2A38] hover:bg-[#2A3849] text-[#F3F0EA] px-5 sm:px-6 py-3.5 shadow-[0_18px_44px_-14px_rgba(20,32,26,0.75)] transition-colors ${
+        className={`mx-auto flex max-w-[560px] items-center justify-between gap-3 rounded-full bg-[#2C3A2E] hover:bg-[#3A4B3C] text-[#F3F0EA] px-5 sm:px-6 py-3.5 shadow-[0_18px_44px_-14px_rgba(20,32,26,0.75)] transition-colors ${
           show ? "pointer-events-auto" : "pointer-events-none"
         }`}
       >
@@ -63,7 +63,7 @@ export default function StickyConsultBar() {
           <span className="text-[15px] font-bold">
             {consult ? "まず無料で相談する" : "30秒で、自分のプランを見る"}
           </span>
-          <span className="mt-0.5 text-[11px] text-[#8E979E]">
+          <span className="mt-0.5 text-[11px] text-[#93A08F]">
             {consult
               ? `${PLAN.days}日 ／ ${PLAN.where}・${PLAN.when} ／ 費用は個別見積`
               : "登録不要・そのまま見られます"}
@@ -71,7 +71,7 @@ export default function StickyConsultBar() {
         </span>
         <span
           aria-hidden
-          className="shrink-0 grid place-items-center w-9 h-9 rounded-full bg-[#C28863] text-[#1E2A38] text-[16px] font-bold"
+          className="shrink-0 grid place-items-center w-9 h-9 rounded-full bg-[#B9A06B] text-[#2C3A2E] text-[16px] font-bold"
         >
           →
         </span>

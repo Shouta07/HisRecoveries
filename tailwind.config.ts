@@ -16,9 +16,9 @@ const config: Config = {
         keshizumi: "#45443E",   // 消炭 — リード・補足
         ainezu: "#5E6A70",      // 藍鼠 — キャプション・日付
         shironezu: "#DAD6CD",   // 白鼠 — 罫線
-        konjo: "#1E2A38",       // 紺青 — 濃い面
-        dou: "#97613F",         // 銅 — リンク（明るい地の上）
-        "dou-usu": "#C28863",   // 淡銅 — 紺青の上のアクセント
+        tokiwa: "#2C3A2E",      // 常盤 — 濃い面（写真の下、締めの帯）
+        dou: "#8A6A3B",         // 銅 — リンク（明るい地の上）
+        "dou-usu": "#B9A06B",   // 淡銅 — 常盤の上のアクセント
         koke: "#6B6E55",        // 苔 — ごく稀
       },
       fontFamily: {

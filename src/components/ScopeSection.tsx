@@ -54,7 +54,7 @@ function List({
   tone: "do" | "dont";
 }) {
   const mark = tone === "do" ? "✓" : "—";
-  const markColor = tone === "do" ? "text-[#97613F]" : "text-[#5E6A70]";
+  const markColor = tone === "do" ? "text-[#8A6A3B]" : "text-[#5E6A70]";
   return (
     <div className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 p-5 sm:p-6">
       <p className="text-[15px] font-bold text-[#1F1E1B] mb-3" style={MINCHO}>
@@ -122,7 +122,7 @@ export default function ScopeSection() {
         </div>
 
         {/* 顧客自身の役割 — ここを曖昧にすると必ず揉める */}
-        <div className="mt-4 rounded-[1.2rem] bg-[#1E2A38] text-[#F3F0EA] px-5 sm:px-7 py-6">
+        <div className="mt-4 rounded-[1.2rem] bg-[#2C3A2E] text-[#F3F0EA] px-5 sm:px-7 py-6">
           <p className="text-[15px] font-bold" style={MINCHO}>
             あなたにやっていただくこと
           </p>
@@ -136,7 +136,7 @@ export default function ScopeSection() {
               </li>
             ))}
           </ul>
-          <p className="mt-3.5 text-[12.5px] text-[#C28863] leading-[1.85]">
+          <p className="mt-3.5 text-[12.5px] text-[#B9A06B] leading-[1.85]">
             この3つさえやっていただければ、あとは考えなくて大丈夫です。
           </p>
         </div>

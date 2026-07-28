@@ -29,9 +29,9 @@ export const metadata: Metadata = {
 
 export default function ConfidencePage() {
   return (
-    <div className="bg-[#1E2A38] text-[#F3F0EA] min-h-screen">
+    <div className="bg-[#2C3A2E] text-[#F3F0EA] min-h-screen">
       <div className="mx-auto max-w-[720px] px-6 sm:px-10 pt-20 sm:pt-28 pb-24">
-        <nav aria-label="パンくず" className="text-[13.5px] text-[#8E979E] mb-10">
+        <nav aria-label="パンくず" className="text-[13.5px] text-[#93A08F] mb-10">
           <Link href="/" className="hover:text-[#F3F0EA]">ホーム</Link>
           <span className="mx-1.5">/</span>
           <Link href="/#index" className="hover:text-[#F3F0EA]">記事</Link>
@@ -39,12 +39,12 @@ export default function ConfidencePage() {
           <span className="text-[#F3F0EA]">自信・パートナーシップ</span>
         </nav>
 
-        <div className="font-mono text-[12px] tracking-[0.22em] uppercase text-[#C28863] mb-5">Confidence &amp; Partnership</div>
+        <div className="font-mono text-[12px] tracking-[0.22em] uppercase text-[#B9A06B] mb-5">Confidence &amp; Partnership</div>
         <h1 className="text-[#F3F0EA] text-[1.9rem] sm:text-[2.5rem] leading-[1.4]" style={HEAD}>
           自信・パートナーシップ
         </h1>
 
-        <div className="mt-8 space-y-5 text-[15px] sm:text-[16px] text-[#C6CAD0] leading-[2.1] max-w-[34rem]">
+        <div className="mt-8 space-y-5 text-[15px] sm:text-[16px] text-[#CBCEC4] leading-[2.1] max-w-[34rem]">
           <p>見た目を整える理由の奥に、たいてい「誰かの前でどうありたいか」がある。</p>
           <p>言葉にしにくい悩み——自信、関係、性のこと。</p>
           <p>
@@ -56,7 +56,7 @@ export default function ConfidencePage() {
         </div>
 
         <div className="mt-10">
-          <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#1E2A38] text-[15px] font-semibold px-7 py-3.5 transition-colors">
+          <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#2C3A2E] text-[15px] font-semibold px-7 py-3.5 transition-colors">
             無料で相談する <span aria-hidden>→</span>
           </ConsultLink>
         </div>
@@ -67,7 +67,7 @@ export default function ConfidencePage() {
         </p>
 
         <div className="mt-8">
-          <Link href="/#index" className="text-[14.5px] text-[#C28863] font-semibold hover:text-[#F3F0EA] transition-colors">
+          <Link href="/#index" className="text-[14.5px] text-[#B9A06B] font-semibold hover:text-[#F3F0EA] transition-colors">
             ← Library に戻る
           </Link>
         </div>

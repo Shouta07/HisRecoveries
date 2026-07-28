@@ -19,10 +19,10 @@
   --ink: #1f1e1b;         /* 墨 */
   --sub-gray: #45443e;    /* 消炭 */
   --hair-line: #dad6cd;   /* 白鼠 */
-  --navy: #1e2a38;        /* 紺青 */
-  --navy-deep: #161f2a;
-  --gold: #97613f;        /* 銅（旧称のまま。値だけ差し替え） */
-  --gold-bright: #c28863; /* 淡銅 */
+  --navy: #2c3a2e;        /* 紺青 */
+  --navy-deep: #1e2a20;
+  --gold: #8a6a3b;        /* 銅（旧称のまま。値だけ差し替え） */
+  --gold-bright: #b9a06b; /* 淡銅 */
 }
 
 html,
@@ -582,7 +582,7 @@ html {
   }
 }
 .hr-facts > * {
-  background: #1E2A38;
+  background: #2C3A2E;
   padding: 0.85rem 0.5rem;
   text-align: center;
 }
@@ -635,4 +635,20 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .hr-photo > img { transition: none; }
   .group:hover .hr-photo > img { transform: none; }
+}
+
+
+/* ── 縦組みの見出し ────────────────────────────────
+   写真の上に、明朝を縦に置く。日本語の誌面でしか成立しない組み方で、
+   横組みだけの画面と決定的に印象が変わる。
+   使うのはトップのヒーローだけ。多用すると読みにくくなる。 */
+.hr-tate {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-feature-settings: "palt" 0, "vpal" 1;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 639px) {
+  .hr-tate { line-height: 1.45; letter-spacing: 0.05em; }
 }
