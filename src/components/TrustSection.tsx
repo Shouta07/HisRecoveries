@@ -5,6 +5,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { operator, experts, cases, PROCESS } from "@/lib/trust";
+import { producer } from "@/lib/producer";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -24,63 +25,92 @@ export default function TrustSection() {
           任せる相手が、見えること。
         </h2>
         <p className="mt-4 text-[15px] text-[#4b5b47] leading-[1.95] max-w-[34rem]">
-          匿名でいられるのは、お客様の側です。わたしたちは、名前と顔と理由を出します。
+          匿名でいられるのは、お客様の側です。関わるのは2人だけで、役割を分けています。
         </p>
 
-        {/* 運営者 */}
-        <div className="mt-8 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-6 sm:p-7">
-          {hasOperator ? (
-            <div className="flex flex-col sm:flex-row gap-5">
-              {operator.photo ? (
-                <div className="relative w-[104px] h-[104px] shrink-0 rounded-full overflow-hidden bg-[#eef3ea]">
-                  <Image src={operator.photo} alt={operator.name} fill className="object-cover" sizes="104px" />
-                </div>
-              ) : null}
-              <div>
-                <p className="text-[15.5px] font-bold text-[#1f2a1d]" style={MINCHO}>
-                  {operator.name}
-                  <span className="ml-2 text-[13.5px] font-normal text-[#6b7a66]">{operator.role}</span>
-                </p>
-                {operator.why ? (
-                  <p className="mt-2.5 text-[14.5px] text-[#4b5b47] leading-[1.95]">{operator.why}</p>
-                ) : null}
-                {operator.background.length > 0 ? (
-                  <ul className="mt-3 space-y-1">
-                    {operator.background.map((b) => (
-                      <li key={b} className="text-[14px] text-[#5c6b58] leading-[1.8]">
-                        ・{b}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-            </div>
-          ) : (
-            <div>
-              <p className="text-[15px] font-bold text-[#1f2a1d]" style={MINCHO}>
-                実名と写真の公開は、準備中です
-              </p>
-              <p className="mt-2 text-[14px] text-[#5c6b58] leading-[1.9]">
-                同じ悩みを経験した当事者が設計・運営しています。
-                名前より先に知っていただきたいのは、どう考えて手を入れるのかのほうです。
-              </p>
-            </div>
-          )}
+        {/* 関わる人は2人。誰が何をするかを、はっきり分けて出す。
+            片方だけ写真があると「準備中」の表示と矛盾して見えるので、
+            役割ごとに公開状況を書き分ける。 */}
+        <div className="mt-8 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 overflow-hidden">
+          {/* ① 当日、実際に手を動かす人 */}
+          <Link
+            href="/producer"
+            className="group flex items-center gap-4 p-6 sm:p-7 hover:bg-[#f8faf6] transition-colors"
+          >
+            {producer.avatar || producer.photo ? (
+              <span className="relative w-[80px] h-[80px] sm:w-[96px] sm:h-[96px] shrink-0 rounded-full overflow-hidden bg-[#eef3ea] ring-2 ring-[#B98A3C]/35">
+                <Image
+                  src={producer.avatar || producer.photo}
+                  alt={producer.photoAlt || producer.role}
+                  fill
+                  sizes="96px"
+                  className="object-cover"
+                />
+              </span>
+            ) : null}
+            <span className="min-w-0">
+              <span className="block text-[11px] font-bold tracking-[0.14em] uppercase text-[#7E5B29]">
+                {producer.role}
+              </span>
+              <span
+                className="mt-1 block text-[15.5px] font-bold text-[#1f2a1d] leading-[1.55] group-hover:text-[#3d5638] transition-colors"
+                style={MINCHO}
+              >
+                当日、実際に手を動かすのはこの人です。
+              </span>
+              <span className="mt-1.5 block text-[13.5px] text-[#3d5638] font-semibold">
+                考え方とメソッドを見る <span aria-hidden className="text-[#B98A3C]">→</span>
+              </span>
+            </span>
+          </Link>
 
-          {/* 考え方は、実名より先に読める。ここが実質の信頼材料になる。 */}
-          <div className="mt-5 pt-5 border-t border-[#1f2a1d]/10 flex flex-wrap gap-2.5">
-            <Link
-              href="/producer"
-              className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[14px] font-bold px-5 py-2.5 transition-colors"
-            >
-              担当者の考え方とメソッドを見る <span aria-hidden className="text-[#E0B75F]">→</span>
-            </Link>
-            <Link
-              href="/why"
-              className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#3d5638] text-[#1f2a1d] text-[14px] font-semibold px-5 py-2.5 transition-colors"
-            >
-              なぜ、やるのか
-            </Link>
+          {/* ② 設計・運営 */}
+          <div className="border-t border-[#1f2a1d]/10 px-6 sm:px-7 py-5 sm:py-6 bg-[#f8faf6]">
+            {hasOperator ? (
+              <div className="flex flex-col sm:flex-row gap-5">
+                {operator.photo ? (
+                  <div className="relative w-[80px] h-[80px] shrink-0 rounded-full overflow-hidden bg-[#eef3ea]">
+                    <Image src={operator.photo} alt={operator.name} fill className="object-cover" sizes="80px" />
+                  </div>
+                ) : null}
+                <div>
+                  <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#9aa79a]">
+                    {operator.role}
+                  </p>
+                  <p className="mt-1 text-[15.5px] font-bold text-[#1f2a1d]" style={MINCHO}>
+                    {operator.name}
+                  </p>
+                  {operator.why ? (
+                    <p className="mt-2 text-[14px] text-[#4b5b47] leading-[1.95]">{operator.why}</p>
+                  ) : null}
+                  {operator.background.length > 0 ? (
+                    <ul className="mt-3 space-y-1">
+                      {operator.background.map((b) => (
+                        <li key={b} className="text-[14px] text-[#5c6b58] leading-[1.8]">
+                          ・{b}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#9aa79a]">
+                  設計・運営
+                </p>
+                <p className="mt-1 text-[15px] font-bold text-[#1f2a1d]" style={MINCHO}>
+                  現在地の整理と、順番を決める役です
+                </p>
+                <p className="mt-2 text-[14px] text-[#5c6b58] leading-[1.9]">
+                  同じ悩みを経験した当事者が設計・運営しています。こちらは実名と写真の公開を準備中です。
+                  <Link href="/why" className="ml-1 text-[#3d5638] underline underline-offset-2 hover:opacity-70">
+                    なぜやるのか
+                  </Link>
+                  は先に書いてあります。
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

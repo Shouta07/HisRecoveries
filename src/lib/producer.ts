@@ -15,18 +15,28 @@ export type Producer = {
   role: string;
   /** 自然な写真（public 配下のパス）。空なら枠だけ出す */
   photo: string;
+  /** 丸いサムネイル用の正方形（頭と肩）。空なら photo を使う */
+  avatar: string;
   /** 写真の説明（スクリーンリーダー用） */
   photoAlt: string;
   /** 経歴。事実のみ。空配列なら非表示 */
   background: string[];
 };
 
-/** ★要記入：写真と名前が入ると、このページの信頼度が一段変わります。 */
+/**
+ * 写真は掲載済み。名前と経歴は本人の許可が取れ次第。
+ *
+ * 写真について：第三者のナンバープレートは読めないように処理し、
+ * 通行人が写り込んでいた範囲は背景のぼけに含めている（プライバシー）。
+ * 加工はそこまでで、本人の顔・体型・服装には手を入れていない。
+ * 「別人にしない」と書いているサービスが、写真で別人を作るわけにいかないため。
+ */
 export const producer: Producer = {
   name: "",
   role: "第一印象改善プロデューサー",
-  photo: "",
-  photoAlt: "",
+  photo: "/media/producer/producer.jpg",
+  avatar: "/media/producer/producer-avatar.jpg",
+  photoAlt: "第一印象改善プロデューサー。街なかで撮影した自然な写真。",
   background: [],
 };
 
