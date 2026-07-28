@@ -79,8 +79,8 @@ export default function HomePage() {
       <GlassNav />
 
       {/* ══════ 1画面目 ══════
-          写真と検索を1つの箱（100svh）に入れている。理由は ArticleIndex 冒頭のコメント。
-          ここで渡しているのは写真の中身だけで、高さは ArticleIndex 側が持つ。
+          検索を右上のアイコンに移したので、ここは写真だけ。
+          高さ（100svh）は ArticleIndex 側が持つ。ここで渡すのは中身だけ。
 
           写真は全幅、見出しは縦組みの明朝。参考にした誌面と同じ組み方で、
           横組みだけの画面とはここで決定的に印象が変わる。 */}
@@ -107,11 +107,10 @@ export default function HomePage() {
 
             {/* 縦組みの見出し。
                 天は固定値で開ける（ナビの下に潜らせない）。
-                文字サイズは画面の高さに追従させる。写真の高さが 100svh から
-                検索フォームぶんを引いた残りなので、%指定だと低い端末で
-                ナビや説明文とぶつかる。 */}
+                文字サイズは画面の高さに追従させる。低い端末でも、
+                下の説明文とぶつからないところで頭打ちにする。 */}
             <h1
-              className="hr-tate absolute right-4 top-[68px] text-[clamp(20px,4.2svh,32px)] text-sumi sm:right-10 sm:top-[12%] sm:text-[38px] lg:right-12 lg:text-[48px]"
+              className="hr-tate absolute right-4 top-[74px] text-[clamp(24px,5svh,40px)] text-sumi sm:right-10 sm:top-[13%] sm:text-[42px] lg:right-12 lg:text-[52px]"
               style={{ ...MINCHO, fontWeight: 600 }}
             >
               もっといい自分は、
@@ -120,13 +119,11 @@ export default function HomePage() {
             </h1>
 
             {/* 説明。写真の下部、明るい側に置く。縦組みの列に食い込まないよう幅を切る */}
-            <p className="absolute bottom-5 left-4 max-w-[calc(100%-5.5rem)] text-[12.5px] leading-[1.85] text-kinari sm:bottom-10 sm:left-10 sm:max-w-[30em] sm:text-[15px] sm:leading-[2.1]">
+            <p className="absolute bottom-8 left-4 max-w-[calc(100%-6rem)] text-[13.5px] leading-[2] text-kinari sm:bottom-12 sm:left-10 sm:max-w-[30em] sm:text-[15px] sm:leading-[2.1]">
               髪、肌、眠り、疲れ、体、パートナーとのこと。
-              <span className="hidden sm:inline">
-                <br />
-                誰にも相談できないまま調べていることを、
-              </span>
-              <br className="sm:hidden" />
+              <br />
+              誰にも相談できないまま調べていることを、
+              <br />
               <span className="font-semibold">実体験だけではなく、専門家への取材をもとに</span>
               発信しています。
             </p>

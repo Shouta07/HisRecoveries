@@ -2,12 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import SearchButton from "@/components/search/SearchButton";
 import { site } from "@/lib/site";
 
 // 下層ページのヘッダー。トップの GlassNav と同じ見え方に揃える
 // （ロゴ＋肩書き1行、記事が先頭）。メディアが主、サービスが従。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/#index", label: "記事" },
+  { href: "/#results", label: "記事" },
   { href: "/#about", label: "編集方針" },
 ];
 
@@ -30,18 +31,21 @@ export default function Header() {
           </span>
         </Link>
 
-        <ul className="flex items-center gap-5 sm:gap-7">
-          {LINKS.map((l) => (
-            <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
-              <Link
-                href={l.href}
-                className="whitespace-nowrap text-[14.5px] font-medium text-keshizumi transition-colors hover:text-dou sm:text-[15px]"
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center gap-5 sm:gap-7">
+          <ul className="flex items-center gap-5 sm:gap-7">
+            {LINKS.map((l) => (
+              <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
+                <Link
+                  href={l.href}
+                  className="whitespace-nowrap text-[14.5px] font-medium text-keshizumi transition-colors hover:text-dou sm:text-[15px]"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <SearchButton />
+        </div>
       </div>
     </header>
   );

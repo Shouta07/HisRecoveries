@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import SearchButton from "@/components/search/SearchButton";
 
 // メディアが主、サービスが従。記事を先頭に置く。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/#index", label: "記事" },
+  { href: "/#results", label: "記事" },
   { href: "/#about", label: "編集方針" },
 ];
 
@@ -48,20 +49,23 @@ export default function GlassNav() {
           </span>
         </Link>
 
-        <ul className="flex items-center gap-5 sm:gap-7">
-          {LINKS.map((l) => (
-            <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
-              <Link
-                href={l.href}
-                className={`text-[14.5px] sm:text-[15px] font-medium transition-colors whitespace-nowrap ${
-                  scrolled ? "text-keshizumi hover:text-dou" : "text-kinari/85 hover:text-kinari"
-                }`}
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center gap-5 sm:gap-7">
+          <ul className="flex items-center gap-5 sm:gap-7">
+            {LINKS.map((l) => (
+              <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
+                <Link
+                  href={l.href}
+                  className={`text-[14.5px] sm:text-[15px] font-medium transition-colors whitespace-nowrap ${
+                    scrolled ? "text-keshizumi hover:text-dou" : "text-kinari/85 hover:text-kinari"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <SearchButton tone={scrolled ? "dark" : "light"} />
+        </div>
       </div>
     </nav>
   );

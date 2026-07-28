@@ -13,6 +13,7 @@ import "@fontsource/noto-sans-jp/900.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
+import SearchProvider from "@/components/search/SearchProvider";
 import { site, socialSameAs } from "@/lib/site";
 import "./globals.css";
 
@@ -170,11 +171,13 @@ export default function RootLayout({
         >
           本文へスキップ
         </a>
-        <Header />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <SearchProvider>
+          <Header />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </SearchProvider>
         <Analytics />
       </body>
     </html>
