@@ -66,17 +66,17 @@ export default function PlanPage() {
       />
 
       {/* ── ヒーロー：事実だけ。読まない人がここで判断できる状態にする ── */}
-      <section className="relative overflow-hidden bg-[#1E2A38] text-[#F3F0EA]">
+      <section className="relative overflow-hidden bg-[#2C3A2E] text-[#F3F0EA]">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 95% 75% at 50% 18%, #2A3849 0%, #1E2A38 58%, #161F2A 100%)",
+              "radial-gradient(ellipse 95% 75% at 50% 18%, #3A4B3C 0%, #2C3A2E 58%, #1E2A20 100%)",
           }}
         />
         <div className="relative max-w-[880px] mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-12 sm:pb-16">
-          <nav aria-label="パンくず" className="text-[12.5px] text-[#8E979E] mb-8">
+          <nav aria-label="パンくず" className="text-[12.5px] text-[#93A08F] mb-8">
             <Link href="/" className="hover:text-[#F3F0EA]">
               ホーム
             </Link>
@@ -91,9 +91,9 @@ export default function PlanPage() {
           >
             <span className="inline-block">大事な日までに、</span>
             <br />
-            <span className="inline-block text-[#C28863]">間に合わせる。</span>
+            <span className="inline-block text-[#B9A06B]">間に合わせる。</span>
           </h1>
-          <p className="mt-5 text-[15px] text-[#C6CAD0] leading-[2] max-w-[34rem]">
+          <p className="mt-5 text-[15px] text-[#CBCEC4] leading-[2] max-w-[34rem]">
             眉・髪型・服・メイク・写真。別々に探す時代から、
             <span className="text-[#F3F0EA] font-semibold">まとめて整える</span>時代へ。
             何をやるかを決めて、1日で整え、手順の動画とサイズ表を持ち帰っていただきます。
@@ -102,11 +102,11 @@ export default function PlanPage() {
           <dl className="hr-facts mt-8 w-full max-w-[600px] text-left">
             {FACTS.map((f) => (
               <div key={f.k}>
-                <dt className="text-[10.5px] tracking-[0.14em] uppercase text-[#8E979E]">{f.k}</dt>
-                <dd className="hr-figure mt-1.5 text-[17px] sm:text-[19px] font-bold text-[#C28863]">
+                <dt className="text-[10.5px] tracking-[0.14em] uppercase text-[#93A08F]">{f.k}</dt>
+                <dd className="hr-figure mt-1.5 text-[17px] sm:text-[19px] font-bold text-[#B9A06B]">
                   {f.v}
                   {f.sub && (
-                    <span className="ml-1 text-[11px] font-normal text-[#C6CAD0]">{f.sub}</span>
+                    <span className="ml-1 text-[11px] font-normal text-[#CBCEC4]">{f.sub}</span>
                   )}
                 </dd>
               </div>
@@ -116,9 +116,9 @@ export default function PlanPage() {
           <div className="mt-7 flex flex-wrap gap-3">
             <a
               href="#pricing"
-              className="inline-flex items-center gap-2 rounded-full border border-[#C28863]/45 bg-[#C28863]/12 hover:bg-[#C28863]/22 text-[#F3F0EA] text-[15px] font-semibold px-7 py-3.5 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-[#B9A06B]/45 bg-[#B9A06B]/12 hover:bg-[#B9A06B]/22 text-[#F3F0EA] text-[15px] font-semibold px-7 py-3.5 transition-colors"
             >
-              何をするのかを見る <span aria-hidden className="text-[#C28863]">→</span>
+              何をするのかを見る <span aria-hidden className="text-[#B9A06B]">→</span>
             </a>
             <Link
               href="/#plan"

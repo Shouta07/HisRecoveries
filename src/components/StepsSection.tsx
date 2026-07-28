@@ -49,7 +49,7 @@ export default function StepsSection() {
         <div className="on-media max-w-2xl mb-7">
           <p className="hr-eyebrow mb-3.5">はじめかた</p>
           <h2 className="text-[1.5rem] sm:text-[1.9rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
-            無料の相談から、<span className="text-[#97613F]">5ステップ。</span>
+            無料の相談から、<span className="text-[#8A6A3B]">5ステップ。</span>
           </h2>
           <p className="mt-3 text-[14.5px] sm:text-[15px] text-[#45443E] leading-[1.9]">
 費用の決まり方も、連絡の手段も、キャンセルの条件も、申し込む前にすべてお見せします。
@@ -57,12 +57,12 @@ export default function StepsSection() {
         </div>
 
         {/* 縦タイムライン（モバイル最適・線でつなぐ） */}
-        <ol className="relative border-l-2 border-[#C28863]/35 ml-4 sm:ml-5 space-y-6 mb-7">
+        <ol className="relative border-l-2 border-[#B9A06B]/35 ml-4 sm:ml-5 space-y-6 mb-7">
           {STEPS.map((s) => (
             <li key={s.n} className="relative pl-6 sm:pl-7">
               <span
                 aria-hidden
-                className="absolute -left-[13px] top-0 grid place-items-center w-6 h-6 rounded-full bg-[#1E2A38] text-[#F3F0EA] text-[10px] font-bold font-mono"
+                className="absolute -left-[13px] top-0 grid place-items-center w-6 h-6 rounded-full bg-[#2C3A2E] text-[#F3F0EA] text-[10px] font-bold font-mono"
               >
                 {s.n}
               </span>

@@ -8,10 +8,10 @@ const MINCHO: React.CSSProperties = {
 
 export default function EmpathyLead({ worry }: { worry: string }) {
   return (
-    <div className="mb-9 rounded-[1.5rem] border border-[#97613F]/15 p-6 sm:p-7 relative overflow-hidden" style={{ background: "linear-gradient(135deg,#EDE9E0 0%,#f5f7f2 60%,#e9f0e6 100%)" }}>
+    <div className="mb-9 rounded-[1.5rem] border border-[#8A6A3B]/15 p-6 sm:p-7 relative overflow-hidden" style={{ background: "linear-gradient(135deg,#EDE9E0 0%,#f5f7f2 60%,#e9f0e6 100%)" }}>
       <div aria-hidden className="absolute -top-10 -right-6 w-40 h-40 rounded-full blur-3xl" style={{ background: "rgba(133,171,139,0.22)" }} />
       <div className="relative">
-        <span aria-hidden className="block text-[2rem] leading-none text-[#C28863] mb-1" style={MINCHO}>“</span>
+        <span aria-hidden className="block text-[2rem] leading-none text-[#B9A06B] mb-1" style={MINCHO}>“</span>
         <p className="text-[1.05rem] sm:text-[1.2rem] text-[#1F1E1B] leading-[1.7] font-bold" style={MINCHO}>
           {worry}——そう感じているなら。
         </p>

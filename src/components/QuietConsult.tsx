@@ -11,15 +11,15 @@ const HEAD: React.CSSProperties = {
 
 export default function QuietConsult() {
   return (
-    <aside className="mt-14 rounded-[1.4rem] border border-[#1E2A38]/12 bg-white px-6 sm:px-8 py-7">
-      <p className="text-[1.05rem] sm:text-[1.2rem] leading-[1.7] text-[#1E2A38]" style={HEAD}>
+    <aside className="mt-14 rounded-[1.4rem] border border-[#2C3A2E]/12 bg-white px-6 sm:px-8 py-7">
+      <p className="text-[1.05rem] sm:text-[1.2rem] leading-[1.7] text-[#2C3A2E]" style={HEAD}>
         仕組みが分かったら、次は、あなたの場合を。
       </p>
       <p className="mt-2.5 text-[14.5px] text-[#45443E] leading-[1.95]">
         ここから先は、人によって違います。急ぐ必要はありません。
         無料で相談できます。秘密は守ります。
       </p>
-      <ConsultLink className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#1E2A38]/25 hover:border-[#1E2A38] text-[#1E2A38] text-[15px] font-semibold px-6 py-3 transition-colors">
+      <ConsultLink className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#2C3A2E]/25 hover:border-[#2C3A2E] text-[#2C3A2E] text-[15px] font-semibold px-6 py-3 transition-colors">
         無料で相談する <span aria-hidden>→</span>
       </ConsultLink>
     </aside>

@@ -15,7 +15,7 @@ export default async function Image() {
           width: "100%",
           height: "100%",
           background:
-            "radial-gradient(circle at 50% 22%, #263a2c 0%, #1E2A38 58%, #161F2A 100%)",
+            "radial-gradient(circle at 50% 22%, #263a2c 0%, #2C3A2E 58%, #1E2A20 100%)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -33,7 +33,7 @@ export default async function Image() {
             display: "flex",
             justifyContent: "center",
             fontSize: 20,
-            color: "#C28863",
+            color: "#B9A06B",
             letterSpacing: "0.28em",
             textTransform: "uppercase",
           }}
@@ -51,14 +51,14 @@ export default async function Image() {
             display: "flex",
           }}
         >
-          His <span style={{ color: "#C28863", marginLeft: 24 }}>Recoveries</span>
+          His <span style={{ color: "#B9A06B", marginLeft: 24 }}>Recoveries</span>
         </div>
 
         <div
           style={{
             marginTop: 34,
             fontSize: 30,
-            color: "#C6CAD0",
+            color: "#CBCEC4",
             letterSpacing: "0.05em",
             display: "flex",
           }}

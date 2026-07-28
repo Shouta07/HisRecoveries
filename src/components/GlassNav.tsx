@@ -33,7 +33,7 @@ export default function GlassNav() {
         <Link
           href="/"
           className={`logo-type text-base sm:text-xl tracking-tight font-semibold shrink-0 transition-colors ${
-            "text-sumi"
+            scrolled ? "text-sumi" : "text-kinari"
           }`}
         >
           His Recoveries
@@ -45,7 +45,7 @@ export default function GlassNav() {
               <Link
                 href={l.href}
                 className={`text-[14.5px] sm:text-[15px] font-medium transition-colors whitespace-nowrap ${
-                  "text-keshizumi hover:text-dou"
+                  scrolled ? "text-keshizumi hover:text-dou" : "text-kinari/85 hover:text-kinari"
                 }`}
               >
                 {l.label}

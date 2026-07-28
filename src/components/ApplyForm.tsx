@@ -4,7 +4,7 @@ import { useState } from "react";
 import { complexes } from "@/lib/complexes";
 import { site } from "@/lib/site";
 
-const ACCENT = "#97613F";
+const ACCENT = "#8A6A3B";
 
 // Formspree form id (the hashid in formspree.io/f/XXXX). Ships with a working
 // default so submissions complete on-site out of the box; override in Vercel
@@ -84,14 +84,14 @@ export default function ApplyForm() {
   }
 
   const field =
-    "w-full rounded-2xl border border-[#1F1E1B]/15 bg-white px-4 py-3 text-[16px] text-[#1F1E1B] outline-none focus:border-[#97613F] transition-colors";
+    "w-full rounded-2xl border border-[#1F1E1B]/15 bg-white px-4 py-3 text-[16px] text-[#1F1E1B] outline-none focus:border-[#8A6A3B] transition-colors";
   const label = "block text-[14.5px] font-semibold text-[#1F1E1B] mb-2";
 
   // ── Success state — completes entirely on-site ──
   if (status === "success") {
     return (
       <div className="rounded-[1.6rem] border border-[#1F1E1B]/12 bg-[#F3F0EA] p-8 sm:p-10 text-center">
-        <div className="mx-auto mb-5 grid place-items-center w-14 h-14 rounded-full bg-[#1E2A38] text-[#F3F0EA]">
+        <div className="mx-auto mb-5 grid place-items-center w-14 h-14 rounded-full bg-[#2C3A2E] text-[#F3F0EA]">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M20 6L9 17l-5-5" />
           </svg>
@@ -226,7 +226,7 @@ export default function ApplyForm() {
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-0.5 w-5 h-5 accent-[#97613F] shrink-0"
+            className="mt-0.5 w-5 h-5 accent-[#8A6A3B] shrink-0"
             required
           />
           <span className="text-[15px] font-medium text-[#1F1E1B] leading-[1.7]">

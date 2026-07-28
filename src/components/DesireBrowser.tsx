@@ -26,8 +26,8 @@ export default function DesireBrowser({
     <section id="mokuteki" className="scroll-mt-[128px]">
       <div className="rounded-[1.6rem] bg-white border border-[#1F1E1B]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
         {/* ヘッダー帯 — 診断カードと同じ濃緑のアンカー */}
-        <div className="bg-[#1E2A38] text-[#F3F0EA] px-6 sm:px-9 py-6 sm:py-7">
-          <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#C28863]">
+        <div className="bg-[#2C3A2E] text-[#F3F0EA] px-6 sm:px-9 py-6 sm:py-7">
+          <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#B9A06B]">
             目的から探す
           </div>
           <h2
@@ -36,7 +36,7 @@ export default function DesireBrowser({
           >
             {heading}
           </h2>
-          <p className="mt-2 text-[14px] sm:text-[15px] text-[#C6CAD0] leading-[1.8]">
+          <p className="mt-2 text-[14px] sm:text-[15px] text-[#CBCEC4] leading-[1.8]">
             悩みの名前がわからなくても、「どうなりたいか」から選べます。
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function DesireBrowser({
                   aria-current={active ? "true" : undefined}
                   className={`group relative rounded-[1.2rem] px-5 py-4 transition-all duration-200 ${
                     active
-                      ? "bg-[#1E2A38] text-[#F3F0EA] shadow-[0_18px_40px_-26px_rgba(20,32,26,0.8)]"
+                      ? "bg-[#2C3A2E] text-[#F3F0EA] shadow-[0_18px_40px_-26px_rgba(20,32,26,0.8)]"
                       : "bg-[#FAF8F4] text-[#1F1E1B] hover:bg-white hover:shadow-[0_18px_40px_-28px_rgba(20,32,26,0.55)] hover:-translate-y-0.5"
                   }`}
                 >
@@ -65,7 +65,7 @@ export default function DesireBrowser({
                     </span>
                     <span
                       className={`shrink-0 font-mono text-[12px] tabular-nums pt-1 ${
-                        active ? "text-[#C28863]" : "text-[#5E6A70]"
+                        active ? "text-[#B9A06B]" : "text-[#5E6A70]"
                       }`}
                     >
                       {count}
@@ -73,7 +73,7 @@ export default function DesireBrowser({
                   </div>
                   <p
                     className={`mt-2 text-[13.5px] leading-[1.85] ${
-                      active ? "text-[#C6CAD0]" : "text-[#45443E]"
+                      active ? "text-[#CBCEC4]" : "text-[#45443E]"
                     }`}
                   >
                     {d.hook}
@@ -83,8 +83,8 @@ export default function DesireBrowser({
                     aria-hidden
                     className={`absolute right-4 bottom-3 text-[14.5px] transition-all duration-200 ${
                       active
-                        ? "text-[#C28863] opacity-100"
-                        : "text-[#97613F] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5"
+                        ? "text-[#B9A06B] opacity-100"
+                        : "text-[#8A6A3B] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5"
                     }`}
                   >
                     →

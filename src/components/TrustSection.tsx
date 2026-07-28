@@ -35,7 +35,7 @@ export default function TrustSection() {
           {/* ① 当日、実際に手を動かす人 */}
           <div className="flex items-center gap-4 p-6 sm:p-7">
             {producer.avatar || producer.photo ? (
-              <span className="relative w-[80px] h-[80px] sm:w-[96px] sm:h-[96px] shrink-0 rounded-full overflow-hidden bg-[#EDE9E0] ring-2 ring-[#97613F]/35">
+              <span className="relative w-[80px] h-[80px] sm:w-[96px] sm:h-[96px] shrink-0 rounded-full overflow-hidden bg-[#EDE9E0] ring-2 ring-[#8A6A3B]/35">
                 <Image
                   src={producer.avatar || producer.photo}
                   alt={producer.photoAlt || producer.role}
@@ -46,11 +46,11 @@ export default function TrustSection() {
               </span>
             ) : null}
             <span className="min-w-0">
-              <span className="block text-[11px] font-bold tracking-[0.14em] uppercase text-[#97613F]">
+              <span className="block text-[11px] font-bold tracking-[0.14em] uppercase text-[#8A6A3B]">
                 {producer.role}
               </span>
               <span
-                className="mt-1 block text-[15.5px] font-bold text-[#1F1E1B] leading-[1.55] group-hover:text-[#97613F] transition-colors"
+                className="mt-1 block text-[15.5px] font-bold text-[#1F1E1B] leading-[1.55] group-hover:text-[#8A6A3B] transition-colors"
                 style={MINCHO}
               >
                 当日、実際に手を動かすのはこの人です。
@@ -98,7 +98,7 @@ export default function TrustSection() {
                 </p>
                 <p className="mt-2 text-[14px] text-[#45443E] leading-[1.9]">
                   同じ悩みを経験した当事者が設計・運営しています。こちらは実名と写真の公開を準備中です。
-                  <Link href="/why" className="ml-1 text-[#97613F] underline underline-offset-2 hover:opacity-70">
+                  <Link href="/why" className="ml-1 text-[#8A6A3B] underline underline-offset-2 hover:opacity-70">
                     なぜやるのか
                   </Link>
                   は先に書いてあります。
@@ -132,7 +132,7 @@ export default function TrustSection() {
             <ul className="space-y-3">
               {cases.map((c) => (
                 <li key={c.who} className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-5 py-5">
-                  <span className="font-mono text-[11px] text-[#C28863]">{c.who}</span>
+                  <span className="font-mono text-[11px] text-[#B9A06B]">{c.who}</span>
                   <p className="mt-1.5 text-[14.5px] text-[#45443E] leading-[1.9]">
                     <span className="font-bold text-[#1F1E1B]">相談時：</span>
                     {c.before}

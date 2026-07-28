@@ -24,7 +24,7 @@ export default function Header() {
         <Link
           href="/"
           aria-label={`${site.name} ホーム`}
-          className="logo-type text-base sm:text-xl tracking-[0.04em] font-semibold text-zinc-900 hover:text-[#97613F] transition-colors shrink-0"
+          className="logo-type text-base sm:text-xl tracking-[0.04em] font-semibold text-zinc-900 hover:text-[#8A6A3B] transition-colors shrink-0"
         >
           {site.name}
         </Link>

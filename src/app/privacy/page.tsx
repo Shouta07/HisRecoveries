@@ -20,7 +20,7 @@ function Section({ n, title, children }: { n: string; title: string; children: R
   return (
     <section>
       <h2 className="flex items-baseline gap-2.5 text-[1.05rem] font-bold text-[#1F1E1B] mb-3" style={HEAD}>
-        <span className="font-mono text-[13.5px] font-medium text-[#C28863] not-italic">{n}</span>
+        <span className="font-mono text-[13.5px] font-medium text-[#B9A06B] not-italic">{n}</span>
         {title}
       </h2>
       <div className="text-[15px] leading-[2] text-[#45443E] space-y-4">{children}</div>
@@ -34,8 +34,8 @@ export default function PrivacyPage() {
       <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
         <header className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <span aria-hidden className="block w-8 h-px bg-[#C28863]" />
-            <p className="font-mono text-[13.5px] tracking-[0.16em] uppercase text-[#97613F] font-medium">
+            <span aria-hidden className="block w-8 h-px bg-[#B9A06B]" />
+            <p className="font-mono text-[13.5px] tracking-[0.16em] uppercase text-[#8A6A3B] font-medium">
               Privacy &amp; Disclaimer
             </p>
           </div>
@@ -45,11 +45,11 @@ export default function PrivacyPage() {
         </header>
 
         {/* Medical & neutrality disclaimer — placed prominently at the top. */}
-        <section className="mb-12 rounded-[1.4rem] border border-[#1F1E1B]/10 bg-[#1E2A38] text-[#F3F0EA] p-6 sm:p-8">
+        <section className="mb-12 rounded-[1.4rem] border border-[#1F1E1B]/10 bg-[#2C3A2E] text-[#F3F0EA] p-6 sm:p-8">
           <h2 className="text-[1.1rem] mb-4 text-[#F3F0EA]" style={HEAD}>
             免責事項（医療・中立性）
           </h2>
-          <div className="text-[15px] leading-[2] text-[#C6CAD0] space-y-4">
+          <div className="text-[15px] leading-[2] text-[#CBCEC4] space-y-4">
             <p>
               His Recoveries（以下「本サービス」）は、<strong className="font-bold text-[#F3F0EA]">実名・顔写真なしのご相談から始められる</strong>、
               完全守秘のもとで運営する第一印象改善サービスです。お名前・ご連絡先の確認は、お申し込み（お支払い）の段階で、当日のご案内とご請求に必要な範囲に限って行います。
@@ -85,7 +85,7 @@ export default function PrivacyPage() {
 
           <Section n="02" title="取得する情報">
             <p>当社は、本サービスの提供にあたり、次の情報を取得することがあります。</p>
-            <ul className="list-disc pl-5 space-y-2 marker:text-[#C28863]">
+            <ul className="list-disc pl-5 space-y-2 marker:text-[#B9A06B]">
               <li>無料相談のフォームでご提供いただく連絡先およびご相談内容。フォームの送信には外部サービスを利用します（当該サービスの取扱いは各社のポリシーに従います）。</li>
               <li>お申し込みの段階で、ご本人の同意のもとで確認するお名前・ご連絡先。お支払い方法は個別にご案内し、当社がクレジットカード番号等の決済情報を保持することはありません。</li>
               <li>お支払い後の伴走で利用するLINEでのやりとり、および作成・記録する状態・記録等の情報。</li>
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
               本ポリシーに関するお問い合わせは、
               <a
                 href={`mailto:${site.email}`}
-                className="text-[#97613F] underline decoration-[#C28863]/60 underline-offset-4 hover:decoration-[#97613F] transition-colors"
+                className="text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-4 hover:decoration-[#8A6A3B] transition-colors"
               >
                 {site.email}
               </a>{" "}

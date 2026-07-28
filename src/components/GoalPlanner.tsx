@@ -101,8 +101,8 @@ export default function GoalPlanner() {
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-4">
         <div className="rounded-[1.6rem] bg-white border border-[#1F1E1B]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
           {/* ヘッダー */}
-          <div className="bg-[#1E2A38] text-[#F3F0EA] px-6 sm:px-9 py-6 sm:py-7">
-            <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#C28863]">
+          <div className="bg-[#2C3A2E] text-[#F3F0EA] px-6 sm:px-9 py-6 sm:py-7">
+            <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#B9A06B]">
               30秒・無料・匿名
             </div>
             <h2
@@ -112,15 +112,15 @@ export default function GoalPlanner() {
               {goal ? (
                 <>
                   {goal.label}まで
-                  <span className="text-[#C28863]">あと{days}日</span>のプラン。
+                  <span className="text-[#B9A06B]">あと{days}日</span>のプラン。
                 </>
               ) : (
                 <>
-                  迎えたい日は？ <span className="text-[#C28863]">プランを作ります。</span>
+                  迎えたい日は？ <span className="text-[#B9A06B]">プランを作ります。</span>
                 </>
               )}
             </h2>
-            <p className="mt-2 text-[14px] sm:text-[15px] text-[#C6CAD0] leading-[1.8]">
+            <p className="mt-2 text-[14px] sm:text-[15px] text-[#CBCEC4] leading-[1.8]">
               {goal
                 ? goal.outcome + "ために、その日までにやることを順番に並べました。"
                 : "その日までにやることを、順番に。一つずつ終わらせれば間に合います。"}
@@ -148,7 +148,7 @@ export default function GoalPlanner() {
                       <p className="mt-1.5 text-[13.5px] text-[#45443E] leading-[1.8]">
                         {g.outcome}
                       </p>
-                      <span className="mt-2.5 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#97613F]">
+                      <span className="mt-2.5 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#8A6A3B]">
                         {g.defaultDays}日プランを作る{" "}
                         <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
                           →
@@ -182,7 +182,7 @@ export default function GoalPlanner() {
                       onClick={() => chooseDays(d)}
                       className={`rounded-full px-3.5 py-1.5 text-[14px] font-semibold transition-colors ${
                         d === days
-                          ? "bg-[#1E2A38] text-[#F3F0EA]"
+                          ? "bg-[#2C3A2E] text-[#F3F0EA]"
                           : "bg-[#FAF8F4] text-[#45443E] hover:bg-[#EDE9E0]"
                       }`}
                     >
@@ -204,11 +204,11 @@ export default function GoalPlanner() {
                     <span className="text-[14px] font-bold text-[#1F1E1B]">
                       {doneCount} / {total} 完了
                     </span>
-                    <span className="font-mono text-[13.5px] text-[#97613F] tabular-nums">{pct}%</span>
+                    <span className="font-mono text-[13.5px] text-[#8A6A3B] tabular-nums">{pct}%</span>
                   </div>
                   <div className="h-2.5 w-full rounded-full bg-[#e7ece4] overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-[#97613F] transition-all duration-500"
+                      className="h-full rounded-full bg-[#8A6A3B] transition-all duration-500"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -216,17 +216,17 @@ export default function GoalPlanner() {
 
                 {/* 今週やること */}
                 {loaded && nextStep ? (
-                  <div className="mb-6 rounded-[1.2rem] bg-[#1E2A38] text-[#F3F0EA] px-5 py-4">
-                    <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#C28863]">
+                  <div className="mb-6 rounded-[1.2rem] bg-[#2C3A2E] text-[#F3F0EA] px-5 py-4">
+                    <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#B9A06B]">
                       今週やること
                     </div>
                     <p className="mt-1.5 text-[15px] font-bold" style={HEAD}>
                       {nextStep.title}
                     </p>
-                    <p className="mt-1 text-[13.5px] text-[#C6CAD0] leading-[1.8]">{nextStep.why}</p>
+                    <p className="mt-1 text-[13.5px] text-[#CBCEC4] leading-[1.8]">{nextStep.why}</p>
                     <Link
                       href={`/areas/${nextStep.areaId}/${nextStep.slug}`}
-                      className="mt-2.5 inline-flex items-center gap-1 text-[14px] font-semibold text-[#C28863] hover:text-[#F3F0EA] transition-colors"
+                      className="mt-2.5 inline-flex items-center gap-1 text-[14px] font-semibold text-[#B9A06B] hover:text-[#F3F0EA] transition-colors"
                     >
                       やり方を読む <span aria-hidden>→</span>
                     </Link>
@@ -234,11 +234,11 @@ export default function GoalPlanner() {
                 ) : null}
 
                 {loaded && !nextStep ? (
-                  <div className="mb-6 rounded-[1.2rem] bg-[#1E2A38] text-[#F3F0EA] px-5 py-4">
+                  <div className="mb-6 rounded-[1.2rem] bg-[#2C3A2E] text-[#F3F0EA] px-5 py-4">
                     <p className="text-[15px] font-bold" style={HEAD}>
                       全部、終わりました。
                     </p>
-                    <p className="mt-1 text-[13.5px] text-[#C6CAD0] leading-[1.8]">
+                    <p className="mt-1 text-[13.5px] text-[#CBCEC4] leading-[1.8]">
                       あとは当日を迎えるだけです。仕上げを一緒に確認することもできます。
                     </p>
                   </div>
@@ -259,7 +259,7 @@ export default function GoalPlanner() {
                           <span
                             aria-hidden
                             className={`absolute left-[11px] top-7 bottom-0 w-px ${
-                              isDone ? "bg-[#97613F]" : "bg-[#e7ece4]"
+                              isDone ? "bg-[#8A6A3B]" : "bg-[#e7ece4]"
                             }`}
                           />
                         )}
@@ -271,8 +271,8 @@ export default function GoalPlanner() {
                           aria-label={`${s.title}を${isDone ? "未完了に戻す" : "完了にする"}`}
                           className={`relative z-10 mt-0.5 grid place-items-center w-[23px] h-[23px] shrink-0 rounded-full border-2 transition-colors ${
                             isDone
-                              ? "bg-[#97613F] border-[#97613F] text-white"
-                              : "bg-white border-[#DAD6CD] hover:border-[#97613F]"
+                              ? "bg-[#8A6A3B] border-[#8A6A3B] text-white"
+                              : "bg-white border-[#DAD6CD] hover:border-[#8A6A3B]"
                           }`}
                         >
                           {isDone ? <span className="text-[13.5px] leading-none">✓</span> : null}
@@ -282,7 +282,7 @@ export default function GoalPlanner() {
                           <div className="flex items-baseline gap-2 flex-wrap">
                             <span className="font-mono text-[11px] text-[#5E6A70]">{s.when}</span>
                             {isNext && (
-                              <span className="rounded-full bg-[#EDE9E0] text-[#97613F] px-2 py-0.5 text-[10px] font-bold">
+                              <span className="rounded-full bg-[#EDE9E0] text-[#8A6A3B] px-2 py-0.5 text-[10px] font-bold">
                                 次はここ
                               </span>
                             )}
@@ -298,7 +298,7 @@ export default function GoalPlanner() {
                           <p className="mt-0.5 text-[13.5px] text-[#45443E] leading-[1.8]">{s.why}</p>
                           <Link
                             href={`/areas/${s.areaId}/${s.slug}`}
-                            className="mt-1 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#97613F] hover:opacity-70 transition-opacity"
+                            className="mt-1 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#8A6A3B] hover:opacity-70 transition-opacity"
                           >
                             やり方を読む <span aria-hidden>→</span>
                           </Link>
@@ -316,7 +316,7 @@ export default function GoalPlanner() {
                   </p>
                   <ConsultLink
                     market={goal.id}
-                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#97613F] text-[#1F1E1B] text-[14.5px] font-semibold px-6 py-2.5 transition-colors"
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#8A6A3B] text-[#1F1E1B] text-[14.5px] font-semibold px-6 py-2.5 transition-colors"
                   >
                     このプランを、一緒に詰める <span aria-hidden>→</span>
                   </ConsultLink>

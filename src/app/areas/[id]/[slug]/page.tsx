@@ -146,24 +146,24 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             {c.ja}
           </span>
           {a.kind === "interview" && (
-            <span className="inline-flex rounded-full bg-[#97613F] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">取材</span>
+            <span className="inline-flex rounded-full bg-[#8A6A3B] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">取材</span>
           )}
           {a.kind === "guide" && (
-            <span className="inline-flex rounded-full bg-[#97613F] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">ガイド</span>
+            <span className="inline-flex rounded-full bg-[#8A6A3B] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">ガイド</span>
           )}
           {a.kind === "choose" && (
-            <span className="inline-flex rounded-full bg-[#1E2A38] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">選び方</span>
+            <span className="inline-flex rounded-full bg-[#2C3A2E] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">選び方</span>
           )}
           <h1 className="text-[1.8rem] sm:text-[2.3rem] leading-[1.35]" style={HEAD}>
             {a.title}
           </h1>
           {a.kind === "interview" && a.interviewee && (
             <p className="mt-3 text-[14.5px] text-[#5E6A70]">
-              語り手: <span className="font-semibold text-[#97613F]">{a.interviewee.name}</span>（{a.interviewee.role}）
+              語り手: <span className="font-semibold text-[#8A6A3B]">{a.interviewee.name}</span>（{a.interviewee.role}）
               {a.interviewee.link && (
                 <>
                   {" "}
-                  <a href={a.interviewee.link} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-[#C28863]/60 underline-offset-2 hover:decoration-[#97613F]">
+                  <a href={a.interviewee.link} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-[#B9A06B]/60 underline-offset-2 hover:decoration-[#8A6A3B]">
                     活動ページ↗
                   </a>
                 </>
@@ -180,7 +180,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {/* 欲求→悩みのブレイクダウン（普遍的欲求レイヤー。SEO/GEOの共感接点） */}
         {a.desire && DESIRES[a.desire] && (
           <div className="mb-5 flex items-start gap-2.5">
-            <span className="shrink-0 inline-flex items-center rounded-full bg-[#1E2A38] text-[#F3F0EA] px-3 py-1 text-[12px] font-bold tracking-[0.06em]">
+            <span className="shrink-0 inline-flex items-center rounded-full bg-[#2C3A2E] text-[#F3F0EA] px-3 py-1 text-[12px] font-bold tracking-[0.06em]">
               {DESIRES[a.desire].label}
             </span>
             <p className="text-[14px] text-[#45443E] leading-[1.9] pt-0.5">{DESIRES[a.desire].hook}</p>
@@ -193,13 +193,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {/* 要点（TL;DR） */}
         <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#F3F0EA] border border-[#1F1E1B]/10 p-6 sm:p-7 mb-10">
           <div className="flex items-center gap-2.5 mb-4">
-            <span aria-hidden className="block w-5 h-px bg-[#C28863]" />
-            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#97613F] font-medium">要点 / TL;DR</span>
+            <span aria-hidden className="block w-5 h-px bg-[#B9A06B]" />
+            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#8A6A3B] font-medium">要点 / TL;DR</span>
           </div>
           <ul className="space-y-2.5">
             {a.summary.map((s, i) => (
               <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#1F1E1B] leading-[1.85]">
-                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#C28863] shrink-0" />
+                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#B9A06B] shrink-0" />
                 {s}
               </li>
             ))}
@@ -213,7 +213,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           {a.sections.map((s) => (
             <section key={s.h}>
               <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1F1E1B] mb-3 leading-[1.5]" style={HEAD}>
-                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#C28863] shrink-0" />
+                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#B9A06B] shrink-0" />
                 {s.h}
               </h2>
               <p className="text-[15.5px] text-[#45443E] leading-[2.05] pl-3.5">{s.body}</p>
@@ -243,13 +243,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                 <li key={r.slug}>
                   <Link
                     href={`/areas/${r.areaId}/${r.slug}`}
-                    className="group flex items-start justify-between gap-3 rounded-[1rem] border border-[#1F1E1B]/10 bg-white px-4 py-3.5 hover:border-[#97613F]/40 hover:shadow-[0_14px_30px_-22px_rgba(20,32,26,0.5)] transition-all"
+                    className="group flex items-start justify-between gap-3 rounded-[1rem] border border-[#1F1E1B]/10 bg-white px-4 py-3.5 hover:border-[#8A6A3B]/40 hover:shadow-[0_14px_30px_-22px_rgba(20,32,26,0.5)] transition-all"
                   >
                     <span className="min-w-0">
-                      <span className="block text-[15px] font-semibold text-[#1F1E1B] leading-[1.6] group-hover:text-[#97613F] transition-colors">{r.title}</span>
+                      <span className="block text-[15px] font-semibold text-[#1F1E1B] leading-[1.6] group-hover:text-[#8A6A3B] transition-colors">{r.title}</span>
                       <span className="mt-0.5 block text-[13.5px] text-[#5E6A70] leading-[1.7] line-clamp-1">{r.lead}</span>
                     </span>
-                    <span aria-hidden className="text-[#97613F] shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform">→</span>
+                    <span aria-hidden className="text-[#8A6A3B] shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
               ))}
@@ -277,13 +277,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             <ul className="space-y-2">
               {sources.map((q) => (
                 <li key={q.url} className="flex items-start gap-2">
-                  <span aria-hidden className="text-[#C28863] mt-px">›</span>
+                  <span aria-hidden className="text-[#B9A06B] mt-px">›</span>
                   <p className="text-[14.5px] text-[#45443E] leading-[1.85]">
                     <a
                       href={q.url}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
-                      className="font-semibold text-[#97613F] underline decoration-[#C28863]/60 underline-offset-2 hover:decoration-[#97613F]"
+                      className="font-semibold text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-2 hover:decoration-[#8A6A3B]"
                     >
                       {q.source}↗
                     </a>

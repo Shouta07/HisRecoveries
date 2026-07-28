@@ -64,7 +64,7 @@ export const STAGES: Stage[] = [
     theme: "昔と、同じではない",
     loss: "人生で初めての「昔はこうじゃなかった」。髪、肌、体力、立場。",
     hook: "急にではなく、じわじわ変わってきた気がする。",
-    accent: "#97613F",
+    accent: "#8A6A3B",
   },
   {
     id: "rebuild",
@@ -84,7 +84,7 @@ export const STAGES: Stage[] = [
     theme: "経験を価値に変える",
     loss: "積み上げた経験が、誰にも渡っていないこと。",
     hook: "自分が通ってきた道を、下の世代に。",
-    accent: "#97613F",
+    accent: "#8A6A3B",
   },
 ];
 
