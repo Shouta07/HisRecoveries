@@ -19,41 +19,41 @@ const HEAD: React.CSSProperties = {
 function Section({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="flex items-baseline gap-2.5 text-[1.05rem] font-bold text-[#1f2a1d] mb-3" style={HEAD}>
-        <span className="font-mono text-[13.5px] font-medium text-[#85AB8B] not-italic">{n}</span>
+      <h2 className="flex items-baseline gap-2.5 text-[1.05rem] font-bold text-[#1F1E1B] mb-3" style={HEAD}>
+        <span className="font-mono text-[13.5px] font-medium text-[#C28863] not-italic">{n}</span>
         {title}
       </h2>
-      <div className="text-[15px] leading-[2] text-[#4b5b47] space-y-4">{children}</div>
+      <div className="text-[15px] leading-[2] text-[#45443E] space-y-4">{children}</div>
     </section>
   );
 }
 
 export default function PrivacyPage() {
   return (
-    <div className="bg-[#f4f6f2] text-[#1f2a1d]">
+    <div className="bg-[#F3F0EA] text-[#1F1E1B]">
       <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
         <header className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <p className="font-mono text-[13.5px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">
+            <span aria-hidden className="block w-8 h-px bg-[#C28863]" />
+            <p className="font-mono text-[13.5px] tracking-[0.16em] uppercase text-[#97613F] font-medium">
               Privacy &amp; Disclaimer
             </p>
           </div>
-          <h1 className="text-[2rem] sm:text-[2.6rem] leading-[1.3] text-[#1f2a1d]" style={HEAD}>
+          <h1 className="text-[2rem] sm:text-[2.6rem] leading-[1.3] text-[#1F1E1B]" style={HEAD}>
             プライバシーポリシー・<wbr />免責事項
           </h1>
         </header>
 
         {/* Medical & neutrality disclaimer — placed prominently at the top. */}
-        <section className="mb-12 rounded-[1.4rem] border border-[#1f2a1d]/10 bg-[#16241a] text-[#EDF1E8] p-6 sm:p-8">
-          <h2 className="text-[1.1rem] mb-4 text-[#EDF1E8]" style={HEAD}>
+        <section className="mb-12 rounded-[1.4rem] border border-[#1F1E1B]/10 bg-[#1E2A38] text-[#F3F0EA] p-6 sm:p-8">
+          <h2 className="text-[1.1rem] mb-4 text-[#F3F0EA]" style={HEAD}>
             免責事項（医療・中立性）
           </h2>
-          <div className="text-[15px] leading-[2] text-[#C9D2C4] space-y-4">
+          <div className="text-[15px] leading-[2] text-[#C6CAD0] space-y-4">
             <p>
-              His Recoveries（以下「本サービス」）は、<strong className="font-bold text-[#EDF1E8]">実名・顔写真なしのご相談から始められる</strong>、
+              His Recoveries（以下「本サービス」）は、<strong className="font-bold text-[#F3F0EA]">実名・顔写真なしのご相談から始められる</strong>、
               完全守秘のもとで運営する第一印象改善サービスです。お名前・ご連絡先の確認は、お申し込み（お支払い）の段階で、当日のご案内とご請求に必要な範囲に限って行います。
-              <strong className="font-bold text-[#EDF1E8]">
+              <strong className="font-bold text-[#F3F0EA]">
                 本サービスは医療行為ではなく、診断・治療・投薬その他の医療行為は行いません。
                 診断・治療は、必要に応じて連携する医療機関が、その医師の責任と判断において行います。
               </strong>
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
             <p>
               His Recoveries（以下「本サービス」）を運営するバイタリティデザイン合同会社
               （以下「当社」）は、本サービスを利用するすべての方の個人情報および
-              プライバシーを尊重し、その保護に努めます。本サービスは<strong className="font-bold text-[#1f2a1d]">実名なしで相談から始められる設計</strong>とし、完全守秘義務のもとで運営します。
+              プライバシーを尊重し、その保護に努めます。本サービスは<strong className="font-bold text-[#1F1E1B]">実名なしで相談から始められる設計</strong>とし、完全守秘義務のもとで運営します。
               お名前・記録の預かりに進む段階でのみ、ご本人の同意のうえ、必要最小限の情報を確認します。
               ご本人を不必要に特定する情報を保持しないことを基本方針とします。
             </p>
@@ -85,7 +85,7 @@ export default function PrivacyPage() {
 
           <Section n="02" title="取得する情報">
             <p>当社は、本サービスの提供にあたり、次の情報を取得することがあります。</p>
-            <ul className="list-disc pl-5 space-y-2 marker:text-[#85AB8B]">
+            <ul className="list-disc pl-5 space-y-2 marker:text-[#C28863]">
               <li>無料相談のフォームでご提供いただく連絡先およびご相談内容。フォームの送信には外部サービスを利用します（当該サービスの取扱いは各社のポリシーに従います）。</li>
               <li>お申し込みの段階で、ご本人の同意のもとで確認するお名前・ご連絡先。お支払い方法は個別にご案内し、当社がクレジットカード番号等の決済情報を保持することはありません。</li>
               <li>お支払い後の伴走で利用するLINEでのやりとり、および作成・記録する状態・記録等の情報。</li>
@@ -128,7 +128,7 @@ export default function PrivacyPage() {
             </p>
             <p>
               医療機関等との連携においてご本人の情報を提供する場合は、
-              <strong className="font-bold text-[#1f2a1d]">事前にご本人の同意を得たうえで</strong>、
+              <strong className="font-bold text-[#1F1E1B]">事前にご本人の同意を得たうえで</strong>、
               原則として会員ID等の匿名情報を基本とし、本名・顔写真等の識別情報は
               ご本人の個別同意なく提供しません。当該連携に関して紹介手数料その他の
               金銭の授受は行いません（中立）。
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
               本ポリシーに関するお問い合わせは、
               <a
                 href={`mailto:${site.email}`}
-                className="text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4 hover:decoration-[#3d5638] transition-colors"
+                className="text-[#97613F] underline decoration-[#C28863]/60 underline-offset-4 hover:decoration-[#97613F] transition-colors"
               >
                 {site.email}
               </a>{" "}
@@ -188,8 +188,8 @@ export default function PrivacyPage() {
             </p>
           </Section>
 
-          <section className="border-t border-[#1f2a1d]/10 pt-8 mt-4 text-[13.5px] text-[#6b7a66] leading-[1.9]">
-            <p className="font-semibold text-[#4b5b47] mb-1">運営者</p>
+          <section className="border-t border-[#1F1E1B]/10 pt-8 mt-4 text-[13.5px] text-[#5E6A70] leading-[1.9]">
+            <p className="font-semibold text-[#45443E] mb-1">運営者</p>
             <p>バイタリティデザイン合同会社</p>
             <p>制定日: 2026年5月16日</p>
             <p>改定日: 2026年7月23日</p>

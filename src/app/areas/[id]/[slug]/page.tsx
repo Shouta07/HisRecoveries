@@ -120,7 +120,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
   };
 
   return (
-    <div className="bg-[#f4f6f2] text-[#1f2a1d]">
+    <div className="bg-[#F3F0EA] text-[#1F1E1B]">
       <MarketView market={a.areaId} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
@@ -128,14 +128,14 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
 
       <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
         {/* breadcrumb */}
-        <nav aria-label="パンくず" className="text-[13.5px] text-[#6b7a66] mb-6">
-          <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
+        <nav aria-label="パンくず" className="text-[13.5px] text-[#5E6A70] mb-6">
+          <Link href="/" className="hover:text-[#1F1E1B]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/areas" className="hover:text-[#1f2a1d]">記事</Link>
+          <Link href="/areas" className="hover:text-[#1F1E1B]">記事</Link>
           <span className="mx-1.5">/</span>
-          <Link href={`/areas/${c.id}`} className="hover:text-[#1f2a1d]">{c.ja}</Link>
+          <Link href={`/areas/${c.id}`} className="hover:text-[#1F1E1B]">{c.ja}</Link>
           <span className="mx-1.5">/</span>
-          <span className="text-[#1f2a1d]">{a.title}</span>
+          <span className="text-[#1F1E1B]">{a.title}</span>
         </nav>
 
         <header className="mb-8">
@@ -146,44 +146,44 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             {c.ja}
           </span>
           {a.kind === "interview" && (
-            <span className="inline-flex rounded-full bg-[#3d5638] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">取材</span>
+            <span className="inline-flex rounded-full bg-[#97613F] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">取材</span>
           )}
           {a.kind === "guide" && (
-            <span className="inline-flex rounded-full bg-[#3d5638] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">ガイド</span>
+            <span className="inline-flex rounded-full bg-[#97613F] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">ガイド</span>
           )}
           {a.kind === "choose" && (
-            <span className="inline-flex rounded-full bg-[#16241A] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">選び方</span>
+            <span className="inline-flex rounded-full bg-[#1E2A38] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">選び方</span>
           )}
           <h1 className="text-[1.8rem] sm:text-[2.3rem] leading-[1.35]" style={HEAD}>
             {a.title}
           </h1>
           {a.kind === "interview" && a.interviewee && (
-            <p className="mt-3 text-[14.5px] text-[#6b7a66]">
-              語り手: <span className="font-semibold text-[#3d5638]">{a.interviewee.name}</span>（{a.interviewee.role}）
+            <p className="mt-3 text-[14.5px] text-[#5E6A70]">
+              語り手: <span className="font-semibold text-[#97613F]">{a.interviewee.name}</span>（{a.interviewee.role}）
               {a.interviewee.link && (
                 <>
                   {" "}
-                  <a href={a.interviewee.link} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
+                  <a href={a.interviewee.link} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-[#C28863]/60 underline-offset-2 hover:decoration-[#97613F]">
                     活動ページ↗
                   </a>
                 </>
               )}
             </p>
           )}
-          <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{a.lead}</p>
+          <p className="mt-5 text-[15px] text-[#45443E] leading-[2]">{a.lead}</p>
           <div className="mt-4 flex items-center gap-3">
             <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[12px] font-bold">{a.kind === "guide" ? "実践ガイド" : a.kind === "choose" ? "選び方・向き合い方" : "出典明記"}</span>
-            <span className="text-[12px] text-[#9aa79a]">最終更新: {CLUSTER_UPDATED}</span>
+            <span className="text-[12px] text-[#5E6A70]">最終更新: {CLUSTER_UPDATED}</span>
           </div>
         </header>
 
         {/* 欲求→悩みのブレイクダウン（普遍的欲求レイヤー。SEO/GEOの共感接点） */}
         {a.desire && DESIRES[a.desire] && (
           <div className="mb-5 flex items-start gap-2.5">
-            <span className="shrink-0 inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[12px] font-bold tracking-[0.06em]">
+            <span className="shrink-0 inline-flex items-center rounded-full bg-[#1E2A38] text-[#F3F0EA] px-3 py-1 text-[12px] font-bold tracking-[0.06em]">
               {DESIRES[a.desire].label}
             </span>
-            <p className="text-[14px] text-[#4b5b47] leading-[1.9] pt-0.5">{DESIRES[a.desire].hook}</p>
+            <p className="text-[14px] text-[#45443E] leading-[1.9] pt-0.5">{DESIRES[a.desire].hook}</p>
           </div>
         )}
 
@@ -191,15 +191,15 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         <EmpathyLead worry={`「${c.worry}」`} />
 
         {/* 要点（TL;DR） */}
-        <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#f4f6f2] border border-[#1f2a1d]/10 p-6 sm:p-7 mb-10">
+        <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#F3F0EA] border border-[#1F1E1B]/10 p-6 sm:p-7 mb-10">
           <div className="flex items-center gap-2.5 mb-4">
-            <span aria-hidden className="block w-5 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">要点 / TL;DR</span>
+            <span aria-hidden className="block w-5 h-px bg-[#C28863]" />
+            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#97613F] font-medium">要点 / TL;DR</span>
           </div>
           <ul className="space-y-2.5">
             {a.summary.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#1f2a1d] leading-[1.85]">
-                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#85AB8B] shrink-0" />
+              <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#1F1E1B] leading-[1.85]">
+                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#C28863] shrink-0" />
                 {s}
               </li>
             ))}
@@ -212,23 +212,23 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         <div className="space-y-8">
           {a.sections.map((s) => (
             <section key={s.h}>
-              <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1f2a1d] mb-3 leading-[1.5]" style={HEAD}>
-                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#85AB8B] shrink-0" />
+              <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1F1E1B] mb-3 leading-[1.5]" style={HEAD}>
+                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#C28863] shrink-0" />
                 {s.h}
               </h2>
-              <p className="text-[15.5px] text-[#3a423a] leading-[2.05] pl-3.5">{s.body}</p>
+              <p className="text-[15.5px] text-[#45443E] leading-[2.05] pl-3.5">{s.body}</p>
             </section>
           ))}
         </div>
 
         {/* FAQ */}
         <section className="mt-12">
-          <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>よくある質問</h2>
-          <dl className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 px-6 divide-y divide-[#1f2a1d]/10">
+          <h2 className="text-[1.15rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>よくある質問</h2>
+          <dl className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-6 divide-y divide-[#1F1E1B]/10">
             {a.faqs.map((f) => (
               <div key={f.q} className="py-5">
-                <dt className="text-[15px] font-bold text-[#1f2a1d] mb-1.5">{f.q}</dt>
-                <dd className="text-[14.5px] text-[#4b5b47] leading-[1.95]">{f.a}</dd>
+                <dt className="text-[15px] font-bold text-[#1F1E1B] mb-1.5">{f.q}</dt>
+                <dd className="text-[14.5px] text-[#45443E] leading-[1.95]">{f.a}</dd>
               </div>
             ))}
           </dl>
@@ -237,19 +237,19 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {/* あわせて読む — 内部リンク網（潜在→仕組み→選び方の導線） */}
         {relatedArticles.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>あわせて読む</h2>
+            <h2 className="text-[1.15rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>あわせて読む</h2>
             <ul className="space-y-2.5">
               {relatedArticles.map((r) => (
                 <li key={r.slug}>
                   <Link
                     href={`/areas/${r.areaId}/${r.slug}`}
-                    className="group flex items-start justify-between gap-3 rounded-[1rem] border border-[#1f2a1d]/10 bg-white px-4 py-3.5 hover:border-[#3d5638]/40 hover:shadow-[0_14px_30px_-22px_rgba(20,32,26,0.5)] transition-all"
+                    className="group flex items-start justify-between gap-3 rounded-[1rem] border border-[#1F1E1B]/10 bg-white px-4 py-3.5 hover:border-[#97613F]/40 hover:shadow-[0_14px_30px_-22px_rgba(20,32,26,0.5)] transition-all"
                   >
                     <span className="min-w-0">
-                      <span className="block text-[15px] font-semibold text-[#1f2a1d] leading-[1.6] group-hover:text-[#3d5638] transition-colors">{r.title}</span>
-                      <span className="mt-0.5 block text-[13.5px] text-[#6b7a66] leading-[1.7] line-clamp-1">{r.lead}</span>
+                      <span className="block text-[15px] font-semibold text-[#1F1E1B] leading-[1.6] group-hover:text-[#97613F] transition-colors">{r.title}</span>
+                      <span className="mt-0.5 block text-[13.5px] text-[#5E6A70] leading-[1.7] line-clamp-1">{r.lead}</span>
                     </span>
-                    <span aria-hidden className="text-[#3d5638] shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform">→</span>
+                    <span aria-hidden className="text-[#97613F] shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
               ))}
@@ -271,23 +271,23 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {/* 出典 — 根拠を示すことで、読者にもAI検索にも検証可能にする */}
         {sources.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-3" style={HEAD}>
+            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-3" style={HEAD}>
               参考にした情報源
             </h2>
             <ul className="space-y-2">
               {sources.map((q) => (
                 <li key={q.url} className="flex items-start gap-2">
-                  <span aria-hidden className="text-[#85AB8B] mt-px">›</span>
-                  <p className="text-[14.5px] text-[#3a423a] leading-[1.85]">
+                  <span aria-hidden className="text-[#C28863] mt-px">›</span>
+                  <p className="text-[14.5px] text-[#45443E] leading-[1.85]">
                     <a
                       href={q.url}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
-                      className="font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]"
+                      className="font-semibold text-[#97613F] underline decoration-[#C28863]/60 underline-offset-2 hover:decoration-[#97613F]"
                     >
                       {q.source}↗
                     </a>
-                    {q.note ? <span className="ml-1.5 text-[#6b7a66]">— {q.note}</span> : null}
+                    {q.note ? <span className="ml-1.5 text-[#5E6A70]">— {q.note}</span> : null}
                   </p>
                 </li>
               ))}
@@ -295,7 +295,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </section>
         )}
 
-        <p className="mt-12 text-[13.5px] text-[#6b7a66] leading-[1.9]">
+        <p className="mt-12 text-[13.5px] text-[#5E6A70] leading-[1.9]">
           {a.kind === "guide"
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
             : a.kind === "choose"
@@ -304,10 +304,10 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">
-          <Link href={`/areas/${c.id}`} className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
+          <Link href={`/areas/${c.id}`} className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
             {c.ja}の全体を見る <span aria-hidden>→</span>
           </Link>
-          <Link href="/#plan" className="inline-flex items-center gap-2 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
+          <Link href="/#plan" className="inline-flex items-center gap-2 rounded-full bg-[#1F1E1B] hover:bg-[#7E4F33] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
             自分の順番を診断する（無料） <span aria-hidden>→</span>
           </Link>
         </div>

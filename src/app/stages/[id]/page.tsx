@@ -85,7 +85,7 @@ export default function StagePage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="bg-[#f4f6f2] text-[#1f2a1d]">
+    <div className="bg-[#F3F0EA] text-[#1F1E1B]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <script
         type="application/ld+json"
@@ -93,35 +93,35 @@ export default function StagePage({ params }: { params: { id: string } }) {
       />
 
       {/* ── ヒーロー ── */}
-      <section className="relative overflow-hidden bg-[#16241A] text-[#EDF1E8]">
+      <section className="relative overflow-hidden bg-[#1E2A38] text-[#F3F0EA]">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 95% 75% at 50% 18%, #24382b 0%, #16241A 58%, #0f1a12 100%)",
+              "radial-gradient(ellipse 95% 75% at 50% 18%, #2A3849 0%, #1E2A38 58%, #161F2A 100%)",
           }}
         />
         <div className="relative max-w-[900px] mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-12 sm:pb-14">
-          <nav aria-label="パンくず" className="text-[12.5px] text-[#9FB0A0] mb-8">
-            <Link href="/" className="hover:text-[#EDF1E8]">ホーム</Link>
+          <nav aria-label="パンくず" className="text-[12.5px] text-[#8E979E] mb-8">
+            <Link href="/" className="hover:text-[#F3F0EA]">ホーム</Link>
             <span className="mx-1.5">/</span>
-            <Link href="/areas" className="hover:text-[#EDF1E8]">記事</Link>
+            <Link href="/areas" className="hover:text-[#F3F0EA]">記事</Link>
             <span className="mx-1.5">/</span>
-            <span className="text-[#EDF1E8]">{stage.label}</span>
+            <span className="text-[#F3F0EA]">{stage.label}</span>
           </nav>
 
           <p className="hr-eyebrow hr-eyebrow-on-dark mb-4">
-            Stage {stage.n} — {stage.age}
+            {stage.age}
           </p>
-          <h1 className="text-[1.8rem] sm:text-[2.5rem] leading-[1.4] text-[#EDF1E8]" style={HEAD}>
+          <h1 className="text-[1.8rem] sm:text-[2.5rem] leading-[1.4] text-[#F3F0EA]" style={HEAD}>
             {stage.hook}
           </h1>
-          <p className="mt-6 text-[15px] text-[#C9D2C4] leading-[2] max-w-[36rem]">
-            <span className="text-[#EDF1E8] font-semibold">{stage.theme}</span>——
+          <p className="mt-6 text-[15px] text-[#C6CAD0] leading-[2] max-w-[36rem]">
+            <span className="text-[#F3F0EA] font-semibold">{stage.theme}</span>——
             {stage.loss}
           </p>
-          <p className="mt-5 font-mono text-[12.5px] text-[#9FB0A0] tracking-[0.06em]">
+          <p className="mt-5 font-mono text-[12.5px] text-[#8E979E] tracking-[0.06em]">
             {articles.length} 本 ／ 更新 {CLUSTER_UPDATED}
           </p>
         </div>
@@ -129,19 +129,19 @@ export default function StagePage({ params }: { params: { id: string } }) {
 
       <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
         {articles.length === 0 ? (
-          <div className="rounded-[1.3rem] border border-dashed border-[#1f2a1d]/20 bg-white/60 px-6 sm:px-8 py-8">
-            <p className="text-[16px] font-bold text-[#1f2a1d] mb-2.5" style={HEAD}>
+          <div className="rounded-[1.3rem] border border-dashed border-[#1F1E1B]/20 bg-white/60 px-6 sm:px-8 py-8">
+            <p className="text-[16px] font-bold text-[#1F1E1B] mb-2.5" style={HEAD}>
               この年代の記事は、まだ1本もありません。
             </p>
-            <p className="text-[14px] text-[#5c6b58] leading-[1.95]">
+            <p className="text-[14px] text-[#45443E] leading-[1.95]">
               数合わせで書くことはしません。ここは、実際にその年代を通った方への取材で
               埋めていく場所だと考えています。取材にご協力いただける方を探しています。
             </p>
             <Link
               href="/partner"
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[14px] font-bold px-6 py-3 transition-colors"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1E2A38] hover:bg-[#2A3849] text-[#F3F0EA] text-[14px] font-bold px-6 py-3 transition-colors"
             >
-              取材について <span aria-hidden className="text-[#E0B75F]">→</span>
+              取材について <span aria-hidden className="text-[#C28863]">→</span>
             </Link>
           </div>
         ) : (
@@ -154,13 +154,13 @@ export default function StagePage({ params }: { params: { id: string } }) {
                     className="block w-6 h-[3px] shrink-0"
                     style={{ background: area.accent }}
                   />
-                  <h2 className="text-[1.05rem] font-bold text-[#1f2a1d]" style={HEAD}>
+                  <h2 className="text-[1.05rem] font-bold text-[#1F1E1B]" style={HEAD}>
                     {area.ja}
                   </h2>
-                  <span className="font-mono text-[11px] text-[#9aa79a]">{items.length}</span>
+                  <span className="font-mono text-[11px] text-[#5E6A70]">{items.length}</span>
                   <Link
                     href={`/areas/${area.id}`}
-                    className="ml-auto text-[12.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap"
+                    className="ml-auto text-[12.5px] font-semibold text-[#97613F] hover:opacity-70 transition-opacity whitespace-nowrap"
                   >
                     領域を見る →
                   </Link>
@@ -171,18 +171,18 @@ export default function StagePage({ params }: { params: { id: string } }) {
                       <Link
                         href={`/areas/${a.areaId}/${a.slug}`}
                         style={{ borderLeftColor: area.accent, borderLeftWidth: 3 }}
-                        className="group flex h-full flex-col rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 px-5 py-5 hover:border-[#3d5638]/40 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_-24px_rgba(20,32,26,0.5)] transition-all"
+                        className="group flex h-full flex-col rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-5 py-5 hover:border-[#97613F]/40 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_-24px_rgba(20,32,26,0.5)] transition-all"
                       >
                         <h3
-                          className="text-[14.5px] font-bold text-[#1f2a1d] leading-[1.6] group-hover:text-[#3d5638] transition-colors"
+                          className="text-[14.5px] font-bold text-[#1F1E1B] leading-[1.6] group-hover:text-[#97613F] transition-colors"
                           style={HEAD}
                         >
                           {a.title}
                         </h3>
-                        <p className="mt-2 text-[13px] text-[#5c6b58] leading-[1.85] line-clamp-3 flex-1">
+                        <p className="mt-2 text-[13px] text-[#45443E] leading-[1.85] line-clamp-3 flex-1">
                           {a.lead}
                         </p>
-                        <span className="mt-3 text-[12.5px] font-semibold text-[#3d5638]">
+                        <span className="mt-3 text-[12.5px] font-semibold text-[#97613F]">
                           読む <span aria-hidden>→</span>
                         </span>
                       </Link>
@@ -203,18 +203,18 @@ export default function StagePage({ params }: { params: { id: string } }) {
             <Link
               key={s!.id}
               href={`/stages/${s!.id}`}
-              className="group rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 px-5 py-5 hover:border-[#3d5638]/40 transition-colors"
+              className="group rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-5 py-5 hover:border-[#97613F]/40 transition-colors"
             >
-              <p className="font-mono text-[11px] text-[#B98A3C] tracking-[0.08em]">
+              <p className="font-mono text-[11px] text-[#97613F] tracking-[0.08em]">
                 Stage {s!.n} ／ {s!.age}
               </p>
               <p
-                className="mt-1.5 text-[15px] font-bold text-[#1f2a1d] group-hover:text-[#3d5638] transition-colors"
+                className="mt-1.5 text-[15px] font-bold text-[#1F1E1B] group-hover:text-[#97613F] transition-colors"
                 style={HEAD}
               >
                 {s!.label}
               </p>
-              <p className="mt-1 text-[13px] text-[#5c6b58] leading-[1.8]">{s!.hook}</p>
+              <p className="mt-1 text-[13px] text-[#45443E] leading-[1.8]">{s!.hook}</p>
             </Link>
           ))}
         </nav>
@@ -222,7 +222,7 @@ export default function StagePage({ params }: { params: { id: string } }) {
         <p className="mt-8 text-[13.5px]">
           <Link
             href="/areas"
-            className="text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4 hover:decoration-[#3d5638] transition-colors"
+            className="text-[#97613F] underline decoration-[#C28863]/60 underline-offset-4 hover:decoration-[#97613F] transition-colors"
           >
             すべての記事を見る
           </Link>

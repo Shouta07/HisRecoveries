@@ -17,7 +17,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#f4f6f2] text-zinc-600 border-t border-zinc-200">
+    <footer className="bg-[#F3F0EA] text-zinc-600 border-t border-zinc-200">
       <div className="mx-auto max-w-[1280px] px-6 sm:px-10 py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <Link href="/" className="logo-type text-xl tracking-[0.04em] text-zinc-900">
           {site.name}

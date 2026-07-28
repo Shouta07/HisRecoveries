@@ -8,8 +8,8 @@ import { site } from "@/lib/site";
 // メディアが主、サービスが従。記事を先頭に置く。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
-  { href: "/plan", label: "個人向け" },
-  { href: "/business", label: "法人向け" },
+  { href: "/stages/mature", label: "年代から" },
+  { href: "/why", label: "編集方針" },
   { href: "/producer", label: "担当者", desktopOnly: true },
 ];
 
@@ -26,7 +26,7 @@ export default function Header() {
         <Link
           href="/"
           aria-label={`${site.name} ホーム`}
-          className="logo-type text-base sm:text-xl tracking-[0.04em] font-semibold text-zinc-900 hover:text-[#3d5638] transition-colors shrink-0"
+          className="logo-type text-base sm:text-xl tracking-[0.04em] font-semibold text-zinc-900 hover:text-[#97613F] transition-colors shrink-0"
         >
           {site.name}
         </Link>
@@ -44,10 +44,7 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <ConsultLink className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[13px] sm:text-[14.5px] font-semibold px-3.5 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap">
-            <span className="sm:hidden">無料相談</span>
-            <span className="hidden sm:inline">相談する（無料）</span>
-          </ConsultLink>
+
         </div>
       </div>
     </header>
