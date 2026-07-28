@@ -36,17 +36,12 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // /packages index folds into the home section; /packages/first-impression is the real detail page.
-      { source: "/packages", destination: "/#packages", permanent: true },
-      // 第一印象改善パッケージ1本に特化 → 旧ティア/旧IDは実ページへ集約
-      { source: "/packages/gift", destination: "/packages/first-impression", permanent: true },
-      { source: "/packages/standard", destination: "/packages/first-impression", permanent: true },
-      { source: "/packages/highend", destination: "/packages/first-impression", permanent: true },
-      { source: "/packages/membership", destination: "/packages/first-impression", permanent: true },
-      { source: "/packages/cleanliness", destination: "/packages/first-impression", permanent: true },
-      { source: "/packages/hair", destination: "/packages/first-impression", permanent: true },
-      { source: "/packages/future", destination: "/packages/first-impression", permanent: true },
-      { source: "/packages/animals", destination: "/packages/first-impression", permanent: true },
+      // 商品は「第一印象改善プラン（30日 ¥49,800）」の1本のみ。
+      // 旧パッケージ／旧2商品（Recover・Refine）ページは全廃し、ホームの価格へ集約する。
+      { source: "/packages", destination: "/#pricing", permanent: true },
+      { source: "/packages/:slug*", destination: "/#pricing", permanent: true },
+      { source: "/recover", destination: "/", permanent: true },
+      { source: "/refine", destination: "/", permanent: true },
       // /areas は第一印象4領域に特化 → 退避した領域はライブラリ index へ
       { source: "/areas/sweat", destination: "/areas", permanent: true },
       { source: "/areas/sweat/:slug*", destination: "/areas", permanent: true },

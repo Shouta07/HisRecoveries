@@ -3,7 +3,7 @@ export const site = {
   tagline: "From Complex to Confidence",
   promise: "もっと、いい男へ。もっと、自分らしく。",
   description:
-    "男の「変わりたい」に、伴走する。髪・肌・体・心を、診断→整える順番の設計→あなたに合うプロ・施設へおつなぎし、そのあとも伴走します。相談は無料・完全守秘、費用は先に説明。押し売りはせず、医療機関から紹介料は受け取りません。",
+    "男性の第一印象を、30日で整える。何をやるかを決めて、眉・メイク・服選び・髪型・撮影を1日でまとめて整え、自分で再現できるまで伴走します。第一印象改善プラン（30日）¥49,800 税込・先着10名。実施は東京都内・土日のみ。相談は無料・完全守秘で、医療機関から紹介料は受け取りません。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",
@@ -20,8 +20,8 @@ export const site = {
   // LINE は SaaS モード（LINE Login + LIFF + 詳細診断）の入口。
   // addFriendUrl が空の間は、UI は「準備中」表示になる（壊れない）。
   // 値が入った瞬間に Hero / Screen result / Letter から自動で出る。
-  // LINE は公開サイトに貼らない。体験フェーズ（相談→NDAの後）の会員のみ、
-  // 別途・非公開で友だち追加する設計。公開導線は /reserve（匿名Web相談）に統一。
+  // LINE は公開サイトに貼らない。お支払い後の伴走でのみ使い、その時点で
+  // 個別に友だち追加をご案内する。公開の入口は /reserve（無料相談）に統一。
   line: {
     addFriendUrl: "",
     liffUrl: process.env.NEXT_PUBLIC_LINE_LIFF_URL ?? "",

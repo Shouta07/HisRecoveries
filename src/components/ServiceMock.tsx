@@ -16,7 +16,7 @@ export function PhoneMock({ className = "" }: { className?: string }) {
 
           {/* app header */}
           <div className="px-4 pt-7 pb-3 bg-white border-b border-zinc-100 flex items-center justify-between">
-            <span className="logo-type text-[13px] tracking-[0.04em] text-zinc-900">
+            <span className="logo-type text-[14.5px] tracking-[0.04em] text-zinc-900">
               His Recoveries
             </span>
             <span
@@ -62,12 +62,12 @@ export function PhoneMock({ className = "" }: { className?: string }) {
             {/* chat */}
             <div className="space-y-1.5">
               <div
-                className="w-fit max-w-[80%] rounded-2xl rounded-tl-sm px-3 py-2 text-[10.5px] leading-[1.5]"
+                className="w-fit max-w-[80%] rounded-2xl rounded-tl-sm px-3 py-2 text-[11px] leading-[1.5]"
                 style={{ backgroundColor: SOFT, color: "#134E48" }}
               >
                 今週、調子はどうですか？写真も見ますよ。
               </div>
-              <div className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-sm bg-zinc-900 text-white px-3 py-2 text-[10.5px] leading-[1.5]">
+              <div className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-sm bg-zinc-900 text-white px-3 py-2 text-[11px] leading-[1.5]">
                 少し落ち着いてきました
               </div>
             </div>
@@ -148,13 +148,13 @@ export function ClinicScene({ className = "" }: { className?: string }) {
       {/* floating appointment chip */}
       <div className="absolute -bottom-3 left-4 sm:left-6 rounded-2xl bg-white shadow-md px-4 py-2.5 flex items-center gap-2.5">
         <span
-          className="grid place-items-center w-7 h-7 rounded-full text-[12px]"
+          className="grid place-items-center w-7 h-7 rounded-full text-[13.5px]"
           style={{ backgroundColor: SOFT, color: ACCENT }}
           aria-hidden
         >
           ◎
         </span>
-        <span className="text-[11.5px] leading-tight">
+        <span className="text-[12.5px] leading-tight">
           <span className="block font-bold text-zinc-900">専属担当との面談</span>
           <span className="block text-zinc-400">オンライン / 対面 ・ 連携クリニック</span>
         </span>

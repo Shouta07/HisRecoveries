@@ -118,6 +118,73 @@ export async function dbUpdate(
 }
 
 /**
+ * PATCH rows matched by a PostgREST filter (e.g. `stripe_session_id=eq.cs_123`).
+ * Used by the Stripe webhook, which knows the session id but not our row id.
+ */
+export async function dbUpdateWhere(
+  table: string,
+  filter: string,
+  patch: Record<string, unknown>
+): Promise<{ ok: boolean; error?: string }> {
+  if (!dbAdminEnabled) {
+    return { ok: false, error: "admin db not configured" };
+  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
+      method: "PATCH",
+      headers: {
+        apikey: SUPABASE_SERVICE_KEY!,
+        Authorization: `Bearer ${SUPABASE_SERVICE_KEY!}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`[db] patch-where failed (${res.status})`, text);
+      return { ok: false, error: text };
+    }
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "patch failed" };
+  }
+}
+
+/**
+ * INSERT using the service key. Unlike dbInsert (anon key, fire-and-forget),
+ * this reports failures — the caller needs to know when an order was not saved.
+ */
+export async function dbInsertAdmin(
+  table: string,
+  row: RowPayload
+): Promise<{ ok: boolean; error?: string }> {
+  if (!dbAdminEnabled) {
+    return { ok: false, error: "admin db not configured" };
+  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_SERVICE_KEY!,
+        Authorization: `Bearer ${SUPABASE_SERVICE_KEY!}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(row),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`[db] admin insert failed (${res.status})`, text);
+      return { ok: false, error: text };
+    }
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "insert failed" };
+  }
+}
+
+/**
  * SHA-256 hash of an email (lowercased, trimmed).
  * Stored instead of raw email so we never persist PII.
  */

@@ -79,14 +79,14 @@ function ArticleCard({ c, carousel = false, starter = false }: { c: Card; carous
       <div className="flex items-center gap-2 mb-2">
         <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold ${badgeStyle(c.badge)}`}>{c.badge}</span>
         {starter && (
-          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#16241A] text-[#EDF1E8] px-2 py-0.5 text-[9.5px] font-bold tracking-[0.04em]">
+          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#16241A] text-[#EDF1E8] px-2 py-0.5 text-[11px] font-bold tracking-[0.04em]">
             <span aria-hidden>★</span>はじめの1本
           </span>
         )}
       </div>
       <h3 className="text-[15px] font-bold text-[#1f2a1d] leading-[1.55] group-hover:text-[#3d5638] transition-colors" style={HEAD}>{c.title}</h3>
-      <p className="mt-2 text-[12.5px] text-[#4b5b47] leading-[1.85] line-clamp-2 sm:line-clamp-3 flex-1">{c.excerpt}</p>
-      <span className="mt-3 text-[12px] font-semibold text-[#3d5638] inline-flex items-center gap-1 group-hover:gap-1.5 transition-all">読む <span aria-hidden>→</span></span>
+      <p className="mt-2 text-[14px] text-[#4b5b47] leading-[1.85] line-clamp-2 sm:line-clamp-3 flex-1">{c.excerpt}</p>
+      <span className="mt-3 text-[13.5px] font-semibold text-[#3d5638] inline-flex items-center gap-1 group-hover:gap-1.5 transition-all">読む <span aria-hidden>→</span></span>
     </Link>
   );
 }
@@ -171,7 +171,7 @@ export default function LibraryPage({
 
       <div className="mx-auto max-w-[1080px] px-5 sm:px-8 pt-12 sm:pt-16 pb-24">
         {/* パンくず */}
-        <nav aria-label="パンくず" className="text-[12px] text-[#6b7a66] mb-7">
+        <nav aria-label="パンくず" className="text-[13.5px] text-[#6b7a66] mb-7">
           <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
           <span className="mx-1.5">/</span>
           <span className="text-[#1f2a1d]">記事</span>
@@ -181,12 +181,12 @@ export default function LibraryPage({
         <header className="mb-10 max-w-2xl">
           <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[11.5px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">His Recoveries Library</span>
+            <span className="font-mono text-[12.5px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">His Recoveries Library</span>
           </div>
           <h1 className="text-[1.9rem] sm:text-[2.5rem] leading-[1.26]" style={HEAD}>
             <W>男の「<span className="text-[#3d5638]">よくなる</span>」を、</W><W>まとめています。</W>
           </h1>
-          <p className="mt-4 text-[14px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
+          <p className="mt-4 text-[15px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
             <W>清潔感・薄毛・肌・顔・体毛・第一印象。</W><W>ぜんぶまとめて調べられます。</W>{" "}
             <W>何も売らないから、広告ぬきの答えだけ。</W><W>匿名で、読むだけ。</W>
           </p>
@@ -201,13 +201,13 @@ export default function LibraryPage({
               <div className="flex items-center gap-3 mb-4">
                 <h3 className="text-[1.05rem] font-bold text-[#1f2a1d]" style={HEAD}>
                   「{DESIRES[activeDesire].label}」に効く記事
-                  <span className="ml-2 text-[12px] font-normal text-[#6b7a66]">
+                  <span className="ml-2 text-[13.5px] font-normal text-[#6b7a66]">
                     {desireCards.length}本
                   </span>
                 </h3>
                 <Link
                   href="/areas#mokuteki"
-                  className="ml-auto text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap"
+                  className="ml-auto text-[13.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap"
                 >
                   × 絞り込みを解除
                 </Link>
@@ -219,7 +219,7 @@ export default function LibraryPage({
                   ))}
                 </div>
               ) : (
-                <p className="text-[13px] text-[#4b5b47]">この目的の記事は準備中です。</p>
+                <p className="text-[14.5px] text-[#4b5b47]">この目的の記事は準備中です。</p>
               )}
             </div>
           )}
@@ -230,14 +230,14 @@ export default function LibraryPage({
         <div className="sticky top-[62px] sm:top-[72px] z-30 -mx-5 sm:mx-0 mb-11 border-b border-[#1f2a1d]/10 bg-[#f4f6f2]/92 backdrop-blur-sm">
           <div className="flex sm:flex-wrap gap-2 overflow-x-auto sm:overflow-visible px-5 sm:px-0 py-3.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {categories.map((c) => (
-              <a key={c.id} href={`#cat-${c.id}`} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
+              <a key={c.id} href={`#cat-${c.id}`} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[14px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
                 {c.ja}
               </a>
             ))}
-            <a href="/areas/confidence" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
+            <a href="/areas/confidence" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#1f2a1d]/12 bg-white px-3.5 py-1.5 text-[14px] font-medium text-[#3a423a] hover:border-[#3d5638]/50 hover:text-[#1f2a1d] transition-colors">
               自信・パートナーシップ
             </a>
-            <a href="#cat-interview" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
+            <a href="#cat-interview" className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#3d5638]/25 bg-white px-3.5 py-1.5 text-[14px] font-medium text-[#3d5638] hover:border-[#3d5638] transition-colors">
               インタビュー
             </a>
           </div>
@@ -254,7 +254,7 @@ export default function LibraryPage({
                   </svg>
                 </span>
                 <h2 className="text-[1.25rem] font-bold text-[#1f2a1d]" style={HEAD}>{c.ja}</h2>
-                <Link href={`/areas/${c.id}`} className="ml-auto text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
+                <Link href={`/areas/${c.id}`} className="ml-auto text-[13.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity whitespace-nowrap">
                   まとめて見る →
                 </Link>
               </div>
@@ -262,17 +262,17 @@ export default function LibraryPage({
                 {c.cards.map((card, i) => <ArticleCard key={card.href} c={card} carousel starter={i === 0} />)}
               </div>
               {c.cards.length > 1 && (
-                <p className="sm:hidden mt-2.5 text-[11px] text-[#9aa79a]">← 横にスクロール（{c.cards.length}件）</p>
+                <p className="sm:hidden mt-2.5 text-[12px] text-[#9aa79a]">← 横にスクロール（{c.cards.length}件）</p>
               )}
 
               {/* 最大カテゴリの直後に、静かな相談バンドを1つだけ（中間CVRポイント） */}
               {c.id === "impression" && (
                 <div className="mt-8 rounded-[1.3rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="flex-1">
-                    <p className="text-[14.5px] font-bold leading-[1.6]"><W>調べ続けるより、</W><W>10分の相談が早いこともあります。</W></p>
-                    <p className="mt-1 text-[12.5px] text-[#C9D2C4] leading-[1.8]"><W>何から始めるか、いくらかかるか。</W><W>無料・完全守秘で。</W></p>
+                    <p className="text-[15.5px] font-bold leading-[1.6]"><W>調べ続けるより、</W><W>10分の相談が早いこともあります。</W></p>
+                    <p className="mt-1 text-[14px] text-[#C9D2C4] leading-[1.8]"><W>何から始めるか、いくらかかるか。</W><W>無料・完全守秘で。</W></p>
                   </div>
-                  <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-3 transition-colors">
+                  <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14.5px] font-bold px-6 py-3 transition-colors">
                     無料で相談する（無料） <span aria-hidden>→</span>
                   </ConsultLink>
                 </div>
@@ -290,7 +290,7 @@ export default function LibraryPage({
               </span>
               <h2 className="text-[1.3rem] font-bold text-[#1f2a1d]" style={HEAD}>インタビュー</h2>
             </div>
-            <p className="text-[12.5px] text-[#6b7a66] leading-[1.9] mb-5">
+            <p className="text-[14px] text-[#6b7a66] leading-[1.9] mb-5">
               <W>現場の第一線で働くプロ</W><W>（メイク・スタイリスト・撮影ほか）に、</W><W>His Recoveries が直接聞く一次情報。</W>
             </p>
             {interviews.length > 0 ? (
@@ -299,7 +299,7 @@ export default function LibraryPage({
               </div>
             ) : (
               <div className="rounded-[1.3rem] border border-dashed border-[#1f2a1d]/15 bg-white/50 p-8 text-center">
-                <p className="text-[13px] text-[#6b7a66] leading-[1.9]">
+                <p className="text-[14.5px] text-[#6b7a66] leading-[1.9]">
                   取材記事を、これから掲載していきます。
                 </p>
               </div>
@@ -309,20 +309,20 @@ export default function LibraryPage({
 
         {/* 読み終わりの受け皿：相談（無料・匿名）を主導線に、サービスは従 */}
         <div className="mt-16 rounded-[1.3rem] border border-[#1f2a1d]/10 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
-          <p className="text-[13px] text-[#4b5b47] leading-[1.85] flex-1">
+          <p className="text-[14.5px] text-[#4b5b47] leading-[1.85] flex-1">
             <W>読むだけでも大丈夫。</W><W>聞きたくなったら、無料で相談できます（完全守秘）。</W>
           </p>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-            <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[13px] font-bold px-6 py-3 transition-colors">
+            <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[14.5px] font-bold px-6 py-3 transition-colors">
               無料で相談する（無料） <span aria-hidden>→</span>
             </ConsultLink>
-            <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[13px] font-semibold px-6 py-3 transition-colors">
-              サービスを見る
+            <Link href="/#pricing" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[14.5px] font-semibold px-6 py-3 transition-colors">
+              プランを見る
             </Link>
           </div>
         </div>
 
-        <p className="mt-8 text-[11.5px] text-[#6b7a66] leading-[1.9]">
+        <p className="mt-8 text-[12.5px] text-[#6b7a66] leading-[1.9]">
           ※ 記事は一般的に知られる情報や実践のヒントを、出典を明記して整理したものです。効果を保証するものではなく、
           診断・治療・受診勧奨を目的としたものではありません。「選び方・向き合い方」の記事も、選ぶときの観点を中立に整理したもので、
           特定の医療機関・製品・施術を推奨するものではありません。「今はやらない」も含め、選ぶのはあなたです。個別の判断は専門家にご相談ください。

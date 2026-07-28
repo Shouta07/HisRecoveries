@@ -2,22 +2,37 @@
 
 // スクロール追従の下部固定CTA。
 //
-// 方針: 入口を1つに絞る（診断 → 相談 → 契約）。追従バーも相談ではなく診断へ送る。
-// プランナーを読み終えたあたりから現れ、読了後にもう一度入口を差し出す。
+// 「人はサイトをじっくり見ない」前提に立つと、常に見えているボタンが
+// 一番よく押される。だからここは、いま画面のどこにいるかで文言を変える。
+//
+//  価格より前 … まだ判断材料がない → 「自分のプランを見る」
+//  価格より後 … 中身も値段も見た  → 「無料で相談する」
+//
+// 同じ文言を出し続けると、読み終えた人に「もう見た」と無視される。
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { TIERS, yen } from "@/lib/pricing";
+
+type Stage = "hidden" | "plan" | "consult";
 
 export default function StickyConsultBar() {
-  const [show, setShow] = useState(false);
+  const [stage, setStage] = useState<Stage>("hidden");
 
   useEffect(() => {
-    // プランナー（#plan）を通り過ぎたら出す。無ければ1画面分で出す。
     const onScroll = () => {
       const plan = document.getElementById("plan");
-      const threshold = plan
-        ? plan.offsetTop + plan.offsetHeight * 0.6
-        : window.innerHeight;
-      setShow(window.scrollY > threshold);
+      const pricing = document.getElementById("pricing");
+      const y = window.scrollY;
+
+      const planPassed = plan
+        ? y > plan.offsetTop + plan.offsetHeight * 0.6
+        : y > window.innerHeight;
+      // 価格ブロックを半分まで読んだら、相談へ切り替える
+      const pricingPassed = pricing
+        ? y > pricing.offsetTop + pricing.offsetHeight * 0.5
+        : false;
+
+      setStage(pricingPassed ? "consult" : planPassed ? "plan" : "hidden");
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -28,6 +43,9 @@ export default function StickyConsultBar() {
     };
   }, []);
 
+  const show = stage !== "hidden";
+  const consult = stage === "consult";
+
   return (
     <div
       className={`fixed inset-x-0 bottom-0 z-40 px-3 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] pointer-events-none transition-all duration-300 ${
@@ -36,12 +54,27 @@ export default function StickyConsultBar() {
       aria-hidden={!show}
     >
       <Link
-        href="/#plan"
-        className={`mx-auto flex max-w-[560px] items-center justify-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[15px] font-bold px-6 py-4 shadow-[0_18px_44px_-14px_rgba(20,32,26,0.75)] transition-colors ${
+        href={consult ? "/reserve" : "/#plan"}
+        className={`mx-auto flex max-w-[560px] items-center justify-between gap-3 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] px-5 sm:px-6 py-3.5 shadow-[0_18px_44px_-14px_rgba(20,32,26,0.75)] transition-colors ${
           show ? "pointer-events-auto" : "pointer-events-none"
         }`}
       >
-        30秒で、自分に必要な改善プランを見る <span aria-hidden>→</span>
+        <span className="flex flex-col items-start leading-tight">
+          <span className="text-[15px] font-bold">
+            {consult ? "まず無料で相談する" : "30秒で、自分のプランを見る"}
+          </span>
+          <span className="mt-0.5 text-[11px] text-[#9FB0A0]">
+            {consult
+              ? `${yen(TIERS.founder.amount)} 税込・${TIERS.founder.label}／東京・土日`
+              : "登録不要・そのまま見られます"}
+          </span>
+        </span>
+        <span
+          aria-hidden
+          className="shrink-0 grid place-items-center w-9 h-9 rounded-full bg-[#E0B75F] text-[#16241A] text-[16px] font-bold"
+        >
+          →
+        </span>
       </Link>
     </div>
   );

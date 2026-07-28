@@ -63,7 +63,7 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
                 }`}
               />
               <span
-                className={`text-[12px] sm:text-[13px] font-bold leading-[1.45] tracking-[0.04em] transition-colors ${
+                className={`text-[13.5px] sm:text-[14.5px] font-bold leading-[1.45] tracking-[0.04em] transition-colors ${
                   isSelected ? "text-ink" : "text-ink group-hover:text-ink"
                 }`}
               >
@@ -123,12 +123,12 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
                       <h4 className="text-[15px] font-bold leading-[1.65] text-ink group-hover:text-ink transition-colors line-clamp-3">
                         {a.title}
                       </h4>
-                      <p className="mt-2 text-[11px] text-sub-gray tracking-[0.06em]">
+                      <p className="mt-2 text-[12px] text-sub-gray tracking-[0.06em]">
                         {formatDate(a.publishedAt)}
                         <span className="mx-1.5">·</span>
                         {a.readingMinutes} min
                       </p>
-                      <p className="mt-2 text-[11px] text-gold tracking-[0.04em]">
+                      <p className="mt-2 text-[12px] text-gold tracking-[0.04em]">
                         # {categoryLabel(a.category)}
                       </p>
                     </Link>

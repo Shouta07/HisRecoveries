@@ -6,7 +6,8 @@ import Link from "next/link";
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
   { href: "/why", label: "想い" },
-  { href: "/#service", label: "サービス" },
+  { href: "/#pricing", label: "プラン" },
+  { href: "/producer", label: "担当者" },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,
@@ -44,7 +45,7 @@ export default function GlassNav() {
             <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
               <Link
                 href={l.href}
-                className={`text-[13px] sm:text-[14px] font-medium transition-colors whitespace-nowrap ${
+                className={`text-[14.5px] sm:text-[15px] font-medium transition-colors whitespace-nowrap ${
                   scrolled ? "text-[#3d5638] hover:text-[#1f2a1d]" : "text-[#EDF1E8]/85 hover:text-[#EDF1E8]"
                 }`}
               >

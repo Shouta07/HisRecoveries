@@ -2,12 +2,11 @@ import { MetadataRoute } from "next";
 import { site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
 import { clusters } from "@/lib/clusters";
-import { packages } from "@/lib/packages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const staticPaths: MetadataRoute.Sitemap = ["", "/reserve", "/apply", "/areas", "/areas/confidence", "/recover", "/refine", "/faq", "/privacy"].map((p) => ({
+  const staticPaths: MetadataRoute.Sitemap = ["", "/reserve", "/apply", "/areas", "/areas/confidence", "/producer", "/why", "/faq", "/privacy"].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: now,
     changeFrequency: "monthly",
@@ -28,12 +27,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const packagePaths: MetadataRoute.Sitemap = packages.map((p) => ({
-    url: `${site.url}/packages/${p.id}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.75,
-  }));
-
-  return [...staticPaths, ...areaPaths, ...clusterPaths, ...packagePaths];
+  return [...staticPaths, ...areaPaths, ...clusterPaths];
 }

@@ -1,38 +1,63 @@
-// はじめかたの流れ（Oh my teeth 型の「N ステップ」ファネル）。
-// 無料相談（LINE・相互NDA）を入口に、記録・継続までの一本を見せる。
-// CTA は下部追従バー（StickyConsultBar）に集約。
+// お申し込みから当日までの流れ（手続き編）。
+//
+// PlanPricing が「何をやるか（商品の中身）」なら、ここは「どう始めるか」。
+// 決済手段・連絡手段・キャンセル条件を、申し込む前に全部見せる。
+// 曖昧なままお金を受け取らない＝クレーム予防の中心。
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
 };
 
 const STEPS = [
-  { n: "01", t: "日程を選ぶ", d: "15分・無料。アカウント登録は不要。ご都合のいい時間を選ぶだけ。" },
-  { n: "02", t: "匿名でWeb相談", d: "カメラオフ・表示名なしでOK。正体を明かさず、「なりたい理想」と「今の現在地」を一枚の地図に。" },
-  { n: "03", t: "秘密保持契約に同意", d: "体験に進むなら、相互の秘密保持契約（NDA）を。話した内容も、あなたのことも、外には出しません。" },
-  { n: "04", t: "LINEで、進める", d: "決めた順番どおりに、一つずつ。記録・進捗はLINEで残り、迷えばその場で聞けます。費用は先に、予算内で。" },
-  { n: "05", t: "その日を、迎える。", d: "やることが終わった状態で、当日に立てること。続けられるかたちで残します。記録はあなたのもの。" },
+  {
+    n: "01",
+    t: "無料で相談する",
+    d: "フォームから、気になっていることをお送りください。3営業日を目処にご返信します。実名・顔写真は不要です。",
+  },
+  {
+    n: "02",
+    t: "合うかどうかを、先に確かめる",
+    d: "できること・できないことをお伝えします。合わないと思えば、その場でそう言います。ここまで費用はかかりません。",
+  },
+  {
+    n: "03",
+    t: "日程を決めて、お支払い",
+    d: "東京都内・土日で実施日を決めます。お支払い専用のリンクをお送りしますので、そこからクレジットカードでお願いします。ご入金の確認をもって、日程が確定します。",
+  },
+  {
+    n: "04",
+    t: "LINEでつながる",
+    d: "お支払いのあとに、伴走用のLINEをご案内します。当日の持ち物や待ち合わせも、ここでやりとりします。",
+  },
+  {
+    n: "05",
+    t: "当日、そして30日",
+    d: "1日で整えて、手順を動画で残します。あとは、自分で再現できるようになるまで見届けます。",
+  },
+];
+
+const TERMS = [
+  ["お支払い方法", "クレジットカードのみです。決済はStripeの画面で行われ、カード情報はこちらを通りません。現金・分割には対応していません。"],
+  ["ご連絡の手段", "お申し込みまではメールです。LINEは、お支払い後の伴走でのみ使います。"],
+  ["キャンセル", "お支払い後のキャンセル・返金はお受けできません。日程の変更は、実施日の1週間前まで承ります。"],
 ];
 
 export default function StepsSection() {
   return (
-    <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+    <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d] hr-readable">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 sm:pt-14 pb-6">
         <div className="on-media max-w-2xl mb-7">
-          <div className="flex items-center gap-3 mb-3">
-            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">How it works — はじめかた</span>
-          </div>
+          <p className="hr-eyebrow mb-3.5">How to start — はじめかた</p>
           <h2 className="text-[1.5rem] sm:text-[1.9rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
-            匿名15分の相談から、<span className="text-[#3d5638]">5ステップ。</span>
+            無料の相談から、<span className="text-[#3d5638]">5ステップ。</span>
           </h2>
-          <p className="mt-3 text-[13px] sm:text-[14px] text-[#4b5b47] leading-[1.9]">
-            何から始めればいいか、迷わせません。相談から記録まで、順番にご案内します。
+          <p className="mt-3 text-[14.5px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
+            決済も、連絡の手段も、キャンセルの条件も、申し込む前にすべてお見せします。
           </p>
         </div>
 
         {/* 縦タイムライン（モバイル最適・線でつなぐ） */}
-        <ol className="relative border-l-2 border-[#85AB8B]/35 ml-4 sm:ml-5 space-y-6 mb-9">
+        <ol className="relative border-l-2 border-[#85AB8B]/35 ml-4 sm:ml-5 space-y-6 mb-7">
           {STEPS.map((s) => (
             <li key={s.n} className="relative pl-6 sm:pl-7">
               <span
@@ -41,11 +66,21 @@ export default function StepsSection() {
               >
                 {s.n}
               </span>
-              <div className="text-[14.5px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.5]" style={MINCHO}>{s.t}</div>
-              <p className="mt-1 text-[12.5px] text-[#4b5b47] leading-[1.9]">{s.d}</p>
+              <div className="text-[15.5px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.5]" style={MINCHO}>{s.t}</div>
+              <p className="mt-1 text-[14px] text-[#4b5b47] leading-[1.9]">{s.d}</p>
             </li>
           ))}
         </ol>
+
+        {/* 前提を1箇所に集約（探させない） */}
+        <dl className="grid sm:grid-cols-3 gap-3 mb-9">
+          {TERMS.map(([t, d]) => (
+            <div key={t} className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 px-5 py-4">
+              <dt className="text-[14px] font-bold text-[#1f2a1d] mb-1.5" style={MINCHO}>{t}</dt>
+              <dd className="text-[13.5px] text-[#5c6b58] leading-[1.85]">{d}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

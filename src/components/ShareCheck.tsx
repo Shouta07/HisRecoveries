@@ -36,7 +36,7 @@ export default function ShareCheck() {
       <p className="logo-type italic text-[10px] tracking-[0.3em] uppercase text-gold mb-3">
         Pass it on
       </p>
-      <p className="font-mincho text-[14px] text-ink/85 leading-[2.05]">
+      <p className="font-mincho text-[15px] text-ink/85 leading-[2.05]">
         この場所を、まだ言葉にできていない誰かに。
         あなたの観察の中身は、共有されません。
       </p>
@@ -51,7 +51,7 @@ export default function ShareCheck() {
               channel: "threads",
             })
           }
-          className="text-[13px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5"
+          className="text-[14.5px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5"
         >
           Threads で渡す
         </a>
@@ -65,14 +65,14 @@ export default function ShareCheck() {
               channel: "x",
             })
           }
-          className="text-[13px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5"
+          className="text-[14.5px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5"
         >
           X で渡す
         </a>
         <button
           type="button"
           onClick={onCopy}
-          className="text-[13px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5"
+          className="text-[14.5px] tracking-[0.1em] text-ink border border-hair-line hover:border-gold hover:text-gold transition-colors px-4 py-2.5"
         >
           {copied ? "コピーしました" : "リンクをコピー"}
         </button>

@@ -38,7 +38,7 @@ export const GOALS: Goal[] = [
     id: "konkatsu",
     label: "婚活・出会い",
     outcome: "選ばれる側に回って、次に進む",
-    defaultDays: 90,
+    defaultDays: 30,
     steps: [
       {
         id: "seiketsu",
@@ -50,7 +50,7 @@ export const GOALS: Goal[] = [
       },
       {
         id: "hair",
-        when: "〜3週目",
+        when: "〜2週目",
         title: "髪型を、今の自分に合わせる",
         why: "第一印象がいちばん大きく動くのが髪です。",
         areaId: "impression",
@@ -58,7 +58,7 @@ export const GOALS: Goal[] = [
       },
       {
         id: "mayu",
-        when: "〜5週目",
+        when: "〜3週目",
         title: "眉を整える",
         why: "顔の印象が締まる。手間が小さく、変化が見えやすい。",
         areaId: "impression",
@@ -66,7 +66,7 @@ export const GOALS: Goal[] = [
       },
       {
         id: "photo",
-        when: "〜8週目",
+        when: "〜4週目",
         title: "写真を撮り直す",
         why: "出会いの入口は写真。盛らずに、整えて撮る。",
         areaId: "impression",
@@ -86,7 +86,7 @@ export const GOALS: Goal[] = [
     id: "kekkonshiki",
     label: "結婚式・大事な日",
     outcome: "写真に残る日を、最高の状態で迎える",
-    defaultDays: 90,
+    defaultDays: 30,
     steps: [
       {
         id: "skin",
@@ -98,7 +98,7 @@ export const GOALS: Goal[] = [
       },
       {
         id: "hair",
-        when: "〜4週目",
+        when: "〜2週目",
         title: "髪型を決めて、当日の型を作る",
         why: "当日に初挑戦しない。慣らす時間を取ります。",
         areaId: "impression",
@@ -106,7 +106,7 @@ export const GOALS: Goal[] = [
       },
       {
         id: "fuku",
-        when: "〜8週目",
+        when: "〜3週目",
         title: "服装を、浮かない形で用意する",
         why: "場に合うことが第一。サイズ感で印象が決まります。",
         areaId: "impression",
@@ -114,7 +114,7 @@ export const GOALS: Goal[] = [
       },
       {
         id: "photo",
-        when: "〜10週目",
+        when: "〜4週目",
         title: "写真写りを練習する",
         why: "写真は一生残ります。角度と表情は、練習で変わる。",
         areaId: "impression",
@@ -185,4 +185,4 @@ export function getGoal(id: string): Goal | undefined {
 }
 
 /** 選べる準備期間 */
-export const DAY_OPTIONS = [30, 90, 180] as const;
+export const DAY_OPTIONS = [30, 60, 90] as const;

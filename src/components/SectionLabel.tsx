@@ -19,11 +19,11 @@ export default function SectionLabel({ en, ja, number, className = "" }: Props) 
     <div className={className}>
       <div className="flex items-baseline gap-4">
         {number && (
-          <span className="logo-type italic text-[12px] tracking-[0.2em] text-gold">
+          <span className="logo-type italic text-[13.5px] tracking-[0.2em] text-gold">
             {number}
           </span>
         )}
-        <p className="logo-type italic text-[11px] sm:text-[12px] tracking-[0.4em] uppercase text-gold">
+        <p className="logo-type italic text-[12px] sm:text-[13.5px] tracking-[0.4em] uppercase text-gold">
           {en}
         </p>
       </div>

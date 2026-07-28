@@ -16,7 +16,7 @@ export default function TagMarquee({ items }: Props) {
         {doubled.map((it, i) => (
           <span
             key={i}
-            className="inline-flex items-center text-[12px] tracking-[0.18em] text-sub-gray px-10 sm:px-12"
+            className="inline-flex items-center text-[13.5px] tracking-[0.18em] text-sub-gray px-10 sm:px-12"
           >
             <span className="text-gold mr-3">·</span>
             {it}

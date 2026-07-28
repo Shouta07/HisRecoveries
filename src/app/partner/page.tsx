@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 
 function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div className={`font-mono text-[11px] tracking-[0.28em] uppercase ${dark ? "text-[#85AB8B]" : "text-[#3d5638]"}`}>{children}</div>
+    <div className={`font-mono text-[12px] tracking-[0.28em] uppercase ${dark ? "text-[#85AB8B]" : "text-[#3d5638]"}`}>{children}</div>
   );
 }
 
@@ -58,7 +58,7 @@ function SectionCta({ dark = false }: { dark?: boolean }) {
       >
         無料で提携をはじめる <span aria-hidden>→</span>
       </a>
-      <p className={`mt-3 text-[11.5px] ${dark ? "text-[#9FB0A0]" : "text-[#8a9686]"}`}>申込は1分・費用は一切かかりません</p>
+      <p className={`mt-3 text-[12.5px] ${dark ? "text-[#9FB0A0]" : "text-[#8a9686]"}`}>申込は1分・費用は一切かかりません</p>
     </div>
   );
 }
@@ -104,8 +104,8 @@ export default function PartnerPage() {
         <div className="max-w-[1100px] mx-auto flex items-center justify-between px-6 sm:px-8 py-3.5">
           <Link href="/" className="logo-type text-[17px] font-semibold tracking-[0.04em] text-[#16241A]">His Recoveries</Link>
           <div className="flex items-center gap-5">
-            <span className="hidden sm:block font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#6b7a66]">For Partners</span>
-            <a href="#apply" className="rounded-full bg-[#16241A] hover:bg-[#22331f] text-[#EDF1E8] text-[12.5px] font-semibold px-4 py-2 transition-colors">無料で提携をはじめる</a>
+            <span className="hidden sm:block font-mono text-[11px] tracking-[0.24em] uppercase text-[#6b7a66]">For Partners</span>
+            <a href="#apply" className="rounded-full bg-[#16241A] hover:bg-[#22331f] text-[#EDF1E8] text-[14px] font-semibold px-4 py-2 transition-colors">無料で提携をはじめる</a>
           </div>
         </div>
       </div>
@@ -132,11 +132,11 @@ export default function PartnerPage() {
               仕組みを見る
             </a>
           </div>
-          <p className="mt-8 font-mono text-[11.5px] tracking-[0.14em] text-[#6b7a66]">
+          <p className="mt-8 font-mono text-[12.5px] tracking-[0.14em] text-[#6b7a66]">
             費用は一切なし　・　紹介料も受け取りません　・　申込は1分
           </p>
           {/* 冷リンクで開いた相手への実在性の証明（メディアを見れば本気度が分かる） */}
-          <Link href="/areas" className="mt-4 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[#3d5638] underline underline-offset-4 decoration-[#85AB8B]/50 hover:opacity-70 transition-opacity">
+          <Link href="/areas" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#3d5638] underline underline-offset-4 decoration-[#85AB8B]/50 hover:opacity-70 transition-opacity">
             男性向けの専門記事を50本以上発信中 — メディアを見る <span aria-hidden>→</span>
           </Link>
         </div>
@@ -173,13 +173,13 @@ export default function PartnerPage() {
             {/* Before */}
             <div className="flex-1 rounded-[1.5rem] border border-[#1f2a1d]/10 bg-[#f6f8f4] p-6 sm:p-7 flex flex-col">
               <div className="font-mono text-[10px] tracking-[0.24em] uppercase text-[#9aa79a]">Before</div>
-              <div className="mt-3 text-[14px] font-bold text-[#1f2a1d]" style={HEAD}>迷っている男性</div>
+              <div className="mt-3 text-[15px] font-bold text-[#1f2a1d]" style={HEAD}>迷っている男性</div>
               <div className="mt-3 space-y-1.5">
                 {BEFORE_WORRIES.map((w) => (
-                  <div key={w} className="rounded-lg bg-white border border-[#1f2a1d]/8 px-3 py-1.5 text-[12px] text-[#4b5b47]">「{w}」</div>
+                  <div key={w} className="rounded-lg bg-white border border-[#1f2a1d]/8 px-3 py-1.5 text-[13.5px] text-[#4b5b47]">「{w}」</div>
                 ))}
               </div>
-              <p className="mt-3 text-[11px] text-[#9aa79a] leading-[1.6]">何から始めればいいか、分からない。</p>
+              <p className="mt-3 text-[12px] text-[#9aa79a] leading-[1.6]">何から始めればいいか、分からない。</p>
             </div>
             <FlowArrow />
             {/* His Recoveries */}
@@ -189,8 +189,8 @@ export default function PartnerPage() {
                 「あなたの場合は、<br />この順番で整えると良い」
               </div>
               <div className="mt-4 flex flex-wrap gap-1.5">
-                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[11px] font-semibold text-[#C9D2C4]">AI印象診断</span>
-                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[11px] font-semibold text-[#C9D2C4]">改善プラン</span>
+                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-semibold text-[#C9D2C4]">AI印象診断</span>
+                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-semibold text-[#C9D2C4]">改善プラン</span>
               </div>
             </div>
             <FlowArrow />
@@ -199,12 +199,12 @@ export default function PartnerPage() {
               <span aria-hidden className="mx-auto grid place-items-center w-11 h-11 rounded-full bg-white border border-[#1f2a1d]/8 mb-4">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3d5638" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V9l8-5 8 5v11" /><path d="M9 20v-6h6v6" /><path d="M4 20h16" /></svg>
               </span>
-              <div className="text-[14.5px] font-bold text-[#1f2a1d]" style={HEAD}>あなたへ、ご紹介</div>
-              <p className="mt-1.5 text-[11.5px] text-[#4b5b47] leading-[1.65]">順番が来た人を、<br />ベストなタイミングで。</p>
+              <div className="text-[15.5px] font-bold text-[#1f2a1d]" style={HEAD}>あなたへ、ご紹介</div>
+              <p className="mt-1.5 text-[12.5px] text-[#4b5b47] leading-[1.65]">順番が来た人を、<br />ベストなタイミングで。</p>
             </div>
           </div>
 
-          <p className="mt-12 text-center text-[13.5px] sm:text-[15px] text-[#3d5638] font-semibold leading-[1.9]">
+          <p className="mt-12 text-center text-[15px] sm:text-[15px] text-[#3d5638] font-semibold leading-[1.9]">
             <W>だから届くのは、</W><W className="text-[#16241A]">やることが決まった、</W><W className="text-[#16241A]">意欲の高い男性</W><W>だけ。</W>
           </p>
 
@@ -259,9 +259,9 @@ export default function PartnerPage() {
           <div className="mt-14 grid sm:grid-cols-2 gap-4">
             {BENEFITS.map((b, i) => (
               <div key={b.t} className="rounded-[1.4rem] bg-white/[0.06] border border-white/10 p-6 sm:p-7">
-                <div className="font-mono text-[11px] text-[#85AB8B]">{String(i + 1).padStart(2, "0")}</div>
+                <div className="font-mono text-[12px] text-[#85AB8B]">{String(i + 1).padStart(2, "0")}</div>
                 <div className="mt-3 text-[16px] font-bold text-[#EDF1E8] leading-[1.5]" style={HEAD}>{b.t}</div>
-                <p className="mt-2.5 text-[12.5px] text-[#C9D2C4] leading-[1.9]">{b.d}</p>
+                <p className="mt-2.5 text-[14px] text-[#C9D2C4] leading-[1.9]">{b.d}</p>
               </div>
             ))}
           </div>
@@ -310,19 +310,19 @@ export default function PartnerPage() {
               },
             ].map((c) => (
               <div key={c.who} className="rounded-[1.5rem] border border-[#1f2a1d]/8 bg-[#f6f8f4] p-6 sm:p-7 flex flex-col">
-                <div className="text-[13.5px] font-bold text-[#1f2a1d]">{c.who}</div>
-                <span className="mt-2 self-start rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[10.5px] font-bold tracking-[0.04em]">あなたは {c.flow}</span>
+                <div className="text-[15px] font-bold text-[#1f2a1d]">{c.who}</div>
+                <span className="mt-2 self-start rounded-full bg-[#16241A] text-[#EDF1E8] px-3 py-1 text-[11px] font-bold tracking-[0.04em]">あなたは {c.flow}</span>
                 <div className="mt-4 text-[1.15rem] font-[800] text-[#16241A] leading-[1.4]" style={HEAD}>{c.big}</div>
                 <div className="mt-3 space-y-1.5">
                   {c.lines.map((l) => (
-                    <p key={l} className="text-[12px] text-[#4b5b47] leading-[1.8]">{l}</p>
+                    <p key={l} className="text-[13.5px] text-[#4b5b47] leading-[1.8]">{l}</p>
                   ))}
                 </div>
               </div>
             ))}
           </div>
 
-          <p className="mt-6 text-center text-[12px] text-[#6b7a66] leading-[1.8]">
+          <p className="mt-6 text-center text-[13.5px] text-[#6b7a66] leading-[1.8]">
             共通：費用は一切かかりません。最低契約期間の縛りはなく、いつでも停止できます。条件は書面で明示します。
           </p>
 
@@ -344,7 +344,7 @@ export default function PartnerPage() {
               <div key={s.n} className="rounded-[1.4rem] border border-[#1f2a1d]/8 bg-white p-6 sm:p-7">
                 <div className="text-[2.2rem] font-[800] text-[#dbe4d6] leading-none" style={HEAD}>{s.n}</div>
                 <div className="mt-4 text-[16px] font-bold text-[#16241A]" style={HEAD}>{s.t}</div>
-                <p className="mt-2 text-[12.5px] text-[#6b7a66] leading-[1.85]">{s.d}</p>
+                <p className="mt-2 text-[14px] text-[#6b7a66] leading-[1.85]">{s.d}</p>
               </div>
             ))}
           </div>
@@ -359,7 +359,7 @@ export default function PartnerPage() {
             <h2 className="mt-6 text-[1.8rem] sm:text-[2.4rem] leading-[1.3] font-[800] text-[#16241A]" style={HEAD}>
               まずは、<br className="sm:hidden" />話を聞かせてください。
             </h2>
-            <p className="mt-6 text-[14px] sm:text-[15px] leading-[1.95] text-[#4b5b47]">
+            <p className="mt-6 text-[15px] sm:text-[15px] leading-[1.95] text-[#4b5b47]">
               入力は1分、必須はお名前とメールだけ。合うかどうかの確認からで大丈夫です。
             </p>
           </div>
@@ -369,18 +369,18 @@ export default function PartnerPage() {
             {FAQ.map((f) => (
               <details key={f.q} className="group py-4">
                 <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
-                  <span className="text-[14px] font-bold text-[#1f2a1d] leading-[1.6]">{f.q}</span>
+                  <span className="text-[15px] font-bold text-[#1f2a1d] leading-[1.6]">{f.q}</span>
                   <span aria-hidden className="shrink-0 text-[#3d5638] transition-transform group-open:rotate-45">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
                   </span>
                 </summary>
-                <p className="mt-2.5 text-[12.5px] text-[#4b5b47] leading-[1.9] pr-8">{f.a}</p>
+                <p className="mt-2.5 text-[14px] text-[#4b5b47] leading-[1.9] pr-8">{f.a}</p>
               </details>
             ))}
           </div>
 
           <PartnerApplyForm />
-          <p className="mt-8 text-[11px] text-[#8a9686] leading-[1.85] text-center">
+          <p className="mt-8 text-[12px] text-[#8a9686] leading-[1.85] text-center">
             His Recoveries は医療機関ではなく、施術・診療を行いません。医療機関のご紹介は、医療広告に関する法令・ガイドラインを遵守した形でのみ行います。
           </p>
         </div>
@@ -391,7 +391,7 @@ export default function PartnerPage() {
         <div className="max-w-[1100px] mx-auto px-6 sm:px-8 pt-10 pb-4">
           <div className="rounded-[1.4rem] bg-white/70 border border-[#1f2a1d]/8 p-6 sm:p-7">
             <div className="font-mono text-[10px] tracking-[0.24em] uppercase text-[#85AB8B] mb-4">Company — 運営会社</div>
-            <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-[13px]">
+            <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-[14.5px]">
               {[
                 ["社名", `${site.company.name}（${site.company.nameEn}）`],
                 ["事業内容", "男性ウェルネスサービス「His Recoveries」の企画・運営"],
@@ -408,12 +408,12 @@ export default function PartnerPage() {
         </div>
         <div className="max-w-[1100px] mx-auto px-6 sm:px-8 pb-10 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <Link href="/" className="logo-type text-[17px] font-semibold text-[#16241A]">His Recoveries</Link>
-          <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-[#4b5b47]">
+          <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-[#4b5b47]">
             <Link href="/" className="hover:text-[#16241A] transition-colors">ホーム</Link>
             <Link href="/areas" className="hover:text-[#16241A] transition-colors">記事</Link>
             <Link href="/privacy" className="hover:text-[#16241A] transition-colors">プライバシー・免責事項</Link>
           </nav>
-          <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries</span>
+          <span className="text-[13.5px] text-[#6b7a66]">© 2026 His Recoveries</span>
         </div>
       </footer>
     </div>
@@ -429,15 +429,15 @@ function TrackCard({ tag, title, desc, chips, money, icon }: { tag: string; titl
       </span>
       <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B]">{tag}</div>
       <div className="mt-2 text-[1.3rem] font-[800] text-[#16241A]" style={HEAD}>{title}</div>
-      <p className="mt-3 text-[13px] text-[#4b5b47] leading-[1.9]">{desc}</p>
+      <p className="mt-3 text-[14.5px] text-[#4b5b47] leading-[1.9]">{desc}</p>
       <div className="mt-5 flex flex-wrap gap-2">
         {chips.map((c) => (
-          <span key={c} className="rounded-full bg-[#f6f8f4] border border-[#1f2a1d]/8 px-3 py-1.5 text-[12px] font-semibold text-[#3d5638]">{c}</span>
+          <span key={c} className="rounded-full bg-[#f6f8f4] border border-[#1f2a1d]/8 px-3 py-1.5 text-[13.5px] font-semibold text-[#3d5638]">{c}</span>
         ))}
       </div>
       <div className="mt-6 pt-4 border-t border-[#1f2a1d]/8 flex items-center gap-2">
         <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-[#9aa79a]">Fee</span>
-        <span className="text-[12.5px] font-bold text-[#16241A]">{money}</span>
+        <span className="text-[14px] font-bold text-[#16241A]">{money}</span>
       </div>
     </div>
   );

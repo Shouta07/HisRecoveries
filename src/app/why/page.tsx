@@ -51,12 +51,12 @@ export default function WhyPage() {
       <section className="relative overflow-hidden bg-[#16241A] text-[#EDF1E8]">
         <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 95% 75% at 50% 18%, #24382b 0%, #16241A 58%, #0f1a12 100%)" }} />
         <div className="relative max-w-[760px] mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-12 sm:pb-16">
-          <nav aria-label="パンくず" className="text-[11.5px] text-[#9FB0A0] mb-8">
+          <nav aria-label="パンくず" className="text-[12.5px] text-[#9FB0A0] mb-8">
             <Link href="/" className="hover:text-[#EDF1E8]">ホーム</Link>
             <span className="mx-1.5">/</span>
             <span className="text-[#EDF1E8]">なぜ、やるのか</span>
           </nav>
-          <div className="font-mono text-[11px] tracking-[0.28em] text-[#85AB8B] mb-4">WHY — なぜ、やるのか</div>
+          <div className="hr-eyebrow hr-eyebrow-on-dark mb-4">WHY — なぜ、やるのか</div>
           <h1 className="text-[#EDF1E8] text-[2rem] sm:text-[2.9rem] leading-[1.35] font-[800]" style={HEAD}>
             治らない時間を、<br />
             <span className="text-[#9ec4a3]">知っているから。</span>
@@ -131,19 +131,19 @@ export default function WhyPage() {
               <div>
                 <p className="text-[15.5px] font-bold text-[#1f2a1d]" style={HEAD}>
                   {operator.name}
-                  <span className="ml-2 text-[12px] font-normal text-[#6b7a66]">{operator.role}</span>
+                  <span className="ml-2 text-[13.5px] font-normal text-[#6b7a66]">{operator.role}</span>
                 </p>
                 {operator.background.length > 0 ? (
                   <ul className="mt-3 space-y-1">
                     {operator.background.map((b) => (
-                      <li key={b} className="text-[12.5px] text-[#5c6b58] leading-[1.8]">・{b}</li>
+                      <li key={b} className="text-[14px] text-[#5c6b58] leading-[1.8]">・{b}</li>
                     ))}
                   </ul>
                 ) : null}
               </div>
             </div>
           ) : (
-            <p className="text-[12.5px] text-[#5c6b58] leading-[1.95]">
+            <p className="text-[14px] text-[#5c6b58] leading-[1.95]">
               いまは名前と顔を出していませんが、
               <span className="text-[#1f2a1d] font-semibold">公開の準備をしています</span>。
               大事なことをお任せいただく以上、誰がやっているかは見えているべきだと考えています。
@@ -156,21 +156,21 @@ export default function WhyPage() {
           <h2 className="text-[1.25rem] sm:text-[1.55rem] leading-[1.5] mb-2 text-[#EDF1E8] font-[800]" style={HEAD}>
             まず、あなたの<span className="text-[#85AB8B]">「整える順番」</span>を。
           </h2>
-          <p className="text-[13px] text-[#C9D2C4] leading-[1.95] mb-6">
+          <p className="text-[14.5px] text-[#C9D2C4] leading-[1.95] mb-6">
             30秒・無料・匿名。迎えたい日を選ぶだけで、その日までにやることの順番をお見せします。
             相談は、そのあとで大丈夫です。
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/#plan" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14px] font-bold px-7 py-3.5 transition-colors">
+            <Link href="/#plan" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[15px] font-bold px-7 py-3.5 transition-colors">
               整える順番を見る <span aria-hidden>→</span>
             </Link>
-            <ConsultLink className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 hover:bg-white/10 text-[#EDF1E8] text-[14px] font-semibold px-7 py-3.5 transition-colors">
+            <ConsultLink className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 hover:bg-white/10 text-[#EDF1E8] text-[15px] font-semibold px-7 py-3.5 transition-colors">
               無料で相談する <span aria-hidden>→</span>
             </ConsultLink>
           </div>
         </div>
 
-        <p className="mt-6 text-[11.5px] text-[#8a9686] leading-[1.9]">
+        <p className="mt-6 text-[12.5px] text-[#8a9686] leading-[1.9]">
           ※ His Recoveries は医療行為を行いません。診断・治療方針の決定は医師の領域です。
           ここに書いた経験は運営者本人のものであり、同じ経過をたどることを示すものではありません。
         </p>

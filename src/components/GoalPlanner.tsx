@@ -26,7 +26,7 @@ type Saved = { goal: string; days: number; done: string[] };
 
 export default function GoalPlanner() {
   const [goalId, setGoalId] = useState<string | null>(null);
-  const [days, setDays] = useState<number>(90);
+  const [days, setDays] = useState<number>(30);
   const [done, setDone] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -38,7 +38,7 @@ export default function GoalPlanner() {
         const s = JSON.parse(raw) as Saved;
         if (s.goal && getGoal(s.goal)) {
           setGoalId(s.goal);
-          setDays(s.days ?? 90);
+          setDays(s.days ?? 30);
           setDone(Array.isArray(s.done) ? s.done : []);
         }
       }
@@ -59,7 +59,7 @@ export default function GoalPlanner() {
 
   function chooseGoal(id: string) {
     const g = getGoal(id);
-    const d = g?.defaultDays ?? 90;
+    const d = g?.defaultDays ?? 30;
     setGoalId(id);
     setDays(d);
     setDone([]);
@@ -102,7 +102,7 @@ export default function GoalPlanner() {
         <div className="rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
           {/* ヘッダー */}
           <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
-            <div className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#85AB8B]">
+            <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#85AB8B]">
               30秒・無料・匿名
             </div>
             <h2
@@ -120,7 +120,7 @@ export default function GoalPlanner() {
                 </>
               )}
             </h2>
-            <p className="mt-2 text-[12.5px] sm:text-[13.5px] text-[#C9D2C4] leading-[1.8]">
+            <p className="mt-2 text-[14px] sm:text-[15px] text-[#C9D2C4] leading-[1.8]">
               {goal
                 ? goal.outcome + "ために、その日までにやることを順番に並べました。"
                 : "その日までにやることを、順番に。一つずつ終わらせれば間に合います。"}
@@ -131,7 +131,7 @@ export default function GoalPlanner() {
             {/* ステップ1: 目的を選ぶ */}
             {!goal ? (
               <>
-                <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
+                <div className="text-[13.5px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
                   迎えたい日を選ぶ
                 </div>
                 <div className="grid sm:grid-cols-3 gap-3">
@@ -145,10 +145,10 @@ export default function GoalPlanner() {
                       <span className="text-[15.5px] font-bold text-[#1f2a1d] leading-[1.5]" style={HEAD}>
                         {g.label}
                       </span>
-                      <p className="mt-1.5 text-[12px] text-[#5c6b58] leading-[1.8]">
+                      <p className="mt-1.5 text-[13.5px] text-[#5c6b58] leading-[1.8]">
                         {g.outcome}
                       </p>
-                      <span className="mt-2.5 inline-flex items-center gap-1 text-[12px] font-semibold text-[#3d5638]">
+                      <span className="mt-2.5 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#3d5638]">
                         {g.defaultDays}日プランを作る{" "}
                         <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
                           →
@@ -159,7 +159,7 @@ export default function GoalPlanner() {
                 </div>
 
                 {/* 期限がない人・贈りたい人は別導線へ（主導線は3つに絞る） */}
-                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-[#5c6b58]">
+                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[13.5px] text-[#5c6b58]">
                   <Link href="/areas" className="hover:text-[#1f2a1d] underline underline-offset-2">
                     期限はないが、整えたい
                   </Link>
@@ -172,7 +172,7 @@ export default function GoalPlanner() {
               <>
                 {/* 期日の調整 */}
                 <div className="flex flex-wrap items-center gap-2 mb-6">
-                  <span className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mr-1">
+                  <span className="text-[13.5px] font-bold tracking-[0.08em] text-[#9aa79a] mr-1">
                     その日まで
                   </span>
                   {DAY_OPTIONS.map((d) => (
@@ -180,7 +180,7 @@ export default function GoalPlanner() {
                       key={d}
                       type="button"
                       onClick={() => chooseDays(d)}
-                      className={`rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors ${
+                      className={`rounded-full px-3.5 py-1.5 text-[14px] font-semibold transition-colors ${
                         d === days
                           ? "bg-[#16241A] text-[#EDF1E8]"
                           : "bg-[#f6f8f4] text-[#3a423a] hover:bg-[#eef3ea]"
@@ -192,7 +192,7 @@ export default function GoalPlanner() {
                   <button
                     type="button"
                     onClick={reset}
-                    className="ml-auto text-[12px] text-[#6b7a66] hover:text-[#1f2a1d] underline underline-offset-2"
+                    className="ml-auto text-[13.5px] text-[#6b7a66] hover:text-[#1f2a1d] underline underline-offset-2"
                   >
                     目的を選び直す
                   </button>
@@ -201,10 +201,10 @@ export default function GoalPlanner() {
                 {/* 進捗バー */}
                 <div className="mb-6">
                   <div className="flex items-baseline justify-between mb-2">
-                    <span className="text-[12.5px] font-bold text-[#1f2a1d]">
+                    <span className="text-[14px] font-bold text-[#1f2a1d]">
                       {doneCount} / {total} 完了
                     </span>
-                    <span className="font-mono text-[12px] text-[#3d5638] tabular-nums">{pct}%</span>
+                    <span className="font-mono text-[13.5px] text-[#3d5638] tabular-nums">{pct}%</span>
                   </div>
                   <div className="h-2.5 w-full rounded-full bg-[#e7ece4] overflow-hidden">
                     <div
@@ -223,10 +223,10 @@ export default function GoalPlanner() {
                     <p className="mt-1.5 text-[15px] font-bold" style={HEAD}>
                       {nextStep.title}
                     </p>
-                    <p className="mt-1 text-[12px] text-[#C9D2C4] leading-[1.8]">{nextStep.why}</p>
+                    <p className="mt-1 text-[13.5px] text-[#C9D2C4] leading-[1.8]">{nextStep.why}</p>
                     <Link
                       href={`/areas/${nextStep.areaId}/${nextStep.slug}`}
-                      className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#9ec4a3] hover:text-[#EDF1E8] transition-colors"
+                      className="mt-2.5 inline-flex items-center gap-1 text-[14px] font-semibold text-[#9ec4a3] hover:text-[#EDF1E8] transition-colors"
                     >
                       やり方を読む <span aria-hidden>→</span>
                     </Link>
@@ -238,14 +238,14 @@ export default function GoalPlanner() {
                     <p className="text-[15px] font-bold" style={HEAD}>
                       全部、終わりました。
                     </p>
-                    <p className="mt-1 text-[12px] text-[#C9D2C4] leading-[1.8]">
+                    <p className="mt-1 text-[13.5px] text-[#C9D2C4] leading-[1.8]">
                       あとは当日を迎えるだけです。仕上げを一緒に確認することもできます。
                     </p>
                   </div>
                 ) : null}
 
                 {/* ロードマップ（タイムライン） */}
-                <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">
+                <div className="text-[13.5px] font-bold tracking-[0.08em] text-[#9aa79a] mb-3">
                   {goal.label}までのロードマップ
                 </div>
                 <ol className="relative">
@@ -275,12 +275,12 @@ export default function GoalPlanner() {
                               : "bg-white border-[#c9d3c4] hover:border-[#3d5638]"
                           }`}
                         >
-                          {isDone ? <span className="text-[12px] leading-none">✓</span> : null}
+                          {isDone ? <span className="text-[13.5px] leading-none">✓</span> : null}
                         </button>
                         {/* 中身 */}
                         <div className={`flex-1 min-w-0 ${isDone ? "opacity-55" : ""}`}>
                           <div className="flex items-baseline gap-2 flex-wrap">
-                            <span className="font-mono text-[10.5px] text-[#6b7a66]">{s.when}</span>
+                            <span className="font-mono text-[11px] text-[#6b7a66]">{s.when}</span>
                             {isNext && (
                               <span className="rounded-full bg-[#eef3ea] text-[#3d5638] px-2 py-0.5 text-[10px] font-bold">
                                 次はここ
@@ -288,17 +288,17 @@ export default function GoalPlanner() {
                             )}
                           </div>
                           <p
-                            className={`text-[14.5px] font-bold text-[#1f2a1d] leading-[1.5] ${
+                            className={`text-[15.5px] font-bold text-[#1f2a1d] leading-[1.5] ${
                               isDone ? "line-through" : ""
                             }`}
                             style={HEAD}
                           >
                             {s.title}
                           </p>
-                          <p className="mt-0.5 text-[12px] text-[#5c6b58] leading-[1.8]">{s.why}</p>
+                          <p className="mt-0.5 text-[13.5px] text-[#5c6b58] leading-[1.8]">{s.why}</p>
                           <Link
                             href={`/areas/${s.areaId}/${s.slug}`}
-                            className="mt-1 inline-flex items-center gap-1 text-[12px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity"
+                            className="mt-1 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#3d5638] hover:opacity-70 transition-opacity"
                           >
                             やり方を読む <span aria-hidden>→</span>
                           </Link>
@@ -310,13 +310,13 @@ export default function GoalPlanner() {
 
                 {/* 相談は最後。まず自分で進められる。困ったら相談。 */}
                 <div className="mt-7 border-t border-[#1f2a1d]/10 pt-5">
-                  <p className="text-[12.5px] text-[#5c6b58] leading-[1.9]">
+                  <p className="text-[14px] text-[#5c6b58] leading-[1.9]">
                     ここまで自分で進められます。迷ったとき・自分の場合を詰めたいときだけ、
                     どうぞ。
                   </p>
                   <ConsultLink
                     market={goal.id}
-                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#3d5638] text-[#1f2a1d] text-[13px] font-semibold px-6 py-2.5 transition-colors"
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#3d5638] text-[#1f2a1d] text-[14.5px] font-semibold px-6 py-2.5 transition-colors"
                   >
                     このプランを、一緒に詰める <span aria-hidden>→</span>
                   </ConsultLink>

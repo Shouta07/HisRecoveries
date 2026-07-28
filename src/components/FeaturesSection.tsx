@@ -72,7 +72,7 @@ export default function FeaturesSection() {
             当日までの、進み方
           </h2>
         </div>
-        <p className="text-center text-[13px] sm:text-[14px] text-[#4b5b47] leading-[1.9] max-w-[30rem] mx-auto mb-8 sm:mb-10 -mt-3 sm:-mt-4">
+        <p className="text-center text-[14.5px] sm:text-[15px] text-[#4b5b47] leading-[1.9] max-w-[30rem] mx-auto mb-8 sm:mb-10 -mt-3 sm:-mt-4">
           機能ではなく、体験で。迎えたい日まで、この4つを繰り返すだけです。
         </p>
 
@@ -80,17 +80,17 @@ export default function FeaturesSection() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {FEATURES.map((f, i) => (
             <div key={f.t} className="relative flex flex-col items-center text-center rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 px-3 sm:px-6 py-6 sm:py-8">
-              <span className="font-mono text-[10.5px] tracking-[0.2em] text-[#85AB8B] mb-2">
+              <span className="font-mono text-[11px] tracking-[0.2em] text-[#85AB8B] mb-2">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="text-[13.5px] sm:text-[1.05rem] font-bold text-[#1f2a1d] leading-[1.45]" style={MINCHO}>{f.t}</h3>
+              <h3 className="text-[15px] sm:text-[1.05rem] font-bold text-[#1f2a1d] leading-[1.45]" style={MINCHO}>{f.t}</h3>
               <span aria-hidden className="block w-8 h-px bg-[#1f2a1d]/15 my-3 sm:my-4" />
               <span aria-hidden className="grid place-items-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#eef3ea] mb-3 sm:mb-4">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3d5638" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                   {f.icon}
                 </svg>
               </span>
-              <p className="text-[11px] sm:text-[12.5px] text-[#4b5b47] leading-[1.7]">{f.d}</p>
+              <p className="text-[12px] sm:text-[14px] text-[#4b5b47] leading-[1.7]">{f.d}</p>
               {i < FEATURES.length - 1 && (
                 <span aria-hidden className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 text-[#85AB8B] text-[15px]">→</span>
               )}

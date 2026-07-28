@@ -107,16 +107,16 @@ export default function NextStepBlock({
   const eye = isDark ? "text-zinc-500" : "text-zinc-400";
   const text = isDark ? "text-zinc-400" : "text-zinc-500";
   const primaryClass = isDark
-    ? "inline-flex items-center justify-center gap-2 rounded-full bg-white text-zinc-900 text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-200 transition-colors"
-    : "inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 text-white text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-700 transition-colors";
+    ? "inline-flex items-center justify-center gap-2 rounded-full bg-white text-zinc-900 text-[15px] font-bold px-6 py-3.5 hover:bg-zinc-200 transition-colors"
+    : "inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 text-white text-[15px] font-bold px-6 py-3.5 hover:bg-zinc-700 transition-colors";
   const secondaryClass = isDark
-    ? "inline-flex items-center justify-center gap-2 rounded-full border border-zinc-600 text-white text-[14px] font-bold px-6 py-3.5 hover:border-zinc-400 transition-colors"
-    : "inline-flex items-center justify-center gap-2 rounded-full bg-zinc-100 text-zinc-900 text-[14px] font-bold px-6 py-3.5 hover:bg-zinc-200 transition-colors";
+    ? "inline-flex items-center justify-center gap-2 rounded-full border border-zinc-600 text-white text-[15px] font-bold px-6 py-3.5 hover:border-zinc-400 transition-colors"
+    : "inline-flex items-center justify-center gap-2 rounded-full bg-zinc-100 text-zinc-900 text-[15px] font-bold px-6 py-3.5 hover:bg-zinc-200 transition-colors";
 
   return (
     <section className={bg}>
       <div className="mx-auto max-w-[1000px] px-6 sm:px-10 py-16 sm:py-24 text-center">
-        <p className={`text-[12px] font-bold tracking-[0.08em] uppercase ${eye}`}>
+        <p className={`text-[13.5px] font-bold tracking-[0.08em] uppercase ${eye}`}>
           {eyebrow}
         </p>
         <h2
@@ -126,7 +126,7 @@ export default function NextStepBlock({
         >
           {title}
         </h2>
-        <p className={`mt-4 text-[14px] leading-[2] max-w-[34rem] mx-auto ${text}`}>
+        <p className={`mt-4 text-[15px] leading-[2] max-w-[34rem] mx-auto ${text}`}>
           {body}
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">

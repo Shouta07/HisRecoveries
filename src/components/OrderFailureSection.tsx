@@ -32,9 +32,9 @@ const HR_ORDER = [
 
 export default function OrderFailureSection() {
   return (
-    <section id="order" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+    <section id="order" className="relative z-10 scroll-mt-24 text-[#1f2a1d] hr-readable">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
-        <p className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#3d5638] mb-3">
+        <p className="hr-eyebrow mb-3.5">
           なぜ、自己流だと届かないのか
         </p>
         <h2
@@ -45,7 +45,7 @@ export default function OrderFailureSection() {
           <br className="hidden sm:block" />
           <span className="text-[#3d5638]">順番</span>で失敗します。
         </h2>
-        <p className="mt-4 text-[13.5px] sm:text-[14.5px] text-[#4b5b47] leading-[1.95] max-w-[34rem]">
+        <p className="mt-4 text-[15px] sm:text-[15.5px] text-[#4b5b47] leading-[1.95] max-w-[34rem]">
           やる気がないわけでも、情報が足りないわけでもありません。
           効くまでに時間がかかるものを後回しにして、すぐ変わるものから手をつける。
           それだけで、同じ努力が間に合わなくなります。
@@ -55,7 +55,7 @@ export default function OrderFailureSection() {
         <div className="mt-9 grid sm:grid-cols-2 gap-3 sm:gap-4">
           {/* 自己流 */}
           <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-6">
-            <div className="text-[12px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
+            <div className="text-[13.5px] font-bold tracking-[0.08em] text-[#9aa79a] mb-4">
               自己流の場合
             </div>
             <ol className="space-y-0">
@@ -67,7 +67,7 @@ export default function OrderFailureSection() {
                       <span aria-hidden className="w-px flex-1 bg-[#e7ece4] mt-1" />
                     )}
                   </div>
-                  <p className="text-[13.5px] text-[#5c6b58] leading-[1.6]">{t}</p>
+                  <p className="text-[15px] text-[#5c6b58] leading-[1.6]">{t}</p>
                 </li>
               ))}
             </ol>
@@ -75,7 +75,7 @@ export default function OrderFailureSection() {
 
           {/* His Recoveries */}
           <div className="rounded-[1.4rem] bg-[#16241A] text-[#EDF1E8] p-5 sm:p-6">
-            <div className="text-[12px] font-bold tracking-[0.08em] text-[#85AB8B] mb-4">
+            <div className="text-[13.5px] font-bold tracking-[0.08em] text-[#85AB8B] mb-4">
               His Recoveries の場合
             </div>
             <ol className="space-y-0">
@@ -87,7 +87,7 @@ export default function OrderFailureSection() {
                       <span aria-hidden className="w-px flex-1 bg-[#9ec4a3]/30 mt-1" />
                     )}
                   </div>
-                  <p className="text-[13.5px] leading-[1.6]">{t}</p>
+                  <p className="text-[15px] leading-[1.6]">{t}</p>
                 </li>
               ))}
             </ol>
@@ -100,16 +100,16 @@ export default function OrderFailureSection() {
               →
             </span>
             <div>
-              <p className="text-[14px] font-bold leading-[1.6]" style={MINCHO}>
+              <p className="text-[15px] font-bold leading-[1.6]" style={MINCHO}>
                 では、あなたの場合は何からやるべきか。
               </p>
-              <p className="mt-1 text-[12px] text-[#C9D2C4] leading-[1.85]">
+              <p className="mt-1 text-[13.5px] text-[#C9D2C4] leading-[1.85]">
                 同じ悩みでも、期日・現在地・体質で最初の一手は変わります。
                 そこを設計するのが、このサービスです。
               </p>
               <Link
                 href="/#plan"
-                className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-2.5 transition-colors"
+                className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14.5px] font-bold px-6 py-2.5 transition-colors"
               >
                 30秒で自分専用プランを見る <span aria-hidden>→</span>
               </Link>
