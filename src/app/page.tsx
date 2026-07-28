@@ -84,61 +84,61 @@ export default function HomePage() {
       />
       <GlassNav />
 
-      {/* ══════ Hero — 写真が主役。見出しは縦組みの明朝 ══════
-          参考にした誌面と同じ組み方。写真を全幅で敷き、その上に縦書きを置く。
-          横組みだけの画面と、ここで決定的に印象が変わる。 */}
-      <header className="relative w-full overflow-hidden bg-tokiwa">
-        <div className="relative h-[78vh] min-h-[520px] w-full sm:h-[86vh]">
-          <Image
-            src="/media/hero/portrait.png"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[42%_28%]"
-          />
-          {/* 文字を読ませるための、ごく薄いスクリム。写真を暗くしすぎない */}
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(100deg, rgba(30,42,32,0.42) 0%, rgba(30,42,32,0.12) 42%, rgba(243,240,234,0.10) 68%, rgba(243,240,234,0.55) 100%)",
-            }}
-          />
+      {/* ══════ 1画面目 ══════
+          写真と検索を1つの箱（100svh）に入れている。理由は ArticleIndex 冒頭のコメント。
+          ここで渡しているのは写真の中身だけで、高さは ArticleIndex 側が持つ。
 
-          {/* 縦組みの見出し */}
-          <h1
-            className="hr-tate absolute right-5 top-[13%] text-[30px] text-sumi sm:right-12 sm:text-[42px] lg:text-[50px]"
-            style={{ ...MINCHO, fontWeight: 600 }}
-          >
-            もっといい自分は、
-            <br />
-            つくれる。
-          </h1>
+          写真は全幅、見出しは縦組みの明朝。参考にした誌面と同じ組み方で、
+          横組みだけの画面とはここで決定的に印象が変わる。 */}
+      <ArticleIndex
+        hero={
+          <>
+            <Image
+              src="/media/hero/portrait.png"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[42%_26%]"
+            />
+            {/* 文字を読ませるための、ごく薄いスクリム。写真を暗くしすぎない */}
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(100deg, rgba(30,42,32,0.46) 0%, rgba(30,42,32,0.14) 40%, rgba(243,240,234,0.10) 66%, rgba(243,240,234,0.55) 100%)",
+              }}
+            />
 
-          {/* 説明。写真の下部、明るい側に置く */}
-          <div className="absolute bottom-8 left-5 max-w-[26em] sm:bottom-12 sm:left-10">
-            <p className="text-[14px] leading-[2.1] text-kinari sm:text-[15px]">
-              髪、肌、睡眠、疲れ、体、パートナーとのこと。
+            {/* 縦組みの見出し。
+                天は固定値で開ける（ナビの下に潜らせない）。
+                文字サイズは画面の高さに追従させる。写真の高さが 100svh から
+                検索フォームぶんを引いた残りなので、%指定だと低い端末で
+                ナビや説明文とぶつかる。 */}
+            <h1
+              className="hr-tate absolute right-4 top-[68px] text-[clamp(20px,4.2svh,32px)] text-sumi sm:right-10 sm:top-[12%] sm:text-[38px] lg:right-12 lg:text-[48px]"
+              style={{ ...MINCHO, fontWeight: 600 }}
+            >
+              もっといい自分は、
               <br />
-              誰にも相談できないまま調べていることを、
-              <br />
+              つくれる。
+            </h1>
+
+            {/* 説明。写真の下部、明るい側に置く。縦組みの列に食い込まないよう幅を切る */}
+            <p className="absolute bottom-5 left-4 max-w-[calc(100%-5.5rem)] text-[12.5px] leading-[1.85] text-kinari sm:bottom-10 sm:left-10 sm:max-w-[30em] sm:text-[15px] sm:leading-[2.1]">
+              髪、肌、眠り、疲れ、体、パートナーとのこと。
+              <span className="hidden sm:inline">
+                <br />
+                誰にも相談できないまま調べていることを、
+              </span>
+              <br className="sm:hidden" />
               <span className="font-semibold">実体験だけではなく、専門家への取材をもとに</span>
-              <br />
               発信しています。
             </p>
-          </div>
-        </div>
-      </header>
-
-      {/* ══════ 記事の索引 — このメディアの本体 ══════ */}
-      <section
-        id="index"
-        className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[44px] sm:pt-[64px] lg:pt-[80px] scroll-mt-[68px]"
-      >
-        <ArticleIndex />
-      </section>
+          </>
+        }
+      />
 
       {/* ══════ 最新記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
