@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+// メディアが主、サービスが従。記事を先頭に置く。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
-  { href: "/why", label: "想い" },
-  { href: "/#pricing", label: "プラン" },
-  { href: "/producer", label: "担当者" },
+  { href: "/plan", label: "個人向け" },
+  { href: "/business", label: "法人向け" },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,

@@ -121,8 +121,8 @@ export default function TrustSection() {
             お金の基準
           </p>
           <ul className="space-y-1.5 text-[14px] text-[#5c6b58] leading-[1.8]">
-            <li>・商品は<span className="text-[#1f2a1d] font-semibold">30日 ¥49,800（税込）の1本のみ</span>。先着10名さまの価格で、11名以降は ¥66,000（税込）です</li>
-            <li>・表示価格はすべて税込です。追加費用はありません</li>
+            <li>・商品は<span className="text-[#1f2a1d] font-semibold">30日プランの1本のみ</span>です。上位プランも追加オプションもありません</li>
+            <li>・費用はご相談のうえで個別にお見積りします。お出しした金額から増えることはありません</li>
             <li>・会場（レンタルスペース等）の費用は、こちらで負担します</li>
             <li>・服・化粧品・カット代・交通費は、実費としてご本人のご負担です</li>
             <li>・<span className="text-[#1f2a1d] font-semibold">提携先からの紹介料は受け取っていません</span>。だから「やらなくていい」と言えます</li>

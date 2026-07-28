@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ConsultLink from "@/components/ConsultLink";
 import { site } from "@/lib/site";
-import { PLAN, TIERS, yen } from "@/lib/pricing";
+import { PLAN } from "@/lib/pricing";
 import {
   producer,
   PROFILE,
@@ -402,9 +402,8 @@ export default function ProducerPage() {
               話してから決めてください。
             </p>
             <p className="mt-4 text-[14px] text-[#C9D2C4] leading-[2] max-w-[34rem]">
-              お取り扱いは{PLAN.name}（{PLAN.days}日）の1本だけです。
-              {yen(TIERS.founder.amount)}（税込・{TIERS.founder.label}）、実施は{PLAN.where}・
-              {PLAN.when}。
+              お取り扱いは{PLAN.name}（{PLAN.days}日）の1本だけです。実施は{PLAN.where}・
+              {PLAN.when}。費用は内容によって変わるため、ご相談のうえでお見積りします。
               ご相談は無料で、合わないと思えばその場でそうお伝えします。
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
@@ -412,7 +411,7 @@ export default function ProducerPage() {
                 まず無料で相談する <span aria-hidden>→</span>
               </ConsultLink>
               <Link
-                href="/#pricing"
+                href="/plan"
                 className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-[15px] font-semibold px-6 py-3.5 transition-colors"
               >
                 プランの中身を見る

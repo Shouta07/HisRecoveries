@@ -155,7 +155,8 @@ export default function ApplyForm() {
         >
           <option value="">選択してください（任意）</option>
           <option value="まずは相談だけ（無料）">まずは相談だけ（無料）</option>
-          <option value="第一印象改善プラン（¥49,800 税込・30日／先着10名）">第一印象改善プラン（¥49,800 税込・30日／先着10名）</option>
+          <option value="第一印象改善プラン（30日）について聞きたい">第一印象改善プラン（30日）について聞きたい</option>
+          <option value="法人向け研修について聞きたい">法人向け研修について聞きたい</option>
         </select>
       </div>
 
@@ -256,7 +257,7 @@ export default function ApplyForm() {
       <p className="text-[12.5px] text-[#6b7a66] leading-[1.8]">
         ※ ご相談は無料です。目安：3営業日以内に一次のご連絡をします。
         お取り扱いは第一印象改善プラン（30日）1本のみで、医療行為は含みません。
-        お支払いはクレジットカード（Stripe）のみ、LINEはお支払い後の伴走でのみ使います。
+        費用はご相談のうえで個別にお見積りします。LINEはお申し込み後のご連絡に使います。
       </p>
     </form>
   );

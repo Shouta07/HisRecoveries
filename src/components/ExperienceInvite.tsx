@@ -10,9 +10,9 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-// 商品は「第一印象改善プラン（30日 ¥49,800 税込）」の1本のみ。
+// 商品は「第一印象改善プラン（30日）」の1本のみ。費用はサイトに出さず個別見積。
 // ここに別プランを増やさないこと（増やすと記事からの導線が割れる）。
-const STEPS = ["カウンセリング", "改善プラン", "1日で整える", "30日の伴走"];
+const STEPS = ["カウンセリング", "改善プラン", "1日で整える", "材料を渡す"];
 
 /** 記事の文脈に合わせた一言（省略時は汎用）。 */
 export default function ExperienceInvite({ context }: { context?: string }) {
@@ -27,8 +27,8 @@ export default function ExperienceInvite({ context }: { context?: string }) {
         </h3>
         <p className="text-[14.5px] text-[#C9D2C4] leading-[1.95] max-w-[34rem] mb-4">
           読んで分かっても、自分に合う形にするのは難しいもの。His Recoveries は、
-          何をやるかを決めて、眉・メイク・服・髪型・撮影を1日で整え、自分で再現できるまで見届けます。
-          プランは<span className="text-[#EDF1E8] font-semibold">30日 ¥49,800（税込・先着10名）</span>の1本だけです。
+          何をやるかを決めて、眉・メイク・服・髪型・撮影を1日で整え、手順の動画とサイズ表を持ち帰っていただきます。
+          お取り扱いは<span className="text-[#EDF1E8] font-semibold">30日プラン</span>の1本だけです。費用は個別のお見積りで、ご相談は無料です。
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
@@ -44,7 +44,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
           <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
             無料で相談する
           </BookingCTA>
-          <Link href="/#pricing" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
+          <Link href="/plan" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
             プランの中身を見る <span aria-hidden>→</span>
           </Link>
         </div>

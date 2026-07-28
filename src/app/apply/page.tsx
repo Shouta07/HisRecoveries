@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "無料で相談する — 実名不要・秘密は守ります",
   description:
-    "His Recoveries への無料相談。実名不要（ニックネーム可）。第一印象改善プラン（30日 ¥49,800 税込）が合うかどうかを、申し込む前に確かめられます。",
+    "His Recoveries への無料相談。実名不要（ニックネーム可）。第一印象改善プラン（30日）が合うかどうかを、申し込む前に確かめられます。費用はご相談のうえで個別にお見積りします。",
   alternates: { canonical: `${site.url}/apply` },
   robots: { index: true, follow: true },
 };
@@ -33,7 +33,7 @@ export default function ApplyPage() {
           何が正解か、いくらかかるか。<strong className="font-bold text-[#1f2a1d]">遠回りせず、あなたのペースで一緒に整理します。</strong>
           気になることは、いくつでも。実名・顔写真は不要です。
           <br />
-          お取り扱いは<Link href="/#pricing" className="font-bold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4">第一印象改善プラン（30日・¥49,800 税込）</Link>の1本だけ。
+          お取り扱いは<Link href="/plan" className="font-bold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4">第一印象改善プラン（30日）</Link>の1本だけ。
           このフォームからのご相談は無料で、3営業日を目処にご返信します。
           話した内容も、あなたのことも<strong className="font-bold text-[#1f2a1d]">外に出しません（完全守秘）</strong>。
         </p>

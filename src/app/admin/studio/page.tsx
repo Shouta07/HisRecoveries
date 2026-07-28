@@ -52,9 +52,6 @@ export default function StudioPage() {
               在庫を見て、次に作るものを決める場所。
             </p>
             <div className="mt-2 flex flex-wrap gap-4 text-[12px]">
-              <Link href="/admin/checkout" className="text-sage-bright hover:text-brand-cream font-semibold">
-                お支払いリンク発行 →
-              </Link>
               <Link href="/admin/markets" className="text-sage hover:text-sage-bright">
                 勝てる市場 →
               </Link>

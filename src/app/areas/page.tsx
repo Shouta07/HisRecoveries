@@ -12,6 +12,7 @@ import {
 } from "@/lib/clusters";
 import ConsultLink from "@/components/ConsultLink";
 import DesireBrowser from "@/components/DesireBrowser";
+import StageBrowser from "@/components/StageBrowser";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -192,6 +193,11 @@ export default function LibraryPage({
           </p>
         </header>
 
+        {/* ライフステージから探す — 悩みの名前を知らなくても、年代なら迷わない */}
+        <div className="mb-12">
+          <StageBrowser compact />
+        </div>
+
         {/* 目的から探す（あなたは、何を叶えたい？）— 悩み名がわからなくても探せる入口 */}
         <div className="mb-12">
           <DesireBrowser activeDesire={activeDesire} />
@@ -316,7 +322,7 @@ export default function LibraryPage({
             <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-white text-[14.5px] font-bold px-6 py-3 transition-colors">
               無料で相談する（無料） <span aria-hidden>→</span>
             </ConsultLink>
-            <Link href="/#pricing" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[14.5px] font-semibold px-6 py-3 transition-colors">
+            <Link href="/plan" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-[14.5px] font-semibold px-6 py-3 transition-colors">
               プランを見る
             </Link>
           </div>
