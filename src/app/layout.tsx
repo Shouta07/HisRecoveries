@@ -131,8 +131,6 @@ export default function RootLayout({
     slogan: site.promise,
     foundingDate: "2026",
     publishingPrinciples: `${site.url}/#about`,
-    // 紹介料を受け取らないことが、この媒体の立場そのもの。構造化データにも出す。
-    ethicsPolicy: `${site.url}/#about`,
     knowsAbout: [
       "男性の美容",
       "男性の健康",
