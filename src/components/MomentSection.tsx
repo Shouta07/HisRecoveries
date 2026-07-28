@@ -14,19 +14,19 @@ const MINCHO: React.CSSProperties = {
 
 const MOMENTS = [
   {
-    when: "結婚式が、決まった",
+    when: "結婚式が決まった",
     text: "前撮りの日程が届いた日。はじめて、自分の顔をまじまじと見た。",
   },
   {
-    when: "写真を、求められた",
+    when: "写真を求められた",
     text: "プロフィールに使える写真が、1枚もなかった。",
   },
   {
-    when: "画面に、自分が映った",
+    when: "画面に映った自分",
     text: "オンライン会議の自分が、思っていたより疲れて見えた。",
   },
   {
-    when: "美容室で、聞かれた",
+    when: "美容室で聞かれた",
     text: "「どうしますか」に、いつも「短めで」としか答えられない。",
   },
 ];
@@ -42,16 +42,17 @@ export default function MomentSection() {
           だいたい、こういう日に来られます。
         </h2>
 
-        <ul className="mt-8 grid sm:grid-cols-2 gap-3 sm:gap-4">
+        {/* スマホでも2列。4枚を縦に積むと、それだけで1画面を使ってしまう。 */}
+        <ul className="mt-8 grid grid-cols-2 gap-2.5 sm:gap-4">
           {MOMENTS.map((m) => (
             <li
               key={m.when}
-              className="rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 px-5 py-5"
+              className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 px-4 sm:px-5 py-4 sm:py-5"
             >
-              <p className="font-mono text-[11px] tracking-[0.1em] text-[#85AB8B]">
+              <p className="text-[11.5px] font-bold tracking-[0.06em] text-[#7E5B29]">
                 {m.when}
               </p>
-              <p className="mt-2 text-[15.5px] text-[#1f2a1d] leading-[1.85]" style={MINCHO}>
+              <p className="mt-1.5 text-[13.5px] sm:text-[15px] text-[#1f2a1d] leading-[1.8]" style={MINCHO}>
                 {m.text}
               </p>
             </li>
@@ -65,8 +66,9 @@ export default function MomentSection() {
           <p className="mt-2.5 text-[14px] text-[#C9D2C4] leading-[1.95]">
             どれも、放っておいて直るものではありません。でも、
             <span className="hr-mark-dark">才能や生まれつきの話でもありません</span>。
-            髪・眉・服のサイズ感・表情・写真の撮られ方。
-            変えられる要素を、変えられる順番で。30日あれば足ります。
+            多くの場合、努力不足ではなく<span className="text-[#EDF1E8] font-semibold">順番</span>の問題です。
+            時間のかかるものを後回しにするだけで、同じ努力が間に合わなくなります。
+            髪・眉・服のサイズ感・表情・写真の撮られ方。変えられる要素を、変えられる順番で。
           </p>
           <Link
             href="/#plan"

@@ -72,12 +72,15 @@ export default function StepsSection() {
           ))}
         </ol>
 
-        {/* 前提を1箇所に集約（探させない） */}
-        <dl className="grid sm:grid-cols-3 gap-3 mb-9">
-          {TERMS.map(([t, d]) => (
-            <div key={t} className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 px-5 py-4">
-              <dt className="text-[14px] font-bold text-[#1f2a1d] mb-1.5" style={MINCHO}>{t}</dt>
-              <dd className="text-[13.5px] text-[#5c6b58] leading-[1.85]">{d}</dd>
+        {/* 前提を1箇所に集約（探させない）。3枚のカードより、1枚の表のほうが短く読める。 */}
+        <dl className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 px-5 sm:px-6 py-5 mb-9 max-w-2xl">
+          {TERMS.map(([t, d], i) => (
+            <div
+              key={t}
+              className={`flex flex-col sm:flex-row sm:gap-4 ${i > 0 ? "mt-3 pt-3 border-t border-[#1f2a1d]/10" : ""}`}
+            >
+              <dt className="shrink-0 sm:w-[7em] text-[13.5px] font-bold text-[#1f2a1d]" style={MINCHO}>{t}</dt>
+              <dd className="mt-0.5 sm:mt-0 text-[13.5px] text-[#5c6b58] leading-[1.85]">{d}</dd>
             </div>
           ))}
         </dl>

@@ -2,16 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import GoalPlanner from "@/components/GoalPlanner";
-import DesireBrowser from "@/components/DesireBrowser";
 import StepsSection from "@/components/StepsSection";
-import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
-import OrderFailureSection from "@/components/OrderFailureSection";
 import PlanPricing from "@/components/PlanPricing";
 import TrustSection from "@/components/TrustSection";
 import ScopeSection from "@/components/ScopeSection";
-import ForWhomSection from "@/components/ForWhomSection";
 import MomentSection from "@/components/MomentSection";
 import { PLAN, TIERS, yen } from "@/lib/pricing";
 
@@ -31,22 +27,6 @@ const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
 };
-
-// 男性の内なる声（ヒーロー上部を静かに流れる・共感の代弁）。2本＝左流れ／右流れ。
-const VOICES_A = [
-  "清潔感がない、って言われた",
-  "鏡の自分に、自信がない",
-  "何から始めればいいか、分からない",
-  "調べるほど、分からなくなる",
-  "写真の自分が、嫌いだ",
-];
-const VOICES_B = [
-  "誰にも、相談できずにいる",
-  "このままじゃ、まずい気がする",
-  "ぼったくられるのが、怖い",
-  "老けたね、って言われたくない",
-  "変わりたい、とは思ってる",
-];
 
 // ヒーロー直下の推し3カラム（Oh my teeth の 通院不要/短期間/リーズナブル に相当）。
 // 見出し「間に合わせる」を支える3本柱。
@@ -158,76 +138,40 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* こんなお悩み、ないですか？ — 男性の内なる声（2本のマーキー） */}
-          <div className="mt-11 sm:mt-14 w-full">
-            <p className="text-[#9ec4a3] text-[14.5px] sm:text-[15px] font-medium tracking-[0.04em] mb-4 sm:mb-5" style={MINCHO}>
-              こんなお悩み、ないですか？
-            </p>
-            <div aria-hidden className="w-screen overflow-hidden space-y-2.5 sm:space-y-3 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
-              <div className="hr-marquee flex w-max gap-8 sm:gap-12 whitespace-nowrap">
-                {[0, 1].map((n) => (
-                  <div key={n} className="flex gap-8 sm:gap-12">
-                    {VOICES_A.map((v) => (
-                      <span key={v} className="text-[13.5px] sm:text-[14.5px] text-[#C9D2C4]/85 tracking-[0.04em]" style={MINCHO}>
-                        「{v}」
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-              <div className="hr-marquee-rev flex w-max gap-8 sm:gap-12 whitespace-nowrap">
-                {[0, 1].map((n) => (
-                  <div key={n} className="flex gap-8 sm:gap-12">
-                    {VOICES_B.map((v) => (
-                      <span key={v} className="text-[13.5px] sm:text-[14.5px] text-[#C9D2C4]/65 tracking-[0.04em]" style={MINCHO}>
-                        「{v}」
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* ============ Lower sections — 明るいクリームのキャンバス ============ */}
       <div className="relative z-10 overflow-hidden bg-[#f4f6f2]">
-        {/* ② 自己同定 — 条件ではなく「瞬間」で「これは自分のことだ」を起こす。
-            論理（問題提起）より前に置く。 */}
+        {/* ホームの仕事は5つだけ。1セクション1役に絞る。
+              ① これは自分の話だ    → Moment
+              ② 何を、いくらで      → PlanPricing
+              ③ 嘘がない            → Scope（境界線）／ Trust（誰が）
+              ④ どう始めるか        → Steps
+              ⑤ 疑問を潰す          → Faq
+            以前はここに OrderFailure / ForWhom / Features / DesireBrowser も
+            並べていたが、上の5つと役割が重複して同じことを3回言っていた。
+            記事の入口は /areas に集約し、ホームは売る面に戻す。 */}
+
+        {/* ① 自己同定 — 条件ではなく「瞬間」で「これは自分のことだ」を起こす */}
         <MomentSection />
 
-        {/* ③ 問題提起 — 真の競合は「自己流の迷走」。順番の失敗を名指しする。 */}
-        <OrderFailureSection />
-
-        {/* ④ 新しい解決方法 — 施術ではなく「その日までの計画」を渡す中核ツール。 */}
+        {/* 自分専用のロードマップ。ヒーローCTA（#plan）の着地点 */}
         <GoalPlanner />
 
-        {/* 対象の明確化 — PMF検証期は「合う人だけを通す」。冷やかしを入口で外す。 */}
-        <ForWhomSection />
-
-        {/* ⑤ 体験フロー — 使うと、どう進むか（迷わない→逆算→終わらせる→迎える） */}
-        <FeaturesSection />
-
-        {/* ⑥ 価格 — Founder Program 1本。5ステップと価値分解で「何に払うか」を示す。 */}
+        {/* ② 価格 — 何を、いくらで */}
         <PlanPricing />
 
-        {/* 期待値調整 — 提供する/しない・期待できる/できない・お断りする相談。
-            価格の直後に置き、申し込む前に境界線を読ませる（クレーム予防）。 */}
+        {/* ③-a 境界線 — 申し込む前に、できないことを読ませる（クレーム予防） */}
         <ScopeSection />
 
-        {/* ⑦ 信頼 — 誰がやるか・どう進めるか・料金基準とやめ方・実際の記録 */}
+        {/* ③-b 誰が — 当日手を動かす人と、設計・運営 */}
         <TrustSection />
 
-        {/* はじめかた — 申し込み後の流れ */}
+        {/* ④ どう始めるか — 決済・連絡手段・キャンセル条件 */}
         <StepsSection />
 
-        {/* 目的から探す — 情報収集で来た人の受け皿（記事へ） */}
-        <section className="mx-auto max-w-[1080px] px-5 sm:px-8 py-14 sm:py-20">
-          <DesireBrowser />
-        </section>
-
-        {/* FAQ — 予約直前の不安を潰す */}
+        {/* ⑤ FAQ — 相談直前の不安を潰す */}
         <FaqSection />
 
         {/* ===== Footer — ⑤ リンク網（SEO＋回遊）。悩み別・コンテンツ・運営で整理 ===== */}

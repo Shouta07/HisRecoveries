@@ -10,6 +10,8 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
+// 以前は「提供する/しない」と「期待できる/できない」を別々の4リストにしていたが、
+// 中身がほぼ同じことの言い換えだった。2リストに統合する。
 const DO = [
   "現在地の整理（何が減点になっているかを言葉にする）",
   "改善プランの作成（やらないことも決める）",
@@ -19,31 +21,11 @@ const DO = [
 ];
 
 const DONT = [
-  "医療行為（脱毛・注入・AGA治療などは行いません）",
-  "医療判断（診断・治療方針の決定は、医師の領域です）",
+  "医療行為・医療判断（診断や治療方針は、医師の領域です）",
   "効果の保証・仕上がりの保証",
+  "別人のように変えること",
   "本人に代わって続けること（習慣は、ご本人のものです）",
   "外見以外の悩み全般の解決（恋愛・転職そのものの成否は範囲外です）",
-];
-
-// 医療・美容を扱う以上、線引きは名詞で明示する（「紹介サービス」に見せない）。
-const MEDICAL_DO = ["現在地の整理", "選択肢の整理", "情報の整理", "比較軸の作成", "質問の用意"];
-const MEDICAL_DONT = ["医療判断", "効果保証", "施術結果の保証", "医師の代替"];
-
-const CAN_EXPECT = [
-  "何をやるか、何をやらないかが決まる",
-  "眉・髪型・服の「自分に合う型」が分かる",
-  "整えた状態を、自分で再現できるようになる",
-  "写真で、変化が客観的に見える",
-  "調べる・比べる・選ぶ時間がほぼなくなる",
-];
-
-const CANNOT_EXPECT = [
-  "別人のように変わること",
-  "何もしなくても変わること",
-  "全員に同じ結果が出ること",
-  "医学的な効果の保証",
-  "短期間で、すべてが解決すること",
 ];
 
 // お断りするご相談。断れることが商品になる（サロンもクリニックも言えない）。
@@ -52,6 +34,7 @@ const DECLINE = [
   "短期間で、別人のように変わりたい",
   "肌荒れを、施術だけで早く消したい",
   "睡眠・食事・ストレスには手をつけたくない",
+  "東京都内に、土日1日来ることが難しい（オンラインのみの対応はしていません）",
 ];
 
 const YOUR_PART = [
@@ -108,62 +91,10 @@ export default function ScopeSection() {
         <div className="mt-8 grid sm:grid-cols-2 gap-3 sm:gap-4">
           <List title="提供すること" items={DO} tone="do" />
           <List title="提供しないこと" items={DONT} tone="dont" />
-          <List title="期待できる変化" items={CAN_EXPECT} tone="do" />
-          <List title="期待できないこと" items={CANNOT_EXPECT} tone="dont" />
         </div>
 
-        {/* 医療・美容の線引き — 「おすすめクリニック紹介」に見せないための中核 */}
-        <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
-          <p className="text-[15px] font-bold text-[#1f2a1d] mb-1" style={MINCHO}>
-            医療・美容を扱うときの、線引き
-          </p>
-          <p className="text-[14px] text-[#5c6b58] leading-[1.9]">
-            わたしたちは医療者ではありません。だから、次のように分けています。
-          </p>
-          <div className="mt-4 grid sm:grid-cols-2 gap-3">
-            <div className="rounded-[1rem] bg-[#f6f8f4] px-4 py-3.5">
-              <p className="text-[12.5px] font-bold tracking-[0.06em] text-[#3d5638] mb-2">
-                提供するもの
-              </p>
-              <ul className="flex flex-wrap gap-1.5">
-                {MEDICAL_DO.map((x) => (
-                  <li
-                    key={x}
-                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[12.5px] text-[#1f2a1d]"
-                  >
-                    {x}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-[1rem] bg-[#f6f8f4] px-4 py-3.5">
-              <p className="text-[12.5px] font-bold tracking-[0.06em] text-[#9aa79a] mb-2">
-                提供しないもの
-              </p>
-              <ul className="flex flex-wrap gap-1.5">
-                {MEDICAL_DONT.map((x) => (
-                  <li
-                    key={x}
-                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[12.5px] text-[#9aa79a] line-through decoration-[#c9a091]"
-                  >
-                    {x}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <p className="mt-4 text-[15px] font-bold text-[#1f2a1d] leading-[1.8]" style={MINCHO}>
-            <span className="hr-mark">施術を受けるかどうかを決めるのは、あなたです。</span>
-            <br className="hidden sm:block" />
-            私たちは、納得して選べる状態を作ります。
-          </p>
-          <p className="mt-2.5 text-[13.5px] text-[#6b7a66] leading-[1.9]">
-            特定の医療機関を「おすすめ」することはしません。候補と、比べるための軸と、
-            受診時に聞くべき質問をお渡しします。提携先からの紹介料は受け取っていません。
-          </p>
-        </div>
-
-        {/* お断りする場合 — 受けない判断を先に見せる。ここが最大のクレーム予防。 */}
+        {/* お断りする場合 — 受けない判断を先に見せる。ここが最大のクレーム予防。
+            肌の説明は長くなるので、詳細は FAQ に逃がして要点だけ残す。 */}
         <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
           <p className="text-[15px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
             こういうご相談は、お断りしています
@@ -176,23 +107,16 @@ export default function ScopeSection() {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-[14px] text-[#5c6b58] leading-[1.95]">
-            とくに肌は、施術だけで早く、というのが難しい部分です。睡眠・食事・ストレスが関わり、
-            年齢によってはホルモンの影響で避けにくい面もあります。医療にかかっても、
+          <p className="mt-4 text-[14px] text-[#5c6b58] leading-[1.95] border-t border-[#1f2a1d]/10 pt-4">
+            とくに肌は、施術だけで早く、というのが難しい部分です。医療にかかっても
             <span className="text-[#1f2a1d] font-semibold">1年で解決するとは限りません</span>。
-            期日が近いのに肌を主戦場にすると、間に合わないまま当日を迎えることになります。
-          </p>
-          <p className="mt-2.5 text-[14px] text-[#1f2a1d] leading-[1.95] font-semibold">
-            ただ、肌が完璧でなくても、第一印象は動きます。
-          </p>
-          <p className="mt-1.5 text-[14px] text-[#5c6b58] leading-[1.95]">
-            第一印象は、髪・眉・服のサイズ感・姿勢・表情・写真の撮られ方の総合点です。
-            肌はそのうちの一つで、十割ではありません。期日が近い場合は、
-            動かせる要素から整えます。肌は期日と切り離して、長く付き合う前提でお話しします。
+            ただ、<span className="hr-mark">肌が完璧でなくても、第一印象は動きます</span>。
+            第一印象は髪・眉・服のサイズ感・姿勢・表情・写真の総合点で、肌はその一つだからです。
+            期日が近い場合は、動かせる要素から整えます。
           </p>
           <p className="mt-2.5 text-[13.5px] text-[#6b7a66] leading-[1.9]">
-            それでも「施術中心で、短期間に」をお望みの場合は、力になれません。
-            正直にお伝えして、お引き受けしません。
+            医療行為は行いません。特定の医療機関を「おすすめ」することもせず、
+            紹介料も受け取っていません。施術を受けるかどうかを決めるのは、あなたです。
           </p>
         </div>
 
@@ -200,9 +124,6 @@ export default function ScopeSection() {
         <div className="mt-4 rounded-[1.2rem] bg-[#16241A] text-[#EDF1E8] px-5 sm:px-7 py-6">
           <p className="text-[15px] font-bold" style={MINCHO}>
             あなたにやっていただくこと
-          </p>
-          <p className="mt-2 text-[14px] text-[#C9D2C4] leading-[1.9]">
-            段取りは全部こちらで引き受けます。ただし、代われないことが3つだけあります。
           </p>
           <ul className="mt-3 grid sm:grid-cols-3 gap-2.5">
             {YOUR_PART.map((x) => (
@@ -215,7 +136,7 @@ export default function ScopeSection() {
             ))}
           </ul>
           <p className="mt-3.5 text-[12.5px] text-[#9ec4a3] leading-[1.85]">
-            逆に言えば、この3つさえやっていただければ、あとは考えなくて大丈夫です。
+            この3つさえやっていただければ、あとは考えなくて大丈夫です。
           </p>
         </div>
       </div>
