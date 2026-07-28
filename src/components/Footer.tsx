@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { complexes } from "@/lib/complexes";
+import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
 
 // 下層ページのフッター。トップのフッターと同じ中身に揃える。
@@ -17,7 +18,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-shironezu bg-hakuji text-sumi">
       <div className="mx-auto max-w-[1200px] px-5 py-14 sm:px-8 lg:px-12">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-5">
           <div className="col-span-2">
             <p className="text-[12.5px] text-ainezu">分野</p>
             <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
@@ -25,6 +26,18 @@ export default function Footer() {
                 <li key={c.id}>
                   <Link href={`/areas/${c.id}`} className="transition-colors hover:text-dou">
                     {c.ja}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-[12.5px] text-ainezu">状況からさがす</p>
+            <ul className="mt-4 space-y-2.5 text-[14px]">
+              {SITUATIONS.map((x) => (
+                <li key={x.id}>
+                  <Link href={`/situations/${x.id}`} className="transition-colors hover:text-dou">
+                    {x.label}
                   </Link>
                 </li>
               ))}

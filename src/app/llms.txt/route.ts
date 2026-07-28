@@ -2,6 +2,7 @@ import { clusters } from "@/lib/clusters";
 import { complexes } from "@/lib/complexes";
 import { SITUATIONS } from "@/lib/situations";
 import { STAGES, STAGE_OF } from "@/lib/stages";
+import { publishedAt } from "@/lib/articleDates";
 import { site } from "@/lib/site";
 
 // /llms.txt — 生成AI・AI検索向けの、このサイトの案内図。
@@ -18,14 +19,17 @@ export function GET() {
     .map((c) => {
       const items = clusters
         .filter((a) => a.areaId === c.id)
-        .map((a) => `- [${a.title}](${site.url}/areas/${a.areaId}/${a.slug}): ${a.lead}`)
+        .map((a) => {
+          const d = publishedAt(a.slug);
+          return `- [${a.title}](${site.url}/areas/${a.areaId}/${a.slug})${d ? `（${d} 公開）` : ""}: ${a.lead}`;
+        })
         .join("\n");
       return `### ${c.ja}（?area=${c.id}）\n\n概要: ${c.mechanism}\n分野トップ: ${site.url}/areas/${c.id}\n\n${items}`;
     })
     .join("\n\n");
 
   const situationBlock = SITUATIONS.map(
-    (s) => `- ${s.label}: ${site.url}/?s=${s.id}#index`,
+    (s) => `- ${s.label}: ${site.url}/situations/${s.id}`,
   ).join("\n");
 
   const stageBlock = STAGES.filter((s) => clusters.some((c) => STAGE_OF[c.slug] === s.id))

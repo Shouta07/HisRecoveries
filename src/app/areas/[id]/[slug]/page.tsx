@@ -5,6 +5,8 @@ import { complexById } from "@/lib/complexes";
 import { citationsByComplex } from "@/lib/citations";
 import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
 import { charCount, headingId, readingMinutes, sameSituationArticles } from "@/lib/reading";
+import { formatDate, publishedAt } from "@/lib/articleDates";
+import ShareRow from "@/components/ShareRow";
 import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
 
@@ -44,7 +46,7 @@ export function generateMetadata({ params }: { params: { id: string; slug: strin
       title: a.title,
       description: a.lead,
       section: c.ja,
-      publishedTime: "2026-06-01",
+      publishedTime: publishedAt(a.slug) ?? CLUSTER_UPDATED,
       modifiedTime: CLUSTER_UPDATED,
       tags: a.keywords,
     },
@@ -61,6 +63,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
   // 出典: 記事固有があればそれ、無ければエリア共通（lib/citations.ts の検証済みのみ）
   const sources = a.sources ?? citationsByComplex[a.areaId] ?? [];
   const minutes = readingMinutes(a);
+  const published = publishedAt(a.slug);
   const situationBlocks = sameSituationArticles(a);
   const situationSlugs = new Set(situationBlocks.flatMap((b) => b.items.map((x) => x.slug)));
 
@@ -104,8 +107,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
     genre: kindLabel,
     wordCount: charCount(a),
     timeRequired: `PT${minutes}M`,
-    datePublished: "2026-06-01",
-    dateModified: CLUSTER_UPDATED,
+    datePublished: published ?? CLUSTER_UPDATED,
+    dateModified: published ?? CLUSTER_UPDATED,
     author: { "@type": "Organization", name: site.name, url: site.url },
     // 要点を machine-readable に（AI検索が抜き出しやすくする）
     abstract: a.summary.join(" "),
@@ -194,8 +197,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           <p className="mt-5 text-[15.5px] leading-[2.05] text-keshizumi">{a.lead}</p>
           <p className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-shironezu pt-4 text-[12.5px] text-ainezu">
             <span>{c.ja}</span>
+            {published && <span className="tabular-nums">公開 {formatDate(published)}</span>}
             <span>読了 約{minutes}分</span>
-            <span>最終更新 {CLUSTER_UPDATED.replace(/-/g, ".")}</span>
           </p>
         </header>
 
@@ -303,6 +306,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
               ? "※ 本記事は、選ぶときの観点を中立に整理したものです。特定の医療機関・製品・施術を推奨するものではなく、効果・有効性を示すものでも、診断・治療・受診勧奨を目的としたものでもありません。「今はやらない」も含め、選ぶのはあなたです。個別の判断は専門家にご相談ください。"
               : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
         </p>
+
+        <ShareRow url={url} title={a.title} />
       </article>
 
       {/* ══ ここから先は回遊。地を変えて、記事が終わったことを示す ══ */}
@@ -310,10 +315,18 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         <div className="mx-auto max-w-[860px] px-5 sm:px-8 py-16 sm:py-20">
           {/* 同じ状況の人が読んでいる記事 — 分野をまたぐ導線 */}
           {situationBlocks.map((b) => (
-            <section key={b.situationLabel} className="mb-14 last:mb-0">
-              <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
-                「{b.situationLabel}」で読まれている記事
-              </h2>
+            <section key={b.situationId} className="mb-14 last:mb-0">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+                  「{b.situationLabel}」で読まれている記事
+                </h2>
+                <Link
+                  href={`/situations/${b.situationId}`}
+                  className="shrink-0 text-[13px] font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+                >
+                  一覧
+                </Link>
+              </div>
               <ul className="mt-5 border-t border-shironezu">
                 {b.items.map((r) => (
                   <li key={r.slug} className="border-b border-shironezu">

@@ -1,12 +1,17 @@
 import { ImageResponse } from "next/og";
+import { ogFont } from "@/lib/ogFont";
 import { site } from "@/lib/site";
 
-export const runtime = "edge";
+// サイト共通のOG画像（記事以外のページで使う）。
+//
+// 以前は edge ランタイム＋ fontFamily: "serif" だった。日本語のフォントを
+// 積んでいなかったので、タグラインを日本語にした時点で豆腐になる。
+// 記事側のOG画像と同じ組みに揃え、フォントも同じものを積む。
+
 export const alt = `${site.name} — ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// 深緑のブランドカラーデザイン（サイトのヒーローと同じ register）。
 export default async function Image() {
   return new ImageResponse(
     (
@@ -14,78 +19,45 @@ export default async function Image() {
         style={{
           width: "100%",
           height: "100%",
-          background:
-            "radial-gradient(circle at 50% 22%, #263a2c 0%, #2C3A2E 58%, #1E2A20 100%)",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "80px",
-          fontFamily: "serif",
+          justifyContent: "space-between",
+          background: "#F3F0EA",
+          padding: "72px 80px",
+          fontFamily: "Noto",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: 64,
-            left: 0,
-            right: 0,
-            display: "flex",
-            justifyContent: "center",
-            fontSize: 20,
-            color: "#B9A06B",
-            letterSpacing: "0.28em",
-            textTransform: "uppercase",
-          }}
-        >
-          Men&apos;s Wellness Concierge
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <div style={{ width: 44, height: 3, background: "#8A6A3B", display: "flex" }} />
+          <div style={{ fontSize: 26, color: "#8A6A3B", display: "flex" }}>{site.tagline}</div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div style={{ fontSize: 84, color: "#1F1E1B", display: "flex" }}>His Recoveries</div>
+          <div style={{ fontSize: 30, color: "#45443E", display: "flex", lineHeight: 1.6 }}>
+            髪、肌、眠り、疲れ、体、パートナーとのこと。
+          </div>
         </div>
 
         <div
           style={{
-            fontSize: 104,
-            color: "#F3F0EA",
-            letterSpacing: "0.04em",
-            fontWeight: 400,
-            lineHeight: 1,
             display: "flex",
-          }}
-        >
-          His <span style={{ color: "#B9A06B", marginLeft: 24 }}>Recoveries</span>
-        </div>
-
-        <div
-          style={{
-            marginTop: 34,
-            fontSize: 30,
-            color: "#CBCEC4",
-            letterSpacing: "0.05em",
-            display: "flex",
-          }}
-        >
-          {site.tagline}
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            bottom: 60,
-            left: 80,
-            right: 80,
-            display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            fontSize: 18,
-            color: "#7f9a84",
-            letterSpacing: "0.2em",
+            justifyContent: "space-between",
+            borderTop: "1px solid #DAD6CD",
+            paddingTop: 28,
+            fontSize: 20,
+            color: "#5E6A70",
           }}
         >
-          <div style={{ display: "flex" }}>HISRECOVERIES.COM</div>
-          <div style={{ display: "flex" }}>—</div>
-          <div style={{ display: "flex" }}>RECOVER YOUR PRESENCE</div>
+          <div style={{ display: "flex" }}>男性の美容・健康・恋愛を、編集部が調べて書いています</div>
+          <div style={{ display: "flex" }}>hisrecoveries.com</div>
         </div>
       </div>
     ),
-    { ...size }
+    {
+      ...size,
+      fonts: [{ name: "Noto", data: ogFont(), weight: 700, style: "normal" }],
+    },
   );
 }

@@ -39,6 +39,7 @@ export function charCount(a: ClusterArticle): number {
 }
 
 export type SituationLink = {
+  situationId: string;
   situationLabel: string;
   items: ClusterArticle[];
 };
@@ -67,7 +68,7 @@ export function sameSituationArticles(a: ClusterArticle, limit = 4): SituationLi
       .slice(0, limit);
     if (items.length === 0) continue;
     items.forEach((x) => used.add(x.slug));
-    out.push({ situationLabel: s.label, items });
+    out.push({ situationId: s.id, situationLabel: s.label, items });
   }
 
   // 状況が多い記事でも、出すのは2ブロックまで。並べすぎると選べなくなる。

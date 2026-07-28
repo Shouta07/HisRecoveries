@@ -1,6 +1,9 @@
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 
-export const runtime = "edge";
+// Node ランタイムで動かす。edge にすると、このページのメタデータに紐づく
+// ルートの opengraph-image まで edge バンドルに入り、OG画像が日本語フォントを
+// fs で読めなくなる（＝全ページのOG画像が豆腐になる）。
+// DB アクセスは HTTP 経由なので Node でも動く。
 export const dynamic = "force-dynamic";
 
 type DailySignal = {

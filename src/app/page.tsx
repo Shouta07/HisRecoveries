@@ -4,7 +4,9 @@ import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import ArticleIndex from "@/components/ArticleIndex";
 import { complexes } from "@/lib/complexes";
-import { clusters, CLUSTER_UPDATED } from "@/lib/clusters";
+import { clusters } from "@/lib/clusters";
+import { byNewest, formatDate, publishedAt } from "@/lib/articleDates";
+import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
 
 // ══════════════════════════════════════════════════════════════
@@ -31,18 +33,10 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  // 最新記事。編集の順で並べる（自動レコメンドを作らない）。
-  const latest = [
-    "30dai-seiketsukan",
-    "aga-early-signs",
-    "otona-nikibi-genin",
-    "fuke-mie-genin",
-    "sleep-totonoe",
-    "mens-hairstyle-seiketsukan",
-    "kekkonshiki-mijitaku-men",
-  ]
-    .map((slug) => clusters.find((c) => c.slug === slug))
-    .filter((a): a is NonNullable<typeof a> => Boolean(a));
+  // 新しい記事。公開日（git の記録）で並べる。
+  // 以前は手で選んだ7本を「新しい記事」として出していたが、
+  // 記事に公開日が無かったので、実際には新しくないものが混ざっていた。
+  const latest = byNewest(clusters).slice(0, 7);
 
   const [head, ...rest] = latest;
   const areaLabel = (id: string) => complexes.find((c) => c.id === id)?.ja ?? "";
@@ -159,7 +153,9 @@ export default function HomePage() {
             <p className="mt-4 max-w-[36em] text-[15px] leading-[1.95] text-keshizumi">
               {head.lead}
             </p>
-            <p className="mt-4 text-[13px] text-ainezu">{CLUSTER_UPDATED.replace(/-/g, ".")}</p>
+            {publishedAt(head.slug) && (
+              <p className="mt-4 text-[13px] tabular-nums text-ainezu">{formatDate(publishedAt(head.slug)!)}</p>
+            )}
           </Link>
         )}
 
@@ -167,7 +163,12 @@ export default function HomePage() {
           {rest.map((a) => (
             <li key={a.slug}>
               <Link href={`/areas/${a.areaId}/${a.slug}`} className="group block">
-                <p className="text-[13px] text-dou">{areaLabel(a.areaId)}</p>
+                <p className="flex items-baseline gap-3 text-[13px] text-dou">
+                  {areaLabel(a.areaId)}
+                  {publishedAt(a.slug) && (
+                    <span className="tabular-nums text-ainezu">{formatDate(publishedAt(a.slug)!)}</span>
+                  )}
+                </p>
                 <h3
                   className="mt-1.5 text-[18px] leading-[1.65] group-hover:text-dou transition-colors"
                   style={{ ...MINCHO, fontWeight: 600 }}
@@ -301,7 +302,7 @@ export default function HomePage() {
       {/* ══════ Footer ══════ */}
       <footer className="border-t border-shironezu bg-hakuji">
         <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12 py-14">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-5">
             <div className="col-span-2">
               <p className="text-[12.5px] text-ainezu">分野</p>
               <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
@@ -309,6 +310,18 @@ export default function HomePage() {
                   <li key={c.id}>
                     <Link href={`/areas/${c.id}`} className="hover:text-dou transition-colors">
                       {c.ja}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12.5px] text-ainezu">状況からさがす</p>
+              <ul className="mt-4 space-y-2.5 text-[14px]">
+                {SITUATIONS.map((x) => (
+                  <li key={x.id}>
+                    <Link href={`/situations/${x.id}`} className="hover:text-dou transition-colors">
+                      {x.label}
                     </Link>
                   </li>
                 ))}
