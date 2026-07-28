@@ -4,7 +4,7 @@
 // 売っているのは施術ではなく、判断の代行・順番設計・期限管理・専門家選定・継続サポート。
 import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
-import { PLAN, TIERS, yen } from "@/lib/pricing";
+import { DELIVERABLES, PLAN, SUPPORT, TIERS, yen } from "@/lib/pricing";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -17,8 +17,9 @@ const STEPS = [
   { n: "01", t: "カウンセリング", d: "何が気になっているのかを、一緒に言葉にします。ここが起点です。" },
   { n: "02", t: "改善プランの作成", d: "何をやるか、何をやらないかを決めて、一枚にまとめます。" },
   { n: "03", t: "オフライン体験（1日）", d: "眉・メンズメイク・服選び・髪型の提案・写真撮影。東京都内・土日のみの実施です。" },
-  { n: "04", t: "手順を、動画で残す", d: "メイクなどの手順を動画で納品。あとから何度でも見返して、自分で再現できます。" },
-  { n: "05", t: "再現できるまで伴走", d: "その場限りにしません。お申し込み後にご案内するLINEで確認しながら、Before / After も記録します（掲載は許可があるときだけ）。" },
+  // 04/05 の中身は下の納品物リストで具体的に出すので、ここでは繰り返さない。
+  { n: "04", t: "持ち帰るものを、その日につくる", d: "撮影も記録も、その場で行います。" },
+  { n: "05", t: "次に使える形にして、渡す", d: "下の6点です。買い物や美容室で、そのまま使えます。" },
 ];
 
 export default function PlanPricing() {
@@ -107,7 +108,7 @@ export default function PlanPricing() {
             <dl className="mt-6 border-t border-[#1f2a1d]/10 pt-5 text-[13.5px] leading-[1.9]">
               <div className="flex gap-3">
                 <dt className="shrink-0 w-[5.5em] font-bold text-[#3d5638]">含みます</dt>
-                <dd className="text-[#5c6b58]">体験（眉・メイク・服選び・髪型提案・撮影）／会場費／手順の動画／30日の伴走</dd>
+                <dd className="text-[#5c6b58]">体験（眉・メイク・服選び・髪型提案・撮影）／会場費／下の納品物6点／{SUPPORT.days}日間の質問窓口</dd>
               </div>
               <div className="mt-2 flex gap-3">
                 <dt className="shrink-0 w-[5.5em] font-bold text-[#9aa79a]">含みません</dt>
@@ -117,6 +118,40 @@ export default function PlanPricing() {
             <p className="mt-3 text-[13.5px] text-[#6b7a66] leading-[1.9]">
               <span className="hr-mark">お支払い後のキャンセル・返金はお受けできません</span>。
               実施者の土日と会場を確保するためです。
+            </p>
+          </div>
+
+          {/* 納品物 — 「できるようになるまで」ではなく「渡すもの」で書く。
+              終わりの条件が相手の習得度で決まる約束は、いつ終わったのかを
+              こちらから言えない。数えられる物に置き換えている。 */}
+          <div className="border-t border-[#1f2a1d]/10 bg-[#f6f8f4] px-6 sm:px-9 py-7">
+            <p className="text-[12.5px] font-bold tracking-[0.08em] text-[#7E5B29] mb-1.5">
+              その日で、終わらせないために
+            </p>
+            <p className="text-[16px] sm:text-[17px] font-bold text-[#1f2a1d] leading-[1.6]" style={MINCHO}>
+              手元に、この6つが残ります。
+            </p>
+            <ul className="mt-5 grid sm:grid-cols-2 gap-x-7 gap-y-4">
+              {DELIVERABLES.map((d, i) => (
+                <li key={d.t} className="flex gap-3">
+                  <span
+                    aria-hidden
+                    className="hr-figure shrink-0 text-[13px] font-bold text-[#B98A3C] pt-0.5"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <p className="text-[14.5px] font-bold text-[#1f2a1d] leading-[1.55]">{d.t}</p>
+                    <p className="mt-0.5 text-[13.5px] text-[#5c6b58] leading-[1.85]">{d.d}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 pt-4 border-t border-[#1f2a1d]/10 text-[13.5px] text-[#5c6b58] leading-[1.9]">
+              加えて、実施日から<span className="text-[#1f2a1d] font-semibold">{SUPPORT.days}日間</span>
+              は{SUPPORT.channel}で質問していただけます（{SUPPORT.note}）。
+              ただし、<span className="text-[#1f2a1d] font-semibold">お渡ししたものを必ず再現できるようになること</span>
+              までは、お約束していません。手を動かすのはご本人だからです。
             </p>
           </div>
         </div>

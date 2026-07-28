@@ -106,7 +106,7 @@ export async function createCheckoutSession(p: IssueParams): Promise<{
           product_data: {
             name: `第一印象改善プラン（30日）`,
             description:
-              "カウンセリング／改善プランの作成／オフライン体験（東京都内・土日・1日）／手順の動画／30日の伴走",
+              "カウンセリング／改善プランの作成／オフライン体験（東京都内・土日・1日）／納品物6点（手順動画・眉の型・服のサイズ表・オーダー資料・写真・改善プラン）／30日間の質問窓口",
           },
         },
       };
@@ -142,7 +142,7 @@ export async function createCheckoutSession(p: IssueParams): Promise<{
         },
         submit: {
           message:
-            "お支払いの確認後、実施日が確定します。伴走用のLINEは、このあとメールでご案内します。",
+            "お支払いの確認後、実施日が確定します。ご連絡用のLINEは、このあとメールでご案内します。",
         },
       },
       success_url: `${p.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
