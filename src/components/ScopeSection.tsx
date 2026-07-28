@@ -92,7 +92,7 @@ function List({
 
 export default function ScopeSection() {
   return (
-    <section id="scope" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+    <section id="scope" className="relative z-10 scroll-mt-24 text-[#1f2a1d] hr-readable">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="hr-eyebrow mb-3.5">
           Scope — 何をして、何をしないか

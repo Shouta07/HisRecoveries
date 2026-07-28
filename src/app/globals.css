@@ -584,12 +584,28 @@ html {
   text-align: center;
 }
 
-/* ── 本文の下限 ──────────────────────────────────
-   スマホの本文が12pxを切ると、読む前に離脱される。
-   セクション内の <p> は最低14pxを確保する。 */
+/* ── 読ませる版面 ────────────────────────────────
+   1) 本文の下限：スマホで12pxを切ると読む前に離脱される。14pxを確保する。
+   2) 禁則処理：body 全体は word-break:keep-all + overflow-wrap:anywhere で、
+      文節を保つ代わりに「。」「、」だけが次行の頭に落ちることがある。
+      読ませたい本文では、日本語として正しい折り返し
+      （line-break:strict = 句読点や閉じ括弧を行頭に置かない）に戻す。 */
+.hr-readable p,
+.hr-readable li,
+.hr-readable dd,
+.hr-readable dt,
+.hr-readable h1,
+.hr-readable h2,
+.hr-readable h3 {
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-break: strict;
+}
+
 @media (max-width: 639px) {
   .hr-readable p,
-  .hr-readable li {
+  .hr-readable li,
+  .hr-readable dd {
     font-size: max(1em, 14px);
   }
 }

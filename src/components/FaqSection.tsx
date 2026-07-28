@@ -11,7 +11,7 @@ const MINCHO: React.CSSProperties = {
 
 export default function FaqSection() {
   return (
-    <section id="faq" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+    <section id="faq" className="relative z-10 scroll-mt-24 text-[#1f2a1d] hr-readable">
       <div className="max-w-[860px] mx-auto px-5 sm:px-8 pt-7 sm:pt-14 pb-8">
         {/* コーナー括弧つき見出し（特徴セクションと揃える） */}
         <div className="relative mx-auto w-fit px-9 py-3 mb-7 sm:mb-9">

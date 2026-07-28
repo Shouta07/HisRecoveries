@@ -7,8 +7,9 @@ import { site } from "@/lib/site";
 
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
-  { href: "/why", label: "想い" },
-  { href: "/#service", label: "Service" },
+  { href: "/producer", label: "担当者" },
+  { href: "/why", label: "想い", desktopOnly: true },
+  { href: "/#pricing", label: "プラン" },
 ];
 
 export default function Header() {
@@ -42,8 +43,9 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <ConsultLink className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[13.5px] sm:text-[14.5px] font-semibold px-4 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap">
-            相談する（無料）
+          <ConsultLink className="shrink-0 rounded-full bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-[13px] sm:text-[14.5px] font-semibold px-3.5 sm:px-5 py-2 sm:py-2.5 transition-colors whitespace-nowrap">
+            <span className="sm:hidden">無料相談</span>
+            <span className="hidden sm:inline">相談する（無料）</span>
           </ConsultLink>
         </div>
       </div>

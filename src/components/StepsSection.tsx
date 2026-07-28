@@ -44,7 +44,7 @@ const TERMS = [
 
 export default function StepsSection() {
   return (
-    <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+    <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d] hr-readable">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 sm:pt-14 pb-6">
         <div className="on-media max-w-2xl mb-7">
           <p className="hr-eyebrow mb-3.5">How to start — はじめかた</p>

@@ -15,7 +15,7 @@ export default function TrustSection() {
   const hasOperator = operator.name.length > 0;
 
   return (
-    <section id="trust" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
+    <section id="trust" className="relative z-10 scroll-mt-24 text-[#1f2a1d] hr-readable">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="hr-eyebrow mb-3.5">
           Who — 誰が、やるのか
@@ -58,18 +58,30 @@ export default function TrustSection() {
           ) : (
             <div>
               <p className="text-[15px] font-bold text-[#1f2a1d]" style={MINCHO}>
-                運営者プロフィール — 準備中
+                実名と写真の公開は、準備中です
               </p>
               <p className="mt-2 text-[14px] text-[#5c6b58] leading-[1.9]">
-                同じ悩みを経験した当事者が設計・運営しています。実名と経歴の公開を準備中です。
-                先に人柄を知りたい方は、なぜこの事業をやるのかを書いた
-                <Link href="/why" className="mx-1 text-[#3d5638] underline underline-offset-2 hover:opacity-70">
-                  想いのページ
-                </Link>
-                をご覧ください。
+                同じ悩みを経験した当事者が設計・運営しています。
+                名前より先に知っていただきたいのは、どう考えて手を入れるのかのほうです。
               </p>
             </div>
           )}
+
+          {/* 考え方は、実名より先に読める。ここが実質の信頼材料になる。 */}
+          <div className="mt-5 pt-5 border-t border-[#1f2a1d]/10 flex flex-wrap gap-2.5">
+            <Link
+              href="/producer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[14px] font-bold px-5 py-2.5 transition-colors"
+            >
+              担当者の考え方とメソッドを見る <span aria-hidden className="text-[#E0B75F]">→</span>
+            </Link>
+            <Link
+              href="/why"
+              className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#3d5638] text-[#1f2a1d] text-[14px] font-semibold px-5 py-2.5 transition-colors"
+            >
+              なぜ、やるのか
+            </Link>
+          </div>
         </div>
 
         {/* 改善プロセス（事実なので常時掲載） */}

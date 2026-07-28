@@ -6,7 +6,8 @@ import Link from "next/link";
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
   { href: "/why", label: "想い" },
-  { href: "/#service", label: "サービス" },
+  { href: "/#pricing", label: "プラン" },
+  { href: "/producer", label: "担当者" },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,

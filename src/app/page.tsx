@@ -268,6 +268,7 @@ export default function HomePage() {
               <div>
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">His Recoveries</div>
                 <ul className="space-y-2 text-[14.5px] text-[#4b5b47]">
+                  <li><Link href="/producer" className="hover:text-[#1f2a1d] transition-colors">担当者について</Link></li>
                   <li><Link href="/why" className="hover:text-[#1f2a1d] transition-colors">なぜ、やるのか</Link></li>
                   <li><Link href="/partner" className="hover:text-[#1f2a1d] transition-colors">提携パートナー募集</Link></li>
                   <li><Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link></li>
