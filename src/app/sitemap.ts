@@ -1,31 +1,52 @@
 import { MetadataRoute } from "next";
 import { site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
-import { clusters } from "@/lib/clusters";
+import { clusters, CLUSTER_UPDATED } from "@/lib/clusters";
+import { AREA_UPDATED } from "@/lib/areas";
 
+// 優先度は「トップ > 分野ハブ > 記事 > 手続きページ」。
+// lastModified は今日ではなく、実際に中身を更新した日を出す。
+// 毎日 now を出すと、更新していないのに更新したと言うことになる。
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const articleDate = new Date(`${CLUSTER_UPDATED}T00:00:00+09:00`);
+  const areaDate = new Date(`${AREA_UPDATED}T00:00:00+09:00`);
 
-  const staticPaths: MetadataRoute.Sitemap = ["", "/areas/confidence", "/plan", "/why", "/reserve", "/apply", "/privacy", "/partner"].map((p) => ({
-    url: `${site.url}${p}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: p === "" ? 1.0 : 0.7,
-  }));
+  const home: MetadataRoute.Sitemap = [
+    {
+      url: site.url,
+      lastModified: articleDate,
+      changeFrequency: "weekly",
+      priority: 1.0,
+    },
+  ];
 
   const areaPaths: MetadataRoute.Sitemap = complexes.map((c) => ({
     url: `${site.url}/areas/${c.id}`,
-    lastModified: now,
+    lastModified: areaDate,
     changeFrequency: "monthly",
-    priority: 0.85,
+    priority: 0.9,
   }));
 
   const clusterPaths: MetadataRoute.Sitemap = clusters.map((a) => ({
     url: `${site.url}/areas/${a.areaId}/${a.slug}`,
-    lastModified: now,
+    lastModified: articleDate,
     changeFrequency: "monthly",
     priority: 0.8,
   }));
 
-  return [...staticPaths, ...areaPaths, ...clusterPaths];
+  const staticPaths: MetadataRoute.Sitemap = [
+    "/plan",
+    "/areas/confidence",
+    "/reserve",
+    "/apply",
+    "/partner",
+    "/privacy",
+  ].map((p) => ({
+    url: `${site.url}${p}`,
+    lastModified: areaDate,
+    changeFrequency: "monthly",
+    priority: p === "/plan" ? 0.7 : 0.4,
+  }));
+
+  return [...home, ...areaPaths, ...clusterPaths, ...staticPaths];
 }

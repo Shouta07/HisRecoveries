@@ -4,19 +4,21 @@ import { notFound } from "next/navigation";
 import { complexes, complexById } from "@/lib/complexes";
 import { getArea, AREA_UPDATED } from "@/lib/areas";
 import { citationsByComplex } from "@/lib/citations";
-import { clustersByArea, chooseArticleByArea } from "@/lib/clusters";
+import { clustersByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
-import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
-import EmpathyLead from "@/components/EmpathyLead";
-import QuietConsult from "@/components/QuietConsult";
-import ConsultLink from "@/components/ConsultLink";
+import { headingId } from "@/lib/reading";
 import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
 
-const HEAD: React.CSSProperties = {
+// 分野のハブ。役割は2つ。
+//  ① その分野の仕組みを一本にまとめた、いちばん上位の読み物（ピラー）
+//  ② その分野の記事を全部並べる索引（ここから下位記事へリンクを流す）
+//
+// 検索は「薄毛 原因」のような分野語でこのページに当たり、
+// 「AGA 費用」のような具体語で下位記事に当たる。だから②の全件リストが要る。
+
+const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
-  fontWeight: 800,
-  letterSpacing: "0.01em",
   fontFeatureSettings: '"palt" 1',
 };
 
@@ -37,7 +39,15 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
       ? [c.ja, `${c.ja} 男`, "第一印象 改善", "清潔感", "メンズ 身だしなみ", c.en]
       : [c.ja, `${c.ja} 原因`, `${c.ja} 仕組み`, c.system, c.en, "メカニズム", "男性"],
     alternates: { canonical: url },
-    openGraph: { type: "article", url, title, description: area.lead },
+    openGraph: {
+      type: "article",
+      url,
+      siteName: site.name,
+      locale: site.locale,
+      title,
+      description: area.lead,
+      modifiedTime: AREA_UPDATED,
+    },
     twitter: { card: "summary_large_image", title, description: area.lead },
   };
 }
@@ -49,31 +59,48 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
   const cites = citationsByComplex[c.id] ?? [];
   const all = clustersByArea(c.id);
-  const related = all.filter((r) => r.kind !== "interview" && r.kind !== "choose");
-  const interviews = all.filter((r) => r.kind === "interview");
-  const chooseArticle = chooseArticleByArea(c.id);
   const voices = fieldVoicesByArea(c.id);
   const url = `${site.url}/areas/${c.id}`;
   const pillarTitle = area.titleOverride ?? `${c.ja}は、なぜ起きるのか — 原因と仕組み`;
+
+  // 索引は「選び方 → ガイド → 仕組み → 取材」の順。決めたい人を先に通す。
+  const rank = (x: (typeof all)[number]) =>
+    x.kind === "choose" ? 0 : x.kind === "guide" ? 1 : x.kind === "interview" ? 3 : 2;
+  const index = [...all].sort((p, q) => rank(p) - rank(q));
 
   // ---- structured data (SEO + GEO) ----
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
+    "@id": `${url}#article`,
     headline: pillarTitle,
     description: area.lead,
     inLanguage: "ja",
-    mainEntityOfPage: url,
+    isAccessibleForFree: true,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
     about: c.ja,
+    articleSection: c.ja,
+    abstract: area.summary.join(" "),
     datePublished: "2026-06-01",
     dateModified: AREA_UPDATED,
     author: { "@type": "Organization", name: site.name, url: site.url },
-    publisher: {
-      "@type": "Organization",
-      name: site.name,
-      url: site.url,
-      logo: { "@type": "ImageObject", url: `${site.url}/icon` },
-    },
+    speakable: { "@type": "SpeakableSpecification", cssSelector: ["#area-title", "#tldr"] },
+    isPartOf: { "@id": `${site.url}/#website` },
+    publisher: { "@id": `${site.url}/#publisher` },
+  };
+  // 索引としての顔。AI検索に「この分野の記事一覧はここ」と示す。
+  const listLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${c.ja}の記事`,
+    numberOfItems: index.length,
+    itemListElement: index.map((x, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${site.url}/areas/${x.areaId}/${x.slug}`,
+      name: x.title,
+    })),
   };
   const faqLd = {
     "@context": "https://schema.org",
@@ -89,199 +116,150 @@ export default function AreaPage({ params }: { params: { id: string } }) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "ホーム", item: site.url },
-      { "@type": "ListItem", position: 2, name: "記事", item: `${site.url}/areas` },
-      { "@type": "ListItem", position: 3, name: c.ja, item: url },
+      { "@type": "ListItem", position: 2, name: c.ja, item: url },
     ],
   };
 
   return (
-    <div className="bg-[#F3F0EA] text-[#1F1E1B]">
+    <div className="bg-kinari text-sumi">
       <MarketView market={c.id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(listLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
-      <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
-        {/* breadcrumb */}
-        <nav aria-label="パンくず" className="text-[13.5px] text-[#5E6A70] mb-6">
-          <Link href="/" className="hover:text-[#1F1E1B]">ホーム</Link>
-          <span className="mx-1.5">/</span>
-          <Link href="/#index" className="hover:text-[#1F1E1B]">記事</Link>
-          <span className="mx-1.5">/</span>
-          <span className="text-[#1F1E1B]">{c.ja}</span>
+      <article className="mx-auto max-w-reading px-5 sm:px-8 pt-12 sm:pt-16 pb-20">
+        <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
+          <Link href="/" className="transition-colors hover:text-dou">ホーム</Link>
+          <span className="mx-1.5" aria-hidden>/</span>
+          <Link href="/#index" className="transition-colors hover:text-dou">記事をさがす</Link>
         </nav>
 
-        <header className="mb-8">
-          <span
-            className="inline-flex rounded-full px-3 py-1 text-[12px] font-bold mb-4"
-            style={{ backgroundColor: c.accentSoft, color: c.accent }}
+        <header className="mt-7">
+          <p className="text-[13px] text-dou">{c.system}</p>
+          <h1
+            id="area-title"
+            className="mt-3 text-[28px] leading-[1.45] sm:text-[38px]"
+            style={{ ...MINCHO, fontWeight: 600 }}
           >
-            {c.system}
-          </span>
-          <h1 className="text-[2rem] sm:text-[2.6rem] leading-[1.3]" style={HEAD}>
-            {c.guide ? (
-              area.titleOverride
-            ) : (
-              <>
-                {c.ja}は、<span className="text-[#8A6A3B]">なぜ起きるのか。</span>
-              </>
-            )}
+            {pillarTitle}
           </h1>
-          <p className="mt-5 text-[15px] text-[#45443E] leading-[2]">{area.lead}</p>
-          <div className="mt-4 flex items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[12px] font-bold">{c.guide ? "実践ガイド" : "出典明記"}</span>
-            <span className="text-[12px] text-[#5E6A70]">最終更新: {AREA_UPDATED}</span>
-          </div>
+          <p className="mt-5 text-[15.5px] leading-[2.05] text-keshizumi">{area.lead}</p>
+          <p className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-shironezu pt-4 text-[12.5px] text-ainezu">
+            <span>{c.ja}</span>
+            <span>記事 {all.length}本</span>
+            <span>最終更新 {AREA_UPDATED.replace(/-/g, ".")}</span>
+          </p>
         </header>
 
-        {/* 共感リード（心理を正面に・正常化・安心） */}
-        <EmpathyLead worry={`「${c.worry}」`} />
-
-        {/* 要点（TL;DR）— extractable summary for search & AI engines */}
-        <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#F3F0EA] border border-[#1F1E1B]/10 p-6 sm:p-7 mb-10">
-          <div className="flex items-center gap-2.5 mb-4">
-            <span aria-hidden className="block w-5 h-px bg-[#B9A06B]" />
-            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#8A6A3B] font-medium">要点 / TL;DR</span>
-          </div>
-          <ul className="space-y-2.5">
+        {/* 要点 */}
+        <div id="tldr" className="mt-10 border-l-2 border-dou pl-5 sm:pl-6">
+          <p className="text-[13px] text-dou">この分野の要点</p>
+          <ul className="mt-3 space-y-2.5">
             {area.summary.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#1F1E1B] leading-[1.85]">
-                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#B9A06B] shrink-0" />
+              <li key={i} className="text-[15px] leading-[1.95] text-sumi">
                 {s}
               </li>
             ))}
           </ul>
         </div>
 
-        {c.guide && <InlineConsult />}
+        {/* 目次 */}
+        {area.sections.length > 2 && (
+          <nav aria-label="目次" className="mt-10 border-y border-shironezu py-6">
+            <p className="text-[13px] text-ainezu">目次</p>
+            <ol className="mt-3 space-y-2">
+              {area.sections.map((s, i) => (
+                <li key={s.h} className="flex items-baseline gap-3">
+                  <span className="w-[1.4em] shrink-0 text-[12px] tabular-nums text-ainezu">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <a
+                    href={`#${headingId(i)}`}
+                    className="text-[14.5px] leading-[1.75] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-dou hover:decoration-dou"
+                  >
+                    {s.h}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
 
-        {/* 原文（主） */}
-        <div className="space-y-8">
-          {area.sections.map((s) => (
-            <section key={s.h}>
-              <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1F1E1B] mb-3 leading-[1.5]" style={HEAD}>
-                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#B9A06B] shrink-0" />
+        {/* 本文 */}
+        <div className="mt-12 flex flex-col gap-11">
+          {area.sections.map((s, i) => (
+            <section key={s.h} id={headingId(i)} className="scroll-mt-20">
+              <h2 className="text-[20px] leading-[1.6] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
                 {s.h}
               </h2>
-              <p className="text-[15.5px] text-[#45443E] leading-[2.05] pl-3.5">{s.body}</p>
+              <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">{s.body}</p>
             </section>
           ))}
 
-          <section className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 p-6">
-            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-2" style={HEAD}>
+          <section className="border-l-2 border-shironezu pl-5 sm:pl-6">
+            <h2 className="text-[17px]" style={{ ...MINCHO, fontWeight: 600 }}>
               {c.guide ? "プロと整える目安" : "受診の目安"}
             </h2>
-            <p className="text-[15px] text-[#45443E] leading-[1.95]">{area.whenToSee}</p>
+            <p className="mt-3 text-[15px] leading-[2] text-keshizumi">{area.whenToSee}</p>
           </section>
         </div>
 
-        {/* 橋セクション — 仕組み（誰にでも）から、選び方（あなたの場合）へ。
-            メカニズム領域のみ。押さない、静かな導線。 */}
-        {!c.guide && chooseArticle && (
-          <section className="mt-12 rounded-[1.6rem] bg-[#2C3A2E] text-[#F3F0EA] p-7 sm:p-9">
-            <p className="text-[15px] sm:text-[15px] leading-[2] text-[#CBCEC4]">
-              ここまでは、誰にでも当てはまる仕組みの話。
-              <br className="hidden sm:block" />
-              ここから先は、<span className="text-[#F3F0EA] font-medium">あなたの状態・優先順位・予算で、答えが変わります</span>。
-            </p>
-            <Link
-              href={`/areas/${c.id}/${chooseArticle.slug}`}
-              className="group mt-5 flex items-center justify-between gap-3 rounded-[1.1rem] border border-[#B9A06B]/40 bg-[#1E2A20]/40 px-5 py-4 hover:border-[#B9A06B] transition-colors"
-            >
-              <span className="min-w-0">
-                <span className="block text-[10px] tracking-[0.16em] text-[#B9A06B] font-semibold mb-1">選び方・向き合い方</span>
-                <span className="block text-[15px] font-semibold text-[#F3F0EA] leading-[1.5]">{chooseArticle.title}</span>
-              </span>
-              <span aria-hidden className="text-[#B9A06B] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
-            </Link>
-            <p className="mt-4 text-[12.5px] text-[#93A08F] leading-[1.85]">
-              「行かない」「今はやらない」も、正当な選択です。急ぐ必要はありません。
-            </p>
+        {/* FAQ */}
+        {area.faqs.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              よくある質問
+            </h2>
+            <dl className="mt-6 border-t border-shironezu">
+              {area.faqs.map((f) => (
+                <div key={f.q} className="border-b border-shironezu py-5">
+                  <dt className="text-[15px] font-semibold leading-[1.7]">{f.q}</dt>
+                  <dd className="mt-2 text-[14.5px] leading-[1.95] text-keshizumi">{f.a}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
         )}
 
-        {/* FAQ */}
-        <section className="mt-12">
-          <h2 className="text-[1.15rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>
-            よくある質問
-          </h2>
-          <dl className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-6 divide-y divide-[#1F1E1B]/10">
-            {area.faqs.map((f) => (
-              <div key={f.q} className="py-5">
-                <dt className="text-[15px] font-bold text-[#1F1E1B] mb-1.5">{f.q}</dt>
-                <dd className="text-[14.5px] text-[#45443E] leading-[1.95]">{f.a}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {/* 体験の提案 — ガイド（第一印象）のみ。メカニズムは末尾の静かな一本に集約。 */}
-        {c.guide && <ExperienceInvite context={`${c.ja}を整えたいあなたへ`} />}
-
-        {/* 出典・参考（従）— メカニズム記事のみ */}
-        {!c.guide && (
-        <section className="mt-12">
-          <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>
-            出典・参考リンク
-          </h2>
-          {cites.length > 0 ? (
-            <ul className="space-y-3">
+        {/* 出典 */}
+        {cites.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              出典・参考リンク
+            </h2>
+            <ul className="mt-5 space-y-5">
               {cites.map((q, i) => (
-                <li key={i} className="rounded-[1rem] border border-[#1F1E1B]/10 bg-white p-4">
+                <li key={i}>
                   {q.quote ? (
-                    <blockquote className="border-l-2 border-[#B9A06B] pl-3">
-                      <p className="text-[15px] text-[#1F1E1B] leading-[1.95]">「{q.quote}」</p>
-                      <footer className="mt-2 text-[13.5px] text-[#5E6A70]">
+                    <blockquote className="border-l-2 border-dou pl-4">
+                      <p className="text-[14.5px] leading-[1.95] text-sumi">「{q.quote}」</p>
+                      <footer className="mt-2 text-[13px] text-ainezu">
                         — {q.source}
-                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="ml-2 text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-2 hover:decoration-[#8A6A3B]">
-                          原文を読む↗
+                        <a
+                          href={q.url}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          className="ml-2 font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                        >
+                          原文<span aria-hidden> ↗</span>
                         </a>
                       </footer>
                     </blockquote>
                   ) : (
-                    <div className="flex items-start gap-2">
-                      <span className="text-[#B9A06B] mt-px" aria-hidden>›</span>
-                      <p className="text-[14.5px] text-[#45443E] leading-[1.85]">
-                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-2 hover:decoration-[#8A6A3B]">
-                          {q.source}↗
-                        </a>
-                        {q.note && <span className="text-[#5E6A70]"> — {q.note}</span>}
-                      </p>
-                    </div>
+                    <p className="text-[14px] leading-[1.9] text-keshizumi">
+                      <a
+                        href={q.url}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        className="font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                      >
+                        {q.source}
+                        <span aria-hidden> ↗</span>
+                      </a>
+                      {q.note && <span className="ml-1.5 text-ainezu">— {q.note}</span>}
+                    </p>
                   )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[14.5px] text-[#5E6A70] leading-[1.9]">
-              出典は順次追加していきます。
-            </p>
-          )}
-        </section>
-        )}
-
-        {/* 取材記事 — 現場第一線のプロへのインタビュー（一次情報） */}
-        {interviews.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-1" style={HEAD}>現場の言葉（取材）</h2>
-            <p className="text-[14px] text-[#5E6A70] leading-[1.85] mb-4">
-              この領域の第一線で働くプロに、His Recoveries が直接聞いた一次情報です。
-            </p>
-            <ul className="space-y-2">
-              {interviews.map((r) => (
-                <li key={r.slug}>
-                  <Link
-                    href={`/areas/${c.id}/${r.slug}`}
-                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#8A6A3B]/25 bg-white px-4 py-3.5 hover:border-[#8A6A3B] transition-colors"
-                  >
-                    <span className="min-w-0">
-                      <span className="block text-[15px] font-semibold text-[#1F1E1B]">{r.title}</span>
-                      {r.interviewee && (
-                        <span className="block mt-0.5 text-[12.5px] text-[#5E6A70]">{r.interviewee.name}（{r.interviewee.role}）</span>
-                      )}
-                    </span>
-                    <span aria-hidden className="text-[#8A6A3B] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
-                  </Link>
                 </li>
               ))}
             </ul>
@@ -290,69 +268,89 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
         {/* 現場の声（キュレーション）— 業界のプロが公開している記事の紹介 */}
         {voices.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-1" style={HEAD}>現場の声（キュレーション）</h2>
-            <p className="text-[14px] text-[#5E6A70] leading-[1.85] mb-4">
+          <section className="mt-16">
+            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              現場の声（キュレーション）
+            </h2>
+            <p className="mt-3 text-[13.5px] leading-[1.9] text-ainezu">
               この領域の現場で活躍するプロが公開している記事を、出典を明記して紹介します。順不同・中立です。
             </p>
-            <ul className="space-y-3">
+            <ul className="mt-5 border-t border-shironezu">
               {voices.map((v) => (
-                <li key={v.url} className="rounded-[1rem] border border-[#1F1E1B]/10 bg-white p-4">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="inline-flex rounded-full bg-[#EDE9E0] text-[#8A6A3B] px-2 py-0.5 text-[10px] font-bold">{v.industry}</span>
-                    <span className="text-[12.5px] text-[#5E6A70]">{v.author}</span>
-                  </div>
+                <li key={v.url} className="border-b border-shironezu py-5">
+                  <p className="text-[12.5px] text-ainezu">
+                    {v.industry}／{v.author}
+                  </p>
                   <a
                     href={v.url}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="text-[15px] font-semibold text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-2 hover:decoration-[#8A6A3B]"
+                    className="mt-1.5 block text-[15px] font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] hover:decoration-dou"
                   >
-                    {v.title}↗
+                    {v.title}
+                    <span aria-hidden> ↗</span>
                   </a>
-                  <p className="mt-1.5 text-[14px] text-[#45443E] leading-[1.85]">{v.note}</p>
+                  <p className="mt-1.5 text-[13.5px] leading-[1.9] text-keshizumi">{v.note}</p>
                 </li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* 関連記事（仕組み解説クラスタ） */}
-        {related.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>関連記事</h2>
-            <ul className="space-y-2">
-              {related.map((r) => (
-                <li key={r.slug}>
-                  <Link
-                    href={`/areas/${c.id}/${r.slug}`}
-                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#1F1E1B]/10 bg-white px-4 py-3.5 hover:border-[#8A6A3B]/40 transition-colors"
-                  >
-                    <span className="text-[15px] font-semibold text-[#1F1E1B]">{r.title}</span>
-                    <span aria-hidden className="text-[#8A6A3B] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <p className="mt-12 text-[13.5px] text-[#5E6A70] leading-[1.9]">
+        <p className="mt-12 text-[13px] leading-[1.95] text-ainezu">
           {c.guide
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
             : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。出典・参考リンクは中立な医学情報源によります。特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
         </p>
+      </article>
 
-        {/* 静かな一本（メカニズム領域のみ・末尾に1つだけ） */}
-        {!c.guide && <QuietConsult />}
+      {/* ══ この分野の記事、全件 ══ */}
+      <div className="border-t border-shironezu bg-hakuji">
+        <div className="mx-auto max-w-[860px] px-5 sm:px-8 py-16 sm:py-20">
+          <div className="flex items-baseline gap-4 border-b-2 border-sumi pb-3">
+            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              {c.ja}の記事
+            </h2>
+            <span className="text-[12.5px] tabular-nums text-ainezu">{index.length}</span>
+          </div>
+          <ul>
+            {index.map((r) => (
+              <li key={r.slug} className="border-b border-shironezu">
+                <Link
+                  href={`/areas/${r.areaId}/${r.slug}`}
+                  className="group block py-6 transition-colors hover:text-dou"
+                >
+                  <p className="text-[12.5px] text-ainezu">
+                    {r.kind === "interview"
+                      ? "取材"
+                      : r.kind === "guide"
+                        ? "実践ガイド"
+                        : r.kind === "choose"
+                          ? "選び方"
+                          : "仕組みの解説"}
+                    {r.kind === "interview" && r.interviewee
+                      ? `／${r.interviewee.name}（${r.interviewee.role}）`
+                      : ""}
+                  </p>
+                  <p className="mt-1.5 max-w-[30em] text-[16.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 600 }}>
+                    {r.title}
+                  </p>
+                  <p className="mt-2 max-w-[38em] text-[13.5px] leading-[1.9] text-keshizumi line-clamp-2">
+                    {r.lead}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link href="/#index" className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
-            ほかの領域を見る <span aria-hidden>→</span>
-          </Link>
-          <ConsultLink market={c.id} className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
-            相談する（無料） <span aria-hidden>→</span>
-          </ConsultLink>
+          <p className="mt-10 text-[14px]">
+            <Link
+              href="/#index"
+              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            >
+              ほかの分野からさがす<span aria-hidden> →</span>
+            </Link>
+          </p>
         </div>
       </div>
     </div>
