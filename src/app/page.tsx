@@ -249,34 +249,21 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 編集方針。守れないことは書かない。 */}
-          <h3 className="mt-12 text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
-            編集方針
-          </h3>
-          <ul className="mt-5 max-w-[36em] border-t border-shironezu">
-            {[
-              ["紹介料を受け取らない", "提携先・医療機関・メーカーから、紹介料や成果報酬を受け取っていません。だから「やらなくていい」と書けます。"],
-              ["効果を保証しない", "「必ず治る」「絶対に変わる」は書きません。医療的な判断は医師の領域として、そこには踏み込みません。"],
-              ["出典を示す", "一般に知られている知見を整理するときは、参照した情報源を記事の末尾に出します。推測でURLを書くことはしません。"],
-              ["確かめていないことは書かない", "編集部が実際に試したことと、出典のある情報だけを書きます。体験談を創作することはしません。"],
-              ["数合わせで記事を作らない", "検索順位のためだけの記事は作りません。該当する記事がないときは、正直に「ありません」と出します。"],
-            ].map(([t, d]) => (
-              <li key={t} className="border-b border-shironezu py-5">
-                <p className="text-[15px] font-semibold">{t}</p>
-                <p className="mt-1.5 text-[14px] leading-[1.9] text-keshizumi">{d}</p>
-              </li>
-            ))}
+          {/* 編集方針。当たり前のことは書かない。守れないことも書かない。
+              「紹介料を受け取らない」は上の段落で言い切っているので、ここでは繰り返さない。 */}
+          <ul className="mt-9 max-w-[34em] space-y-2.5 text-[15px] leading-[1.95] text-keshizumi">
+            <li>効果や結果は保証しません。医療的な判断は、医師の領域です。</li>
+            <li>出典のある情報と、編集部が実際に確かめたことだけを書きます。</li>
           </ul>
-          <p className="mt-6 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
-            専門家への取材記事は、まだ0本です。これから増やしていきます。
-            記事に事実の誤りを見つけた場合は、
+          <p className="mt-8 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
+            専門家への取材記事は、まだ0本です。記事の誤りは
             <a
               href={`mailto:${site.email}`}
               className="mx-1 font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
             >
               {site.email}
             </a>
-            までお知らせください。確認のうえ、記事を直します。
+            までお知らせください。
           </p>
         </div>
       </section>
