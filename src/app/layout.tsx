@@ -55,6 +55,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: site.url,
+    types: {
+      "application/rss+xml": [{ url: `${site.url}/feed.xml`, title: `${site.name} — 新着記事` }],
+    },
   },
   robots: {
     index: true,
@@ -95,35 +98,54 @@ export default function RootLayout({
     description: site.description,
     inLanguage: site.language,
     publisher: { "@id": `${site.url}/#publisher` },
+    // トップの絞り込みは ?q= を URL に載せるので、この宣言は実際に動く
+    // （検索結果からサイト内検索に直接入れる可能性を残す）。
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${site.url}/?q={search_term_string}#index`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 
+  // 出版者。メディアなので Organization ではなく NewsMediaOrganization…ではなく、
+  // 報道機関ではないため Organization のまま publishingPrinciples を持たせる。
+  // 編集方針は独立ページを持たないので、トップの #about を指す。
   const publisherLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${site.url}/#publisher`,
     name: site.name,
-    alternateName: ["His Recoveries", "Male Conditioning"],
+    alternateName: ["His Recoveries", "男性ウェルネスメディア"],
     url: site.url,
     logo: {
       "@type": "ImageObject",
-      url: `${site.url}/icon`,
+      url: `${site.url}/icon.png`,
+      width: 256,
+      height: 256,
     },
     sameAs: socialSameAs,
     description: site.description,
     slogan: site.promise,
     foundingDate: "2026",
+    publishingPrinciples: `${site.url}/#about`,
+    // 紹介料を受け取らないことが、この媒体の立場そのもの。構造化データにも出す。
+    ethicsPolicy: `${site.url}/#about`,
     knowsAbout: [
-      "Male Conditioning",
-      "Recover Your Presence",
-      "Quiet Masculinity",
-      "Social Recovery",
-      "Emotional Grooming",
-      "Quiet Gatherings",
+      "男性の美容",
+      "男性の健康",
       "第一印象",
-      "自信・パートナーシップ",
+      "薄毛・AGA",
+      "メンズスキンケア",
+      "メンズメイク",
+      "髭・体毛の処理",
+      "顔の印象",
+      "睡眠・習慣",
       "男性のコンプレックス",
     ],
-    knowsLanguage: ["ja", "en"],
+    knowsLanguage: ["ja"],
     areaServed: { "@type": "Country", name: "Japan" },
     contactPoint: {
       "@type": "ContactPoint",

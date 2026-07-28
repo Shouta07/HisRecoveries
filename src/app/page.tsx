@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import ArticleIndex from "@/components/ArticleIndex";
 import { complexes } from "@/lib/complexes";
-import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
+import { clusters, CLUSTER_UPDATED } from "@/lib/clusters";
+import { site } from "@/lib/site";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ = 編集メディアの表紙。
@@ -22,6 +24,10 @@ import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
   fontFeatureSettings: '"palt" 1',
+};
+
+export const metadata: Metadata = {
+  alternates: { canonical: site.url },
 };
 
 export default function HomePage() {
@@ -45,8 +51,37 @@ export default function HomePage() {
     .map((slug) => clusters.find((c) => c.slug === slug))
     .filter((a): a is NonNullable<typeof a> => Boolean(a));
 
+  // トップは「表紙」であると同時に、全記事の索引でもある。
+  // 検索エンジンとAI検索に、その両方を宣言しておく。
+  const collectionLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${site.url}/#collection`,
+    url: site.url,
+    name: `${site.name} — 男性ウェルネスメディア`,
+    description: site.description,
+    inLanguage: "ja",
+    isPartOf: { "@id": `${site.url}/#website` },
+    about: complexes.map((c) => ({ "@type": "Thing", name: c.ja })),
+    mainEntity: {
+      "@type": "ItemList",
+      name: "記事の索引",
+      numberOfItems: clusters.length,
+      itemListElement: clusters.map((a, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${site.url}/areas/${a.areaId}/${a.slug}`,
+        name: a.title,
+      })),
+    },
+  };
+
   return (
     <div className="bg-kinari text-sumi">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
+      />
       <GlassNav />
 
       {/* ══════ Hero — 写真が主役。見出しは縦組みの明朝 ══════
@@ -92,15 +127,6 @@ export default function HomePage() {
               <span className="font-semibold">実体験だけではなく、専門家への取材をもとに</span>
               <br />
               発信しています。
-            </p>
-            <p className="mt-6">
-              <a
-                href="#index"
-                className="inline-flex items-baseline gap-2 text-[15px] font-semibold text-kinari underline decoration-kinari/40 underline-offset-[6px] transition-colors hover:decoration-kinari"
-              >
-                記事を読む
-                <span aria-hidden>→</span>
-              </a>
             </p>
           </div>
         </div>
@@ -197,8 +223,13 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* ══════ His Recoveriesについて ══════ */}
-      <section className="mt-[96px] sm:mt-[136px] lg:mt-[184px] border-y border-shironezu bg-hakuji">
+      {/* ══════ His Recoveriesについて — 編集方針もここに置く ══════
+          別ページに分けていたが、読まれない場所に信頼の根拠を置いても意味がない。
+          誰が・どういう立場で書いているかは、記事の索引と同じ画面に出す。 */}
+      <section
+        id="about"
+        className="mt-[96px] sm:mt-[136px] lg:mt-[184px] scroll-mt-20 border-y border-shironezu bg-hakuji"
+      >
         <div className="mx-auto max-w-[840px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
           <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
             His Recoveriesについて
@@ -206,7 +237,8 @@ export default function HomePage() {
           <div className="mt-7 max-w-[34em] space-y-6 text-[15px] sm:text-[16px] leading-[2.05] text-keshizumi">
             <p>
               男性向けの美容・健康・恋愛・セクシャルウェルネスを扱う編集メディアです。
-              編集部が実際に試したこと、専門家に取材して聞いたことを記事にしています。
+              髪、肌、睡眠、疲れ、体、パートナーとのこと——誰にも相談できないまま
+              検索していることを、記事にしています。
             </p>
             <p>
               この分野の情報は、ほとんどを売る側が書いています。だから「やったほうがいい」しか
@@ -215,19 +247,36 @@ export default function HomePage() {
                 「いまはやらなくていい」と書くことができます。
               </span>
             </p>
-            <p>
-              効果を保証することはしません。出典のある情報と、実際に確かめたことだけを書きます。
-              専門家への取材記事はまだ0本です。これから増やしていきます。
-            </p>
           </div>
-          <p className="mt-9">
-            <Link
-              href="/why"
-              className="inline-flex items-baseline gap-2 text-[15px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
+
+          {/* 編集方針。守れないことは書かない。 */}
+          <h3 className="mt-12 text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            編集方針
+          </h3>
+          <ul className="mt-5 max-w-[36em] border-t border-shironezu">
+            {[
+              ["紹介料を受け取らない", "提携先・医療機関・メーカーから、紹介料や成果報酬を受け取っていません。だから「やらなくていい」と書けます。"],
+              ["効果を保証しない", "「必ず治る」「絶対に変わる」は書きません。医療的な判断は医師の領域として、そこには踏み込みません。"],
+              ["出典を示す", "一般に知られている知見を整理するときは、参照した情報源を記事の末尾に出します。推測でURLを書くことはしません。"],
+              ["確かめていないことは書かない", "編集部が実際に試したことと、出典のある情報だけを書きます。体験談を創作することはしません。"],
+              ["数合わせで記事を作らない", "検索順位のためだけの記事は作りません。該当する記事がないときは、正直に「ありません」と出します。"],
+            ].map(([t, d]) => (
+              <li key={t} className="border-b border-shironezu py-5">
+                <p className="text-[15px] font-semibold">{t}</p>
+                <p className="mt-1.5 text-[14px] leading-[1.9] text-keshizumi">{d}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
+            専門家への取材記事は、まだ0本です。これから増やしていきます。
+            記事に事実の誤りを見つけた場合は、
+            <a
+              href={`mailto:${site.email}`}
+              className="mx-1 font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
             >
-              編集方針を読む
-              <span aria-hidden>→</span>
-            </Link>
+              {site.email}
+            </a>
+            までお知らせください。確認のうえ、記事を直します。
           </p>
         </div>
       </section>
@@ -293,12 +342,13 @@ export default function HomePage() {
                     ニュースレター（Substack）<span aria-hidden className="text-ainezu"> ↗</span>
                   </a>
                 </li>
+                <li><a href="/feed.xml" className="hover:text-dou transition-colors">RSS</a></li>
               </ul>
             </div>
             <div>
               <p className="text-[12.5px] text-ainezu">His Recoveries</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><Link href="/why" className="hover:text-dou transition-colors">編集方針</Link></li>
+                <li><a href="#about" className="hover:text-dou transition-colors">編集方針</a></li>
                 <li><Link href="/partner" className="hover:text-dou transition-colors">取材・掲載について</Link></li>
                 <li><Link href="/plan" className="hover:text-dou transition-colors">第一印象改善プラン</Link></li>
                 <li><Link href="/privacy" className="hover:text-dou transition-colors">プライバシー・免責事項</Link></li>

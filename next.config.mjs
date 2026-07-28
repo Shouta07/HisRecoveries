@@ -46,8 +46,11 @@ const nextConfig = {
       { source: "/stages", destination: "/", permanent: true },
       { source: "/stages/:slug*", destination: "/", permanent: true },
       { source: "/business", destination: "/", permanent: true },
-      { source: "/faq", destination: "/", permanent: true },
+      // FAQ は /plan に集約（全件＋FAQPage schema）
+      { source: "/faq", destination: "/plan", permanent: true },
       { source: "/producer", destination: "/", permanent: true },
+      // 編集方針は独立ページをやめ、トップの #about に統合
+      { source: "/why", destination: "/#about", permanent: true },
       { source: "/recover", destination: "/", permanent: true },
       { source: "/refine", destination: "/", permanent: true },
       // /areas は第一印象4領域に特化 → 退避した領域はライブラリ index へ
@@ -85,7 +88,7 @@ const nextConfig = {
       { source: "/screen", destination: "/#index", permanent: true },
       { source: "/screen/:slug*", destination: "/#index", permanent: true },
       { source: "/check", destination: "/#index", permanent: true },
-      { source: "/feed.xml", destination: "/#index", permanent: true },
+      // /feed.xml は実体のある RSS になったのでリダイレクトしない
       // 旧の体験・コミュニティ系 → ホームへ
       { source: "/events", destination: "/", permanent: true },
       { source: "/events/:slug*", destination: "/", permanent: true },

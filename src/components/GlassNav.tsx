@@ -5,8 +5,8 @@ import Link from "next/link";
 
 // メディアが主、サービスが従。記事を先頭に置く。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/areas", label: "記事" },
-  { href: "/why", label: "編集方針" },
+  { href: "/#index", label: "記事" },
+  { href: "/#about", label: "編集方針" },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,

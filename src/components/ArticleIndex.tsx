@@ -8,10 +8,16 @@
 //   分野（肌・髪・睡眠）……………………… 名前が分かっている人向け
 // 加えて自由入力。3つは重ねて使える（30代 × 結婚式 × 髪 のように絞れる）。
 //
-// 選んだものはもう一度押せば外れる。適用中の条件は上に出して、必ず解除できる。
-// カードで囲まない。地の上に文字を直接置く。
+// 選択肢を全部並べると19個のボタンが積み上がり、記事に着く前に画面が終わる。
+// なのでトグルダウン（開いて選ぶ）にした。閉じているときは1行で済む。
+//
+// 選んだ条件は URL に載せる（?s=deai&age=20s&area=hair&q=眉）。
+//  ・絞り込んだ状態をそのまま共有・ブックマークできる
+//  ・戻ってきたときに同じ画面が出る
+//  ・schema.org の SearchAction を正直に宣言できる
+// 静的書き出しを壊さないよう、URL の読み書きは history API で行う（Suspense 不要）。
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { clusters } from "@/lib/clusters";
 import { complexes } from "@/lib/complexes";
@@ -25,28 +31,122 @@ const MINCHO: React.CSSProperties = {
 
 const AREA_ORDER = ["impression", "skin", "hair", "body-hair", "face", "mind"] as const;
 
-function Chip({
-  on,
-  onClick,
-  children,
+type Option = { value: string; label: string; count: number };
+
+/* ── トグルダウン ───────────────────────────────────────────────
+   ネイティブの <select> ではなく自前にしている理由は、件数を併記したいのと、
+   選択中に「解除」を出したいため。キーボードとスクリーンリーダーは
+   listbox のロールで担保する。 */
+function Toggle({
+  id,
+  label,
+  options,
+  value,
+  onChange,
 }: {
-  on: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
+  id: string;
+  label: string;
+  options: Option[];
+  value: string | null;
+  onChange: (v: string | null) => void;
 }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const selected = options.find((o) => o.value === value) ?? null;
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (box.current && !box.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={on}
-      className={`rounded-[2px] border px-3.5 py-2 text-[13.5px] transition-colors ${
-        on
-          ? "border-tokiwa bg-tokiwa text-kinari"
-          : "border-shironezu bg-hakuji text-keshizumi hover:border-dou hover:text-dou"
-      }`}
-    >
-      {children}
-    </button>
+    <div ref={box} className="relative">
+      <label htmlFor={id} className="block text-[12.5px] text-ainezu">
+        {label}
+      </label>
+      <button
+        id={id}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className={`mt-2 flex h-12 w-full items-center justify-between gap-3 rounded-[2px] border px-4 text-left text-[14.5px] transition-colors ${
+          selected
+            ? "border-tokiwa bg-tokiwa text-kinari"
+            : "border-shironezu bg-hakuji text-keshizumi hover:border-dou"
+        }`}
+      >
+        <span className="truncate">{selected ? selected.label : "選ぶ"}</span>
+        <span
+          aria-hidden
+          className={`shrink-0 text-[11px] transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        >
+          ▼
+        </span>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          aria-label={label}
+          className="absolute left-0 right-0 top-full z-30 mt-1 max-h-[19rem] overflow-y-auto border border-sumi/15 bg-hakuji shadow-[0_18px_40px_-28px_rgba(31,30,27,0.55)]"
+        >
+          {selected && (
+            <button
+              type="button"
+              onClick={() => {
+                onChange(null);
+                setOpen(false);
+              }}
+              className="block w-full border-b border-shironezu px-4 py-3 text-left text-[13.5px] text-dou hover:bg-kinari"
+            >
+              指定しない
+            </button>
+          )}
+          {options.map((o) => {
+            const on = o.value === value;
+            return (
+              <button
+                key={o.value}
+                type="button"
+                role="option"
+                aria-selected={on}
+                disabled={o.count === 0 && !on}
+                onClick={() => {
+                  onChange(on ? null : o.value);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-baseline justify-between gap-3 border-b border-shironezu px-4 py-3 text-left text-[14.5px] last:border-b-0 transition-colors ${
+                  on
+                    ? "bg-tokiwa text-kinari"
+                    : o.count === 0
+                      ? "cursor-not-allowed text-ainezu/50"
+                      : "text-keshizumi hover:bg-kinari hover:text-dou"
+                }`}
+              >
+                <span>{o.label}</span>
+                <span className={`shrink-0 text-[12px] tabular-nums ${on ? "text-kinari/70" : "text-ainezu"}`}>
+                  {o.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -55,9 +155,80 @@ export default function ArticleIndex() {
   const [situation, setSituation] = useState<SituationId | null>(null);
   const [stage, setStage] = useState<StageId | null>(null);
   const [area, setArea] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
 
-  const areaName = (id: string) => complexes.find((c) => c.id === id)?.ja ?? "";
+  const areaName = useCallback(
+    (id: string) => complexes.find((c) => c.id === id)?.ja ?? "",
+    [],
+  );
+
+  // URL → 状態（初回のみ）
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const s = p.get("s");
+    const age = p.get("age");
+    const ar = p.get("area");
+    if (s && SITUATIONS.some((x) => x.id === s)) setSituation(s as SituationId);
+    if (age && STAGES.some((x) => x.id === age)) setStage(age as StageId);
+    if (ar && AREA_ORDER.includes(ar as (typeof AREA_ORDER)[number])) setArea(ar);
+    setQ(p.get("q") ?? "");
+    setReady(true);
+  }, []);
+
+  // 状態 → URL（履歴は汚さない）
+  useEffect(() => {
+    if (!ready) return;
+    const p = new URLSearchParams();
+    if (situation) p.set("s", situation);
+    if (stage) p.set("age", stage);
+    if (area) p.set("area", area);
+    if (q.trim()) p.set("q", q.trim());
+    const qs = p.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${qs ? `?${qs}` : ""}#index`);
+  }, [ready, q, situation, stage, area]);
+
   const hasFilter = Boolean(q.trim() || situation || stage || area);
+
+  // 条件を1つ外した状態での件数を出す。0件の選択肢を押させないため。
+  const countIf = useCallback(
+    (over: { situation?: SituationId | null; stage?: StageId | null; area?: string | null }) => {
+      const s = over.situation !== undefined ? over.situation : situation;
+      const g = over.stage !== undefined ? over.stage : stage;
+      const a = over.area !== undefined ? over.area : area;
+      const needle = q.trim().toLowerCase();
+      return clusters.filter((x) => {
+        if (s && !situationsOf(x.slug).includes(s)) return false;
+        if (g && STAGE_OF[x.slug] !== g) return false;
+        if (a && x.areaId !== a) return false;
+        if (!needle) return true;
+        return (
+          x.title.toLowerCase().includes(needle) ||
+          x.lead.toLowerCase().includes(needle) ||
+          x.keywords.some((k) => k.toLowerCase().includes(needle)) ||
+          areaName(x.areaId).includes(needle)
+        );
+      }).length;
+    },
+    [q, situation, stage, area, areaName],
+  );
+
+  const situationOptions: Option[] = useMemo(
+    () => SITUATIONS.map((s) => ({ value: s.id, label: s.label, count: countIf({ situation: s.id }) })),
+    [countIf],
+  );
+  const stageOptions: Option[] = useMemo(
+    () =>
+      STAGES.filter((s) => clusters.some((c) => STAGE_OF[c.slug] === s.id)).map((s) => ({
+        value: s.id,
+        label: s.age,
+        count: countIf({ stage: s.id }),
+      })),
+    [countIf],
+  );
+  const areaOptions: Option[] = useMemo(
+    () => AREA_ORDER.map((id) => ({ value: id, label: areaName(id), count: countIf({ area: id }) })),
+    [countIf, areaName],
+  );
 
   const groups = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -78,7 +249,7 @@ export default function ArticleIndex() {
       name: areaName(id),
       items: clusters.filter((a) => a.areaId === id && match(a)),
     })).filter((g) => g.items.length > 0);
-  }, [q, situation, stage, area]);
+  }, [q, situation, stage, area, areaName]);
 
   const total = groups.reduce((n, g) => n + g.items.length, 0);
 
@@ -100,64 +271,41 @@ export default function ArticleIndex() {
         </p>
       </div>
 
-      {/* ① 状況から — いちばん自己同定が速いので先頭 */}
-      <div className="mt-9">
-        <p className="text-[13px] text-dou">いまの状況から</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {SITUATIONS.map((s) => (
-            <Chip
-              key={s.id}
-              on={situation === s.id}
-              onClick={() => setSituation(situation === s.id ? null : s.id)}
-            >
-              {s.label}
-            </Chip>
-          ))}
-        </div>
-      </div>
-
-      {/* ② 年代から */}
-      <div className="mt-7">
-        <p className="text-[13px] text-dou">年代から</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {STAGES.filter((s) => clusters.some((c) => STAGE_OF[c.slug] === s.id)).map((s) => (
-            <Chip key={s.id} on={stage === s.id} onClick={() => setStage(stage === s.id ? null : s.id)}>
-              {s.age}
-            </Chip>
-          ))}
-        </div>
-      </div>
-
-      {/* ③ 分野から */}
-      <div className="mt-7">
-        <p className="text-[13px] text-dou">分野から</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {AREA_ORDER.map((id) => (
-            <Chip key={id} on={area === id} onClick={() => setArea(area === id ? null : id)}>
-              {areaName(id)}
-            </Chip>
-          ))}
-        </div>
-      </div>
-
-      {/* ④ 言葉で */}
-      <div className="mt-7 max-w-[26rem]">
-        <label htmlFor="q" className="block text-[13px] text-dou">
-          言葉でさがす
-        </label>
-        <input
-          id="q"
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="AGA、ニキビ、眉、写真 …"
-          className="mt-3 h-12 w-full rounded-[2px] border border-shironezu bg-hakuji px-4 text-[16px] text-sumi outline-none transition-colors placeholder:text-ainezu focus:border-dou"
+      {/* 絞り込み。閉じているときは1行に収まる */}
+      <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Toggle
+          id="f-situation"
+          label="いまの状況から"
+          options={situationOptions}
+          value={situation}
+          onChange={(v) => setSituation(v as SituationId | null)}
         />
+        <Toggle
+          id="f-stage"
+          label="年代から"
+          options={stageOptions}
+          value={stage}
+          onChange={(v) => setStage(v as StageId | null)}
+        />
+        <Toggle id="f-area" label="分野から" options={areaOptions} value={area} onChange={setArea} />
+        <div>
+          <label htmlFor="q" className="block text-[12.5px] text-ainezu">
+            言葉でさがす
+          </label>
+          <input
+            id="q"
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="AGA、ニキビ、眉、写真 …"
+            className="mt-2 h-12 w-full rounded-[2px] border border-shironezu bg-hakuji px-4 text-[16px] text-sumi outline-none transition-colors placeholder:text-ainezu focus:border-dou"
+          />
+        </div>
       </div>
 
       {/* 適用中の条件。必ず解除できるようにしておく */}
       {hasFilter && (
-        <p className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-t border-shironezu pt-5 text-[13.5px] text-keshizumi">
+        <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-t border-shironezu pt-5 text-[13.5px] text-keshizumi">
           <span className="text-ainezu">絞り込み中：</span>
           {situation && <span>{SITUATIONS.find((s) => s.id === situation)?.label}</span>}
           {stage && <span>{STAGES.find((s) => s.id === stage)?.age}</span>}
@@ -191,7 +339,7 @@ export default function ArticleIndex() {
           </button>
         </div>
       ) : (
-        <div className="mt-14 flex flex-col gap-[72px] sm:gap-[96px]">
+        <div className="mt-12 flex flex-col gap-[72px] sm:gap-[96px]">
           {groups.map((g) => (
             <section key={g.id}>
               <div className="flex items-baseline gap-4 border-b-2 border-sumi pb-3">

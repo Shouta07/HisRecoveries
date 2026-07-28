@@ -4,18 +4,21 @@ import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
 import { citationsByComplex } from "@/lib/citations";
 import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
-import ExperienceInvite, { InlineConsult } from "@/components/ExperienceInvite";
-import EmpathyLead from "@/components/EmpathyLead";
-import QuietConsult from "@/components/QuietConsult";
-import ConsultLink from "@/components/ConsultLink";
+import { charCount, headingId, readingMinutes, sameSituationArticles } from "@/lib/reading";
 import MarketView from "@/components/MarketView";
-import YourCaseCta from "@/components/YourCaseCta";
 import { site } from "@/lib/site";
 
-const HEAD: React.CSSProperties = {
+// 記事ページ。検索から来た人が最初に見る面であり、このサイトのPVの大半がここに立つ。
+//
+// 組みはトップと同じ（生成りの地・明朝の見出し・罫線・カードなし）。
+// 読み物として成立させたうえで、次の一本に進める導線を3種類だけ置く：
+//   ① 目次 …………… ページ内で迷わせない。Google のジャンプリンクにも効く
+//   ② 同じ状況 ……… 分野をまたぐ回遊。ここが2本目への最大の入口
+//   ③ 同じ分野 ……… 深掘りしたい人向け
+// 「無料診断」のような存在しない導線は置かない。
+
+const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
-  fontWeight: 800,
-  letterSpacing: "0.01em",
   fontFeatureSettings: '"palt" 1',
 };
 
@@ -25,16 +28,26 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { id: string; slug: string } }): Metadata {
   const a = getCluster(params.id, params.slug);
-  if (!a) return {};
+  const c = complexById(params.id);
+  if (!a || !c) return {};
   const url = `${site.url}/areas/${a.areaId}/${a.slug}`;
-  // 出典: 記事固有があればそれ、無ければエリア共通（lib/citations.ts の検証済みのみ）
-  const sources = a.sources ?? citationsByComplex[a.areaId] ?? [];
   return {
     title: a.title,
     description: a.lead,
     keywords: a.keywords,
     alternates: { canonical: url },
-    openGraph: { type: "article", url, title: a.title, description: a.lead },
+    openGraph: {
+      type: "article",
+      url,
+      siteName: site.name,
+      locale: site.locale,
+      title: a.title,
+      description: a.lead,
+      section: c.ja,
+      publishedTime: "2026-06-01",
+      modifiedTime: CLUSTER_UPDATED,
+      tags: a.keywords,
+    },
     twitter: { card: "summary_large_image", title: a.title, description: a.lead },
   };
 }
@@ -47,41 +60,65 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
   const url = `${site.url}/areas/${a.areaId}/${a.slug}`;
   // 出典: 記事固有があればそれ、無ければエリア共通（lib/citations.ts の検証済みのみ）
   const sources = a.sources ?? citationsByComplex[a.areaId] ?? [];
+  const minutes = readingMinutes(a);
+  const situationBlocks = sameSituationArticles(a);
+  const situationSlugs = new Set(situationBlocks.flatMap((b) => b.items.map((x) => x.slug)));
 
   // あわせて読む（related slug → 記事解決。存在しない slug は無視）
   const relatedArticles = (a.related ?? [])
-    .map((s) => clusters.find((c) => c.slug === s))
-    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+    .map((s) => clusters.find((x) => x.slug === s))
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+    .filter((x) => !situationSlugs.has(x.slug));
 
   // 袋小路をなくす：related が3本未満なら同カテゴリで補完（回遊/PV）。
   // 補完順は「選び方 → ガイド → 解説」——下流（相談に近い）記事へ自然に流す。
-  if (relatedArticles.length < 3) {
-    const seen = new Set([a.slug, ...relatedArticles.map((r) => r.slug)]);
+  if (relatedArticles.length < 4) {
+    const seen = new Set([a.slug, ...relatedArticles.map((r) => r.slug), ...situationSlugs]);
     const rank = (x: (typeof clusters)[number]) =>
       x.kind === "choose" ? 0 : x.kind === "guide" ? 1 : 2;
     const fill = clusters
       .filter((x) => x.areaId === a.areaId && x.kind !== "interview" && !seen.has(x.slug))
       .sort((p, q) => rank(p) - rank(q));
     for (const x of fill) {
-      if (relatedArticles.length >= 3) break;
+      if (relatedArticles.length >= 4) break;
       relatedArticles.push(x);
     }
   }
 
+  const kindLabel =
+    a.kind === "interview" ? "取材" : a.kind === "guide" ? "実践ガイド" : a.kind === "choose" ? "選び方" : "仕組みの解説";
+
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
+    "@id": `${url}#article`,
     headline: a.title,
+    name: a.title,
     description: a.lead,
     inLanguage: "ja",
-    mainEntityOfPage: url,
+    isAccessibleForFree: true,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
     about: c.ja,
+    articleSection: c.ja,
+    genre: kindLabel,
+    wordCount: charCount(a),
+    timeRequired: `PT${minutes}M`,
     datePublished: "2026-06-01",
     dateModified: CLUSTER_UPDATED,
     author: { "@type": "Organization", name: site.name, url: site.url },
     // 要点を machine-readable に（AI検索が抜き出しやすくする）
     abstract: a.summary.join(" "),
     keywords: a.keywords.join(", "),
+    // 音声アシスタント／AI検索に「まずここを読め」と伝える
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["#article-title", "#tldr"],
+    },
+    isPartOf: { "@id": `${site.url}/#website` },
+    ...(a.kind === "interview" && a.interviewee
+      ? { interviewee: { "@type": "Person", name: a.interviewee.name, jobTitle: a.interviewee.role } }
+      : {}),
     // 出典を構造化データにも出す＝検証可能性を示す
     ...(sources.length > 0
       ? {
@@ -92,12 +129,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           })),
         }
       : {}),
-    publisher: {
-      "@type": "Organization",
-      name: site.name,
-      url: site.url,
-      logo: { "@type": "ImageObject", url: `${site.url}/icon` },
-    },
+    publisher: { "@id": `${site.url}/#publisher` },
   };
   const faqLd = {
     "@context": "https://schema.org",
@@ -113,203 +145,244 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "ホーム", item: site.url },
-      { "@type": "ListItem", position: 2, name: "記事", item: `${site.url}/areas` },
-      { "@type": "ListItem", position: 3, name: c.ja, item: `${site.url}/areas/${c.id}` },
-      { "@type": "ListItem", position: 4, name: a.title, item: url },
+      { "@type": "ListItem", position: 2, name: c.ja, item: `${site.url}/areas/${c.id}` },
+      { "@type": "ListItem", position: 3, name: a.title, item: url },
     ],
   };
 
   return (
-    <div className="bg-[#F3F0EA] text-[#1F1E1B]">
+    <div className="bg-kinari text-sumi">
       <MarketView market={a.areaId} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
-      <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
-        {/* breadcrumb */}
-        <nav aria-label="パンくず" className="text-[13.5px] text-[#5E6A70] mb-6">
-          <Link href="/" className="hover:text-[#1F1E1B]">ホーム</Link>
-          <span className="mx-1.5">/</span>
-          <Link href="/#index" className="hover:text-[#1F1E1B]">記事</Link>
-          <span className="mx-1.5">/</span>
-          <Link href={`/areas/${c.id}`} className="hover:text-[#1F1E1B]">{c.ja}</Link>
-          <span className="mx-1.5">/</span>
-          <span className="text-[#1F1E1B]">{a.title}</span>
+      <article className="mx-auto max-w-reading px-5 sm:px-8 pt-12 sm:pt-16 pb-24">
+        <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
+          <Link href="/" className="transition-colors hover:text-dou">ホーム</Link>
+          <span className="mx-1.5" aria-hidden>/</span>
+          <Link href={`/areas/${c.id}`} className="transition-colors hover:text-dou">{c.ja}</Link>
         </nav>
 
-        <header className="mb-8">
-          <span
-            className="inline-flex rounded-full px-3 py-1 text-[12px] font-bold mb-4"
-            style={{ backgroundColor: c.accentSoft, color: c.accent }}
+        <header className="mt-7">
+          <p className="text-[13px] text-dou">{kindLabel}</p>
+          <h1
+            id="article-title"
+            className="mt-3 text-[26px] leading-[1.5] sm:text-[34px]"
+            style={{ ...MINCHO, fontWeight: 600 }}
           >
-            {c.ja}
-          </span>
-          {a.kind === "interview" && (
-            <span className="inline-flex rounded-full bg-[#8A6A3B] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">取材</span>
-          )}
-          {a.kind === "guide" && (
-            <span className="inline-flex rounded-full bg-[#8A6A3B] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">ガイド</span>
-          )}
-          {a.kind === "choose" && (
-            <span className="inline-flex rounded-full bg-[#2C3A2E] text-white px-3 py-1 text-[12px] font-bold mb-4 ml-2">選び方</span>
-          )}
-          <h1 className="text-[1.8rem] sm:text-[2.3rem] leading-[1.35]" style={HEAD}>
             {a.title}
           </h1>
           {a.kind === "interview" && a.interviewee && (
-            <p className="mt-3 text-[14.5px] text-[#5E6A70]">
-              語り手: <span className="font-semibold text-[#8A6A3B]">{a.interviewee.name}</span>（{a.interviewee.role}）
+            <p className="mt-4 text-[14px] text-keshizumi">
+              語り手：<span className="font-semibold text-dou">{a.interviewee.name}</span>（{a.interviewee.role}）
               {a.interviewee.link && (
                 <>
                   {" "}
-                  <a href={a.interviewee.link} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-[#B9A06B]/60 underline-offset-2 hover:decoration-[#8A6A3B]">
-                    活動ページ↗
+                  <a
+                    href={a.interviewee.link}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                  >
+                    活動ページ<span aria-hidden> ↗</span>
                   </a>
                 </>
               )}
             </p>
           )}
-          <p className="mt-5 text-[15px] text-[#45443E] leading-[2]">{a.lead}</p>
-          <div className="mt-4 flex items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[12px] font-bold">{a.kind === "guide" ? "実践ガイド" : a.kind === "choose" ? "選び方・向き合い方" : "出典明記"}</span>
-            <span className="text-[12px] text-[#5E6A70]">最終更新: {CLUSTER_UPDATED}</span>
-          </div>
+          <p className="mt-5 text-[15.5px] leading-[2.05] text-keshizumi">{a.lead}</p>
+          <p className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-shironezu pt-4 text-[12.5px] text-ainezu">
+            <span>{c.ja}</span>
+            <span>読了 約{minutes}分</span>
+            <span>最終更新 {CLUSTER_UPDATED.replace(/-/g, ".")}</span>
+          </p>
         </header>
 
-        {/* 欲求→悩みのブレイクダウン（普遍的欲求レイヤー。SEO/GEOの共感接点） */}
-        {a.desire && DESIRES[a.desire] && (
-          <div className="mb-5 flex items-start gap-2.5">
-            <span className="shrink-0 inline-flex items-center rounded-full bg-[#2C3A2E] text-[#F3F0EA] px-3 py-1 text-[12px] font-bold tracking-[0.06em]">
-              {DESIRES[a.desire].label}
-            </span>
-            <p className="text-[14px] text-[#45443E] leading-[1.9] pt-0.5">{DESIRES[a.desire].hook}</p>
-          </div>
-        )}
-
-        {/* 共感リード（心理を正面に・正常化・安心） */}
-        <EmpathyLead worry={`「${c.worry}」`} />
-
-        {/* 要点（TL;DR） */}
-        <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#F3F0EA] border border-[#1F1E1B]/10 p-6 sm:p-7 mb-10">
-          <div className="flex items-center gap-2.5 mb-4">
-            <span aria-hidden className="block w-5 h-px bg-[#B9A06B]" />
-            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#8A6A3B] font-medium">要点 / TL;DR</span>
-          </div>
-          <ul className="space-y-2.5">
+        {/* 要点（TL;DR）— 読者にもAI検索にも、最初に結論を渡す */}
+        <div id="tldr" className="mt-10 border-l-2 border-dou pl-5 sm:pl-6">
+          <p className="text-[13px] text-dou">この記事の要点</p>
+          <ul className="mt-3 space-y-2.5">
             {a.summary.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#1F1E1B] leading-[1.85]">
-                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#B9A06B] shrink-0" />
+              <li key={i} className="text-[15px] leading-[1.95] text-sumi">
                 {s}
               </li>
             ))}
           </ul>
         </div>
 
-        {c.guide && <InlineConsult />}
+        {/* 目次 — 長い記事で迷わせない。検索結果のジャンプリンクにも使われる */}
+        {a.sections.length > 2 && (
+          <nav aria-label="目次" className="mt-10 border-y border-shironezu py-6">
+            <p className="text-[13px] text-ainezu">目次</p>
+            <ol className="mt-3 space-y-2">
+              {a.sections.map((s, i) => (
+                <li key={s.h} className="flex items-baseline gap-3">
+                  <span className="w-[1.4em] shrink-0 text-[12px] tabular-nums text-ainezu">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <a
+                    href={`#${headingId(i)}`}
+                    className="text-[14.5px] leading-[1.75] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-dou hover:decoration-dou"
+                  >
+                    {s.h}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
+        {/* 欲求のブレイクダウン — 「これは自分の話だ」と接続する一行 */}
+        {a.desire && DESIRES[a.desire] && (
+          <p className="mt-10 text-[14.5px] leading-[2] text-keshizumi">
+            <span className="font-semibold text-sumi">{DESIRES[a.desire].label}</span>
+            <span className="mx-2 text-shironezu" aria-hidden>|</span>
+            {DESIRES[a.desire].hook}
+          </p>
+        )}
 
         {/* 本文 */}
-        <div className="space-y-8">
-          {a.sections.map((s) => (
-            <section key={s.h}>
-              <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1F1E1B] mb-3 leading-[1.5]" style={HEAD}>
-                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#B9A06B] shrink-0" />
+        <div className="mt-12 flex flex-col gap-11">
+          {a.sections.map((s, i) => (
+            <section key={s.h} id={headingId(i)} className="scroll-mt-20">
+              <h2 className="text-[20px] leading-[1.6] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
                 {s.h}
               </h2>
-              <p className="text-[15.5px] text-[#45443E] leading-[2.05] pl-3.5">{s.body}</p>
+              <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">{s.body}</p>
             </section>
           ))}
         </div>
 
         {/* FAQ */}
-        <section className="mt-12">
-          <h2 className="text-[1.15rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>よくある質問</h2>
-          <dl className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-6 divide-y divide-[#1F1E1B]/10">
-            {a.faqs.map((f) => (
-              <div key={f.q} className="py-5">
-                <dt className="text-[15px] font-bold text-[#1F1E1B] mb-1.5">{f.q}</dt>
-                <dd className="text-[14.5px] text-[#45443E] leading-[1.95]">{f.a}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {/* あわせて読む — 内部リンク網（潜在→仕組み→選び方の導線） */}
-        {relatedArticles.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-[1.15rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>あわせて読む</h2>
-            <ul className="space-y-2.5">
-              {relatedArticles.map((r) => (
-                <li key={r.slug}>
-                  <Link
-                    href={`/areas/${r.areaId}/${r.slug}`}
-                    className="group flex items-start justify-between gap-3 rounded-[1rem] border border-[#1F1E1B]/10 bg-white px-4 py-3.5 hover:border-[#8A6A3B]/40 hover:shadow-[0_14px_30px_-22px_rgba(20,32,26,0.5)] transition-all"
-                  >
-                    <span className="min-w-0">
-                      <span className="block text-[15px] font-semibold text-[#1F1E1B] leading-[1.6] group-hover:text-[#8A6A3B] transition-colors">{r.title}</span>
-                      <span className="mt-0.5 block text-[13.5px] text-[#5E6A70] leading-[1.7] line-clamp-1">{r.lead}</span>
-                    </span>
-                    <span aria-hidden className="text-[#8A6A3B] shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform">→</span>
-                  </Link>
-                </li>
+        {a.faqs.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              よくある質問
+            </h2>
+            <dl className="mt-6 border-t border-shironezu">
+              {a.faqs.map((f) => (
+                <div key={f.q} className="border-b border-shironezu py-5">
+                  <dt className="text-[15px] font-semibold leading-[1.7]">{f.q}</dt>
+                  <dd className="mt-2 text-[14.5px] leading-[1.95] text-keshizumi">{f.a}</dd>
+                </div>
               ))}
-            </ul>
+            </dl>
           </section>
-        )}
-
-        {/* 記事 → 検討層への橋。「答えは渡す。ただし順番はあなた固有」で診断へ送る。
-            情報収集で満足して離脱するのを防ぐ、最初の一段。 */}
-        <YourCaseCta topic={c.ja} market={a.areaId} />
-
-        {/* 次の一歩。ガイド（第一印象）は体験へ、メカニズム／選び方は静かな一本CTA。 */}
-        {c.guide ? (
-          <ExperienceInvite context={`${c.ja}が気になっているあなたへ`} />
-        ) : (
-          <QuietConsult />
         )}
 
         {/* 出典 — 根拠を示すことで、読者にもAI検索にも検証可能にする */}
         {sources.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-3" style={HEAD}>
+          <section className="mt-16">
+            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
               参考にした情報源
             </h2>
-            <ul className="space-y-2">
+            <ul className="mt-5 space-y-3">
               {sources.map((q) => (
-                <li key={q.url} className="flex items-start gap-2">
-                  <span aria-hidden className="text-[#B9A06B] mt-px">›</span>
-                  <p className="text-[14.5px] text-[#45443E] leading-[1.85]">
-                    <a
-                      href={q.url}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                      className="font-semibold text-[#8A6A3B] underline decoration-[#B9A06B]/60 underline-offset-2 hover:decoration-[#8A6A3B]"
-                    >
-                      {q.source}↗
-                    </a>
-                    {q.note ? <span className="ml-1.5 text-[#5E6A70]">— {q.note}</span> : null}
-                  </p>
+                <li key={q.url} className="text-[14px] leading-[1.9] text-keshizumi">
+                  <a
+                    href={q.url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                  >
+                    {q.source}
+                    <span aria-hidden> ↗</span>
+                  </a>
+                  {q.note ? <span className="ml-1.5 text-ainezu">— {q.note}</span> : null}
                 </li>
               ))}
             </ul>
           </section>
         )}
 
-        <p className="mt-12 text-[13.5px] text-[#5E6A70] leading-[1.9]">
+        <p className="mt-12 text-[13px] leading-[1.95] text-ainezu">
           {a.kind === "guide"
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
             : a.kind === "choose"
-            ? "※ 本記事は、選ぶときの観点を中立に整理したものです。特定の医療機関・製品・施術を推奨するものではなく、効果・有効性を示すものでも、診断・治療・受診勧奨を目的としたものでもありません。「今はやらない」も含め、選ぶのはあなたです。個別の判断は専門家にご相談ください。"
-            : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
+              ? "※ 本記事は、選ぶときの観点を中立に整理したものです。特定の医療機関・製品・施術を推奨するものではなく、効果・有効性を示すものでも、診断・治療・受診勧奨を目的としたものでもありません。「今はやらない」も含め、選ぶのはあなたです。個別の判断は専門家にご相談ください。"
+              : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
         </p>
+      </article>
 
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link href={`/areas/${c.id}`} className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
-            {c.ja}の全体を見る <span aria-hidden>→</span>
-          </Link>
-          <Link href="/#plan" className="inline-flex items-center gap-2 rounded-full bg-[#1F1E1B] hover:bg-[#7E4F33] text-white text-sm font-semibold px-7 py-3.5 transition-colors">
-            自分の順番を診断する（無料） <span aria-hidden>→</span>
-          </Link>
+      {/* ══ ここから先は回遊。地を変えて、記事が終わったことを示す ══ */}
+      <div className="border-t border-shironezu bg-hakuji">
+        <div className="mx-auto max-w-[860px] px-5 sm:px-8 py-16 sm:py-20">
+          {/* 同じ状況の人が読んでいる記事 — 分野をまたぐ導線 */}
+          {situationBlocks.map((b) => (
+            <section key={b.situationLabel} className="mb-14 last:mb-0">
+              <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+                「{b.situationLabel}」で読まれている記事
+              </h2>
+              <ul className="mt-5 border-t border-shironezu">
+                {b.items.map((r) => (
+                  <li key={r.slug} className="border-b border-shironezu">
+                    <Link
+                      href={`/areas/${r.areaId}/${r.slug}`}
+                      className="group block py-5 transition-colors hover:text-dou"
+                    >
+                      <p className="text-[12.5px] text-ainezu">
+                        {complexById(r.areaId)?.ja ?? ""}
+                      </p>
+                      <p className="mt-1 text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 600 }}>
+                        {r.title}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+
+          {/* あわせて読む — 同じ分野で深掘りする人向け */}
+          {relatedArticles.length > 0 && (
+            <section className="mb-14 last:mb-0">
+              <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+                あわせて読む
+              </h2>
+              <ul className="mt-5 border-t border-shironezu">
+                {relatedArticles.map((r) => (
+                  <li key={r.slug} className="border-b border-shironezu">
+                    <Link
+                      href={`/areas/${r.areaId}/${r.slug}`}
+                      className="group block py-5 transition-colors hover:text-dou"
+                    >
+                      <p className="text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 600 }}>
+                        {r.title}
+                      </p>
+                      <p className="mt-1.5 text-[13.5px] leading-[1.85] text-keshizumi line-clamp-2">
+                        {r.lead}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <p className="flex flex-wrap gap-x-8 gap-y-3 border-t border-shironezu pt-8 text-[14px]">
+            <Link
+              href={`/areas/${c.id}`}
+              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            >
+              {c.ja}の記事をすべて見る<span aria-hidden> →</span>
+            </Link>
+            <Link
+              href="/#index"
+              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            >
+              ほかの分野からさがす<span aria-hidden> →</span>
+            </Link>
+          </p>
+
+          {/* サービス — 押さない。読んで進む人のほうが多い前提で置く */}
+          <p className="mt-10 border-t border-shironezu pt-8 text-[13.5px] leading-[1.95] text-ainezu">
+            記事はすべて無料で公開しています。一人だと止まってしまう場合だけ、
+            <Link href="/plan" className="mx-1 font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou">
+              第一印象改善プラン
+            </Link>
+            をご覧ください。東京都内・土日のみ。
+          </p>
         </div>
       </div>
     </div>
