@@ -102,15 +102,21 @@ export default function PlanPricing() {
               ))}
             </ol>
 
-            {/* 施術費は別、を明示（不信を生まないため） */}
-            <p className="mt-6 text-[13.5px] text-[#6b7a66] leading-[1.9] border-t border-[#1f2a1d]/10 pt-5">
-              ※ 体験は<span className="text-[#1f2a1d] font-semibold">東京都内・土日</span>のみの実施です（所要は1日）。
-              体験（眉・メイク・服選び・髪型提案・撮影）と<span className="text-[#1f2a1d] font-semibold">会場の費用は含まれます</span>。
-              交通費はご本人のご負担です。
-              お支払いは<span className="text-[#1f2a1d] font-semibold">クレジットカード</span>（Stripeの決済ページ）。
-              <span className="hr-mark">お支払い後のキャンセル・返金はお受けできません</span>（実施者の日程を確保するため）。
-              購入する服・化粧品などの実費、美容室でのカット代はご本人のご負担です。
-              提携先からの手数料は受け取らないので、必要のないものは「やらなくていい」と伝えます。
+            {/* 含む/含まないは、文章より表のほうが速く読める。
+                実施日・支払い方法・キャンセルは上の仕様欄に出しているので繰り返さない。 */}
+            <dl className="mt-6 border-t border-[#1f2a1d]/10 pt-5 text-[13.5px] leading-[1.9]">
+              <div className="flex gap-3">
+                <dt className="shrink-0 w-[5.5em] font-bold text-[#3d5638]">含みます</dt>
+                <dd className="text-[#5c6b58]">体験（眉・メイク・服選び・髪型提案・撮影）／会場費／手順の動画／30日の伴走</dd>
+              </div>
+              <div className="mt-2 flex gap-3">
+                <dt className="shrink-0 w-[5.5em] font-bold text-[#9aa79a]">含みません</dt>
+                <dd className="text-[#5c6b58]">交通費／購入する服・化粧品／美容室のカット代（いずれも実費）</dd>
+              </div>
+            </dl>
+            <p className="mt-3 text-[13.5px] text-[#6b7a66] leading-[1.9]">
+              <span className="hr-mark">お支払い後のキャンセル・返金はお受けできません</span>。
+              実施者の土日と会場を確保するためです。
             </p>
           </div>
         </div>
@@ -128,13 +134,10 @@ export default function PlanPricing() {
           <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#1f2a1d]/10">
             <div className="px-6 sm:px-8 py-6">
               <p className="text-[13.5px] font-bold text-[#9aa79a] mb-3">自分で、バラバラに揃える</p>
-              <ul className="space-y-1.5 text-[14px] text-[#5c6b58] leading-[1.8]">
-                <li>・スタイリストに同行を頼む</li>
-                <li>・写真を撮り直す</li>
-                <li>・肌の施術に通う</li>
-                <li>・脱毛を始める</li>
-                <li>・髪を見直す</li>
-              </ul>
+              <p className="text-[14px] text-[#5c6b58] leading-[1.9]">
+                スタイリストに同行を頼む／写真を撮り直す／肌の施術に通う／脱毛／髪を見直す。
+                それぞれ別々に、探して、比べて、予約する。
+              </p>
               <p className="mt-4 pt-3 border-t border-[#1f2a1d]/10 text-[14.5px] text-[#1f2a1d]">
                 <span className="font-bold text-[1.15rem]" style={MINCHO}>数十万円</span>
                 <span className="ml-2 text-[12.5px] text-[#6b7a66]">＋ 順番も予約も、自分で</span>
@@ -142,12 +145,11 @@ export default function PlanPricing() {
             </div>
             <div className="px-6 sm:px-8 py-6 bg-[#f6f8f4] border-t-2 sm:border-t-0 sm:border-l-2 border-[#B98A3C]">
               <p className="text-[13.5px] font-bold text-[#7E5B29] mb-3">His Recoveries なら</p>
-              <ul className="space-y-1.5 text-[14px] text-[#5c6b58] leading-[1.8]">
-                <li>・<span className="text-[#1f2a1d] font-semibold">必要なものだけ</span>に絞る</li>
-                <li>・眉・メイク・服・髪・撮影を<span className="text-[#1f2a1d] font-semibold">1日で</span></li>
-                <li>・やらなくていいものは、やらない</li>
-                <li>・順番と締切は、こちらで管理</li>
-              </ul>
+              <p className="text-[14px] text-[#5c6b58] leading-[1.9]">
+                <span className="text-[#1f2a1d] font-semibold">必要なものだけ</span>に絞って、
+                眉・メイク・服・髪・撮影を<span className="text-[#1f2a1d] font-semibold">1日で</span>。
+                順番と締切は、こちらで管理します。
+              </p>
               <p className="mt-4 pt-3 border-t border-[#1f2a1d]/10 text-[14.5px] text-[#1f2a1d]">
                 <span className="hr-figure font-bold text-[1.6rem] text-[#7E5B29]">{yen(TIERS.founder.amount)}</span>
                 <span className="ml-1.5 text-[12px] text-[#6b7a66]">税込・{TIERS.founder.label}</span>
@@ -161,40 +163,14 @@ export default function PlanPricing() {
           </p>
         </div>
 
-        {/* 価値分解 — 何にお金を払っているのかを、機能ではなく"消えるコスト"で示す */}
-        <div className="mt-6 rounded-[1.4rem] bg-[#eef3ea] px-6 sm:px-8 py-6">
-          <p className="text-[12.5px] font-bold tracking-[0.08em] text-[#3d5638] mb-1">
-            これは施術費ではありません
-          </p>
-          <p className="text-[15.5px] sm:text-[15.5px] font-bold text-[#1f2a1d] leading-[1.7]" style={MINCHO}>
-            あなたが払っているのは、<br className="sm:hidden" />
-            この6つの負担が消えることです。
-          </p>
-          <ul className="mt-4 grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
-            {[
-              ["判断コスト", "「どれが自分に必要か」を、もう考えなくていい"],
-              ["失敗コスト", "順番を間違えて、時間と費用を捨てるリスクが下がる"],
-              ["時間コスト", "調べる・比べる・予約する時間が、ほぼゼロになる"],
-              ["選定コスト", "どの専門家が合うかを、中立に選んでもらえる"],
-              ["管理コスト", "締切と進捗を、自分で管理しなくてよくなる"],
-              ["心理コスト", "一人で抱えず、迷ったその場で聞ける相手がいる"],
-            ].map(([t, d]) => (
-              <li key={t} className="flex gap-2.5">
-                <span aria-hidden className="text-[#3d5638] text-[13.5px] leading-[1.9] shrink-0">✓</span>
-                <p className="text-[14px] text-[#4b5b47] leading-[1.9]">
-                  <span className="font-bold text-[#1f2a1d]">{t}</span>
-                  <span className="mx-1.5 text-[#c9d3c4]">|</span>
-                  {d}
-                </p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 text-[14px] text-[#4b5b47] leading-[1.95] border-t border-[#1f2a1d]/10 pt-4">
-            自分で調べ、比べ、選び、間違え、やり直す。その時間と費用を合計すると、
-            多くの場合これを上回ります。しかも大事な日は、やり直しがききません。
-            ここで払っているのは、施術ではなく<span className="font-semibold text-[#1f2a1d]">判断と段取り</span>です。
-          </p>
-        </div>
+        {/* 「何に払うのか」は、6項目の一覧ではなく1文で足りる。
+            機能を並べるほど読まれなくなるので、比較表の直後に置いて締める。 */}
+        <p className="mt-4 px-1 text-[14px] text-[#4b5b47] leading-[1.95]">
+          自分で調べ、比べ、選び、間違え、やり直す。その時間と費用を合計すると、
+          多くの場合これを上回ります。しかも大事な日は、やり直しがききません。
+          ここで払っているのは、施術ではなく
+          <span className="hr-mark">判断と段取り</span>です。
+        </p>
 
         {/* 入口 */}
         <div className="mt-6 rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 px-6 sm:px-8 py-6">
