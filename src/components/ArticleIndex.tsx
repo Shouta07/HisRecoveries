@@ -8,13 +8,14 @@
 //   分野（肌・髪・睡眠）……………………… 名前が分かっている人向け
 // 加えて自由入力。3つは重ねて使える（30代 × 結婚式 × 髪 のように絞れる）。
 //
-// 選択肢を全部並べると19個のボタンが積み上がり、記事に着く前に画面が終わる。
-// なのでトグルダウン（開いて選ぶ）にした。閉じているときは1行で済む。
+// ── 形 ──────────────────────────────────────────────────
+// 旅行予約サイトの検索フォームと同じ組み方にしている。
+// 枠は1つ。中を横罫で区切って、1行＝1つの条件。ラベルは置かない
+// （「年代をえらぶ」がそのまま指示になるので、上に見出しを足すと二重になる）。
+// 選ぶと、その行の文字が置き換わる。最後に件数つきのボタンを1つ。
+// 条件ごとにラベル＋ボックスを積むと縦に伸びて、スクロールしないと全体が見えない。
 //
-// 選んだ条件は URL に載せる（?s=deai&age=20s&area=hair&q=眉）。
-//  ・絞り込んだ状態をそのまま共有・ブックマークできる
-//  ・戻ってきたときに同じ画面が出る
-//  ・schema.org の SearchAction を正直に宣言できる
+// 選んだ条件は URL に載せる（?s=deai&age=mature&area=hair&q=眉）。
 // 静的書き出しを壊さないよう、URL の読み書きは history API で行う（Suspense 不要）。
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -33,19 +34,19 @@ const AREA_ORDER = ["impression", "skin", "hair", "body-hair", "face", "mind"] a
 
 type Option = { value: string; label: string; count: number };
 
-/* ── トグルダウン ───────────────────────────────────────────────
+/* ── 1行＝1条件 ─────────────────────────────────────────────
    ネイティブの <select> ではなく自前にしている理由は、件数を併記したいのと、
-   選択中に「解除」を出したいため。キーボードとスクリーンリーダーは
-   listbox のロールで担保する。 */
-function Toggle({
+   0件になる選択肢を押せなくしたいため（選んでから空振りするのを防ぐ）。
+   キーボードとスクリーンリーダーは listbox のロールで担保する。 */
+function Row({
   id,
-  label,
+  placeholder,
   options,
   value,
   onChange,
 }: {
   id: string;
-  label: string;
+  placeholder: string;
   options: Option[];
   value: string | null;
   onChange: (v: string | null) => void;
@@ -71,26 +72,21 @@ function Toggle({
   }, [open]);
 
   return (
-    <div ref={box} className="relative">
-      <label htmlFor={id} className="block text-[12.5px] text-ainezu">
-        {label}
-      </label>
+    <div ref={box} className="relative flex-1">
       <button
         id={id}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className={`mt-2 flex h-12 w-full items-center justify-between gap-3 rounded-[2px] border px-4 text-left text-[14.5px] transition-colors ${
-          selected
-            ? "border-tokiwa bg-tokiwa text-kinari"
-            : "border-shironezu bg-hakuji text-keshizumi hover:border-dou"
-        }`}
+        className="flex h-[54px] w-full items-center justify-between gap-3 px-4 text-left text-[15px] transition-colors hover:bg-kinari/60"
       >
-        <span className="truncate">{selected ? selected.label : "選ぶ"}</span>
+        <span className={`truncate ${selected ? "font-semibold text-sumi" : "text-ainezu"}`}>
+          {selected ? selected.label : placeholder}
+        </span>
         <span
           aria-hidden
-          className={`shrink-0 text-[11px] transition-transform duration-200 ${
+          className={`shrink-0 text-[10px] text-ainezu transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
         >
@@ -101,8 +97,8 @@ function Toggle({
       {open && (
         <div
           role="listbox"
-          aria-label={label}
-          className="absolute left-0 right-0 top-full z-30 mt-1 max-h-[19rem] overflow-y-auto border border-sumi/15 bg-hakuji shadow-[0_18px_40px_-28px_rgba(31,30,27,0.55)]"
+          aria-label={placeholder}
+          className="absolute left-0 right-0 top-full z-30 mt-px max-h-[17rem] overflow-y-auto border border-sumi/15 bg-hakuji shadow-[0_18px_40px_-24px_rgba(31,30,27,0.6)]"
         >
           {selected && (
             <button
@@ -129,11 +125,11 @@ function Toggle({
                   onChange(on ? null : o.value);
                   setOpen(false);
                 }}
-                className={`flex w-full items-baseline justify-between gap-3 border-b border-shironezu px-4 py-3 text-left text-[14.5px] last:border-b-0 transition-colors ${
+                className={`flex w-full items-baseline justify-between gap-3 border-b border-shironezu px-4 py-3 text-left text-[14.5px] transition-colors last:border-b-0 ${
                   on
                     ? "bg-tokiwa text-kinari"
                     : o.count === 0
-                      ? "cursor-not-allowed text-ainezu/50"
+                      ? "cursor-not-allowed text-ainezu/45"
                       : "text-keshizumi hover:bg-kinari hover:text-dou"
                 }`}
               >
@@ -189,7 +185,7 @@ export default function ArticleIndex() {
 
   const hasFilter = Boolean(q.trim() || situation || stage || area);
 
-  // 条件を1つ外した状態での件数を出す。0件の選択肢を押させないため。
+  // 条件を1つ差し替えた状態での件数。0件の選択肢を押させないため。
   const countIf = useCallback(
     (over: { situation?: SituationId | null; stage?: StageId | null; area?: string | null }) => {
       const s = over.situation !== undefined ? over.situation : situation;
@@ -260,125 +256,137 @@ export default function ArticleIndex() {
     setArea(null);
   };
 
+  const toResults = () => {
+    document.getElementById("results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+      <div className="flex items-baseline justify-between gap-4">
         <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
           記事をさがす
         </h2>
-        <p className="text-[12.5px] tabular-nums text-ainezu">
-          {hasFilter ? `${total}件` : `全${clusters.length}本`}
-        </p>
-      </div>
-
-      {/* 絞り込み。閉じているときは1行に収まる */}
-      <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Toggle
-          id="f-situation"
-          label="いまの状況から"
-          options={situationOptions}
-          value={situation}
-          onChange={(v) => setSituation(v as SituationId | null)}
-        />
-        <Toggle
-          id="f-stage"
-          label="年代から"
-          options={stageOptions}
-          value={stage}
-          onChange={(v) => setStage(v as StageId | null)}
-        />
-        <Toggle id="f-area" label="分野から" options={areaOptions} value={area} onChange={setArea} />
-        <div>
-          <label htmlFor="q" className="block text-[12.5px] text-ainezu">
-            言葉でさがす
-          </label>
-          <input
-            id="q"
-            type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="AGA、ニキビ、眉、写真 …"
-            className="mt-2 h-12 w-full rounded-[2px] border border-shironezu bg-hakuji px-4 text-[16px] text-sumi outline-none transition-colors placeholder:text-ainezu focus:border-dou"
-          />
-        </div>
-      </div>
-
-      {/* 適用中の条件。必ず解除できるようにしておく */}
-      {hasFilter && (
-        <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-t border-shironezu pt-5 text-[13.5px] text-keshizumi">
-          <span className="text-ainezu">絞り込み中：</span>
-          {situation && <span>{SITUATIONS.find((s) => s.id === situation)?.label}</span>}
-          {stage && <span>{STAGES.find((s) => s.id === stage)?.age}</span>}
-          {area && <span>{areaName(area)}</span>}
-          {q.trim() && <span>「{q.trim()}」</span>}
+        {hasFilter && (
           <button
             type="button"
             onClick={clearAll}
-            className="font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+            className="text-[13px] text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
           >
             すべて解除
           </button>
-        </p>
-      )}
+        )}
+      </div>
 
-      {total === 0 ? (
-        <div className="mt-12 border border-dashed border-shironezu bg-hakuji/50 px-6 py-8">
-          <p className="text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
-            この条件に当てはまる記事は、まだありません。
-          </p>
-          <p className="mt-3 text-[14px] leading-[1.95] text-keshizumi">
-            数合わせで記事を作ることはしないので、見つからないときは正直にこう出ます。
-            条件を1つ外すか、別の言葉でお試しください。
-          </p>
-          <button
-            type="button"
-            onClick={clearAll}
-            className="mt-5 text-[14px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
-          >
-            すべて解除する
-          </button>
+      {/* 枠は1つ。中を罫線で区切る。 */}
+      <div className="mt-5 rounded-[2px] border border-shironezu bg-hakuji sm:flex sm:items-stretch">
+        <div className="divide-y divide-shironezu sm:flex sm:flex-1 sm:divide-x sm:divide-y-0">
+          <Row
+            id="f-situation"
+            placeholder="いまの状況をえらぶ"
+            options={situationOptions}
+            value={situation}
+            onChange={(v) => setSituation(v as SituationId | null)}
+          />
+          <Row
+            id="f-stage"
+            placeholder="年代をえらぶ"
+            options={stageOptions}
+            value={stage}
+            onChange={(v) => setStage(v as StageId | null)}
+          />
+          <Row
+            id="f-area"
+            placeholder="分野をえらぶ"
+            options={areaOptions}
+            value={area}
+            onChange={setArea}
+          />
+          <div className="flex-1 border-t border-shironezu sm:border-t-0">
+            <input
+              id="q"
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="言葉でさがす"
+              aria-label="言葉でさがす"
+              className="h-[54px] w-full bg-transparent px-4 text-[16px] text-sumi outline-none placeholder:text-ainezu focus:bg-kinari/60 sm:text-[15px]"
+            />
+          </div>
         </div>
-      ) : (
-        <div className="mt-12 flex flex-col gap-[72px] sm:gap-[96px]">
-          {groups.map((g) => (
-            <section key={g.id}>
-              <div className="flex items-baseline gap-4 border-b-2 border-sumi pb-3">
-                <h3 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
-                  {g.name}
-                </h3>
-                <span className="text-[12.5px] tabular-nums text-ainezu">{g.items.length}</span>
-                <Link
-                  href={`/areas/${g.id}`}
-                  className="ml-auto text-[13px] font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
-                >
-                  この分野について
-                </Link>
-              </div>
+      </div>
 
-              <ul>
-                {g.items.map((a) => (
-                  <li key={a.slug} className="border-b border-shironezu">
-                    <Link
-                      href={`/areas/${a.areaId}/${a.slug}`}
-                      className="group block py-7 transition-colors hover:text-dou"
-                    >
-                      <h4
-                        className="max-w-[30em] text-[17px] leading-[1.7] sm:text-[19px]"
-                        style={{ ...MINCHO, fontWeight: 600 }}
+      {/* 件数つきのボタンを1つ。押すと結果の先頭へ。 */}
+      <button
+        type="button"
+        onClick={toResults}
+        className="mt-3 flex h-[54px] w-full items-center justify-center gap-2 rounded-[2px] bg-tokiwa text-[15px] font-semibold text-kinari transition-colors hover:bg-tokiwa/90 sm:mt-4"
+      >
+        <span>
+          <span className="tabular-nums">{total}</span>本をみる
+        </span>
+        <span aria-hidden>→</span>
+      </button>
+
+      <div id="results" className="scroll-mt-24">
+        {total === 0 ? (
+          <div className="mt-12 border border-dashed border-shironezu bg-hakuji/50 px-6 py-8">
+            <p className="text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              この条件に当てはまる記事は、まだありません。
+            </p>
+            <p className="mt-3 text-[14px] leading-[1.95] text-keshizumi">
+              数合わせで記事を作ることはしないので、見つからないときは正直にこう出ます。
+              条件を1つ外すか、別の言葉でお試しください。
+            </p>
+            <button
+              type="button"
+              onClick={clearAll}
+              className="mt-5 text-[14px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            >
+              すべて解除する
+            </button>
+          </div>
+        ) : (
+          <div className="mt-14 flex flex-col gap-[72px] sm:gap-[96px]">
+            {groups.map((g) => (
+              <section key={g.id}>
+                <div className="flex items-baseline gap-4 border-b-2 border-sumi pb-3">
+                  <h3 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+                    {g.name}
+                  </h3>
+                  <span className="text-[12.5px] tabular-nums text-ainezu">{g.items.length}</span>
+                  <Link
+                    href={`/areas/${g.id}`}
+                    className="ml-auto text-[13px] font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+                  >
+                    この分野について
+                  </Link>
+                </div>
+
+                <ul>
+                  {g.items.map((a) => (
+                    <li key={a.slug} className="border-b border-shironezu">
+                      <Link
+                        href={`/areas/${a.areaId}/${a.slug}`}
+                        className="group block py-7 transition-colors hover:text-dou"
                       >
-                        {a.title}
-                      </h4>
-                      <p className="mt-2.5 max-w-[38em] text-[14px] leading-[1.95] text-keshizumi">
-                        {a.lead}
-                      </p>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      )}
+                        <h4
+                          className="max-w-[30em] text-[17px] leading-[1.7] sm:text-[19px]"
+                          style={{ ...MINCHO, fontWeight: 600 }}
+                        >
+                          {a.title}
+                        </h4>
+                        <p className="mt-2.5 max-w-[38em] text-[14px] leading-[1.95] text-keshizumi">
+                          {a.lead}
+                        </p>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
