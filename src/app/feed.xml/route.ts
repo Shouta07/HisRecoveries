@@ -1,5 +1,6 @@
 import { clusters, CLUSTER_UPDATED } from "@/lib/clusters";
 import { complexById } from "@/lib/complexes";
+import { publishedAt } from "@/lib/articleDates";
 import { site } from "@/lib/site";
 
 // RSS 2.0。用途は3つ。
@@ -17,8 +18,14 @@ const escape = (s: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+/** 記事ごとの公開日。未登録なら媒体の更新日にフォールバックする */
+function pubDate(slug: string): string {
+  const d = publishedAt(slug);
+  return new Date(`${d ?? "2026-07-22"}T12:00:00+09:00`).toUTCString();
+}
+
 export function GET() {
-  const updated = new Date(`${CLUSTER_UPDATED}T00:00:00+09:00`).toUTCString();
+  const updated = new Date(`${CLUSTER_UPDATED}T12:00:00+09:00`).toUTCString();
 
   const items = clusters
     .map((a) => {
@@ -31,7 +38,7 @@ export function GET() {
         `      <guid isPermaLink="true">${url}</guid>`,
         `      <description>${escape(a.lead)}</description>`,
         category ? `      <category>${escape(category)}</category>` : "",
-        `      <pubDate>${updated}</pubDate>`,
+        `      <pubDate>${pubDate(a.slug)}</pubDate>`,
         "    </item>",
       ]
         .filter(Boolean)
