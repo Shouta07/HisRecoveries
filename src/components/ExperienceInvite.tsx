@@ -10,7 +10,7 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-// 商品は「第一印象改善プラン（30日 ¥49,800 税込）」の1本のみ。
+// 商品は「第一印象改善プラン（30日）」の1本のみ。費用はサイトに出さず個別見積。
 // ここに別プランを増やさないこと（増やすと記事からの導線が割れる）。
 const STEPS = ["カウンセリング", "改善プラン", "1日で整える", "材料を渡す"];
 
@@ -28,7 +28,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
         <p className="text-[14.5px] text-[#C9D2C4] leading-[1.95] max-w-[34rem] mb-4">
           読んで分かっても、自分に合う形にするのは難しいもの。His Recoveries は、
           何をやるかを決めて、眉・メイク・服・髪型・撮影を1日で整え、手順の動画とサイズ表を持ち帰っていただきます。
-          プランは<span className="text-[#EDF1E8] font-semibold">30日 ¥49,800（税込・先着10名）</span>の1本だけです。
+          お取り扱いは<span className="text-[#EDF1E8] font-semibold">30日プラン</span>の1本だけです。費用は個別のお見積りで、ご相談は無料です。
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">

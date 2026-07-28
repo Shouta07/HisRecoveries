@@ -7,7 +7,7 @@ import TrustSection from "@/components/TrustSection";
 import StepsSection from "@/components/StepsSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
-import { PLAN, TIERS, yen } from "@/lib/pricing";
+import { PLAN } from "@/lib/pricing";
 import { site } from "@/lib/site";
 
 // 個人向けサービスの面。
@@ -28,9 +28,9 @@ const HEAD: React.CSSProperties = {
 const url = `${site.url}/plan`;
 
 export const metadata: Metadata = {
-  title: `第一印象改善プラン（30日）— ${yen(TIERS.founder.amount)} 税込・東京都内・土日`,
+  title: "第一印象改善プラン（30日）— 東京都内・土日・1日の体験",
   description:
-    "男性の第一印象を30日で整える個人向けプラン。眉・メンズメイク・服選び・髪型の提案・写真撮影を1日で行い、メイクの手順動画・服のサイズ表・髪型のオーダー資料など6点をお渡しします。東京都内・土日のみ。相談は無料。",
+    "男性の第一印象を30日で整える個人向けプラン。眉・メンズメイク・服選び・髪型の提案・写真撮影を1日で行い、メイクの手順動画・服のサイズ表・髪型のオーダー資料など6点をお渡しします。東京都内・土日のみ。費用は個別のお見積り、ご相談は無料です。",
   alternates: { canonical: url },
   openGraph: {
     type: "website",
@@ -43,9 +43,9 @@ export const metadata: Metadata = {
 
 const FACTS = [
   { k: "期間", v: `${PLAN.days}日`, sub: "" },
-  { k: "料金", v: yen(TIERS.founder.amount), sub: "税込" },
   { k: "実施", v: PLAN.where, sub: PLAN.when },
-  { k: "枠", v: `先着${TIERS.founder.seats}名`, sub: "" },
+  { k: "所要", v: PLAN.duration, sub: "体験" },
+  { k: "費用", v: "個別見積", sub: "" },
 ];
 
 export default function PlanPage() {
@@ -118,7 +118,7 @@ export default function PlanPage() {
               href="#pricing"
               className="inline-flex items-center gap-2 rounded-full border border-[#E0B75F]/45 bg-[#E0B75F]/12 hover:bg-[#E0B75F]/22 text-[#EDF1E8] text-[15px] font-semibold px-7 py-3.5 transition-colors"
             >
-              中身と料金を見る <span aria-hidden className="text-[#E0B75F]">→</span>
+              何をするのかを見る <span aria-hidden className="text-[#E0B75F]">→</span>
             </a>
             <Link
               href="/#plan"

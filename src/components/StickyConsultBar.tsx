@@ -11,7 +11,7 @@
 // 同じ文言を出し続けると、読み終えた人に「もう見た」と無視される。
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { TIERS, yen } from "@/lib/pricing";
+import { PLAN } from "@/lib/pricing";
 
 type Stage = "hidden" | "plan" | "consult";
 
@@ -65,7 +65,7 @@ export default function StickyConsultBar() {
           </span>
           <span className="mt-0.5 text-[11px] text-[#9FB0A0]">
             {consult
-              ? `${yen(TIERS.founder.amount)} 税込・${TIERS.founder.label}／東京・土日`
+              ? `${PLAN.days}日 ／ ${PLAN.where}・${PLAN.when} ／ 費用は個別見積`
               : "登録不要・そのまま見られます"}
           </span>
         </span>

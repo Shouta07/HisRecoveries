@@ -8,7 +8,7 @@ import { complexes } from "@/lib/complexes";
 import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
 import { fieldVoices } from "@/lib/fieldVoices";
 import { experts } from "@/lib/trust";
-import { PLAN, TIERS, yen } from "@/lib/pricing";
+import { PLAN } from "@/lib/pricing";
 
 // ══════════════════════════════════════════════════════════════
 // ホーム = メディアの顔。
@@ -162,7 +162,7 @@ export default function HomePage() {
                   <ul className="space-y-2 text-[14px] text-[#5c6b58] leading-[1.85]">
                     <li>
                       ・<Link href="/plan" className="text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4">個人向けプラン</Link>
-                      （{yen(TIERS.founder.amount)}税込・{PLAN.days}日）
+                      （{PLAN.days}日・個別見積）
                     </li>
                     <li>
                       ・<Link href="/business" className="text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4">法人向け研修</Link>
@@ -338,16 +338,12 @@ export default function HomePage() {
                   眉・メイク・服選び・髪型の提案・撮影を1日で。手順の動画とサイズ表を
                   持ち帰っていただきます。東京都内・土日のみ。
                 </p>
-                <p className="mt-4 pt-4 border-t border-white/15 flex items-baseline gap-2 flex-wrap">
-                  <span className="hr-figure text-[1.7rem] font-bold text-[#E0B75F]">
-                    {yen(TIERS.founder.amount)}
-                  </span>
-                  <span className="text-[12.5px] text-[#9FB0A0]">
-                    税込 ／ {PLAN.days}日 ／ 先着{TIERS.founder.seats}名
-                  </span>
+                <p className="mt-4 pt-4 border-t border-white/15 text-[13.5px] text-[#C9D2C4]">
+                  {PLAN.days}日 ／ {PLAN.where}・{PLAN.when}
+                  <span className="ml-2 text-[12.5px] text-[#9FB0A0]">費用は個別見積</span>
                 </p>
                 <p className="mt-3 text-[13.5px] font-semibold text-[#E0B75F]">
-                  中身を見る <span aria-hidden>→</span>
+                  何をするのかを見る <span aria-hidden>→</span>
                 </p>
               </Link>
 

@@ -15,7 +15,7 @@ const MINCHO: React.CSSProperties = {
 export const metadata: Metadata = {
   title: "無料で相談する — 実名不要・返信は3営業日を目処に",
   description:
-    "His Recoveries の無料相談。第一印象改善プラン（30日 ¥49,800 税込）が合うかどうかを、申し込む前に確かめられます。実名・顔写真は不要。合わないと思えば、その場でお伝えします。",
+    "His Recoveries の無料相談。第一印象改善プラン（30日）が合うかどうかを、申し込む前に確かめられます。実名・顔写真は不要。合わないと思えば、その場でお伝えします。",
   alternates: { canonical: `${site.url}/reserve` },
   robots: { index: true, follow: true },
 };
@@ -25,7 +25,7 @@ const CHIPS = ["無料", "実名なしでOK", "売り込みません", "秘密�
 const AFTER = [
   "無料でご相談（メール）。3営業日を目処にご返信します。",
   "合うかどうかを先に確認。合わなければ、そうお伝えします。",
-  "実施日（東京都内・土日）を決めて、カードでお支払い（Stripe）。",
+  "内容が決まったら、お見積りをお出しします。",
   "お支払い後に、ご連絡用のLINEをご案内します。",
 ];
 
@@ -68,8 +68,8 @@ export default function ReservePage() {
             お取り扱いは、30日プラン1本だけです。
           </p>
           <p className="text-[14px] text-[#4b5b47] leading-[1.9]">
-            第一印象改善プラン（30日）¥49,800（税込・先着10名／以降 ¥66,000 税込）。
-            実施は東京都内・土日のみ、お支払いはクレジットカードのみです。
+            第一印象改善プラン（30日）の1本のみです。実施は東京都内・土日のみ。
+            内容は人によって変わるため、費用はご相談のうえで個別にお見積りします。
             <Link href="/plan" className="ml-1 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4">
               中身を見る
             </Link>
