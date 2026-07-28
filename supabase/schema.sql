@@ -307,3 +307,46 @@ select
 from events
 group by 1
 order by 2 desc;
+
+-- ─────────────────────────────────────────────────────────────
+-- orders — Stripe Checkout の発行と入金の記録。
+--
+-- 「先着10名」をコピーではなく実体で止めるためのテーブル。
+-- 書き込むのは service key を持つサーバー（管理APIとWebhook）だけ。
+-- anon から触れないよう RLS を有効にし、ポリシーは作らない。
+-- ─────────────────────────────────────────────────────────────
+create table if not exists orders (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  paid_at timestamptz,
+  -- Stripe 側の識別子。session_id は一意（冪等性の要）。
+  stripe_session_id text not null unique,
+  stripe_payment_intent text,
+  stripe_event_id text,
+  -- issued（発行済・未入金）/ paid / expired / canceled
+  status text not null default 'issued',
+  -- founder（先着10名）/ standard
+  tier text not null,
+  amount integer not null,
+  currency text not null default 'jpy',
+  email text not null,
+  display_name text,
+  scheduled_for date,
+  note text
+);
+
+create index if not exists orders_status_idx on orders (status);
+create index if not exists orders_tier_status_idx on orders (tier, status);
+create index if not exists orders_created_idx on orders (created_at desc);
+
+alter table orders enable row level security;
+-- ポリシーは意図的に作らない = anon key からは読めない・書けない。
+-- service key（server-only）だけが RLS をバイパスして操作する。
+
+-- 先着枠の残数を見るためのビュー
+create or replace view founder_seats as
+select
+  count(*) filter (where status = 'paid') as paid,
+  count(*) filter (where status in ('issued', 'paid')) as held
+from orders
+where tier = 'founder';

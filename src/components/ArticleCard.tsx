@@ -40,11 +40,11 @@ export default function ArticleCard({
             {article.title}
           </h3>
           {showExcerpt && article.excerpt && (
-            <p className="mt-3 text-[12.5px] leading-[1.85] text-sub-gray line-clamp-3">
+            <p className="mt-3 text-[14px] leading-[1.85] text-sub-gray line-clamp-3">
               {article.excerpt}
             </p>
           )}
-          <div className="mt-4 flex items-center justify-between gap-3 text-[11px] tracking-[0.06em]">
+          <div className="mt-4 flex items-center justify-between gap-3 text-[12px] tracking-[0.06em]">
             <time dateTime={article.publishedAt} className="text-sub-gray">
               {formatDate(article.publishedAt)}
             </time>

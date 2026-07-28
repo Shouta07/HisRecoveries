@@ -35,7 +35,7 @@ export default function MomentSection() {
   return (
     <section id="moment" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
-        <p className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#3d5638] mb-3">
+        <p className="hr-eyebrow mb-3.5">
           Moment — 来られるきっかけ
         </p>
         <h2 className="text-[1.45rem] sm:text-[2rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
@@ -48,10 +48,10 @@ export default function MomentSection() {
               key={m.when}
               className="rounded-[1.3rem] bg-white border border-[#1f2a1d]/10 px-5 py-5"
             >
-              <p className="font-mono text-[10.5px] tracking-[0.1em] text-[#85AB8B]">
+              <p className="font-mono text-[11px] tracking-[0.1em] text-[#85AB8B]">
                 {m.when}
               </p>
-              <p className="mt-2 text-[14.5px] text-[#1f2a1d] leading-[1.85]" style={MINCHO}>
+              <p className="mt-2 text-[15.5px] text-[#1f2a1d] leading-[1.85]" style={MINCHO}>
                 {m.text}
               </p>
             </li>
@@ -62,15 +62,15 @@ export default function MomentSection() {
           <p className="text-[15px] sm:text-[16px] font-bold leading-[1.7]" style={MINCHO}>
             心当たりが、ひとつでもありましたか。
           </p>
-          <p className="mt-2.5 text-[12.5px] text-[#C9D2C4] leading-[1.95]">
+          <p className="mt-2.5 text-[14px] text-[#C9D2C4] leading-[1.95]">
             どれも、放っておいて直るものではありません。でも、
-            <span className="text-[#EDF1E8] font-semibold">才能や生まれつきの話でもありません</span>。
+            <span className="hr-mark-dark">才能や生まれつきの話でもありません</span>。
             髪・眉・服のサイズ感・表情・写真の撮られ方。
             変えられる要素を、変えられる順番で。30日あれば足ります。
           </p>
           <Link
             href="/#plan"
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13px] font-bold px-6 py-2.5 transition-colors"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[14.5px] font-bold px-6 py-2.5 transition-colors"
           >
             30秒で、自分に必要な改善プランを見る <span aria-hidden>→</span>
           </Link>

@@ -13,6 +13,7 @@ import TrustSection from "@/components/TrustSection";
 import ScopeSection from "@/components/ScopeSection";
 import ForWhomSection from "@/components/ForWhomSection";
 import MomentSection from "@/components/MomentSection";
+import { PLAN, TIERS, yen } from "@/lib/pricing";
 
 // Hero display — an elegant high-contrast mincho serif for a premium,
 // editorial feel (the grotesk read too generic / "cheap" at hero scale).
@@ -56,6 +57,15 @@ const BURDENS = [
   { k: "続ける", t: "自分で、再現できる。", d: "その場限りにしません。できるまで見届けます。" },
 ];
 
+// 事実だけを並べる4枠。読まない人のための最低限。
+// 数字は src/lib/pricing.ts が正。ここに直接書かない。
+const FACTS = [
+  { k: "期間", v: `${PLAN.days}日`, sub: "" },
+  { k: "料金", v: yen(TIERS.founder.amount), sub: "税込" },
+  { k: "実施", v: PLAN.where, sub: PLAN.when },
+  { k: "枠", v: `先着${TIERS.founder.seats}名`, sub: "" },
+];
+
 export default function HomePage() {
   return (
     <div className="relative font-sans bg-[#f4f6f2]">
@@ -79,7 +89,7 @@ export default function HomePage() {
         {/* Hero copy — vertically centered in the viewport */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[72vh] sm:min-h-[80vh] px-4 sm:px-6 pt-24 pb-10">
           {/* 何のサービスか、を最初のひと言で */}
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[11.5px] sm:text-[12.5px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[12.5px] sm:text-[14px] font-semibold tracking-[0.04em] text-[#C9D2C4]">
             <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#9ec4a3]" />
             男性の第一印象を、30日で整える
           </span>
@@ -111,48 +121,46 @@ export default function HomePage() {
             </h1>
           </div>
 
-          {/* サービスの中身＝当事者が設計→つなぐ→伴走（改行は文節単位で自然に） */}
-          <p className="text-[#D7DED2] text-[13px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
+          {/* 事実バー — 見出しの直後。読まない人が「期間・値段・場所・枠」だけは
+              分かるようにする。ここから下の文章を全部飛ばしても判断できる状態。 */}
+          <dl className="hr-facts w-full max-w-[600px] text-left">
+            {FACTS.map((f) => (
+              <div key={f.k}>
+                <dt className="text-[10.5px] tracking-[0.14em] uppercase text-[#9FB0A0]">{f.k}</dt>
+                <dd className="hr-figure mt-1.5 text-[17px] sm:text-[19px] font-bold text-[#E0B75F]">
+                  {f.v}
+                  {f.sub && <span className="ml-1 text-[11px] font-normal text-[#C9D2C4]">{f.sub}</span>}
+                </dd>
+              </div>
+            ))}
+          </dl>
+
+          {/* サービスの中身を1文で。3ステップの説明は下の3カラムと重複するので置かない。 */}
+          <p className="mt-5 text-[#D7DED2] text-[14.5px] sm:text-[15px] leading-[1.95] max-w-[33rem]">
             <span className="inline-block">眉・髪型・服・メイク・写真。</span>{" "}
             <span className="inline-block">別々に探す時代から、</span>
             <span className="inline-block"><span className="font-semibold text-[#EDF1E8]">まとめて整える</span>時代へ。</span>
-            <br className="hidden sm:block" />
-            <span className="inline-block">何をやるかを決めて、</span>{" "}
-            <span className="inline-block">実際に整えて、</span>{" "}
-            <span className="inline-block">自分で再現できるまで見届けます。</span>
           </p>
 
-          {/* メカニズムを3ステップでスキャンできるように */}
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[11.5px] sm:text-[13px] font-semibold">
-            {["何をやるか決める", "実際に整える", "再現できるまで見届ける"].map((s, i) => (
-              <div key={s} className="flex items-center gap-2">
-                <span className="rounded-full bg-white/[0.07] border border-white/12 px-3 py-1.5 text-[#C9D2C4]">
-                  <span className="text-[#9ec4a3] font-bold mr-1">{i + 1}</span>{s}
-                </span>
-                {i < 2 && <span aria-hidden className="text-[#85AB8B]">→</span>}
-              </div>
-            ))}
-          </div>
-
           {/* 一次CTA＝診断ツールへ（相談は下部の追従バーに集約） */}
-          <a href="#plan" className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#9ec4a3]/40 bg-white/[0.06] hover:bg-white/[0.12] text-[#EDF1E8] text-[13.5px] font-semibold px-7 py-3 transition-colors">
-            30秒で自分専用プランを見る <span aria-hidden>→</span>
+          <a href="#plan" className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#E0B75F]/45 bg-[#E0B75F]/12 hover:bg-[#E0B75F]/22 text-[#EDF1E8] text-[15px] font-semibold px-7 py-3.5 transition-colors">
+            30秒で自分専用プランを見る <span aria-hidden className="text-[#E0B75F]">→</span>
           </a>
 
           {/* 価値3カラム（手間・恥・損）— サブコピー直下 */}
           <div className="mt-8 w-full max-w-[600px] grid grid-cols-3 rounded-[1.4rem] bg-white/95 backdrop-blur-sm border border-[#1f2a1d]/10 divide-x divide-[#1f2a1d]/10 overflow-hidden shadow-[0_20px_48px_-26px_rgba(20,32,26,0.5)]">
             {BURDENS.map((b) => (
               <div key={b.k} className="flex flex-col items-center text-center px-1.5 sm:px-4 py-4 sm:py-6">
-                <span className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[10px] sm:text-[11.5px] font-bold tracking-[0.06em]">{b.k}</span>
-                <div className="mt-2 sm:mt-3 text-[12px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.4]" style={MINCHO}>{b.t}</div>
-                <p className="mt-1 text-[9.5px] sm:text-[11.5px] text-[#6b7a66] leading-[1.55]">{b.d}</p>
+                <span className="inline-flex items-center rounded-full bg-[#16241A] text-[#EDF1E8] px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[10px] sm:text-[12.5px] font-bold tracking-[0.06em]">{b.k}</span>
+                <div className="mt-2 sm:mt-3 text-[13.5px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.4]" style={MINCHO}>{b.t}</div>
+                <p className="mt-1 text-[11px] sm:text-[12.5px] text-[#6b7a66] leading-[1.55]">{b.d}</p>
               </div>
             ))}
           </div>
 
           {/* こんなお悩み、ないですか？ — 男性の内なる声（2本のマーキー） */}
           <div className="mt-11 sm:mt-14 w-full">
-            <p className="text-[#9ec4a3] text-[13px] sm:text-[14px] font-medium tracking-[0.04em] mb-4 sm:mb-5" style={MINCHO}>
+            <p className="text-[#9ec4a3] text-[14.5px] sm:text-[15px] font-medium tracking-[0.04em] mb-4 sm:mb-5" style={MINCHO}>
               こんなお悩み、ないですか？
             </p>
             <div aria-hidden className="w-screen overflow-hidden space-y-2.5 sm:space-y-3 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
@@ -160,7 +168,7 @@ export default function HomePage() {
                 {[0, 1].map((n) => (
                   <div key={n} className="flex gap-8 sm:gap-12">
                     {VOICES_A.map((v) => (
-                      <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/85 tracking-[0.04em]" style={MINCHO}>
+                      <span key={v} className="text-[13.5px] sm:text-[14.5px] text-[#C9D2C4]/85 tracking-[0.04em]" style={MINCHO}>
                         「{v}」
                       </span>
                     ))}
@@ -171,7 +179,7 @@ export default function HomePage() {
                 {[0, 1].map((n) => (
                   <div key={n} className="flex gap-8 sm:gap-12">
                     {VOICES_B.map((v) => (
-                      <span key={v} className="text-[12px] sm:text-[13px] text-[#C9D2C4]/65 tracking-[0.04em]" style={MINCHO}>
+                      <span key={v} className="text-[13.5px] sm:text-[14.5px] text-[#C9D2C4]/65 tracking-[0.04em]" style={MINCHO}>
                         「{v}」
                       </span>
                     ))}
@@ -229,7 +237,7 @@ export default function HomePage() {
               {/* 悩みから探す */}
               <div className="col-span-2 sm:col-span-2">
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">悩みから探す</div>
-                <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-[13px] text-[#4b5b47]">
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-[14.5px] text-[#4b5b47]">
                   {[
                     ["impression", "清潔感・第一印象"],
                     ["hair", "薄毛・髪"],
@@ -248,7 +256,7 @@ export default function HomePage() {
               {/* サービス */}
               <div>
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">サービス</div>
-                <ul className="space-y-2 text-[13px] text-[#4b5b47]">
+                <ul className="space-y-2 text-[14.5px] text-[#4b5b47]">
                   <li><a href="#plan" className="hover:text-[#1f2a1d] transition-colors">自分専用プランを見る</a></li>
                   <li><a href="#pricing" className="hover:text-[#1f2a1d] transition-colors">第一印象改善プラン（30日）</a></li>
                   <li><Link href="/reserve" className="hover:text-[#1f2a1d] transition-colors">無料で相談する</Link></li>
@@ -259,7 +267,7 @@ export default function HomePage() {
               {/* His Recoveries */}
               <div>
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">His Recoveries</div>
-                <ul className="space-y-2 text-[13px] text-[#4b5b47]">
+                <ul className="space-y-2 text-[14.5px] text-[#4b5b47]">
                   <li><Link href="/why" className="hover:text-[#1f2a1d] transition-colors">なぜ、やるのか</Link></li>
                   <li><Link href="/partner" className="hover:text-[#1f2a1d] transition-colors">提携パートナー募集</Link></li>
                   <li><Link href="/privacy" className="hover:text-[#1f2a1d] transition-colors">プライバシー・免責事項</Link></li>
@@ -269,7 +277,7 @@ export default function HomePage() {
 
             <div className="mt-10 pt-6 border-t border-[#1f2a1d]/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <Link href="/" className="logo-type text-xl font-semibold tracking-tight text-[#1f2a1d]">His Recoveries</Link>
-              <span className="text-[12px] text-[#6b7a66]">© 2026 His Recoveries — 男の「変わりたい」に、伴走する。</span>
+              <span className="text-[13.5px] text-[#6b7a66]">© 2026 His Recoveries — 男の「変わりたい」に、伴走する。</span>
             </div>
           </div>
           {/* 追従バーが最下部で内容を隠さないための余白 */}

@@ -22,14 +22,14 @@ export default function Footer() {
         <Link href="/" className="logo-type text-xl tracking-[0.04em] text-zinc-900">
           {site.name}
         </Link>
-        <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
+        <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14.5px]">
           {LINKS.map((l) => (
             <Link key={l.href} href={l.href} className="hover:text-zinc-900 transition-colors">
               {l.label}
             </Link>
           ))}
         </nav>
-        <span className="text-[12px] text-zinc-400">© {year} {site.name}</span>
+        <span className="text-[13.5px] text-zinc-400">© {year} {site.name}</span>
       </div>
     </footer>
   );

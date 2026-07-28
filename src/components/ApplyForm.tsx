@@ -85,7 +85,7 @@ export default function ApplyForm() {
 
   const field =
     "w-full rounded-2xl border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[16px] text-[#1f2a1d] outline-none focus:border-[#3d5638] transition-colors";
-  const label = "block text-[13px] font-semibold text-[#1f2a1d] mb-2";
+  const label = "block text-[14.5px] font-semibold text-[#1f2a1d] mb-2";
 
   // ── Success state — completes entirely on-site ──
   if (status === "success") {
@@ -99,11 +99,11 @@ export default function ApplyForm() {
         <h2 className="text-[1.4rem] font-bold text-[#1f2a1d] mb-3" style={{ fontFamily: "var(--font-shippori), serif" }}>
           ご相談を受け付けました。
         </h2>
-        <p className="text-[14px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
+        <p className="text-[15px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
           いただいた内容を確認のうえ、3営業日を目処にご連絡先へご返信します。
           まずは、合うかどうかを一緒に確かめるところから。合わないと思えば、正直にそうお伝えします。
         </p>
-        <p className="mt-5 text-[12px] text-[#6b7a66]">
+        <p className="mt-5 text-[13.5px] text-[#6b7a66]">
           ※ この時点で費用は発生しません。医療行為は含みません。
         </p>
       </div>
@@ -124,7 +124,7 @@ export default function ApplyForm() {
           placeholder="山田 太郎（ニックネーム可）"
           required
         />
-        <p className="mt-1.5 text-[11.5px] text-[#6b7a66] leading-[1.7]">
+        <p className="mt-1.5 text-[12.5px] text-[#6b7a66] leading-[1.7]">
           実名・顔写真は不要です。ニックネームと、連絡のつくメールアドレスだけで構いません。
         </p>
       </div>
@@ -212,10 +212,10 @@ export default function ApplyForm() {
 
       {/* 秘密保持 — 必須同意 */}
       <div className="rounded-2xl border border-[#1f2a1d]/15 bg-[#f4f6f2] p-5">
-        <p className="text-[13px] font-semibold text-[#1f2a1d] mb-2">
+        <p className="text-[14.5px] font-semibold text-[#1f2a1d] mb-2">
           秘密保持について（必須）
         </p>
-        <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
+        <p className="text-[14px] text-[#4b5b47] leading-[1.9]">
           お預かりするお名前・連絡先・悩みに関する情報は、ご相談への対応と運営の目的に限り、
           厳重に管理します。第三者へ販売・提供することはありません。ご相談の過程で知り得た双方の情報は、
           相互に秘密として扱います。
@@ -228,14 +228,14 @@ export default function ApplyForm() {
             className="mt-0.5 w-5 h-5 accent-[#3d5638] shrink-0"
             required
           />
-          <span className="text-[13.5px] font-medium text-[#1f2a1d] leading-[1.7]">
+          <span className="text-[15px] font-medium text-[#1f2a1d] leading-[1.7]">
             秘密保持に同意します。（同意がない場合は送信いただけません）
           </span>
         </label>
       </div>
 
       {status === "error" && (
-        <p className="text-[13px] text-[#a3402f] bg-[#f7ece9] border border-[#a3402f]/20 rounded-xl px-4 py-3">
+        <p className="text-[14.5px] text-[#a3402f] bg-[#f7ece9] border border-[#a3402f]/20 rounded-xl px-4 py-3">
           送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。
         </p>
       )}
@@ -253,10 +253,10 @@ export default function ApplyForm() {
           : "秘密保持に同意すると送信できます"}
       </button>
 
-      <p className="text-[11.5px] text-[#6b7a66] leading-[1.8]">
+      <p className="text-[12.5px] text-[#6b7a66] leading-[1.8]">
         ※ ご相談は無料です。目安：3営業日以内に一次のご連絡をします。
         お取り扱いは第一印象改善プラン（30日）1本のみで、医療行為は含みません。
-        お支払いはPayPayのみ、LINEはお支払い後の伴走でのみ使います。
+        お支払いはクレジットカード（Stripe）のみ、LINEはお支払い後の伴走でのみ使います。
       </p>
     </form>
   );

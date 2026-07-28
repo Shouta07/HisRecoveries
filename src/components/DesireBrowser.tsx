@@ -27,7 +27,7 @@ export default function DesireBrowser({
       <div className="rounded-[1.6rem] bg-white border border-[#1f2a1d]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
         {/* ヘッダー帯 — 診断カードと同じ濃緑のアンカー */}
         <div className="bg-[#16241A] text-[#EDF1E8] px-6 sm:px-9 py-6 sm:py-7">
-          <div className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#85AB8B]">
+          <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#85AB8B]">
             目的から探す
           </div>
           <h2
@@ -36,7 +36,7 @@ export default function DesireBrowser({
           >
             {heading}
           </h2>
-          <p className="mt-2 text-[12.5px] sm:text-[13.5px] text-[#C9D2C4] leading-[1.8]">
+          <p className="mt-2 text-[14px] sm:text-[15px] text-[#C9D2C4] leading-[1.8]">
             悩みの名前がわからなくても、「どうなりたいか」から選べます。
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function DesireBrowser({
                       {d.label}
                     </span>
                     <span
-                      className={`shrink-0 font-mono text-[11px] tabular-nums pt-1 ${
+                      className={`shrink-0 font-mono text-[12px] tabular-nums pt-1 ${
                         active ? "text-[#85AB8B]" : "text-[#9aa79a]"
                       }`}
                     >
@@ -72,7 +72,7 @@ export default function DesireBrowser({
                     </span>
                   </div>
                   <p
-                    className={`mt-2 text-[12px] leading-[1.85] ${
+                    className={`mt-2 text-[13.5px] leading-[1.85] ${
                       active ? "text-[#C9D2C4]" : "text-[#5c6b58]"
                     }`}
                   >
@@ -81,7 +81,7 @@ export default function DesireBrowser({
                   {/* 矢印はホバー時だけ。全カードにCTA文言を並べない */}
                   <span
                     aria-hidden
-                    className={`absolute right-4 bottom-3 text-[13px] transition-all duration-200 ${
+                    className={`absolute right-4 bottom-3 text-[14.5px] transition-all duration-200 ${
                       active
                         ? "text-[#85AB8B] opacity-100"
                         : "text-[#3d5638] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5"

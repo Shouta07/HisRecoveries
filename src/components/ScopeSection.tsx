@@ -73,12 +73,12 @@ function List({
   const markColor = tone === "do" ? "text-[#3d5638]" : "text-[#9aa79a]";
   return (
     <div className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-6">
-      <p className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
+      <p className="text-[15px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
         {title}
       </p>
       <ul className="space-y-2">
         {items.map((x) => (
-          <li key={x} className="flex gap-2.5 text-[12.5px] text-[#4b5b47] leading-[1.85]">
+          <li key={x} className="flex gap-2.5 text-[14px] text-[#4b5b47] leading-[1.85]">
             <span aria-hidden className={`${markColor} shrink-0 leading-[1.85]`}>
               {mark}
             </span>
@@ -94,13 +94,13 @@ export default function ScopeSection() {
   return (
     <section id="scope" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
-        <p className="font-mono text-[10.5px] tracking-[0.24em] uppercase text-[#3d5638] mb-3">
+        <p className="hr-eyebrow mb-3.5">
           Scope — 何をして、何をしないか
         </p>
         <h2 className="text-[1.45rem] sm:text-[2rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
           先に、境界線をお伝えします。
         </h2>
-        <p className="mt-4 text-[13.5px] text-[#4b5b47] leading-[1.95] max-w-[34rem]">
+        <p className="mt-4 text-[15px] text-[#4b5b47] leading-[1.95] max-w-[34rem]">
           お金を払ってから「思っていたものと違った」となるのが、いちばん不幸です。
           だから、できることと、できないことを、申し込みの前に書いておきます。
         </p>
@@ -114,22 +114,22 @@ export default function ScopeSection() {
 
         {/* 医療・美容の線引き — 「おすすめクリニック紹介」に見せないための中核 */}
         <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
-          <p className="text-[13.5px] font-bold text-[#1f2a1d] mb-1" style={MINCHO}>
+          <p className="text-[15px] font-bold text-[#1f2a1d] mb-1" style={MINCHO}>
             医療・美容を扱うときの、線引き
           </p>
-          <p className="text-[12.5px] text-[#5c6b58] leading-[1.9]">
+          <p className="text-[14px] text-[#5c6b58] leading-[1.9]">
             わたしたちは医療者ではありません。だから、次のように分けています。
           </p>
           <div className="mt-4 grid sm:grid-cols-2 gap-3">
             <div className="rounded-[1rem] bg-[#f6f8f4] px-4 py-3.5">
-              <p className="text-[11.5px] font-bold tracking-[0.06em] text-[#3d5638] mb-2">
+              <p className="text-[12.5px] font-bold tracking-[0.06em] text-[#3d5638] mb-2">
                 提供するもの
               </p>
               <ul className="flex flex-wrap gap-1.5">
                 {MEDICAL_DO.map((x) => (
                   <li
                     key={x}
-                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[11.5px] text-[#1f2a1d]"
+                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[12.5px] text-[#1f2a1d]"
                   >
                     {x}
                   </li>
@@ -137,14 +137,14 @@ export default function ScopeSection() {
               </ul>
             </div>
             <div className="rounded-[1rem] bg-[#f6f8f4] px-4 py-3.5">
-              <p className="text-[11.5px] font-bold tracking-[0.06em] text-[#9aa79a] mb-2">
+              <p className="text-[12.5px] font-bold tracking-[0.06em] text-[#9aa79a] mb-2">
                 提供しないもの
               </p>
               <ul className="flex flex-wrap gap-1.5">
                 {MEDICAL_DONT.map((x) => (
                   <li
                     key={x}
-                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[11.5px] text-[#9aa79a] line-through decoration-[#c9a091]"
+                    className="rounded-full bg-white border border-[#1f2a1d]/10 px-2.5 py-1 text-[12.5px] text-[#9aa79a] line-through decoration-[#c9a091]"
                   >
                     {x}
                   </li>
@@ -152,11 +152,12 @@ export default function ScopeSection() {
               </ul>
             </div>
           </div>
-          <p className="mt-4 text-[13.5px] font-bold text-[#1f2a1d] leading-[1.8]" style={MINCHO}>
-            施術を受けるかどうかを決めるのは、あなたです。<br className="hidden sm:block" />
+          <p className="mt-4 text-[15px] font-bold text-[#1f2a1d] leading-[1.8]" style={MINCHO}>
+            <span className="hr-mark">施術を受けるかどうかを決めるのは、あなたです。</span>
+            <br className="hidden sm:block" />
             私たちは、納得して選べる状態を作ります。
           </p>
-          <p className="mt-2.5 text-[12px] text-[#6b7a66] leading-[1.9]">
+          <p className="mt-2.5 text-[13.5px] text-[#6b7a66] leading-[1.9]">
             特定の医療機関を「おすすめ」することはしません。候補と、比べるための軸と、
             受診時に聞くべき質問をお渡しします。提携先からの紹介料は受け取っていません。
           </p>
@@ -164,32 +165,32 @@ export default function ScopeSection() {
 
         {/* お断りする場合 — 受けない判断を先に見せる。ここが最大のクレーム予防。 */}
         <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
-          <p className="text-[13.5px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
+          <p className="text-[15px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
             こういうご相談は、お断りしています
           </p>
           <ul className="space-y-2">
             {DECLINE.map((x) => (
-              <li key={x} className="flex gap-2.5 text-[12.5px] text-[#4b5b47] leading-[1.85]">
+              <li key={x} className="flex gap-2.5 text-[14px] text-[#4b5b47] leading-[1.85]">
                 <span aria-hidden className="text-[#9aa79a] shrink-0 leading-[1.85]">—</span>
                 <span>{x}</span>
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-[12.5px] text-[#5c6b58] leading-[1.95]">
+          <p className="mt-4 text-[14px] text-[#5c6b58] leading-[1.95]">
             とくに肌は、施術だけで早く、というのが難しい部分です。睡眠・食事・ストレスが関わり、
             年齢によってはホルモンの影響で避けにくい面もあります。医療にかかっても、
             <span className="text-[#1f2a1d] font-semibold">1年で解決するとは限りません</span>。
             期日が近いのに肌を主戦場にすると、間に合わないまま当日を迎えることになります。
           </p>
-          <p className="mt-2.5 text-[12.5px] text-[#1f2a1d] leading-[1.95] font-semibold">
+          <p className="mt-2.5 text-[14px] text-[#1f2a1d] leading-[1.95] font-semibold">
             ただ、肌が完璧でなくても、第一印象は動きます。
           </p>
-          <p className="mt-1.5 text-[12.5px] text-[#5c6b58] leading-[1.95]">
+          <p className="mt-1.5 text-[14px] text-[#5c6b58] leading-[1.95]">
             第一印象は、髪・眉・服のサイズ感・姿勢・表情・写真の撮られ方の総合点です。
             肌はそのうちの一つで、十割ではありません。期日が近い場合は、
             動かせる要素から整えます。肌は期日と切り離して、長く付き合う前提でお話しします。
           </p>
-          <p className="mt-2.5 text-[12px] text-[#6b7a66] leading-[1.9]">
+          <p className="mt-2.5 text-[13.5px] text-[#6b7a66] leading-[1.9]">
             それでも「施術中心で、短期間に」をお望みの場合は、力になれません。
             正直にお伝えして、お引き受けしません。
           </p>
@@ -197,23 +198,23 @@ export default function ScopeSection() {
 
         {/* 顧客自身の役割 — ここを曖昧にすると必ず揉める */}
         <div className="mt-4 rounded-[1.2rem] bg-[#16241A] text-[#EDF1E8] px-5 sm:px-7 py-6">
-          <p className="text-[14px] font-bold" style={MINCHO}>
+          <p className="text-[15px] font-bold" style={MINCHO}>
             あなたにやっていただくこと
           </p>
-          <p className="mt-2 text-[12.5px] text-[#C9D2C4] leading-[1.9]">
+          <p className="mt-2 text-[14px] text-[#C9D2C4] leading-[1.9]">
             段取りは全部こちらで引き受けます。ただし、代われないことが3つだけあります。
           </p>
           <ul className="mt-3 grid sm:grid-cols-3 gap-2.5">
             {YOUR_PART.map((x) => (
               <li
                 key={x}
-                className="rounded-[0.9rem] bg-white/[0.06] border border-white/10 px-4 py-3 text-[12.5px] leading-[1.75]"
+                className="rounded-[0.9rem] bg-white/[0.06] border border-white/10 px-4 py-3 text-[14px] leading-[1.75]"
               >
                 {x}
               </li>
             ))}
           </ul>
-          <p className="mt-3.5 text-[11.5px] text-[#9ec4a3] leading-[1.85]">
+          <p className="mt-3.5 text-[12.5px] text-[#9ec4a3] leading-[1.85]">
             逆に言えば、この3つさえやっていただければ、あとは考えなくて大丈夫です。
           </p>
         </div>

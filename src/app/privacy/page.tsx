@@ -20,10 +20,10 @@ function Section({ n, title, children }: { n: string; title: string; children: R
   return (
     <section>
       <h2 className="flex items-baseline gap-2.5 text-[1.05rem] font-bold text-[#1f2a1d] mb-3" style={HEAD}>
-        <span className="font-mono text-[12px] font-medium text-[#85AB8B] not-italic">{n}</span>
+        <span className="font-mono text-[13.5px] font-medium text-[#85AB8B] not-italic">{n}</span>
         {title}
       </h2>
-      <div className="text-[14px] leading-[2] text-[#4b5b47] space-y-4">{children}</div>
+      <div className="text-[15px] leading-[2] text-[#4b5b47] space-y-4">{children}</div>
     </section>
   );
 }
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         <header className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <p className="font-mono text-[12px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">
+            <p className="font-mono text-[13.5px] tracking-[0.16em] uppercase text-[#3d5638] font-medium">
               Privacy &amp; Disclaimer
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function PrivacyPage() {
           <h2 className="text-[1.1rem] mb-4 text-[#EDF1E8]" style={HEAD}>
             免責事項（医療・中立性）
           </h2>
-          <div className="text-[14px] leading-[2] text-[#C9D2C4] space-y-4">
+          <div className="text-[15px] leading-[2] text-[#C9D2C4] space-y-4">
             <p>
               His Recoveries（以下「本サービス」）は、<strong className="font-bold text-[#EDF1E8]">実名・顔写真なしのご相談から始められる</strong>、
               完全守秘のもとで運営する第一印象改善サービスです。お名前・ご連絡先の確認は、お申し込み（お支払い）の段階で、当日のご案内とご請求に必要な範囲に限って行います。
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
             <p>当社は、本サービスの提供にあたり、次の情報を取得することがあります。</p>
             <ul className="list-disc pl-5 space-y-2 marker:text-[#85AB8B]">
               <li>無料相談のフォームでご提供いただく連絡先およびご相談内容。フォームの送信には外部サービスを利用します（当該サービスの取扱いは各社のポリシーに従います）。</li>
-              <li>お申し込み（お支払い）の段階で、ご本人の同意のもとで確認するお名前・ご連絡先。お支払いはPayPayを利用します（決済情報は当社では保持しません）。</li>
+              <li>お申し込み（お支払い）の段階で、ご本人の同意のもとで確認するお名前・ご連絡先。決済は Stripe, Inc. のサービスを利用しており、<strong className="font-bold text-[#1f2a1d]">クレジットカード番号等の決済情報は当社を経由せず、当社では保持しません。</strong>当社が受け取るのは、決済が完了した事実・金額・お申し込み時のメールアドレスのみです。</li>
               <li>お支払い後の伴走で利用するLINEでのやりとり、および作成・記録する状態・記録等の情報。</li>
               <li>ご本人の同意のもとで取得する、健康・身体に関する情報（要配慮個人情報）。</li>
               <li>撮影を伴う体験において作成する写真等のデータ（取扱いは第6条のとおり）。</li>
@@ -188,7 +188,7 @@ export default function PrivacyPage() {
             </p>
           </Section>
 
-          <section className="border-t border-[#1f2a1d]/10 pt-8 mt-4 text-[12px] text-[#6b7a66] leading-[1.9]">
+          <section className="border-t border-[#1f2a1d]/10 pt-8 mt-4 text-[13.5px] text-[#6b7a66] leading-[1.9]">
             <p className="font-semibold text-[#4b5b47] mb-1">運営者</p>
             <p>バイタリティデザイン合同会社</p>
             <p>制定日: 2026年5月16日</p>

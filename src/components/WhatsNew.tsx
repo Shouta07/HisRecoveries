@@ -72,7 +72,7 @@ export default function WhatsNew({ featured, rest }: Props) {
                 />
               </div>
               <div>
-                <p className="text-[11px] text-sub-gray">
+                <p className="text-[12px] text-sub-gray">
                   {categoryLabel(a.category)}
                   <span className="mx-1.5">·</span>
                   {formatDate(a.publishedAt)}

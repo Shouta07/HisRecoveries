@@ -94,7 +94,7 @@ export default function PartnerApplyForm() {
 
   const field =
     "w-full rounded-2xl border border-[#1f2a1d]/12 bg-white px-4 py-3 text-[15px] text-[#1f2a1d] outline-none focus:border-[#3d5638] transition-colors";
-  const label = "block text-[13px] font-semibold text-[#1f2a1d] mb-2";
+  const label = "block text-[14.5px] font-semibold text-[#1f2a1d] mb-2";
 
   if (status === "success") {
     return (
@@ -105,7 +105,7 @@ export default function PartnerApplyForm() {
           </svg>
         </div>
         <h2 className="text-[1.4rem] font-bold text-[#1f2a1d] mb-3">受け付けました。</h2>
-        <p className="text-[14px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
+        <p className="text-[15px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
           エリア・カテゴリの空き状況を確認のうえ、担当より2営業日以内にご連絡します。
         </p>
       </div>
@@ -165,11 +165,11 @@ export default function PartnerApplyForm() {
       >
         {status === "submitting" ? "送信中…" : "無料で提携を申し込む"}
       </button>
-      <p className="text-[11.5px] text-[#6b7a66] leading-[1.8] text-center">
+      <p className="text-[12.5px] text-[#6b7a66] leading-[1.8] text-center">
         まずは、ご相談から。エリアの空き状況をご案内します。無理な勧誘は一切ありません。
       </p>
       {status === "error" && (
-        <p className="text-[12.5px] text-[#b4453c] text-center">送信に問題が発生しました。お手数ですが {site.company.email} まで直接お送りください。</p>
+        <p className="text-[14px] text-[#b4453c] text-center">送信に問題が発生しました。お手数ですが {site.company.email} まで直接お送りください。</p>
       )}
     </form>
   );

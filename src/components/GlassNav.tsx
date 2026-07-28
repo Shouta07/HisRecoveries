@@ -44,7 +44,7 @@ export default function GlassNav() {
             <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
               <Link
                 href={l.href}
-                className={`text-[13px] sm:text-[14px] font-medium transition-colors whitespace-nowrap ${
+                className={`text-[14.5px] sm:text-[15px] font-medium transition-colors whitespace-nowrap ${
                   scrolled ? "text-[#3d5638] hover:text-[#1f2a1d]" : "text-[#EDF1E8]/85 hover:text-[#EDF1E8]"
                 }`}
               >

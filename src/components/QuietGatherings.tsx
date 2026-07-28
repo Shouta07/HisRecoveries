@@ -73,7 +73,7 @@ function Single({ event }: { event: EventFrontmatter }) {
       </Link>
 
       <div className="min-w-0">
-        <p className="text-[11px] text-sub-gray tracking-[0.08em]">
+        <p className="text-[12px] text-sub-gray tracking-[0.08em]">
           {dateText}
           <span className="mx-1.5">·</span>
           {timeText}
@@ -92,7 +92,7 @@ function Single({ event }: { event: EventFrontmatter }) {
             {event.title}
           </Link>
         </h3>
-        <p className="mt-2 text-[12px] text-sub-gray tracking-[0.04em]">
+        <p className="mt-2 text-[13.5px] text-sub-gray tracking-[0.04em]">
           {event.location}
           {event.format && (
             <>
@@ -158,7 +158,7 @@ function CardEvent({ event }: { event: EventFrontmatter }) {
         size="md"
       />
       <div className="mt-4">
-        <p className="text-[11px] text-sub-gray tracking-[0.06em]">
+        <p className="text-[12px] text-sub-gray tracking-[0.06em]">
           {dateText}
           {isOpen && (
             <>
@@ -170,7 +170,7 @@ function CardEvent({ event }: { event: EventFrontmatter }) {
         <h3 className="mt-2 text-[15px] sm:text-base font-bold leading-[1.65] text-ink group-hover:text-ink transition-colors line-clamp-3">
           {event.title}
         </h3>
-        <p className="mt-2 text-[11px] text-sub-gray tracking-[0.04em]">
+        <p className="mt-2 text-[12px] text-sub-gray tracking-[0.04em]">
           {event.location}
           {event.format && (
             <>

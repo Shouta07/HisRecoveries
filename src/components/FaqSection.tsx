@@ -28,19 +28,19 @@ export default function FaqSection() {
         <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 px-5 sm:px-8 divide-y divide-[#1f2a1d]/10">
           {FAQ_TOP.map((f) => (
             <details key={f.q} className="group py-4 sm:py-[18px]">
-              <summary className="flex items-start justify-between gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[13.5px] sm:text-[14px] font-bold text-[#1f2a1d] leading-[1.65]">
+              <summary className="flex items-start justify-between gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[15px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.65]">
                 <span>{f.q}</span>
                 <span aria-hidden className="mt-0.5 shrink-0 grid place-items-center w-6 h-6 rounded-full bg-[#eef3ea] text-[#3d5638] transition-transform duration-200 group-open:rotate-180">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                 </span>
               </summary>
-              <p className="mt-2.5 text-[13px] text-[#4b5b47] leading-[1.95]">{f.a}</p>
+              <p className="mt-2.5 text-[14.5px] text-[#4b5b47] leading-[1.95]">{f.a}</p>
             </details>
           ))}
 
           {/* 全FAQへ */}
           <div className="py-6 text-center">
-            <Link href="/faq" className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[13.5px] font-bold px-8 py-3.5 transition-colors">
+            <Link href="/faq" className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[15px] font-bold px-8 py-3.5 transition-colors">
               すべての質問をみる <span aria-hidden>→</span>
             </Link>
           </div>

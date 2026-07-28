@@ -29,7 +29,7 @@ export default function ApplyPage() {
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">
           ひとりで抱えず、<br />メールで、相談する。
         </h1>
-        <p className="mt-5 text-[14.5px] text-[#4b5b47] leading-[2] mb-10">
+        <p className="mt-5 text-[15.5px] text-[#4b5b47] leading-[2] mb-10">
           何が正解か、いくらかかるか。<strong className="font-bold text-[#1f2a1d]">遠回りせず、あなたのペースで一緒に整理します。</strong>
           気になることは、いくつでも。実名・顔写真は不要です。
           <br />
@@ -40,7 +40,7 @@ export default function ApplyPage() {
 
         <ConsultEntry />
 
-        <div className="mt-8 flex items-start gap-2.5 text-[13px] text-[#4b5b47] leading-[1.9]">
+        <div className="mt-8 flex items-start gap-2.5 text-[14.5px] text-[#4b5b47] leading-[1.9]">
           <span aria-hidden className="text-[#85AB8B] mt-px">→</span>
           <p>
             送信いただいた内容は{" "}

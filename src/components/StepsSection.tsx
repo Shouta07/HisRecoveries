@@ -22,7 +22,7 @@ const STEPS = [
   {
     n: "03",
     t: "日程を決めて、お支払い",
-    d: "東京都内・土日で実施日を決めます。お支払いはPayPayのみ。請求リンクをお送りしますので、そこからお願いします。ご入金の確認をもって、日程が確定します。",
+    d: "東京都内・土日で実施日を決めます。お支払い専用のリンクをお送りしますので、そこからクレジットカードでお願いします。ご入金の確認をもって、日程が確定します。",
   },
   {
     n: "04",
@@ -37,7 +37,7 @@ const STEPS = [
 ];
 
 const TERMS = [
-  ["お支払い方法", "PayPayのみです。請求リンクをお送りします。カード・現金・分割には対応していません。"],
+  ["お支払い方法", "クレジットカードのみです。決済はStripeの画面で行われ、カード情報はこちらを通りません。現金・分割には対応していません。"],
   ["ご連絡の手段", "お申し込みまではメールです。LINEは、お支払い後の伴走でのみ使います。"],
   ["キャンセル", "お支払い後のキャンセル・返金はお受けできません。日程の変更は、実施日の1週間前まで承ります。"],
 ];
@@ -47,14 +47,11 @@ export default function StepsSection() {
     <section id="how" className="relative z-10 scroll-mt-24 text-[#1f2a1d]">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 sm:pt-14 pb-6">
         <div className="on-media max-w-2xl mb-7">
-          <div className="flex items-center gap-3 mb-3">
-            <span aria-hidden className="block w-8 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-[#3d5638] font-medium">How to start — はじめかた</span>
-          </div>
+          <p className="hr-eyebrow mb-3.5">How to start — はじめかた</p>
           <h2 className="text-[1.5rem] sm:text-[1.9rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
             無料の相談から、<span className="text-[#3d5638]">5ステップ。</span>
           </h2>
-          <p className="mt-3 text-[13px] sm:text-[14px] text-[#4b5b47] leading-[1.9]">
+          <p className="mt-3 text-[14.5px] sm:text-[15px] text-[#4b5b47] leading-[1.9]">
             決済も、連絡の手段も、キャンセルの条件も、申し込む前にすべてお見せします。
           </p>
         </div>
@@ -69,8 +66,8 @@ export default function StepsSection() {
               >
                 {s.n}
               </span>
-              <div className="text-[14.5px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.5]" style={MINCHO}>{s.t}</div>
-              <p className="mt-1 text-[12.5px] text-[#4b5b47] leading-[1.9]">{s.d}</p>
+              <div className="text-[15.5px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.5]" style={MINCHO}>{s.t}</div>
+              <p className="mt-1 text-[14px] text-[#4b5b47] leading-[1.9]">{s.d}</p>
             </li>
           ))}
         </ol>
@@ -79,8 +76,8 @@ export default function StepsSection() {
         <dl className="grid sm:grid-cols-3 gap-3 mb-9">
           {TERMS.map(([t, d]) => (
             <div key={t} className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 px-5 py-4">
-              <dt className="text-[12.5px] font-bold text-[#1f2a1d] mb-1.5" style={MINCHO}>{t}</dt>
-              <dd className="text-[12px] text-[#5c6b58] leading-[1.85]">{d}</dd>
+              <dt className="text-[14px] font-bold text-[#1f2a1d] mb-1.5" style={MINCHO}>{t}</dt>
+              <dd className="text-[13.5px] text-[#5c6b58] leading-[1.85]">{d}</dd>
             </div>
           ))}
         </dl>

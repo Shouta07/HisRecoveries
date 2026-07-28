@@ -32,7 +32,7 @@ export default function FaqPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <div className="mx-auto max-w-[860px] px-5 sm:px-8 pt-12 sm:pt-16 pb-24">
         {/* パンくず */}
-        <nav aria-label="パンくず" className="text-[12px] text-[#6b7a66] mb-8">
+        <nav aria-label="パンくず" className="text-[13.5px] text-[#6b7a66] mb-8">
           <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
           <span className="mx-1.5">/</span>
           <span className="text-[#1f2a1d]">よくある質問</span>
@@ -49,7 +49,7 @@ export default function FaqPage() {
           </h1>
         </div>
 
-        <p className="text-center text-[13.5px] text-[#4b5b47] leading-[1.95] mb-10">
+        <p className="text-center text-[15px] text-[#4b5b47] leading-[1.95] mb-10">
           お問い合わせの多い質問をまとめました。
           <br className="sm:hidden" />
           ここにない内容は、お気軽に{" "}
@@ -65,7 +65,7 @@ export default function FaqPage() {
             <a
               key={c.id}
               href={`#${c.id}`}
-              className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 px-4 py-5 text-center text-[13px] font-bold text-[#1f2a1d] hover:border-[#3d5638]/50 transition-colors"
+              className="rounded-[1.1rem] bg-white border border-[#1f2a1d]/10 px-4 py-5 text-center text-[14.5px] font-bold text-[#1f2a1d] hover:border-[#3d5638]/50 transition-colors"
             >
               {c.label}
             </a>
@@ -80,13 +80,13 @@ export default function FaqPage() {
               <div className="rounded-[1.4rem] bg-white border border-[#1f2a1d]/10 px-5 sm:px-7 divide-y divide-[#1f2a1d]/10">
                 {c.items.map((f) => (
                   <details key={f.q} className="group py-4 sm:py-[18px]">
-                    <summary className="flex items-start justify-between gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[13.5px] sm:text-[14px] font-bold text-[#1f2a1d] leading-[1.65]">
+                    <summary className="flex items-start justify-between gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[15px] sm:text-[15px] font-bold text-[#1f2a1d] leading-[1.65]">
                       <span>{f.q}</span>
                       <span aria-hidden className="mt-0.5 shrink-0 grid place-items-center w-6 h-6 rounded-full bg-[#eef3ea] text-[#3d5638] transition-transform duration-200 group-open:rotate-180">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                       </span>
                     </summary>
-                    <p className="mt-2.5 text-[13px] text-[#4b5b47] leading-[1.95]">{f.a}</p>
+                    <p className="mt-2.5 text-[14.5px] text-[#4b5b47] leading-[1.95]">{f.a}</p>
                   </details>
                 ))}
               </div>
@@ -96,10 +96,10 @@ export default function FaqPage() {
 
         {/* 締めの相談導線 */}
         <div className="mt-14 rounded-[1.4rem] bg-[#16241a] text-[#EDF1E8] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-4">
-          <p className="text-[13.5px] leading-[1.9] flex-1">
+          <p className="text-[15px] leading-[1.9] flex-1">
             解決しないことは、無料相談で直接どうぞ。<span className="text-[#C9D2C4]">匿名・秘密保持のもとで。</span>
           </p>
-          <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[13.5px] font-bold px-7 py-3.5 transition-colors">
+          <ConsultLink className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full bg-[#EDF1E8] hover:bg-white text-[#16241A] text-[15px] font-bold px-7 py-3.5 transition-colors">
             無料で相談する <span aria-hidden>→</span>
           </ConsultLink>
         </div>

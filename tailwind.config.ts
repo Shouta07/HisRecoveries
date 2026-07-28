@@ -27,6 +27,16 @@ const config: Config = {
         "brand-cream": "#EDF1E8",
         sage: "#85AB8B",
         "sage-bright": "#9EC4A3",
+        // 差し色（ブラス）。緑が"地"、ブラスが"ここを見て"の印。
+        // 面で塗らない。細い線・小さいラベル・数字・1文のマーカーにだけ使う。
+        // brass       … 明るい地の上の文字（#f4f6f2 に対して 5.5:1）
+        // brass-mid   … 罫線・枠・アイコン
+        // brass-bright… 深緑の上の文字（#16241A に対して 8.5:1）
+        // brass-wash  … 蛍光ペンの下地
+        brass: "#7E5B29",
+        "brass-mid": "#B98A3C",
+        "brass-bright": "#E0B75F",
+        "brass-wash": "#F6E9CE",
         // Legacy aliases
         "off-white": "#F2EAD9",
         "quiet-brass": "#8E6A36",

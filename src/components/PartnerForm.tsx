@@ -89,7 +89,7 @@ export default function PartnerForm() {
 
   const field =
     "w-full rounded-2xl border border-[#1f2a1d]/15 bg-white px-4 py-3 text-[15px] text-[#1f2a1d] outline-none focus:border-[#3d5638] transition-colors";
-  const label = "block text-[13px] font-semibold text-[#1f2a1d] mb-2";
+  const label = "block text-[14.5px] font-semibold text-[#1f2a1d] mb-2";
 
   if (status === "success") {
     return (
@@ -102,7 +102,7 @@ export default function PartnerForm() {
         <h2 className="text-[1.4rem] font-bold text-[#1f2a1d] mb-3" style={{ fontFamily: "var(--font-shippori), serif" }}>
           ありがとうございます。
         </h2>
-        <p className="text-[14px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
+        <p className="text-[15px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
           いただいた内容を拝見し、数日以内にご連絡します。まずはお話を聞かせてください。
         </p>
       </div>
@@ -132,7 +132,7 @@ export default function PartnerForm() {
           {WAYS.map((w) => (
             <label key={w.key} className="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" checked={ways.includes(w.key)} onChange={() => toggleWay(w.key)} className="mt-0.5 w-5 h-5 accent-[#3d5638] shrink-0" />
-              <span className="text-[13.5px] text-[#3a423a] leading-[1.6]">{w.label}</span>
+              <span className="text-[15px] text-[#3a423a] leading-[1.6]">{w.label}</span>
             </label>
           ))}
         </div>
@@ -155,7 +155,7 @@ export default function PartnerForm() {
         {status === "submitting" ? "送信中…" : "送る"}
       </button>
       {status === "error" && (
-        <p className="text-[12.5px] text-[#b4453c]">送信に問題が発生しました。お手数ですが {site.company.email} まで直接お送りください。</p>
+        <p className="text-[14px] text-[#b4453c]">送信に問題が発生しました。お手数ですが {site.company.email} まで直接お送りください。</p>
       )}
     </form>
   );

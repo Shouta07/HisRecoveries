@@ -58,11 +58,11 @@ export default function FounderTimeline() {
             className="absolute -left-[5px] top-2 block h-2 w-2 rounded-full bg-gold"
           />
           <div className="flex items-baseline gap-3 mb-3">
-            <p className="logo-type italic text-[11px] tracking-[0.3em] uppercase text-gold">
+            <p className="logo-type italic text-[12px] tracking-[0.3em] uppercase text-gold">
               {e.era}
             </p>
             {e.age && (
-              <span className="text-[11px] tracking-[0.06em] text-sub-gray">
+              <span className="text-[12px] tracking-[0.06em] text-sub-gray">
                 {e.age}
               </span>
             )}
@@ -71,7 +71,7 @@ export default function FounderTimeline() {
             {e.body}
           </p>
           {e.note && (
-            <p className="mt-3 text-[11px] tracking-[0.06em] text-sub-gray">
+            <p className="mt-3 text-[12px] tracking-[0.06em] text-sub-gray">
               {e.note}
             </p>
           )}
