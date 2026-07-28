@@ -106,7 +106,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         <nav aria-label="パンくず" className="text-[13.5px] text-[#5E6A70] mb-6">
           <Link href="/" className="hover:text-[#1F1E1B]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/areas" className="hover:text-[#1F1E1B]">記事</Link>
+          <Link href="/#index" className="hover:text-[#1F1E1B]">記事</Link>
           <span className="mx-1.5">/</span>
           <span className="text-[#1F1E1B]">{c.ja}</span>
         </nav>
@@ -347,7 +347,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {!c.guide && <QuietConsult />}
 
         <div className="mt-10 flex flex-wrap gap-3">
-          <Link href="/areas" className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
+          <Link href="/#index" className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
             ほかの領域を見る <span aria-hidden>→</span>
           </Link>
           <ConsultLink market={c.id} className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">

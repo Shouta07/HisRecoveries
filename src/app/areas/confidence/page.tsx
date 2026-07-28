@@ -34,7 +34,7 @@ export default function ConfidencePage() {
         <nav aria-label="パンくず" className="text-[13.5px] text-[#8E979E] mb-10">
           <Link href="/" className="hover:text-[#F3F0EA]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/areas" className="hover:text-[#F3F0EA]">記事</Link>
+          <Link href="/#index" className="hover:text-[#F3F0EA]">記事</Link>
           <span className="mx-1.5">/</span>
           <span className="text-[#F3F0EA]">自信・パートナーシップ</span>
         </nav>
@@ -67,7 +67,7 @@ export default function ConfidencePage() {
         </p>
 
         <div className="mt-8">
-          <Link href="/areas" className="text-[14.5px] text-[#C28863] font-semibold hover:text-[#F3F0EA] transition-colors">
+          <Link href="/#index" className="text-[14.5px] text-[#C28863] font-semibold hover:text-[#F3F0EA] transition-colors">
             ← Library に戻る
           </Link>
         </div>

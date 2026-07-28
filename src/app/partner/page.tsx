@@ -136,7 +136,7 @@ export default function PartnerPage() {
             費用は一切なし　・　紹介料も受け取りません　・　申込は1分
           </p>
           {/* 冷リンクで開いた相手への実在性の証明（メディアを見れば本気度が分かる） */}
-          <Link href="/areas" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#97613F] underline underline-offset-4 decoration-[#C28863]/50 hover:opacity-70 transition-opacity">
+          <Link href="/#index" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#97613F] underline underline-offset-4 decoration-[#C28863]/50 hover:opacity-70 transition-opacity">
             男性向けの専門記事を50本以上発信中 — メディアを見る <span aria-hidden>→</span>
           </Link>
         </div>
@@ -410,7 +410,7 @@ export default function PartnerPage() {
           <Link href="/" className="logo-type text-[17px] font-semibold text-[#1E2A38]">His Recoveries</Link>
           <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-[#45443E]">
             <Link href="/" className="hover:text-[#1E2A38] transition-colors">ホーム</Link>
-            <Link href="/areas" className="hover:text-[#1E2A38] transition-colors">記事</Link>
+            <Link href="/#index" className="hover:text-[#1E2A38] transition-colors">記事</Link>
             <Link href="/privacy" className="hover:text-[#1E2A38] transition-colors">プライバシー・免責事項</Link>
           </nav>
           <span className="text-[13.5px] text-[#5E6A70]">© 2026 His Recoveries</span>

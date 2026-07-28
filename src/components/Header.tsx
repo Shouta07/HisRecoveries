@@ -8,9 +8,7 @@ import { site } from "@/lib/site";
 // メディアが主、サービスが従。記事を先頭に置く。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
-  { href: "/stages/mature", label: "年代から" },
   { href: "/why", label: "編集方針" },
-  { href: "/producer", label: "担当者", desktopOnly: true },
 ];
 
 export default function Header() {
