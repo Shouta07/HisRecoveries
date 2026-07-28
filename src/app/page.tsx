@@ -3,6 +3,7 @@ import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import GoalPlanner from "@/components/GoalPlanner";
 import DesireBrowser from "@/components/DesireBrowser";
+import StageBrowser from "@/components/StageBrowser";
 import { complexes } from "@/lib/complexes";
 import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
 import { fieldVoices } from "@/lib/fieldVoices";
@@ -175,6 +176,15 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ══════ ライフステージから探す ══════
+            領域（髪・肌）や目的より、年代のほうが「自分はどれか」を迷わない。
+            だから3つの入口のうち、これを先頭に置く。 */}
+        <section className="hr-readable">
+          <div className="max-w-[1080px] mx-auto px-5 sm:px-8 pb-14 sm:pb-20">
+            <StageBrowser />
           </div>
         </section>
 

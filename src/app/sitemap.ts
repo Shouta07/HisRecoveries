@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { site } from "@/lib/site";
 import { complexes } from "@/lib/complexes";
 import { clusters } from "@/lib/clusters";
+import { STAGES } from "@/lib/stages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -27,5 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPaths, ...areaPaths, ...clusterPaths];
+  const stagePaths: MetadataRoute.Sitemap = STAGES.map((s) => ({
+    url: `${site.url}/stages/${s.id}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [...staticPaths, ...areaPaths, ...stagePaths, ...clusterPaths];
 }

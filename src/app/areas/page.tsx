@@ -12,6 +12,7 @@ import {
 } from "@/lib/clusters";
 import ConsultLink from "@/components/ConsultLink";
 import DesireBrowser from "@/components/DesireBrowser";
+import StageBrowser from "@/components/StageBrowser";
 import { site } from "@/lib/site";
 
 const HEAD: React.CSSProperties = {
@@ -191,6 +192,11 @@ export default function LibraryPage({
             <W>何も売らないから、広告ぬきの答えだけ。</W><W>匿名で、読むだけ。</W>
           </p>
         </header>
+
+        {/* ライフステージから探す — 悩みの名前を知らなくても、年代なら迷わない */}
+        <div className="mb-12">
+          <StageBrowser compact />
+        </div>
 
         {/* 目的から探す（あなたは、何を叶えたい？）— 悩み名がわからなくても探せる入口 */}
         <div className="mb-12">
