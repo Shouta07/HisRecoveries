@@ -10,7 +10,9 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-const STEPS = ["印象カウンセリング", "メイク", "服選び", "撮影"];
+// 商品は「第一印象改善プラン（30日 ¥49,800 税込）」の1本のみ。
+// ここに別プランを増やさないこと（増やすと記事からの導線が割れる）。
+const STEPS = ["カウンセリング", "改善プラン", "1日で整える", "30日の伴走"];
 
 /** 記事の文脈に合わせた一言（省略時は汎用）。 */
 export default function ExperienceInvite({ context }: { context?: string }) {
@@ -21,11 +23,12 @@ export default function ExperienceInvite({ context }: { context?: string }) {
         <div className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#85AB8B] mb-2.5">Experience</div>
         <h3 className="text-[1.3rem] sm:text-[1.55rem] font-bold text-[#EDF1E8] leading-[1.45] mb-3" style={MINCHO}>
           {context ? <>{context}。<br /></> : null}
-          ひとりで抱えず、<span className="text-[#85AB8B]">プロと一日で。</span>
+          ひとりで抱えず、<span className="text-[#85AB8B]">30日で整える。</span>
         </h3>
         <p className="text-[13px] text-[#C9D2C4] leading-[1.95] max-w-[34rem] mb-4">
           読んで分かっても、自分に合う形にするのは難しいもの。His Recoveries は、
-          メイク・服・写真まで、専属チームがあなたに合わせて一日で整えます。相談は、秘密保持のもとで。
+          何をやるかを決めて、眉・メイク・服・髪型・撮影を1日で整え、自分で再現できるまで見届けます。
+          プランは<span className="text-[#EDF1E8] font-semibold">30日 ¥49,800（税込・先着10名）</span>の1本だけです。
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
@@ -41,13 +44,13 @@ export default function ExperienceInvite({ context }: { context?: string }) {
           <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
             無料で相談する
           </BookingCTA>
-          <Link href="/packages/first-impression" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
-            パッケージを見る <span aria-hidden>→</span>
+          <Link href="/#pricing" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
+            プランの中身を見る <span aria-hidden>→</span>
           </Link>
         </div>
 
         <p className="mt-4 text-[11px] text-[#9FB0A0] leading-[1.8]">
-          はじめの相談は無料・完全守秘（相互NDA）。実名・顔写真は不要です。整えるかどうかは、読んでから決めていただけます。
+          はじめの相談は無料・完全守秘。実名・顔写真は不要です。実施は東京都内・土日のみ。整えるかどうかは、読んでから決めていただけます。
         </p>
       </div>
     </aside>

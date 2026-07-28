@@ -26,7 +26,7 @@ type Saved = { goal: string; days: number; done: string[] };
 
 export default function GoalPlanner() {
   const [goalId, setGoalId] = useState<string | null>(null);
-  const [days, setDays] = useState<number>(90);
+  const [days, setDays] = useState<number>(30);
   const [done, setDone] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -38,7 +38,7 @@ export default function GoalPlanner() {
         const s = JSON.parse(raw) as Saved;
         if (s.goal && getGoal(s.goal)) {
           setGoalId(s.goal);
-          setDays(s.days ?? 90);
+          setDays(s.days ?? 30);
           setDone(Array.isArray(s.done) ? s.done : []);
         }
       }
@@ -59,7 +59,7 @@ export default function GoalPlanner() {
 
   function chooseGoal(id: string) {
     const g = getGoal(id);
-    const d = g?.defaultDays ?? 90;
+    const d = g?.defaultDays ?? 30;
     setGoalId(id);
     setDays(d);
     setDone([]);

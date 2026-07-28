@@ -27,7 +27,7 @@ export default function ApplyForm() {
   const canSubmit = !!(name.trim() && contact.trim() && agreed) && status !== "submitting";
 
   function mailtoFallback() {
-    const subject = encodeURIComponent("予約登録 — His Recoveries");
+    const subject = encodeURIComponent("無料相談 — His Recoveries");
     const body = encodeURIComponent(
       [
         `お名前: ${name}`,
@@ -40,7 +40,7 @@ export default function ApplyForm() {
         message || "（未記入）",
         "",
         "── 秘密保持への同意 ──",
-        "本予約登録にあたり、秘密保持に同意しました。",
+        "本相談にあたり、秘密保持に同意しました。",
       ].join("\n")
     );
     window.location.href = `mailto:${site.company.email}?subject=${subject}&body=${body}`;
@@ -70,7 +70,7 @@ export default function ApplyForm() {
           気になる悩み: topic || "未選択",
           ご相談内容: message || "（未記入）",
           秘密保持への同意: "同意済み",
-          _subject: "予約登録 — His Recoveries",
+          _subject: "無料相談 — His Recoveries",
         }),
       });
       if (res.ok) {
@@ -97,14 +97,14 @@ export default function ApplyForm() {
           </svg>
         </div>
         <h2 className="text-[1.4rem] font-bold text-[#1f2a1d] mb-3" style={{ fontFamily: "var(--font-shippori), serif" }}>
-          ご予約登録を受け付けました。
+          ご相談を受け付けました。
         </h2>
         <p className="text-[14px] text-[#4b5b47] leading-[1.95] max-w-md mx-auto">
-          いただいた内容を確認のうえ、3営業日を目処にご連絡先へ日程調整のご案内をお送りします。
-          ご相談は秘密保持契約と完全守秘義務のもとで扱います。
+          いただいた内容を確認のうえ、3営業日を目処にご連絡先へご返信します。
+          まずは、合うかどうかを一緒に確かめるところから。合わないと思えば、正直にそうお伝えします。
         </p>
         <p className="mt-5 text-[12px] text-[#6b7a66]">
-          ※ 本パッケージは医療行為を含みません。
+          ※ この時点で費用は発生しません。医療行為は含みません。
         </p>
       </div>
     );
@@ -155,8 +155,7 @@ export default function ApplyForm() {
         >
           <option value="">選択してください（任意）</option>
           <option value="まずは相談だけ（無料）">まずは相談だけ（無料）</option>
-          <option value="第一印象改善プラン（¥49,800 税込・30日）">第一印象改善プラン（¥49,800 税込・30日／先着10名）</option>
-          <option value="ギフト（大切な人へ贈る）">ギフト（大切な人へ贈る）</option>
+          <option value="第一印象改善プラン（¥49,800 税込・30日／先着10名）">第一印象改善プラン（¥49,800 税込・30日／先着10名）</option>
         </select>
       </div>
 
@@ -211,13 +210,13 @@ export default function ApplyForm() {
         />
       </div>
 
-      {/* NDA / confidentiality — mandatory */}
+      {/* 秘密保持 — 必須同意 */}
       <div className="rounded-2xl border border-[#1f2a1d]/15 bg-[#f4f6f2] p-5">
         <p className="text-[13px] font-semibold text-[#1f2a1d] mb-2">
           秘密保持について（必須）
         </p>
         <p className="text-[12.5px] text-[#4b5b47] leading-[1.9]">
-          お預かりするお名前・連絡先・悩みに関する情報は、本プログラムのご案内と運営の目的に限り、
+          お預かりするお名前・連絡先・悩みに関する情報は、ご相談への対応と運営の目的に限り、
           厳重に管理します。第三者へ販売・提供することはありません。ご相談の過程で知り得た双方の情報は、
           相互に秘密として扱います。
         </p>
@@ -230,7 +229,7 @@ export default function ApplyForm() {
             required
           />
           <span className="text-[13.5px] font-medium text-[#1f2a1d] leading-[1.7]">
-            秘密保持に同意します。（同意がない場合はご登録いただけません）
+            秘密保持に同意します。（同意がない場合は送信いただけません）
           </span>
         </label>
       </div>
@@ -255,8 +254,9 @@ export default function ApplyForm() {
       </button>
 
       <p className="text-[11.5px] text-[#6b7a66] leading-[1.8]">
-        ※ 無料相談を受付中です。目安：3営業日以内に一次のご連絡をします。
-        本パッケージは医療行為を含みません。
+        ※ ご相談は無料です。目安：3営業日以内に一次のご連絡をします。
+        お取り扱いは第一印象改善プラン（30日）1本のみで、医療行為は含みません。
+        お支払いはPayPayのみ、LINEはお支払い後の伴走でのみ使います。
       </p>
     </form>
   );

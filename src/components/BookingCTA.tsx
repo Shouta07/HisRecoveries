@@ -1,4 +1,4 @@
-// 無料相談 CTA。相談の入口は「匿名Web相談の予約」= /reserve に集約。
+// 無料相談 CTA。相談の入口は /reserve（メールでの無料相談）に集約。
 import Link from "next/link";
 
 export default function BookingCTA({

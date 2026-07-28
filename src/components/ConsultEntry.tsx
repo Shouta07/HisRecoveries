@@ -1,6 +1,6 @@
 // 相談の入口フォールバック（メール相談）。
 // LINE は公開サイトに貼らない方針のため、ここはフォームのみ。
-// LINE 追加は体験フェーズ（相談→NDAの後）の会員に、非公開で案内する。
+// LINE のご案内は、お支払い後（伴走の開始時）に個別で行う。
 import ApplyForm from "@/components/ApplyForm";
 
 export default function ConsultEntry() {

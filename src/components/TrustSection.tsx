@@ -129,8 +129,8 @@ export default function TrustSection() {
                 料金の基準
               </p>
               <ul className="space-y-1.5 text-[12.5px] text-[#5c6b58] leading-[1.8]">
-                <li>・30日 ¥49,800（税込）の1本です。先着10名さまの価格で、11名以降は ¥66,000（税込）です</li>
-                <li>・期間を延ばす場合のみ、着手前にご相談します</li>
+                <li>・商品は<span className="text-[#1f2a1d] font-semibold">30日 ¥49,800（税込）の1本のみ</span>です。先着10名さまの価格で、11名以降は ¥66,000（税込）です</li>
+                <li>・<span className="text-[#1f2a1d] font-semibold">お支払いはPayPayのみ</span>です（請求リンクをお送りします）</li>
                 <li>・表示価格はすべて税込です。追加費用はありません</li>
                 <li>・会場（レンタルスペース等）の費用は、こちらで負担します</li>
                 <li>・服・化粧品・カット代・交通費は、実費としてご本人のご負担です</li>

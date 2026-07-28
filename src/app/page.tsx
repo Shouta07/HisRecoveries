@@ -4,7 +4,6 @@ import GlassNav from "@/components/GlassNav";
 import GoalPlanner from "@/components/GoalPlanner";
 import DesireBrowser from "@/components/DesireBrowser";
 import StepsSection from "@/components/StepsSection";
-import ExperiencesSection from "@/components/ExperiencesSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import FaqSection from "@/components/FaqSection";
 import StickyConsultBar from "@/components/StickyConsultBar";
@@ -215,9 +214,6 @@ export default function HomePage() {
         {/* はじめかた — 申し込み後の流れ */}
         <StepsSection />
 
-        {/* Recover / Refine の詳細（後段） */}
-        <ExperiencesSection />
-
         {/* 目的から探す — 情報収集で来た人の受け皿（記事へ） */}
         <section className="mx-auto max-w-[1080px] px-5 sm:px-8 py-14 sm:py-20">
           <DesireBrowser />
@@ -254,8 +250,8 @@ export default function HomePage() {
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#85AB8B] mb-3.5">サービス</div>
                 <ul className="space-y-2 text-[13px] text-[#4b5b47]">
                   <li><a href="#plan" className="hover:text-[#1f2a1d] transition-colors">自分専用プランを見る</a></li>
-                  <li><Link href="/recover" className="hover:text-[#1f2a1d] transition-colors">Recover｜取り戻す</Link></li>
-                  <li><Link href="/refine" className="hover:text-[#1f2a1d] transition-colors">Refine｜深める</Link></li>
+                  <li><a href="#pricing" className="hover:text-[#1f2a1d] transition-colors">第一印象改善プラン（30日）</a></li>
+                  <li><Link href="/reserve" className="hover:text-[#1f2a1d] transition-colors">無料で相談する</Link></li>
                   <li><Link href="/areas" className="hover:text-[#1f2a1d] transition-colors">記事をすべて見る</Link></li>
                 </ul>
               </div>
