@@ -1,8 +1,8 @@
 import Link from "next/link";
 import GlassNav from "@/components/GlassNav";
+import ArticleIndex from "@/components/ArticleIndex";
 import { complexes } from "@/lib/complexes";
 import { clusters, clustersByArea, CLUSTER_UPDATED } from "@/lib/clusters";
-import { STAGES, stageCounts } from "@/lib/stages";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ = 編集メディアの表紙。
@@ -23,28 +23,6 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-// カテゴリ。DESIGN.md「11. カテゴリ」の分類。
-// 記事のある領域は既存の areaId に紐づけ、まだ書いていないものは
-// 記事0として正直に出す（数合わせで埋めない）。
-const CATEGORIES: { label: string; href: string; areaId?: string }[] = [
-  { label: "第一印象", href: "/areas/impression", areaId: "impression" },
-  { label: "肌", href: "/areas/skin", areaId: "skin" },
-  { label: "AGA・薄毛", href: "/areas/hair", areaId: "hair" },
-  { label: "脱毛・体毛", href: "/areas/body-hair", areaId: "body-hair" },
-  { label: "老け見え", href: "/areas/face", areaId: "face" },
-  { label: "睡眠・食事", href: "/areas/mind", areaId: "mind" },
-  { label: "恋愛", href: "/areas?desire=erabaretai" },
-  { label: "婚活", href: "/areas?desire=erabaretai" },
-  { label: "セクシャルウェルネス", href: "/areas" },
-  { label: "男性不妊", href: "/areas" },
-  { label: "活力", href: "/areas?desire=sonae" },
-];
-
-function categoryCount(areaId?: string) {
-  if (!areaId) return 0;
-  return clustersByArea(areaId).length + 1;
-}
-
 export default function HomePage() {
   // 最新記事。編集の順で並べる（自動レコメンドを作らない）。
   const latest = [
@@ -60,7 +38,6 @@ export default function HomePage() {
     .filter((a): a is NonNullable<typeof a> => Boolean(a));
 
   const [head, ...rest] = latest;
-  const counts = stageCounts();
   const areaLabel = (id: string) => complexes.find((c) => c.id === id)?.ja ?? "";
 
   const popular = ["seiketsukan-tsukurikata", "aga-hiyou-kangae", "mens-makeup-hajimete", "fuke-mie-genin", "datsumou-hiyou-kangae"]
@@ -88,13 +65,13 @@ export default function HomePage() {
             提携先から紹介料を受け取っていないので、「これはやらなくていい」とも書きます。
           </p>
           <p className="mt-10">
-            <Link
-              href="/areas"
+            <a
+              href="#index"
               className="inline-flex items-baseline gap-2 text-[16px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
             >
               記事を読む
               <span aria-hidden>→</span>
-            </Link>
+            </a>
           </p>
         </div>
       </header>
@@ -142,80 +119,22 @@ export default function HomePage() {
         </ul>
 
         <p className="mt-14">
-          <Link
-            href="/areas"
+          <a
+            href="#index"
             className="inline-flex items-baseline gap-2 text-[15px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
           >
-            記事一覧へ
+            記事をすべて見る
             <span aria-hidden>→</span>
-          </Link>
+          </a>
         </p>
       </section>
 
-      {/* ══════ 特集 — ここで一度、面を変える ══════ */}
-      <section className="mt-[96px] sm:mt-[136px] lg:mt-[184px] bg-konjo text-kinari">
-        <div className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
-          <p className="text-[13px] text-dou-usu">特集</p>
-          <h2
-            className="mt-3 max-w-[18em] text-[23px] sm:text-[30px] leading-[1.55]"
-            style={{ ...MINCHO, fontWeight: 600 }}
-          >
-            年代で、やることは変わります。
-          </h2>
-          <p className="mt-6 max-w-[34em] text-[15px] leading-[2.05] text-[#C6CAD0]">
-            20代で効くことと、30代で効くことは違います。既存の記事を、
-            その悩みが本人の前に現れる時期で並べ直しました。悩みの名前が分からなくても、
-            自分の年代から辿れます。
-          </p>
-
-          <ul className="mt-12 divide-y divide-white/[0.12] border-y border-white/[0.12]">
-            {STAGES.map((s) => {
-              const n = counts[s.id];
-              return (
-                <li key={s.id}>
-                  <Link
-                    href={`/stages/${s.id}`}
-                    className="group flex items-baseline gap-4 sm:gap-8 py-5 hover:text-dou-usu transition-colors"
-                  >
-                    <span className="w-[6.5em] shrink-0 text-[13px] text-[#8E979E]">{s.age}</span>
-                    <span className="flex-1 text-[16px] sm:text-[17px]" style={{ ...MINCHO, fontWeight: 600 }}>
-                      {s.label}
-                    </span>
-                    <span className="shrink-0 text-[13px] text-[#8E979E]">
-                      {n > 0 ? `${n}本` : "準備中"}
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </section>
-
-      {/* ══════ カテゴリ — 文字だけ。囲まない ══════ */}
-      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
-        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
-          カテゴリ
-        </h2>
-        <p className="mt-4 max-w-[32em] text-[14px] leading-[1.95] text-keshizumi">
-          扱う分野です。まだ記事を書いていないものは、そのまま「—」と出しています。
-        </p>
-        <ul className="mt-9 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 border-t border-shironezu">
-          {CATEGORIES.map((c) => {
-            const n = categoryCount(c.areaId);
-            return (
-              <li key={c.label} className="border-b border-shironezu">
-                <Link
-                  href={c.href}
-                  className="group flex items-baseline justify-between gap-3 py-4 hover:text-dou transition-colors"
-                >
-                  <span className="text-[15px]">{c.label}</span>
-                  <span className="shrink-0 text-[12.5px] text-ainezu">{n > 0 ? n : "—"}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      {/* ══════ 記事の索引 — このメディアの本体 ══════ */}
+      <section
+        id="index"
+        className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px] scroll-mt-20"
+      >
+        <ArticleIndex />
       </section>
 
       {/* ══════ よく読まれている記事 ══════ */}
@@ -327,35 +246,23 @@ export default function HomePage() {
             記事はすべて無料で公開しています。読むだけで進む方もいます。
             一人だと止まってしまう場合だけ、こちらをご覧ください。
           </p>
-          <div className="mt-9 grid gap-x-14 gap-y-10 sm:grid-cols-2">
-            {[
-              {
-                href: "/plan",
-                t: "個人向け",
-                d: "眉・メイク・服選び・髪型の提案・撮影を1日で行い、手順の動画とサイズ表をお渡しします。東京都内・土日のみ。",
-              },
-              {
-                href: "/business",
-                t: "法人向け",
-                d: "新卒研修・営業職研修・管理職研修。座学で終わらせず、その場で整えて、一人ずつに印象カルテを渡します。",
-              },
-            ].map((s) => (
-              <div key={s.href}>
-                <h3 className="text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
-                  {s.t}
-                </h3>
-                <p className="mt-2.5 text-[14px] leading-[1.95] text-keshizumi">{s.d}</p>
-                <p className="mt-4">
-                  <Link
-                    href={s.href}
-                    className="inline-flex items-baseline gap-2 text-[14px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
-                  >
-                    詳しく見る
-                    <span aria-hidden>→</span>
-                  </Link>
-                </p>
-              </div>
-            ))}
+          <div className="mt-9 max-w-[34em]">
+            <h3 className="text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              第一印象改善プラン（30日）
+            </h3>
+            <p className="mt-2.5 text-[14px] leading-[1.95] text-keshizumi">
+              眉・メイク・服選び・髪型の提案・撮影を1日で行い、手順の動画とサイズ表をお渡しします。
+              東京都内・土日のみ。費用はご相談のうえで個別にお見積りします。
+            </p>
+            <p className="mt-4">
+              <Link
+                href="/plan"
+                className="inline-flex items-baseline gap-2 text-[14px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
+              >
+                詳しく見る
+                <span aria-hidden>→</span>
+              </Link>
+            </p>
           </div>
         </div>
       </section>
@@ -365,12 +272,12 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12 py-14">
           <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
             <div className="col-span-2">
-              <p className="text-[12.5px] text-ainezu">カテゴリ</p>
+              <p className="text-[12.5px] text-ainezu">分野</p>
               <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
-                {CATEGORIES.slice(0, 8).map((c) => (
-                  <li key={c.label}>
-                    <Link href={c.href} className="hover:text-dou transition-colors">
-                      {c.label}
+                {complexes.map((c) => (
+                  <li key={c.id}>
+                    <Link href={`/areas/${c.id}`} className="hover:text-dou transition-colors">
+                      {c.ja}
                     </Link>
                   </li>
                 ))}
@@ -379,19 +286,15 @@ export default function HomePage() {
             <div>
               <p className="text-[12.5px] text-ainezu">読みもの</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><Link href="/areas" className="hover:text-dou transition-colors">記事一覧</Link></li>
-                <li><Link href="/stages/mature" className="hover:text-dou transition-colors">年代から探す</Link></li>
-                <li><Link href="/faq" className="hover:text-dou transition-colors">よくある質問</Link></li>
+                <li><a href="/#index" className="hover:text-dou transition-colors">記事をさがす</a></li>
               </ul>
             </div>
             <div>
               <p className="text-[12.5px] text-ainezu">His Recoveries</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
                 <li><Link href="/why" className="hover:text-dou transition-colors">編集方針</Link></li>
-                <li><Link href="/producer" className="hover:text-dou transition-colors">担当者について</Link></li>
                 <li><Link href="/partner" className="hover:text-dou transition-colors">取材・掲載について</Link></li>
-                <li><Link href="/plan" className="hover:text-dou transition-colors">個人向け</Link></li>
-                <li><Link href="/business" className="hover:text-dou transition-colors">法人向け</Link></li>
+                <li><Link href="/plan" className="hover:text-dou transition-colors">第一印象改善プラン</Link></li>
                 <li><Link href="/privacy" className="hover:text-dou transition-colors">プライバシー・免責事項</Link></li>
               </ul>
             </div>

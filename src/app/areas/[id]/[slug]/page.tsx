@@ -131,7 +131,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         <nav aria-label="パンくず" className="text-[13.5px] text-[#5E6A70] mb-6">
           <Link href="/" className="hover:text-[#1F1E1B]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/areas" className="hover:text-[#1F1E1B]">記事</Link>
+          <Link href="/#index" className="hover:text-[#1F1E1B]">記事</Link>
           <span className="mx-1.5">/</span>
           <Link href={`/areas/${c.id}`} className="hover:text-[#1F1E1B]">{c.ja}</Link>
           <span className="mx-1.5">/</span>

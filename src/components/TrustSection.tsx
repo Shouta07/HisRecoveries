@@ -33,10 +33,7 @@ export default function TrustSection() {
             役割ごとに公開状況を書き分ける。 */}
         <div className="mt-8 rounded-[1.4rem] bg-white border border-[#1F1E1B]/10 overflow-hidden">
           {/* ① 当日、実際に手を動かす人 */}
-          <Link
-            href="/producer"
-            className="group flex items-center gap-4 p-6 sm:p-7 hover:bg-[#FAF8F4] transition-colors"
-          >
+          <div className="flex items-center gap-4 p-6 sm:p-7">
             {producer.avatar || producer.photo ? (
               <span className="relative w-[80px] h-[80px] sm:w-[96px] sm:h-[96px] shrink-0 rounded-full overflow-hidden bg-[#EDE9E0] ring-2 ring-[#97613F]/35">
                 <Image
@@ -58,11 +55,8 @@ export default function TrustSection() {
               >
                 当日、実際に手を動かすのはこの人です。
               </span>
-              <span className="mt-1.5 block text-[13.5px] text-[#97613F] font-semibold">
-                考え方とメソッドを見る <span aria-hidden className="text-[#97613F]">→</span>
-              </span>
             </span>
-          </Link>
+          </div>
 
           {/* ② 設計・運営 */}
           <div className="border-t border-[#1F1E1B]/10 px-6 sm:px-7 py-5 sm:py-6 bg-[#FAF8F4]">

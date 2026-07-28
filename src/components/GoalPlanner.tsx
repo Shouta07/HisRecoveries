@@ -160,7 +160,7 @@ export default function GoalPlanner() {
 
                 {/* 期限がない人・贈りたい人は別導線へ（主導線は3つに絞る） */}
                 <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[13.5px] text-[#45443E]">
-                  <Link href="/areas" className="hover:text-[#1F1E1B] underline underline-offset-2">
+                  <Link href="/#index" className="hover:text-[#1F1E1B] underline underline-offset-2">
                     期限はないが、整えたい
                   </Link>
                   <Link href="/apply" className="hover:text-[#1F1E1B] underline underline-offset-2">

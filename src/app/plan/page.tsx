@@ -144,26 +144,6 @@ export default function PlanPage() {
         {/* 残る疑問 */}
         <FaqSection />
 
-        <div className="max-w-[880px] mx-auto px-5 sm:px-8 pb-20 pt-4">
-          <div className="rounded-[1.3rem] border border-[#1F1E1B]/10 bg-white px-6 py-6">
-            <p className="text-[12.5px] font-bold tracking-[0.08em] text-[#97613F] mb-1.5">
-              法人・団体の方へ
-            </p>
-            <p className="text-[15px] font-bold text-[#1F1E1B] leading-[1.6] mb-2">
-              新卒研修・営業職研修・会員向け講座としても実施します。
-            </p>
-            <p className="text-[14px] text-[#45443E] leading-[1.9]">
-              個人向けは土日・1名ずつのため枠が限られます。まとまった人数の場合は、
-              集合形式のほうが早く、1人あたりの費用も下がります。
-              <Link
-                href="/business"
-                className="ml-1 text-[#97613F] underline decoration-[#C28863]/60 underline-offset-4"
-              >
-                法人向けのご案内
-              </Link>
-            </p>
-          </div>
-        </div>
       </div>
 
       <StickyConsultBar />
