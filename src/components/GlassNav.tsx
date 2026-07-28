@@ -6,8 +6,8 @@ import Link from "next/link";
 // メディアが主、サービスが従。記事を先頭に置く。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
-  { href: "/plan", label: "個人向け" },
-  { href: "/business", label: "法人向け" },
+  { href: "/stages/mature", label: "年代から" },
+  { href: "/why", label: "編集方針" },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,
@@ -26,7 +26,7 @@ export default function GlassNav() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "bg-[#f6f8f4]/70 backdrop-blur-xl border-b border-[#1f2a1d]/10 shadow-sm"
+          ? "bg-[#FAF8F4]/70 backdrop-blur-xl border-b border-[#1F1E1B]/10 shadow-sm"
           : "bg-transparent"
       }`}
     >
@@ -34,7 +34,7 @@ export default function GlassNav() {
         <Link
           href="/"
           className={`logo-type text-base sm:text-xl tracking-tight font-semibold shrink-0 transition-colors ${
-            scrolled ? "text-[#1f2a1d]" : "text-[#EDF1E8]"
+            "text-sumi"
           }`}
         >
           His Recoveries
@@ -46,7 +46,7 @@ export default function GlassNav() {
               <Link
                 href={l.href}
                 className={`text-[14.5px] sm:text-[15px] font-medium transition-colors whitespace-nowrap ${
-                  scrolled ? "text-[#3d5638] hover:text-[#1f2a1d]" : "text-[#EDF1E8]/85 hover:text-[#EDF1E8]"
+                  "text-keshizumi hover:text-dou"
                 }`}
               >
                 {l.label}

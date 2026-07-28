@@ -54,15 +54,15 @@ function List({
   tone: "do" | "dont";
 }) {
   const mark = tone === "do" ? "✓" : "—";
-  const markColor = tone === "do" ? "text-[#3d5638]" : "text-[#9aa79a]";
+  const markColor = tone === "do" ? "text-[#97613F]" : "text-[#5E6A70]";
   return (
-    <div className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-6">
-      <p className="text-[15px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
+    <div className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 p-5 sm:p-6">
+      <p className="text-[15px] font-bold text-[#1F1E1B] mb-3" style={MINCHO}>
         {title}
       </p>
       <ul className="space-y-2">
         {items.map((x) => (
-          <li key={x} className="flex gap-2.5 text-[14px] text-[#4b5b47] leading-[1.85]">
+          <li key={x} className="flex gap-2.5 text-[14px] text-[#45443E] leading-[1.85]">
             <span aria-hidden className={`${markColor} shrink-0 leading-[1.85]`}>
               {mark}
             </span>
@@ -76,15 +76,15 @@ function List({
 
 export default function ScopeSection() {
   return (
-    <section id="scope" className="relative z-10 scroll-mt-24 text-[#1f2a1d] hr-readable">
+    <section id="scope" className="relative z-10 scroll-mt-24 text-[#1F1E1B] hr-readable">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="hr-eyebrow mb-3.5">
-          Scope — 何をして、何をしないか
+          できること・できないこと
         </p>
         <h2 className="text-[1.45rem] sm:text-[2rem] leading-[1.4]" style={{ ...MINCHO, fontWeight: 800 }}>
           先に、境界線をお伝えします。
         </h2>
-        <p className="mt-4 text-[15px] text-[#4b5b47] leading-[1.95] max-w-[34rem]">
+        <p className="mt-4 text-[15px] text-[#45443E] leading-[1.95] max-w-[34rem]">
           お金を払ってから「思っていたものと違った」となるのが、いちばん不幸です。
           だから、できることと、できないことを、申し込みの前に書いておきます。
         </p>
@@ -96,33 +96,33 @@ export default function ScopeSection() {
 
         {/* お断りする場合 — 受けない判断を先に見せる。ここが最大のクレーム予防。
             肌の説明は長くなるので、詳細は FAQ に逃がして要点だけ残す。 */}
-        <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-5 sm:p-7">
-          <p className="text-[15px] font-bold text-[#1f2a1d] mb-3" style={MINCHO}>
+        <div className="mt-4 rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 p-5 sm:p-7">
+          <p className="text-[15px] font-bold text-[#1F1E1B] mb-3" style={MINCHO}>
             こういうご相談は、お断りしています
           </p>
           <ul className="space-y-2">
             {DECLINE.map((x) => (
-              <li key={x} className="flex gap-2.5 text-[14px] text-[#4b5b47] leading-[1.85]">
-                <span aria-hidden className="text-[#9aa79a] shrink-0 leading-[1.85]">—</span>
+              <li key={x} className="flex gap-2.5 text-[14px] text-[#45443E] leading-[1.85]">
+                <span aria-hidden className="text-[#5E6A70] shrink-0 leading-[1.85]">—</span>
                 <span>{x}</span>
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-[14px] text-[#5c6b58] leading-[1.95] border-t border-[#1f2a1d]/10 pt-4">
+          <p className="mt-4 text-[14px] text-[#45443E] leading-[1.95] border-t border-[#1F1E1B]/10 pt-4">
             とくに肌は、施術だけで早く、というのが難しい部分です。医療にかかっても
-            <span className="text-[#1f2a1d] font-semibold">1年で解決するとは限りません</span>。
+            <span className="text-[#1F1E1B] font-semibold">1年で解決するとは限りません</span>。
             ただ、<span className="hr-mark">肌が完璧でなくても、第一印象は動きます</span>。
             第一印象は髪・眉・服のサイズ感・姿勢・表情・写真の総合点で、肌はその一つだからです。
             期日が近い場合は、動かせる要素から整えます。
           </p>
-          <p className="mt-2.5 text-[13.5px] text-[#6b7a66] leading-[1.9]">
+          <p className="mt-2.5 text-[13.5px] text-[#5E6A70] leading-[1.9]">
             医療行為は行いません。特定の医療機関を「おすすめ」することもせず、
             紹介料も受け取っていません。施術を受けるかどうかを決めるのは、あなたです。
           </p>
         </div>
 
         {/* 顧客自身の役割 — ここを曖昧にすると必ず揉める */}
-        <div className="mt-4 rounded-[1.2rem] bg-[#16241A] text-[#EDF1E8] px-5 sm:px-7 py-6">
+        <div className="mt-4 rounded-[1.2rem] bg-[#1E2A38] text-[#F3F0EA] px-5 sm:px-7 py-6">
           <p className="text-[15px] font-bold" style={MINCHO}>
             あなたにやっていただくこと
           </p>
@@ -136,7 +136,7 @@ export default function ScopeSection() {
               </li>
             ))}
           </ul>
-          <p className="mt-3.5 text-[12.5px] text-[#9ec4a3] leading-[1.85]">
+          <p className="mt-3.5 text-[12.5px] text-[#C28863] leading-[1.85]">
             この3つさえやっていただければ、あとは考えなくて大丈夫です。
           </p>
         </div>

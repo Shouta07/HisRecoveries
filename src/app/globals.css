@@ -12,16 +12,17 @@
   --font-cormorant: "Cormorant Garamond";
 
   /* Chic dark sophisticated palette — high-end men register */
-  --cream: #f2ead9;
-  --cream-deep: #e6dbc4;
-  --paper: #fbf6ea;
-  --ink: #221a11;
-  --sub-gray: #7a6b57;
-  --hair-line: #d9cdb6;
-  --navy: #1f1813;
-  --navy-deep: #15100b;
-  --gold: #8e6a36;
-  --gold-bright: #a6824a;
+  /* 自然素材の色。DESIGN.md「3. カラーパレット」参照 */
+  --cream: #f3f0ea;       /* 生成り（旧称のまま。値だけ差し替え） */
+  --cream-deep: #eae6dc;
+  --paper: #faf8f4;       /* 白磁 */
+  --ink: #1f1e1b;         /* 墨 */
+  --sub-gray: #45443e;    /* 消炭 */
+  --hair-line: #dad6cd;   /* 白鼠 */
+  --navy: #1e2a38;        /* 紺青 */
+  --navy-deep: #161f2a;
+  --gold: #97613f;        /* 銅（旧称のまま。値だけ差し替え） */
+  --gold-bright: #c28863; /* 淡銅 */
 }
 
 html,
@@ -46,7 +47,7 @@ body {
 }
 
 ::selection {
-  background: rgba(156, 118, 74, 0.25);
+  background: rgba(151, 97, 63, 0.2);
   color: var(--ink);
 }
 
@@ -76,9 +77,11 @@ a {
 }
 
 .logo-type {
-  font-family: var(--font-cormorant), "Crimson Pro", serif;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  /* 英字の飾り書体をやめ、和文の明朝で組む。
+     英字ブランド風に寄せず、日本語のメディアであることを示す。 */
+  font-family: var(--font-shippori), "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
 }
 
 /* The signature: a thin gold rule used above section headers */
@@ -120,7 +123,7 @@ a {
 .article-body {
   font-family: var(--font-noto-sans-jp), system-ui, sans-serif;
   font-size: 1.0625rem;
-  line-height: 1.95;
+  line-height: 2.05;
   letter-spacing: 0.03em;
   color: var(--ink);
   word-break: keep-all;
@@ -136,7 +139,7 @@ a {
 }
 
 .article-body > p {
-  margin-bottom: 1.75em;
+  margin-bottom: 1.8em;
 }
 
 .article-body h2 {
@@ -158,7 +161,7 @@ a {
 }
 
 .article-body blockquote {
-  border-left: 3px solid #d4d4d8;
+  border-left: 3px solid #DAD6CD;
   background: #faf6f0;
   border-radius: 0.75rem;
   padding: 1em 1.4em;
@@ -494,7 +497,7 @@ html {
   --hr-brass-mid: #b98a3c;
   --hr-brass-bright: #e0b75f;
   --hr-brass-wash: #f6e9ce;
-  --hr-ink: #1f2a1d;
+  --hr-ink: #1F1E1B;
 }
 
 /* ── セクションの目印 ──────────────────────────────
@@ -513,8 +516,8 @@ html {
 .hr-eyebrow::before {
   content: "";
   display: block;
-  width: 1.75rem;
-  height: 2px;
+  width: 1.25rem;
+  height: 1px;
   background: var(--hr-brass-mid);
   flex: none;
 }
@@ -549,7 +552,7 @@ html {
   );
   padding: 0 0.1em;
   font-weight: 700;
-  color: #edf1e8;
+  color: #F3F0EA;
 }
 
 /* ── 数字 ────────────────────────────────────────
@@ -579,7 +582,7 @@ html {
   }
 }
 .hr-facts > * {
-  background: #16241a;
+  background: #1E2A38;
   padding: 0.85rem 0.5rem;
   text-align: center;
 }
@@ -608,4 +611,28 @@ html {
   .hr-readable dd {
     font-size: max(1em, 14px);
   }
+}
+
+
+/* ── 編集メディアの版面 ────────────────────────────
+   影を使わない。角丸を最小にする。境界は余白でつくる。
+   詳細は DESIGN.md「6. コンポーネントルール」。 */
+.hr-rule-soft {
+  border-top: 1px solid var(--hair-line);
+}
+
+/* 記事一覧のホバー。影を出さず、写真だけをわずかに動かす。 */
+.hr-photo {
+  overflow: hidden;
+  background: var(--hair-line);
+}
+.hr-photo > img {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.group:hover .hr-photo > img {
+  transform: scale(1.02);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hr-photo > img { transition: none; }
+  .group:hover .hr-photo > img { transform: none; }
 }

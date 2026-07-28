@@ -95,7 +95,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="bg-[#f4f6f2] text-[#1f2a1d]">
+    <div className="bg-[#F3F0EA] text-[#1F1E1B]">
       <MarketView market={c.id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
@@ -103,12 +103,12 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
       <div className="mx-auto max-w-[760px] px-6 sm:px-10 pt-16 sm:pt-24 pb-24">
         {/* breadcrumb */}
-        <nav aria-label="パンくず" className="text-[13.5px] text-[#6b7a66] mb-6">
-          <Link href="/" className="hover:text-[#1f2a1d]">ホーム</Link>
+        <nav aria-label="パンくず" className="text-[13.5px] text-[#5E6A70] mb-6">
+          <Link href="/" className="hover:text-[#1F1E1B]">ホーム</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/areas" className="hover:text-[#1f2a1d]">記事</Link>
+          <Link href="/areas" className="hover:text-[#1F1E1B]">記事</Link>
           <span className="mx-1.5">/</span>
-          <span className="text-[#1f2a1d]">{c.ja}</span>
+          <span className="text-[#1F1E1B]">{c.ja}</span>
         </nav>
 
         <header className="mb-8">
@@ -123,14 +123,14 @@ export default function AreaPage({ params }: { params: { id: string } }) {
               area.titleOverride
             ) : (
               <>
-                {c.ja}は、<span className="text-[#3d5638]">なぜ起きるのか。</span>
+                {c.ja}は、<span className="text-[#97613F]">なぜ起きるのか。</span>
               </>
             )}
           </h1>
-          <p className="mt-5 text-[15px] text-[#4b5b47] leading-[2]">{area.lead}</p>
+          <p className="mt-5 text-[15px] text-[#45443E] leading-[2]">{area.lead}</p>
           <div className="mt-4 flex items-center gap-3">
             <span className="inline-flex items-center rounded-full bg-[#e5f0ef] text-[#0f766e] px-3 py-1 text-[12px] font-bold">{c.guide ? "実践ガイド" : "出典明記"}</span>
-            <span className="text-[12px] text-[#9aa79a]">最終更新: {AREA_UPDATED}</span>
+            <span className="text-[12px] text-[#5E6A70]">最終更新: {AREA_UPDATED}</span>
           </div>
         </header>
 
@@ -138,15 +138,15 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         <EmpathyLead worry={`「${c.worry}」`} />
 
         {/* 要点（TL;DR）— extractable summary for search & AI engines */}
-        <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#f4f6f2] border border-[#1f2a1d]/10 p-6 sm:p-7 mb-10">
+        <div className="rounded-[1.4rem] bg-gradient-to-br from-white to-[#F3F0EA] border border-[#1F1E1B]/10 p-6 sm:p-7 mb-10">
           <div className="flex items-center gap-2.5 mb-4">
-            <span aria-hidden className="block w-5 h-px bg-[#85AB8B]" />
-            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#3d5638] font-medium">要点 / TL;DR</span>
+            <span aria-hidden className="block w-5 h-px bg-[#C28863]" />
+            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-[#97613F] font-medium">要点 / TL;DR</span>
           </div>
           <ul className="space-y-2.5">
             {area.summary.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#1f2a1d] leading-[1.85]">
-                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#85AB8B] shrink-0" />
+              <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#1F1E1B] leading-[1.85]">
+                <span aria-hidden className="mt-2 w-1.5 h-1.5 rounded-full bg-[#C28863] shrink-0" />
                 {s}
               </li>
             ))}
@@ -159,42 +159,42 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         <div className="space-y-8">
           {area.sections.map((s) => (
             <section key={s.h}>
-              <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1f2a1d] mb-3 leading-[1.5]" style={HEAD}>
-                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#85AB8B] shrink-0" />
+              <h2 className="flex items-start gap-2.5 text-[1.2rem] font-bold text-[#1F1E1B] mb-3 leading-[1.5]" style={HEAD}>
+                <span aria-hidden className="mt-1.5 w-1 h-5 rounded-full bg-[#C28863] shrink-0" />
                 {s.h}
               </h2>
-              <p className="text-[15.5px] text-[#3a423a] leading-[2.05] pl-3.5">{s.body}</p>
+              <p className="text-[15.5px] text-[#45443E] leading-[2.05] pl-3.5">{s.body}</p>
             </section>
           ))}
 
-          <section className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 p-6">
-            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-2" style={HEAD}>
+          <section className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 p-6">
+            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-2" style={HEAD}>
               {c.guide ? "プロと整える目安" : "受診の目安"}
             </h2>
-            <p className="text-[15px] text-[#4b5b47] leading-[1.95]">{area.whenToSee}</p>
+            <p className="text-[15px] text-[#45443E] leading-[1.95]">{area.whenToSee}</p>
           </section>
         </div>
 
         {/* 橋セクション — 仕組み（誰にでも）から、選び方（あなたの場合）へ。
             メカニズム領域のみ。押さない、静かな導線。 */}
         {!c.guide && chooseArticle && (
-          <section className="mt-12 rounded-[1.6rem] bg-[#16241A] text-[#EDF1E8] p-7 sm:p-9">
-            <p className="text-[15px] sm:text-[15px] leading-[2] text-[#C9D2C4]">
+          <section className="mt-12 rounded-[1.6rem] bg-[#1E2A38] text-[#F3F0EA] p-7 sm:p-9">
+            <p className="text-[15px] sm:text-[15px] leading-[2] text-[#C6CAD0]">
               ここまでは、誰にでも当てはまる仕組みの話。
               <br className="hidden sm:block" />
-              ここから先は、<span className="text-[#EDF1E8] font-medium">あなたの状態・優先順位・予算で、答えが変わります</span>。
+              ここから先は、<span className="text-[#F3F0EA] font-medium">あなたの状態・優先順位・予算で、答えが変わります</span>。
             </p>
             <Link
               href={`/areas/${c.id}/${chooseArticle.slug}`}
-              className="group mt-5 flex items-center justify-between gap-3 rounded-[1.1rem] border border-[#85AB8B]/40 bg-[#0f1a12]/40 px-5 py-4 hover:border-[#85AB8B] transition-colors"
+              className="group mt-5 flex items-center justify-between gap-3 rounded-[1.1rem] border border-[#C28863]/40 bg-[#161F2A]/40 px-5 py-4 hover:border-[#C28863] transition-colors"
             >
               <span className="min-w-0">
-                <span className="block text-[10px] tracking-[0.16em] text-[#85AB8B] font-semibold mb-1">選び方・向き合い方</span>
-                <span className="block text-[15px] font-semibold text-[#EDF1E8] leading-[1.5]">{chooseArticle.title}</span>
+                <span className="block text-[10px] tracking-[0.16em] text-[#C28863] font-semibold mb-1">選び方・向き合い方</span>
+                <span className="block text-[15px] font-semibold text-[#F3F0EA] leading-[1.5]">{chooseArticle.title}</span>
               </span>
-              <span aria-hidden className="text-[#85AB8B] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+              <span aria-hidden className="text-[#C28863] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
             </Link>
-            <p className="mt-4 text-[12.5px] text-[#9FB0A0] leading-[1.85]">
+            <p className="mt-4 text-[12.5px] text-[#8E979E] leading-[1.85]">
               「行かない」「今はやらない」も、正当な選択です。急ぐ必要はありません。
             </p>
           </section>
@@ -202,14 +202,14 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
         {/* FAQ */}
         <section className="mt-12">
-          <h2 className="text-[1.15rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+          <h2 className="text-[1.15rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>
             よくある質問
           </h2>
-          <dl className="rounded-[1.2rem] bg-white border border-[#1f2a1d]/10 px-6 divide-y divide-[#1f2a1d]/10">
+          <dl className="rounded-[1.2rem] bg-white border border-[#1F1E1B]/10 px-6 divide-y divide-[#1F1E1B]/10">
             {area.faqs.map((f) => (
               <div key={f.q} className="py-5">
-                <dt className="text-[15px] font-bold text-[#1f2a1d] mb-1.5">{f.q}</dt>
-                <dd className="text-[14.5px] text-[#4b5b47] leading-[1.95]">{f.a}</dd>
+                <dt className="text-[15px] font-bold text-[#1F1E1B] mb-1.5">{f.q}</dt>
+                <dd className="text-[14.5px] text-[#45443E] leading-[1.95]">{f.a}</dd>
               </div>
             ))}
           </dl>
@@ -221,31 +221,31 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {/* 出典・参考（従）— メカニズム記事のみ */}
         {!c.guide && (
         <section className="mt-12">
-          <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>
+          <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>
             出典・参考リンク
           </h2>
           {cites.length > 0 ? (
             <ul className="space-y-3">
               {cites.map((q, i) => (
-                <li key={i} className="rounded-[1rem] border border-[#1f2a1d]/10 bg-white p-4">
+                <li key={i} className="rounded-[1rem] border border-[#1F1E1B]/10 bg-white p-4">
                   {q.quote ? (
-                    <blockquote className="border-l-2 border-[#85AB8B] pl-3">
-                      <p className="text-[15px] text-[#1f2a1d] leading-[1.95]">「{q.quote}」</p>
-                      <footer className="mt-2 text-[13.5px] text-[#6b7a66]">
+                    <blockquote className="border-l-2 border-[#C28863] pl-3">
+                      <p className="text-[15px] text-[#1F1E1B] leading-[1.95]">「{q.quote}」</p>
+                      <footer className="mt-2 text-[13.5px] text-[#5E6A70]">
                         — {q.source}
-                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="ml-2 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
+                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="ml-2 text-[#97613F] underline decoration-[#C28863]/60 underline-offset-2 hover:decoration-[#97613F]">
                           原文を読む↗
                         </a>
                       </footer>
                     </blockquote>
                   ) : (
                     <div className="flex items-start gap-2">
-                      <span className="text-[#85AB8B] mt-px" aria-hidden>›</span>
-                      <p className="text-[14.5px] text-[#3a423a] leading-[1.85]">
-                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]">
+                      <span className="text-[#C28863] mt-px" aria-hidden>›</span>
+                      <p className="text-[14.5px] text-[#45443E] leading-[1.85]">
+                        <a href={q.url} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-[#97613F] underline decoration-[#C28863]/60 underline-offset-2 hover:decoration-[#97613F]">
                           {q.source}↗
                         </a>
-                        {q.note && <span className="text-[#6b7a66]"> — {q.note}</span>}
+                        {q.note && <span className="text-[#5E6A70]"> — {q.note}</span>}
                       </p>
                     </div>
                   )}
@@ -253,7 +253,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
               ))}
             </ul>
           ) : (
-            <p className="text-[14.5px] text-[#9aa79a] leading-[1.9]">
+            <p className="text-[14.5px] text-[#5E6A70] leading-[1.9]">
               出典は順次追加していきます。
             </p>
           )}
@@ -263,8 +263,8 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {/* 取材記事 — 現場第一線のプロへのインタビュー（一次情報） */}
         {interviews.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>現場の言葉（取材）</h2>
-            <p className="text-[14px] text-[#6b7a66] leading-[1.85] mb-4">
+            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-1" style={HEAD}>現場の言葉（取材）</h2>
+            <p className="text-[14px] text-[#5E6A70] leading-[1.85] mb-4">
               この領域の第一線で働くプロに、His Recoveries が直接聞いた一次情報です。
             </p>
             <ul className="space-y-2">
@@ -272,15 +272,15 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                 <li key={r.slug}>
                   <Link
                     href={`/areas/${c.id}/${r.slug}`}
-                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#3d5638]/25 bg-white px-4 py-3.5 hover:border-[#3d5638] transition-colors"
+                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#97613F]/25 bg-white px-4 py-3.5 hover:border-[#97613F] transition-colors"
                   >
                     <span className="min-w-0">
-                      <span className="block text-[15px] font-semibold text-[#1f2a1d]">{r.title}</span>
+                      <span className="block text-[15px] font-semibold text-[#1F1E1B]">{r.title}</span>
                       {r.interviewee && (
-                        <span className="block mt-0.5 text-[12.5px] text-[#6b7a66]">{r.interviewee.name}（{r.interviewee.role}）</span>
+                        <span className="block mt-0.5 text-[12.5px] text-[#5E6A70]">{r.interviewee.name}（{r.interviewee.role}）</span>
                       )}
                     </span>
-                    <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+                    <span aria-hidden className="text-[#97613F] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
               ))}
@@ -291,26 +291,26 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {/* 現場の声（キュレーション）— 業界のプロが公開している記事の紹介 */}
         {voices.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-1" style={HEAD}>現場の声（キュレーション）</h2>
-            <p className="text-[14px] text-[#6b7a66] leading-[1.85] mb-4">
+            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-1" style={HEAD}>現場の声（キュレーション）</h2>
+            <p className="text-[14px] text-[#5E6A70] leading-[1.85] mb-4">
               この領域の現場で活躍するプロが公開している記事を、出典を明記して紹介します。順不同・中立です。
             </p>
             <ul className="space-y-3">
               {voices.map((v) => (
-                <li key={v.url} className="rounded-[1rem] border border-[#1f2a1d]/10 bg-white p-4">
+                <li key={v.url} className="rounded-[1rem] border border-[#1F1E1B]/10 bg-white p-4">
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span className="inline-flex rounded-full bg-[#eef3ea] text-[#3d5638] px-2 py-0.5 text-[10px] font-bold">{v.industry}</span>
-                    <span className="text-[12.5px] text-[#6b7a66]">{v.author}</span>
+                    <span className="inline-flex rounded-full bg-[#EDE9E0] text-[#97613F] px-2 py-0.5 text-[10px] font-bold">{v.industry}</span>
+                    <span className="text-[12.5px] text-[#5E6A70]">{v.author}</span>
                   </div>
                   <a
                     href={v.url}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="text-[15px] font-semibold text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-2 hover:decoration-[#3d5638]"
+                    className="text-[15px] font-semibold text-[#97613F] underline decoration-[#C28863]/60 underline-offset-2 hover:decoration-[#97613F]"
                   >
                     {v.title}↗
                   </a>
-                  <p className="mt-1.5 text-[14px] text-[#4b5b47] leading-[1.85]">{v.note}</p>
+                  <p className="mt-1.5 text-[14px] text-[#45443E] leading-[1.85]">{v.note}</p>
                 </li>
               ))}
             </ul>
@@ -320,16 +320,16 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {/* 関連記事（仕組み解説クラスタ） */}
         {related.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-[1.05rem] font-bold text-[#1f2a1d] mb-4" style={HEAD}>関連記事</h2>
+            <h2 className="text-[1.05rem] font-bold text-[#1F1E1B] mb-4" style={HEAD}>関連記事</h2>
             <ul className="space-y-2">
               {related.map((r) => (
                 <li key={r.slug}>
                   <Link
                     href={`/areas/${c.id}/${r.slug}`}
-                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#1f2a1d]/10 bg-white px-4 py-3.5 hover:border-[#3d5638]/40 transition-colors"
+                    className="group flex items-center justify-between gap-3 rounded-[1rem] border border-[#1F1E1B]/10 bg-white px-4 py-3.5 hover:border-[#97613F]/40 transition-colors"
                   >
-                    <span className="text-[15px] font-semibold text-[#1f2a1d]">{r.title}</span>
-                    <span aria-hidden className="text-[#3d5638] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
+                    <span className="text-[15px] font-semibold text-[#1F1E1B]">{r.title}</span>
+                    <span aria-hidden className="text-[#97613F] shrink-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
               ))}
@@ -337,7 +337,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </section>
         )}
 
-        <p className="mt-12 text-[13.5px] text-[#6b7a66] leading-[1.9]">
+        <p className="mt-12 text-[13.5px] text-[#5E6A70] leading-[1.9]">
           {c.guide
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
             : "※ 本記事は一般的に知られる情報を、出典を明記して整理したものです。出典・参考リンクは中立な医学情報源によります。特定の医療機関を推奨するものではなく、診断・治療・受診勧奨を目的としたものではありません。個別の判断は医療機関にご相談ください。"}
@@ -347,10 +347,10 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {!c.guide && <QuietConsult />}
 
         <div className="mt-10 flex flex-wrap gap-3">
-          <Link href="/areas" className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
+          <Link href="/areas" className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
             ほかの領域を見る <span aria-hidden>→</span>
           </Link>
-          <ConsultLink market={c.id} className="inline-flex items-center gap-2 rounded-full border border-[#1f2a1d]/20 hover:border-[#1f2a1d] text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 transition-colors">
+          <ConsultLink market={c.id} className="inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#1F1E1B] text-[#1F1E1B] text-sm font-semibold px-7 py-3.5 transition-colors">
             相談する（無料） <span aria-hidden>→</span>
           </ConsultLink>
         </div>

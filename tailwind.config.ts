@@ -8,38 +8,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Bright warm cream body + reserved dark for cinematic
-        // sections. Aesop register on the page; chrome reads as
-        // sand. Three places stay dark (Philosophy, Belonging,
-        // /recoveries Act II) and earn their cinema by contrast.
-        cream: "#F2EAD9",
-        "cream-deep": "#E6DBC4",
-        paper: "#FBF6EA",
-        ink: "#221A11",
-        "sub-gray": "#7A6B57",
-        "hair-line": "#D9CDB6",
-        navy: "#1F1813",
-        "navy-deep": "#15100B",
-        gold: "#8E6A36",
-        "gold-bright": "#A6824A",
-        // Brand green register (hero / logo mark / videos). Deep green + sage.
-        brand: "#16241A",
-        "brand-cream": "#EDF1E8",
-        sage: "#85AB8B",
-        "sage-bright": "#9EC4A3",
-        // 差し色（ブラス）。緑が"地"、ブラスが"ここを見て"の印。
-        // 面で塗らない。細い線・小さいラベル・数字・1文のマーカーにだけ使う。
-        // brass       … 明るい地の上の文字（#f4f6f2 に対して 5.5:1）
-        // brass-mid   … 罫線・枠・アイコン
-        // brass-bright… 深緑の上の文字（#16241A に対して 8.5:1）
-        // brass-wash  … 蛍光ペンの下地
-        brass: "#7E5B29",
-        "brass-mid": "#B98A3C",
-        "brass-bright": "#E0B75F",
-        "brass-wash": "#F6E9CE",
-        // Legacy aliases
-        "off-white": "#F2EAD9",
-        "quiet-brass": "#8E6A36",
+        // 自然素材の色。画面のための色（鮮やかな緑・金・青）は持たない。
+        // 詳細と使い分けは DESIGN.md「3. カラーパレット」。
+        kinari: "#F3F0EA",      // 生成り — サイトの地
+        hakuji: "#FAF8F4",      // 白磁 — 記事の紙
+        sumi: "#1F1E1B",        // 墨 — 本文（純黒にしない）
+        keshizumi: "#45443E",   // 消炭 — リード・補足
+        ainezu: "#5E6A70",      // 藍鼠 — キャプション・日付
+        shironezu: "#DAD6CD",   // 白鼠 — 罫線
+        konjo: "#1E2A38",       // 紺青 — 濃い面
+        dou: "#97613F",         // 銅 — リンク（明るい地の上）
+        "dou-usu": "#C28863",   // 淡銅 — 紺青の上のアクセント
+        koke: "#6B6E55",        // 苔 — ごく稀
       },
       fontFamily: {
         sans: [
@@ -64,7 +44,7 @@ const config: Config = {
         logo: ["Cormorant Garamond", "Crimson Pro", "serif"],
       },
       maxWidth: {
-        reading: "720px",
+        reading: "680px",
       },
       letterSpacing: {
         logo: "0.05em",
