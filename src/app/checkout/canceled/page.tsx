@@ -29,7 +29,7 @@ export default function CheckoutCanceledPage() {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            href="/#pricing"
+            href="/plan"
             className="inline-flex items-center gap-2 rounded-full bg-[#16241A] hover:bg-[#1c2e21] text-[#EDF1E8] text-[14px] font-bold px-6 py-3 transition-colors"
           >
             プランの中身を、もう一度見る <span aria-hidden>→</span>

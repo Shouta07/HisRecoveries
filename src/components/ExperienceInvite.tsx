@@ -44,7 +44,7 @@ export default function ExperienceInvite({ context }: { context?: string }) {
           <BookingCTA className="bg-[#EDF1E8] hover:bg-white text-[#16241a] text-sm font-semibold px-7 py-3.5 rounded-full transition-colors">
             無料で相談する
           </BookingCTA>
-          <Link href="/#pricing" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
+          <Link href="/plan" className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-sm font-semibold px-6 py-3.5 transition-colors">
             プランの中身を見る <span aria-hidden>→</span>
           </Link>
         </div>

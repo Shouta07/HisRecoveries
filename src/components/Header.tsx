@@ -5,11 +5,12 @@ import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
 import { site } from "@/lib/site";
 
+// メディアが主、サービスが従。記事を先頭に置く。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
   { href: "/areas", label: "記事" },
-  { href: "/producer", label: "担当者" },
-  { href: "/why", label: "想い", desktopOnly: true },
-  { href: "/#pricing", label: "プラン" },
+  { href: "/plan", label: "個人向け" },
+  { href: "/business", label: "法人向け" },
+  { href: "/producer", label: "担当者", desktopOnly: true },
 ];
 
 export default function Header() {

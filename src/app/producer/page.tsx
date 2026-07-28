@@ -412,7 +412,7 @@ export default function ProducerPage() {
                 まず無料で相談する <span aria-hidden>→</span>
               </ConsultLink>
               <Link
-                href="/#pricing"
+                href="/plan"
                 className="inline-flex items-center gap-2 rounded-full border border-white/25 hover:border-white/60 text-[#EDF1E8] text-[15px] font-semibold px-6 py-3.5 transition-colors"
               >
                 プランの中身を見る

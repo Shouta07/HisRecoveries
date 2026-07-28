@@ -70,7 +70,7 @@ export default function ReservePage() {
           <p className="text-[14px] text-[#4b5b47] leading-[1.9]">
             第一印象改善プラン（30日）¥49,800（税込・先着10名／以降 ¥66,000 税込）。
             実施は東京都内・土日のみ、お支払いはクレジットカードのみです。
-            <Link href="/#pricing" className="ml-1 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4">
+            <Link href="/plan" className="ml-1 text-[#3d5638] underline decoration-[#85AB8B]/60 underline-offset-4">
               中身を見る
             </Link>
           </p>

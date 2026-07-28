@@ -6,7 +6,7 @@ import { clusters } from "@/lib/clusters";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const staticPaths: MetadataRoute.Sitemap = ["", "/reserve", "/apply", "/areas", "/areas/confidence", "/producer", "/why", "/faq", "/privacy"].map((p) => ({
+  const staticPaths: MetadataRoute.Sitemap = ["", "/areas", "/areas/confidence", "/plan", "/business", "/producer", "/why", "/reserve", "/apply", "/faq", "/privacy", "/partner"].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: now,
     changeFrequency: "monthly",
