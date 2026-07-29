@@ -148,6 +148,35 @@
         "source_type": "content_source",
         "product": null
       }
+    },
+    {
+      "id": "20260729132911545950",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-07-29T13:29:11.545973",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "腕はいいのに、広告費ばかりかさむ——\nそんな話を、施術者の方からよく聞く。\n\n———\n\n集客コストは上がり続けて、\n物量で勝てるのは大手ばかり。\n\n———\n\nでも患者が本当に欲しいのは、\n「広告がうまい院」じゃなくて\n「自分に合う施術者」だと思う。\n\n———\n\nだから患者側に立って、\n悩みと術式が噛み合う人だけを、\n中立にお繋ぎする仕組みを作っている。\n\n———\n\n施術はしない。売り込みもしない。\n質を絞った送客に興味がある方、話せたら。\nhttps://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-adcost\n\n———\n\n広告費以外の集客、どうされていますか？",
+        "posts": [
+          "腕はいいのに、広告費ばかりかさむ——\nそんな話を、施術者の方からよく聞く。",
+          "集客コストは上がり続けて、\n物量で勝てるのは大手ばかり。",
+          "でも患者が本当に欲しいのは、\n「広告がうまい院」じゃなくて\n「自分に合う施術者」だと思う。",
+          "だから患者側に立って、\n悩みと術式が噛み合う人だけを、\n中立にお繋ぎする仕組みを作っている。",
+          "施術はしない。売り込みもしない。\n質を絞った送客に興味がある方、話せたら。\nhttps://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-adcost",
+          "広告費以外の集客、どうされていますか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-adcost",
+        "cta_used": "https://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-adcost",
+        "hypothesis_id": "b2b-adcost",
+        "hypothesis_name": "仮説D1: 施術者の広告費の痛み→中立送客",
+        "topic_slug": "b2b-adcost",
+        "buzz_score": 8,
+        "source_type": "b2b_thread",
+        "product": null
+      }
     }
   ]
 }
