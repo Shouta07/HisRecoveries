@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { complexes } from "@/lib/complexes";
 import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
 
 // 下層ページのフッター。トップのフッターと同じ中身に揃える。
 // 6分野へのリンクをここに置くのは、記事ページの末尾から
 // 他の分野へ抜けられるようにするため（袋小路をなくす）。
-export default function Footer() {
+//
+// 分野は props で受け取る。ここは "use client" なので complexes を
+// import すると、6領域それぞれの解説文まで丸ごとバンドルに入る。
+// 要るのは id と表示名だけ。
+export default function Footer({ areas }: { areas: { id: string; ja: string }[] }) {
   const pathname = usePathname();
   // The home ("/") ships its own footer; /apply and /partner are focused pages
   // that carry their own footer.
@@ -22,7 +25,7 @@ export default function Footer() {
           <div className="col-span-2">
             <p className="text-[12.5px] text-ainezu">分野</p>
             <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
-              {complexes.map((c) => (
+              {areas.map((c) => (
                 <li key={c.id}>
                   <Link href={`/areas/${c.id}`} className="transition-colors hover:text-dou">
                     {c.ja}

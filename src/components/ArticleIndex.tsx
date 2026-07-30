@@ -8,9 +8,11 @@
 //
 // 一覧は分野ごとに束ねて全部出す。絞り込み中はその条件を上に出し、
 // いつでも解除できるようにしておく。
+//
+// 記事のデータはここでも import しない。SearchProvider が
+// サーバーで作った索引（本文を含まない）を持っているので、そこから取る。
 
 import Link from "next/link";
-import { clusters } from "@/lib/clusters";
 import { useSearch } from "@/components/search/SearchProvider";
 
 const MINCHO: React.CSSProperties = {
@@ -18,8 +20,18 @@ const MINCHO: React.CSSProperties = {
   fontFeatureSettings: '"palt" 1',
 };
 
-export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
+export default function ArticleIndex({
+  hero,
+  list,
+}: {
+  hero: React.ReactNode;
+  /** サーバーが書き出した全記事の一覧。絞り込みが始まるまではこれを出す */
+  list: React.ReactNode;
+}) {
   const s = useSearch();
+  // 索引が届いていない間は、絞り込み条件があってもサーバーの一覧を出しておく。
+  // 空白を見せるより、全部見えているほうがまし。
+  const filtering = s.hasFilter && s.ready;
 
   return (
     <>
@@ -41,12 +53,12 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
             記事
           </h2>
           <p className="text-[12.5px] tabular-nums text-ainezu">
-            {s.hasFilter ? `${s.total}件` : `全${clusters.length}本`}
+            {filtering ? `${s.total}件` : `全${s.allCount}本`}
           </p>
         </div>
 
         {/* 絞り込み中は、条件と解除をここに出す（シートを開かなくても外せる） */}
-        {s.hasFilter ? (
+        {filtering ? (
           <p className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-t border-shironezu pt-4 text-[13.5px] text-keshizumi">
             <span className="text-ainezu">絞り込み中：</span>
             {s.labels.map((l) => (
@@ -73,7 +85,9 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
           </p>
         )}
 
-        {s.total === 0 ? (
+        {!filtering ? (
+          list
+        ) : s.total === 0 ? (
           <div className="mt-12 border border-dashed border-shironezu bg-hakuji/50 px-6 py-8">
             <p className="text-[16px]" style={{ ...MINCHO, fontWeight: 700 }}>
               この条件に当てはまる記事は、まだありません。

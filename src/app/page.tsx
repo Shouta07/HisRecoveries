@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
 import ArticleIndex from "@/components/ArticleIndex";
+import ArticleList from "@/components/ArticleList";
 import { complexes } from "@/lib/complexes";
 import { clusters } from "@/lib/clusters";
 import { byNewest, formatDate, publishedAt } from "@/lib/articleDates";
@@ -85,6 +86,7 @@ export default function HomePage() {
           写真は全幅、見出しは縦組みの明朝。参考にした誌面と同じ組み方で、
           横組みだけの画面とはここで決定的に印象が変わる。 */}
       <ArticleIndex
+        list={<ArticleList />}
         hero={
           <>
             <Image
