@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
-  fontWeight: 800,
+  fontWeight: 700,
   letterSpacing: "0.01em",
   fontFeatureSettings: '"palt" 1',
 };
@@ -20,7 +20,7 @@ function Section({ n, title, children }: { n: string; title: string; children: R
   return (
     <section>
       <h2 className="flex items-baseline gap-2.5 text-[1.05rem] font-bold text-[#1F1E1B] mb-3" style={HEAD}>
-        <span className="font-mono text-[13.5px] font-medium text-[#B9A06B] not-italic">{n}</span>
+        <span className="font-mono text-[13.5px] font-normal text-[#B9A06B] not-italic">{n}</span>
         {title}
       </h2>
       <div className="text-[15px] leading-[2] text-[#45443E] space-y-4">{children}</div>
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         <header className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <span aria-hidden className="block w-8 h-px bg-[#B9A06B]" />
-            <p className="font-mono text-[13.5px] tracking-[0.16em] uppercase text-[#8A6A3B] font-medium">
+            <p className="font-mono text-[13.5px] tracking-[0.16em] uppercase text-[#8A6A3B] font-normal">
               Privacy &amp; Disclaimer
             </p>
           </div>
@@ -189,7 +189,7 @@ export default function PrivacyPage() {
           </Section>
 
           <section className="border-t border-[#1F1E1B]/10 pt-8 mt-4 text-[13.5px] text-[#5E6A70] leading-[1.9]">
-            <p className="font-semibold text-[#45443E] mb-1">運営者</p>
+            <p className="font-bold text-[#45443E] mb-1">運営者</p>
             <p>バイタリティデザイン合同会社</p>
             <p>制定日: 2026年5月16日</p>
             <p>改定日: 2026年7月23日</p>

@@ -31,7 +31,7 @@ export default function FeaturedGathering({ event }: Props) {
             >
               The Next Gathering
             </p>
-            <h2 className="font-mincho text-2xl sm:text-4xl font-medium leading-[1.45] text-ink">
+            <h2 className="font-mincho text-2xl sm:text-4xl font-normal leading-[1.45] text-ink">
               次の集まり
             </h2>
           </div>
@@ -76,7 +76,7 @@ export default function FeaturedGathering({ event }: Props) {
               </span>
             )}
 
-            <h3 className="font-mincho text-3xl sm:text-4xl font-medium leading-[1.45] text-ink">
+            <h3 className="font-mincho text-3xl sm:text-4xl font-normal leading-[1.45] text-ink">
               <Link
                 href={`/events/${event.slug}`}
                 className="hover:text-ink transition-colors"

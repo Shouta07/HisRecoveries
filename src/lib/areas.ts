@@ -6,7 +6,10 @@
 // SEO/GEO: summary（要点 = AIが引用しやすい抽出可能な箇条書き）と
 // faqs（FAQPage 用）を各領域に持たせる。
 
-export type AreaSection = { h: string; body: string };
+import type { ClusterSection } from "@/lib/clusters";
+
+/** 分野ページの本文。記事と同じ器を使う（表・箇条書き・図が置ける） */
+export type AreaSection = ClusterSection;
 export type AreaFaq = { q: string; a: string };
 
 export type Area = {

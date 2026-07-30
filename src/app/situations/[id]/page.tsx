@@ -111,7 +111,7 @@ export default function SituationPage({ params }: { params: { id: string } }) {
 
         <header className="mt-7">
           <p className="text-[13px] text-dou">いまの状況から</p>
-          <h1 className="mt-3 text-[28px] leading-[1.45] sm:text-[38px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h1 className="mt-3 text-[28px] leading-[1.45] sm:text-[38px]" style={{ ...MINCHO, fontWeight: 700 }}>
             {s.label}
           </h1>
           <p className="mt-5 max-w-[34em] text-[15.5px] leading-[2.05] text-keshizumi">{INTRO[s.id]}</p>
@@ -135,7 +135,7 @@ export default function SituationPage({ params }: { params: { id: string } }) {
                   </p>
                   <h2
                     className="mt-2 max-w-[30em] text-[17px] leading-[1.7] sm:text-[19px]"
-                    style={{ ...MINCHO, fontWeight: 600 }}
+                    style={{ ...MINCHO, fontWeight: 700 }}
                   >
                     {a.title}
                   </h2>
@@ -147,7 +147,7 @@ export default function SituationPage({ params }: { params: { id: string } }) {
         </ul>
 
         <section className="mt-16 border-t border-shironezu pt-10">
-          <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
             ほかの状況から
           </h2>
           <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-3">
@@ -165,7 +165,7 @@ export default function SituationPage({ params }: { params: { id: string } }) {
           <p className="mt-8 text-[14px]">
             <Link
               href="/#index"
-              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
             >
               年代・分野からもさがす<span aria-hidden> →</span>
             </Link>

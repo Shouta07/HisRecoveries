@@ -36,7 +36,7 @@ export default function WhatsNew({ featured, rest }: Props) {
             <span className="mx-2">·</span>
             {featured.readingMinutes} min
           </p>
-          <h3 className="mt-3 font-mincho text-2xl sm:text-3xl font-medium leading-[1.55] text-ink group-hover:text-ink transition-colors">
+          <h3 className="mt-3 font-mincho text-2xl sm:text-3xl font-normal leading-[1.55] text-ink group-hover:text-ink transition-colors">
             {featured.title}
           </h3>
           {featured.excerpt && (

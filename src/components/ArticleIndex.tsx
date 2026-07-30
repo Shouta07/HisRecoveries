@@ -37,7 +37,7 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
       {/* ══ 記事一覧 ══ */}
       <div id="results" className="mx-auto max-w-[1080px] scroll-mt-4 px-5 pt-16 sm:px-8 sm:pt-24 lg:px-12">
         <div className="flex items-baseline justify-between gap-4 pb-1">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             記事
           </h2>
           <p className="text-[12.5px] tabular-nums text-ainezu">
@@ -55,7 +55,7 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
             <button
               type="button"
               onClick={s.clearAll}
-              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+              className="font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
             >
               すべて解除
             </button>
@@ -66,7 +66,7 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
             <button
               type="button"
               onClick={() => s.setOpen(true)}
-              className="ml-1.5 font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+              className="ml-1.5 font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
             >
               記事をさがす
             </button>
@@ -75,7 +75,7 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
 
         {s.total === 0 ? (
           <div className="mt-12 border border-dashed border-shironezu bg-hakuji/50 px-6 py-8">
-            <p className="text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <p className="text-[16px]" style={{ ...MINCHO, fontWeight: 700 }}>
               この条件に当てはまる記事は、まだありません。
             </p>
             <p className="mt-3 text-[14px] leading-[1.95] text-keshizumi">
@@ -85,7 +85,7 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
             <button
               type="button"
               onClick={s.clearAll}
-              className="mt-5 text-[14px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="mt-5 text-[14px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
             >
               すべて解除する
             </button>
@@ -95,13 +95,13 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
             {s.groups.map((g) => (
               <section key={g.id}>
                 <div className="flex items-baseline gap-4 border-b-2 border-sumi pb-3">
-                  <h3 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+                  <h3 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
                     {g.name}
                   </h3>
                   <span className="text-[12.5px] tabular-nums text-ainezu">{g.items.length}</span>
                   <Link
                     href={`/areas/${g.id}`}
-                    className="ml-auto text-[13px] font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+                    className="ml-auto text-[13px] font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
                   >
                     この分野について
                   </Link>
@@ -116,7 +116,7 @@ export default function ArticleIndex({ hero }: { hero: React.ReactNode }) {
                       >
                         <h4
                           className="max-w-[30em] text-[17px] leading-[1.7] sm:text-[19px]"
-                          style={{ ...MINCHO, fontWeight: 600 }}
+                          style={{ ...MINCHO, fontWeight: 700 }}
                         >
                           {a.title}
                         </h4>

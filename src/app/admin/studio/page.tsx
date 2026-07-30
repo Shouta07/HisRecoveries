@@ -42,7 +42,7 @@ export default function StudioPage() {
         {/* ヘッダー + KPI を1バンドに */}
         <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
           <div>
-            <span className="inline-flex items-center rounded-full bg-sage-bright px-3 py-0.5 text-[10px] tracking-[0.18em] text-brand uppercase font-semibold">
+            <span className="inline-flex items-center rounded-full bg-sage-bright px-3 py-0.5 text-[10px] tracking-[0.18em] text-brand uppercase font-bold">
               Studio
             </span>
             <h1 className="mt-2 font-mincho text-2xl sm:text-3xl leading-tight text-brand-cream">

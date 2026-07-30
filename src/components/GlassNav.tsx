@@ -34,7 +34,7 @@ export default function GlassNav() {
         {/* ロゴの下に肩書きを1行。何のサイトかを、ロゴの位置で言い切る。 */}
         <Link href="/" className="shrink-0 leading-none">
           <span
-            className={`logo-type block text-base font-semibold tracking-tight transition-colors sm:text-xl ${
+            className={`logo-type block text-base font-bold tracking-tight transition-colors sm:text-xl ${
               scrolled ? "text-sumi" : "text-kinari"
             }`}
           >
@@ -55,7 +55,7 @@ export default function GlassNav() {
               <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
                 <Link
                   href={l.href}
-                  className={`text-[14.5px] sm:text-[15px] font-medium transition-colors whitespace-nowrap ${
+                  className={`text-[14.5px] sm:text-[15px] font-normal transition-colors whitespace-nowrap ${
                     scrolled ? "text-keshizumi hover:text-dou" : "text-kinari/85 hover:text-kinari"
                   }`}
                 >

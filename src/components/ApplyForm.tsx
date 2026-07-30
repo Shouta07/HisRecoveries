@@ -85,7 +85,7 @@ export default function ApplyForm() {
 
   const field =
     "w-full rounded-2xl border border-[#1F1E1B]/15 bg-white px-4 py-3 text-[16px] text-[#1F1E1B] outline-none focus:border-[#8A6A3B] transition-colors";
-  const label = "block text-[14.5px] font-semibold text-[#1F1E1B] mb-2";
+  const label = "block text-[14.5px] font-bold text-[#1F1E1B] mb-2";
 
   // ── Success state — completes entirely on-site ──
   if (status === "success") {
@@ -213,7 +213,7 @@ export default function ApplyForm() {
 
       {/* 秘密保持 — 必須同意 */}
       <div className="rounded-2xl border border-[#1F1E1B]/15 bg-[#F3F0EA] p-5">
-        <p className="text-[14.5px] font-semibold text-[#1F1E1B] mb-2">
+        <p className="text-[14.5px] font-bold text-[#1F1E1B] mb-2">
           秘密保持について（必須）
         </p>
         <p className="text-[14px] text-[#45443E] leading-[1.9]">
@@ -229,7 +229,7 @@ export default function ApplyForm() {
             className="mt-0.5 w-5 h-5 accent-[#8A6A3B] shrink-0"
             required
           />
-          <span className="text-[15px] font-medium text-[#1F1E1B] leading-[1.7]">
+          <span className="text-[15px] font-normal text-[#1F1E1B] leading-[1.7]">
             秘密保持に同意します。（同意がない場合は送信いただけません）
           </span>
         </label>
@@ -244,7 +244,7 @@ export default function ApplyForm() {
       <button
         type="submit"
         disabled={!canSubmit}
-        className="w-full rounded-full text-white text-[15px] font-semibold px-7 py-4 transition-colors disabled:cursor-not-allowed"
+        className="w-full rounded-full text-white text-[15px] font-bold px-7 py-4 transition-colors disabled:cursor-not-allowed"
         style={{ backgroundColor: canSubmit ? "#1F1E1B" : "#5E6A70" }}
       >
         {status === "submitting"

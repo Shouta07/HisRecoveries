@@ -121,7 +121,7 @@ export default function HomePage() {
                 下の説明文とぶつからないところで頭打ちにする。 */}
             <h1
               className="hr-tate absolute right-4 top-[74px] text-[clamp(24px,5svh,40px)] text-sumi sm:right-10 sm:top-[13%] sm:text-[42px] lg:right-12 lg:text-[52px]"
-              style={{ ...MINCHO, fontWeight: 600 }}
+              style={{ ...MINCHO, fontWeight: 700 }}
             >
               もっといい自分は、
               <br />
@@ -132,7 +132,7 @@ export default function HomePage() {
             <p className="absolute bottom-8 left-4 max-w-[calc(100%-5rem)] text-[14px] leading-[1.95] text-kinari sm:bottom-12 sm:left-10 sm:max-w-[30em] sm:text-[15.5px] sm:leading-[2.1]">
               髪、肌、眠り、疲れ、体、パートナーとのこと。
               <br />
-              <span className="font-semibold">実体験と、専門家への取材をもとに。</span>
+              <span className="font-bold">実体験と、専門家への取材をもとに。</span>
             </p>
           </>
         }
@@ -140,7 +140,7 @@ export default function HomePage() {
 
       {/* ══════ 最新記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
-        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
           新しい記事
         </h2>
 
@@ -150,7 +150,7 @@ export default function HomePage() {
             <p className="text-[13px] text-dou">{areaLabel(head.areaId)}</p>
             <h3
               className="mt-2 max-w-[24em] text-[23px] sm:text-[30px] leading-[1.55] group-hover:text-dou transition-colors"
-              style={{ ...MINCHO, fontWeight: 600 }}
+              style={{ ...MINCHO, fontWeight: 700 }}
             >
               {head.title}
             </h3>
@@ -175,7 +175,7 @@ export default function HomePage() {
                 </p>
                 <h3
                   className="mt-1.5 text-[18px] leading-[1.65] group-hover:text-dou transition-colors"
-                  style={{ ...MINCHO, fontWeight: 600 }}
+                  style={{ ...MINCHO, fontWeight: 700 }}
                 >
                   {a.title}
                 </h3>
@@ -190,7 +190,7 @@ export default function HomePage() {
         <p className="mt-14">
           <a
             href="#index"
-            className="inline-flex items-baseline gap-2 text-[15px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
+            className="inline-flex items-baseline gap-2 text-[15px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
           >
             記事をすべて見る
             <span aria-hidden>→</span>
@@ -200,7 +200,7 @@ export default function HomePage() {
 
       {/* ══════ よく読まれている記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
-        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
           よく読まれている記事
         </h2>
         <ol className="mt-9 max-w-[42em] border-t border-shironezu">
@@ -214,7 +214,7 @@ export default function HomePage() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="flex-1">
-                  <span className="block text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 600 }}>
+                  <span className="block text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 700 }}>
                     {a.title}
                   </span>
                   <span className="mt-1 block text-[12.5px] text-ainezu">{areaLabel(a.areaId)}</span>
@@ -236,7 +236,7 @@ export default function HomePage() {
         className="mt-[96px] sm:mt-[136px] lg:mt-[184px] scroll-mt-20 border-y border-shironezu bg-hakuji"
       >
         <div className="mx-auto max-w-[840px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             His Recoveriesについて
           </h2>
           <div className="mt-7 max-w-[34em] space-y-6 text-[15px] sm:text-[16px] leading-[2.05] text-keshizumi">
@@ -248,7 +248,7 @@ export default function HomePage() {
             <p>
               調べても出てくるのは「やったほうがいい」ばかりで、順番も、やらなくていいことも
               書いてありません。ここでは、
-              <span className="font-semibold text-sumi">
+              <span className="font-bold text-sumi">
                 やらなくていいことは、やらなくていいと書きます。
               </span>
             </p>
@@ -263,7 +263,7 @@ export default function HomePage() {
             専門家への取材記事は、まだ0本です。記事の誤りは
             <a
               href={`mailto:${site.email}`}
-              className="mx-1 font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+              className="mx-1 font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
             >
               {site.email}
             </a>
@@ -275,7 +275,7 @@ export default function HomePage() {
       {/* ══════ サービス — 最後。静かに ══════ */}
       <section className="border-t border-shironezu">
         <div className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
-          <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
             サービス
           </h2>
           <p className="mt-4 max-w-[32em] text-[14px] leading-[1.95] text-keshizumi">
@@ -283,7 +283,7 @@ export default function HomePage() {
             一人だと止まってしまう場合だけ、こちらをご覧ください。
           </p>
           <div className="mt-9 max-w-[34em]">
-            <h3 className="text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h3 className="text-[16px]" style={{ ...MINCHO, fontWeight: 700 }}>
               第一印象改善プラン（30日）
             </h3>
             <p className="mt-2.5 text-[14px] leading-[1.95] text-keshizumi">
@@ -293,7 +293,7 @@ export default function HomePage() {
             <p className="mt-4">
               <Link
                 href="/plan"
-                className="inline-flex items-baseline gap-2 text-[14px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
+                className="inline-flex items-baseline gap-2 text-[14px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
               >
                 詳しく見る
                 <span aria-hidden>→</span>

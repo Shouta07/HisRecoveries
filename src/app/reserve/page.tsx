@@ -42,18 +42,18 @@ export default function ReservePage() {
             <span className="text-[#F3F0EA]">無料で相談する</span>
           </nav>
           <div className="hr-eyebrow hr-eyebrow-on-dark mb-4">無料の相談</div>
-          <h1 className="text-[#F3F0EA] text-[1.9rem] sm:text-[2.7rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 800 }}>
+          <h1 className="text-[#F3F0EA] text-[1.9rem] sm:text-[2.7rem] leading-[1.35]" style={{ ...MINCHO, fontWeight: 700 }}>
             申し込む前に、<br /><span className="text-[#B9A06B]">合うかどうかを。</span>
           </h1>
           <p className="mt-5 text-[15px] sm:text-[15px] text-[#CBCEC4] leading-[2] max-w-[38rem]">
-            <strong className="text-[#F3F0EA] font-semibold">実名・顔写真は不要です。</strong>
+            <strong className="text-[#F3F0EA] font-bold">実名・顔写真は不要です。</strong>
             気になっていることをお送りいただければ、3営業日を目処にご返信します。
-            <strong className="text-[#F3F0EA] font-semibold">合わないと思えば、その場でそうお伝えします。</strong>
+            <strong className="text-[#F3F0EA] font-bold">合わないと思えば、その場でそうお伝えします。</strong>
             お支払い後のキャンセルはお受けしていないので、迷いが残っているうちは、お勧めしません。
           </p>
           <div className="mt-7 flex flex-wrap gap-2">
             {CHIPS.map((c) => (
-              <span key={c} className="rounded-full border border-[#B9A06B]/30 bg-white/[0.06] px-3.5 py-1.5 text-[13.5px] font-medium text-[#D3D7DC]">
+              <span key={c} className="rounded-full border border-[#B9A06B]/30 bg-white/[0.06] px-3.5 py-1.5 text-[13.5px] font-normal text-[#D3D7DC]">
                 {c}
               </span>
             ))}

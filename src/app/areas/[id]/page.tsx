@@ -7,6 +7,7 @@ import { citationsByComplex } from "@/lib/citations";
 import { clustersByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
 import { headingId } from "@/lib/reading";
+import SectionBody from "@/components/SectionBody";
 import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
 
@@ -140,7 +141,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           <h1
             id="area-title"
             className="mt-3 text-[28px] leading-[1.45] sm:text-[38px]"
-            style={{ ...MINCHO, fontWeight: 600 }}
+            style={{ ...MINCHO, fontWeight: 700 }}
           >
             {pillarTitle}
           </h1>
@@ -190,15 +191,15 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         <div className="mt-12 flex flex-col gap-11">
           {area.sections.map((s, i) => (
             <section key={s.h} id={headingId(i)} className="scroll-mt-20">
-              <h2 className="text-[20px] leading-[1.6] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              <h2 className="text-[20px] leading-[1.6] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
                 {s.h}
               </h2>
-              <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">{s.body}</p>
+              <SectionBody s={s} />
             </section>
           ))}
 
           <section className="border-l-2 border-shironezu pl-5 sm:pl-6">
-            <h2 className="text-[17px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[17px]" style={{ ...MINCHO, fontWeight: 700 }}>
               {c.guide ? "プロと整える目安" : "受診の目安"}
             </h2>
             <p className="mt-3 text-[15px] leading-[2] text-keshizumi">{area.whenToSee}</p>
@@ -208,13 +209,13 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {/* FAQ */}
         {area.faqs.length > 0 && (
           <section className="mt-16">
-            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 700 }}>
               よくある質問
             </h2>
             <dl className="mt-6 border-t border-shironezu">
               {area.faqs.map((f) => (
                 <div key={f.q} className="border-b border-shironezu py-5">
-                  <dt className="text-[15px] font-semibold leading-[1.7]">{f.q}</dt>
+                  <dt className="text-[15px] font-bold leading-[1.7]">{f.q}</dt>
                   <dd className="mt-2 text-[14.5px] leading-[1.95] text-keshizumi">{f.a}</dd>
                 </div>
               ))}
@@ -225,7 +226,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {/* 出典 */}
         {cites.length > 0 && (
           <section className="mt-16">
-            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
               出典・参考リンク
             </h2>
             <ul className="mt-5 space-y-5">
@@ -240,7 +241,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                           href={q.url}
                           target="_blank"
                           rel="noopener noreferrer nofollow"
-                          className="ml-2 font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                          className="ml-2 font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
                         >
                           原文<span aria-hidden> ↗</span>
                         </a>
@@ -252,7 +253,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                         href={q.url}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
-                        className="font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                        className="font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
                       >
                         {q.source}
                         <span aria-hidden> ↗</span>
@@ -269,7 +270,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         {/* 現場の声（キュレーション）— 業界のプロが公開している記事の紹介 */}
         {voices.length > 0 && (
           <section className="mt-16">
-            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
               現場の声（キュレーション）
             </h2>
             <p className="mt-3 text-[13.5px] leading-[1.9] text-ainezu">
@@ -285,7 +286,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                     href={v.url}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="mt-1.5 block text-[15px] font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] hover:decoration-dou"
+                    className="mt-1.5 block text-[15px] font-bold text-dou underline decoration-dou/40 underline-offset-[5px] hover:decoration-dou"
                   >
                     {v.title}
                     <span aria-hidden> ↗</span>
@@ -308,7 +309,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
       <div className="border-t border-shironezu bg-hakuji">
         <div className="mx-auto max-w-[860px] px-5 sm:px-8 py-16 sm:py-20">
           <div className="flex items-baseline gap-4 border-b-2 border-sumi pb-3">
-            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 700 }}>
               {c.ja}の記事
             </h2>
             <span className="text-[12.5px] tabular-nums text-ainezu">{index.length}</span>
@@ -332,7 +333,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                       ? `／${r.interviewee.name}（${r.interviewee.role}）`
                       : ""}
                   </p>
-                  <p className="mt-1.5 max-w-[30em] text-[16.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 600 }}>
+                  <p className="mt-1.5 max-w-[30em] text-[16.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 700 }}>
                     {r.title}
                   </p>
                   <p className="mt-2 max-w-[38em] text-[13.5px] leading-[1.9] text-keshizumi line-clamp-2">
@@ -346,7 +347,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           <p className="mt-10 text-[14px]">
             <Link
               href="/#index"
-              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
             >
               ほかの分野からさがす<span aria-hidden> →</span>
             </Link>

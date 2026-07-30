@@ -90,7 +90,7 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
                       type="button"
                       onClick={() => toggle(w.key)}
                       aria-pressed={on}
-                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[14.5px] sm:text-[15px] font-semibold transition-colors ${
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[14.5px] sm:text-[15px] font-bold transition-colors ${
                         on
                           ? "bg-[#2C3A2E] border-[#2C3A2E] text-[#F3F0EA]"
                           : "bg-white border-[#1F1E1B]/15 text-[#45443E] hover:border-[#8A6A3B]/50"
@@ -134,7 +134,7 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
               {synthesis && (
                 <div className="mb-5 rounded-[1.1rem] bg-[#2C3A2E] text-[#F3F0EA] px-5 py-4">
                   <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#B9A06B] mb-1.5">束ね方</div>
-                  <p className="text-[14.5px] leading-[1.9] font-medium">{synthesis}</p>
+                  <p className="text-[14.5px] leading-[1.9] font-normal">{synthesis}</p>
                 </div>
               )}
 
@@ -149,9 +149,9 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
                         <div className="px-4 py-3.5 border-b border-[#1F1E1B]/8">
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-[15.5px] font-bold text-[#1F1E1B]" style={HEAD}>{w.label}</span>
-                            <Link href={`/areas/${w.area}`} className="text-[12px] font-semibold text-[#8A6A3B] hover:opacity-70 shrink-0 transition-opacity">領域を見る →</Link>
+                            <Link href={`/areas/${w.area}`} className="text-[12px] font-bold text-[#8A6A3B] hover:opacity-70 shrink-0 transition-opacity">領域を見る →</Link>
                           </div>
-                          <p className="mt-1 text-[13.5px] font-semibold text-[#8A6A3B] leading-[1.7]">{w.action}</p>
+                          <p className="mt-1 text-[13.5px] font-bold text-[#8A6A3B] leading-[1.7]">{w.action}</p>
                           <p className="mt-0.5 text-[12px] text-[#5E6A70] leading-[1.6]">{w.why}</p>
                         </div>
                         {/* そのステップの読みもの */}
@@ -177,8 +177,8 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
               <div className="mt-6 rounded-[1.2rem] bg-[#EDE9E0] border border-[#B9A06B]/30 p-5">
                 <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#8A6A3B] mb-2">このあと</div>
                 <p className="text-[14px] text-[#45443E] leading-[1.9]">
-                  これは、よくある順路の<span className="font-semibold text-[#2C3A2E]">下書き</span>です。
-                  無料相談で、あなたの現在地に合わせて<span className="font-semibold text-[#2C3A2E]">専用のロードマップに設計し直し</span>、
+                  これは、よくある順路の<span className="font-bold text-[#2C3A2E]">下書き</span>です。
+                  無料相談で、あなたの現在地に合わせて<span className="font-bold text-[#2C3A2E]">専用のロードマップに設計し直し</span>、
                   合うプロ・施設へおつなぎします（体験を経て、さらにパーソナライズ）。売り込みはありません。
                 </p>
                 <ConsultLink className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#2C3A2E] hover:bg-[#22331f] text-[#F3F0EA] text-[15px] font-bold px-7 py-3 transition-colors">
@@ -186,7 +186,7 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
                 </ConsultLink>
               </div>
 
-              <button type="button" onClick={() => { setDone(false); setPicked([]); }} className="mt-4 text-[13.5px] font-semibold text-[#5E6A70] underline underline-offset-4 hover:text-[#8A6A3B] transition-colors">
+              <button type="button" onClick={() => { setDone(false); setPicked([]); }} className="mt-4 text-[13.5px] font-bold text-[#5E6A70] underline underline-offset-4 hover:text-[#8A6A3B] transition-colors">
                 選び直す
               </button>
             </div>
