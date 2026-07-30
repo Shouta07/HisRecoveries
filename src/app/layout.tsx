@@ -20,6 +20,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
 import SearchProvider from "@/components/search/SearchProvider";
+import { clusters } from "@/lib/clusters";
+import { complexes } from "@/lib/complexes";
 import { site, socialSameAs } from "@/lib/site";
 import "./globals.css";
 
@@ -177,12 +179,12 @@ export default function RootLayout({
         >
           本文へスキップ
         </a>
-        <SearchProvider>
+        <SearchProvider allCount={clusters.length}>
           <Header />
           <main id="main" className="flex-1">
             {children}
           </main>
-          <Footer />
+          <Footer areas={complexes.map((c) => ({ id: c.id, ja: c.ja }))} />
         </SearchProvider>
         <Analytics />
       </body>
