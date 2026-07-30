@@ -1,15 +1,21 @@
 import type { Metadata, Viewport } from "next";
-// Self-hosted fonts via fontsource (no build-time Google Fonts fetch → no
-// more transient CI deploy failures). CSS vars are set in globals.css.
-import "@fontsource/cormorant-garamond/400.css";
-import "@fontsource/cormorant-garamond/500.css";
-import "@fontsource/cormorant-garamond/600.css";
-import "@fontsource/cormorant-garamond/700.css";
-import "@fontsource/noto-sans-jp/400.css";
-import "@fontsource/noto-sans-jp/500.css";
-import "@fontsource/noto-sans-jp/700.css";
-import "@fontsource/noto-sans-jp/800.css";
-import "@fontsource/noto-sans-jp/900.css";
+// ── Webフォントを積むのをやめた ─────────────────────────────
+//
+// 以前は Noto Sans JP を5ウェイト＋Cormorant を4ウェイト読んでいて、
+// 記事1ページが 2.2MB・96リクエストだった。本文600字の記事に載せる重さではない。
+//
+// ウェイトを 400/700 の2つに絞ってもフォントは 730KB のままだった。
+// 実測すると、日本語のサブセット分割で 69ファイル に分かれて落ちてくる
+// （119番のブロックだけで 43KB × 2ウェイト）。ウェイトを減らしても、
+// ページに出る漢字の種類が減るわけではないので、ここは削れない。
+//
+// なので端末のフォントで組む。iOS/Mac は ヒラギノ角ゴ、Windows は 游ゴシック。
+// どちらも日本語メディアで広く使われている本文書体で、Noto Sans JP と
+// 大きく印象が変わらない。転送量は 730KB → 0KB、リクエストは 69 → 0。
+//
+// もしブランド書体を戻すなら、fontsource ではなく
+// 「実際に使う文字だけを含むサブセットを1ファイル作って自前で置く」形にすること。
+// fontsource のサブセット分割は、日本語ではこの症状が必ず出る。
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";

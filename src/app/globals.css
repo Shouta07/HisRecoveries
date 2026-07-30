@@ -7,9 +7,14 @@
   /* サイト全体をゴシックへ統一。旧・見出し用ミンチョ変数(--font-shippori)は
      全コンポーネントが参照しているため、ここをゴシックへ差し替えるだけで
      見出し一括ゴシック化。変数名は互換のため据え置く。 */
-  --font-shippori: "Noto Sans JP";
-  --font-noto-sans-jp: "Noto Sans JP";
-  --font-cormorant: "Cormorant Garamond";
+  /* 端末のフォントで組む（Webフォントは積んでいない。理由は layout.tsx）。
+     Apple → ヒラギノ角ゴ、Windows → 游ゴシック の順で当てる。
+     "Noto Sans JP" を先頭に残してあるのは、端末に入っている場合はそれを使うため。 */
+  --font-jp: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+    "Yu Gothic Medium", "Yu Gothic", YuGothic, Meiryo, system-ui, sans-serif;
+  --font-shippori: var(--font-jp);
+  --font-noto-sans-jp: var(--font-jp);
+  --font-cormorant: var(--font-jp);
 
   /* Chic dark sophisticated palette — high-end men register */
   /* 自然素材の色。DESIGN.md「3. カラーパレット」参照 */

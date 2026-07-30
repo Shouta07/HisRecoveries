@@ -24,16 +24,30 @@ export function readingMinutes(a: ClusterArticle): number {
   const chars =
     a.lead.length +
     a.summary.join("").length +
-    a.sections.reduce((n, s) => n + s.h.length + s.body.length, 0) +
+    a.sections.reduce((n, s) => n + s.h.length + sectionChars(s), 0) +
     a.faqs.reduce((n, f) => n + f.q.length + f.a.length, 0);
   return Math.max(1, Math.ceil(chars / 400));
+}
+
+/** 本文＋箇条書き＋表の文字数。図のキャプションも読む対象として数える */
+function sectionChars(s: ClusterArticle["sections"][number]): number {
+  return (
+    s.body.length +
+    (s.list?.join("").length ?? 0) +
+    (s.table
+      ? s.table.head.join("").length +
+        s.table.rows.reduce((n, r) => n + r.join("").length, 0) +
+        (s.table.caption?.length ?? 0)
+      : 0) +
+    (s.figure?.caption?.length ?? 0)
+  );
 }
 
 /** 概算の文字数（Article schema の wordCount に使う） */
 export function charCount(a: ClusterArticle): number {
   return (
     a.lead.length +
-    a.sections.reduce((n, s) => n + s.h.length + s.body.length, 0) +
+    a.sections.reduce((n, s) => n + s.h.length + sectionChars(s), 0) +
     a.faqs.reduce((n, f) => n + f.q.length + f.a.length, 0)
   );
 }

@@ -59,7 +59,7 @@ function Row({
         aria-expanded={open}
         className="flex h-[54px] w-full items-center justify-between gap-3 px-4 text-left text-[15px] transition-colors hover:bg-kinari/60"
       >
-        <span className={`truncate ${selected ? "font-semibold text-sumi" : "text-ainezu"}`}>
+        <span className={`truncate ${selected ? "font-bold text-sumi" : "text-ainezu"}`}>
           {selected ? selected.label : placeholder}
         </span>
         <span
@@ -176,7 +176,7 @@ export default function SearchSheet() {
       >
         <div className="mx-auto max-w-[560px] px-5 py-6 sm:px-8 sm:py-8">
           <div className="flex items-baseline justify-between gap-4">
-            <h2 className="text-[18px] sm:text-[20px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[18px] sm:text-[20px]" style={{ ...MINCHO, fontWeight: 700 }}>
               記事をさがす
             </h2>
             <button
@@ -226,7 +226,7 @@ export default function SearchSheet() {
           <button
             type="button"
             onClick={show}
-            className="mt-4 flex h-[52px] w-full items-center justify-center gap-2 rounded-[2px] bg-tokiwa text-[15px] font-semibold text-kinari transition-colors hover:bg-tokiwa/90"
+            className="mt-4 flex h-[52px] w-full items-center justify-center gap-2 rounded-[2px] bg-tokiwa text-[15px] font-bold text-kinari transition-colors hover:bg-tokiwa/90"
           >
             <span>
               <span className="tabular-nums">{s.total}</span>本をみる

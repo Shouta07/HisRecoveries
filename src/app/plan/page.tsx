@@ -184,7 +184,7 @@ export default function PlanPage() {
 
         <header className="mt-7">
           <p className="text-[13px] text-dou">個人向けサービス</p>
-          <h1 className="mt-3 max-w-[16em] text-[28px] leading-[1.45] sm:text-[38px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h1 className="mt-3 max-w-[16em] text-[28px] leading-[1.45] sm:text-[38px]" style={{ ...MINCHO, fontWeight: 700 }}>
             {PLAN.name}（{PLAN.days}日）
           </h1>
           <p className="mt-5 max-w-[34em] text-[15.5px] leading-[2.05] text-keshizumi">
@@ -197,7 +197,7 @@ export default function PlanPage() {
             {FACTS.map(([k, v]) => (
               <div key={k}>
                 <dt className="text-[12px] text-ainezu">{k}</dt>
-                <dd className="mt-1.5 text-[16px] leading-[1.5]" style={{ ...MINCHO, fontWeight: 600 }}>
+                <dd className="mt-1.5 text-[16px] leading-[1.5]" style={{ ...MINCHO, fontWeight: 700 }}>
                   {v}
                 </dd>
               </div>
@@ -207,7 +207,7 @@ export default function PlanPage() {
 
         {/* ══ 何をするか ══ */}
         <section className="mt-[72px] sm:mt-[96px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             何をするか
           </h2>
           <ol className="mt-7 border-t border-shironezu">
@@ -217,7 +217,7 @@ export default function PlanPage() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <p className="text-[15.5px] leading-[1.6]" style={{ ...MINCHO, fontWeight: 600 }}>
+                  <p className="text-[15.5px] leading-[1.6]" style={{ ...MINCHO, fontWeight: 700 }}>
                     {s.t}
                   </p>
                   <p className="mt-1.5 text-[14px] leading-[1.9] text-keshizumi">{s.d}</p>
@@ -229,7 +229,7 @@ export default function PlanPage() {
 
         {/* ══ 渡すもの ══ */}
         <section className="mt-[72px] sm:mt-[96px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             お渡しするもの
           </h2>
           <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.95] text-keshizumi">
@@ -243,7 +243,7 @@ export default function PlanPage() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <p className="text-[15.5px] leading-[1.6]" style={{ ...MINCHO, fontWeight: 600 }}>
+                  <p className="text-[15.5px] leading-[1.6]" style={{ ...MINCHO, fontWeight: 700 }}>
                     {d.t}
                   </p>
                   <p className="mt-1.5 text-[14px] leading-[1.9] text-keshizumi">{d.d}</p>
@@ -259,7 +259,7 @@ export default function PlanPage() {
 
         {/* ══ できないこと ══ */}
         <section className="mt-[96px] sm:mt-[136px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             できないこと
           </h2>
           <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.95] text-keshizumi">
@@ -274,7 +274,7 @@ export default function PlanPage() {
             ))}
           </ul>
 
-          <h3 className="mt-12 text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h3 className="mt-12 text-[16px]" style={{ ...MINCHO, fontWeight: 700 }}>
             こういうご相談は、お断りしています
           </h3>
           <ul className="mt-5 border-t border-shironezu">
@@ -286,7 +286,7 @@ export default function PlanPage() {
           </ul>
           <p className="mt-6 max-w-[34em] text-[14.5px] leading-[2] text-keshizumi">
             とくに肌は、施術だけで早く、というのが難しい部分です。医療にかかっても
-            <span className="font-semibold text-sumi">1年で解決するとは限りません</span>。
+            <span className="font-bold text-sumi">1年で解決するとは限りません</span>。
             ただ、肌が完璧でなくても、第一印象は動きます。第一印象は髪・眉・服のサイズ感・
             姿勢・表情・写真の総合点で、肌はその一つだからです。
             期日が近い場合は、動かせる要素から整えます。
@@ -296,7 +296,7 @@ export default function PlanPage() {
             施術を受けるかどうかを決めるのは、あなたです。
           </p>
 
-          <h3 className="mt-12 text-[16px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h3 className="mt-12 text-[16px]" style={{ ...MINCHO, fontWeight: 700 }}>
             あなたにやっていただくこと
           </h3>
           <ul className="mt-5 border-t border-shironezu">
@@ -313,13 +313,13 @@ export default function PlanPage() {
 
         {/* ══ 費用 ══ */}
         <section className="mt-[96px] sm:mt-[136px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             費用について
           </h2>
           <p className="mt-4 max-w-[34em] text-[14.5px] leading-[2] text-keshizumi">
             サイトに金額は出していません。何をやるか・何をやらないかを決めるのがこの仕事なので、
             内容が人によって変わり、一律の金額が実態と合わなくなるためです。
-            <span className="font-semibold text-sumi">いくらかは先に言えませんが、何で決まるかは先に言えます。</span>
+            <span className="font-bold text-sumi">いくらかは先に言えませんが、何で決まるかは先に言えます。</span>
           </p>
           <div className="mt-8 grid gap-10 sm:grid-cols-2">
             <div>
@@ -350,7 +350,7 @@ export default function PlanPage() {
 
         {/* ══ はじめかた ══ */}
         <section className="mt-[96px] sm:mt-[136px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             はじめかた
           </h2>
           <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.95] text-keshizumi">
@@ -363,7 +363,7 @@ export default function PlanPage() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <p className="text-[15.5px] leading-[1.6]" style={{ ...MINCHO, fontWeight: 600 }}>
+                  <p className="text-[15.5px] leading-[1.6]" style={{ ...MINCHO, fontWeight: 700 }}>
                     {s.t}
                   </p>
                   <p className="mt-1.5 text-[14px] leading-[1.9] text-keshizumi">{s.d}</p>
@@ -375,7 +375,7 @@ export default function PlanPage() {
           <dl className="mt-10 border-t border-shironezu">
             {TERMS.map(([t, d]) => (
               <div key={t} className="flex flex-col gap-1 border-b border-shironezu py-5 sm:flex-row sm:gap-6">
-                <dt className="shrink-0 text-[13.5px] sm:w-[8em]" style={{ ...MINCHO, fontWeight: 600 }}>
+                <dt className="shrink-0 text-[13.5px] sm:w-[8em]" style={{ ...MINCHO, fontWeight: 700 }}>
                   {t}
                 </dt>
                 <dd className="text-[14px] leading-[1.9] text-keshizumi">{d}</dd>
@@ -386,7 +386,7 @@ export default function PlanPage() {
 
         {/* ══ 相談 ══ */}
         <section className="mt-[96px] sm:mt-[136px] border-y border-shironezu bg-hakuji px-6 py-12 sm:px-10 sm:py-14">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             まず、相談から
           </h2>
           <p className="mt-4 max-w-[32em] text-[14.5px] leading-[2] text-keshizumi">
@@ -396,7 +396,7 @@ export default function PlanPage() {
           <p className="mt-7">
             <Link
               href="/reserve"
-              className="inline-flex items-baseline gap-2 text-[15px] font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="inline-flex items-baseline gap-2 text-[15px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
             >
               無料で相談する
               <span aria-hidden>→</span>
@@ -406,7 +406,7 @@ export default function PlanPage() {
 
         {/* ══ よくある質問 ══ */}
         <section className="mt-[96px] sm:mt-[136px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             よくある質問
           </h2>
           <div className="mt-9 flex flex-col gap-12">
@@ -416,7 +416,7 @@ export default function PlanPage() {
                 <dl className="mt-4 border-t border-shironezu">
                   {cat.items.map((f) => (
                     <div key={f.q} className="border-b border-shironezu py-5">
-                      <dt className="text-[15px] font-semibold leading-[1.7]">{f.q}</dt>
+                      <dt className="text-[15px] font-bold leading-[1.7]">{f.q}</dt>
                       <dd className="mt-2 text-[14.5px] leading-[1.95] text-keshizumi">{f.a}</dd>
                     </div>
                   ))}
@@ -434,13 +434,13 @@ export default function PlanPage() {
         <p className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-shironezu pt-8 text-[14px]">
           <Link
             href="/#index"
-            className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
           >
             記事をさがす<span aria-hidden> →</span>
           </Link>
           <Link
             href="/reserve"
-            className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
           >
             無料で相談する<span aria-hidden> →</span>
           </Link>

@@ -32,7 +32,7 @@ export function PhoneMock({ className = "" }: { className?: string }) {
             <div className="rounded-2xl bg-white p-3.5 shadow-sm">
               <p className="text-[10px] font-bold text-zinc-400">いまの状態</p>
               <div className="mt-2 flex items-end gap-2">
-                <span className="text-[26px] font-extrabold leading-none text-zinc-900">
+                <span className="text-[26px] font-bold leading-none text-zinc-900">
                   62
                 </span>
                 <span className="text-[10px] text-zinc-400 mb-1">/ 100 ・ 改善中</span>

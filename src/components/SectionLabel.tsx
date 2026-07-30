@@ -28,7 +28,7 @@ export default function SectionLabel({ en, ja, number, className = "" }: Props) 
         </p>
       </div>
       {ja && (
-        <h2 className="mt-3 font-mincho text-3xl sm:text-4xl lg:text-[2.75rem] font-medium leading-[1.35] tracking-[0.02em] text-ink">
+        <h2 className="mt-3 font-mincho text-3xl sm:text-4xl lg:text-[2.75rem] font-normal leading-[1.35] tracking-[0.02em] text-ink">
           {ja}
         </h2>
       )}

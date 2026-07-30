@@ -102,10 +102,10 @@ export default function PartnerPage() {
       {/* ── 専用スリムトップバー ── */}
       <div className="sticky top-0 z-50 border-b border-[#1F1E1B]/8 bg-[#FAF8F4]/85 backdrop-blur">
         <div className="max-w-[1100px] mx-auto flex items-center justify-between px-6 sm:px-8 py-3.5">
-          <Link href="/" className="logo-type text-[17px] font-semibold tracking-[0.04em] text-[#2C3A2E]">His Recoveries</Link>
+          <Link href="/" className="logo-type text-[17px] font-bold tracking-[0.04em] text-[#2C3A2E]">His Recoveries</Link>
           <div className="flex items-center gap-5">
             <span className="hidden sm:block font-mono text-[11px] tracking-[0.24em] uppercase text-[#5E6A70]">For Partners</span>
-            <a href="#apply" className="rounded-full bg-[#2C3A2E] hover:bg-[#22331f] text-[#F3F0EA] text-[14px] font-semibold px-4 py-2 transition-colors">無料で提携をはじめる</a>
+            <a href="#apply" className="rounded-full bg-[#2C3A2E] hover:bg-[#22331f] text-[#F3F0EA] text-[14px] font-bold px-4 py-2 transition-colors">無料で提携をはじめる</a>
           </div>
         </div>
       </div>
@@ -125,10 +125,10 @@ export default function PartnerPage() {
             <W>その人に合うプロ・施設を</W><W>候補としてお伝えします。</W>
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="#apply" className="w-full sm:w-auto rounded-full bg-[#2C3A2E] hover:bg-[#22331f] text-[#F3F0EA] text-[15px] font-semibold px-9 py-4 transition-colors">
+            <a href="#apply" className="w-full sm:w-auto rounded-full bg-[#2C3A2E] hover:bg-[#22331f] text-[#F3F0EA] text-[15px] font-bold px-9 py-4 transition-colors">
               無料で提携をはじめる
             </a>
-            <a href="#how" className="w-full sm:w-auto rounded-full border border-[#1F1E1B]/15 hover:border-[#8A6A3B]/50 text-[#1F1E1B] text-[15px] font-semibold px-9 py-4 transition-colors">
+            <a href="#how" className="w-full sm:w-auto rounded-full border border-[#1F1E1B]/15 hover:border-[#8A6A3B]/50 text-[#1F1E1B] text-[15px] font-bold px-9 py-4 transition-colors">
               仕組みを見る
             </a>
           </div>
@@ -136,7 +136,7 @@ export default function PartnerPage() {
             費用は一切なし　・　申込は1分
           </p>
           {/* 冷リンクで開いた相手への実在性の証明（メディアを見れば本気度が分かる） */}
-          <Link href="/#index" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#8A6A3B] underline underline-offset-4 decoration-[#B9A06B]/50 hover:opacity-70 transition-opacity">
+          <Link href="/#index" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#8A6A3B] underline underline-offset-4 decoration-[#B9A06B]/50 hover:opacity-70 transition-opacity">
             男性向けの専門記事を50本以上発信中 — メディアを見る <span aria-hidden>→</span>
           </Link>
         </div>
@@ -189,8 +189,8 @@ export default function PartnerPage() {
                 「あなたの場合は、<br />この順番で整えると良い」
               </div>
               <div className="mt-4 flex flex-wrap gap-1.5">
-                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-semibold text-[#CBCEC4]">AI印象診断</span>
-                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-semibold text-[#CBCEC4]">改善プラン</span>
+                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-bold text-[#CBCEC4]">AI印象診断</span>
+                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-bold text-[#CBCEC4]">改善プラン</span>
               </div>
             </div>
             <FlowArrow />
@@ -204,7 +204,7 @@ export default function PartnerPage() {
             </div>
           </div>
 
-          <p className="mt-12 text-center text-[15px] sm:text-[15px] text-[#8A6A3B] font-semibold leading-[1.9]">
+          <p className="mt-12 text-center text-[15px] sm:text-[15px] text-[#8A6A3B] font-bold leading-[1.9]">
             <W>だから届くのは、</W><W className="text-[#2C3A2E]">やることが決まった、</W><W className="text-[#2C3A2E]">意欲の高い男性</W><W>だけ。</W>
           </p>
 
@@ -398,7 +398,7 @@ export default function PartnerPage() {
                 ["お問い合わせ", site.company.email],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-4">
-                  <dt className="shrink-0 w-[5.5em] text-[#5E6A70] font-semibold">{k}</dt>
+                  <dt className="shrink-0 w-[5.5em] text-[#5E6A70] font-bold">{k}</dt>
                   <dd className="text-[#45443E] leading-[1.7]">{v}</dd>
                 </div>
               ))}
@@ -406,7 +406,7 @@ export default function PartnerPage() {
           </div>
         </div>
         <div className="max-w-[1100px] mx-auto px-6 sm:px-8 pb-10 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <Link href="/" className="logo-type text-[17px] font-semibold text-[#2C3A2E]">His Recoveries</Link>
+          <Link href="/" className="logo-type text-[17px] font-bold text-[#2C3A2E]">His Recoveries</Link>
           <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-[#45443E]">
             <Link href="/" className="hover:text-[#2C3A2E] transition-colors">ホーム</Link>
             <Link href="/#index" className="hover:text-[#2C3A2E] transition-colors">記事</Link>
@@ -431,7 +431,7 @@ function TrackCard({ tag, title, desc, chips, money, icon }: { tag: string; titl
       <p className="mt-3 text-[14.5px] text-[#45443E] leading-[1.9]">{desc}</p>
       <div className="mt-5 flex flex-wrap gap-2">
         {chips.map((c) => (
-          <span key={c} className="rounded-full bg-[#FAF8F4] border border-[#1F1E1B]/8 px-3 py-1.5 text-[13.5px] font-semibold text-[#8A6A3B]">{c}</span>
+          <span key={c} className="rounded-full bg-[#FAF8F4] border border-[#1F1E1B]/8 px-3 py-1.5 text-[13.5px] font-bold text-[#8A6A3B]">{c}</span>
         ))}
       </div>
       <div className="mt-6 pt-4 border-t border-[#1F1E1B]/8 flex items-center gap-2">

@@ -120,7 +120,7 @@ export default function NextStepBlock({
           {eyebrow}
         </p>
         <h2
-          className={`mt-3 text-[1.5rem] sm:text-[2rem] font-extrabold leading-[1.35] ${
+          className={`mt-3 text-[1.5rem] sm:text-[2rem] font-bold leading-[1.35] ${
             isDark ? "text-white" : "text-zinc-900"
           }`}
         >

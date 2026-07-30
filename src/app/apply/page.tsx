@@ -17,13 +17,13 @@ export default function ApplyPage() {
       {/* minimal logo bar — back to home, no nav/footer on this focused page */}
       <div className="border-b border-[#1F1E1B]/10">
         <div className="mx-auto max-w-[640px] px-6 sm:px-8 py-5">
-          <Link href="/" className="logo-type text-lg font-semibold tracking-tight text-[#1F1E1B] hover:opacity-70 transition-opacity">
+          <Link href="/" className="logo-type text-lg font-bold tracking-tight text-[#1F1E1B] hover:opacity-70 transition-opacity">
             His Recoveries
           </Link>
         </div>
       </div>
       <div className="mx-auto max-w-[640px] px-6 sm:px-8 pt-12 sm:pt-16 pb-24">
-        <p className="text-xs tracking-[0.22em] text-[#8A6A3B] font-semibold mb-4">
+        <p className="text-xs tracking-[0.22em] text-[#8A6A3B] font-bold mb-4">
           CONTACT · 無料 · 実名不要 · 完全守秘
         </p>
         <h1 className="text-[2rem] sm:text-[2.6rem] font-bold leading-[1.25] tracking-[-0.01em]">

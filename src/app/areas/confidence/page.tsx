@@ -9,7 +9,7 @@ import { site } from "@/lib/site";
 // 静的ルートのため /areas/[id] の「なぜ起きるのか」テンプレートには乗らない。
 const HEAD: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
-  fontWeight: 800,
+  fontWeight: 700,
   letterSpacing: "0.01em",
   fontFeatureSettings: '"palt" 1',
 };
@@ -48,15 +48,15 @@ export default function ConfidencePage() {
           <p>見た目を整える理由の奥に、たいてい「誰かの前でどうありたいか」がある。</p>
           <p>言葉にしにくい悩み——自信、関係、性のこと。</p>
           <p>
-            ここでは、それも<span className="text-[#F3F0EA] font-medium">回復の一部</span>として、守秘のもとで扱います。
+            ここでは、それも<span className="text-[#F3F0EA] font-normal">回復の一部</span>として、守秘のもとで扱います。
             <br className="hidden sm:block" />
             茶化さず、急かさず。
           </p>
-          <p className="text-[#F3F0EA] font-medium">相談は、守秘のもとで。</p>
+          <p className="text-[#F3F0EA] font-normal">相談は、守秘のもとで。</p>
         </div>
 
         <div className="mt-10">
-          <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#2C3A2E] text-[15px] font-semibold px-7 py-3.5 transition-colors">
+          <ConsultLink className="inline-flex items-center gap-2 rounded-full bg-[#F3F0EA] hover:bg-white text-[#2C3A2E] text-[15px] font-bold px-7 py-3.5 transition-colors">
             無料で相談する <span aria-hidden>→</span>
           </ConsultLink>
         </div>
@@ -67,7 +67,7 @@ export default function ConfidencePage() {
         </p>
 
         <div className="mt-8">
-          <Link href="/#index" className="text-[14.5px] text-[#B9A06B] font-semibold hover:text-[#F3F0EA] transition-colors">
+          <Link href="/#index" className="text-[14.5px] text-[#B9A06B] font-bold hover:text-[#F3F0EA] transition-colors">
             ← Library に戻る
           </Link>
         </div>

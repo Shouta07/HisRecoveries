@@ -83,7 +83,7 @@ export default function TerritoryBrowser({ territories, articles }: Props) {
         >
           <div className="px-6 sm:px-10 lg:px-12 pt-9 sm:pt-12 pb-2">
             <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <h3 className="font-mincho text-2xl sm:text-3xl font-medium leading-[1.45] text-ink">
+              <h3 className="font-mincho text-2xl sm:text-3xl font-normal leading-[1.45] text-ink">
                 {selectedTerritory.title}
               </h3>
               <p className="text-xs text-sub-gray tracking-[0.08em]">

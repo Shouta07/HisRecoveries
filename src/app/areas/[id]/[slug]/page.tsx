@@ -7,6 +7,7 @@ import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
 import { charCount, headingId, readingMinutes, sameSituationArticles } from "@/lib/reading";
 import { formatDate, publishedAt } from "@/lib/articleDates";
 import ShareRow from "@/components/ShareRow";
+import SectionBody from "@/components/SectionBody";
 import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
 
@@ -64,6 +65,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
   const sources = a.sources ?? citationsByComplex[a.areaId] ?? [];
   const minutes = readingMinutes(a);
   const published = publishedAt(a.slug);
+  // 本文中の図。1枚でもあれば schema と OGP に出す（Discover の参加条件）
+  const figures = a.sections.map((x) => x.figure).filter((x): x is NonNullable<typeof x> => Boolean(x));
   const situationBlocks = sameSituationArticles(a);
   const situationSlugs = new Set(situationBlocks.flatMap((b) => b.items.map((x) => x.slug)));
 
@@ -119,6 +122,9 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
       cssSelector: ["#article-title", "#tldr"],
     },
     isPartOf: { "@id": `${site.url}/#website` },
+    ...(figures.length > 0
+      ? { image: figures.map((f) => `${site.url}${f.src}`) }
+      : {}),
     ...(a.kind === "interview" && a.interviewee
       ? { interviewee: { "@type": "Person", name: a.interviewee.name, jobTitle: a.interviewee.role } }
       : {}),
@@ -172,13 +178,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           <h1
             id="article-title"
             className="mt-3 text-[26px] leading-[1.5] sm:text-[34px]"
-            style={{ ...MINCHO, fontWeight: 600 }}
+            style={{ ...MINCHO, fontWeight: 700 }}
           >
             {a.title}
           </h1>
           {a.kind === "interview" && a.interviewee && (
             <p className="mt-4 text-[14px] text-keshizumi">
-              語り手：<span className="font-semibold text-dou">{a.interviewee.name}</span>（{a.interviewee.role}）
+              語り手：<span className="font-bold text-dou">{a.interviewee.name}</span>（{a.interviewee.role}）
               {a.interviewee.link && (
                 <>
                   {" "}
@@ -239,7 +245,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {/* 欲求のブレイクダウン — 「これは自分の話だ」と接続する一行 */}
         {a.desire && DESIRES[a.desire] && (
           <p className="mt-10 text-[14.5px] leading-[2] text-keshizumi">
-            <span className="font-semibold text-sumi">{DESIRES[a.desire].label}</span>
+            <span className="font-bold text-sumi">{DESIRES[a.desire].label}</span>
             <span className="mx-2 text-shironezu" aria-hidden>|</span>
             {DESIRES[a.desire].hook}
           </p>
@@ -249,10 +255,10 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         <div className="mt-12 flex flex-col gap-11">
           {a.sections.map((s, i) => (
             <section key={s.h} id={headingId(i)} className="scroll-mt-20">
-              <h2 className="text-[20px] leading-[1.6] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              <h2 className="text-[20px] leading-[1.6] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
                 {s.h}
               </h2>
-              <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">{s.body}</p>
+              <SectionBody s={s} />
             </section>
           ))}
         </div>
@@ -260,13 +266,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {/* FAQ */}
         {a.faqs.length > 0 && (
           <section className="mt-16">
-            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[19px] sm:text-[21px]" style={{ ...MINCHO, fontWeight: 700 }}>
               よくある質問
             </h2>
             <dl className="mt-6 border-t border-shironezu">
               {a.faqs.map((f) => (
                 <div key={f.q} className="border-b border-shironezu py-5">
-                  <dt className="text-[15px] font-semibold leading-[1.7]">{f.q}</dt>
+                  <dt className="text-[15px] font-bold leading-[1.7]">{f.q}</dt>
                   <dd className="mt-2 text-[14.5px] leading-[1.95] text-keshizumi">{f.a}</dd>
                 </div>
               ))}
@@ -277,7 +283,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         {/* 出典 — 根拠を示すことで、読者にもAI検索にも検証可能にする */}
         {sources.length > 0 && (
           <section className="mt-16">
-            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+            <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
               参考にした情報源
             </h2>
             <ul className="mt-5 space-y-3">
@@ -287,7 +293,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                     href={q.url}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                    className="font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
                   >
                     {q.source}
                     <span aria-hidden> ↗</span>
@@ -317,12 +323,12 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           {situationBlocks.map((b) => (
             <section key={b.situationId} className="mb-14 last:mb-0">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+                <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
                   「{b.situationLabel}」で読まれている記事
                 </h2>
                 <Link
                   href={`/situations/${b.situationId}`}
-                  className="shrink-0 text-[13px] font-semibold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+                  className="shrink-0 text-[13px] font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
                 >
                   一覧
                 </Link>
@@ -337,7 +343,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                       <p className="text-[12.5px] text-ainezu">
                         {complexById(r.areaId)?.ja ?? ""}
                       </p>
-                      <p className="mt-1 text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 600 }}>
+                      <p className="mt-1 text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 700 }}>
                         {r.title}
                       </p>
                     </Link>
@@ -350,7 +356,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           {/* あわせて読む — 同じ分野で深掘りする人向け */}
           {relatedArticles.length > 0 && (
             <section className="mb-14 last:mb-0">
-              <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 600 }}>
+              <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
                 あわせて読む
               </h2>
               <ul className="mt-5 border-t border-shironezu">
@@ -360,7 +366,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                       href={`/areas/${r.areaId}/${r.slug}`}
                       className="group block py-5 transition-colors hover:text-dou"
                     >
-                      <p className="text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 600 }}>
+                      <p className="text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 700 }}>
                         {r.title}
                       </p>
                       <p className="mt-1.5 text-[13.5px] leading-[1.85] text-keshizumi line-clamp-2">
@@ -376,13 +382,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           <p className="flex flex-wrap gap-x-8 gap-y-3 border-t border-shironezu pt-8 text-[14px]">
             <Link
               href={`/areas/${c.id}`}
-              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
             >
               {c.ja}の記事をすべて見る<span aria-hidden> →</span>
             </Link>
             <Link
               href="/#index"
-              className="font-semibold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
             >
               ほかの分野からさがす<span aria-hidden> →</span>
             </Link>
@@ -391,7 +397,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           {/* サービス — 押さない。読んで進む人のほうが多い前提で置く */}
           <p className="mt-10 border-t border-shironezu pt-8 text-[13.5px] leading-[1.95] text-ainezu">
             記事はすべて無料で公開しています。一人だと止まってしまう場合だけ、
-            <Link href="/plan" className="mx-1 font-semibold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou">
+            <Link href="/plan" className="mx-1 font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou">
               第一印象改善プラン
             </Link>
             をご覧ください。東京都内・土日のみ。

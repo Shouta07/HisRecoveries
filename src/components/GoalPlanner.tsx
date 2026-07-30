@@ -148,7 +148,7 @@ export default function GoalPlanner() {
                       <p className="mt-1.5 text-[13.5px] text-[#45443E] leading-[1.8]">
                         {g.outcome}
                       </p>
-                      <span className="mt-2.5 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#8A6A3B]">
+                      <span className="mt-2.5 inline-flex items-center gap-1 text-[13.5px] font-bold text-[#8A6A3B]">
                         {g.defaultDays}日プランを作る{" "}
                         <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
                           →
@@ -180,7 +180,7 @@ export default function GoalPlanner() {
                       key={d}
                       type="button"
                       onClick={() => chooseDays(d)}
-                      className={`rounded-full px-3.5 py-1.5 text-[14px] font-semibold transition-colors ${
+                      className={`rounded-full px-3.5 py-1.5 text-[14px] font-bold transition-colors ${
                         d === days
                           ? "bg-[#2C3A2E] text-[#F3F0EA]"
                           : "bg-[#FAF8F4] text-[#45443E] hover:bg-[#EDE9E0]"
@@ -226,7 +226,7 @@ export default function GoalPlanner() {
                     <p className="mt-1 text-[13.5px] text-[#CBCEC4] leading-[1.8]">{nextStep.why}</p>
                     <Link
                       href={`/areas/${nextStep.areaId}/${nextStep.slug}`}
-                      className="mt-2.5 inline-flex items-center gap-1 text-[14px] font-semibold text-[#B9A06B] hover:text-[#F3F0EA] transition-colors"
+                      className="mt-2.5 inline-flex items-center gap-1 text-[14px] font-bold text-[#B9A06B] hover:text-[#F3F0EA] transition-colors"
                     >
                       やり方を読む <span aria-hidden>→</span>
                     </Link>
@@ -298,7 +298,7 @@ export default function GoalPlanner() {
                           <p className="mt-0.5 text-[13.5px] text-[#45443E] leading-[1.8]">{s.why}</p>
                           <Link
                             href={`/areas/${s.areaId}/${s.slug}`}
-                            className="mt-1 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#8A6A3B] hover:opacity-70 transition-opacity"
+                            className="mt-1 inline-flex items-center gap-1 text-[13.5px] font-bold text-[#8A6A3B] hover:opacity-70 transition-opacity"
                           >
                             やり方を読む <span aria-hidden>→</span>
                           </Link>
@@ -316,7 +316,7 @@ export default function GoalPlanner() {
                   </p>
                   <ConsultLink
                     market={goal.id}
-                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#8A6A3B] text-[#1F1E1B] text-[14.5px] font-semibold px-6 py-2.5 transition-colors"
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#1F1E1B]/20 hover:border-[#8A6A3B] text-[#1F1E1B] text-[14.5px] font-bold px-6 py-2.5 transition-colors"
                   >
                     このプランを、一緒に詰める <span aria-hidden>→</span>
                   </ConsultLink>

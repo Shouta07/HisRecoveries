@@ -89,7 +89,7 @@ export default function PartnerForm() {
 
   const field =
     "w-full rounded-2xl border border-[#1F1E1B]/15 bg-white px-4 py-3 text-[15px] text-[#1F1E1B] outline-none focus:border-[#8A6A3B] transition-colors";
-  const label = "block text-[14.5px] font-semibold text-[#1F1E1B] mb-2";
+  const label = "block text-[14.5px] font-bold text-[#1F1E1B] mb-2";
 
   if (status === "success") {
     return (
@@ -149,7 +149,7 @@ export default function PartnerForm() {
       <button
         type="submit"
         disabled={!canSubmit}
-        className="w-full rounded-full text-white text-[15px] font-semibold px-7 py-4 transition-colors disabled:cursor-not-allowed"
+        className="w-full rounded-full text-white text-[15px] font-bold px-7 py-4 transition-colors disabled:cursor-not-allowed"
         style={{ backgroundColor: canSubmit ? "#1F1E1B" : "#5E6A70" }}
       >
         {status === "submitting" ? "送信中…" : "送る"}
