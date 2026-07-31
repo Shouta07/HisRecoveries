@@ -243,6 +243,28 @@
         "source_type": "content_source",
         "product": null
       }
+    },
+    {
+      "id": "20260731132250415491",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-07-31T13:22:50.415509",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "会議の前、トイレの鏡でつい自分の顔を確認してしまう。\n直すわけでもないのに、見ずにいられない。\nあれ、なんなんだろうな。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-face-tired",
+        "hypothesis_name": "引用リソース src-face-tired",
+        "topic_slug": "src-face-tired",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
