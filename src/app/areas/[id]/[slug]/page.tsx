@@ -316,6 +316,24 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </section>
         )}
 
+        {/* この記事が答えていないこと。出典の前に置く——
+            読み終えた人が次に迷うのは「で、自分の場合は？」なので、
+            その線をこちらから引いておく。 */}
+        {a.limits && a.limits.length > 0 && (
+          <section className="mt-16 border-l-2 border-ainezu/40 pl-5 sm:pl-6">
+            <h2 className="text-[16px] sm:text-[17px]" style={{ ...MINCHO, fontWeight: 700 }}>
+              この記事が答えていないこと
+            </h2>
+            <ul className="mt-4 space-y-2.5">
+              {a.limits.map((x) => (
+                <li key={x} className="text-[14.5px] leading-[1.95] text-keshizumi">
+                  {x}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <p className="mt-12 text-[13px] leading-[1.95] text-ainezu">
           {a.kind === "guide"
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
