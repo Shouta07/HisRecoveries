@@ -7,6 +7,7 @@ import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
 import { charCount, headingId, readingMinutes, sameSituationArticles } from "@/lib/reading";
 import { formatDate, publishedAt } from "@/lib/articleDates";
 import ShareRow from "@/components/ShareRow";
+import { ReadingProgress, StickyToc } from "@/components/ReadingAids";
 import SectionBody from "@/components/SectionBody";
 import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
@@ -166,7 +167,17 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
-      <article className="mx-auto max-w-reading px-5 sm:px-8 pt-12 sm:pt-16 pb-24">
+      <ReadingProgress />
+
+      {/* xl 以上では、左の余白に追従目次を置く。
+          本文の幅（680px）は変えない——1行の文字数を増やすと読みにくくなる。
+          余っていた場所を、読む助けに使うだけ。 */}
+      <div className="mx-auto xl:grid xl:max-w-[1180px] xl:grid-cols-[240px_minmax(0,680px)] xl:gap-16 xl:px-8">
+        <div className="hidden pt-16 xl:block">
+          <StickyToc items={a.sections.map((x, i) => ({ id: headingId(i), h: x.h }))} />
+        </div>
+
+        <article className="mx-auto max-w-reading px-5 sm:px-8 pt-12 sm:pt-16 pb-24 xl:mx-0 xl:px-0">
         <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
           <Link href="/" className="transition-colors hover:text-dou">ホーム</Link>
           <span className="mx-1.5" aria-hidden>/</span>
@@ -222,7 +233,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
 
         {/* 目次 — 長い記事で迷わせない。検索結果のジャンプリンクにも使われる */}
         {a.sections.length > 2 && (
-          <nav aria-label="目次" className="mt-10 border-y border-shironezu py-6">
+          <nav aria-label="目次" className="mt-10 border-y border-shironezu py-6 xl:hidden">
             <p className="text-[13px] text-ainezu">目次</p>
             <ol className="mt-3 space-y-2">
               {a.sections.map((s, i) => (
@@ -314,7 +325,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         </p>
 
         <ShareRow url={url} title={a.title} />
-      </article>
+        </article>
+      </div>
 
       {/* ══ ここから先は回遊。地を変えて、記事が終わったことを示す ══ */}
       <div className="border-t border-shironezu bg-hakuji">

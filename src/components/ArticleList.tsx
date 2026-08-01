@@ -40,7 +40,7 @@ export default function ArticleList() {
             </Link>
           </div>
 
-          <ul>
+          <ul className="lg:grid lg:grid-cols-2 lg:gap-x-12">
             {g.items.map((a) => (
               <li key={a.slug} className="border-b border-shironezu">
                 <Link
@@ -48,12 +48,12 @@ export default function ArticleList() {
                   className="group block py-7 transition-colors hover:text-dou"
                 >
                   <h4
-                    className="max-w-[30em] text-[17px] leading-[1.7] sm:text-[19px]"
+                    className="text-[17px] leading-[1.7] sm:text-[19px]"
                     style={{ ...MINCHO, fontWeight: 700 }}
                   >
                     {a.title}
                   </h4>
-                  <p className="mt-2.5 max-w-[38em] text-[14px] leading-[1.95] text-keshizumi">
+                  <p className="mt-2.5 text-[14px] leading-[1.95] text-keshizumi">
                     {a.lead}
                   </p>
                 </Link>
