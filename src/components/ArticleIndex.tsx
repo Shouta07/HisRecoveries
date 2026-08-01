@@ -47,7 +47,8 @@ export default function ArticleIndex({
       </header>
 
       {/* ══ 記事一覧 ══ */}
-      <div id="results" className="mx-auto max-w-[1080px] scroll-mt-4 px-5 pt-16 sm:px-8 sm:pt-24 lg:px-12">
+      {/* 固定ナビの下に見出しが潜らないよう、その高さぶん開けてから止める */}
+      <div id="results" className="mx-auto max-w-[1080px] scroll-mt-[76px] px-5 pt-16 sm:px-8 sm:pt-24 lg:px-12 lg:scroll-mt-[110px]">
         <div className="flex items-baseline justify-between gap-4 pb-1">
           <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             記事
@@ -121,7 +122,7 @@ export default function ArticleIndex({
                   </Link>
                 </div>
 
-                <ul>
+                <ul className="lg:grid lg:grid-cols-2 lg:gap-x-12">
                   {g.items.map((a) => (
                     <li key={a.slug} className="border-b border-shironezu">
                       <Link
@@ -129,12 +130,12 @@ export default function ArticleIndex({
                         className="group block py-7 transition-colors hover:text-dou"
                       >
                         <h4
-                          className="max-w-[30em] text-[17px] leading-[1.7] sm:text-[19px]"
+                          className="text-[17px] leading-[1.7] sm:text-[19px]"
                           style={{ ...MINCHO, fontWeight: 700 }}
                         >
                           {a.title}
                         </h4>
-                        <p className="mt-2.5 max-w-[38em] text-[14px] leading-[1.95] text-keshizumi">
+                        <p className="mt-2.5 text-[14px] leading-[1.95] text-keshizumi">
                           {a.lead}
                         </p>
                       </Link>

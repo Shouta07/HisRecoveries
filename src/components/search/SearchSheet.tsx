@@ -6,8 +6,11 @@
 // 1条件1行、縦に4つ。半分の幅に押し込む必要がなくなったので、
 // 「いまの状況をえらぶ」のような省略しない言い方に戻している。
 //
-// 閉じ方は3つ（×・背景をタップ・Esc）。どれかは必ず見つかる。
+// 閉じ方は3つ（閉じる・背景をタップ・Esc）。どれかは必ず見つかる。
 // 「◯本をみる」を押すと閉じて、トップの記事一覧へ送る。
+//
+// スマホは上から降りてくるシート、デスクトップは画面中央のダイアログ。
+// 幅1500pxの画面で上端に貼り付くと、視線の位置から遠すぎる。
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -159,7 +162,7 @@ export default function SearchSheet() {
   };
 
   return (
-    <div className="fixed inset-0 z-[60]">
+    <div className="fixed inset-0 z-[60] sm:grid sm:place-items-center sm:p-6">
       <button
         type="button"
         aria-label="検索を閉じる"
@@ -172,9 +175,9 @@ export default function SearchSheet() {
         role="dialog"
         aria-modal="true"
         aria-label="記事をさがす"
-        className="absolute inset-x-0 top-0 max-h-[100svh] overflow-y-auto border-b border-shironezu bg-kinari"
+        className="absolute inset-x-0 top-0 max-h-[100svh] overflow-y-auto border-b border-shironezu bg-kinari sm:relative sm:inset-auto sm:max-h-[calc(100svh-3rem)] sm:w-full sm:max-w-[520px] sm:rounded-[2px] sm:border sm:shadow-[0_40px_80px_-40px_rgba(31,30,27,0.6)]"
       >
-        <div className="mx-auto max-w-[560px] px-5 py-6 sm:px-8 sm:py-8">
+        <div className="mx-auto max-w-[560px] px-5 py-6 sm:px-7 sm:py-7">
           <div className="flex items-baseline justify-between gap-4">
             <h2 className="text-[18px] sm:text-[20px]" style={{ ...MINCHO, fontWeight: 700 }}>
               記事をさがす
