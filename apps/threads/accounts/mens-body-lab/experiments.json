@@ -3,13 +3,14 @@
     "fan-reversal": 1,
     "mother-shukatsu": 1,
     "fan-record": 1,
-    "b2b-adcost": 1
+    "b2b-adcost": 1,
+    "fan-midnight": 1
   },
   "cta_post_counts": {
-    "none": 4
+    "none": 5
   },
-  "total_posts": 4,
+  "total_posts": 5,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-07-29T13:29:11.544988"
+  "last_updated": "2026-08-02T02:57:46.320053"
 }
