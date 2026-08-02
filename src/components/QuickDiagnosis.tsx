@@ -64,23 +64,23 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
   const synthesis = picked.length >= 2 ? synthParts.join("、") + "。" : null;
 
   return (
-    <section id="diagnosis" className="relative z-10 scroll-mt-20 bg-[#F3F0EA]">
+    <section id="diagnosis" className="relative z-10 scroll-mt-20 bg-[#F1F3F3]">
       <div className="max-w-[880px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-4">
-        <div className="rounded-[1.6rem] bg-white border border-[#1F1E1B]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
+        <div className="rounded-[1.6rem] bg-white border border-[#1B2024]/10 shadow-[0_24px_60px_-40px_rgba(20,32,26,0.55)] overflow-hidden">
           {/* ヘッダー */}
-          <div className="bg-[#2C3A2E] text-[#F3F0EA] px-6 sm:px-9 py-6 sm:py-7">
-            <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#B9A06B]">30秒・無料・匿名</div>
-            <h2 className="mt-2.5 text-[1.35rem] sm:text-[1.7rem] font-[800] leading-[1.4] text-[#F3F0EA]" style={HEAD}>
-              何から整える？ <span className="text-[#B9A06B]">順番と、読みものを。</span>
+          <div className="bg-[#2E4A66] text-[#F1F3F3] px-6 sm:px-9 py-6 sm:py-7">
+            <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-[#70B0B0]">30秒・無料・匿名</div>
+            <h2 className="mt-2.5 text-[1.35rem] sm:text-[1.7rem] font-[800] leading-[1.4] text-[#F1F3F3]" style={HEAD}>
+              何から整える？ <span className="text-[#70B0B0]">順番と、読みものを。</span>
             </h2>
-            <p className="mt-2 text-[14px] sm:text-[15px] text-[#CBCEC4] leading-[1.8]">
+            <p className="mt-2 text-[14px] sm:text-[15px] text-[#C3D3D6] leading-[1.8]">
               気になるものを選ぶだけ。整える順番と、各ステップの記事・進め方のロードマップを、すぐにお見せします。
             </p>
           </div>
 
           {!done ? (
             <div className="px-6 sm:px-9 py-7 sm:py-8">
-              <div className="text-[13.5px] font-bold tracking-[0.08em] text-[#5E6A70] mb-4">気になるものを選ぶ（複数OK）</div>
+              <div className="text-[13.5px] font-bold tracking-[0.08em] text-[#5E6E76] mb-4">気になるものを選ぶ（複数OK）</div>
               <div className="flex flex-wrap gap-2.5">
                 {WORRIES.map((w) => {
                   const on = picked.includes(w.key);
@@ -92,16 +92,16 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
                       aria-pressed={on}
                       className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[14.5px] sm:text-[15px] font-bold transition-colors ${
                         on
-                          ? "bg-[#2C3A2E] border-[#2C3A2E] text-[#F3F0EA]"
-                          : "bg-white border-[#1F1E1B]/15 text-[#45443E] hover:border-[#8A6A3B]/50"
+                          ? "bg-[#2E4A66] border-[#2E4A66] text-[#F1F3F3]"
+                          : "bg-white border-[#1B2024]/15 text-[#414A50] hover:border-[#2F6F79]/50"
                       }`}
                     >
                       <span
                         aria-hidden
-                        className={`grid place-items-center w-4 h-4 rounded-full border ${on ? "border-[#B9A06B] bg-[#B9A06B]" : "border-[#1F1E1B]/25"}`}
+                        className={`grid place-items-center w-4 h-4 rounded-full border ${on ? "border-[#70B0B0] bg-[#70B0B0]" : "border-[#1B2024]/25"}`}
                       >
                         {on && (
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2C3A2E" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2E4A66" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                         )}
                       </span>
                       {w.label}
@@ -115,16 +115,16 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
                 disabled={picked.length === 0}
                 onClick={() => setDone(true)}
                 className="mt-7 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full text-white text-[15.5px] font-bold px-8 py-3.5 transition-colors disabled:cursor-not-allowed"
-                style={{ backgroundColor: picked.length ? "#2C3A2E" : "#5E6A70" }}
+                style={{ backgroundColor: picked.length ? "#2E4A66" : "#5E6E76" }}
               >
                 ロードマップを見る <span aria-hidden>→</span>
               </button>
-              <p className="mt-3 text-[12px] text-[#5E6A70]">※ 登録不要。誰にも知られず、まず知りたいだけでも大丈夫です。</p>
+              <p className="mt-3 text-[12px] text-[#5E6E76]">※ 登録不要。誰にも知られず、まず知りたいだけでも大丈夫です。</p>
             </div>
           ) : (
             <div className="px-6 sm:px-9 py-7 sm:py-8">
-              <div className="flex items-center gap-2 text-[13.5px] font-bold tracking-[0.06em] text-[#8A6A3B] mb-5">
-                <span aria-hidden className="grid place-items-center w-5 h-5 rounded-full bg-[#2C3A2E] text-[#F3F0EA]">
+              <div className="flex items-center gap-2 text-[13.5px] font-bold tracking-[0.06em] text-[#2F6F79] mb-5">
+                <span aria-hidden className="grid place-items-center w-5 h-5 rounded-full bg-[#2E4A66] text-[#F1F3F3]">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                 </span>
                 あなたの、整える順番のロードマップ
@@ -132,36 +132,36 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
 
               {/* 束ね方 — 複数選択を一つの戦略にまとめる一文 */}
               {synthesis && (
-                <div className="mb-5 rounded-[1.1rem] bg-[#2C3A2E] text-[#F3F0EA] px-5 py-4">
-                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#B9A06B] mb-1.5">束ね方</div>
+                <div className="mb-5 rounded-[1.1rem] bg-[#2E4A66] text-[#F1F3F3] px-5 py-4">
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#70B0B0] mb-1.5">束ね方</div>
                   <p className="text-[14.5px] leading-[1.9] font-normal">{synthesis}</p>
                 </div>
               )}
 
-              <ol className="relative border-l-2 border-[#B9A06B]/35 ml-3 space-y-5">
+              <ol className="relative border-l-2 border-[#70B0B0]/35 ml-3 space-y-5">
                 {roadmap.map((w, i) => {
                   const arts = (articles[w.area] ?? []).slice(0, 3);
                   return (
                     <li key={w.key} className="relative pl-6">
-                      <span aria-hidden className="absolute -left-[12px] top-0 grid place-items-center w-6 h-6 rounded-full bg-[#2C3A2E] text-[#F3F0EA] text-[12px] font-bold font-mono">{i + 1}</span>
-                      <div className="rounded-[1.1rem] border border-[#1F1E1B]/10 bg-[#FAF8F4] overflow-hidden">
+                      <span aria-hidden className="absolute -left-[12px] top-0 grid place-items-center w-6 h-6 rounded-full bg-[#2E4A66] text-[#F1F3F3] text-[12px] font-bold font-mono">{i + 1}</span>
+                      <div className="rounded-[1.1rem] border border-[#1B2024]/10 bg-[#FAFBFB] overflow-hidden">
                         {/* ステップの見出し＋やること */}
-                        <div className="px-4 py-3.5 border-b border-[#1F1E1B]/8">
+                        <div className="px-4 py-3.5 border-b border-[#1B2024]/8">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[15.5px] font-bold text-[#1F1E1B]" style={HEAD}>{w.label}</span>
-                            <Link href={`/areas/${w.area}`} className="text-[12px] font-bold text-[#8A6A3B] hover:opacity-70 shrink-0 transition-opacity">領域を見る →</Link>
+                            <span className="text-[15.5px] font-bold text-[#1B2024]" style={HEAD}>{w.label}</span>
+                            <Link href={`/areas/${w.area}`} className="text-[12px] font-bold text-[#2F6F79] hover:opacity-70 shrink-0 transition-opacity">領域を見る →</Link>
                           </div>
-                          <p className="mt-1 text-[13.5px] font-bold text-[#8A6A3B] leading-[1.7]">{w.action}</p>
-                          <p className="mt-0.5 text-[12px] text-[#5E6A70] leading-[1.6]">{w.why}</p>
+                          <p className="mt-1 text-[13.5px] font-bold text-[#2F6F79] leading-[1.7]">{w.action}</p>
+                          <p className="mt-0.5 text-[12px] text-[#5E6E76] leading-[1.6]">{w.why}</p>
                         </div>
                         {/* そのステップの読みもの */}
                         {arts.length > 0 && (
-                          <ul className="divide-y divide-[#1F1E1B]/8 bg-white">
+                          <ul className="divide-y divide-[#1B2024]/8 bg-white">
                             {arts.map((a) => (
                               <li key={a.slug}>
-                                <Link href={`/areas/${w.area}/${a.slug}`} className="group flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-[#FAF8F4] transition-colors">
-                                  <span className="text-[14px] text-[#45443E] group-hover:text-[#2C3A2E] leading-[1.5] transition-colors">{a.title}</span>
-                                  <span aria-hidden className="text-[#B9A06B] shrink-0 text-[13.5px] group-hover:translate-x-0.5 transition-transform">読む →</span>
+                                <Link href={`/areas/${w.area}/${a.slug}`} className="group flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-[#FAFBFB] transition-colors">
+                                  <span className="text-[14px] text-[#414A50] group-hover:text-[#2E4A66] leading-[1.5] transition-colors">{a.title}</span>
+                                  <span aria-hidden className="text-[#70B0B0] shrink-0 text-[13.5px] group-hover:translate-x-0.5 transition-transform">読む →</span>
                                 </Link>
                               </li>
                             ))}
@@ -174,19 +174,19 @@ export default function QuickDiagnosis({ articles }: { articles: Record<string, 
               </ol>
 
               {/* 接続＝パーソナライズへ */}
-              <div className="mt-6 rounded-[1.2rem] bg-[#EDE9E0] border border-[#B9A06B]/30 p-5">
-                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#8A6A3B] mb-2">このあと</div>
-                <p className="text-[14px] text-[#45443E] leading-[1.9]">
-                  これは、よくある順路の<span className="font-bold text-[#2C3A2E]">下書き</span>です。
-                  無料相談で、あなたの現在地に合わせて<span className="font-bold text-[#2C3A2E]">専用のロードマップに設計し直し</span>、
+              <div className="mt-6 rounded-[1.2rem] bg-[#E2EAEA] border border-[#70B0B0]/30 p-5">
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#2F6F79] mb-2">このあと</div>
+                <p className="text-[14px] text-[#414A50] leading-[1.9]">
+                  これは、よくある順路の<span className="font-bold text-[#2E4A66]">下書き</span>です。
+                  無料相談で、あなたの現在地に合わせて<span className="font-bold text-[#2E4A66]">専用のロードマップに設計し直し</span>、
                   合うプロ・施設へおつなぎします（体験を経て、さらにパーソナライズ）。売り込みはありません。
                 </p>
-                <ConsultLink className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#2C3A2E] hover:bg-[#22331f] text-[#F3F0EA] text-[15px] font-bold px-7 py-3 transition-colors">
+                <ConsultLink className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#2E4A66] hover:bg-[#24405C] text-[#F1F3F3] text-[15px] font-bold px-7 py-3 transition-colors">
                   この順番で、無料相談する <span aria-hidden>→</span>
                 </ConsultLink>
               </div>
 
-              <button type="button" onClick={() => { setDone(false); setPicked([]); }} className="mt-4 text-[13.5px] font-bold text-[#5E6A70] underline underline-offset-4 hover:text-[#8A6A3B] transition-colors">
+              <button type="button" onClick={() => { setDone(false); setPicked([]); }} className="mt-4 text-[13.5px] font-bold text-[#5E6E76] underline underline-offset-4 hover:text-[#2F6F79] transition-colors">
                 選び直す
               </button>
             </div>

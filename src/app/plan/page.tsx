@@ -172,18 +172,18 @@ export default function PlanPage() {
   };
 
   return (
-    <div className="bg-kinari text-sumi">
+    <div className="bg-shironeri text-sumi">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
       <div className="mx-auto max-w-[860px] px-5 sm:px-8 pt-12 sm:pt-16 pb-24">
         <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
-          <Link href="/" className="transition-colors hover:text-dou">ホーム</Link>
+          <Link href="/" className="transition-colors hover:text-asagi">ホーム</Link>
         </nav>
 
         <header className="mt-7">
-          <p className="text-[13px] text-dou">個人向けサービス</p>
+          <p className="text-[13px] text-asagi">個人向けサービス</p>
           <h1 className="mt-3 max-w-[16em] text-[28px] leading-[1.45] sm:text-[38px]" style={{ ...MINCHO, fontWeight: 700 }}>
             {PLAN.name}（{PLAN.days}日）
           </h1>
@@ -323,7 +323,7 @@ export default function PlanPage() {
           </p>
           <div className="mt-8 grid gap-10 sm:grid-cols-2">
             <div>
-              <p className="text-[13px] text-dou">費用が変わる要素</p>
+              <p className="text-[13px] text-asagi">費用が変わる要素</p>
               <ul className="mt-4 border-t border-shironezu">
                 {COST_FACTORS.map((x) => (
                   <li key={x} className="border-b border-shironezu py-3.5 text-[14px] leading-[1.85] text-keshizumi">
@@ -333,7 +333,7 @@ export default function PlanPage() {
               </ul>
             </div>
             <div>
-              <p className="text-[13px] text-dou">ご本人の実費負担</p>
+              <p className="text-[13px] text-asagi">ご本人の実費負担</p>
               <ul className="mt-4 border-t border-shironezu">
                 {OUT_OF_POCKET.map((x) => (
                   <li key={x} className="border-b border-shironezu py-3.5 text-[14px] leading-[1.85] text-keshizumi">
@@ -396,7 +396,7 @@ export default function PlanPage() {
           <p className="mt-7">
             <Link
               href="/reserve"
-              className="inline-flex items-baseline gap-2 text-[15px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="inline-flex items-baseline gap-2 text-[15px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               無料で相談する
               <span aria-hidden>→</span>
@@ -412,7 +412,7 @@ export default function PlanPage() {
           <div className="mt-9 flex flex-col gap-12">
             {FAQ_CATEGORIES.map((cat) => (
               <div key={cat.id}>
-                <h3 className="text-[13px] text-dou">{cat.label}</h3>
+                <h3 className="text-[13px] text-asagi">{cat.label}</h3>
                 <dl className="mt-4 border-t border-shironezu">
                   {cat.items.map((f) => (
                     <div key={f.q} className="border-b border-shironezu py-5">
@@ -434,13 +434,13 @@ export default function PlanPage() {
         <p className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-shironezu pt-8 text-[14px]">
           <Link
             href="/#index"
-            className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
           >
             記事をさがす<span aria-hidden> →</span>
           </Link>
           <Link
             href="/reserve"
-            className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+            className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
           >
             無料で相談する<span aria-hidden> →</span>
           </Link>

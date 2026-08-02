@@ -39,14 +39,14 @@ export default async function Image({ params }: { params: { id: string; slug: st
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#F3F0EA",
+          background: "#F1F3F3",
           padding: "72px 80px",
           fontFamily: "Noto",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <div style={{ width: 44, height: 3, background: "#8A6A3B", display: "flex" }} />
-          <div style={{ fontSize: 26, color: "#8A6A3B", display: "flex" }}>{area}</div>
+          <div style={{ width: 44, height: 3, background: "#2F6F79", display: "flex" }} />
+          <div style={{ fontSize: 26, color: "#2F6F79", display: "flex" }}>{area}</div>
         </div>
 
         <div
@@ -54,7 +54,7 @@ export default async function Image({ params }: { params: { id: string; slug: st
             display: "flex",
             fontSize,
             lineHeight: 1.42,
-            color: "#1F1E1B",
+            color: "#1B2024",
             letterSpacing: "0.01em",
             maxWidth: 1000,
           }}
@@ -67,15 +67,15 @@ export default async function Image({ params }: { params: { id: string; slug: st
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            borderTop: "1px solid #DAD6CD",
+            borderTop: "1px solid #D6DCDC",
             paddingTop: 28,
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <div style={{ fontSize: 32, color: "#1F1E1B", display: "flex" }}>His Recoveries</div>
-            <div style={{ fontSize: 20, color: "#5E6A70", display: "flex" }}>男性ウェルネスメディア</div>
+            <div style={{ fontSize: 32, color: "#1B2024", display: "flex" }}>His Recoveries</div>
+            <div style={{ fontSize: 20, color: "#5E6E76", display: "flex" }}>男性ウェルネスメディア</div>
           </div>
-          <div style={{ fontSize: 20, color: "#5E6A70", display: "flex" }}>hisrecoveries.com</div>
+          <div style={{ fontSize: 20, color: "#5E6E76", display: "flex" }}>hisrecoveries.com</div>
         </div>
       </div>
     ),

@@ -25,7 +25,7 @@ export default function ShareRow({ url, title }: { url: string; title: string })
   };
 
   const base =
-    "inline-flex items-center gap-2 rounded-[2px] border border-shironezu bg-hakuji px-4 py-2.5 text-[13.5px] text-keshizumi transition-colors hover:border-dou hover:text-dou";
+    "inline-flex items-center gap-2 rounded-[2px] border border-shironezu bg-hakuji px-4 py-2.5 text-[13.5px] text-keshizumi transition-colors hover:border-asagi hover:text-asagi";
 
   return (
     <div className="mt-12 border-t border-shironezu pt-7">

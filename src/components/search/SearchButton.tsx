@@ -7,7 +7,7 @@ import { useSearch } from "./SearchProvider";
 
 export default function SearchButton({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const s = useSearch();
-  const color = tone === "light" ? "text-kinari" : "text-sumi";
+  const color = tone === "light" ? "text-shironeri" : "text-sumi";
 
   return (
     <button

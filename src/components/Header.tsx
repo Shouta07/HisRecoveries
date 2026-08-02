@@ -23,7 +23,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-shironezu bg-hakuji/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-5 py-3.5 sm:px-8 sm:py-4 lg:px-12">
         <Link href="/" aria-label={`${site.name} ホーム`} className="shrink-0 leading-none">
-          <span className="logo-type block text-base font-bold tracking-tight text-sumi transition-colors hover:text-dou sm:text-xl">
+          <span className="logo-type block text-base font-bold tracking-tight text-sumi transition-colors hover:text-asagi sm:text-xl">
             {site.name}
           </span>
           <span className="mt-1.5 block text-[10px] tracking-[0.12em] text-ainezu sm:text-[11px]">
@@ -37,7 +37,7 @@ export default function Header() {
               <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
                 <Link
                   href={l.href}
-                  className="whitespace-nowrap text-[14.5px] font-normal text-keshizumi transition-colors hover:text-dou sm:text-[15px]"
+                  className="whitespace-nowrap text-[14.5px] font-normal text-keshizumi transition-colors hover:text-asagi sm:text-[15px]"
                 >
                   {l.label}
                 </Link>

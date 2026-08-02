@@ -22,19 +22,19 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#F3F0EA",
+          background: "#F1F3F3",
           padding: "72px 80px",
           fontFamily: "Noto",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <div style={{ width: 44, height: 3, background: "#8A6A3B", display: "flex" }} />
-          <div style={{ fontSize: 26, color: "#8A6A3B", display: "flex" }}>{site.tagline}</div>
+          <div style={{ width: 44, height: 3, background: "#2F6F79", display: "flex" }} />
+          <div style={{ fontSize: 26, color: "#2F6F79", display: "flex" }}>{site.tagline}</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          <div style={{ fontSize: 84, color: "#1F1E1B", display: "flex" }}>His Recoveries</div>
-          <div style={{ fontSize: 30, color: "#45443E", display: "flex", lineHeight: 1.6 }}>
+          <div style={{ fontSize: 84, color: "#1B2024", display: "flex" }}>His Recoveries</div>
+          <div style={{ fontSize: 30, color: "#414A50", display: "flex", lineHeight: 1.6 }}>
             髪、肌、眠り、疲れ、体、パートナーとのこと。
           </div>
         </div>
@@ -44,10 +44,10 @@ export default async function Image() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            borderTop: "1px solid #DAD6CD",
+            borderTop: "1px solid #D6DCDC",
             paddingTop: 28,
             fontSize: 20,
-            color: "#5E6A70",
+            color: "#5E6E76",
           }}
         >
           <div style={{ display: "flex" }}>男性の美容・健康・恋愛を、編集部が調べて書いています</div>

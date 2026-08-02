@@ -16,18 +16,21 @@
   --font-noto-sans-jp: var(--font-jp);
   --font-cormorant: var(--font-jp);
 
-  /* Chic dark sophisticated palette — high-end men register */
-  /* 自然素材の色。DESIGN.md「3. カラーパレット」参照 */
-  --cream: #f3f0ea;       /* 生成り（旧称のまま。値だけ差し替え） */
-  --cream-deep: #eae6dc;
-  --paper: #faf8f4;       /* 白磁 */
-  --ink: #1f1e1b;         /* 墨 */
-  --sub-gray: #45443e;    /* 消炭 */
-  --hair-line: #dad6cd;   /* 白鼠 */
-  --navy: #2c3a2e;        /* 紺青 */
-  --navy-deep: #1e2a20;
-  --gold: #8a6a3b;        /* 銅（旧称のまま。値だけ差し替え） */
-  --gold-bright: #b9a06b; /* 淡銅 */
+  /* ロゴ（HRのモノグラム）から取った色。
+     ロゴは 濃紺 #2E4A66 → 浅葱 #70B0B0 のグラデーションと白。
+     以前は生成り・深緑・銅の暖色だったが、ロゴと並ぶと色がぶつかっていた。
+     変数名は参照箇所が多いので旧称のまま。値だけ差し替えている。
+     DESIGN.md「3. カラーパレット」参照。 */
+  --cream: #f1f3f3;       /* 白練 — 地（変数名は旧称のまま。値だけ差し替え） */
+  --cream-deep: #e6eaea;
+  --paper: #fafbfb;       /* 白磁 */
+  --ink: #1b2024;         /* 墨 */
+  --sub-gray: #414a50;    /* 消炭 */
+  --hair-line: #d6dcdc;   /* 白鼠 */
+  --navy: #2e4a66;        /* 紺青 — ロゴの深い側 */
+  --navy-deep: #223a52;
+  --gold: #2f6f79;        /* 浅葱（旧称のまま。値だけ差し替え） */
+  --gold-bright: #70b0b0; /* 淡浅葱 — ロゴの明るい側 */
 }
 
 html,
@@ -166,7 +169,7 @@ a {
 }
 
 .article-body blockquote {
-  border-left: 3px solid #DAD6CD;
+  border-left: 3px solid #D6DCDC;
   background: #faf6f0;
   border-radius: 0.75rem;
   padding: 1em 1.4em;
@@ -498,11 +501,11 @@ html {
    ・緑が"地"、ブラスが"印"。主従を逆にしない。
    ══════════════════════════════════════════════════════════ */
 :root {
-  --hr-brass: #7e5b29;
-  --hr-brass-mid: #b98a3c;
-  --hr-brass-bright: #e0b75f;
-  --hr-brass-wash: #f6e9ce;
-  --hr-ink: #1F1E1B;
+  --hr-brass: #2a626b;
+  --hr-brass-mid: #3f8a94;
+  --hr-brass-bright: #70b0b0;
+  --hr-brass-wash: #dceeee;
+  --hr-ink: #1B2024;
 }
 
 /* ── セクションの目印 ──────────────────────────────
@@ -557,7 +560,7 @@ html {
   );
   padding: 0 0.1em;
   font-weight: 700;
-  color: #F3F0EA;
+  color: #F1F3F3;
 }
 
 /* ── 数字 ────────────────────────────────────────
@@ -587,7 +590,7 @@ html {
   }
 }
 .hr-facts > * {
-  background: #2C3A2E;
+  background: #2E4A66;
   padding: 0.85rem 0.5rem;
   text-align: center;
 }
@@ -725,5 +728,5 @@ html {
 .hr-scrollcue { display: block; width: 1px; height: 46px; }
 .hr-scrollcue::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(243,240,234,0), rgba(243,240,234,0.85));
+  background: linear-gradient(to bottom, rgba(241,243,243,0), rgba(241,243,243,0.85));
 }

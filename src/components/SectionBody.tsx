@@ -22,7 +22,7 @@ export default function SectionBody({ s }: { s: ClusterSection }) {
               key={x}
               className="flex gap-3 border-b border-shironezu py-3 text-[15px] leading-[1.9] text-keshizumi"
             >
-              <span aria-hidden className="mt-[0.7em] h-px w-3 shrink-0 bg-dou" />
+              <span aria-hidden className="mt-[0.7em] h-px w-3 shrink-0 bg-asagi" />
               <span>{x}</span>
             </li>
           ))}
@@ -42,7 +42,7 @@ export default function SectionBody({ s }: { s: ClusterSection }) {
                     <th
                       key={h}
                       scope="col"
-                      className="whitespace-nowrap border-b border-shironezu bg-kinari px-4 py-3 text-left text-[12.5px] font-bold text-ainezu"
+                      className="whitespace-nowrap border-b border-shironezu bg-shironeri px-4 py-3 text-left text-[12.5px] font-bold text-ainezu"
                     >
                       {h}
                     </th>

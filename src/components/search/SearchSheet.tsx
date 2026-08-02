@@ -60,7 +60,7 @@ function Row({
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex h-[54px] w-full items-center justify-between gap-3 px-4 text-left text-[15px] transition-colors hover:bg-kinari/60"
+        className="flex h-[54px] w-full items-center justify-between gap-3 px-4 text-left text-[15px] transition-colors hover:bg-shironeri/60"
       >
         <span className={`truncate ${selected ? "font-bold text-sumi" : "text-ainezu"}`}>
           {selected ? selected.label : placeholder}
@@ -86,7 +86,7 @@ function Row({
                 onChange(null);
                 setOpen(false);
               }}
-              className="block w-full border-b border-shironezu px-4 py-3 text-left text-[13.5px] text-dou hover:bg-kinari"
+              className="block w-full border-b border-shironezu px-4 py-3 text-left text-[13.5px] text-asagi hover:bg-shironeri"
             >
               指定しない
             </button>
@@ -106,14 +106,14 @@ function Row({
                 }}
                 className={`flex w-full items-baseline justify-between gap-3 border-b border-shironezu px-4 py-3 text-left text-[14.5px] transition-colors last:border-b-0 ${
                   on
-                    ? "bg-tokiwa text-kinari"
+                    ? "bg-konjo text-shironeri"
                     : o.count === 0
                       ? "cursor-not-allowed text-ainezu/45"
-                      : "text-keshizumi hover:bg-kinari hover:text-dou"
+                      : "text-keshizumi hover:bg-shironeri hover:text-asagi"
                 }`}
               >
                 <span>{o.label}</span>
-                <span className={`shrink-0 text-[12px] tabular-nums ${on ? "text-kinari/70" : "text-ainezu"}`}>
+                <span className={`shrink-0 text-[12px] tabular-nums ${on ? "text-shironeri/70" : "text-ainezu"}`}>
                   {o.count}
                 </span>
               </button>
@@ -175,7 +175,7 @@ export default function SearchSheet() {
         role="dialog"
         aria-modal="true"
         aria-label="記事をさがす"
-        className="absolute inset-x-0 top-0 max-h-[100svh] overflow-y-auto border-b border-shironezu bg-kinari sm:relative sm:inset-auto sm:max-h-[calc(100svh-3rem)] sm:w-full sm:max-w-[520px] sm:rounded-[2px] sm:border sm:shadow-[0_40px_80px_-40px_rgba(31,30,27,0.6)]"
+        className="absolute inset-x-0 top-0 max-h-[100svh] overflow-y-auto border-b border-shironezu bg-shironeri sm:relative sm:inset-auto sm:max-h-[calc(100svh-3rem)] sm:w-full sm:max-w-[520px] sm:rounded-[2px] sm:border sm:shadow-[0_40px_80px_-40px_rgba(31,30,27,0.6)]"
       >
         <div className="mx-auto max-w-[560px] px-5 py-6 sm:px-7 sm:py-7">
           <div className="flex items-baseline justify-between gap-4">
@@ -185,7 +185,7 @@ export default function SearchSheet() {
             <button
               type="button"
               onClick={() => s.setOpen(false)}
-              className="text-[13px] text-ainezu transition-colors hover:text-dou"
+              className="text-[13px] text-ainezu transition-colors hover:text-asagi"
             >
               閉じる
             </button>
@@ -221,7 +221,7 @@ export default function SearchSheet() {
                 onChange={(e) => s.setQ(e.target.value)}
                 placeholder="言葉でさがす"
                 aria-label="言葉でさがす"
-                className="h-[54px] w-full bg-transparent px-4 text-[16px] text-sumi outline-none placeholder:text-ainezu focus:bg-kinari/60"
+                className="h-[54px] w-full bg-transparent px-4 text-[16px] text-sumi outline-none placeholder:text-ainezu focus:bg-shironeri/60"
               />
             </div>
           </div>
@@ -229,7 +229,7 @@ export default function SearchSheet() {
           <button
             type="button"
             onClick={show}
-            className="mt-4 flex h-[52px] w-full items-center justify-center gap-2 rounded-[2px] bg-tokiwa text-[15px] font-bold text-kinari transition-colors hover:bg-tokiwa/90"
+            className="mt-4 flex h-[52px] w-full items-center justify-center gap-2 rounded-[2px] bg-konjo text-[15px] font-bold text-shironeri transition-colors hover:bg-konjo/90"
           >
             <span>
               <span className="tabular-nums">{s.total}</span>本をみる
@@ -241,7 +241,7 @@ export default function SearchSheet() {
             <button
               type="button"
               onClick={s.clearAll}
-              className="mt-4 text-[13.5px] text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+              className="mt-4 text-[13.5px] text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
             >
               すべて解除
             </button>

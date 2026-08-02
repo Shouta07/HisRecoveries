@@ -161,7 +161,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
   };
 
   return (
-    <div className="bg-kinari text-sumi">
+    <div className="bg-shironeri text-sumi">
       <MarketView market={a.areaId} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
@@ -179,13 +179,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
 
         <article className="mx-auto max-w-reading px-5 sm:px-8 pt-12 sm:pt-16 pb-24 xl:mx-0 xl:px-0">
         <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
-          <Link href="/" className="transition-colors hover:text-dou">ホーム</Link>
+          <Link href="/" className="transition-colors hover:text-asagi">ホーム</Link>
           <span className="mx-1.5" aria-hidden>/</span>
-          <Link href={`/areas/${c.id}`} className="transition-colors hover:text-dou">{c.ja}</Link>
+          <Link href={`/areas/${c.id}`} className="transition-colors hover:text-asagi">{c.ja}</Link>
         </nav>
 
         <header className="mt-7">
-          <p className="text-[13px] text-dou">{kindLabel}</p>
+          <p className="text-[13px] text-asagi">{kindLabel}</p>
           <h1
             id="article-title"
             className="mt-3 text-[26px] leading-[1.5] sm:text-[34px]"
@@ -195,7 +195,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </h1>
           {a.kind === "interview" && a.interviewee && (
             <p className="mt-4 text-[14px] text-keshizumi">
-              語り手：<span className="font-bold text-dou">{a.interviewee.name}</span>（{a.interviewee.role}）
+              語り手：<span className="font-bold text-asagi">{a.interviewee.name}</span>（{a.interviewee.role}）
               {a.interviewee.link && (
                 <>
                   {" "}
@@ -203,7 +203,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                     href={a.interviewee.link}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                    className="underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
                   >
                     活動ページ<span aria-hidden> ↗</span>
                   </a>
@@ -220,8 +220,8 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         </header>
 
         {/* 要点（TL;DR）— 読者にもAI検索にも、最初に結論を渡す */}
-        <div id="tldr" className="mt-10 border-l-2 border-dou pl-5 sm:pl-6">
-          <p className="text-[13px] text-dou">この記事の要点</p>
+        <div id="tldr" className="mt-10 border-l-2 border-asagi pl-5 sm:pl-6">
+          <p className="text-[13px] text-asagi">この記事の要点</p>
           <ul className="mt-3 space-y-2.5">
             {a.summary.map((s, i) => (
               <li key={i} className="text-[15px] leading-[1.95] text-sumi">
@@ -243,7 +243,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                   </span>
                   <a
                     href={`#${headingId(i)}`}
-                    className="text-[14.5px] leading-[1.75] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-dou hover:decoration-dou"
+                    className="text-[14.5px] leading-[1.75] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-asagi hover:decoration-asagi"
                   >
                     {s.h}
                   </a>
@@ -304,7 +304,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                     href={q.url}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                    className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
                   >
                     {q.source}
                     <span aria-hidden> ↗</span>
@@ -358,7 +358,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                 </h2>
                 <Link
                   href={`/situations/${b.situationId}`}
-                  className="shrink-0 text-[13px] font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+                  className="shrink-0 text-[13px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
                 >
                   一覧
                 </Link>
@@ -368,7 +368,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                   <li key={r.slug} className="border-b border-shironezu">
                     <Link
                       href={`/areas/${r.areaId}/${r.slug}`}
-                      className="group block py-5 transition-colors hover:text-dou"
+                      className="group block py-5 transition-colors hover:text-asagi"
                     >
                       <p className="text-[12.5px] text-ainezu">
                         {complexById(r.areaId)?.ja ?? ""}
@@ -394,7 +394,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                   <li key={r.slug} className="border-b border-shironezu">
                     <Link
                       href={`/areas/${r.areaId}/${r.slug}`}
-                      className="group block py-5 transition-colors hover:text-dou"
+                      className="group block py-5 transition-colors hover:text-asagi"
                     >
                       <p className="text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 700 }}>
                         {r.title}
@@ -412,13 +412,13 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           <p className="flex flex-wrap gap-x-8 gap-y-3 border-t border-shironezu pt-8 text-[14px]">
             <Link
               href={`/areas/${c.id}`}
-              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               {c.ja}の記事をすべて見る<span aria-hidden> →</span>
             </Link>
             <Link
               href="/#index"
-              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               ほかの分野からさがす<span aria-hidden> →</span>
             </Link>
@@ -427,7 +427,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           {/* サービス — 押さない。読んで進む人のほうが多い前提で置く */}
           <p className="mt-10 border-t border-shironezu pt-8 text-[13.5px] leading-[1.95] text-ainezu">
             記事はすべて無料で公開しています。一人だと止まってしまう場合だけ、
-            <Link href="/plan" className="mx-1 font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou">
+            <Link href="/plan" className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi">
               第一印象改善プラン
             </Link>
             をご覧ください。東京都内・土日のみ。
