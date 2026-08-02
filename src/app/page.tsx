@@ -83,59 +83,82 @@ export default function HomePage() {
           検索を右上のアイコンに移したので、ここは写真だけ。
           高さ（100svh）は ArticleIndex 側が持つ。ここで渡すのは中身だけ。
 
-          写真は全幅、見出しは縦組みの明朝。参考にした誌面と同じ組み方で、
-          横組みだけの画面とはここで決定的に印象が変わる。 */}
+          ── 見出しを白にした理由 ──────────────────────────
+          墨色の縦組みを写真に直接置いていたが、写真は上が明るい壁、
+          中央が黒い髪、下がテーブルと、縦方向に明暗が変わる。
+          縦書きは縦に長いので、どこかで必ず背景と同じ明るさになり沈む。
+          そこで、右側にだけ縦の暗幕を敷き、その上に生成りの文字を置く。
+          写真全体を暗くしないので、朝の光は残る。
+
+          ── 動き ────────────────────────────────────
+          写真がゆっくり寄り、見出しが上から現れる。
+          静止画に文字が乗っているだけだと、開いた瞬間に何も起きない。
+          prefers-reduced-motion のときは全部止まる（globals.css）。 */}
       <ArticleIndex
         list={<ArticleList />}
         hero={
           <>
-            <Image
-              src="/media/hero/portrait.png"
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-[42%_26%]"
-            />
-            {/* 文字を読ませるための、ごく薄いスクリム。写真を暗くしすぎない */}
+            <div className="hr-kenburns absolute inset-0">
+              <Image
+                src="/media/hero/portrait.png"
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-[42%_26%]"
+              />
+            </div>
+
+            {/* 全体をわずかに締める。写真の明るさは残す */}
             <div
               aria-hidden
               className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(100deg, rgba(30,42,32,0.46) 0%, rgba(30,42,32,0.14) 40%, rgba(243,240,234,0.10) 66%, rgba(243,240,234,0.55) 100%)",
-              }}
+              style={{ background: "linear-gradient(105deg, rgba(24,34,26,0.34) 0%, rgba(24,34,26,0.06) 46%, rgba(24,34,26,0) 72%)" }}
             />
-            {/* 下端だけ、もう一枚。説明文が乗るあたりはテーブルの天板で
-                明るく、横方向のグラデだけだと白文字が飛ぶ。 */}
+            {/* 見出しが乗る右側だけ、しっかり落とす */}
             <div
               aria-hidden
-              className="absolute inset-x-0 bottom-0 h-[42%]"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(24,34,26,0.72) 0%, rgba(24,34,26,0.42) 45%, rgba(24,34,26,0) 100%)",
-              }}
+              className="absolute inset-y-0 right-0 w-[46%] sm:w-[38%]"
+              style={{ background: "linear-gradient(to left, rgba(18,26,20,0.80) 0%, rgba(18,26,20,0.52) 45%, rgba(18,26,20,0) 100%)" }}
+            />
+            {/* 下端。説明文とスクロール表示のために */}
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-[46%]"
+              style={{ background: "linear-gradient(to top, rgba(18,26,20,0.86) 0%, rgba(18,26,20,0.45) 42%, rgba(18,26,20,0) 100%)" }}
             />
 
-            {/* 縦組みの見出し。
-                天は固定値で開ける（ナビの下に潜らせない）。
-                文字サイズは画面の高さに追従させる。低い端末でも、
-                下の説明文とぶつからないところで頭打ちにする。 */}
+            {/* 縦組みの見出し。1文字ずつ降りてくる。
+                天はナビの下に潜らせない固定値。 */}
             <h1
-              className="hr-tate absolute right-4 top-[74px] text-[clamp(24px,5svh,40px)] text-sumi sm:right-10 sm:top-[13%] sm:text-[42px] lg:right-12 lg:text-[52px]"
-              style={{ ...MINCHO, fontWeight: 700 }}
+              className="hr-tate hr-wipe absolute right-5 top-[72px] text-[clamp(26px,5.4svh,46px)] text-kinari sm:right-12 sm:top-[13%] sm:text-[50px] lg:right-16 lg:text-[60px]"
+              style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 24px rgba(12,18,14,0.45)" }}
             >
               もっといい自分は、
               <br />
               つくれる。
             </h1>
 
-            {/* 説明。写真の下部、明るい側に置く。縦組みの列に食い込まないよう幅を切る */}
-            <p className="absolute bottom-8 left-4 max-w-[calc(100%-5rem)] text-[14px] leading-[1.95] text-kinari sm:bottom-12 sm:left-10 sm:max-w-[30em] sm:text-[15.5px] sm:leading-[2.1]">
-              髪、肌、眠り、疲れ、体、パートナーとのこと。
-              <br />
-              <span className="font-bold">実体験と、専門家への取材をもとに。</span>
-            </p>
+            {/* 説明。見出しのあとに続けて出す */}
+            <div className="absolute bottom-[72px] left-5 max-w-[calc(100%-5.5rem)] sm:bottom-[96px] sm:left-12 sm:max-w-[32em]">
+              <p
+                className="hr-rise text-[15px] leading-[1.95] text-kinari sm:text-[17px] sm:leading-[2]"
+                style={{ ["--d" as string]: "760ms" }}
+              >
+                髪、肌、眠り、疲れ、体、パートナーとのこと。
+                <br />
+                <span className="font-bold">実体験と、専門家への取材をもとに。</span>
+              </p>
+            </div>
+
+            {/* スクロールしてよい、と分かるようにする */}
+            <div
+              className="hr-rise absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-8"
+              style={{ ["--d" as string]: "1100ms" }}
+            >
+              <span className="text-[10px] tracking-[0.18em] text-kinari/70">記事</span>
+              <span aria-hidden className="hr-scrollcue" />
+            </div>
           </>
         }
       />

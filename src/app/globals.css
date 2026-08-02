@@ -650,10 +650,78 @@ html {
 .hr-tate {
   writing-mode: vertical-rl;
   text-orientation: upright;
-  font-feature-settings: "palt" 0, "vpal" 1;
+  /* 縦組みの字形・字送りを明示的に要求する。
+     日本語フォントに縦組みメトリクスが無いと、一部の漢字の送り幅が
+     0 になって文字が重なることがある（縦組みメトリクスを持たない
+     フォントしか無い環境で実測）。iOS のヒラギノ角ゴ、Windows の游ゴシック、
+     Android の Noto Sans CJK はいずれも持っているので実機では起きないが、
+     vert / vkrn を明示しておくほうが安全側に倒せる。 */
+  font-feature-settings: "palt" 0, "vpal" 1, "vert" 1, "vkrn" 1;
   line-height: 1.5;
   letter-spacing: 0.08em;
 }
 @media (max-width: 639px) {
   .hr-tate { line-height: 1.45; letter-spacing: 0.05em; }
+}
+
+/* ═══ ファーストビューの動き ═══════════════════════════════════
+   静止画に文字が乗っているだけだと、開いた瞬間に何も起きない。
+   起きることが1つあるだけで、画面は見られる。
+
+   初期状態は「見えている」にしておき、動きは
+   prefers-reduced-motion: no-preference のときだけ足す。
+   アニメーションが走らない環境でも中身は必ず読める。 */
+@media (prefers-reduced-motion: no-preference) {
+  /* 写真をゆっくり寄せる。20秒かけて8%。速いと酔うので、
+     「気づかないが、止まってもいない」速度に置く。 */
+  .hr-kenburns {
+    animation: hr-kenburns 24s cubic-bezier(0.33, 0, 0.67, 1) forwards;
+  }
+  @keyframes hr-kenburns {
+    from { transform: scale(1); }
+    to   { transform: scale(1.08); }
+  }
+
+  /* 縦組みの見出しを、上から下へ現す。
+     1文字ずつ span で包む方法は使えない。writing-mode: vertical-rl と
+     text-orientation: upright の中では、span（inline / inline-block とも）の
+     配置が壊れて文字が同じ位置に重なる。実測で確認済み。
+     クリップで削り出せば、組みには一切触れずに同じ見え方が作れる。 */
+  .hr-wipe {
+    animation: hr-wipe 1.3s cubic-bezier(0.33, 0, 0.15, 1) both;
+    animation-delay: 150ms;
+  }
+  @keyframes hr-wipe {
+    from { clip-path: inset(0 0 100% 0); opacity: 0.2; }
+    30%  { opacity: 1; }
+    to   { clip-path: inset(0 0 0 0); opacity: 1; }
+  }
+
+  /* 見出しのあとに続くもの */
+  .hr-rise {
+    animation: hr-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes hr-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* スクロールを促す縦線。伸びて、消えて、また伸びる。 */
+  .hr-scrollcue::after {
+    animation: hr-scrollcue 2.4s ease-in-out infinite;
+  }
+  @keyframes hr-scrollcue {
+    0%        { transform: scaleY(0); transform-origin: top; opacity: 0; }
+    30%       { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    70%       { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+    100%      { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  }
+}
+
+/* 縦線そのもの（動きの有無に関わらず存在する） */
+.hr-scrollcue { position: relative; display: block; width: 1px; height: 46px; }
+.hr-scrollcue::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(243,240,234,0), rgba(243,240,234,0.85));
 }
