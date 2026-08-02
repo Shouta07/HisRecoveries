@@ -682,18 +682,16 @@ html {
     to   { transform: scale(1.08); }
   }
 
-  /* 縦組みの見出しを、上から下へ現す。
-     1文字ずつ span で包む方法は使えない。writing-mode: vertical-rl と
-     text-orientation: upright の中では、span（inline / inline-block とも）の
-     配置が壊れて文字が同じ位置に重なる。実測で確認済み。
-     クリップで削り出せば、組みには一切触れずに同じ見え方が作れる。 */
+  /* 見出しを左から現す。横組みの読み順と同じ向き。
+     1文字ずつ span で包む方法は使わない。組みに手を入れずに
+     同じ見え方が作れるうえ、文字数が変わっても壊れない。 */
   .hr-wipe {
-    animation: hr-wipe 1.3s cubic-bezier(0.33, 0, 0.15, 1) both;
+    animation: hr-wipe 1.15s cubic-bezier(0.33, 0, 0.15, 1) both;
     animation-delay: 150ms;
   }
   @keyframes hr-wipe {
-    from { clip-path: inset(0 0 100% 0); opacity: 0.2; }
-    30%  { opacity: 1; }
+    from { clip-path: inset(0 100% 0 0); opacity: 0.3; }
+    25%  { opacity: 1; }
     to   { clip-path: inset(0 0 0 0); opacity: 1; }
   }
 
@@ -719,8 +717,12 @@ html {
   }
 }
 
-/* 縦線そのもの（動きの有無に関わらず存在する） */
-.hr-scrollcue { position: relative; display: block; width: 1px; height: 46px; }
+/* 縦線そのもの（動きの有無に関わらず存在する）。
+   position はここで指定しない。globals.css は Tailwind のあとに来るので、
+   ここで position: relative を書くと、付け先の absolute を打ち消してしまう
+   （実際それで、右下に置いたはずの線が画面の上端に出ていた）。
+   置き場所は使う側の utility に任せる。 */
+.hr-scrollcue { display: block; width: 1px; height: 46px; }
 .hr-scrollcue::after {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(to bottom, rgba(243,240,234,0), rgba(243,240,234,0.85));
