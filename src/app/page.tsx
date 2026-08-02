@@ -83,16 +83,20 @@ export default function HomePage() {
           検索を右上のアイコンに移したので、ここは写真だけ。
           高さ（100svh）は ArticleIndex 側が持つ。ここで渡すのは中身だけ。
 
-          ── 見出しを白にした理由 ──────────────────────────
-          墨色の縦組みを写真に直接置いていたが、写真は上が明るい壁、
-          中央が黒い髪、下がテーブルと、縦方向に明暗が変わる。
-          縦書きは縦に長いので、どこかで必ず背景と同じ明るさになり沈む。
-          そこで、右側にだけ縦の暗幕を敷き、その上に生成りの文字を置く。
-          写真全体を暗くしないので、朝の光は残る。
+          ── 縦組みをやめた ─────────────────────────────
+          縦書きの見出しは、実機で文字が重なった。原因は
+          writing-mode + text-orientation がフォント側の縦組みメトリクスに
+          依存することで、環境によって送り幅が壊れる。こちらの検証環境でも
+          「自」「分」の送り幅が 0 になるのを実測している。
+          直せる保証のない不具合を残すより、横組みにする。
+
+          ── 文字を1箇所にまとめた ────────────────────────
+          以前は右に縦組みの見出し、左下に説明と、離れた2箇所に文字があった。
+          視線が割れるうえ、下端では説明とスクロール表示が重なっていた。
+          左下に、見出し → 説明 の順で1つの塊にする。
 
           ── 動き ────────────────────────────────────
-          写真がゆっくり寄り、見出しが上から現れる。
-          静止画に文字が乗っているだけだと、開いた瞬間に何も起きない。
+          写真がゆっくり寄り、見出しが左から現れる。
           prefers-reduced-motion のときは全部止まる（globals.css）。 */}
       <ArticleIndex
         list={<ArticleList />}
@@ -105,60 +109,58 @@ export default function HomePage() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover object-[42%_26%]"
+                className="object-cover object-[46%_24%]"
               />
             </div>
 
-            {/* 全体をわずかに締める。写真の明るさは残す */}
+            {/* 文字が乗る下half を落とす。写真の上半分（顔と光）は残す */}
             <div
               aria-hidden
-              className="absolute inset-0"
-              style={{ background: "linear-gradient(105deg, rgba(24,34,26,0.34) 0%, rgba(24,34,26,0.06) 46%, rgba(24,34,26,0) 72%)" }}
+              className="absolute inset-x-0 bottom-0 h-[62%]"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(16,23,18,0.92) 0%, rgba(16,23,18,0.78) 28%, rgba(16,23,18,0.42) 60%, rgba(16,23,18,0) 100%)",
+              }}
             />
-            {/* 見出しが乗る右側だけ、しっかり落とす */}
+            {/* 左からも少し。文頭の1〜2文字が明るい所に来ても沈まないように */}
             <div
               aria-hidden
-              className="absolute inset-y-0 right-0 w-[46%] sm:w-[38%]"
-              style={{ background: "linear-gradient(to left, rgba(18,26,20,0.80) 0%, rgba(18,26,20,0.52) 45%, rgba(18,26,20,0) 100%)" }}
-            />
-            {/* 下端。説明文とスクロール表示のために */}
-            <div
-              aria-hidden
-              className="absolute inset-x-0 bottom-0 h-[46%]"
-              style={{ background: "linear-gradient(to top, rgba(18,26,20,0.86) 0%, rgba(18,26,20,0.45) 42%, rgba(18,26,20,0) 100%)" }}
+              className="absolute inset-y-0 left-0 w-[62%]"
+              style={{
+                background:
+                  "linear-gradient(to right, rgba(16,23,18,0.42) 0%, rgba(16,23,18,0.12) 55%, rgba(16,23,18,0) 100%)",
+              }}
             />
 
-            {/* 縦組みの見出し。1文字ずつ降りてくる。
-                天はナビの下に潜らせない固定値。 */}
-            <h1
-              className="hr-tate hr-wipe absolute right-5 top-[72px] text-[clamp(26px,5.4svh,46px)] text-kinari sm:right-12 sm:top-[13%] sm:text-[50px] lg:right-16 lg:text-[60px]"
-              style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 24px rgba(12,18,14,0.45)" }}
-            >
-              もっといい自分は、
-              <br />
-              つくれる。
-            </h1>
+            {/* 見出しと説明を、左下に1つの塊として置く */}
+            <div /* 右端はスクロール線のぶん空ける。文字とぶつからないように */
+              className="absolute bottom-[68px] left-5 right-14 sm:bottom-[84px] sm:left-12 sm:right-24 lg:bottom-[96px] lg:left-16">
+              <h1
+                className="hr-wipe max-w-[15em] text-[clamp(30px,7.2vw,44px)] leading-[1.42] text-kinari sm:text-[52px] lg:text-[64px] lg:leading-[1.34]"
+                style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 28px rgba(10,16,12,0.55)" }}
+              >
+                もっといい自分は、
+                <br />
+                つくれる。
+              </h1>
 
-            {/* 説明。見出しのあとに続けて出す */}
-            <div className="absolute bottom-[72px] left-5 max-w-[calc(100%-5.5rem)] sm:bottom-[96px] sm:left-12 sm:max-w-[32em]">
               <p
-                className="hr-rise text-[15px] leading-[1.95] text-kinari sm:text-[17px] sm:leading-[2]"
+                className="hr-rise mt-6 max-w-[34em] text-[14px] leading-[1.95] text-kinari/90 sm:mt-8 sm:text-[16px] sm:leading-[2]"
                 style={{ ["--d" as string]: "760ms" }}
               >
                 髪、肌、眠り、疲れ、体、パートナーとのこと。
                 <br />
-                <span className="font-bold">実体験と、専門家への取材をもとに。</span>
+                <span className="font-bold text-kinari">実体験と、専門家への取材をもとに。</span>
               </p>
             </div>
 
-            {/* スクロールしてよい、と分かるようにする */}
-            <div
-              className="hr-rise absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-8"
-              style={{ ["--d" as string]: "1100ms" }}
-            >
-              <span className="text-[10px] tracking-[0.18em] text-kinari/70">記事</span>
-              <span aria-hidden className="hr-scrollcue" />
-            </div>
+            {/* スクロールしてよい、と分かるようにする。
+                文字は左下にまとめたので、こちらは右下に置いて重ならないようにする。 */}
+            <span
+              aria-hidden
+              className="hr-rise hr-scrollcue absolute bottom-7 right-6 sm:bottom-9 sm:right-10"
+              style={{ ["--d" as string]: "1000ms" }}
+            />
           </>
         }
       />
