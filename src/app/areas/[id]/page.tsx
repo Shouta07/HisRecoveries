@@ -122,7 +122,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="bg-kinari text-sumi">
+    <div className="bg-shironeri text-sumi">
       <MarketView market={c.id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(listLd) }} />
@@ -131,13 +131,13 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
       <article className="mx-auto max-w-reading px-5 sm:px-8 pt-12 sm:pt-16 pb-20">
         <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
-          <Link href="/" className="transition-colors hover:text-dou">ホーム</Link>
+          <Link href="/" className="transition-colors hover:text-asagi">ホーム</Link>
           <span className="mx-1.5" aria-hidden>/</span>
-          <Link href="/#index" className="transition-colors hover:text-dou">記事をさがす</Link>
+          <Link href="/#index" className="transition-colors hover:text-asagi">記事をさがす</Link>
         </nav>
 
         <header className="mt-7">
-          <p className="text-[13px] text-dou">{c.system}</p>
+          <p className="text-[13px] text-asagi">{c.system}</p>
           <h1
             id="area-title"
             className="mt-3 text-[28px] leading-[1.45] sm:text-[38px]"
@@ -154,8 +154,8 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         </header>
 
         {/* 要点 */}
-        <div id="tldr" className="mt-10 border-l-2 border-dou pl-5 sm:pl-6">
-          <p className="text-[13px] text-dou">この分野の要点</p>
+        <div id="tldr" className="mt-10 border-l-2 border-asagi pl-5 sm:pl-6">
+          <p className="text-[13px] text-asagi">この分野の要点</p>
           <ul className="mt-3 space-y-2.5">
             {area.summary.map((s, i) => (
               <li key={i} className="text-[15px] leading-[1.95] text-sumi">
@@ -177,7 +177,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                   </span>
                   <a
                     href={`#${headingId(i)}`}
-                    className="text-[14.5px] leading-[1.75] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-dou hover:decoration-dou"
+                    className="text-[14.5px] leading-[1.75] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-asagi hover:decoration-asagi"
                   >
                     {s.h}
                   </a>
@@ -233,7 +233,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
               {cites.map((q, i) => (
                 <li key={i}>
                   {q.quote ? (
-                    <blockquote className="border-l-2 border-dou pl-4">
+                    <blockquote className="border-l-2 border-asagi pl-4">
                       <p className="text-[14.5px] leading-[1.95] text-sumi">「{q.quote}」</p>
                       <footer className="mt-2 text-[13px] text-ainezu">
                         — {q.source}
@@ -241,7 +241,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                           href={q.url}
                           target="_blank"
                           rel="noopener noreferrer nofollow"
-                          className="ml-2 font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                          className="ml-2 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
                         >
                           原文<span aria-hidden> ↗</span>
                         </a>
@@ -253,7 +253,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                         href={q.url}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
-                        className="font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+                        className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
                       >
                         {q.source}
                         <span aria-hidden> ↗</span>
@@ -286,7 +286,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
                     href={v.url}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
-                    className="mt-1.5 block text-[15px] font-bold text-dou underline decoration-dou/40 underline-offset-[5px] hover:decoration-dou"
+                    className="mt-1.5 block text-[15px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] hover:decoration-asagi"
                   >
                     {v.title}
                     <span aria-hidden> ↗</span>
@@ -319,7 +319,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
               <li key={r.slug} className="border-b border-shironezu">
                 <Link
                   href={`/areas/${r.areaId}/${r.slug}`}
-                  className="group block py-6 transition-colors hover:text-dou"
+                  className="group block py-6 transition-colors hover:text-asagi"
                 >
                   <p className="text-[12.5px] text-ainezu">
                     {r.kind === "interview"
@@ -347,7 +347,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           <p className="mt-10 text-[14px]">
             <Link
               href="/#index"
-              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               ほかの分野からさがす<span aria-hidden> →</span>
             </Link>

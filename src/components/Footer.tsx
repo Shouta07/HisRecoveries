@@ -27,7 +27,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
             <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
               {areas.map((c) => (
                 <li key={c.id}>
-                  <Link href={`/areas/${c.id}`} className="transition-colors hover:text-dou">
+                  <Link href={`/areas/${c.id}`} className="transition-colors hover:text-asagi">
                     {c.ja}
                   </Link>
                 </li>
@@ -39,7 +39,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
             <ul className="mt-4 space-y-2.5 text-[14px]">
               {SITUATIONS.map((x) => (
                 <li key={x.id}>
-                  <Link href={`/situations/${x.id}`} className="transition-colors hover:text-dou">
+                  <Link href={`/situations/${x.id}`} className="transition-colors hover:text-asagi">
                     {x.label}
                   </Link>
                 </li>
@@ -50,7 +50,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
             <p className="text-[12.5px] text-ainezu">読みもの</p>
             <ul className="mt-4 space-y-2.5 text-[14px]">
               <li>
-                <Link href="/#index" className="transition-colors hover:text-dou">
+                <Link href="/#index" className="transition-colors hover:text-asagi">
                   記事をさがす
                 </Link>
               </li>
@@ -59,13 +59,13 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
                   href="https://substack.com/@hisrecoveries"
                   target="_blank"
                   rel="noreferrer"
-                  className="transition-colors hover:text-dou"
+                  className="transition-colors hover:text-asagi"
                 >
                   ニュースレター（Substack）<span aria-hidden className="text-ainezu"> ↗</span>
                 </a>
               </li>
               <li>
-                <a href="/feed.xml" className="transition-colors hover:text-dou">
+                <a href="/feed.xml" className="transition-colors hover:text-asagi">
                   RSS
                 </a>
               </li>
@@ -75,22 +75,22 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
             <p className="text-[12.5px] text-ainezu">His Recoveries</p>
             <ul className="mt-4 space-y-2.5 text-[14px]">
               <li>
-                <Link href="/#about" className="transition-colors hover:text-dou">
+                <Link href="/#about" className="transition-colors hover:text-asagi">
                   編集方針
                 </Link>
               </li>
               <li>
-                <Link href="/partner" className="transition-colors hover:text-dou">
+                <Link href="/partner" className="transition-colors hover:text-asagi">
                   取材・掲載について
                 </Link>
               </li>
               <li>
-                <Link href="/plan" className="transition-colors hover:text-dou">
+                <Link href="/plan" className="transition-colors hover:text-asagi">
                   第一印象改善プラン
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="transition-colors hover:text-dou">
+                <Link href="/privacy" className="transition-colors hover:text-asagi">
                   プライバシー・免責事項
                 </Link>
               </li>

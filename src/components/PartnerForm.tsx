@@ -88,21 +88,21 @@ export default function PartnerForm() {
   }
 
   const field =
-    "w-full rounded-2xl border border-[#1F1E1B]/15 bg-white px-4 py-3 text-[15px] text-[#1F1E1B] outline-none focus:border-[#8A6A3B] transition-colors";
-  const label = "block text-[14.5px] font-bold text-[#1F1E1B] mb-2";
+    "w-full rounded-2xl border border-[#1B2024]/15 bg-white px-4 py-3 text-[15px] text-[#1B2024] outline-none focus:border-[#2F6F79] transition-colors";
+  const label = "block text-[14.5px] font-bold text-[#1B2024] mb-2";
 
   if (status === "success") {
     return (
-      <div className="rounded-[1.6rem] border border-[#1F1E1B]/12 bg-[#F3F0EA] p-8 sm:p-10 text-center">
-        <div className="mx-auto mb-5 grid place-items-center w-14 h-14 rounded-full bg-[#2C3A2E] text-[#F3F0EA]">
+      <div className="rounded-[1.6rem] border border-[#1B2024]/12 bg-[#F1F3F3] p-8 sm:p-10 text-center">
+        <div className="mx-auto mb-5 grid place-items-center w-14 h-14 rounded-full bg-[#2E4A66] text-[#F1F3F3]">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M20 6L9 17l-5-5" />
           </svg>
         </div>
-        <h2 className="text-[1.4rem] font-bold text-[#1F1E1B] mb-3" style={{ fontFamily: "var(--font-shippori), serif" }}>
+        <h2 className="text-[1.4rem] font-bold text-[#1B2024] mb-3" style={{ fontFamily: "var(--font-shippori), serif" }}>
           ありがとうございます。
         </h2>
-        <p className="text-[15px] text-[#45443E] leading-[1.95] max-w-md mx-auto">
+        <p className="text-[15px] text-[#414A50] leading-[1.95] max-w-md mx-auto">
           いただいた内容を拝見し、数日以内にご連絡します。まずはお話を聞かせてください。
         </p>
       </div>
@@ -112,11 +112,11 @@ export default function PartnerForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className={label} htmlFor="pf-name">お名前・活動名 <span className="text-[#8A6A3B]">*</span></label>
+        <label className={label} htmlFor="pf-name">お名前・活動名 <span className="text-[#2F6F79]">*</span></label>
         <input id="pf-name" className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="活動名でも構いません" required />
       </div>
       <div>
-        <label className={label} htmlFor="pf-contact">ご連絡先（メール等） <span className="text-[#8A6A3B]">*</span></label>
+        <label className={label} htmlFor="pf-contact">ご連絡先（メール等） <span className="text-[#2F6F79]">*</span></label>
         <input id="pf-contact" className={field} value={contact} onChange={(e) => setContact(e.target.value)} placeholder="you@example.com" required />
       </div>
       <div>
@@ -131,8 +131,8 @@ export default function PartnerForm() {
         <div className="space-y-2.5">
           {WAYS.map((w) => (
             <label key={w.key} className="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" checked={ways.includes(w.key)} onChange={() => toggleWay(w.key)} className="mt-0.5 w-5 h-5 accent-[#8A6A3B] shrink-0" />
-              <span className="text-[15px] text-[#45443E] leading-[1.6]">{w.label}</span>
+              <input type="checkbox" checked={ways.includes(w.key)} onChange={() => toggleWay(w.key)} className="mt-0.5 w-5 h-5 accent-[#2F6F79] shrink-0" />
+              <span className="text-[15px] text-[#414A50] leading-[1.6]">{w.label}</span>
             </label>
           ))}
         </div>
@@ -150,7 +150,7 @@ export default function PartnerForm() {
         type="submit"
         disabled={!canSubmit}
         className="w-full rounded-full text-white text-[15px] font-bold px-7 py-4 transition-colors disabled:cursor-not-allowed"
-        style={{ backgroundColor: canSubmit ? "#1F1E1B" : "#5E6A70" }}
+        style={{ backgroundColor: canSubmit ? "#1B2024" : "#5E6E76" }}
       >
         {status === "submitting" ? "送信中…" : "送る"}
       </button>

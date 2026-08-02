@@ -93,19 +93,19 @@ export default function PartnerApplyForm() {
   }
 
   const field =
-    "w-full rounded-2xl border border-[#1F1E1B]/12 bg-white px-4 py-3 text-[15px] text-[#1F1E1B] outline-none focus:border-[#8A6A3B] transition-colors";
-  const label = "block text-[14.5px] font-bold text-[#1F1E1B] mb-2";
+    "w-full rounded-2xl border border-[#1B2024]/12 bg-white px-4 py-3 text-[15px] text-[#1B2024] outline-none focus:border-[#2F6F79] transition-colors";
+  const label = "block text-[14.5px] font-bold text-[#1B2024] mb-2";
 
   if (status === "success") {
     return (
-      <div className="rounded-[1.6rem] border border-[#1F1E1B]/10 bg-white p-8 sm:p-10 text-center">
-        <div className="mx-auto mb-5 grid place-items-center w-14 h-14 rounded-full bg-[#2C3A2E] text-[#F3F0EA]">
+      <div className="rounded-[1.6rem] border border-[#1B2024]/10 bg-white p-8 sm:p-10 text-center">
+        <div className="mx-auto mb-5 grid place-items-center w-14 h-14 rounded-full bg-[#2E4A66] text-[#F1F3F3]">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M20 6L9 17l-5-5" />
           </svg>
         </div>
-        <h2 className="text-[1.4rem] font-bold text-[#1F1E1B] mb-3">受け付けました。</h2>
-        <p className="text-[15px] text-[#45443E] leading-[1.95] max-w-md mx-auto">
+        <h2 className="text-[1.4rem] font-bold text-[#1B2024] mb-3">受け付けました。</h2>
+        <p className="text-[15px] text-[#414A50] leading-[1.95] max-w-md mx-auto">
           エリア・カテゴリの空き状況を確認のうえ、担当より2営業日以内にご連絡します。
         </p>
       </div>
@@ -116,11 +116,11 @@ export default function PartnerApplyForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
-          <label className={label} htmlFor="pa-facility">お名前・屋号・施設名 <span className="text-[#8A6A3B]">*</span></label>
+          <label className={label} htmlFor="pa-facility">お名前・屋号・施設名 <span className="text-[#2F6F79]">*</span></label>
           <input id="pa-facility" className={field} value={facility} onChange={(e) => setFacility(e.target.value)} placeholder="活動名・屋号・施設名でも可" required />
         </div>
         <div>
-          <label className={label} htmlFor="pa-email">メール <span className="text-[#8A6A3B]">*</span></label>
+          <label className={label} htmlFor="pa-email">メール <span className="text-[#2F6F79]">*</span></label>
           <input id="pa-email" type="email" className={field} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.jp" required />
         </div>
       </div>
@@ -161,11 +161,11 @@ export default function PartnerApplyForm() {
         type="submit"
         disabled={!canSubmit}
         className="w-full rounded-full text-white text-[15px] font-bold px-7 py-4 transition-colors disabled:cursor-not-allowed"
-        style={{ backgroundColor: canSubmit ? "#2C3A2E" : "#5E6A70" }}
+        style={{ backgroundColor: canSubmit ? "#2E4A66" : "#5E6E76" }}
       >
         {status === "submitting" ? "送信中…" : "無料で提携を申し込む"}
       </button>
-      <p className="text-[12.5px] text-[#5E6A70] leading-[1.8] text-center">
+      <p className="text-[12.5px] text-[#5E6E76] leading-[1.8] text-center">
         まずは、ご相談から。エリアの空き状況をご案内します。無理な勧誘は一切ありません。
       </p>
       {status === "error" && (

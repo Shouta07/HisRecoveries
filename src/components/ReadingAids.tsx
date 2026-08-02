@@ -43,7 +43,7 @@ export function ReadingProgress() {
       className="fixed left-0 right-0 top-0 z-[55] hidden h-[2px] bg-transparent lg:block"
     >
       <div
-        className="h-full bg-dou transition-[width] duration-150"
+        className="h-full bg-asagi transition-[width] duration-150"
         style={{ width: `${p * 100}%` }}
       />
     </div>
@@ -84,12 +84,12 @@ export function StickyToc({ items }: { items: { id: string; h: string }[] }) {
         {items.map((i, n) => {
           const on = i.id === active;
           return (
-            <li key={i.id} className={`-ml-px border-l-2 pl-4 ${on ? "border-dou" : "border-transparent"}`}>
+            <li key={i.id} className={`-ml-px border-l-2 pl-4 ${on ? "border-asagi" : "border-transparent"}`}>
               <a
                 href={`#${i.id}`}
                 aria-current={on ? "true" : undefined}
                 className={`flex gap-2.5 text-[13px] leading-[1.7] transition-colors ${
-                  on ? "text-sumi" : "text-ainezu hover:text-dou"
+                  on ? "text-sumi" : "text-ainezu hover:text-asagi"
                 }`}
               >
                 <span className="shrink-0 tabular-nums text-[11px] pt-[3px]">

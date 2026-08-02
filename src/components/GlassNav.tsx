@@ -26,7 +26,7 @@ export default function GlassNav() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "bg-[#FAF8F4]/70 backdrop-blur-xl border-b border-[#1F1E1B]/10 shadow-sm"
+          ? "bg-[#FAFBFB]/70 backdrop-blur-xl border-b border-[#1B2024]/10 shadow-sm"
           : "bg-transparent"
       }`}
     >
@@ -35,14 +35,14 @@ export default function GlassNav() {
         <Link href="/" className="shrink-0 leading-none">
           <span
             className={`logo-type block text-base font-bold tracking-tight transition-colors sm:text-xl ${
-              scrolled ? "text-sumi" : "text-kinari"
+              scrolled ? "text-sumi" : "text-shironeri"
             }`}
           >
             His Recoveries
           </span>
           <span
             className={`mt-1.5 block text-[10px] tracking-[0.12em] transition-colors sm:text-[11px] ${
-              scrolled ? "text-ainezu" : "text-kinari/70"
+              scrolled ? "text-ainezu" : "text-shironeri/70"
             }`}
           >
             男性ウェルネスメディア
@@ -56,7 +56,7 @@ export default function GlassNav() {
                 <Link
                   href={l.href}
                   className={`text-[14.5px] sm:text-[15px] font-normal transition-colors whitespace-nowrap ${
-                    scrolled ? "text-keshizumi hover:text-dou" : "text-kinari/85 hover:text-kinari"
+                    scrolled ? "text-keshizumi hover:text-asagi" : "text-shironeri/85 hover:text-shironeri"
                   }`}
                 >
                   {l.label}

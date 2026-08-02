@@ -100,17 +100,17 @@ export default function SituationPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="bg-kinari text-sumi">
+    <div className="bg-shironeri text-sumi">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(listLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
       <div className="mx-auto max-w-[860px] px-5 pb-24 pt-12 sm:px-8 sm:pt-16">
         <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
-          <Link href="/" className="transition-colors hover:text-dou">ホーム</Link>
+          <Link href="/" className="transition-colors hover:text-asagi">ホーム</Link>
         </nav>
 
         <header className="mt-7">
-          <p className="text-[13px] text-dou">いまの状況から</p>
+          <p className="text-[13px] text-asagi">いまの状況から</p>
           <h1 className="mt-3 text-[28px] leading-[1.45] sm:text-[38px]" style={{ ...MINCHO, fontWeight: 700 }}>
             {s.label}
           </h1>
@@ -127,10 +127,10 @@ export default function SituationPage({ params }: { params: { id: string } }) {
               <li key={a.slug} className="border-b border-shironezu">
                 <Link
                   href={`/areas/${a.areaId}/${a.slug}`}
-                  className="group block py-7 transition-colors hover:text-dou"
+                  className="group block py-7 transition-colors hover:text-asagi"
                 >
                   <p className="flex items-baseline gap-3 text-[12.5px] text-ainezu">
-                    <span className="text-dou">{complexById(a.areaId)?.ja ?? ""}</span>
+                    <span className="text-asagi">{complexById(a.areaId)?.ja ?? ""}</span>
                     {d && <span className="tabular-nums">{formatDate(d)}</span>}
                   </p>
                   <h2
@@ -155,7 +155,7 @@ export default function SituationPage({ params }: { params: { id: string } }) {
               <li key={o.id}>
                 <Link
                   href={`/situations/${o.id}`}
-                  className="text-[14px] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-dou hover:decoration-dou"
+                  className="text-[14px] text-keshizumi underline decoration-shironezu underline-offset-[5px] transition-colors hover:text-asagi hover:decoration-asagi"
                 >
                   {o.label}
                 </Link>
@@ -165,7 +165,7 @@ export default function SituationPage({ params }: { params: { id: string } }) {
           <p className="mt-8 text-[14px]">
             <Link
               href="/#index"
-              className="font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               年代・分野からもさがす<span aria-hidden> →</span>
             </Link>

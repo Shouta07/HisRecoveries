@@ -72,7 +72,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="bg-kinari text-sumi">
+    <div className="bg-shironeri text-sumi">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
@@ -119,7 +119,7 @@ export default function HomePage() {
               className="absolute inset-x-0 bottom-0 h-[62%]"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(16,23,18,0.92) 0%, rgba(16,23,18,0.78) 28%, rgba(16,23,18,0.42) 60%, rgba(16,23,18,0) 100%)",
+                  "linear-gradient(to top, rgba(17,27,38,0.92) 0%, rgba(17,27,38,0.78) 28%, rgba(17,27,38,0.42) 60%, rgba(17,27,38,0) 100%)",
               }}
             />
             {/* 左からも少し。文頭の1〜2文字が明るい所に来ても沈まないように */}
@@ -128,7 +128,7 @@ export default function HomePage() {
               className="absolute inset-y-0 left-0 w-[62%]"
               style={{
                 background:
-                  "linear-gradient(to right, rgba(16,23,18,0.42) 0%, rgba(16,23,18,0.12) 55%, rgba(16,23,18,0) 100%)",
+                  "linear-gradient(to right, rgba(17,27,38,0.42) 0%, rgba(17,27,38,0.12) 55%, rgba(17,27,38,0) 100%)",
               }}
             />
 
@@ -136,8 +136,8 @@ export default function HomePage() {
             <div /* 右端はスクロール線のぶん空ける。文字とぶつからないように */
               className="absolute bottom-[68px] left-5 right-14 sm:bottom-[84px] sm:left-12 sm:right-24 lg:bottom-[96px] lg:left-16">
               <h1
-                className="hr-wipe max-w-[15em] text-[clamp(30px,7.2vw,44px)] leading-[1.42] text-kinari sm:text-[52px] lg:text-[64px] lg:leading-[1.34]"
-                style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 28px rgba(10,16,12,0.55)" }}
+                className="hr-wipe max-w-[15em] text-[clamp(30px,7.2vw,44px)] leading-[1.42] text-shironeri sm:text-[52px] lg:text-[64px] lg:leading-[1.34]"
+                style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 28px rgba(12,20,29,0.55)" }}
               >
                 もっといい自分は、
                 <br />
@@ -145,12 +145,12 @@ export default function HomePage() {
               </h1>
 
               <p
-                className="hr-rise mt-6 max-w-[34em] text-[14px] leading-[1.95] text-kinari/90 sm:mt-8 sm:text-[16px] sm:leading-[2]"
+                className="hr-rise mt-6 max-w-[34em] text-[14px] leading-[1.95] text-shironeri/90 sm:mt-8 sm:text-[16px] sm:leading-[2]"
                 style={{ ["--d" as string]: "760ms" }}
               >
                 髪、肌、眠り、疲れ、体、パートナーとのこと。
                 <br />
-                <span className="font-bold text-kinari">実体験と、専門家への取材をもとに。</span>
+                <span className="font-bold text-shironeri">実体験と、専門家への取材をもとに。</span>
               </p>
             </div>
 
@@ -174,9 +174,9 @@ export default function HomePage() {
         {/* 1本目だけ大きく。以降は2列。同じ形を並べない。 */}
         {head && (
           <Link href={`/areas/${head.areaId}/${head.slug}`} className="group mt-10 block border-t border-shironezu pt-10">
-            <p className="text-[13px] text-dou">{areaLabel(head.areaId)}</p>
+            <p className="text-[13px] text-asagi">{areaLabel(head.areaId)}</p>
             <h3
-              className="mt-2 max-w-[24em] text-[23px] sm:text-[30px] leading-[1.55] group-hover:text-dou transition-colors"
+              className="mt-2 max-w-[24em] text-[23px] sm:text-[30px] leading-[1.55] group-hover:text-asagi transition-colors"
               style={{ ...MINCHO, fontWeight: 700 }}
             >
               {head.title}
@@ -194,14 +194,14 @@ export default function HomePage() {
           {rest.map((a) => (
             <li key={a.slug}>
               <Link href={`/areas/${a.areaId}/${a.slug}`} className="group block">
-                <p className="flex items-baseline gap-3 text-[13px] text-dou">
+                <p className="flex items-baseline gap-3 text-[13px] text-asagi">
                   {areaLabel(a.areaId)}
                   {publishedAt(a.slug) && (
                     <span className="tabular-nums text-ainezu">{formatDate(publishedAt(a.slug)!)}</span>
                   )}
                 </p>
                 <h3
-                  className="mt-1.5 text-[18px] leading-[1.65] group-hover:text-dou transition-colors"
+                  className="mt-1.5 text-[18px] leading-[1.65] group-hover:text-asagi transition-colors"
                   style={{ ...MINCHO, fontWeight: 700 }}
                 >
                   {a.title}
@@ -217,7 +217,7 @@ export default function HomePage() {
         <p className="mt-14">
           <a
             href="#index"
-            className="inline-flex items-baseline gap-2 text-[15px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
+            className="inline-flex items-baseline gap-2 text-[15px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] hover:decoration-asagi transition-colors"
           >
             記事をすべて見る
             <span aria-hidden>→</span>
@@ -235,7 +235,7 @@ export default function HomePage() {
             <li key={a.slug} className="border-b border-shironezu">
               <Link
                 href={`/areas/${a.areaId}/${a.slug}`}
-                className="group flex items-baseline gap-5 py-5 hover:text-dou transition-colors"
+                className="group flex items-baseline gap-5 py-5 hover:text-asagi transition-colors"
               >
                 <span className="w-[1.6em] shrink-0 text-[13px] tabular-nums text-ainezu">
                   {String(i + 1).padStart(2, "0")}
@@ -290,7 +290,7 @@ export default function HomePage() {
             専門家への取材記事は、まだ0本です。記事の誤りは
             <a
               href={`mailto:${site.email}`}
-              className="mx-1 font-bold text-dou underline decoration-dou/40 underline-offset-[4px] hover:decoration-dou"
+              className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
             >
               {site.email}
             </a>
@@ -320,7 +320,7 @@ export default function HomePage() {
             <p className="mt-4">
               <Link
                 href="/plan"
-                className="inline-flex items-baseline gap-2 text-[14px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] hover:decoration-dou transition-colors"
+                className="inline-flex items-baseline gap-2 text-[14px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] hover:decoration-asagi transition-colors"
               >
                 詳しく見る
                 <span aria-hidden>→</span>
@@ -339,7 +339,7 @@ export default function HomePage() {
               <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
                 {complexes.map((c) => (
                   <li key={c.id}>
-                    <Link href={`/areas/${c.id}`} className="hover:text-dou transition-colors">
+                    <Link href={`/areas/${c.id}`} className="hover:text-asagi transition-colors">
                       {c.ja}
                     </Link>
                   </li>
@@ -351,7 +351,7 @@ export default function HomePage() {
               <ul className="mt-4 space-y-2.5 text-[14px]">
                 {SITUATIONS.map((x) => (
                   <li key={x.id}>
-                    <Link href={`/situations/${x.id}`} className="hover:text-dou transition-colors">
+                    <Link href={`/situations/${x.id}`} className="hover:text-asagi transition-colors">
                       {x.label}
                     </Link>
                   </li>
@@ -361,27 +361,27 @@ export default function HomePage() {
             <div>
               <p className="text-[12.5px] text-ainezu">読みもの</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><a href="/#index" className="hover:text-dou transition-colors">記事をさがす</a></li>
+                <li><a href="/#index" className="hover:text-asagi transition-colors">記事をさがす</a></li>
                 <li>
                   <a
                     href="https://substack.com/@hisrecoveries"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-dou transition-colors"
+                    className="hover:text-asagi transition-colors"
                   >
                     ニュースレター（Substack）<span aria-hidden className="text-ainezu"> ↗</span>
                   </a>
                 </li>
-                <li><a href="/feed.xml" className="hover:text-dou transition-colors">RSS</a></li>
+                <li><a href="/feed.xml" className="hover:text-asagi transition-colors">RSS</a></li>
               </ul>
             </div>
             <div>
               <p className="text-[12.5px] text-ainezu">His Recoveries</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><a href="#about" className="hover:text-dou transition-colors">編集方針</a></li>
-                <li><Link href="/partner" className="hover:text-dou transition-colors">取材・掲載について</Link></li>
-                <li><Link href="/plan" className="hover:text-dou transition-colors">第一印象改善プラン</Link></li>
-                <li><Link href="/privacy" className="hover:text-dou transition-colors">プライバシー・免責事項</Link></li>
+                <li><a href="#about" className="hover:text-asagi transition-colors">編集方針</a></li>
+                <li><Link href="/partner" className="hover:text-asagi transition-colors">取材・掲載について</Link></li>
+                <li><Link href="/plan" className="hover:text-asagi transition-colors">第一印象改善プラン</Link></li>
+                <li><Link href="/privacy" className="hover:text-asagi transition-colors">プライバシー・免責事項</Link></li>
               </ul>
             </div>
           </div>

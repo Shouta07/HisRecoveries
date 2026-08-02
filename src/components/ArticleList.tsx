@@ -34,7 +34,7 @@ export default function ArticleList() {
             <span className="text-[12.5px] tabular-nums text-ainezu">{g.items.length}</span>
             <Link
               href={`/areas/${g.id}`}
-              className="ml-auto text-[13px] font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+              className="ml-auto text-[13px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
             >
               この分野について
             </Link>
@@ -45,7 +45,7 @@ export default function ArticleList() {
               <li key={a.slug} className="border-b border-shironezu">
                 <Link
                   href={`/areas/${a.areaId}/${a.slug}`}
-                  className="group block py-7 transition-colors hover:text-dou"
+                  className="group block py-7 transition-colors hover:text-asagi"
                 >
                   <h4
                     className="text-[17px] leading-[1.7] sm:text-[19px]"

@@ -40,7 +40,7 @@ export default function ArticleIndex({
           この宣言ごと落ちて、クラスの min-h-screen（100vh）が効く。 */}
       <header
         id="index"
-        className="relative min-h-screen overflow-hidden bg-tokiwa"
+        className="relative min-h-screen overflow-hidden bg-konjo"
         style={{ minHeight: "100svh" }}
       >
         {hero}
@@ -68,7 +68,7 @@ export default function ArticleIndex({
             <button
               type="button"
               onClick={s.clearAll}
-              className="font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+              className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
             >
               すべて解除
             </button>
@@ -79,7 +79,7 @@ export default function ArticleIndex({
             <button
               type="button"
               onClick={() => s.setOpen(true)}
-              className="ml-1.5 font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+              className="ml-1.5 font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
             >
               記事をさがす
             </button>
@@ -100,7 +100,7 @@ export default function ArticleIndex({
             <button
               type="button"
               onClick={s.clearAll}
-              className="mt-5 text-[14px] font-bold text-dou underline decoration-dou/40 underline-offset-[6px] transition-colors hover:decoration-dou"
+              className="mt-5 text-[14px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               すべて解除する
             </button>
@@ -116,7 +116,7 @@ export default function ArticleIndex({
                   <span className="text-[12.5px] tabular-nums text-ainezu">{g.items.length}</span>
                   <Link
                     href={`/areas/${g.id}`}
-                    className="ml-auto text-[13px] font-bold text-dou underline decoration-dou/40 underline-offset-[5px] transition-colors hover:decoration-dou"
+                    className="ml-auto text-[13px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
                   >
                     この分野について
                   </Link>
@@ -127,7 +127,7 @@ export default function ArticleIndex({
                     <li key={a.slug} className="border-b border-shironezu">
                       <Link
                         href={`/areas/${a.areaId}/${a.slug}`}
-                        className="group block py-7 transition-colors hover:text-dou"
+                        className="group block py-7 transition-colors hover:text-asagi"
                       >
                         <h4
                           className="text-[17px] leading-[1.7] sm:text-[19px]"
