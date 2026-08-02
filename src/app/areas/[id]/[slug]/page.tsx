@@ -196,6 +196,11 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           {a.kind === "interview" && a.interviewee && (
             <p className="mt-4 text-[14px] text-keshizumi">
               語り手：<span className="font-bold text-asagi">{a.interviewee.name}</span>（{a.interviewee.role}）
+              {a.interviewee.interviewedOn && (
+                <span className="ml-2 tabular-nums text-ainezu">
+                  取材 {formatDate(a.interviewee.interviewedOn)}
+                </span>
+              )}
               {a.interviewee.link && (
                 <>
                   {" "}
@@ -334,8 +339,52 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </section>
         )}
 
+        {/* 取材記事の開示。ステマ規制（景表法）と医療広告規制への回答を、
+            読者から見える場所に置く。詳細は取材記事の法務整理を参照。
+            対価の有無を書かないと、読者にも当局にも区別がつかない。 */}
+        {a.kind === "interview" && a.interviewee && (
+          <section className="mt-16 border border-shironezu bg-hakuji px-5 py-6 sm:px-6">
+            <h2 className="text-[15px]" style={{ ...MINCHO, fontWeight: 700 }}>
+              この取材について
+            </h2>
+            <dl className="mt-4 space-y-3 text-[13.5px] leading-[1.9] text-keshizumi">
+              {a.interviewee.interviewedOn && (
+                <div className="flex gap-3">
+                  <dt className="w-[5.5em] shrink-0 text-ainezu">取材日</dt>
+                  <dd className="tabular-nums">{formatDate(a.interviewee.interviewedOn)}</dd>
+                </div>
+              )}
+              <div className="flex gap-3">
+                <dt className="w-[5.5em] shrink-0 text-ainezu">語り手</dt>
+                <dd>
+                  {a.interviewee.name}（{a.interviewee.role}）
+                </dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="w-[5.5em] shrink-0 text-ainezu">対価</dt>
+                <dd>
+                  {a.interviewee.compensation === "paid-out"
+                    ? "取材へのご協力に対し、編集部から謝礼をお支払いしています。取材先から金銭その他の対価を受け取ってはいません。"
+                    : a.interviewee.compensation === "received"
+                      ? "本記事は取材先からの費用提供を受けています。"
+                      : "この取材にあたり、金銭その他の対価の授受はありません。"}
+                </dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="w-[5.5em] shrink-0 text-ainezu">決定権</dt>
+                <dd>
+                  掲載内容の決定権は His Recoveries 編集部にあります。
+                  公開前の原稿共有は、事実確認のみを目的としています。
+                </dd>
+              </div>
+            </dl>
+          </section>
+        )}
+
         <p className="mt-12 text-[13px] leading-[1.95] text-ainezu">
-          {a.kind === "guide"
+          {a.kind === "interview"
+            ? "※ 本記事は、語り手の説明を編集部が整理したものです。特定の医療機関・施術・製品を推奨するものではなく、効果・有効性を示すものでも、診断・治療・受診勧奨を目的としたものでもありません。個別の判断は専門家にご相談ください。"
+            : a.kind === "guide"
             ? "※ 本記事は一般的な情報と実践のヒントを整理したものです。効果を保証するものではありません。医療的な判断が必要な場合は医療機関にご相談ください。"
             : a.kind === "choose"
               ? "※ 本記事は、選ぶときの観点を中立に整理したものです。特定の医療機関・製品・施術を推奨するものではなく、効果・有効性を示すものでも、診断・治療・受診勧奨を目的としたものでもありません。「今はやらない」も含め、選ぶのはあなたです。個別の判断は専門家にご相談ください。"
