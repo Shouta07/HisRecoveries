@@ -157,7 +157,7 @@ export default function SearchSheet() {
       if (s.area) p.set("area", s.area);
       if (s.q.trim()) p.set("q", s.q.trim());
       const qs = p.toString();
-      router.push(`/${qs ? `?${qs}` : ""}#results`);
+      router.push(`/${qs ? `?${qs}` : ""}#index`);
     }
   };
 

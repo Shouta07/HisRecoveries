@@ -49,9 +49,27 @@ body {
   font-weight: 400;
   line-height: 1.85;
   letter-spacing: 0.02em;
-  word-break: keep-all;
-  overflow-wrap: anywhere;
+  /* 日本語の本文に word-break: keep-all を当ててはいけない。
+     CJK は語の切れ目を持たないので、keep-all だと文節がまるごと
+     折り返し不能単位になり、句読点でしか改行できなくなる。
+     実測で 350px の行に 22 文字入るところが 14 文字で折り返していた。
+     行が短くなるぶん記事は縦に伸び、目線は絶えず左端に戻る。
+     既に表セルと .hr-readable で局所的に打ち消されていたが、
+     打ち消しが必要な既定値は既定値の側が間違っている。
+     正しい日本語の折り返しは normal + line-break: strict
+     （句読点と閉じ括弧を行頭に置かない）。 */
+  word-break: normal;
+  overflow-wrap: break-word;
   line-break: strict;
+}
+
+/* 見出しは短い表示文字列なので keep-all が正しい。
+   本文（長い散文）は normal、見出しは keep-all——この分け方が日本語の既定。
+   「第一印象改善プラン（30／日）」のように意味の切れ目でない所で
+   割れるのを防ぐ。長すぎて入らないぶんは overflow-wrap が受ける。 */
+h1, h2, h3, h4, h5, h6 {
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 ::selection {
@@ -134,8 +152,8 @@ a {
   line-height: 2.05;
   letter-spacing: 0.03em;
   color: var(--ink);
-  word-break: keep-all;
-  overflow-wrap: anywhere;
+  word-break: normal;
+  overflow-wrap: break-word;
   line-break: strict;
 }
 

@@ -3,13 +3,14 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import SearchButton from "@/components/search/SearchButton";
+import CheckCta from "@/components/check/CheckCta";
 import { site } from "@/lib/site";
 
 // 下層ページのヘッダー。トップの GlassNav と同じ見え方に揃える
 // （ロゴ＋肩書き1行、記事が先頭）。メディアが主、サービスが従。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/#results", label: "記事" },
-  { href: "/#about", label: "編集方針" },
+  { href: "/#index", label: "記事" },
+  { href: "/#about", label: "編集方針", desktopOnly: true },
 ];
 
 export default function Header() {
@@ -26,8 +27,10 @@ export default function Header() {
           <span className="logo-type block text-base font-bold tracking-tight text-sumi transition-colors hover:text-asagi sm:text-xl">
             {site.name}
           </span>
+          {/* 肩書きを「メディア」から変えた。読んで終わる場所だと
+              こちらから宣言していたので、期待値がそこで止まっていた。 */}
           <span className="mt-1.5 block text-[10px] tracking-[0.12em] text-ainezu sm:text-[11px]">
-            男性ウェルネスメディア
+            男の改善は、順番で決まる
           </span>
         </Link>
 
@@ -44,6 +47,7 @@ export default function Header() {
               </li>
             ))}
           </ul>
+          <CheckCta from="header" variant="nav" />
           <SearchButton />
         </div>
       </div>

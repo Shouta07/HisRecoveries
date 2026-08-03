@@ -8,6 +8,9 @@ import { clustersByArea } from "@/lib/clusters";
 import { fieldVoicesByArea } from "@/lib/fieldVoices";
 import { headingId } from "@/lib/reading";
 import SectionBody from "@/components/SectionBody";
+import AdNotice from "@/components/AdNotice";
+import CheckCta from "@/components/check/CheckCta";
+import { hasSponsored } from "@/lib/monetization";
 import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
 
@@ -153,6 +156,9 @@ export default function AreaPage({ params }: { params: { id: string } }) {
           </p>
         </header>
 
+        {/* 広告の告知。本文より先に見える位置に置く（景表法・ステマ規制） */}
+        {hasSponsored(area.sections) && <AdNotice />}
+
         {/* 要点 */}
         <div id="tldr" className="mt-10 border-l-2 border-asagi pl-5 sm:pl-6">
           <p className="text-[13px] text-asagi">この分野の要点</p>
@@ -197,6 +203,8 @@ export default function AreaPage({ params }: { params: { id: string } }) {
               <SectionBody s={s} />
             </section>
           ))}
+
+          <CheckCta from={`area:${c.id}`} />
 
           <section className="border-l-2 border-shironezu pl-5 sm:pl-6">
             <h2 className="text-[17px]" style={{ ...MINCHO, fontWeight: 700 }}>

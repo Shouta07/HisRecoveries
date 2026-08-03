@@ -1,27 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbInsert, parseAttribution } from "@/lib/db";
+import { isConversionEvent } from "@/lib/analytics";
 
 export const runtime = "edge";
 
-const ALLOWED_EVENTS = new Set([
-  "gathering_apply",
-  "affiliate_click",
-  "subscribe_click",
-  "reflect_complete",
-  "hero_cta_click",
-  "assessment_start",
-  "assessment_complete",
-  "article_cta_click",
-  "story_start",
-  "story_submitted",
-  // 市場検証（props.market = 領域ID）
-  "market_select",
-  "market_view",
-  "market_consult_click",
-  // ゴール起点
-  "goal_select",
-  "goal_step_done",
-]);
 
 export async function POST(req: NextRequest) {
   let body: { event?: unknown; props?: unknown; path?: unknown };
@@ -31,8 +13,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid json" }, { status: 400 });
   }
 
-  const event = typeof body.event === "string" ? body.event : null;
-  if (!event || !ALLOWED_EVENTS.has(event)) {
+  // 許可リストは lib/analytics.ts の CONVERSION_EVENTS が唯一の出どころ。
+  // ここに書き写すと、必ずどちらかが古くなる。
+  const event = body.event;
+  if (!isConversionEvent(event)) {
     return NextResponse.json({ error: "unknown event" }, { status: 400 });
   }
   const props =

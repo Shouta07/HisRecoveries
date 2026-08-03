@@ -3,26 +3,53 @@
 // (GA4 / Plausible). This module adds first-touch UTM attribution and a
 // single track() entry point for conversion events.
 
-export type ConversionEvent =
-  | "gathering_apply" // クリック: Quiet Gatherings 応募
-  | "affiliate_click" // クリック: アフィリエイト送客
-  | "subscribe_click" // クリック: ニュースレター購読
-  | "reflect_complete" // 完了: 整理フロー(Reflect)
-  | "hero_cta_click" // クリック: ヒーロー CTA
-  | "assessment_start" // 開始: Recovery Assessment
-  | "assessment_complete" // 完了: Recovery Assessment
-  | "article_cta_click" // クリック: 記事下 CTA
-  | "story_start" // 開始: Story 投稿フォーム
-  | "story_submitted" // 完了: Story 投稿
-  | "membership_subscribe_click" // クリック: Recovery Letters 購読
+/**
+ * 送ってよいイベントの一覧。
+ *
+ * 以前はこの型と /api/event 側の許可リストが別々に書かれていて、
+ * 片方に足しただけのイベントが全部 400 で捨てられていた。
+ * 計測を足したつもりで何も記録されていない、がいちばん高くつくので、
+ * 一覧をここに1本化し、型もサーバの検証もここから導く。
+ */
+export const CONVERSION_EVENTS = [
+  "gathering_apply", // クリック: Quiet Gatherings 応募
+  "affiliate_click", // クリック: アフィリエイト送客
+  "subscribe_click", // クリック: ニュースレター購読
+  "reflect_complete", // 完了: 整理フロー(Reflect)
+  "hero_cta_click", // クリック: ヒーロー CTA
+  "assessment_start", // 開始: Recovery Assessment
+  "assessment_complete", // 完了: Recovery Assessment
+  "article_cta_click", // クリック: 記事下 CTA
+  "story_start", // 開始: Story 投稿フォーム
+  "story_submitted", // 完了: Story 投稿
+  "membership_subscribe_click", // クリック: Recovery Letters 購読
+
   // ── 市場検証（6領域のどれが勝てるかを見極めるための3点計測） ──
   // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
-  | "market_select" // 需要: 診断で「この悩みがある」と選ばれた
-  | "market_view" // 関心: その領域の記事・ピラーを読んだ
-  | "market_consult_click" // 意向: その領域の文脈から相談へ進んだ
-  // ── ゴール起点（どの「理想の日」が求められているか＝勝てる市場の直接指標） ──
-  | "goal_select" // 目的の日を選んだ（props: goal, days）
-  | "goal_step_done"; // ロードマップの1ステップを完了（props: goal, step）
+  "market_select", // 需要: 診断で「この悩みがある」と選ばれた
+  "market_view", // 関心: その領域の記事・ピラーを読んだ
+  "market_consult_click", // 意向: その領域の文脈から相談へ進んだ
+
+  // ── ゴール起点 ──
+  "goal_select", // 目的の日を選んだ（props: goal, days）
+  "goal_step_done", // ロードマップの1ステップを完了（props: goal, step）
+
+  // ── 診断ファネル（/check）──
+  // 記事 → 診断 → 結果 → 次、の各段を1つずつ計測する。
+  // どこで落ちているか分からないまま投稿を増やしても、率は動かない。
+  "check_open", // 診断ページへの導線をクリック（props: from）
+  "check_start", // 1問目に答えた
+  "check_abandon", // 途中で離脱（props: at＝何問目まで）
+  "check_complete", // 結果に到達（props: first, untouched）
+  "check_article_click", // 結果から記事へ（props: area, slug）
+] as const;
+
+export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];
+
+/** サーバ側の検証用。/api/event はこれだけを受け付ける */
+export function isConversionEvent(x: unknown): x is ConversionEvent {
+  return typeof x === "string" && (CONVERSION_EVENTS as readonly string[]).includes(x);
+}
 
 type Props = Record<string, string | number | boolean | undefined>;
 

@@ -3,12 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
 import { citationsByComplex } from "@/lib/citations";
-import { clusters, getCluster, CLUSTER_UPDATED, DESIRES } from "@/lib/clusters";
+import { clusters, getCluster, CLUSTER_UPDATED } from "@/lib/clusters";
 import { charCount, headingId, readingMinutes, sameSituationArticles } from "@/lib/reading";
 import { formatDate, publishedAt } from "@/lib/articleDates";
 import ShareRow from "@/components/ShareRow";
 import { ReadingProgress, StickyToc } from "@/components/ReadingAids";
 import SectionBody from "@/components/SectionBody";
+import AdNotice from "@/components/AdNotice";
+import CheckCta from "@/components/check/CheckCta";
+import { hasSponsored } from "@/lib/monetization";
 import MarketView from "@/components/MarketView";
 import { site } from "@/lib/site";
 
@@ -224,6 +227,9 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </p>
         </header>
 
+        {/* 広告の告知。本文より先に見える位置に置く（景表法・ステマ規制） */}
+        {hasSponsored(a.sections) && <AdNotice />}
+
         {/* 要点（TL;DR）— 読者にもAI検索にも、最初に結論を渡す */}
         <div id="tldr" className="mt-10 border-l-2 border-asagi pl-5 sm:pl-6">
           <p className="text-[13px] text-asagi">この記事の要点</p>
@@ -236,11 +242,16 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           </ul>
         </div>
 
-        {/* 目次 — 長い記事で迷わせない。検索結果のジャンプリンクにも使われる */}
+        {/* 目次 — たたんでおく。
+            ここを開いたまま置くと、本文が1画面ぶん先へ押し出される。
+            目次を見たい人は探して開くが、読みに来た人は本文が先に見たい。
+            中身は DOM に残るので、検索エンジンのジャンプリンクには効く。 */}
         {a.sections.length > 2 && (
-          <nav aria-label="目次" className="mt-10 border-y border-shironezu py-6 xl:hidden">
-            <p className="text-[13px] text-ainezu">目次</p>
-            <ol className="mt-3 space-y-2">
+          <details className="mt-8 border-y border-shironezu xl:hidden">
+            <summary className="cursor-pointer list-none py-4 text-[13.5px] text-ainezu marker:content-['']">
+              目次（{a.sections.length}項目）<span aria-hidden className="ml-1.5">▾</span>
+            </summary>
+            <ol className="space-y-2 pb-5">
               {a.sections.map((s, i) => (
                 <li key={s.h} className="flex items-baseline gap-3">
                   <span className="w-[1.4em] shrink-0 text-[12px] tabular-nums text-ainezu">
@@ -255,27 +266,41 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
                 </li>
               ))}
             </ol>
-          </nav>
+          </details>
         )}
 
-        {/* 欲求のブレイクダウン — 「これは自分の話だ」と接続する一行 */}
-        {a.desire && DESIRES[a.desire] && (
-          <p className="mt-10 text-[14.5px] leading-[2] text-keshizumi">
-            <span className="font-bold text-sumi">{DESIRES[a.desire].label}</span>
-            <span className="mx-2 text-shironezu" aria-hidden>|</span>
-            {DESIRES[a.desire].hook}
-          </p>
-        )}
+        {/* 欲求のブレイクダウンは、ここから外した。
+            リード・要点・このフックが、同じことを3回言っていた。
+            しかも置き場所が目次の下＝本文の直前で、いちばん邪魔な位置だった。
+            接続の一行はリードが担っているので、重複を落とす。 */}
 
-        {/* 本文 */}
+        {/* 本文。
+            読了まで到達するのは一部なので、途中にも受け皿を1つだけ差す。
+            「で、自分は？」と思うのは、仕組みが分かった直後——
+            節が4つ以上ある記事の、2節目の後ろに置く。1本だけ。 */}
         <div className="mt-12 flex flex-col gap-11">
           {a.sections.map((s, i) => (
-            <section key={s.h} id={headingId(i)} className="scroll-mt-20">
-              <h2 className="text-[20px] leading-[1.6] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
-                {s.h}
-              </h2>
-              <SectionBody s={s} />
-            </section>
+            <div key={s.h} className="contents">
+              {/* 節の頭に番号と罫線を入れる。
+                  以前は余白だけで区切っていたので、スクロール中に
+                  「新しい話が始まった」という切れ目が感じられなかった。
+                  1節目は記事の続きなので罫線を引かない。 */}
+              <section
+                id={headingId(i)}
+                className={`scroll-mt-20 ${i === 0 ? "" : "border-t border-shironezu pt-9"}`}
+              >
+                <p className="text-[12px] tabular-nums tracking-[0.14em] text-asagi">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h2 className="mt-2 text-[21px] leading-[1.55] sm:text-[24px]" style={{ ...MINCHO, fontWeight: 700 }}>
+                  {s.h}
+                </h2>
+                <SectionBody s={s} />
+              </section>
+              {i === 1 && a.sections.length >= 4 && (
+                <CheckCta from={`article-inline:${a.slug}`} variant="inline" />
+              )}
+            </div>
           ))}
         </div>
 
@@ -395,9 +420,16 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
         </article>
       </div>
 
-      {/* ══ ここから先は回遊。地を変えて、記事が終わったことを示す ══ */}
+      {/* ══ ここから先は次の一歩。地を変えて、記事が終わったことを示す ══
+
+          並びを「回遊4本 → サービス1行」から入れ替えた。
+          読み終えた直後がいちばん熱量の高い瞬間で、そこに置くべきは
+          「次の記事」ではなく「で、自分はどこからか」のほう。
+          回遊はその後ろで足りる（読み続ける人は、探してでも読む）。 */}
       <div className="border-t border-shironezu bg-hakuji">
         <div className="mx-auto max-w-[860px] px-5 sm:px-8 py-16 sm:py-20">
+          <CheckCta from={`article:${a.slug}`} className="mb-14" />
+
           {/* 同じ状況の人が読んでいる記事 — 分野をまたぐ導線 */}
           {situationBlocks.map((b) => (
             <section key={b.situationId} className="mb-14 last:mb-0">
@@ -473,13 +505,15 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             </Link>
           </p>
 
-          {/* サービス — 押さない。読んで進む人のほうが多い前提で置く */}
+          {/* 対面プラン — 地域と曜日の制約があるので、いちばん最後に置く。
+              ここを先に出すと、東京以外の読者が最初の一行で自分の話ではないと判断する。
+              全国で使えるもの（診断）を上に、制約のあるものを下に。 */}
           <p className="mt-10 border-t border-shironezu pt-8 text-[13.5px] leading-[1.95] text-ainezu">
             記事はすべて無料で公開しています。一人だと止まってしまう場合だけ、
             <Link href="/plan" className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi">
               第一印象改善プラン
             </Link>
-            をご覧ください。東京都内・土日のみ。
+            をご覧ください（東京都内・土日のみ）。
           </p>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import Image from "next/image";
 import type { ClusterSection } from "@/lib/clusters";
+import { assertProducts } from "@/lib/monetization";
+import ProductLinks from "./ProductLinks";
 
 // 本文セクションの中身。記事ページと分野ページで共有する。
 //
@@ -11,16 +13,23 @@ import type { ClusterSection } from "@/lib/clusters";
 // 組みはトップと同じ。カードで囲まず、罫線と余白で区切る。
 
 export default function SectionBody({ s }: { s: ClusterSection }) {
+  // 受け取れない区分に成果報酬が付いていたら、ここでビルドを落とす。
+  // 公開してから気づくたぐいの間違いなので、静かに直せる場所には置かない。
+  if (s.products) assertProducts(s.products, s.h);
+
   return (
     <>
-      <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">{s.body}</p>
+      {/* モバイルは16px。15.5px は端末によって「読む前に離脱する」側に寄る。
+          行送りは 2.1 → 2.0。折り返しが直って1行が伸びたぶん、
+          行間を詰めないと段落が縦に間延びする。 */}
+      <p className="mt-4 text-[16px] leading-[2.0] text-keshizumi sm:text-[16px]">{s.body}</p>
 
       {s.list && s.list.length > 0 && (
         <ul className="mt-5 border-t border-shironezu">
           {s.list.map((x) => (
             <li
               key={x}
-              className="flex gap-3 border-b border-shironezu py-3 text-[15px] leading-[1.9] text-keshizumi"
+              className="flex gap-3 border-b border-shironezu py-3.5 text-[15.5px] leading-[1.9] text-keshizumi"
             >
               <span aria-hidden className="mt-[0.7em] h-px w-3 shrink-0 bg-asagi" />
               <span>{x}</span>
@@ -95,6 +104,8 @@ export default function SectionBody({ s }: { s: ClusterSection }) {
           )}
         </figure>
       )}
+
+      {s.products && s.products.length > 0 && <ProductLinks items={s.products} />}
     </>
   );
 }

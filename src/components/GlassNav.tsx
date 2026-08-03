@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import SearchButton from "@/components/search/SearchButton";
+import { track } from "@/lib/analytics";
 
-// メディアが主、サービスが従。記事を先頭に置く。
+// 記事が先頭。そのうえで、診断への導線を1つだけ常設する。
+// ヒーローの上では枠線が浮くので、地の色に合わせて出し分ける。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/#results", label: "記事" },
-  { href: "/#about", label: "編集方針" },
+  { href: "/#index", label: "記事" },
+  { href: "/#about", label: "編集方針", desktopOnly: true },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,
@@ -45,7 +47,7 @@ export default function GlassNav() {
               scrolled ? "text-ainezu" : "text-shironeri/70"
             }`}
           >
-            男性ウェルネスメディア
+            男の改善は、順番で決まる
           </span>
         </Link>
 
@@ -64,6 +66,17 @@ export default function GlassNav() {
               </li>
             ))}
           </ul>
+          <Link
+            href="/check"
+            onClick={() => track("check_open", { from: "home-nav" })}
+            className={`whitespace-nowrap border px-3 py-1.5 text-[13px] font-bold transition-colors sm:text-[13.5px] ${
+              scrolled
+                ? "border-asagi text-asagi hover:bg-asagi hover:text-shironeri"
+                : "border-shironeri/60 text-shironeri hover:bg-shironeri hover:text-sumi"
+            }`}
+          >
+            現在地を測る
+          </Link>
           <SearchButton tone={scrolled ? "dark" : "light"} />
         </div>
       </div>

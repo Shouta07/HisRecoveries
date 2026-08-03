@@ -87,7 +87,9 @@ const nextConfig = {
       { source: "/services/:slug*", destination: "/#index", permanent: true },
       { source: "/screen", destination: "/#index", permanent: true },
       { source: "/screen/:slug*", destination: "/#index", permanent: true },
-      { source: "/check", destination: "/#index", permanent: true },
+      // /check は診断ページとして復活させたので、リダイレクトを外した。
+      // 旧 308 をブラウザが覚えている場合があるが、実体のあるページが
+      // 返るようになれば再クロールで置き換わる。
       // /feed.xml は実体のある RSS になったのでリダイレクトしない
       // 旧の体験・コミュニティ系 → ホームへ
       { source: "/events", destination: "/", permanent: true },
