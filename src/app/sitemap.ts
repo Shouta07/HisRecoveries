@@ -49,6 +49,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  // サイト最上位の一本。全記事を順番の上に並べ直したもの
+  const orderPath: MetadataRoute.Sitemap = [
+    {
+      url: `${site.url}/order`,
+      lastModified: articleDate,
+      changeFrequency: "monthly",
+      priority: 0.95,
+    },
+  ];
+
   // 選択肢（判断情報）。記事より少ないが、AI検索が抜き出すのはこちら
   const choicePaths: MetadataRoute.Sitemap = [
     "/choices",
@@ -78,6 +88,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...home,
+    ...orderPath,
     ...areaPaths,
     ...choicePaths,
     ...situationPaths,

@@ -279,6 +279,32 @@ export default function HomePage() {
         </p>
       </section>
 
+      {/* ══════ 全部の順番 ══════
+          サイトの最上位に置く一本。分野の一覧より先に、
+          「どれが何番目か」を渡す面があると伝わる。 */}
+      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
+        <Link
+          href="/order"
+          className="group block border border-shironezu bg-hakuji px-5 py-7 transition-colors hover:bg-shironeri sm:px-7 sm:py-8"
+        >
+          <p className="text-[13px] text-asagi">まず1本だけ読むなら</p>
+          <h2
+            className="mt-2.5 text-[21px] leading-[1.55] transition-colors group-hover:text-asagi sm:text-[25px]"
+            style={{ ...MINCHO, fontWeight: 700 }}
+          >
+            男の改善、全部の順番
+          </h2>
+          <p className="mt-3 max-w-[38em] text-[15px] leading-[1.95] text-keshizumi">
+            {clusters.length}本すべてを、順番の上に並べ直した一本です。
+            減点をなくす → 進むものだけ早く知る → 続けるものを絞る → 内側を触る。
+            いまはやらなくていいことも書いています。
+          </p>
+          <span className="mt-4 inline-block text-[14px] font-bold text-asagi">
+            読む<span aria-hidden> →</span>
+          </span>
+        </Link>
+      </section>
+
       {/* ══════ 分野から ══════
           文字ばかりの縦の流れに、大きさの違う塊をひとつ挟む。
           6つしかないので、一覧ではなく面として置ける。
