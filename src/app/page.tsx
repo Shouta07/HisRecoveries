@@ -12,13 +12,22 @@ import { readingMinutes } from "@/lib/reading";
 import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
 import HeroStart from "@/components/check/HeroStart";
+import WhyStuck from "@/components/home/WhyStuck";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ = 編集メディアの表紙。
 //
 // サービスLPではありません。順番:
-//   Hero → 診断 → 新しい記事 → よく読まれている → 分野から →
+//   Hero（感情 + 診断の1問目）→ なぜ変われないのか → やることは3つ →
+//   新しい記事 → よく読まれている → 全部の順番 → 分野から →
 //   His Recoveriesについて → 記事をさがす（全件索引）→ サービス → Footer
+//
+// ── ヒーローを感情から始める ─────────────────────
+// 「男の改善は、順番で決まる。」は主張としては強いが、
+// 読み手が自分の話だと気づくまでに一拍かかる。
+// 「変わりたい。でも、何からやればいいか分からない。」は
+// 読み手の内心そのものなので、自己同定が速い。
+// 主張のほうは、ナビの肩書きに残してある。
 //
 // ── 全件索引を最後に落とした ────────────────────────
 // 以前は Hero の直後に「記事 全55本」の索引があり、編集が選んだ
@@ -157,12 +166,14 @@ export default function HomePage() {
             />
 
             <h1
-              className="hr-wipe absolute bottom-7 left-5 right-5 max-w-[15em] text-[clamp(27px,7vw,40px)] leading-[1.38] text-shironeri sm:bottom-8 sm:left-12 sm:text-[46px] lg:left-16 lg:text-[56px] lg:leading-[1.3]"
+              className="hr-wipe absolute bottom-6 left-5 right-5 max-w-[15em] text-[clamp(24px,6.2vw,36px)] leading-[1.4] text-shironeri sm:bottom-8 sm:left-12 sm:text-[40px] lg:left-16 lg:text-[50px] lg:leading-[1.32]"
               style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 26px rgba(12,20,29,0.6)" }}
             >
-              男の改善は、
+              変わりたい。でも、
               <br />
-              順番で決まる。
+              何からやればいいか
+              <br />
+              分からない。
             </h1>
           </>
         }
@@ -172,8 +183,8 @@ export default function HomePage() {
               className="hr-rise max-w-[30em] text-[13.5px] leading-[1.85] text-keshizumi sm:text-[15px]"
               style={{ ["--d" as string]: "700ms" }}
             >
-              髪も、肌も、体も、やることは同じくらいある。
-              <span className="whitespace-nowrap">違うのは順番だけ。</span>
+              見た目、体調、清潔感。
+              <span className="whitespace-nowrap">あなたに必要な改善の順番を、整理します。</span>
             </p>
             <div className="mt-5 max-w-[34em] lg:max-w-[62em]">
               <HeroStart />
@@ -181,6 +192,13 @@ export default function HomePage() {
           </>
         }
       />
+
+      {/* ══════ なぜ変われないのか / やることは3つ ══════
+          記事一覧より先に、このサイトが何を渡すのかを説明する面を置く。
+          ヒーローの次が記事だと、読む場所にしか見えない。 */}
+      <div className="mt-[72px] sm:mt-[104px] lg:mt-[136px]">
+        <WhyStuck />
+      </div>
 
       {/* ══════ 新しい記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
