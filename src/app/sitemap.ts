@@ -49,6 +49,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  // 選択肢（判断情報）。記事より少ないが、AI検索が抜き出すのはこちら
+  const choicePaths: MetadataRoute.Sitemap = [
+    "/choices",
+    ...["impression", "hair", "skin", "face", "body-hair", "mind"].map((a) => `/choices/${a}`),
+  ].map((p) => ({
+    url: `${site.url}${p}`,
+    lastModified: articleDate,
+    changeFrequency: "monthly" as const,
+    priority: 0.85,
+  }));
+
   const staticPaths: MetadataRoute.Sitemap = [
     "/check",
     "/plan",
@@ -65,5 +76,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: p === "/plan" ? 0.7 : 0.4,
   }));
 
-  return [...home, ...areaPaths, ...situationPaths, ...clusterPaths, ...staticPaths];
+  return [
+    ...home,
+    ...areaPaths,
+    ...choicePaths,
+    ...situationPaths,
+    ...clusterPaths,
+    ...staticPaths,
+  ];
 }
