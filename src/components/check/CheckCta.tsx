@@ -38,9 +38,9 @@ export default function CheckCta({ from, variant = "block", className = "" }: Pr
           onClick={go}
           className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
         >
-          35問の診断
+          5問の診断
         </Link>
-        で順番を出せます。3分・登録不要。
+        で順番を出せます。30秒・登録不要。
       </p>
     );
   }
@@ -63,8 +63,8 @@ export default function CheckCta({ from, variant = "block", className = "" }: Pr
         で、自分はどこから始めるのか。
       </p>
       <p className="mt-3 text-[14.5px] leading-[1.95] text-keshizumi">
-        35問に答えると、いまの状態と、手をつける順番が出ます。
-        いまはやらなくていいことも出します。3分・登録不要・無料。
+        5問・30秒で、手をつける順番と、今月やること3つが出ます。
+        いまはやらなくていいことも出します。登録不要・無料。
       </p>
       <Link
         href="/check"
