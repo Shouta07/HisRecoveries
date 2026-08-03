@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   BLOCKS,
+  type Block,
   TOTAL_QUESTIONS,
   AREA_LABEL_SHORT,
   evaluate,
@@ -24,6 +25,8 @@ import {
   type Question,
 } from "@/lib/check";
 import { track } from "@/lib/analytics";
+import ShareRow from "@/components/ShareRow";
+import { site } from "@/lib/site";
 
 const MINCHO: React.CSSProperties = {
   fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
@@ -33,11 +36,33 @@ const MINCHO: React.CSSProperties = {
 export type ArticleRef = { slug: string; title: string };
 
 /** 質問を1本の配列に伸ばしておく。飛ばす判定は進むときに行う */
-type Flat = { q: Question; blockIndex: number; indexInBlock: number };
+type Flat = { q: Question; block: Block; indexInBlock: number };
 
-const FLAT: Flat[] = BLOCKS.flatMap((b, bi) =>
-  b.questions.map((q, qi) => ({ q, blockIndex: bi, indexInBlock: qi })),
-);
+/**
+ * 設問の並びを組む。
+ *
+ * ── なぜ並べ替えるのか ──────────────────────────
+ * 以前は「はじめに（年代・場面・時間・予算）」が固定で先頭だった。
+ * ファーストビューで「髪・薄毛」を押した人が髪の設問に着くのは17問目、
+ * 「眠り・体型」なら31問目。自分の話が始まると思って押したのに、
+ * 最初に来るのが「年代を教えてください」では、期待を1問目で裏切っている。
+ *
+ * 選んだ悩みのブロックを先頭に出す。属性を聞くのは最後でいい
+ * （評価には年代も場面も使っていない。使っているのは予算と時間の表示だけ）。
+ *
+ * 結果の順番表そのものは動かさない。変えるのは「訊く順」だけで、
+ * 「やる順」は誰に対しても同じ（減点 → 現在地 → ケア → 内側）。
+ */
+function buildFlat(focus: AreaId | null): Flat[] {
+  const basic = BLOCKS.find((b) => b.id === "basic")!;
+  const genten = BLOCKS.find((b) => b.id === "genten")!;
+  const areas = BLOCKS.filter((b) => b.areaId !== null);
+  const focused = focus ? areas.find((b) => b.areaId === focus) : undefined;
+  const rest = areas.filter((b) => b !== focused);
+
+  const ordered = [...(focused ? [focused] : []), genten, ...rest, basic];
+  return ordered.flatMap((b) => b.questions.map((q, qi) => ({ q, block: b, indexInBlock: qi })));
+}
 
 export default function CheckFlow({
   articles,
@@ -60,7 +85,8 @@ export default function CheckFlow({
   const raw = params.get("focus");
   const focus: AreaId | null = isAreaId(raw) ? raw : null;
 
-  const current = FLAT[cursor];
+  const flat = useMemo(() => buildFlat(focus), [focus]);
+  const current = flat[cursor];
 
   // 離脱の計測。どこまで進んで閉じたかが分かると、質問の並びを直せる。
   useEffect(() => {
@@ -77,27 +103,26 @@ export default function CheckFlow({
     (fromIndex: number, ans: Answers) => {
       let i = fromIndex + 1;
       // 「特にない」を選んだブロックの残りは飛ばす
-      while (i < FLAT.length) {
-        const f = FLAT[i];
-        const block = BLOCKS[f.blockIndex];
+      while (i < flat.length) {
+        const f = flat[i];
         if (
-          block.skipRestIf &&
+          f.block.skipRestIf &&
           f.indexInBlock > 0 &&
-          ans[block.questions[0].id] === block.skipRestIf
+          ans[f.block.questions[0].id] === f.block.skipRestIf
         ) {
           i++;
           continue;
         }
         break;
       }
-      if (i >= FLAT.length) {
+      if (i >= flat.length) {
         finished.current = true;
         setDone(true);
         return;
       }
       setCursor(i);
     },
-    [],
+    [flat],
   );
 
   function answer(value: string) {
@@ -114,12 +139,11 @@ export default function CheckFlow({
     // 飛ばした設問を戻りでも飛ばす
     let i = cursor - 1;
     while (i >= 0) {
-      const f = FLAT[i];
-      const block = BLOCKS[f.blockIndex];
+      const f = flat[i];
       if (
-        block.skipRestIf &&
+        f.block.skipRestIf &&
         f.indexInBlock > 0 &&
-        answers[block.questions[0].id] === block.skipRestIf
+        answers[f.block.questions[0].id] === f.block.skipRestIf
       ) {
         i--;
         continue;
@@ -151,7 +175,7 @@ export default function CheckFlow({
 
   const answered = Object.keys(answers).length;
   const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
-  const block = BLOCKS[current.blockIndex];
+  const block = current.block;
 
   return (
     <div>
@@ -373,6 +397,23 @@ function Result({
           </ul>
         </section>
       )}
+
+      {/* 共有。診断の結果は、記事よりも人に言いたくなる種類のもの
+          （「俺はここからだった」）。ここに導線がないと、
+          いちばん拡散しやすい瞬間を捨てることになる。
+
+          送るのは診断そのもののURLで、個人の結果は載せない。
+          文面には自分の1つ目だけを入れる——投稿する本人が
+          送信前に必ず目にする場所なので、隠しごとにはならない。 */}
+      <ShareRow
+        label="人に送る"
+        url={`${site.url}/check`}
+        title={
+          r.steps[0]
+            ? `男の改善は、順番で決まる。35問やったら、私は「${r.steps[0].label}」からでした。`
+            : "男の改善は、順番で決まる。35問・3分で、何から始めるかが出ます。"
+        }
+      />
 
       <p className="mt-12 text-[13px] leading-[1.95] text-ainezu">
         ※ この診断は、手をつける順番を整理するためのものです。
