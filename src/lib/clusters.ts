@@ -3,6 +3,8 @@
 // 自分たちで書く中立な原文。出典を明記して公開する（医師監修は体制が整うまで表記しない）。
 // 効果・断定・体験談は使わない。一般的に知られる知見の整理。
 
+import type { ProductRef } from "./monetization";
+
 export type ClusterSection = {
   h: string;
   body: string;
@@ -28,6 +30,17 @@ export type ClusterSection = {
    * 装飾目的では置かない（DESIGN.md「写真がないなら置かない」）。
    */
   figure?: { src: string; alt: string; caption?: string; width: number; height: number };
+  /**
+   * 具体的な物・サービス。成果報酬（アフィリエイト）を含む場合がある。
+   *
+   * 「何を買えばいいか」まで書かないと、読んだあとの一歩が踏み出せない。
+   * ただし置いた時点で表示のルールがかかるので、扱いは lib/monetization.ts に集約した。
+   *   ・成果報酬つきが1つでもあれば、記事の頭に告知が自動で出る
+   *   ・リンクの隣に「広告」が付き、rel="sponsored" になる
+   *   ・医療機関・医薬品には成果報酬を付けられない（ビルドが落ちる）
+   * 並べる順番は報酬額で決めない。安い順・条件の緩い順に置く。
+   */
+  products?: ProductRef[];
 };
 export type ClusterFaq = { q: string; a: string };
 

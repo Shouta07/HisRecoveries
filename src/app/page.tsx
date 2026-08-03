@@ -2,26 +2,39 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import GlassNav from "@/components/GlassNav";
-import ArticleIndex from "@/components/ArticleIndex";
+import HomeHero from "@/components/HomeHero";
+import ArticleResults from "@/components/ArticleResults";
 import ArticleList from "@/components/ArticleList";
 import { complexes } from "@/lib/complexes";
 import { clusters } from "@/lib/clusters";
 import { byNewest, formatDate, publishedAt } from "@/lib/articleDates";
+import { readingMinutes } from "@/lib/reading";
 import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
+import HeroStart from "@/components/check/HeroStart";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ = 編集メディアの表紙。
 //
-// サービスLPではありません。順番は DESIGN.md「10. TOPページ」で固定：
-//   Hero → 最新記事 → 特集 → カテゴリ → よく読まれている記事 →
-//   His Recoveriesについて → ニュースレター → サービス → Footer
+// サービスLPではありません。順番:
+//   Hero → 診断 → 新しい記事 → よく読まれている → 分野から →
+//   His Recoveriesについて → 記事をさがす（全件索引）→ サービス → Footer
+//
+// ── 全件索引を最後に落とした ────────────────────────
+// 以前は Hero の直後に「記事 全55本」の索引があり、編集が選んだ
+// 「新しい記事」「よく読まれている記事」はそのはるか下にあった。
+// 表紙をめくった最初の面が目次だと、ページは「探す画面」になる。
+// 探しに来た人は下まで行くか検索を使うので、索引は下でいい。
 //
 // やらないこと：
 //   ・カードで囲まない（記事は地の上に、写真と文字を直接置く）
 //   ・英語のセクション見出しを置かない
 //   ・すべてのセクションを同じ余白にしない（話題の切れ目で1段広げる）
-//   ・ヒーローに相談・診断のボタンを置かない（「記事を読む」だけ）
+//   ・ヒーローの中にボタンを置かない（写真と見出しだけ）
+//
+// 診断はヒーローの直後、記事より先に置く。
+// 以前は「診断の導線を置かない」と決めていたが、それは読み物としての
+// 純度を守るための判断だった。読者に現在地を渡すほうを優先する。
 // ══════════════════════════════════════════════════════════════
 
 const MINCHO: React.CSSProperties = {
@@ -81,7 +94,7 @@ export default function HomePage() {
 
       {/* ══════ 1画面目 ══════
           検索を右上のアイコンに移したので、ここは写真だけ。
-          高さ（100svh）は ArticleIndex 側が持つ。ここで渡すのは中身だけ。
+          高さ（100svh）は HomeHero が持つ。ここで渡すのは中身だけ。
 
           ── 縦組みをやめた ─────────────────────────────
           縦書きの見出しは、実機で文字が重なった。原因は
@@ -98,9 +111,29 @@ export default function HomePage() {
           ── 動き ────────────────────────────────────
           写真がゆっくり寄り、見出しが左から現れる。
           prefers-reduced-motion のときは全部止まる（globals.css）。 */}
-      <ArticleIndex
-        list={<ArticleList />}
-        hero={
+      {/* ══════ 1画面目 ══════
+          写真だけの1画面をやめ、写真＋入口の帯にした。
+
+          ── なぜ ────────────────────────────────
+          実測したら、ファーストビューの中に押せるものが1つもなかった。
+          訪問→診断のモデルで、最初の画面に行き先がないのは致命的。
+
+          ── なぜ「診断する」ボタンではないのか ──────────
+          ボタンは「これから何かが始まる」という約束にすぎない。
+          1問目そのものを置けば、押した時点でもう始まっている。
+          しかも6つの選択肢が並ぶこと自体が「誰向けのサイトか」を
+          1秒で答えるので、説明のコピーがいらなくなる。
+
+          ── コピーから外したもの ─────────────────
+          「実体験と、専門家への取材をもとに。」を下ろした。
+          取材はまだ0本で、同じページの下の方で自分からそう書いている。
+          言えるようになってから、また置く。
+
+          ── 動き ────────────────────────────────
+          写真がゆっくり寄り、見出しが左から現れ、選択肢が1つずつ立ち上がる。
+          prefers-reduced-motion のときは全部止まる（globals.css）。 */}
+      <HomeHero
+        photo={
           <>
             <div className="hr-kenburns absolute inset-0">
               <Image
@@ -109,63 +142,47 @@ export default function HomePage() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover object-[46%_24%]"
+                className="object-cover object-[46%_20%]"
               />
             </div>
 
-            {/* 文字が乗る下half を落とす。写真の上半分（顔と光）は残す */}
+            {/* 文字が乗る下側を落とす。写真の上半分（顔と光）は残す */}
             <div
               aria-hidden
-              className="absolute inset-x-0 bottom-0 h-[62%]"
+              className="absolute inset-x-0 bottom-0 h-[58%]"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(17,27,38,0.92) 0%, rgba(17,27,38,0.78) 28%, rgba(17,27,38,0.42) 60%, rgba(17,27,38,0) 100%)",
-              }}
-            />
-            {/* 左からも少し。文頭の1〜2文字が明るい所に来ても沈まないように */}
-            <div
-              aria-hidden
-              className="absolute inset-y-0 left-0 w-[62%]"
-              style={{
-                background:
-                  "linear-gradient(to right, rgba(17,27,38,0.42) 0%, rgba(17,27,38,0.12) 55%, rgba(17,27,38,0) 100%)",
+                  "linear-gradient(to top, rgba(17,27,38,0.94) 0%, rgba(17,27,38,0.76) 30%, rgba(17,27,38,0.36) 62%, rgba(17,27,38,0) 100%)",
               }}
             />
 
-            {/* 見出しと説明を、左下に1つの塊として置く */}
-            <div /* 右端はスクロール線のぶん空ける。文字とぶつからないように */
-              className="absolute bottom-[68px] left-5 right-14 sm:bottom-[84px] sm:left-12 sm:right-24 lg:bottom-[96px] lg:left-16">
-              <h1
-                className="hr-wipe max-w-[15em] text-[clamp(30px,7.2vw,44px)] leading-[1.42] text-shironeri sm:text-[52px] lg:text-[64px] lg:leading-[1.34]"
-                style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 28px rgba(12,20,29,0.55)" }}
-              >
-                もっといい自分は、
-                <br />
-                つくれる。
-              </h1>
-
-              <p
-                className="hr-rise mt-6 max-w-[34em] text-[14px] leading-[1.95] text-shironeri/90 sm:mt-8 sm:text-[16px] sm:leading-[2]"
-                style={{ ["--d" as string]: "760ms" }}
-              >
-                髪、肌、眠り、疲れ、体、パートナーとのこと。
-                <br />
-                <span className="font-bold text-shironeri">実体験と、専門家への取材をもとに。</span>
-              </p>
+            <h1
+              className="hr-wipe absolute bottom-7 left-5 right-5 max-w-[15em] text-[clamp(27px,7vw,40px)] leading-[1.38] text-shironeri sm:bottom-8 sm:left-12 sm:text-[46px] lg:left-16 lg:text-[56px] lg:leading-[1.3]"
+              style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 26px rgba(12,20,29,0.6)" }}
+            >
+              男の改善は、
+              <br />
+              順番で決まる。
+            </h1>
+          </>
+        }
+        band={
+          <>
+            <p
+              className="hr-rise max-w-[30em] text-[13.5px] leading-[1.85] text-keshizumi sm:text-[15px]"
+              style={{ ["--d" as string]: "700ms" }}
+            >
+              髪も、肌も、体も、やることは同じくらいある。
+              <span className="whitespace-nowrap">違うのは順番だけ。</span>
+            </p>
+            <div className="mt-5 max-w-[34em] lg:max-w-[62em]">
+              <HeroStart />
             </div>
-
-            {/* スクロールしてよい、と分かるようにする。
-                文字は左下にまとめたので、こちらは右下に置いて重ならないようにする。 */}
-            <span
-              aria-hidden
-              className="hr-rise hr-scrollcue absolute bottom-7 right-6 sm:bottom-9 sm:right-10"
-              style={{ ["--d" as string]: "1000ms" }}
-            />
           </>
         }
       />
 
-      {/* ══════ 最新記事 ══════ */}
+      {/* ══════ 新しい記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
         <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
           新しい記事
@@ -181,12 +198,18 @@ export default function HomePage() {
             >
               {head.title}
             </h3>
-            <p className="mt-4 max-w-[36em] text-[15px] leading-[1.95] text-keshizumi">
-              {head.lead}
+            {/* 導入文ではなく、要点の1本目を出す。
+                リードは「これから説明します」で終わるので、一覧では引きが弱い。
+                要点は結論なので、読む前に持ち帰るものが1つ決まる。 */}
+            <p className="mt-4 max-w-[36em] text-[16px] leading-[2] text-keshizumi">
+              {head.summary[0] ?? head.lead}
             </p>
-            {publishedAt(head.slug) && (
-              <p className="mt-4 text-[13px] tabular-nums text-ainezu">{formatDate(publishedAt(head.slug)!)}</p>
-            )}
+            <p className="mt-5 flex flex-wrap items-baseline gap-x-4 text-[12.5px] text-ainezu">
+              {publishedAt(head.slug) && (
+                <span className="tabular-nums">{formatDate(publishedAt(head.slug)!)}</span>
+              )}
+              <span className="tabular-nums">読了 約{readingMinutes(head)}分</span>
+            </p>
           </Link>
         )}
 
@@ -206,9 +229,10 @@ export default function HomePage() {
                 >
                   {a.title}
                 </h3>
-                <p className="mt-2.5 text-[14px] leading-[1.9] text-keshizumi line-clamp-2">
-                  {a.lead}
+                <p className="mt-2.5 text-[14.5px] leading-[1.95] text-keshizumi line-clamp-3">
+                  {a.summary[0] ?? a.lead}
                 </p>
+                <p className="mt-2.5 text-[12px] tabular-nums text-ainezu">読了 約{readingMinutes(a)}分</p>
               </Link>
             </li>
           ))}
@@ -219,8 +243,8 @@ export default function HomePage() {
             href="#index"
             className="inline-flex items-baseline gap-2 text-[15px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] hover:decoration-asagi transition-colors"
           >
-            記事をすべて見る
-            <span aria-hidden>→</span>
+            55本すべてから探す
+            <span aria-hidden>↓</span>
           </a>
         </p>
       </section>
@@ -253,6 +277,46 @@ export default function HomePage() {
         <p className="mt-5 text-[12.5px] text-ainezu">
           ※ 閲覧数の集計は準備中です。いまは編集部が選んだ5本を出しています。
         </p>
+      </section>
+
+      {/* ══════ 分野から ══════
+          文字ばかりの縦の流れに、大きさの違う塊をひとつ挟む。
+          6つしかないので、一覧ではなく面として置ける。
+          記事の本数は実数（数合わせで作らないので、少ない分野は少ないまま出す）。 */}
+      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
+        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
+          分野から
+        </h2>
+        {/* モバイルでも2列。1列にすると縦長のタイルが6つ並ぶだけで、
+            結局「スクロールするだけ」の面が1つ増える。 */}
+        <ul className="mt-9 grid grid-cols-2 gap-px border border-shironezu bg-shironezu lg:grid-cols-3">
+          {complexes.map((c) => {
+            const n = clusters.filter((a) => a.areaId === c.id).length;
+            return (
+              <li key={c.id} className="bg-shironeri">
+                {/* タイル全体がリンクなので「この分野を見る →」は置かない。
+                    6回繰り返すと、読むものではなく飾りになる。 */}
+                <Link
+                  href={`/areas/${c.id}`}
+                  className="group flex h-full flex-col px-4 py-5 transition-colors hover:bg-hakuji sm:px-6 sm:py-7"
+                >
+                  <div className="flex items-baseline gap-2.5">
+                    <h3
+                      className="text-[17px] leading-[1.45] transition-colors group-hover:text-asagi sm:text-[21px]"
+                      style={{ ...MINCHO, fontWeight: 700 }}
+                    >
+                      {c.ja}
+                    </h3>
+                    <span className="text-[12px] tabular-nums text-ainezu">{n}</span>
+                  </div>
+                  <p className="mt-2 text-[12.5px] leading-[1.8] text-ainezu sm:text-[13.5px]">
+                    {c.system}
+                  </p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
       {/* ══════ His Recoveriesについて — 編集方針もここに置く ══════
@@ -298,6 +362,10 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+      {/* ══════ 記事をさがす（全件索引）══════
+          ここまでで読むものが決まらなかった人のための面。先頭には置かない。 */}
+      <ArticleResults list={<ArticleList />} />
 
       {/* ══════ サービス — 最後。静かに ══════ */}
       <section className="border-t border-shironezu">

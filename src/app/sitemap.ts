@@ -50,11 +50,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const staticPaths: MetadataRoute.Sitemap = [
+    "/check",
     "/plan",
     "/areas/confidence",
     "/reserve",
     "/apply",
     "/partner",
+    "/disclosure",
     "/privacy",
   ].map((p) => ({
     url: `${site.url}${p}`,

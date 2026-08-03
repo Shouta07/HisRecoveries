@@ -90,6 +90,11 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
                 </Link>
               </li>
               <li>
+                <Link href="/disclosure" className="transition-colors hover:text-asagi">
+                  広告と収益について
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="transition-colors hover:text-asagi">
                   プライバシー・免責事項
                 </Link>
