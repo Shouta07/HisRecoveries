@@ -27,6 +27,8 @@ import {
 import { track } from "@/lib/analytics";
 import ShareRow from "@/components/ShareRow";
 import StepOptions from "@/components/check/StepOptions";
+import { buildPlan } from "@/lib/plan";
+import { costLabel } from "@/lib/options";
 import { site } from "@/lib/site";
 
 const MINCHO: React.CSSProperties = {
@@ -332,6 +334,12 @@ function Result({
         </ol>
       </section>
 
+      {/* 90日ロードマップ。
+          順番は優先順位であって予定ではないので、時間軸に展開する。
+          フェーズの中身は順番表から作っている（別々に決めると、
+          同じ画面に違う順序が2つ並ぶことになる）。 */}
+      {r.steps.length > 0 && <Plan steps={r.steps} limits={r.limits} />}
+
       {/* 順番 */}
       {r.steps.length > 0 && (
         <section className="mt-14">
@@ -445,5 +453,65 @@ function Result({
         </Link>
       </div>
     </div>
+  );
+}
+
+// ── 90日ロードマップ ─────────────────────────────
+
+function Plan({
+  steps,
+  limits,
+}: {
+  steps: { areaId: AreaId }[];
+  limits: Parameters<typeof buildPlan>[1];
+}) {
+  const phases = buildPlan(steps, limits);
+
+  return (
+    <section className="mt-14">
+      <h3 className="text-[18px] sm:text-[20px]" style={{ ...MINCHO, fontWeight: 700 }}>
+        90日の進め方
+      </h3>
+      <p className="mt-3 text-[14px] leading-[1.95] text-ainezu">
+        3つに割ってあります。前に進む条件も書いてあるので、期日ではなく状態で進みます。
+      </p>
+
+      <div className="mt-7 flex flex-col gap-8">
+        {phases.map((p) => (
+          <div key={p.n} className="border border-shironezu bg-hakuji px-5 py-6 sm:px-6">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="text-[12px] tabular-nums text-asagi">
+                {p.fromWeek}〜{p.toWeek}週目
+              </span>
+              <h4 className="text-[17px] leading-[1.5]" style={{ ...MINCHO, fontWeight: 700 }}>
+                {p.label}
+              </h4>
+            </div>
+            <p className="mt-2.5 text-[14px] leading-[1.9] text-keshizumi">{p.aim}</p>
+
+            {p.todo.length > 0 ? (
+              <ul className="mt-4 border-t border-shironezu">
+                {p.todo.map((o) => (
+                  <li key={o.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-shironezu py-3">
+                    <span className="text-[14.5px] leading-[1.75] text-sumi">{o.label}</span>
+                    <span className="text-[11.5px] tabular-nums text-ainezu">{costLabel(o)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-[13.5px] text-ainezu">
+                この期間にやることはありません。前の段階を続けてください。
+              </p>
+            )}
+
+            {p.moveOn !== "——" && (
+              <p className="mt-4 text-[13px] leading-[1.85] text-ainezu">
+                <span className="text-keshizumi">次へ進む条件</span>　{p.moveOn}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
