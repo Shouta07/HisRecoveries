@@ -121,6 +121,19 @@ export const BLOCKS: Block[] = [
           { value: "over", label: "それ以上" },
         ],
       },
+      {
+        // 選択肢を絞るための設問。期限がないと「間に合わないもの」を
+        // 落とせず、結局すべてを並べることになる。
+        id: "b5",
+        q: "いつまでに、変化を確かめたいですか",
+        hint: "急ぐほど選べるものは減ります。決めていないなら、それで構いません",
+        choices: [
+          { value: "4", label: "1ヶ月くらい" },
+          { value: "12", label: "3ヶ月くらい" },
+          { value: "26", label: "半年くらい" },
+          { value: "none", label: "決めていない" },
+        ],
+      },
     ],
   },
   {
@@ -422,6 +435,11 @@ export type CheckResult = {
   /** 予算・時間の申告（結果の言い回しに使う） */
   budget: string | undefined;
   minutes: string | undefined;
+  /**
+   * 選択肢を絞るための条件。undefined は「制限しない」。
+   * 文字列のままだと使う側で毎回変換することになるので、ここで数値にする。
+   */
+  limits: { budget?: number; minutes?: number; weeks?: number };
 };
 
 export type Step = {
@@ -576,6 +594,12 @@ export function evaluate(answers: Answers): CheckResult {
     thisMonth,
     budget: answers["b4"],
     minutes: answers["b3"],
+    limits: {
+      // 「それ以上」は上限なしとして扱う（大きい数を置くと表示に出てしまう）
+      budget: answers["b4"] && answers["b4"] !== "over" ? Number(answers["b4"]) : undefined,
+      minutes: answers["b3"] ? Number(answers["b3"]) : undefined,
+      weeks: answers["b5"] && answers["b5"] !== "none" ? Number(answers["b5"]) : undefined,
+    },
   };
 }
 

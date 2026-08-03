@@ -26,6 +26,7 @@ import {
 } from "@/lib/check";
 import { track } from "@/lib/analytics";
 import ShareRow from "@/components/ShareRow";
+import StepOptions from "@/components/check/StepOptions";
 import { site } from "@/lib/site";
 
 const MINCHO: React.CSSProperties = {
@@ -353,8 +354,14 @@ function Result({
                     {s.label}
                   </h4>
                   <p className="mt-2.5 text-[14.5px] leading-[1.95] text-keshizumi">{s.why}</p>
+
+                  {/* 順番だけ出しても、次に何を選ぶかが残る。
+                      予算・時間・期限で仕分けた選択肢をここに置く。
+                      落としたものも理由つきで出す（隠すと比較にならない）。 */}
+                  <StepOptions area={s.areaId} limits={r.limits} />
+
                   {list.length > 0 && (
-                    <ul className="mt-4 flex flex-col gap-2">
+                    <ul className="mt-5 flex flex-col gap-2 border-t border-shironezu pt-4">
                       {list.map((a) => (
                         <li key={a.slug}>
                           <Link
