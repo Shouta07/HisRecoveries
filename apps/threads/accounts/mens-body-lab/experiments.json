@@ -5,13 +5,14 @@
     "fan-record": 1,
     "b2b-adcost": 1,
     "fan-midnight": 1,
-    "biz-e-honest": 1
+    "biz-e-honest": 1,
+    "b2b-quality": 1
   },
   "cta_post_counts": {
-    "none": 6
+    "none": 7
   },
-  "total_posts": 6,
+  "total_posts": 7,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-02T12:47:33.652532"
+  "last_updated": "2026-08-03T03:15:11.487556"
 }
