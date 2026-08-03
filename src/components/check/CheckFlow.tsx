@@ -2,9 +2,9 @@
 
 // 診断の本体。1画面1問で、選んだら自動で次へ進む。
 //
-// 35問を1画面ずつ出すと多く見えるが、選択＝前進なのでタップは35回、
-// 実測で90秒前後に収まる。ページ送りのボタンを別に押させると、
-// ここで倍のタップ数になり、完了率がはっきり落ちる。
+// 本体は5問。選んだら自動で次へ進むので、30秒で終わる。
+// ページ送りのボタンを別に押させると、ここで倍のタップ数になり、
+// 完了率がはっきり落ちる。
 //
 // 気になっていない領域は、先頭の設問で「特にない」を選んだ時点で
 // 残りを飛ばす。答えなかったこと自体が「該当なし」という回答になる。
@@ -15,7 +15,9 @@ import { useSearchParams } from "next/navigation";
 import {
   BLOCKS,
   type Block,
-  TOTAL_QUESTIONS,
+  type Stage,
+  CORE_QUESTIONS,
+  DETAIL_QUESTIONS,
   AREA_LABEL_SHORT,
   evaluate,
   isAreaId,
@@ -38,33 +40,27 @@ const MINCHO: React.CSSProperties = {
 
 export type ArticleRef = { slug: string; title: string };
 
-/** 質問を1本の配列に伸ばしておく。飛ばす判定は進むときに行う */
+/** 質問を1本の配列に伸ばしておく */
 type Flat = { q: Question; block: Block; indexInBlock: number };
 
 /**
- * 設問の並びを組む。
+ * その段階の設問を並べる。
  *
- * ── なぜ並べ替えるのか ──────────────────────────
- * 以前は「はじめに（年代・場面・時間・予算）」が固定で先頭だった。
- * ファーストビューで「髪・薄毛」を押した人が髪の設問に着くのは17問目、
- * 「眠り・体型」なら31問目。自分の話が始まると思って押したのに、
- * 最初に来るのが「年代を教えてください」では、期待を1問目で裏切っている。
+ * ── 5問にした ────────────────────────────────
+ * 以前は36問だった。訊く数を増やすほど精度は上がるが、
+ * 完了しない診断はレポートを1枚も出せない。精度より完了を取る。
+ * 領域別の詳細19問は削り、減点12項目は任意の段階に移した。
  *
- * 選んだ悩みのブロックを先頭に出す。属性を聞くのは最後でいい
- * （評価には年代も場面も使っていない。使っているのは予算と時間の表示だけ）。
- *
- * 結果の順番表そのものは動かさない。変えるのは「訊く順」だけで、
- * 「やる順」は誰に対しても同じ（減点 → 現在地 → ケア → 内側）。
+ * ── 先に答えたものは訊かない ─────────────────────
+ * ファーストビューで悩みを選んだ人には、同じことを訊かない。
+ * 本人が選んだ答えを引き継ぐだけなので、代わりに答えたことにはならない。
  */
-function buildFlat(focus: AreaId | null): Flat[] {
-  const basic = BLOCKS.find((b) => b.id === "basic")!;
-  const genten = BLOCKS.find((b) => b.id === "genten")!;
-  const areas = BLOCKS.filter((b) => b.areaId !== null);
-  const focused = focus ? areas.find((b) => b.areaId === focus) : undefined;
-  const rest = areas.filter((b) => b !== focused);
-
-  const ordered = [...(focused ? [focused] : []), genten, ...rest, basic];
-  return ordered.flatMap((b) => b.questions.map((q, qi) => ({ q, block: b, indexInBlock: qi })));
+function buildFlat(stage: Stage, answered: Answers): Flat[] {
+  return BLOCKS.filter((b) => b.stage === stage).flatMap((b) =>
+    b.questions
+      .map((q, qi) => ({ q, block: b, indexInBlock: qi }))
+      .filter((f) => answered[f.q.id] === undefined),
+  );
 }
 
 export default function CheckFlow({
@@ -78,6 +74,7 @@ export default function CheckFlow({
   const [answers, setAnswers] = useState<Answers>({});
   const [cursor, setCursor] = useState(0);
   const [done, setDone] = useState(false);
+  const [stage, setStage] = useState<Stage>("core");
   const started = useRef(false);
   const finished = useRef(false);
 
@@ -88,7 +85,14 @@ export default function CheckFlow({
   const raw = params.get("focus");
   const focus: AreaId | null = isAreaId(raw) ? raw : null;
 
-  const flat = useMemo(() => buildFlat(focus), [focus]);
+  // ファーストビューで選んだ悩みは、そのまま c1 の答えとして引き継ぐ
+  const seeded: Answers = useMemo<Answers>(() => {
+    const a: Answers = {};
+    if (focus) a.c1 = focus;
+    return a;
+  }, [focus]);
+  const all = useMemo(() => ({ ...seeded, ...answers }), [seeded, answers]);
+  const flat = useMemo(() => buildFlat(stage, seeded), [stage, seeded]);
   const current = flat[cursor];
 
   // 離脱の計測。どこまで進んで閉じたかが分かると、質問の並びを直せる。
@@ -103,21 +107,8 @@ export default function CheckFlow({
   }, [cursor]);
 
   const next = useCallback(
-    (fromIndex: number, ans: Answers) => {
-      let i = fromIndex + 1;
-      // 「特にない」を選んだブロックの残りは飛ばす
-      while (i < flat.length) {
-        const f = flat[i];
-        if (
-          f.block.skipRestIf &&
-          f.indexInBlock > 0 &&
-          ans[f.block.questions[0].id] === f.block.skipRestIf
-        ) {
-          i++;
-          continue;
-        }
-        break;
-      }
+    (fromIndex: number) => {
+      const i = fromIndex + 1;
       if (i >= flat.length) {
         finished.current = true;
         setDone(true);
@@ -135,28 +126,14 @@ export default function CheckFlow({
       started.current = true;
       track("check_start");
     }
-    next(cursor, ans);
+    next(cursor);
   }
 
   function back() {
-    // 飛ばした設問を戻りでも飛ばす
-    let i = cursor - 1;
-    while (i >= 0) {
-      const f = flat[i];
-      if (
-        f.block.skipRestIf &&
-        f.indexInBlock > 0 &&
-        answers[f.block.questions[0].id] === f.block.skipRestIf
-      ) {
-        i--;
-        continue;
-      }
-      break;
-    }
-    if (i >= 0) setCursor(i);
+    if (cursor > 0) setCursor(cursor - 1);
   }
 
-  const result = useMemo(() => (done ? evaluate(answers) : null), [done, answers]);
+  const result = useMemo(() => (done ? evaluate(all) : null), [done, all]);
 
   useEffect(() => {
     if (result) {
@@ -164,20 +141,41 @@ export default function CheckFlow({
         first: result.steps[0]?.areaId ?? "none",
         untouched: result.untouched,
         focus: focus ?? "none",
+        detailed: result.detailed,
       });
     }
   }, [result, focus]);
 
-  if (result) return <Result r={result} articles={articles} onRedo={() => {
-    setAnswers({});
-    setCursor(0);
-    setDone(false);
-    started.current = false;
-    finished.current = false;
-  }} />;
+  if (result)
+    return (
+      <Result
+        r={result}
+        articles={articles}
+        onRedo={() => {
+          setAnswers({});
+          setCursor(0);
+          setDone(false);
+          setStage("core");
+          started.current = false;
+          finished.current = false;
+        }}
+        onDetail={
+          result.detailed
+            ? undefined
+            : () => {
+                track("check_detail_start");
+                setStage("detail");
+                setCursor(0);
+                setDone(false);
+                finished.current = false;
+              }
+        }
+      />
+    );
 
-  const answered = Object.keys(answers).length;
-  const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
+  const answered = cursor;
+  const total = stage === "core" ? flat.length : DETAIL_QUESTIONS;
+  const pct = Math.round((answered / Math.max(total, 1)) * 100);
   const block = current.block;
 
   return (
@@ -195,7 +193,7 @@ export default function CheckFlow({
               ですね。そこも含めて、全体の順番を見ます。
             </p>
             <p className="mt-1.5 text-[13px] leading-[1.85] text-ainezu">
-              {TOTAL_QUESTIONS}問・約3分。1つだけ見ても順番は出ないので、まず全体から。
+              あと{CORE_QUESTIONS - 1}問・30秒で、順番が出ます。
             </p>
           </div>
         ) : (
@@ -207,7 +205,7 @@ export default function CheckFlow({
         <div className="flex items-baseline justify-between gap-4">
           <p className="text-[12.5px] text-ainezu">{block.label}</p>
           <p className="text-[12.5px] tabular-nums text-ainezu">
-            {answered} / {TOTAL_QUESTIONS}
+            {answered} / {total}
           </p>
         </div>
         <div className="mt-2 h-[3px] w-full bg-shironezu">
@@ -273,10 +271,13 @@ function Result({
   r,
   articles,
   onRedo,
+  onDetail,
 }: {
   r: ReturnType<typeof evaluate>;
   articles: Record<string, ArticleRef[]>;
   onRedo: () => void;
+  /** 精度を上げる段階へ。すでに答えた人には渡さない */
+  onDetail?: () => void;
 }) {
   return (
     <div className="pt-4">
@@ -288,34 +289,54 @@ function Result({
         {summarize(r)}
       </h2>
 
-      {/* 現在地。人を採点しているように見せない。数えているのは項目の数だけ */}
-      <div className="mt-8 border border-shironezu bg-hakuji px-5 py-6 sm:px-6">
-        <p className="text-[13px] text-ainezu">いまの状態（12項目）</p>
-        <div className="mt-4 flex flex-wrap items-baseline gap-x-7 gap-y-2">
-          <p className="text-[15px]">
-            <span className="text-[30px] tabular-nums" style={{ ...MINCHO, fontWeight: 700 }}>
-              {12 - r.untouched - r.partial}
-            </span>
-            <span className="ml-1.5 text-ainezu">できている</span>
-          </p>
-          <p className="text-[15px]">
-            <span className="text-[22px] tabular-nums" style={{ ...MINCHO, fontWeight: 700 }}>
-              {r.partial}
-            </span>
-            <span className="ml-1.5 text-ainezu">ときどき抜ける</span>
-          </p>
-          <p className="text-[15px]">
-            <span className="text-[22px] tabular-nums" style={{ ...MINCHO, fontWeight: 700 }}>
-              {r.untouched}
-            </span>
-            <span className="ml-1.5 text-ainezu">手つかず</span>
+      {/* 現在地。答えた人にだけ出す。
+          5問だけで終える人のほうが多い前提なので、
+          未回答のときは空欄を見せず、精度を上げる導線に替える。 */}
+      {r.detailed ? (
+        <div className="mt-8 border border-shironezu bg-hakuji px-5 py-6 sm:px-6">
+          <p className="text-[13px] text-ainezu">いまの状態（12項目）</p>
+          <div className="mt-4 flex flex-wrap items-baseline gap-x-7 gap-y-2">
+            <p className="text-[15px]">
+              <span className="text-[30px] tabular-nums" style={{ ...MINCHO, fontWeight: 700 }}>
+                {12 - r.untouched - r.partial}
+              </span>
+              <span className="ml-1.5 text-ainezu">できている</span>
+            </p>
+            <p className="text-[15px]">
+              <span className="text-[22px] tabular-nums" style={{ ...MINCHO, fontWeight: 700 }}>
+                {r.partial}
+              </span>
+              <span className="ml-1.5 text-ainezu">ときどき抜ける</span>
+            </p>
+            <p className="text-[15px]">
+              <span className="text-[22px] tabular-nums" style={{ ...MINCHO, fontWeight: 700 }}>
+                {r.untouched}
+              </span>
+              <span className="ml-1.5 text-ainezu">手つかず</span>
+            </p>
+          </div>
+          <p className="mt-4 text-[13.5px] leading-[1.9] text-ainezu">
+            これは良し悪しの点数ではなく、手をつけている項目の数です。
+            全部を埋める必要はありません。順番があります。
           </p>
         </div>
-        <p className="mt-4 text-[13.5px] leading-[1.9] text-ainezu">
-          これは良し悪しの点数ではなく、手をつけている項目の数です。
-          全部を埋める必要はありません。順番があります。
-        </p>
-      </div>
+      ) : onDetail ? (
+        <div className="mt-8 border border-shironezu bg-hakuji px-5 py-6 sm:px-6">
+          <p className="text-[13px] text-ainezu">精度を上げる</p>
+          <p className="mt-2 text-[15px] leading-[1.9] text-keshizumi">
+            13問（1分）に答えると、いまの状態が12項目で出て、
+            <span className="font-bold text-sumi">順番の並びも変わることがあります。</span>
+            答えなくても、下の内容はこのまま使えます。
+          </p>
+          <button
+            type="button"
+            onClick={onDetail}
+            className="mt-4 inline-block border border-asagi bg-asagi px-5 py-2.5 text-[14px] font-bold text-shironeri transition-colors hover:bg-transparent hover:text-asagi"
+          >
+            1分だけ足す
+          </button>
+        </div>
+      ) : null}
 
       {/* 今月の3つ — 結果の中で、いちばん先に読まれる位置に置く */}
       <section className="mt-12">
@@ -425,8 +446,8 @@ function Result({
         url={`${site.url}/check`}
         title={
           r.steps[0]
-            ? `男の改善は、順番で決まる。35問やったら、私は「${r.steps[0].label}」からでした。`
-            : "男の改善は、順番で決まる。35問・3分で、何から始めるかが出ます。"
+            ? `男の改善は、順番で決まる。診断したら、私は「${r.steps[0].label}」からでした。`
+            : "男の改善は、順番で決まる。5問・30秒で、何から始めるかが出ます。"
         }
       />
 

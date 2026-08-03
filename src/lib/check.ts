@@ -31,9 +31,16 @@ export type Question = {
   choices: Choice[];
 };
 
+export type Stage = "core" | "detail";
+
 export type Block = {
   id: BlockId;
   label: string;
+  /**
+   * core = 最小診断（これだけでレポートが出る）
+   * detail = 任意。精度を上げたい人だけが進む
+   */
+  stage: Stage;
   /** その領域に対応する areaId。基本ブロックは null */
   areaId: AreaId | null;
   questions: Question[];
@@ -45,7 +52,7 @@ export type Block = {
   skipRestIf?: string;
 };
 
-export type BlockId = "basic" | "genten" | "hair" | "skin" | "face" | "bodyhair" | "mind";
+export type BlockId = "core" | "detail";
 export type AreaId = "impression" | "hair" | "skin" | "face" | "body-hair" | "mind";
 
 // ── 質問 ────────────────────────────────────
@@ -74,10 +81,37 @@ const GENTEN: { id: string; q: string; hint?: string; area: AreaId }[] = [
 
 export const BLOCKS: Block[] = [
   {
-    id: "basic",
-    label: "はじめに",
+    id: "core",
+    label: "5つだけ",
+    stage: "core",
     areaId: null,
     questions: [
+      {
+        id: "c1",
+        q: "いま、いちばん気になっているのは",
+        choices: [
+          { value: "impression", label: "清潔感・第一印象" },
+          { value: "hair", label: "髪・薄毛" },
+          { value: "skin", label: "肌荒れ" },
+          { value: "face", label: "疲れて見えること" },
+          { value: "body-hair", label: "ヒゲ・体毛" },
+          { value: "mind", label: "眠り・体型" },
+        ],
+      },
+      {
+        // 理想を訊く。「何を直すか」だけだと、直したあとに何が
+        // 起きてほしいのかが分からず、順番の理由が書けない。
+        id: "c2",
+        q: "どうなりたいですか",
+        hint: "いちばん近いものを選んでください",
+        choices: [
+          { value: "clean", label: "清潔感がある、と思われたい" },
+          { value: "young", label: "実年齢より上に見られたくない" },
+          { value: "photo", label: "写真に写った自分に、違和感をなくしたい" },
+          { value: "calm", label: "人前で、見た目を気にせずいたい" },
+          { value: "undecided", label: "まだ決めていない" },
+        ],
+      },
       {
         id: "b1",
         q: "年代を教えてください",
@@ -87,28 +121,6 @@ export const BLOCKS: Block[] = [
           { value: "30e", label: "30代前半" },
           { value: "30l", label: "30代後半" },
           { value: "40", label: "40代以上" },
-        ],
-      },
-      {
-        id: "b2",
-        q: "気になったのは、どんな場面でしたか",
-        choices: [
-          { value: "photo", label: "写真に写った自分を見たとき" },
-          { value: "mirror", label: "鏡を見たとき" },
-          { value: "first", label: "初対面の人と会うとき" },
-          { value: "public", label: "人前で話すとき" },
-          { value: "none", label: "特定の場面はない" },
-        ],
-      },
-      {
-        id: "b3",
-        q: "1日に使える時間は、どのくらいですか",
-        hint: "続けられる範囲で答えてください",
-        choices: [
-          { value: "5", label: "5分まで" },
-          { value: "10", label: "10分くらい" },
-          { value: "20", label: "20分くらい" },
-          { value: "30", label: "それ以上とれる" },
         ],
       },
       {
@@ -122,11 +134,9 @@ export const BLOCKS: Block[] = [
         ],
       },
       {
-        // 選択肢を絞るための設問。期限がないと「間に合わないもの」を
-        // 落とせず、結局すべてを並べることになる。
         id: "b5",
         q: "いつまでに、変化を確かめたいですか",
-        hint: "急ぐほど選べるものは減ります。決めていないなら、それで構いません",
+        hint: "急ぐほど、選べるものは減ります",
         choices: [
           { value: "4", label: "1ヶ月くらい" },
           { value: "12", label: "3ヶ月くらい" },
@@ -136,235 +146,46 @@ export const BLOCKS: Block[] = [
       },
     ],
   },
+
+  // ── ここから先は任意 ────────────────────────────
+  // 5問でレポートは出る。この13問は「精度を上げる」ためのもので、
+  // 出さないまま終わってよい。最初から全部訊くと、完了率が落ちる。
   {
-    id: "genten",
-    label: "いまの状態",
+    id: "detail",
+    label: "もう1分",
+    stage: "detail",
     areaId: null,
-    questions: GENTEN.map((g) => ({
-      id: g.id,
-      q: g.q,
-      hint: g.hint,
-      choices: YES_NO_SOMETIMES,
-    })),
-  },
-  {
-    id: "hair",
-    label: "髪",
-    areaId: "hair",
-    skipRestIf: "none",
     questions: [
       {
-        id: "h1",
-        q: "生え際やつむじの変化を感じますか",
+        id: "b3",
+        q: "1日に使える時間は、どのくらいですか",
+        hint: "続けられる範囲で答えてください",
         choices: [
-          { value: "none", label: "気にならない", weight: 0 },
-          { value: "self", label: "自分では少し感じる", weight: 2 },
-          { value: "clear", label: "はっきり感じる", weight: 3 },
-          { value: "told", label: "人に言われたことがある", weight: 4 },
+          { value: "5", label: "5分まで" },
+          { value: "10", label: "10分くらい" },
+          { value: "20", label: "20分くらい" },
+          { value: "30", label: "それ以上とれる" },
         ],
       },
-      {
-        id: "h2",
-        q: "抜け毛の量はどうですか",
-        choices: [
-          { value: "same", label: "変わらない", weight: 0 },
-          { value: "more", label: "増えた気がする", weight: 1 },
-          { value: "clear", label: "明らかに増えた", weight: 2 },
-        ],
-      },
-      {
-        id: "h3",
-        q: "ご家族に、薄毛の方はいますか",
-        hint: "父方・母方どちらでも",
-        choices: [
-          { value: "no", label: "いない", weight: 0 },
-          { value: "yes", label: "いる", weight: 1 },
-          { value: "unknown", label: "わからない", weight: 0 },
-        ],
-      },
-      {
-        id: "h4",
-        q: "いま、何かしていますか",
-        choices: [
-          { value: "none", label: "していない" },
-          { value: "otc", label: "市販品を使っている" },
-          { value: "clinic", label: "医療機関にかかっている" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "skin",
-    label: "肌",
-    areaId: "skin",
-    skipRestIf: "none",
-    questions: [
-      {
-        id: "s1",
-        q: "肌で気になっていることはありますか",
-        choices: [
-          { value: "none", label: "特にない", weight: 0 },
-          { value: "acne", label: "ニキビ・吹き出物", weight: 3 },
-          { value: "dry", label: "乾燥・粉ふき", weight: 2 },
-          { value: "red", label: "赤み・かゆみ", weight: 3 },
-        ],
-      },
-      {
-        id: "s2",
-        q: "跡（色素沈着・凹凸）はありますか",
-        choices: [
-          { value: "no", label: "ない", weight: 0 },
-          { value: "some", label: "少しある", weight: 1 },
-          { value: "yes", label: "気になっている", weight: 2 },
-        ],
-      },
-      {
-        id: "s3",
-        q: "洗顔のあと、何かつけていますか",
-        choices: [
-          { value: "yes", label: "つけている", weight: 0 },
-          { value: "some", label: "たまに", weight: 1 },
-          { value: "no", label: "つけていない", weight: 2 },
-        ],
-      },
-      {
-        id: "s4",
-        q: "日焼けの対策はしていますか",
-        choices: [
-          { value: "yes", label: "している", weight: 0 },
-          { value: "some", label: "たまに", weight: 1 },
-          { value: "no", label: "していない", weight: 2 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "face",
-    label: "顔まわり",
-    areaId: "face",
-    skipRestIf: "none",
-    questions: [
-      {
-        id: "f1",
-        q: "「疲れて見える」と言われることはありますか",
-        choices: [
-          { value: "none", label: "ない", weight: 0 },
-          { value: "some", label: "たまに", weight: 2 },
-          { value: "often", label: "よく言われる", weight: 3 },
-        ],
-      },
-      {
-        id: "f2",
-        q: "目の下のくまはどうですか",
-        choices: [
-          { value: "no", label: "目立たない", weight: 0 },
-          { value: "some", label: "ときどき目立つ", weight: 1 },
-          { value: "yes", label: "いつもある", weight: 2 },
-        ],
-      },
-      {
-        id: "f3",
-        q: "顔のむくみはどうですか",
-        choices: [
-          { value: "no", label: "気にならない", weight: 0 },
-          { value: "morning", label: "朝だけ気になる", weight: 1 },
-          { value: "allday", label: "一日中気になる", weight: 2 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "bodyhair",
-    label: "ヒゲ・体毛",
-    areaId: "body-hair",
-    skipRestIf: "none",
-    questions: [
-      {
-        id: "y1",
-        q: "ヒゲや体毛で困っていることはありますか",
-        choices: [
-          { value: "none", label: "特にない", weight: 0 },
-          { value: "shave", label: "毎日剃るのが負担", weight: 2 },
-          { value: "blue", label: "剃っても青く残る・夕方に目立つ", weight: 3 },
-          { value: "body", label: "体毛が気になる", weight: 2 },
-        ],
-      },
-      {
-        id: "y2",
-        q: "肌荒れ（カミソリ負け・埋没毛）はありますか",
-        choices: [
-          { value: "no", label: "ない", weight: 0 },
-          { value: "some", label: "ときどき", weight: 1 },
-          { value: "yes", label: "よくある", weight: 2 },
-        ],
-      },
-      {
-        id: "y3",
-        q: "どうしたいですか",
-        hint: "「そのまま」も正当な選択です",
-        choices: [
-          { value: "keep", label: "いまのまま整えたい" },
-          { value: "reduce", label: "減らしたい" },
-          { value: "undecided", label: "決めていない" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "mind",
-    label: "睡眠・習慣",
-    areaId: "mind",
-    questions: [
-      {
-        id: "m1",
-        q: "平日の睡眠時間は、だいたいどのくらいですか",
-        choices: [
-          { value: "7", label: "7時間以上", weight: 0 },
-          { value: "6", label: "6時間前後", weight: 1 },
-          { value: "5", label: "5時間以下", weight: 3 },
-        ],
-      },
-      {
-        id: "m2",
-        q: "寝る時刻はどうですか",
-        choices: [
-          { value: "fixed", label: "だいたい一定", weight: 0 },
-          { value: "weekend", label: "平日と休日で2時間以上ずれる", weight: 2 },
-          { value: "random", label: "毎日ばらばら", weight: 3 },
-        ],
-      },
-      {
-        id: "m3",
-        q: "体を動かす習慣はありますか",
-        choices: [
-          { value: "week", label: "週2回以上", weight: 0 },
-          { value: "month", label: "月に数回", weight: 1 },
-          { value: "none", label: "ほとんどしない", weight: 2 },
-        ],
-      },
-      {
-        id: "m4",
-        q: "食事はどうですか",
-        choices: [
-          { value: "ok", label: "だいたい3食とれている", weight: 0 },
-          { value: "skip", label: "抜けることが多い", weight: 1 },
-          { value: "late", label: "夜が遅い・重くなりがち", weight: 2 },
-        ],
-      },
-      {
-        id: "m5",
-        q: "気分の落ち込みはありますか",
-        choices: [
-          { value: "no", label: "ほとんどない", weight: 0 },
-          { value: "some", label: "ときどきある", weight: 1 },
-          { value: "cont", label: "続いている", weight: 3 },
-        ],
-      },
+      ...GENTEN.map((g) => ({
+        id: g.id,
+        q: g.q,
+        hint: g.hint,
+        choices: YES_NO_SOMETIMES,
+      })),
     ],
   },
 ];
 
-export const TOTAL_QUESTIONS = BLOCKS.reduce((n, b) => n + b.questions.length, 0);
+/** その段階の設問数 */
+export function questionCount(stage: Stage): number {
+  return BLOCKS.filter((b) => b.stage === stage).reduce((n, b) => n + b.questions.length, 0);
+}
+
+export const CORE_QUESTIONS = questionCount("core");
+export const DETAIL_QUESTIONS = questionCount("detail");
+
+export const TOTAL_QUESTIONS = CORE_QUESTIONS + DETAIL_QUESTIONS;
 
 // ── 採点 ────────────────────────────────────
 
@@ -410,15 +231,9 @@ export function areaLabel(id: AreaId): string {
   return AREA_LABEL[id];
 }
 
-const BLOCK_BY_AREA = new Map<AreaId, Block>(
-  BLOCKS.filter((b) => b.areaId).map((b) => [b.areaId as AreaId, b]),
-);
-
-function choiceOf(q: Question, value: string | undefined): Choice | undefined {
-  return q.choices.find((c) => c.value === value);
-}
-
 export type CheckResult = {
+  /** 減点チェックに答えたか（任意なので、答えていない人がいる） */
+  detailed: boolean;
   /** 減点チェック 12項目 × 2点 = 24点満点 */
   score: number;
   scoreMax: number;
@@ -527,16 +342,29 @@ export function evaluate(answers: Answers): CheckResult {
   }
 
   // ── 領域ごとの該当度 ──
+  // 領域別の詳細設問（19問）は削った。訊く数を増やすほど完了率が落ち、
+  // 完了しない診断はレポートを出せないので、精度より完了を取る。
+  // 重みの出どころは3つだけ:
+  //   ① いちばん気になると答えた領域（強い）
+  //   ② どうなりたいか（弱い。方向づけ）
+  //   ③ 減点チェックの欠損（任意で答えた人だけ）
+  const focus = answers["c1"];
+  const goal = answers["c2"];
+  const GOAL_AREAS: Record<string, AreaId[]> = {
+    clean: ["impression"],
+    young: ["face", "impression"],
+    photo: ["impression", "face"],
+    calm: ["impression"],
+    undecided: [],
+  };
+  const goalAreas = GOAL_AREAS[goal ?? ""] ?? [];
+
   const areas: AreaScore[] = (Object.keys(AREA_LABEL) as AreaId[]).map((areaId) => {
     let weight = 0;
-    const block = BLOCK_BY_AREA.get(areaId);
-    if (block) {
-      for (const q of block.questions) {
-        const c = choiceOf(q, answers[q.id]);
-        weight += c?.weight ?? 0;
-      }
-    }
-    // 減点チェックの欠損も、その領域の該当度に足す
+    if (focus === areaId) weight += 6;
+    const gi = goalAreas.indexOf(areaId);
+    if (gi === 0) weight += 2;
+    else if (gi > 0) weight += 1;
     const gaps = gapsByArea.get(areaId) ?? [];
     weight += gaps.length;
     return { areaId, label: AREA_LABEL[areaId], weight, gaps };
@@ -584,6 +412,7 @@ export function evaluate(answers: Answers): CheckResult {
       ];
 
   return {
+    detailed: GENTEN.some((g) => answers[g.id] !== undefined),
     score,
     scoreMax: GENTEN.length * 2,
     untouched,
@@ -607,6 +436,9 @@ export function evaluate(answers: Answers): CheckResult {
 export function summarize(r: CheckResult): string {
   if (r.steps.length === 0) return "いま手をつける順番は、特にありません";
   const head = r.steps[0].label;
+  // 12項目に答えていない人に「手つかずはありません」と言ってはいけない。
+  // 未回答と「できている」は別のことで、混ぜると嘘になる。
+  if (!r.detailed) return `${head}から。`;
   if (r.untouched === 0) return `${head}から。手つかずの項目はありません`;
   return `${head}から。手つかずが${r.untouched}項目`;
 }

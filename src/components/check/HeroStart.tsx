@@ -58,7 +58,7 @@ export default function HeroStart() {
           まとめて診る<span aria-hidden> →</span>
         </Link>
         <span className="text-[11.5px] tabular-nums text-ainezu">
-          35問・約3分・登録不要
+          5問・30秒・登録不要
         </span>
       </p>
     </div>

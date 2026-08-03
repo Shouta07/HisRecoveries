@@ -40,7 +40,8 @@ export const CONVERSION_EVENTS = [
   "check_open", // 診断ページへの導線をクリック（props: from）
   "check_start", // 1問目に答えた
   "check_abandon", // 途中で離脱（props: at＝何問目まで）
-  "check_complete", // 結果に到達（props: first, untouched）
+  "check_complete", // 結果に到達（props: first, untouched, detailed）
+  "check_detail_start", // 任意の13問へ進んだ（精度を上げる側を選んだ）
   "check_article_click", // 結果から記事へ（props: area, slug）
 ] as const;
 

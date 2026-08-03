@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { clustersByArea } from "@/lib/clusters";
-import { TOTAL_QUESTIONS } from "@/lib/check";
+import { CORE_QUESTIONS } from "@/lib/check";
 import CheckFlow, { type ArticleRef } from "@/components/check/CheckFlow";
 import { site } from "@/lib/site";
 
@@ -24,9 +24,9 @@ const url = `${site.url}/check`;
 const AREAS = ["impression", "hair", "skin", "face", "body-hair", "mind"];
 
 export const metadata: Metadata = {
-  title: "何から始めるかを決める｜35問",
+  title: "何から始めるかを決める｜5問・30秒",
   description:
-    "35問に答えると、いまの状態と、手をつける順番が出ます。いまはやらなくていいことも出します。無料・3分・登録不要。",
+    "5問・30秒で、手をつける順番と、今月やること3つが出ます。いまはやらなくていいことも出します。無料・登録不要。",
   alternates: { canonical: url },
   openGraph: {
     type: "website",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: site.name,
     locale: site.locale,
     title: "何から始めるかを決める",
-    description: "35問・3分。順番と、いまはやらなくていいことが出ます。",
+    description: "5問・30秒。順番と、いまはやらなくていいことが出ます。",
   },
 };
 
@@ -75,7 +75,7 @@ export default function CheckPage() {
             articles={articles}
             intro={
               <p className="mb-9 text-[15px] leading-[1.95] text-keshizumi">
-                {TOTAL_QUESTIONS}問・約3分。いまの状態と、手をつける順番が出ます。
+{CORE_QUESTIONS}問・30秒。手をつける順番と、今月やること3つが出ます。
                 <span className="font-bold text-sumi">いまはやらなくていいことも出します。</span>
                 <span className="mt-1 block text-[13px] text-ainezu">
                   登録は要りません。回答は保存していません。
