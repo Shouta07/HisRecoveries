@@ -428,7 +428,19 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
           回遊はその後ろで足りる（読み続ける人は、探してでも読む）。 */}
       <div className="border-t border-shironezu bg-hakuji">
         <div className="mx-auto max-w-[860px] px-5 sm:px-8 py-16 sm:py-20">
-          <CheckCta from={`article:${a.slug}`} className="mb-14" />
+          <CheckCta from={`article:${a.slug}`} className="mb-10" />
+
+          {/* 全体のどこにいるのかを知りたい人へ。回遊より前、診断の直後 */}
+          <p className="mb-14 border-y border-shironezu py-4 text-[14px] leading-[1.95] text-keshizumi">
+            この記事が全体のどこに位置するかは
+            <Link
+              href="/order"
+              className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
+            >
+              男の改善、全部の順番
+            </Link>
+            にまとめてあります。
+          </p>
 
           {/* 同じ状況の人が読んでいる記事 — 分野をまたぐ導線 */}
           {situationBlocks.map((b) => (
