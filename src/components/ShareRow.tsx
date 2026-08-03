@@ -11,7 +11,16 @@
 
 import { useState } from "react";
 
-export default function ShareRow({ url, title }: { url: string; title: string }) {
+export default function ShareRow({
+  url,
+  title,
+  label = "この記事を送る・残す",
+}: {
+  url: string;
+  title: string;
+  /** 見出し。記事以外（診断の結果など）でも使うので差し替えられるようにする */
+  label?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -29,7 +38,7 @@ export default function ShareRow({ url, title }: { url: string; title: string })
 
   return (
     <div className="mt-12 border-t border-shironezu pt-7">
-      <p className="text-[13px] text-ainezu">この記事を送る・残す</p>
+      <p className="text-[13px] text-ainezu">{label}</p>
       <div className="mt-4 flex flex-wrap gap-2.5">
         <a
           className={base}
