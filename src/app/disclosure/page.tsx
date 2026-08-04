@@ -246,26 +246,41 @@ export default function DisclosurePage() {
             1件目ができたときは、どこを・どうやって確かめたのかを、このページに足します。
             確かめていないことを「確かめた」と書くくらいなら、送客をしません。
           </p>
-          {/* 現時点の実態を書いておく。基準だけ置くと、
-              「すでに手数料を取っている」と読まれる。/partner では
-              掲載料も成果報酬も0円と伝えているので、そこと矛盾させない。 */}
-          <p className="mt-4 text-[14.5px] leading-[1.95] text-ainezu">
-            なお現時点では、提携先から掲載料も成果報酬も受け取っていません。
-            プロの方・施設の方にお伝えしている条件は
+          {/* 受け取り方の中身。ここを書かないと、基準だけがきれいごとになる。 */}
+          <h3 className="mt-10 text-[16px] sm:text-[17px]" style={{ ...MINCHO, fontWeight: 700 }}>
+            いくら、どう受け取るか
+          </h3>
+          <ul className="mt-4 space-y-2.5 text-[15px] leading-[1.95] text-keshizumi">
+            <li>掲載料・初期費用・月額は、どの提携先からも受け取りません。</li>
+            <li>
+              医療以外の事業者（サロン、ジムなど）からは、お客さまが実際にご利用になったときだけ手数料をいただきます。
+            </li>
+            <li>
+              <span className="font-bold text-sumi">料率は分野ごとに一律で、相手によって変えません。</span>
+              相手ごとに料率が違うと、「順番を報酬額で決めない」が、守る意志の問題になってしまいます。
+              一律なら、金額で順番を動かす動機がそもそも発生しません。
+            </li>
+            <li>医療機関からは、掲載料も紹介料も受け取りません（上記のとおり）。</li>
+          </ul>
+          <p className="mt-6 border-l-2 border-asagi pl-4 text-[14.5px] leading-[1.95] text-keshizumi">
+            <span className="font-bold text-sumi">
+              現時点で受け取った手数料は0円です。条件を満たした提携先が0件だからです。
+            </span>
+            提携先にお伝えしている条件は
             <Link
               href="/partner"
               className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
             >
               取材・掲載について
             </Link>
-            に書いています。ここで受け取る形に変えるときは、変えたことを
+            に、この方針をいつ変えたかは
             <Link
               href="/updates"
               className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
             >
               更新記録
             </Link>
-            に残したうえで、このページを書き換えます。
+            に書いています。
           </p>
         </section>
 
