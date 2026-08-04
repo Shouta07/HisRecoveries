@@ -15,11 +15,25 @@ export default function ShareRow({
   url,
   title,
   label = "この記事を送る・残す",
+  publicUrl,
+  publicTitle,
 }: {
+  /** 自分に残す・一人に送るためのURL。診断の結果では回答が入っている */
   url: string;
   title: string;
   /** 見出し。記事以外（診断の結果など）でも使うので差し替えられるようにする */
   label?: string;
+  /**
+   * 公開の場（X）に貼るときのURL。省略時は url を使う。
+   *
+   * 診断の結果では、url に回答が入っている。
+   * それを公開の場に貼ると、年代も予算も悩みも一緒に公開される。
+   * 押した本人がそこまで意識しているとは限らないので、
+   * 公開の場に出す先は、結果の入っていないURLに差し替える。
+   */
+  publicUrl?: string;
+  /** 公開の場に貼るときの文面。省略時は title を使う */
+  publicTitle?: string;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -50,7 +64,7 @@ export default function ShareRow({
         </a>
         <a
           className={base}
-          href={`https://x.com/intent/post?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`}
+          href={`https://x.com/intent/post?text=${encodeURIComponent(publicTitle ?? title)}&url=${encodeURIComponent(publicUrl ?? url)}`}
           target="_blank"
           rel="noopener noreferrer"
         >
