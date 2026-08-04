@@ -75,7 +75,7 @@ export default function HomePage() {
     "@type": "CollectionPage",
     "@id": `${site.url}/#collection`,
     url: site.url,
-    name: `${site.name} — 男性ウェルネスメディア`,
+    name: `${site.name} — ${site.tagline}`,
     description: site.description,
     inLanguage: "ja",
     isPartOf: { "@id": `${site.url}/#website` },
@@ -190,6 +190,18 @@ export default function HomePage() {
             <div className="mt-7 sm:mt-8">
               <HeroStart />
             </div>
+
+            {/* 立場の但し書き。
+                コピーの上（見出しのすぐ下）ではなく、選択肢の下に置く。
+                狭い画面では1画面目の高さが写真＋文字で埋まっているので、
+                上に3行足すと入口が画面の外に出る。実測して、ここにした。 */}
+            <p
+              className="hr-rise mt-6 max-w-[30em] text-[12.5px] leading-[1.9] text-ainezu sm:mt-7 sm:text-[13px]"
+              style={{ ["--d" as string]: "1300ms" }}
+            >
+              順番は、公開されている情報と編集部の判断で組んだ暫定版です。
+              これから男性本人・女性・専門家に聞いて、書き換えていきます。
+            </p>
 
             {/* 下に続きがあることの手がかり。
                 狭い画面は文字が下にあるので自然にスクロールするが、
@@ -387,9 +399,9 @@ export default function HomePage() {
           </h2>
           <div className="mt-7 max-w-[34em] space-y-6 text-[15px] sm:text-[16px] leading-[2.05] text-keshizumi">
             <p>
-              男性向けの美容・健康・恋愛・セクシャルウェルネスを扱う編集メディアです。
+              男性の見た目、体、関係についての改善を、順番として編集しているところです。
               髪、肌、睡眠、疲れ、体、パートナーとのこと——誰にも相談できないまま
-              検索していることを、記事にしています。
+              検索していることを扱っています。
             </p>
             <p>
               調べても出てくるのは「やったほうがいい」ばかりで、順番も、やらなくていいことも
@@ -397,13 +409,24 @@ export default function HomePage() {
               <span className="font-bold text-sumi">
                 やらなくていいことは、やらなくていいと書きます。
               </span>
+              何を先にやって、何を後回しにしていいのかを決められる状態にするのが、仕事です。
+            </p>
+            <p>
+              いまの順番は、公開されている情報と編集部の判断で組んだ暫定版です。
+              取材はこれからです。男性本人、女性、専門家に聞いて、分かったことから順に
+              書き足していきます。順番が変わったら、変わった記録も残します。
             </p>
           </div>
 
-          {/* 編集方針。当たり前のことは書かない。守れないことも書かない。 */}
+          {/* 編集方針。当たり前のことは書かない。守れないことも書かない。
+              「聞いていないことは聞いていないと書く」を先頭に置いた。
+              取材0本の状態で信頼を主張できる根拠は、いまはこれしかない。 */}
           <ul className="mt-9 max-w-[34em] space-y-2.5 text-[15px] leading-[1.95] text-keshizumi">
+            <li>聞いていないことは、聞いていないと書きます。</li>
+            <li>「やったほうがいい」を全部は並べません。いまはやらなくていいものは、そう書きます。</li>
+            <li>順番が変わったら、変わった記録を残します。</li>
             <li>効果や結果は保証しません。医療的な判断は、医師の領域です。</li>
-            <li>出典のある情報と、編集部が実際に確かめたことだけを書きます。</li>
+            <li>掲載の順番を、報酬額で決めません。</li>
           </ul>
           <p className="mt-8 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
             専門家への取材記事は、まだ0本です。記事の誤りは

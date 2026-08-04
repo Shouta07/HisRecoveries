@@ -319,6 +319,8 @@ export default function OrderPage() {
 
         <p className="mt-12 text-[13px] leading-[1.95] text-ainezu">
           ※ 本記事は、当サイトの記事{clusters.length}本を順番の観点から整理したものです。
+          この順番は、公開されている情報と編集部の判断で組んだ暫定版です。
+          取材が進むたびに、書き換えます。
           効果を保証するものではなく、診断・治療・受診勧奨を目的としたものでもありません。
           個別の判断は専門家にご相談ください。
         </p>
