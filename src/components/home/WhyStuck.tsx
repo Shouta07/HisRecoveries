@@ -66,7 +66,7 @@ export default function WhyStuck({ between }: { between?: React.ReactNode }) {
           実測でも、価値（何をしてくれるか）に着くまでに2画面スクロールが要った。
           自己同定はヒーローで済んでいるので、次は答えを出す。 */}
       <section className="mx-auto max-w-[1080px] px-5 pt-10 sm:px-8 sm:pt-[88px] lg:px-12 lg:pt-[120px]">
-        <h2 className="text-[21px] leading-[1.55] sm:text-[26px]" style={{ ...MINCHO, fontWeight: 700 }}>
+        <h2 data-reveal className="text-[21px] leading-[1.55] sm:text-[26px]" style={{ ...MINCHO, fontWeight: 700 }}>
           やることは、3つだけ
         </h2>
         {/* 「売っていないので」と書いていたが、下ろした。
@@ -79,9 +79,9 @@ export default function WhyStuck({ between }: { between?: React.ReactNode }) {
           <span className="font-bold text-sumi">やらなくていいことも書けます。</span>
         </p>
 
-        <ol className="mt-7 flex flex-col gap-px border border-shironezu bg-shironezu sm:mt-10">
+        <ol data-reveal-stagger className="mt-7 flex flex-col gap-px border border-shironezu bg-shironezu sm:mt-10">
           {STEPS.map((s) => (
-            <li key={s.n} className="bg-shironeri">
+            <li key={s.n} data-reveal className="bg-shironeri">
               <div className="grid gap-2.5 px-5 py-5 sm:grid-cols-[64px_minmax(0,1fr)_auto] sm:items-baseline sm:gap-8 sm:px-7 sm:py-7">
                 <p className="text-[13px] tabular-nums tracking-[0.14em] text-asagi">{s.n}</p>
                 <div>
@@ -124,7 +124,7 @@ export default function WhyStuck({ between }: { between?: React.ReactNode }) {
           何の話が始まるのか分からないため。 */}
       <section className="mt-12 border-y border-shironezu bg-hakuji sm:mt-[88px] lg:mt-[120px]">
         <div className="mx-auto max-w-[1080px] px-5 py-10 sm:px-8 sm:py-[88px] lg:px-12">
-          <h2 className="text-[21px] leading-[1.55] sm:text-[26px]" style={{ ...MINCHO, fontWeight: 700 }}>
+          <h2 data-reveal className="text-[21px] leading-[1.55] sm:text-[26px]" style={{ ...MINCHO, fontWeight: 700 }}>
             情報は足りている。<br className="sm:hidden" />足りないのは、順番のほう。
           </h2>
           <p className="mt-4 max-w-[34em] text-[15.5px] leading-[2.05] text-keshizumi sm:mt-5 sm:text-[16px]">
@@ -132,9 +132,9 @@ export default function WhyStuck({ between }: { between?: React.ReactNode }) {
             構造の問題です。
           </p>
 
-          <ul className="mt-7 grid gap-px border border-shironezu bg-shironezu sm:mt-10">
+          <ul data-reveal-stagger className="mt-7 grid gap-px border border-shironezu bg-shironezu sm:mt-10">
             {REASONS.map((r, i) => (
-              <li key={r.h} className="bg-hakuji">
+              <li key={r.h} data-reveal className="bg-hakuji">
                 <details className="group" open={i === 0}>
                   <summary className="flex cursor-pointer list-none items-baseline gap-3 px-5 py-4 transition-colors hover:bg-shironeri sm:px-6 sm:py-5">
                     <span

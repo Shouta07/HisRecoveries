@@ -13,6 +13,7 @@ import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
 import HeroStart from "@/components/check/HeroStart";
 import WhyStuck from "@/components/home/WhyStuck";
+import ScrollReveal from "@/components/ScrollReveal";
 import SampleResult from "@/components/home/SampleResult";
 
 // ══════════════════════════════════════════════════════════════
@@ -101,6 +102,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
       />
       <GlassNav />
+      <ScrollReveal />
 
       {/* ══════ 1画面目 ══════
           検索を右上のアイコンに移したので、ここは写真だけ。
@@ -236,13 +238,13 @@ export default function HomePage() {
 
       {/* ══════ 新しい記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
-        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
+        <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
           新しい記事
         </h2>
 
         {/* 1本目だけ大きく。以降は2列。同じ形を並べない。 */}
         {head && (
-          <Link href={`/areas/${head.areaId}/${head.slug}`} className="group mt-10 block border-t border-shironezu pt-10">
+          <Link data-reveal href={`/areas/${head.areaId}/${head.slug}`} className="group mt-10 block border-t border-shironezu pt-10">
             <p className="text-[13px] text-asagi">{areaLabel(head.areaId)}</p>
             <h3
               className="mt-2 max-w-[24em] text-[23px] sm:text-[30px] leading-[1.55] group-hover:text-asagi transition-colors"
@@ -270,7 +272,7 @@ export default function HomePage() {
             横に流せば1画面に収まり、続きがあることも端の見切れで分かる。
             スクロールバーは消すが、指では動く。JSは使わない（scroll-snap）。
             はみ出しを出さないため、左右の余白ぶんだけ外へ引いてから戻す。 */}
-        <ul className="mt-[40px] -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-[72px] sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-10 sm:gap-y-[72px] sm:overflow-visible sm:px-0 sm:pb-0">
+        <ul data-reveal className="mt-[40px] -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-[72px] sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-10 sm:gap-y-[72px] sm:overflow-visible sm:px-0 sm:pb-0">
           {rest.map((a) => (
             <li
               key={a.slug}
@@ -314,12 +316,12 @@ export default function HomePage() {
 
       {/* ══════ よく読まれている記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
-        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
+        <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
           よく読まれている記事
         </h2>
-        <ol className="mt-9 max-w-[42em] border-t border-shironezu">
+        <ol data-reveal-stagger className="mt-9 max-w-[42em] border-t border-shironezu">
           {popular.map((a, i) => (
-            <li key={a.slug} className="border-b border-shironezu">
+            <li key={a.slug} data-reveal className="border-b border-shironezu">
               <Link
                 href={`/areas/${a.areaId}/${a.slug}`}
                 className="group flex items-baseline gap-5 py-5 hover:text-asagi transition-colors"
@@ -347,6 +349,7 @@ export default function HomePage() {
           「どれが何番目か」を渡す面があると伝わる。 */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
         <Link
+          data-reveal
           href="/order"
           className="group block border border-shironezu bg-hakuji px-5 py-7 transition-colors hover:bg-shironeri sm:px-7 sm:py-8"
         >
@@ -373,16 +376,16 @@ export default function HomePage() {
           6つしかないので、一覧ではなく面として置ける。
           記事の本数は実数（数合わせで作らないので、少ない分野は少ないまま出す）。 */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
-        <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
+        <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
           分野から
         </h2>
         {/* モバイルでも2列。1列にすると縦長のタイルが6つ並ぶだけで、
             結局「スクロールするだけ」の面が1つ増える。 */}
-        <ul className="mt-9 grid grid-cols-2 gap-px border border-shironezu bg-shironezu lg:grid-cols-3">
+        <ul data-reveal-stagger className="mt-9 grid grid-cols-2 gap-px border border-shironezu bg-shironezu lg:grid-cols-3">
           {complexes.map((c) => {
             const n = clusters.filter((a) => a.areaId === c.id).length;
             return (
-              <li key={c.id} className="bg-shironeri">
+              <li key={c.id} data-reveal className="bg-shironeri">
                 {/* タイル全体がリンクなので「この分野を見る →」は置かない。
                     6回繰り返すと、読むものではなく飾りになる。 */}
                 <Link
@@ -416,7 +419,7 @@ export default function HomePage() {
         className="mt-[96px] sm:mt-[136px] lg:mt-[184px] scroll-mt-20 border-y border-shironezu bg-hakuji"
       >
         <div className="mx-auto max-w-[840px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
-          <h2 className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
+          <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
             His Recoveriesについて
           </h2>
           <div className="mt-7 max-w-[34em] space-y-6 text-[15px] sm:text-[16px] leading-[2.05] text-keshizumi">
