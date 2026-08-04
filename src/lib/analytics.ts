@@ -43,6 +43,10 @@ export const CONVERSION_EVENTS = [
   "check_complete", // 結果に到達（props: first, untouched, detailed）
   "check_detail_start", // 任意の13問へ進んだ（精度を上げる側を選んだ）
   "check_article_click", // 結果から記事へ（props: area, slug）
+  // 保存・共有されたリンク（?r=）から結果を開いた。答えてはいない。
+  // check_complete と混ぜると、1回共有されるたびに完了が増えて率が壊れる。
+  // ここが伸びていれば、結果が人に渡っているということ。
+  "check_restored", // 共有リンクから結果を開いた（props: first）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];
