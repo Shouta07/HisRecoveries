@@ -144,6 +144,56 @@ export type ProductRef = {
 };
 
 /**
+ * 広告の文体。ここに並ぶ言い回しが1つでも入ったら、ビルドを落とす。
+ *
+ * 「煽らない」を編集方針として書くだけなら、守れているかどうかは
+ * 書いた本人の記憶に依存する。成果報酬が発生し始めたあと、
+ * 締切に追われた誰かが「今だけ」と1回書いて、それが通る。
+ * 通ってしまえば2回目からは前例になる。
+ *
+ * だから約束の側ではなく、機械の側に置く。
+ * ここに引っかかる原稿は公開できない。例外の作り方も用意しない。
+ *
+ * 「限定」は「数量限定」等の中立な用法もあるが、区別を機械にさせると
+ * 抜け道になるので、まとめて禁じる。必要なら言い換える。
+ */
+export const PROMO_WORDS = [
+  "今だけ",
+  "残りわずか",
+  "限定",
+  "お得",
+  "激安",
+  "最安",
+  "キャンペーン",
+  "セール",
+  "特別価格",
+  "初回無料",
+  "人気No",
+  "売れ筋",
+  "ランキング1位",
+  "おすすめ第",
+  "圧倒的",
+  "最強",
+  "必ず",
+  "絶対",
+] as const;
+
+/**
+ * 広告の文体が混ざっていないかを確かめる。
+ * 対象は読者が読む文字列だけ（URL や id は見ない）。
+ */
+export function assertNoPromoWords(texts: string[], where: string) {
+  for (const t of texts) {
+    const hit = PROMO_WORDS.find((w) => t.includes(w));
+    if (hit) {
+      throw new Error(
+        `${where}: 広告の言い回し「${hit}」が入っています。判断を急がせる書き方はしません（該当箇所: ${t.slice(0, 40)}…）`,
+      );
+    }
+  }
+}
+
+/**
  * 受け取れない区分に成果報酬が付いていないかを確かめる。
  * ビルド時に落とすのが目的なので、握りつぶさず投げる。
  */
@@ -157,6 +207,7 @@ export function assertProducts(products: ProductRef[], where: string) {
     if (!/^https?:\/\//.test(p.href)) {
       throw new Error(`${where}: 「${p.name}」のリンクが不正です（${p.href}）`);
     }
+    assertNoPromoWords([p.name, p.note, p.price ?? ""], where);
   }
 }
 
