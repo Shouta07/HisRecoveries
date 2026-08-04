@@ -66,10 +66,13 @@ function buildFlat(stage: Stage, answered: Answers): Flat[] {
 export default function CheckFlow({
   articles,
   intro,
+  note,
 }: {
   articles: Record<string, ArticleRef[]>;
-  /** 説明。まだ1問も答えていないときだけ出す（結果の上に残すと邪魔になる） */
+  /** 設問の上に出す短い一行。まだ1問も答えていないときだけ */
   intro?: React.ReactNode;
+  /** 選択肢の下に出す説明。上に置くと選択肢が画面の外に出るので、下に回す */
+  note?: React.ReactNode;
 }) {
   const [answers, setAnswers] = useState<Answers>({});
   const [cursor, setCursor] = useState(0);
@@ -216,7 +219,11 @@ export default function CheckFlow({
         </div>
       </div>
 
-      <div className="pt-8" aria-live="polite">
+      {/* 狭い画面では余白を詰める。
+          実測で、1問目の選択肢6個のうち下2個が画面の外にあった
+          （375x667 で342px はみ出し）。選べないものが見えていないので、
+          スクロールして初めて選択肢の数が分かる状態だった。 */}
+      <div className="pt-5 sm:pt-8" aria-live="polite">
         {/* 見出しに focus を当てて読み上げさせる手もあるが、
             :focus-visible の枠が見出しを囲ってしまい、目で見ている人には
             不具合に見える。読み上げは aria-live に任せて、focus は動かさない。 */}
@@ -227,10 +234,10 @@ export default function CheckFlow({
           {current.q.q}
         </h2>
         {current.q.hint && (
-          <p className="mt-3 text-[13.5px] leading-[1.9] text-ainezu">{current.q.hint}</p>
+          <p className="mt-2.5 text-[13.5px] leading-[1.9] text-ainezu sm:mt-3">{current.q.hint}</p>
         )}
 
-        <ul className="mt-7 flex flex-col gap-2.5">
+        <ul className="mt-5 flex flex-col gap-2 sm:mt-7 sm:gap-2.5">
           {current.q.choices.map((c) => {
             const selected = answers[current.q.id] === c.value;
             return (
@@ -238,7 +245,7 @@ export default function CheckFlow({
                 <button
                   type="button"
                   onClick={() => answer(c.value)}
-                  className={`w-full border px-5 py-4 text-left text-[15.5px] leading-[1.7] transition-colors ${
+                  className={`w-full border px-4 py-3.5 text-left text-[15px] leading-[1.65] transition-colors sm:px-5 sm:py-4 sm:text-[15.5px] sm:leading-[1.7] ${
                     selected
                       ? "border-asagi bg-asagi/5 text-sumi"
                       : "border-shironezu bg-hakuji text-keshizumi hover:border-asagi hover:text-sumi"
@@ -260,6 +267,12 @@ export default function CheckFlow({
             ← ひとつ戻る
           </button>
         )}
+
+        {/* 中身の説明は、選択肢の下に置く。
+            上に置くと、その高さのぶんだけ選択肢が画面の外へ出る。
+            「何問で終わるか」だけは上のバーが常に出しているので、
+            押す前に必要な情報は足りている。 */}
+        {answered === 0 && note}
       </div>
     </div>
   );

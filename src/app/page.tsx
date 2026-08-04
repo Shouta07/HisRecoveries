@@ -254,10 +254,18 @@ export default function HomePage() {
           </Link>
         )}
 
-        <ul className="mt-[48px] sm:mt-[72px] grid gap-x-10 gap-y-[48px] sm:gap-y-[72px] sm:grid-cols-2">
+        {/* 狭い画面は横スワイプ、広い画面は2列。
+            縦に6本積むと、それだけで2.3画面ぶんになる（実測）。
+            横に流せば1画面に収まり、続きがあることも端の見切れで分かる。
+            スクロールバーは消すが、指では動く。JSは使わない（scroll-snap）。
+            はみ出しを出さないため、左右の余白ぶんだけ外へ引いてから戻す。 */}
+        <ul className="mt-[40px] -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-[72px] sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-10 sm:gap-y-[72px] sm:overflow-visible sm:px-0 sm:pb-0">
           {rest.map((a) => (
-            <li key={a.slug}>
-              <Link href={`/areas/${a.areaId}/${a.slug}`} className="group block">
+            <li
+              key={a.slug}
+              className="w-[74vw] shrink-0 snap-start border border-shironezu bg-hakuji sm:w-auto sm:border-0 sm:bg-transparent"
+            >
+              <Link href={`/areas/${a.areaId}/${a.slug}`} className="group block h-full p-4 sm:p-0">
                 <p className="flex items-baseline gap-3 text-[13px] text-asagi">
                   {areaLabel(a.areaId)}
                   {publishedAt(a.slug) && (
@@ -265,12 +273,12 @@ export default function HomePage() {
                   )}
                 </p>
                 <h3
-                  className="mt-1.5 text-[18px] leading-[1.65] group-hover:text-asagi transition-colors"
+                  className="mt-1.5 text-[17px] leading-[1.6] transition-colors group-hover:text-asagi sm:text-[18px] sm:leading-[1.65]"
                   style={{ ...MINCHO, fontWeight: 700 }}
                 >
                   {a.title}
                 </h3>
-                <p className="mt-2.5 text-[14.5px] leading-[1.95] text-keshizumi line-clamp-3">
+                <p className="mt-2.5 line-clamp-3 text-[14px] leading-[1.9] text-keshizumi sm:text-[14.5px] sm:leading-[1.95]">
                   {a.summary[0] ?? a.lead}
                 </p>
                 <p className="mt-2.5 text-[12px] tabular-nums text-ainezu">読了 約{readingMinutes(a)}分</p>
@@ -278,6 +286,9 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
+        <p className="mt-1 text-[12px] text-ainezu sm:hidden" aria-hidden>
+          → 横にスワイプ
+        </p>
 
         <p className="mt-14">
           <a
@@ -496,7 +507,7 @@ export default function HomePage() {
               <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
                 {complexes.map((c) => (
                   <li key={c.id}>
-                    <Link href={`/areas/${c.id}`} className="hover:text-asagi transition-colors">
+                    <Link href={`/areas/${c.id}`} className="-my-1 block py-1 hover:text-asagi transition-colors">
                       {c.ja}
                     </Link>
                   </li>
@@ -508,7 +519,7 @@ export default function HomePage() {
               <ul className="mt-4 space-y-2.5 text-[14px]">
                 {SITUATIONS.map((x) => (
                   <li key={x.id}>
-                    <Link href={`/situations/${x.id}`} className="hover:text-asagi transition-colors">
+                    <Link href={`/situations/${x.id}`} className="-my-1 block py-1 hover:text-asagi transition-colors">
                       {x.label}
                     </Link>
                   </li>
@@ -518,29 +529,29 @@ export default function HomePage() {
             <div>
               <p className="text-[12.5px] text-ainezu">読みもの</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><a href="/#index" className="hover:text-asagi transition-colors">記事をさがす</a></li>
+                <li><a href="/#index" className="-my-1 block py-1 hover:text-asagi transition-colors">記事をさがす</a></li>
                 <li>
                   <a
                     href="https://substack.com/@hisrecoveries"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-asagi transition-colors"
+                    className="-my-1 block py-1 hover:text-asagi transition-colors"
                   >
                     ニュースレター（Substack）<span aria-hidden className="text-ainezu"> ↗</span>
                   </a>
                 </li>
-                <li><a href="/feed.xml" className="hover:text-asagi transition-colors">RSS</a></li>
+                <li><a href="/feed.xml" className="-my-1 block py-1 hover:text-asagi transition-colors">RSS</a></li>
               </ul>
             </div>
             <div>
               <p className="text-[12.5px] text-ainezu">His Recoveries</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><a href="#about" className="hover:text-asagi transition-colors">編集方針</a></li>
-                <li><Link href="/updates" className="hover:text-asagi transition-colors">更新記録</Link></li>
-                <li><Link href="/disclosure" className="hover:text-asagi transition-colors">広告と収益について</Link></li>
-                <li><Link href="/partner" className="hover:text-asagi transition-colors">取材・掲載について</Link></li>
-                <li><Link href="/plan" className="hover:text-asagi transition-colors">第一印象改善プラン</Link></li>
-                <li><Link href="/privacy" className="hover:text-asagi transition-colors">プライバシー・免責事項</Link></li>
+                <li><a href="#about" className="-my-1 block py-1 hover:text-asagi transition-colors">編集方針</a></li>
+                <li><Link href="/updates" className="-my-1 block py-1 hover:text-asagi transition-colors">更新記録</Link></li>
+                <li><Link href="/disclosure" className="-my-1 block py-1 hover:text-asagi transition-colors">広告と収益について</Link></li>
+                <li><Link href="/partner" className="-my-1 block py-1 hover:text-asagi transition-colors">取材・掲載について</Link></li>
+                <li><Link href="/plan" className="-my-1 block py-1 hover:text-asagi transition-colors">第一印象改善プラン</Link></li>
+                <li><Link href="/privacy" className="-my-1 block py-1 hover:text-asagi transition-colors">プライバシー・免責事項</Link></li>
               </ul>
             </div>
           </div>
