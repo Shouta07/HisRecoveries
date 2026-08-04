@@ -27,11 +27,10 @@ export default function HomeHero({
   return (
     <header
       id="top"
-      className="flex min-h-screen flex-col bg-shironeri lg:grid lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] lg:items-stretch"
-      style={{ minHeight: "100svh" }}
+      className="flex flex-col bg-shironeri lg:grid lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] lg:items-stretch lg:[min-height:100svh]"
     >
       {/* 文字。広い画面では左、狭い画面では写真の下 */}
-      <div className="order-2 flex flex-col justify-center px-5 pb-8 pt-7 sm:px-12 sm:pb-10 sm:pt-9 lg:order-1 lg:px-14 lg:py-16 xl:px-20">
+      <div className="order-2 flex flex-col justify-center px-5 pb-6 pt-7 sm:px-12 sm:pb-10 sm:pt-9 lg:order-1 lg:px-14 lg:py-16 xl:px-20">
         <div className="mx-auto w-full max-w-[560px] lg:mx-0 lg:max-w-[30rem] xl:max-w-[34rem]">
           {content}
         </div>
