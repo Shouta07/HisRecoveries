@@ -56,7 +56,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
               </li>
               <li>
                 <a
-                  href="https://substack.com/@hisrecoveries"
+                  href="/letters"
                   target="_blank"
                   rel="noreferrer"
                   className="transition-colors hover:text-asagi"
