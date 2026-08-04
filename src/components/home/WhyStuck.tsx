@@ -55,7 +55,7 @@ const STEPS = [
   },
 ];
 
-export default function WhyStuck() {
+export default function WhyStuck({ between }: { between?: React.ReactNode }) {
   return (
     <>
       {/* ── 解決の3段階。課題より先に置く ──
@@ -111,6 +111,10 @@ export default function WhyStuck() {
           変えたときは、変えた記録も残します。
         </p>
       </section>
+
+      {/* 説明のすぐ後ろに、現物を置く。
+          課題を挟むと、説明 → 問題 → 現物 になって間延びする。 */}
+      {between}
 
       {/* ── 課題。あとに置いて、畳む ──
           3つとも読ませる必要はない。見出しだけで「どれか1つは自分だ」と
