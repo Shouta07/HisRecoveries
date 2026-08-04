@@ -4,7 +4,7 @@ import Link from "next/link";
 import { clustersByArea } from "@/lib/clusters";
 import { CORE_QUESTIONS } from "@/lib/check";
 import CheckFlow, { type ArticleRef } from "@/components/check/CheckFlow";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 診断。サイトの入口をここに移す。
 //
@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     locale: site.locale,
     title: "何から始めるかを決める",
     description: "5問・30秒。順番と、いまはやらなくていいことが出ます。",
+    images: [ogImage],
   },
 };
 

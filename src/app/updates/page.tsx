@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { updatesByNewest, LAST_UPDATED } from "@/lib/updates";
 import { formatDate } from "@/lib/articleDates";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 更新記録。
 //
@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     locale: site.locale,
     title: "更新記録",
     description: "何から何に、なぜ変えたか。変更前も消さずに残しています。",
+    images: [ogImage],
   },
 };
 

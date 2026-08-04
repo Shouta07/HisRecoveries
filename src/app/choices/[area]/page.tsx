@@ -6,7 +6,7 @@ import { areaLabel, isAreaId, type AreaId } from "@/lib/check";
 import { complexById } from "@/lib/complexes";
 import { clustersByArea } from "@/lib/clusters";
 import CheckCta from "@/components/check/CheckCta";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 選択肢の判断情報を、クロールできる形で出す。
 //
@@ -54,7 +54,7 @@ export function generateMetadata({ params }: { params: { area: string } }): Meta
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { type: "article", url, siteName: site.name, locale: site.locale, title, description },
+    openGraph: { type: "article", url, siteName: site.name, locale: site.locale, title, description, images: [ogImage] },
     twitter: { card: "summary_large_image", title, description },
   };
 }

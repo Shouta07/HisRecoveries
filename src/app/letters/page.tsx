@@ -7,7 +7,7 @@ import {
   WONT_SEND,
   QUIET_RULE,
 } from "@/lib/letters";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // お便りについて。
 //
@@ -48,6 +48,7 @@ export const metadata: Metadata = {
     locale: site.locale,
     title: "お便りについて",
     description: `多くて月${MAX_PER_MONTH}回。セールも流行も送りません。開かれなければ、こちらから止めます。`,
+    images: [ogImage],
   },
 };
 

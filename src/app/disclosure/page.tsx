@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AD_CATEGORIES, hasSponsored } from "@/lib/monetization";
 import { HAS_MEDICAL_CLIENTS, assertNoClientInArticles } from "@/lib/medicalClients";
 import { clusters } from "@/lib/clusters";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 広告と収益の開示。
 //
@@ -34,6 +34,7 @@ export const metadata: Metadata = {
     title: "広告と収益について",
     description:
       "受け取る区分と、受け取らない区分。掲載の順番は報酬額では決めていません。",
+    images: [ogImage],
   },
 };
 

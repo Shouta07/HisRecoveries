@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PartnerApplyForm from "@/components/PartnerApplyForm";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // ============================================================
 // /partner — 提携パートナー募集 LP（B2B / Supply確保）
@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     url: `${site.url}/partner`,
     title: "提携パートナー募集 — His Recoveries",
     description: "意欲の高い男性のお客さまを、あなたへ。掲載料・初期費用・月額は0円。申込は1分。",
+    images: [ogImage],
   },
 };
 
