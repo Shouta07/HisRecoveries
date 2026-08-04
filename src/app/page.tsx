@@ -14,6 +14,7 @@ import { site } from "@/lib/site";
 import HeroStart from "@/components/check/HeroStart";
 import WhyStuck from "@/components/home/WhyStuck";
 import ScrollReveal from "@/components/ScrollReveal";
+import Moments from "@/components/home/Moments";
 import SampleResult from "@/components/home/SampleResult";
 
 // ══════════════════════════════════════════════════════════════
@@ -234,6 +235,13 @@ export default function HomePage() {
           課題の説明はそのあと。
           見本の中身は本物の evaluate() の戻り値なので、
           診断を変えればここも一緒に変わる。 */}
+      {/* ヒーローの直後に、場面を置く。
+          ヒーローで「変わりたい。でも分からない。」と言い当てたあと、
+          いきなり「やることは3つだけ」に行くと、答えは早いが
+          自分の話として受け取る時間がない。
+          場面を5つ挟んで、最後の1行で順番の話に折り返す。 */}
+      <Moments />
+
       <WhyStuck between={<SampleResult />} />
 
       {/* ══════ 新しい記事 ══════ */}
