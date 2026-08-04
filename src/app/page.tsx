@@ -13,6 +13,7 @@ import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
 import HeroStart from "@/components/check/HeroStart";
 import WhyStuck from "@/components/home/WhyStuck";
+import SampleResult from "@/components/home/SampleResult";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ = 編集メディアの表紙。
@@ -226,7 +227,12 @@ export default function HomePage() {
                  ②ここの mt-[72px]
                  ③次の節の py-[72px]
           三重に足していたので、②を外し、③は WhyStuck 側で狭めた。 */}
-      <WhyStuck />
+      {/* 診断の出力そのものを、説明（やることは3つだけ）の直後に挟む。
+          「何をしてくれるか」を書いたあとに、現物を出す順番。
+          課題の説明はそのあと。
+          見本の中身は本物の evaluate() の戻り値なので、
+          診断を変えればここも一緒に変わる。 */}
+      <WhyStuck between={<SampleResult />} />
 
       {/* ══════ 新しい記事 ══════ */}
       <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
