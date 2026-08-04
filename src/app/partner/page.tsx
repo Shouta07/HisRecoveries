@@ -22,15 +22,28 @@ const HEAD: React.CSSProperties = {
 export const metadata: Metadata = {
   title: "提携パートナー募集 — 意欲の高い男性のお客さまを、あなたへ",
   description:
-    "His Recoveries は男性ウェルネスの相談窓口。悩みを診断し、改善の順番を決めてから、あなたに合うプロ・施設を候補としてお伝えします。掲載料・成果報酬は一切いただきません。申込は1分で完了。",
+    "His Recoveries は男性ウェルネスの相談窓口。悩みを診断し、改善の順番を決めてから、あなたに合うプロ・施設を候補としてお伝えします。掲載料・初期費用・月額は0円。申込は1分で完了。",
   alternates: { canonical: `${site.url}/partner` },
   openGraph: {
     type: "website",
     url: `${site.url}/partner`,
     title: "提携パートナー募集 — His Recoveries",
-    description: "意欲の高い男性のお客さまを、あなたへ。費用は一切かかりません。申込は1分。",
+    description: "意欲の高い男性のお客さまを、あなたへ。掲載料・初期費用・月額は0円。申込は1分。",
   },
 };
+
+// ── お金の向きについて ──────────────────────────────
+// もとは全種別「掲載料・月額・成果報酬すべて0円」だった。
+// これだと提携先への送客が収益にならず、事業として続かない。
+// 事業者（サロン・ジム等）からは、利用があったときだけ手数料をいただく形にする。
+//
+// ただし料率は分野ごとに一律にする。相手ごとに変えない。
+// サイト全体で「掲載の順番を報酬額で決めない」と約束している以上、
+// 相手によって料率が違うと、その約束は守る意志の問題になる。
+// 一律なら、金額で順番を動かす動機がそもそも発生しない。
+//
+// 医療機関は従来どおり0円（医療法・医療広告ガイドライン）。
+// こちらが仕事を発注するプロの方は、従来どおりお支払いする側。
 
 function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
@@ -56,9 +69,9 @@ function SectionCta({ dark = false }: { dark?: boolean }) {
             : "bg-[#2E4A66] hover:bg-[#24405C] text-[#F1F3F3]"
         }`}
       >
-        無料で提携をはじめる <span aria-hidden>→</span>
+        提携の相談をする <span aria-hidden>→</span>
       </a>
-      <p className={`mt-3 text-[12.5px] ${dark ? "text-[#8FA6B4]" : "text-[#8FA6B4]"}`}>申込は1分・費用は一切かかりません</p>
+      <p className={`mt-3 text-[12.5px] ${dark ? "text-[#8FA6B4]" : "text-[#8FA6B4]"}`}>申込は1分・掲載料と月額は0円</p>
     </div>
   );
 }
@@ -71,7 +84,7 @@ const FACILITY_CHIPS = ["美容皮膚科", "AGA", "医療脱毛", "脱毛サロ�
 const BENEFITS = [
   { t: "意欲の高いお客さまと、出会える。", d: "やることも順番も決まった状態でお名前を候補としてお伝えします。選ぶのはお客さまご本人です。" },
   { t: "説明の手間が、減る。", d: "目的と優先順位を事前に整理してお渡しします。ゼロから説明する時間が減ります。" },
-  { t: "費用は、一切かかりません。", d: "掲載料も月額も成果報酬もゼロ。お仕事ごとに、こちらから報酬をお支払いします。" },
+  { t: "掲載料と月額は、0円。", d: "初期費用もありません。施設・サロンの方は、お客さまが実際にご利用になったときだけ手数料をいただきます。料率は分野ごとに一律で、相手によって変えません。" },
   { t: "取材を、お願いすることも。", d: "現場の知見を記事にさせていただく場合があります（ご希望と合意のうえで）。" },
 ];
 
@@ -84,7 +97,11 @@ const STEPS = [
 const FAQ = [
   {
     q: "費用はかかりますか？",
-    a: "一切かかりません。掲載料・初期費用・月額・成果報酬、すべて0円です。プロの方はむしろ受け取る側で、お仕事ごとに報酬をお支払いします。運営はお客さまからいただく費用でまかなっています。",
+    a: "掲載料・初期費用・月額は、どなたも0円です。そのうえで、サロン・ジムなどの施設の方は、お客さまが実際にご利用になったときだけ手数料をいただきます。料率は分野ごとに一律で、相手によって変えません（金額で紹介の順番が動かないようにするためです）。メイク・スタイリスト等のプロの方は受け取る側で、お仕事ごとに報酬をお支払いします。医療機関からは、掲載料も紹介料も一切いただきません。",
+  },
+  {
+    q: "申し込めば、必ず掲載されますか？",
+    a: "いいえ。4つを確かめたうえで決めています。編集部が実際に会って聞いていること、総額とやめ方が先に確認できること、「合わない人」を先方ご自身が言えること、手数料が掲載の可否と順番に影響しないこと。この条件と現在の状況は「広告と収益について」に公開しています。確かめられていない段階では、お客さまをお送りしません。",
   },
   {
     q: "どんなお客さまが紹介されますか？",
@@ -105,7 +122,7 @@ export default function PartnerPage() {
           <Link href="/" className="logo-type text-[17px] font-bold tracking-[0.04em] text-[#2E4A66]">His Recoveries</Link>
           <div className="flex items-center gap-5">
             <span className="hidden sm:block font-mono text-[11px] tracking-[0.24em] uppercase text-[#5E6E76]">For Partners</span>
-            <a href="#apply" className="rounded-full bg-[#2E4A66] hover:bg-[#24405C] text-[#F1F3F3] text-[14px] font-bold px-4 py-2 transition-colors">無料で提携をはじめる</a>
+            <a href="#apply" className="rounded-full bg-[#2E4A66] hover:bg-[#24405C] text-[#F1F3F3] text-[14px] font-bold px-4 py-2 transition-colors">提携の相談をする</a>
           </div>
         </div>
       </div>
@@ -126,14 +143,14 @@ export default function PartnerPage() {
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="#apply" className="w-full sm:w-auto rounded-full bg-[#2E4A66] hover:bg-[#24405C] text-[#F1F3F3] text-[15px] font-bold px-9 py-4 transition-colors">
-              無料で提携をはじめる
+              提携の相談をする
             </a>
             <a href="#how" className="w-full sm:w-auto rounded-full border border-[#1B2024]/15 hover:border-[#2F6F79]/50 text-[#1B2024] text-[15px] font-bold px-9 py-4 transition-colors">
               仕組みを見る
             </a>
           </div>
           <p className="mt-8 font-mono text-[12.5px] tracking-[0.14em] text-[#5E6E76]">
-            費用は一切なし　・　申込は1分
+            掲載料・初期費用・月額は0円　・　申込は1分
           </p>
           {/* 冷リンクで開いた相手への実在性の証明（メディアを見れば本気度が分かる） */}
           <Link href="/#index" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#2F6F79] underline underline-offset-4 decoration-[#70B0B0]/50 hover:opacity-70 transition-opacity">
@@ -233,9 +250,9 @@ export default function PartnerPage() {
             <TrackCard
               tag="Clinic & Studio — 候補としてお伝えする"
               title="提携する施設"
-              desc="目的のはっきりした男性に、候補としてお名前をお伝えします。選ぶのはお客さまご本人です。掲載料・成果報酬は、一切いただきません。"
+              desc="目的のはっきりした男性に、候補としてお名前をお伝えします。選ぶのはお客さまご本人です。掲載料と月額は0円。実際にご利用があったときだけ、手数料をいただきます。"
               chips={FACILITY_CHIPS}
-              money="費用は一切かかりません"
+              money="掲載料0円／利用があったときだけ"
               icon={<><path d="M4 20V9l8-5 8 5v11" /><path d="M9 20v-6h6v6" /><path d="M4 20h16" /></>}
             />
           </div>
@@ -278,11 +295,11 @@ export default function PartnerPage() {
           <div className="text-center">
             <Eyebrow>Pricing — 費用について</Eyebrow>
             <h2 className="mt-6 text-[1.7rem] sm:text-[2.5rem] leading-[1.35] font-[800] text-[#1B2024]" style={HEAD}>
-              費用は、<span className="text-[#2F6F79]">一切いただきません。</span>
+              掲載料と月額は、<span className="text-[#2F6F79]">0円です。</span>
             </h2>
             <p className="mt-6 mx-auto max-w-[34rem] text-[15px] leading-[1.95] text-[#414A50]">
-              掲載料も、月額も、成果報酬もありません。
-              私たちはお客さまからいただく費用だけで運営しています。
+              初期費用もありません。施設・サロンの方だけ、お客さまが実際にご利用になったときに手数料をいただきます。
+              料率は分野ごとに一律で、相手によって変えません。
             </p>
           </div>
 
@@ -297,9 +314,13 @@ export default function PartnerPage() {
               },
               {
                 who: "サロン・ジムなどの施設",
-                flow: "支払いなし",
-                big: "費用は、かかりません。",
-                lines: ["掲載料・月額・成果報酬、すべて0円です。", "お客さまが来ても、こちらは何も受け取りません。"],
+                flow: "利用があったときだけ",
+                big: "掲載料と月額は、0円。",
+                lines: [
+                  "初期費用もありません。",
+                  "お客さまが実際にご利用になったときだけ、手数料をいただきます。",
+                  "料率は分野ごとに一律です。金額で紹介の順番は変わりません。",
+                ],
               },
               {
                 who: "医療機関（自由診療）",
@@ -322,7 +343,21 @@ export default function PartnerPage() {
           </div>
 
           <p className="mt-6 text-center text-[13.5px] text-[#5E6E76] leading-[1.8]">
-            共通：費用は一切かかりません。最低契約期間の縛りはなく、いつでも停止できます。条件は書面で明示します。
+            共通：掲載料・初期費用・月額は0円。最低契約期間の縛りはなく、いつでも停止できます。
+            手数料をいただく場合の料率も、始める前に書面でお伝えします。
+          </p>
+          {/* 提携先が0件であることを、募集の面でも隠さない。
+              隠して集めると、1件目の相手に「他にもいる」と思わせたことになる。 */}
+          <p className="mt-4 text-center text-[13.5px] text-[#5E6E76] leading-[1.8]">
+            なお、上の4条件を確かめられた提携先は、現時点で0件です。まだ1件もお客さまをお送りしていません。
+            条件と現在の状況は
+            <Link
+              href="/disclosure"
+              className="mx-1 font-bold text-[#2F6F79] underline decoration-[#70B0B0]/50 underline-offset-4 hover:opacity-70 transition-opacity"
+            >
+              広告と収益について
+            </Link>
+            に公開しています。
           </p>
 
           <SectionCta />
