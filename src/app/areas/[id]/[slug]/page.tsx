@@ -517,15 +517,15 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             </Link>
           </p>
 
-          {/* 対面プラン — 地域と曜日の制約があるので、いちばん最後に置く。
-              ここを先に出すと、東京以外の読者が最初の一行で自分の話ではないと判断する。
-              全国で使えるもの（診断）を上に、制約のあるものを下に。 */}
+          {/* ここに対面サービスへの導線を置いていたが、外した。
+              「売っていないから、やらなくていいと書ける」が編集の根拠なので、
+              記事の末尾から自社サービスに直接送ると、その根拠が弱くなる。
+              読者から見れば「結局これを売りたいのだろう」に見える。
+              サービスはフッターからたどれる。編集の面には出さない。 */}
           <p className="mt-10 border-t border-shironezu pt-8 text-[13.5px] leading-[1.95] text-ainezu">
-            記事はすべて無料で公開しています。一人だと止まってしまう場合だけ、
-            <Link href="/plan" className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi">
-              第一印象改善プラン
-            </Link>
-            をご覧ください（東京都内・土日のみ）。
+            記事はすべて無料で公開しています。
+            いまの順番は、公開されている情報と編集部の判断で組んだ暫定版です。
+            取材が進んだら、書き換えます。
           </p>
         </div>
       </div>
