@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AD_CATEGORIES, hasSponsored } from "@/lib/monetization";
+import { HAS_MEDICAL_CLIENTS, assertNoClientInArticles } from "@/lib/medicalClients";
 import { clusters } from "@/lib/clusters";
 import { site } from "@/lib/site";
 
@@ -93,6 +94,10 @@ const NOT = [
 ];
 
 export default function DisclosurePage() {
+  // 受託した医療機関が記事に出ていないかを、公開の前に確かめる。
+  // 出ていたら、いただいている制作費が実質的にご紹介の対価になる。
+  assertNoClientInArticles();
+
   // いま実際に成果報酬つきのリンクを載せているか。
   // 「受け取っています」と現在形で書いたまま1本も載っていないと、
   // 書いてあることと実態がずれる。データから引く形にして、
@@ -198,7 +203,30 @@ export default function DisclosurePage() {
               医療に限定する。医療以外をどうするかは、下の節で状態として書く。 */}
           <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">
             同じ理由で、医療機関および医師・歯科医師からは、掲載料も成果報酬も受け取りません。
-            くわしくは
+          </p>
+
+          {/* 受け取らないものと、受け取るものを、同じ場所で分けて書く。
+              別のページに散らすと、読む側は片方しか見ない。 */}
+          <h3 className="mt-10 text-[16px] sm:text-[17px]" style={{ ...MINCHO, fontWeight: 700 }}>
+            では、医療機関から一切お金を受け取らないのか
+          </h3>
+          <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">
+            そうではありません。受け取らないのは
+            <span className="font-bold text-sumi">患者さまのご紹介に連動した報酬</span>
+            です。医療機関ご自身の発信——自院サイトの記事や、患者さま向けの説明資料の制作——は、
+            運営元のバイタリティデザインが受託することがあります。
+            料金は制作物に対するもので、患者さまの人数とは連動しないので、ご紹介の対価にはあたりません。
+          </p>
+          <p className="mt-4 border-l-2 border-asagi pl-4 text-[14.5px] leading-[1.95] text-keshizumi">
+            <span className="font-bold text-sumi">
+              制作を受託した医療機関を、このサイトの記事で扱うことはしません。
+            </span>
+            扱えば、いただいている制作費が、結局ご紹介の対価と同じものになるからです。
+            これは心がけではなく、記事に受託先の名前が出たらサイトを公開できない仕組みにしてあります。
+            {!HAS_MEDICAL_CLIENTS && "現時点で、制作を受託している医療機関は0件です。"}
+          </p>
+          <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">
+            提携の条件は
             <Link
               href="/partner"
               className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
