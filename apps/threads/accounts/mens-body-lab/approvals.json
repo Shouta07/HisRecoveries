@@ -416,6 +416,28 @@
         "source_type": "content_source",
         "product": null
       }
+    },
+    {
+      "id": "20260804024359813287",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-04T02:43:59.813304",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "始める前は「面倒でやめるだろうな」と思ってた。\n続いたのは、工程が1つ・2分以内だったからだと思う。\n3工程あったら3日でやめてた。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-face-tired",
+        "hypothesis_name": "引用リソース src-face-tired",
+        "topic_slug": "src-face-tired",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
