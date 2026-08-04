@@ -105,7 +105,7 @@ const FAQ = [
   },
   {
     q: "どんなお客さまが紹介されますか？",
-    a: "診断と改善プランを終えて、目的と優先順位がはっきりした男性です。こちらから「ここへ行ってください」と指定はしません。候補としてお伝えし、選ぶのはお客さまご本人です。",
+    a: "診断と改善プランを終えて、目的と優先順位がはっきりした男性です。こちらから「ここへ行ってください」と指定はしません。候補としてお伝えし、選ぶのはお客さまご本人です。なお現時点では、まだ1人もお送りしていません。メディアと診断は公開していますが、ご紹介はこれから始めます。",
   },
   {
     q: "途中でやめられますか？",
@@ -151,6 +151,15 @@ export default function PartnerPage() {
           </div>
           <p className="mt-8 font-mono text-[12.5px] tracking-[0.14em] text-[#5E6E76]">
             掲載料・初期費用・月額は0円　・　申込は1分
+          </p>
+          {/* 現在地を、いちばん上に出す。
+              もとは料金の節（6画面ぶん下）にだけ書いてあり、
+              そこまでの面はすでに動いている事業のように読めた。
+              0件であることは、読む前に分かるほうがいい。 */}
+          <p className="mx-auto mt-5 max-w-[30rem] rounded-[1rem] border border-[#1B2024]/10 bg-white/70 px-5 py-3.5 text-[13.5px] leading-[1.85] text-[#414A50]">
+            <span className="font-bold text-[#1B2024]">いまの状態：提携先は0件、お送りしたお客さまも0人です。</span>
+            <br />
+            メディアは公開していますが、ご紹介の実績はこれからです。1件目としてお話しできる方を探しています。
           </p>
           {/* 冷リンクで開いた相手への実在性の証明（メディアを見れば本気度が分かる） */}
           <Link href="/#index" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#2F6F79] underline underline-offset-4 decoration-[#70B0B0]/50 hover:opacity-70 transition-opacity">
@@ -206,7 +215,7 @@ export default function PartnerPage() {
                 「あなたの場合は、<br />この順番で整えると良い」
               </div>
               <div className="mt-4 flex flex-wrap gap-1.5">
-                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-bold text-[#C3D3D6]">AI印象診断</span>
+                <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-bold text-[#C3D3D6]">5問の診断</span>
                 <span className="rounded-full bg-white/[0.1] px-2.5 py-1 text-[12px] font-bold text-[#C3D3D6]">改善プラン</span>
               </div>
             </div>
@@ -222,7 +231,7 @@ export default function PartnerPage() {
           </div>
 
           <p className="mt-12 text-center text-[15px] sm:text-[15px] text-[#2F6F79] font-bold leading-[1.9]">
-            <W>だから届くのは、</W><W className="text-[#2E4A66]">やることが決まった、</W><W className="text-[#2E4A66]">意欲の高い男性</W><W>だけ。</W>
+            <W>だからお届けするのは、</W><W className="text-[#2E4A66]">やることが決まった、</W><W className="text-[#2E4A66]">意欲の高い男性</W><W>だけです。</W>
           </p>
 
           <SectionCta />
