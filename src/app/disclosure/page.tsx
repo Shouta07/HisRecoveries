@@ -193,8 +193,11 @@ export default function DisclosurePage() {
             それは広告の仕事であって、比べるための記事の仕事ではありません。
             費用が発生しない形でしか、行かないという選択肢を並べて書くことはできない、と考えています。
           </p>
+          {/* もとは「提携している専門家・施設からも、掲載料や成果報酬は受け取っていません」。
+              主語が広すぎて、同じページの「送客するかどうかの基準」と食い違っていた。
+              医療に限定する。医療以外をどうするかは、下の節で状態として書く。 */}
           <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">
-            同じ理由で、提携している専門家・施設からも、掲載料や成果報酬は受け取っていません。
+            同じ理由で、医療機関および医師・歯科医師からは、掲載料も成果報酬も受け取りません。
             くわしくは
             <Link
               href="/partner"
@@ -242,6 +245,27 @@ export default function DisclosurePage() {
             </span>
             1件目ができたときは、どこを・どうやって確かめたのかを、このページに足します。
             確かめていないことを「確かめた」と書くくらいなら、送客をしません。
+          </p>
+          {/* 現時点の実態を書いておく。基準だけ置くと、
+              「すでに手数料を取っている」と読まれる。/partner では
+              掲載料も成果報酬も0円と伝えているので、そこと矛盾させない。 */}
+          <p className="mt-4 text-[14.5px] leading-[1.95] text-ainezu">
+            なお現時点では、提携先から掲載料も成果報酬も受け取っていません。
+            プロの方・施設の方にお伝えしている条件は
+            <Link
+              href="/partner"
+              className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
+            >
+              取材・掲載について
+            </Link>
+            に書いています。ここで受け取る形に変えるときは、変えたことを
+            <Link
+              href="/updates"
+              className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
+            >
+              更新記録
+            </Link>
+            に残したうえで、このページを書き換えます。
           </p>
         </section>
 
