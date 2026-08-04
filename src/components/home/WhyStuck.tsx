@@ -87,9 +87,17 @@ export default function WhyStuck() {
         <h2 className="text-[21px] leading-[1.55] sm:text-[26px]" style={{ ...MINCHO, fontWeight: 700 }}>
           やることは、3つだけ
         </h2>
+        {/* 「売っていないので」と書いていたが、下ろした。
+            この先アフィリエイトや送客が始まると、その一文は嘘になる。
+            嘘になった時点で、このサイトでいちばん強い主張が
+            いちばん弱い場所に変わる。
+            言い換えではなく、条件を書き直した。
+            「掲載の順番を報酬で決めない」は、収入が発生したあとも成立し、
+            しかも /disclosure で確かめられる。 */}
         <p className="mt-5 max-w-[34em] text-[15.5px] leading-[2.05] text-keshizumi sm:text-[16px]">
           知る、順番を決める、選ぶ。どれも無料で、登録は要りません。
-          売っていないので、<span className="font-bold text-sumi">やらなくていいことも書けます。</span>
+          掲載の順番を報酬で決めていないので、
+          <span className="font-bold text-sumi">やらなくていいことも書けます。</span>
         </p>
 
         <ol className="mt-10 flex flex-col gap-px border border-shironezu bg-shironezu">

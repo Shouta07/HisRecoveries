@@ -5,6 +5,7 @@ import { clusters, CLUSTER_UPDATED } from "@/lib/clusters";
 import { SITUATIONS } from "@/lib/situations";
 import { publishedAt } from "@/lib/articleDates";
 import { AREA_UPDATED } from "@/lib/areas";
+import { LAST_UPDATED } from "@/lib/updates";
 
 // 優先度は「トップ > 分野ハブ > 記事 > 手続きページ」。
 // lastModified は今日ではなく、実際に中身を更新した日を出す。
@@ -70,6 +71,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  // 更新記録。lastModified は最後に判断が変わった日を出す。
+  // ここだけは articleDate（記事の更新日）を使わない。
+  const updatesPath: MetadataRoute.Sitemap = [
+    {
+      url: `${site.url}/updates`,
+      lastModified: new Date(`${LAST_UPDATED}T12:00:00+09:00`),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+  ];
+
   const staticPaths: MetadataRoute.Sitemap = [
     "/check",
     "/plan",
@@ -93,6 +105,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...choicePaths,
     ...situationPaths,
     ...clusterPaths,
+    ...updatesPath,
     ...staticPaths,
   ];
 }

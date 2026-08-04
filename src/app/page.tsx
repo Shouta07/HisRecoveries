@@ -424,7 +424,18 @@ export default function HomePage() {
           <ul className="mt-9 max-w-[34em] space-y-2.5 text-[15px] leading-[1.95] text-keshizumi">
             <li>聞いていないことは、聞いていないと書きます。</li>
             <li>「やったほうがいい」を全部は並べません。いまはやらなくていいものは、そう書きます。</li>
-            <li>順番が変わったら、変わった記録を残します。</li>
+            {/* 約束だけ書いて置き場所が無いと、確かめようがない。
+                記録そのものへリンクする。 */}
+            <li>
+              順番が変わったら、変わった記録を残します（
+              <Link
+                href="/updates"
+                className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
+              >
+                更新記録
+              </Link>
+              ）。
+            </li>
             <li>効果や結果は保証しません。医療的な判断は、医師の領域です。</li>
             <li>掲載の順番を、報酬額で決めません。</li>
           </ul>
@@ -525,6 +536,8 @@ export default function HomePage() {
               <p className="text-[12.5px] text-ainezu">His Recoveries</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
                 <li><a href="#about" className="hover:text-asagi transition-colors">編集方針</a></li>
+                <li><Link href="/updates" className="hover:text-asagi transition-colors">更新記録</Link></li>
+                <li><Link href="/disclosure" className="hover:text-asagi transition-colors">広告と収益について</Link></li>
                 <li><Link href="/partner" className="hover:text-asagi transition-colors">取材・掲載について</Link></li>
                 <li><Link href="/plan" className="hover:text-asagi transition-colors">第一印象改善プラン</Link></li>
                 <li><Link href="/privacy" className="hover:text-asagi transition-colors">プライバシー・免責事項</Link></li>

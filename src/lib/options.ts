@@ -28,6 +28,7 @@
 // 「〜すべき」という書き方。書けるのは、やることと条件だけ。
 
 import type { AreaId } from "./check";
+import { assertNoPromoWords } from "./monetization";
 
 export type Tier = "self" | "buy" | "pro" | "care";
 
@@ -336,6 +337,24 @@ export const OPTIONS: Option[] = [
 ];
 
 // ── 絞り込み ──────────────────────────────────
+
+// 並べる軸を、あとから崩せないようにしておく。
+//
+// 送客を始めると、ここに「キャンペーン中」「お得」を足したくなる圧が必ずかかる。
+// 1つ入った時点で、この一覧は比較表ではなく広告になる。
+// 読み込んだ時点で落ちるようにして、判断を残さない。
+//
+// 軸そのものも欠けさせない。費用・手間・期間・向いている人の4つが
+// 揃っていない選択肢は、比べるための行になっていない。
+for (const o of OPTIONS) {
+  assertNoPromoWords([o.label, o.what, o.fitsWhen, o.notYet ?? ""], `選択肢 ${o.id}`);
+  if (!o.fitsWhen.trim()) {
+    throw new Error(`選択肢 ${o.id}: 「向いている人」が空です。書けないなら載せません`);
+  }
+  if (o.tier !== "care" && o.weeks <= 0) {
+    throw new Error(`選択肢 ${o.id}: 確かめるまでの期間が入っていません`);
+  }
+}
 
 /** 診断の回答から取れる条件 */
 export type Constraints = {

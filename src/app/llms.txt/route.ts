@@ -4,6 +4,7 @@ import { SITUATIONS } from "@/lib/situations";
 import { STAGES, STAGE_OF } from "@/lib/stages";
 import { publishedAt } from "@/lib/articleDates";
 import { site } from "@/lib/site";
+import { LAST_UPDATED } from "@/lib/updates";
 
 // /llms.txt — 生成AI・AI検索向けの、このサイトの案内図。
 //
@@ -97,8 +98,12 @@ ${areaBlocks}
 - 新着記事（RSS）: ${site.url}/feed.xml
 - サイトマップ: ${site.url}/sitemap.xml
 - 編集方針: ${site.url}/#about
+- 更新記録: ${site.url}/updates
+  順番・編集方針・導線を、いつ・何から何に・なぜ変えたかの記録。変更前の記述も残している。
+  最終更新: ${LAST_UPDATED}
 - 広告と収益について: ${site.url}/disclosure
   記事内の成果報酬つきリンクの扱い。医療機関への送客に連動した報酬は受け取らない。
+  提携先への送客には4つの条件を課しており、満たした提携先は現時点で0件、送客も0件。
 - プライバシー・免責事項: ${site.url}/privacy
 `;
 
