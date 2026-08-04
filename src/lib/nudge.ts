@@ -15,6 +15,14 @@
 // そして「やめたくなったらやめられる」ことは、この事業では機能のひとつ。
 // 急かす文面は書かない。
 
+/**
+ * 何回続けて反応がなければ止めるか。
+ *
+ * この数字は読者に約束として出すので（/letters）、
+ * 判定と表示で別々に持たない。ずれた瞬間に、書いてあることが嘘になる。
+ */
+export const STOP_AFTER_QUIET = 3;
+
 export type Checkin = {
   /** 何週目か（1始まり） */
   week: number;
@@ -55,7 +63,7 @@ function rate(c: Checkin): number {
  */
 export function decideNudge(trail: Checkin[], missedInARow: number): Nudge {
   // 反応がない人を追いかけない。ここが最初に来る。
-  if (missedInARow >= 3) {
+  if (missedInARow >= STOP_AFTER_QUIET) {
     return {
       kind: "quiet",
       cadence: "pause",

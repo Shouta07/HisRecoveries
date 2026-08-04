@@ -450,7 +450,17 @@ export default function HomePage() {
             <li>効果や結果は保証しません。医療的な判断は、医師の領域です。</li>
             <li>掲載の順番を、報酬額で決めません。</li>
           </ul>
-          <p className="mt-8 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
+          <p className="mt-8 max-w-[34em] text-[15px] leading-[1.95] text-keshizumi">
+            順番が変わったときだけ、お知らせを送っています。多くて月2回で、
+            開かれない状態が続いたら、こちらから止めます。
+            <Link
+              href="/letters"
+              className="ml-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
+            >
+              お便りについて
+            </Link>
+          </p>
+          <p className="mt-6 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
             専門家への取材記事は、まだ0本です。記事の誤りは
             <a
               href={`mailto:${site.email}`}
@@ -531,14 +541,9 @@ export default function HomePage() {
               <ul className="mt-4 space-y-2.5 text-[14px]">
                 <li><a href="/#index" className="-my-1 block py-1 hover:text-asagi transition-colors">記事をさがす</a></li>
                 <li>
-                  <a
-                    href="https://substack.com/@hisrecoveries"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="-my-1 block py-1 hover:text-asagi transition-colors"
-                  >
-                    ニュースレター（Substack）<span aria-hidden className="text-ainezu"> ↗</span>
-                  </a>
+                  <Link href="/letters" className="-my-1 block py-1 hover:text-asagi transition-colors">
+                    お便りについて
+                  </Link>
                 </li>
                 <li><a href="/feed.xml" className="-my-1 block py-1 hover:text-asagi transition-colors">RSS</a></li>
               </ul>
