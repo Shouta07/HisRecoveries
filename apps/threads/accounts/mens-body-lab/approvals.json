@@ -438,6 +438,28 @@
         "source_type": "content_source",
         "product": null
       }
+    },
+    {
+      "id": "20260804132920787579",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-04T13:29:20.787599",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「手をかける」って大げさに聞こえてた。\n蒸しタオルを顔に1分乗せるだけでも、十分手をかけたことになる。\nハードルは自分で上げてただけだった。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-face-tired",
+        "hypothesis_name": "引用リソース src-face-tired",
+        "topic_slug": "src-face-tired",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
