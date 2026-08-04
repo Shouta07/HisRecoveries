@@ -7,7 +7,9 @@ import { useSearch } from "./SearchProvider";
 
 export default function SearchButton({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const s = useSearch();
-  const color = tone === "light" ? "text-shironeri" : "text-sumi";
+  // light は「写真の上に白で置く」用。ただし lg 以上ではヒーローが
+  // 左右分割になり、ナビの地が明るくなるので、そこでは墨に戻す。
+  const color = tone === "light" ? "text-shironeri lg:text-sumi" : "text-sumi";
 
   return (
     <button

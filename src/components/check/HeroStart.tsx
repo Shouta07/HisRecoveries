@@ -30,14 +30,15 @@ export default function HeroStart() {
       </p>
 
       {/* 3列 × 2段。1つずつ順に現れる（動きは globals.css 側で
-          prefers-reduced-motion のときは全部止まる） */}
-      <ul className="mt-3 grid grid-cols-3 gap-2 lg:grid-cols-6">
+          prefers-reduced-motion のときは全部止まる）。
+          PCでも3列のまま——左半分に置くので、6列にすると1つが狭くなりすぎる。 */}
+      <ul className="mt-3 grid grid-cols-3 gap-2">
         {CHIPS.map((c, i) => (
           <li key={c.id}>
             <Link
               href={`/check?focus=${c.id}`}
               onClick={() => track("check_open", { from: "hero-chip", focus: c.id })}
-              className="hr-rise block border border-shironezu bg-hakuji px-2 py-3 text-center text-[13px] font-bold leading-[1.4] text-keshizumi transition-[background-color,border-color,color,transform] duration-150 hover:-translate-y-0.5 hover:border-asagi hover:bg-asagi hover:text-shironeri active:translate-y-0 active:bg-asagi active:text-shironeri motion-reduce:hover:translate-y-0"
+              className="hr-rise block border border-shironezu bg-hakuji px-2 py-3.5 text-center text-[13px] sm:text-[13.5px] font-bold leading-[1.4] text-keshizumi transition-[background-color,border-color,color,transform] duration-150 hover:-translate-y-0.5 hover:border-asagi hover:bg-asagi hover:text-shironeri active:translate-y-0 active:bg-asagi active:text-shironeri motion-reduce:hover:translate-y-0"
               style={{ ["--d" as string]: `${900 + i * 70}ms` }}
             >
               {c.label}

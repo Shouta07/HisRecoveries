@@ -150,24 +150,27 @@ export default function HomePage() {
                 alt=""
                 fill
                 priority
-                sizes="100vw"
-                className="object-cover object-[46%_20%]"
+                sizes="(min-width: 1024px) 52vw, 100vw"
+                className="object-cover object-[54%_14%] lg:object-[46%_26%]"
               />
             </div>
-
-            {/* 文字が乗る下側を落とす。写真の上半分（顔と光）は残す */}
+            {/* 狭い画面では、写真の下端と白練の地の境目を少しだけ和らげる。
+                文字を重ねないので、覆いはここだけで足りる。 */}
             <div
               aria-hidden
-              className="absolute inset-x-0 bottom-0 h-[58%]"
+              className="absolute inset-x-0 bottom-0 h-[22%] lg:hidden"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(17,27,38,0.94) 0%, rgba(17,27,38,0.76) 30%, rgba(17,27,38,0.36) 62%, rgba(17,27,38,0) 100%)",
+                  "linear-gradient(to top, rgba(241,243,243,0.55) 0%, rgba(241,243,243,0) 100%)",
               }}
             />
-
+          </>
+        }
+        content={
+          <>
             <h1
-              className="hr-wipe absolute bottom-6 left-5 right-5 max-w-[15em] text-[clamp(24px,6.2vw,36px)] leading-[1.4] text-shironeri sm:bottom-8 sm:left-12 sm:text-[40px] lg:left-16 lg:text-[50px] lg:leading-[1.32]"
-              style={{ ...MINCHO, fontWeight: 700, textShadow: "0 2px 26px rgba(12,20,29,0.6)" }}
+              className="hr-wipe text-[clamp(26px,6.4vw,34px)] leading-[1.42] text-sumi sm:text-[38px] lg:text-[clamp(34px,3.2vw,46px)] lg:leading-[1.36]"
+              style={{ ...MINCHO, fontWeight: 700 }}
             >
               変わりたい。でも、
               <br />
@@ -175,20 +178,28 @@ export default function HomePage() {
               <br />
               分からない。
             </h1>
-          </>
-        }
-        band={
-          <>
+
             <p
-              className="hr-rise max-w-[30em] text-[13.5px] leading-[1.85] text-keshizumi sm:text-[15px]"
+              className="hr-rise mt-5 text-[14.5px] leading-[1.95] text-keshizumi sm:mt-6 sm:text-[16px] sm:leading-[2]"
               style={{ ["--d" as string]: "700ms" }}
             >
               見た目、体調、清潔感。
               <span className="whitespace-nowrap">あなたに必要な改善の順番を、整理します。</span>
             </p>
-            <div className="mt-5 max-w-[34em] lg:max-w-[62em]">
+
+            <div className="mt-7 sm:mt-8">
               <HeroStart />
             </div>
+
+            {/* 下に続きがあることの手がかり。
+                狭い画面は文字が下にあるので自然にスクロールするが、
+                広い画面は左右分割で、1画面目の下端が読み終わりに見える。
+                lg 以上でだけ出す。 */}
+            <span
+              aria-hidden
+              className="hr-rise hr-scrollcue mt-12 hidden lg:block"
+              style={{ ["--d" as string]: "1500ms" }}
+            />
           </>
         }
       />
