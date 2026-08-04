@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { COST_FACTORS, DELIVERABLES, OUT_OF_POCKET, PLAN, SUPPORT } from "@/lib/pricing";
 import { FAQ_CATEGORIES } from "@/lib/faq";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 個人向けサービスの面。
 //
@@ -33,6 +33,7 @@ export const metadata: Metadata = {
     title: "第一印象改善プラン（30日）",
     description:
       "眉・メイク・服選び・髪型・撮影を1日で。手順の動画とサイズ表を持ち帰れます。東京都内・土日のみ。",
+    images: [ogImage],
   },
 };
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { OPTIONS } from "@/lib/options";
 import { areaLabel, type AreaId } from "@/lib/check";
 import CheckCta from "@/components/check/CheckCta";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 選択肢の入口。
 // 記事は「なぜそうなるのか」、ここは「で、何を選ぶか」。役割を分けている。
@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     locale: site.locale,
     title: "何を選ぶか",
     description: "おすすめの順ではなく、条件で並べた選択肢。",
+    images: [ogImage],
   },
 };
 

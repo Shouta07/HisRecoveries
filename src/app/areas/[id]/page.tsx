@@ -12,7 +12,7 @@ import AdNotice from "@/components/AdNotice";
 import CheckCta from "@/components/check/CheckCta";
 import { hasSponsored } from "@/lib/monetization";
 import MarketView from "@/components/MarketView";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 分野のハブ。役割は2つ。
 //  ① その分野の仕組みを一本にまとめた、いちばん上位の読み物（ピラー）
@@ -51,6 +51,7 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
       title,
       description: area.lead,
       modifiedTime: AREA_UPDATED,
+      images: [ogImage],
     },
     twitter: { card: "summary_large_image", title, description: area.lead },
   };

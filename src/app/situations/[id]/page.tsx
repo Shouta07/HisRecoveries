@@ -5,7 +5,7 @@ import { clusters } from "@/lib/clusters";
 import { complexById } from "@/lib/complexes";
 import { SITUATIONS } from "@/lib/situations";
 import { byNewest, formatDate, publishedAt } from "@/lib/articleDates";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 状況ページ。「結婚式に呼ばれた」「面接・転職がある」など9本。
 //
@@ -52,7 +52,7 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { type: "website", url, siteName: site.name, locale: site.locale, title, description },
+    openGraph: { type: "website", url, siteName: site.name, locale: site.locale, title, description, images: [ogImage] },
     twitter: { card: "summary_large_image", title, description },
   };
 }

@@ -66,6 +66,22 @@ export const site = {
   ],
 } as const;
 
+/**
+ * SNSに貼ったときのカード画像。
+ *
+ * Next.js は、ページ側で openGraph を書くと親の openGraph を丸ごと
+ * 置き換える。images だけ書き忘れると、カードから画像が消える。
+ * 実測で12ルートが画像なしになっていた（twitter:card は
+ * summary_large_image を宣言したまま、画像だけ無い状態）。
+ * 各ページで同じ literal を書くと必ずどれかがずれるので、ここに置く。
+ */
+export const ogImage = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: `${site.name} — ${site.tagline}`,
+};
+
 export const socialSameAs = [
   site.social.threads,
   site.social.x,

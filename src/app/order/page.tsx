@@ -7,7 +7,7 @@ import { formatDate, publishedAt } from "@/lib/articleDates";
 import CheckCta from "@/components/check/CheckCta";
 import { ReadingProgress } from "@/components/ReadingAids";
 import ShareRow from "@/components/ShareRow";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // サイトの最上位に置く一本。55本の記事を、順番という1本の線に通す。
 //
@@ -52,6 +52,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESC,
     modifiedTime: GUIDE_UPDATED,
+    images: [ogImage],
   },
   twitter: { card: "summary_large_image", title: TITLE, description: DESC },
 };

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ConsultLink from "@/components/ConsultLink";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 
 // 「自信・パートナーシップ」— 言葉にしにくい悩み（自信・関係・性のこと）を、
 // 抽象度を保ったまま「回復の一部」として匿名で扱う、静かなランディング。
@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     url: `${site.url}/areas/confidence`,
     title: "自信・パートナーシップ | His Recoveries",
     description: "言葉にしにくい悩みも、回復の一部として、守秘のもとで。茶化さず、急かさず。",
+    images: [ogImage],
   },
 };
 
