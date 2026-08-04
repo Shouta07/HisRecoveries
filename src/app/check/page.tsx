@@ -49,7 +49,7 @@ export default function CheckPage() {
 
   return (
     <main className="bg-shironeri">
-      <div className="mx-auto max-w-reading px-5 sm:px-8 pt-10 sm:pt-14 pb-24">
+      <div className="mx-auto max-w-reading px-5 pb-24 pt-6 sm:px-8 sm:pt-14">
         <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
           <Link href="/" className="transition-colors hover:text-asagi">
             ホーム
@@ -61,7 +61,7 @@ export default function CheckPage() {
             結果の上に案内文が残り続けると、読みたいものが下に押される。
             余白を詰めているのは、初回表示で選択肢が画面に入るようにするため。 */}
         <h1
-          className="mt-5 text-[25px] leading-[1.5] sm:text-[33px]"
+          className="mt-3 text-[22px] leading-[1.45] sm:mt-5 sm:text-[33px]"
           style={{ ...MINCHO, fontWeight: 700 }}
         >
           何から始めるかを、決めます
@@ -69,17 +69,22 @@ export default function CheckPage() {
 
         {/* useSearchParams（?focus=）を使うので境界が要る。
             中身は即座に描けるので、待ちの表示は最小限でよい。 */}
-        <div className="mt-7">
+        <div className="mt-4 sm:mt-7">
           <Suspense fallback={<p className="text-[14px] text-ainezu">読み込み中…</p>}>
           <CheckFlow
             articles={articles}
+            // 押す前に要るのは「何問で終わるか」と「登録が要らないか」だけ。
+            // それ以外は選択肢の下（note）に回す。
             intro={
-              <p className="mb-9 text-[15px] leading-[1.95] text-keshizumi">
-{CORE_QUESTIONS}問・30秒。手をつける順番と、今月やること3つが出ます。
-                <span className="font-bold text-sumi">いまはやらなくていいことも出します。</span>
-                <span className="mt-1 block text-[13px] text-ainezu">
-                  登録は要りません。回答は保存していません。
-                </span>
+              <p className="mb-5 text-[15px] leading-[1.95] text-keshizumi sm:mb-7">
+                {CORE_QUESTIONS}問・30秒。登録は要りません。
+              </p>
+            }
+            note={
+              <p className="mt-9 border-t border-shironezu pt-6 text-[14px] leading-[1.95] text-ainezu">
+                手をつける順番と、今月やること3つが出ます。
+                <span className="font-bold text-keshizumi">いまはやらなくていいことも出します。</span>
+                <span className="mt-1 block">回答は保存していません。</span>
               </p>
             }
           />
