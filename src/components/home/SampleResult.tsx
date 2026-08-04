@@ -51,7 +51,7 @@ export default function SampleResult() {
 
   return (
     <section className="mx-auto max-w-[1080px] px-5 pt-12 sm:px-8 sm:pt-[88px] lg:px-12 lg:pt-[120px]">
-      <h2 className="text-[21px] leading-[1.55] sm:text-[26px]" style={{ ...MINCHO, fontWeight: 700 }}>
+      <h2 data-reveal className="text-[21px] leading-[1.55] sm:text-[26px]" style={{ ...MINCHO, fontWeight: 700 }}>
         こういうものが出ます
       </h2>
       <p className="mt-4 max-w-[34em] text-[15.5px] leading-[2.05] text-keshizumi sm:mt-5 sm:text-[16px]">
@@ -59,7 +59,7 @@ export default function SampleResult() {
         そのまま載せたものです。
       </p>
 
-      <div className="mt-7 border border-shironezu bg-hakuji sm:mt-9">
+      <div data-reveal className="mt-7 border border-shironezu bg-hakuji sm:mt-9">
         {/* 入力。伏せない */}
         <div className="border-b border-shironezu px-5 py-4 sm:px-7 sm:py-5">
           <p className="text-[12.5px] text-ainezu">答えた内容</p>
