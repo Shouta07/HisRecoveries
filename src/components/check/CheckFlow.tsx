@@ -27,6 +27,7 @@ import {
   type Question,
 } from "@/lib/check";
 import { track } from "@/lib/analytics";
+import { encodeAnswers, decodeAnswers, isComplete } from "@/lib/checkLink";
 import ShareRow from "@/components/ShareRow";
 import StepOptions from "@/components/check/StepOptions";
 import { buildPlan } from "@/lib/plan";
@@ -88,13 +89,23 @@ export default function CheckFlow({
   const raw = params.get("focus");
   const focus: AreaId | null = isAreaId(raw) ? raw : null;
 
+  // ?r= から結果を戻す。
+  // 自分で保存したリンクを開いた人と、人から送られてきた人の両方が、
+  // 1問も答えずに結果の画面から始まる。
+  // 壊れた値・足りない値は decode 側で落とすので、ここでは数だけ見る。
+  const restored = useMemo<Answers>(() => decodeAnswers(params.get("r")), [params]);
+  const hasRestored = isComplete(restored);
+
   // ファーストビューで選んだ悩みは、そのまま c1 の答えとして引き継ぐ
   const seeded: Answers = useMemo<Answers>(() => {
     const a: Answers = {};
     if (focus) a.c1 = focus;
     return a;
   }, [focus]);
-  const all = useMemo(() => ({ ...seeded, ...answers }), [seeded, answers]);
+  const all = useMemo(
+    () => (hasRestored ? { ...restored, ...answers } : { ...seeded, ...answers }),
+    [hasRestored, restored, seeded, answers],
+  );
   const flat = useMemo(() => buildFlat(stage, seeded), [stage, seeded]);
   const current = flat[cursor];
 
@@ -136,25 +147,37 @@ export default function CheckFlow({
     if (cursor > 0) setCursor(cursor - 1);
   }
 
-  const result = useMemo(() => (done ? evaluate(all) : null), [done, all]);
+  const result = useMemo(() => (done || hasRestored ? evaluate(all) : null), [done, hasRestored, all]);
 
+  // 復元して開いただけのものを「完了」に混ぜない。
+  // 混ぜると、共有リンクが1回開かれるたびに完了が1件増えて、
+  // 完了率が実態より高く出る。別の名前で数える。
   useEffect(() => {
-    if (result) {
-      track("check_complete", {
-        first: result.steps[0]?.areaId ?? "none",
-        untouched: result.untouched,
-        focus: focus ?? "none",
-        detailed: result.detailed,
-      });
+    if (!result) return;
+    if (hasRestored && !done) {
+      track("check_restored", { first: result.steps[0]?.areaId ?? "none" });
+      return;
     }
-  }, [result, focus]);
+    track("check_complete", {
+      first: result.steps[0]?.areaId ?? "none",
+      untouched: result.untouched,
+      focus: focus ?? "none",
+      detailed: result.detailed,
+    });
+  }, [result, focus, hasRestored, done]);
 
   if (result)
     return (
       <Result
         r={result}
         articles={articles}
+        link={`${site.url}/check?r=${encodeURIComponent(encodeAnswers(all))}`}
         onRedo={() => {
+          // ?r= を消してから初期化する。消さないと、状態を空にした瞬間に
+          // URLから同じ結果がまた復元されて、1問目に戻れない。
+          if (typeof window !== "undefined" && window.location.search) {
+            window.history.replaceState(null, "", "/check");
+          }
           setAnswers({});
           setCursor(0);
           setDone(false);
@@ -285,12 +308,15 @@ function Result({
   articles,
   onRedo,
   onDetail,
+  link,
 }: {
   r: ReturnType<typeof evaluate>;
   articles: Record<string, ArticleRef[]>;
   onRedo: () => void;
   /** 精度を上げる段階へ。すでに答えた人には渡さない */
   onDetail?: () => void;
+  /** この結果を復元できるURL。自分で残すのにも、人に送るのにも使う */
+  link: string;
 }) {
   return (
     <div className="pt-4">
@@ -451,12 +477,18 @@ function Result({
           （「俺はここからだった」）。ここに導線がないと、
           いちばん拡散しやすい瞬間を捨てることになる。
 
-          送るのは診断そのもののURLで、個人の結果は載せない。
-          文面には自分の1つ目だけを入れる——投稿する本人が
-          送信前に必ず目にする場所なので、隠しごとにはならない。 */}
+          ── 送っていたものが間違っていた ──────────────────
+          ここが配っていたのは /check、つまりまっさらな1問目だった。
+          「LINEで送る」を押しても、相手に届くのは空の診断で、
+          自分で保存しても、開いたらまた1問目から始まる。
+          いちばん関心が高い瞬間に、持ち帰るものが無かった。
+
+          いまは結果を復元できるURLを配る。答えはURLの中だけにあり、
+          こちらには何も保存しない。
+          そのぶん「送ると答えも相手に見える」ことは下に書く。 */}
       <ShareRow
-        label="人に送る"
-        url={`${site.url}/check`}
+        label="この結果を残す・送る"
+        url={link}
         title={
           r.steps[0]
             ? `男の改善は、順番で決まる。診断したら、私は「${r.steps[0].label}」からでした。`
@@ -468,7 +500,11 @@ function Result({
         ※ この診断は、手をつける順番を整理するためのものです。
         病気の診断ではなく、効果を示すものでもありません。
         気になる症状がある場合は医療機関にご相談ください。
-        回答は保存していません。
+      </p>
+      <p className="mt-4 text-[13px] leading-[1.95] text-ainezu">
+        ※ 回答は、こちらには保存していません。上のリンクの中にだけ入っています。
+        自分で開けばこの結果に戻れますが、
+        <span className="font-bold text-keshizumi">人に送ると、答えた内容も相手に見えます。</span>
       </p>
 
       <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-shironezu pt-8 text-[14px]">
