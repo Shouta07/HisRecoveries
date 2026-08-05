@@ -47,6 +47,12 @@ export const CONVERSION_EVENTS = [
   // check_complete と混ぜると、1回共有されるたびに完了が増えて率が壊れる。
   // ここが伸びていれば、結果が人に渡っているということ。
   "check_restored", // 共有リンクから結果を開いた（props: first）
+
+  // ── 取材 ──
+  // 街頭ではなく、診断を終えた直後に置いている。
+  // ここが伸びるかどうかで、取材の入口として成立しているかが分かる。
+  "interview_open", // 取材のページを開いた（props: from）
+  "interview_submit", // 送信した（props: answered＝答えた設問数）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

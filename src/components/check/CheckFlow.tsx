@@ -486,6 +486,27 @@ function Result({
           いまは結果を復元できるURLを配る。答えはURLの中だけにあり、
           こちらには何も保存しない。
           そのぶん「送ると答えも相手に見える」ことは下に書く。 */}
+      {/* 取材の入口。ここに置くのがいちばん効く。
+          5問答えて、自分の順番が出て、「いまはやらなくていい」と
+          言われた直後。この画面まで来た人は当事者であることが
+          経路として保証されているので、街で声をかけるより確度が高い。
+          押しつけない。1行だけ置いて、あとは本人に任せる。 */}
+      <section className="mt-14 border-t border-shironezu pt-8">
+        <p className="text-[15px] leading-[1.95] text-keshizumi">
+          この順番は、まだ取材にもとづいていません。
+          <Link
+            href="/interview"
+            className="ml-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
+            onClick={() => track("interview_open", { from: "check_result" })}
+          >
+            書き換えるために、聞かせてください
+          </Link>
+        </p>
+        <p className="mt-2 text-[13px] leading-[1.9] text-ainezu">
+          匿名・連絡先不要・必須は1問だけです。
+        </p>
+      </section>
+
       <ShareRow
         label="この結果を残す・送る"
         url={link}
