@@ -577,6 +577,7 @@ export default function HomePage() {
                 <li><a href="#about" className="-my-1 block py-1 hover:text-asagi transition-colors">編集方針</a></li>
                 <li><Link href="/updates" className="-my-1 block py-1 hover:text-asagi transition-colors">更新記録</Link></li>
                 <li><Link href="/disclosure" className="-my-1 block py-1 hover:text-asagi transition-colors">広告と収益について</Link></li>
+                <li><Link href="/interview" className="-my-1 block py-1 hover:text-asagi transition-colors">取材にご協力いただけませんか</Link></li>
                 <li><Link href="/partner" className="-my-1 block py-1 hover:text-asagi transition-colors">取材・掲載について</Link></li>
                 <li><Link href="/plan" className="-my-1 block py-1 hover:text-asagi transition-colors">第一印象改善プラン</Link></li>
                 <li><Link href="/privacy" className="-my-1 block py-1 hover:text-asagi transition-colors">プライバシー・免責事項</Link></li>

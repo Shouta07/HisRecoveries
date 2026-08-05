@@ -97,7 +97,6 @@ const nextConfig = {
       { source: "/membership", destination: "/", permanent: true },
       { source: "/concierge", destination: "/", permanent: true },
       { source: "/founder", destination: "/", permanent: true },
-      { source: "/interview", destination: "/", permanent: true },
       { source: "/map", destination: "/", permanent: true },
       { source: "/network", destination: "/", permanent: true },
       { source: "/network/:slug*", destination: "/", permanent: true },
