@@ -311,7 +311,7 @@ const WHY: Record<AreaId, string> = {
 };
 
 /** 領域ごとの「まだ早い理由」。やらなくていいことを言えるのが、この診断の役割 */
-const NOT_YET: Record<AreaId, string> = {
+export const NOT_YET: Record<AreaId, string> = {
   impression: "手をつけていない項目がないので、いま急いで足すものはありません",
   hair: "気になっていないなら、いま何かを始める理由はありません",
   skin: "困っていない状態なら、増やすより今のままを崩さないほうが得です",
