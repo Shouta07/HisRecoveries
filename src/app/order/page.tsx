@@ -8,6 +8,7 @@ import CheckCta from "@/components/check/CheckCta";
 import { ReadingProgress } from "@/components/ReadingAids";
 import ShareRow from "@/components/ShareRow";
 import { site, ogImage } from "@/lib/site";
+import { AVOID } from "@/lib/skip";
 
 // サイトの最上位に置く一本。55本の記事を、順番という1本の線に通す。
 //
@@ -260,22 +261,12 @@ export default function OrderPage() {
             いまは、やらなくていいこと
           </h2>
           <ul className="mt-5 space-y-3.5 text-[15.5px] leading-[1.95] text-keshizumi">
-            <li>
-              <span className="font-bold text-sumi">全部を同時に始めること。</span>
-              3つ揃えて2週間でやめるより、1つを3ヶ月続けるほうが、確かめられることが多くあります。
-            </li>
-            <li>
-              <span className="font-bold text-sumi">顔立ちそのものを変えようとすること。</span>
-              第一印象で見られているのは、骨格より手入れで動く部分です。順番としては、あとになります。
-            </li>
-            <li>
-              <span className="font-bold text-sumi">気になっていないものに手をつけること。</span>
-              体毛も、メイクも、そのままで構いません。減らすことが上位互換ではありません。
-            </li>
-            <li>
-              <span className="font-bold text-sumi">記録を残す前に、お金を使うこと。</span>
-              比べる基準がないと、効いたかどうかを判断できません。0円でできることが先です。
-            </li>
+            {AVOID.map((x) => (
+              <li key={x.t}>
+                <span className="font-bold text-sumi">{x.t}。</span>
+                {x.d}
+              </li>
+            ))}
           </ul>
         </section>
 

@@ -51,9 +51,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // サイト最上位の一本。全記事を順番の上に並べ直したもの
+  // /skip は、この事業でいちばん入ってきやすい入口として同じ優先度で置く
   const orderPath: MetadataRoute.Sitemap = [
     {
       url: `${site.url}/order`,
+      lastModified: articleDate,
+      changeFrequency: "monthly",
+      priority: 0.95,
+    },
+    {
+      url: `${site.url}/skip`,
       lastModified: articleDate,
       changeFrequency: "monthly",
       priority: 0.95,

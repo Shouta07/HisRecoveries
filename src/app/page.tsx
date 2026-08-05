@@ -562,6 +562,7 @@ export default function HomePage() {
               <p className="text-[12.5px] text-ainezu">読みもの</p>
               <ul className="mt-4 space-y-2.5 text-[14px]">
                 <li><a href="/#index" className="-my-1 block py-1 hover:text-asagi transition-colors">記事をさがす</a></li>
+                <li><Link href="/skip" className="-my-1 block py-1 hover:text-asagi transition-colors">やらなくていいこと</Link></li>
                 <li>
                   <Link href="/letters" className="-my-1 block py-1 hover:text-asagi transition-colors">
                     お便りについて
