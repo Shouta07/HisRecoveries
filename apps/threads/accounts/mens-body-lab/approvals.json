@@ -511,6 +511,32 @@
         "source_type": "gift_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260806024428802496",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-06T02:44:28.802516",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「このニキビ跡、薄くなるんだろうか」\n——鏡の前で、何度もそう思った。\n\n———\n\n跡の種類によって、向き合い方は違うらしい。\n同じ跡でも、ひとつじゃない。\n\n———\n\n原因と種類を、中立に整理した記録を\nここに置いている。\nhttps://hisrecoveries.com/areas/skin?utm_source=threads&utm_medium=social&utm_campaign=areas-skin",
+        "posts": [
+          "「このニキビ跡、薄くなるんだろうか」\n——鏡の前で、何度もそう思った。",
+          "跡の種類によって、向き合い方は違うらしい。\n同じ跡でも、ひとつじゃない。",
+          "原因と種類を、中立に整理した記録を\nここに置いている。\nhttps://hisrecoveries.com/areas/skin?utm_source=threads&utm_medium=social&utm_campaign=areas-skin"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/areas/skin?utm_source=threads&utm_medium=social&utm_campaign=areas-skin",
+        "cta_used": "https://hisrecoveries.com/areas/skin?utm_source=threads&utm_medium=social&utm_campaign=areas-skin",
+        "hypothesis_id": "areas-skin",
+        "hypothesis_name": "肌・ニキビ（/areasへ）",
+        "topic_slug": "skin",
+        "buzz_score": 8,
+        "source_type": "areas_thread",
+        "product": null
+      }
     }
   ]
 }
