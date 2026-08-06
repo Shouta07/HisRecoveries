@@ -537,6 +537,28 @@
         "source_type": "areas_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260806132603059388",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-06T13:26:03.059410",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "疲れた顔は、放置するものじゃなく、1分で持ち直せるもの。その仕組みと手順を、中立にまとめた。\n\nまとめた記事を、ここに置いておく。\nhttps://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=src-face-tired",
+        "posts": null,
+        "is_thread": false,
+        "link": "https://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=src-face-tired",
+        "cta_used": "https://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=src-face-tired",
+        "hypothesis_id": "src:src-face-tired",
+        "hypothesis_name": "引用リソース src-face-tired",
+        "topic_slug": "src-face-tired",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
