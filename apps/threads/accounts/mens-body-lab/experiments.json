@@ -11,13 +11,14 @@
     "areas-skin": 1,
     "biz-b-chain": 1,
     "biz-a-neutral": 1,
-    "areas-body-hair": 1
+    "areas-body-hair": 1,
+    "gift-career": 1
   },
   "cta_post_counts": {
-    "none": 12
+    "none": 13
   },
-  "total_posts": 12,
+  "total_posts": 13,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-08T01:46:52.537661"
+  "last_updated": "2026-08-08T12:18:24.098208"
 }
