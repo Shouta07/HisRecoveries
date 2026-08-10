@@ -15,13 +15,14 @@
     "gift-career": 1,
     "mother-teen-skin": 1,
     "urgent-wedding": 1,
-    "b2b-neutral-referral": 1
+    "b2b-neutral-referral": 1,
+    "gift-birthday": 1
   },
   "cta_post_counts": {
-    "none": 16
+    "none": 17
   },
-  "total_posts": 16,
+  "total_posts": 17,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-10T01:58:10.686540"
+  "last_updated": "2026-08-10T12:36:36.465157"
 }
