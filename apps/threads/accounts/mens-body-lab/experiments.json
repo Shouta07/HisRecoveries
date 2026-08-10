@@ -14,13 +14,14 @@
     "areas-body-hair": 1,
     "gift-career": 1,
     "mother-teen-skin": 1,
-    "urgent-wedding": 1
+    "urgent-wedding": 1,
+    "b2b-neutral-referral": 1
   },
   "cta_post_counts": {
-    "none": 15
+    "none": 16
   },
-  "total_posts": 15,
+  "total_posts": 16,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-09T12:20:29.248076"
+  "last_updated": "2026-08-10T01:58:10.686540"
 }

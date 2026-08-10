@@ -730,6 +730,35 @@
         "source_type": "urgent_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260810015810687764",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-10T01:58:10.687783",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「患者を紹介します」という話には、\nたいてい裏がある。だから警戒される。\n\n———\n\nでも、施術をしない・手数料で歪めない立場なら、\n中立でいられる。\n\n———\n\n私たちは患者側で、男性の悩みを整理して、\n本当に合う施術者へだけお繋ぎしたい。\n\n———\n\n物量ではなく、質を絞って。\n技術と、患者の悩みが噛み合う形で。\n\n———\n\n技術で選ばれたい施術者の方と、\n一度話してみたい。\nhttps://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-neutral-referral\n\n———\n\n紹介や送客で、嫌な思いをした経験ありますか？",
+        "posts": [
+          "「患者を紹介します」という話には、\nたいてい裏がある。だから警戒される。",
+          "でも、施術をしない・手数料で歪めない立場なら、\n中立でいられる。",
+          "私たちは患者側で、男性の悩みを整理して、\n本当に合う施術者へだけお繋ぎしたい。",
+          "物量ではなく、質を絞って。\n技術と、患者の悩みが噛み合う形で。",
+          "技術で選ばれたい施術者の方と、\n一度話してみたい。\nhttps://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-neutral-referral",
+          "紹介や送客で、嫌な思いをした経験ありますか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-neutral-referral",
+        "cta_used": "https://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-neutral-referral",
+        "hypothesis_id": "b2b-neutral-referral",
+        "hypothesis_name": "仮説C: 中立の送客を受け入れるか",
+        "topic_slug": "b2b-neutral-referral",
+        "buzz_score": 8,
+        "source_type": "b2b_thread",
+        "product": null
+      }
     }
   ]
 }
