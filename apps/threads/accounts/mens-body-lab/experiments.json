@@ -17,13 +17,14 @@
     "urgent-wedding": 1,
     "b2b-neutral-referral": 1,
     "gift-birthday": 1,
-    "mother-confidence": 1
+    "mother-confidence": 1,
+    "fan-question": 1
   },
   "cta_post_counts": {
-    "none": 18
+    "none": 19
   },
-  "total_posts": 18,
+  "total_posts": 19,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-11T01:53:27.419273"
+  "last_updated": "2026-08-11T12:33:29.139220"
 }
