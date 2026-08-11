@@ -788,6 +788,35 @@
         "source_type": "gift_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260811015327420487",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-11T01:53:27.420507",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "就職してから、息子が\n写真に写らなくなった。\n\n———\n\n何かあった？とは聞かない。\n聞いても、たぶん「別に」で終わるから。\n\n———\n\n代わりに、自信を取り戻す時間を\nそっと渡せないかと考えた。\nカウンセリングから始まる、男性のための伴走サービスがある。\n\n———\n\n完全守秘で、親にも何も知らされない。\n始めるかどうかも、本人が決める。\nだから、押し付けにならない。\n\n———\n\n「あの子が自分を好きでいてくれたら」\nそれだけの気持ちを、形に → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-confidence\n\n———\n\n大人になった息子との距離感、\nみなさんはどうしていますか？",
+        "posts": [
+          "就職してから、息子が\n写真に写らなくなった。",
+          "何かあった？とは聞かない。\n聞いても、たぶん「別に」で終わるから。",
+          "代わりに、自信を取り戻す時間を\nそっと渡せないかと考えた。\nカウンセリングから始まる、男性のための伴走サービスがある。",
+          "完全守秘で、親にも何も知らされない。\n始めるかどうかも、本人が決める。\nだから、押し付けにならない。",
+          "「あの子が自分を好きでいてくれたら」\nそれだけの気持ちを、形に → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-confidence",
+          "大人になった息子との距離感、\nみなさんはどうしていますか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-confidence",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=mother-confidence",
+        "hypothesis_id": "mother-confidence",
+        "hypothesis_name": "母: 自信を失くした息子",
+        "topic_slug": "mother-confidence",
+        "buzz_score": 8,
+        "source_type": "mother_thread",
+        "product": null
+      }
     }
   ]
 }

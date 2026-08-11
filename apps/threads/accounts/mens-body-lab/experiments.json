@@ -16,13 +16,14 @@
     "mother-teen-skin": 1,
     "urgent-wedding": 1,
     "b2b-neutral-referral": 1,
-    "gift-birthday": 1
+    "gift-birthday": 1,
+    "mother-confidence": 1
   },
   "cta_post_counts": {
-    "none": 17
+    "none": 18
   },
-  "total_posts": 17,
+  "total_posts": 18,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-10T12:36:36.465157"
+  "last_updated": "2026-08-11T01:53:27.419273"
 }
