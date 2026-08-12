@@ -18,13 +18,14 @@
     "b2b-neutral-referral": 1,
     "gift-birthday": 1,
     "mother-confidence": 1,
-    "fan-question": 1
+    "fan-question": 1,
+    "areas-hair": 1
   },
   "cta_post_counts": {
-    "none": 19
+    "none": 20
   },
-  "total_posts": 19,
+  "total_posts": 20,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-11T12:33:29.139220"
+  "last_updated": "2026-08-12T02:06:31.777404"
 }
