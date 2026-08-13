@@ -898,6 +898,32 @@
         "source_type": "gift_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260813020811667929",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-13T02:08:11.667948",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「ワキガって、自分で気づけるのかな」\n——その問いだけが、長く消えなかった。\n\n———\n\n気づきやすさには個人差があるらしい。\n「わからない」のは、変なことじゃない。\n\n———\n\nなぜそうなるのか、仕組みを\n中立に、ひとつずつ書いている。\nhttps://hisrecoveries.com/areas/sweat?utm_source=threads&utm_medium=social&utm_campaign=areas-sweat",
+        "posts": [
+          "「ワキガって、自分で気づけるのかな」\n——その問いだけが、長く消えなかった。",
+          "気づきやすさには個人差があるらしい。\n「わからない」のは、変なことじゃない。",
+          "なぜそうなるのか、仕組みを\n中立に、ひとつずつ書いている。\nhttps://hisrecoveries.com/areas/sweat?utm_source=threads&utm_medium=social&utm_campaign=areas-sweat"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/areas/sweat?utm_source=threads&utm_medium=social&utm_campaign=areas-sweat",
+        "cta_used": "https://hisrecoveries.com/areas/sweat?utm_source=threads&utm_medium=social&utm_campaign=areas-sweat",
+        "hypothesis_id": "areas-sweat",
+        "hypothesis_name": "汗・におい（/areasへ）",
+        "topic_slug": "sweat",
+        "buzz_score": 8,
+        "source_type": "areas_thread",
+        "product": null
+      }
     }
   ]
 }
