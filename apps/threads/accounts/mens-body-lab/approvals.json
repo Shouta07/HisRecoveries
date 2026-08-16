@@ -1061,6 +1061,35 @@
         "source_type": "urgent_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260816012525288977",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-16T01:25:25.288998",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "ワキガが少し落ち着いたら、\n今度は肌のことが気になり始めた。\n\n———\n\n一つ片付くと、\n次のが見えてくる。不思議と。\n\n———\n\n悩みって単発じゃなくて、\nどこかでつながってる気がする。\n\n———\n\nだから、その都度ゼロから探し直すのは、\n地味にしんどい。\n同じところにまとめて相談したい。\n\n———\n\n悩みを跨いで、ずっと同じ窓口で。\n完全守秘で、急かさない。\nhttps://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-b-chain\n\n———\n\n一つ気になり出すと、次々気になること、ありませんか？",
+        "posts": [
+          "ワキガが少し落ち着いたら、\n今度は肌のことが気になり始めた。",
+          "一つ片付くと、\n次のが見えてくる。不思議と。",
+          "悩みって単発じゃなくて、\nどこかでつながってる気がする。",
+          "だから、その都度ゼロから探し直すのは、\n地味にしんどい。\n同じところにまとめて相談したい。",
+          "悩みを跨いで、ずっと同じ窓口で。\n完全守秘で、急かさない。\nhttps://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-b-chain",
+          "一つ気になり出すと、次々気になること、ありませんか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-b-chain",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-b-chain",
+        "hypothesis_id": "biz-b-chain",
+        "hypothesis_name": "仮説B: 悩みの連鎖(点を線に)",
+        "topic_slug": "biz-b-chain",
+        "buzz_score": 8,
+        "source_type": "biz_thread",
+        "product": null
+      }
     }
   ]
 }
