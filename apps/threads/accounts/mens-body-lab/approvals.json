@@ -1148,6 +1148,34 @@
         "source_type": "b2b_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260817121513218288",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-17T12:15:13.218305",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "面接の日程が決まった日から、\n鏡を見る回数が増えた。\n\n———\n\n第一印象は、生まれつきだけで決まらない。\n整えられる部分が、思ったより大きいと知った。\n\n———\n\nカウンセリングから、肌や髪、当日の服まで。\n1日で「面接に立つ自分」を組み立てられる伴走がある。\n完全守秘で、職場にも誰にも知られない。\n\n———\n\n新しい場所に立つ前に、\nできる準備をひとつ → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-interview\n\n———\n\n大事な面接の前、みなさんは何を整えますか？",
+        "posts": [
+          "面接の日程が決まった日から、\n鏡を見る回数が増えた。",
+          "第一印象は、生まれつきだけで決まらない。\n整えられる部分が、思ったより大きいと知った。",
+          "カウンセリングから、肌や髪、当日の服まで。\n1日で「面接に立つ自分」を組み立てられる伴走がある。\n完全守秘で、職場にも誰にも知られない。",
+          "新しい場所に立つ前に、\nできる準備をひとつ → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-interview",
+          "大事な面接の前、みなさんは何を整えますか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-interview",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-interview",
+        "hypothesis_id": "urgent-interview",
+        "hypothesis_name": "本人: 面接・転職が近い",
+        "topic_slug": "urgent-interview",
+        "buzz_score": 8,
+        "source_type": "urgent_thread",
+        "product": null
+      }
     }
   ]
 }

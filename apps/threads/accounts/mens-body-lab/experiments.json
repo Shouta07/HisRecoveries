@@ -24,15 +24,15 @@
     "areas-sweat": 1,
     "gift-wedding": 1,
     "areas-self": 1,
-    "urgent-interview": 1,
+    "urgent-interview": 2,
     "areas-face": 1,
     "urgent-tonight": 1
   },
   "cta_post_counts": {
-    "none": 30
+    "none": 31
   },
-  "total_posts": 30,
+  "total_posts": 31,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-17T01:22:33.321736"
+  "last_updated": "2026-08-17T12:15:13.217102"
 }
