@@ -1205,6 +1205,34 @@
         "source_type": "b2b_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260818121742458546",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-18T12:17:42.458562",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「このままじゃだめだ」と思う夜は、\nだいたい日曜に来る。\n\n———\n\n焦って何かを買うより、\nまず今の自分を知るほうが早い、と教わった。\n\n———\n\nカウンセリングから始めて、\n必要なものだけを一緒に選ぶ伴走がある。\n完全守秘。誰にも知られずに始められる。\n\n———\n\n今夜の決心を、明日に残すために → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-tonight\n\n———\n\n「変わりたい」と思うのは、どんな瞬間ですか？",
+        "posts": [
+          "「このままじゃだめだ」と思う夜は、\nだいたい日曜に来る。",
+          "焦って何かを買うより、\nまず今の自分を知るほうが早い、と教わった。",
+          "カウンセリングから始めて、\n必要なものだけを一緒に選ぶ伴走がある。\n完全守秘。誰にも知られずに始められる。",
+          "今夜の決心を、明日に残すために → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-tonight",
+          "「変わりたい」と思うのは、どんな瞬間ですか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-tonight",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=urgent-tonight",
+        "hypothesis_id": "urgent-tonight",
+        "hypothesis_name": "本人: このままじゃだめだと思った夜",
+        "topic_slug": "urgent-tonight",
+        "buzz_score": 8,
+        "source_type": "urgent_thread",
+        "product": null
+      }
     }
   ]
 }
