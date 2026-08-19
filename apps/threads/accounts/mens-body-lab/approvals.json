@@ -1259,6 +1259,35 @@
         "source_type": "areas_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260819121705785043",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-19T12:17:05.785066",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "技術は確かなのに、\n検索するとランキング記事に埋もれてしまう。\n\n———\n\n患者からすると、\n「広告が上手い院」と「腕がいい院」の\n見分けがつかない。\n\n———\n\nそこを患者側から中立に整理して、\n埋もれてる良い施術者に光を当てたい。\n\n———\n\n施術はしない。売らない。\nただ、噛み合う患者を質を絞ってお繋ぎする。\n\n———\n\n埋もれている自覚のある施術者の方、\n一度話せたら。\nhttps://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-quality\n\n———\n\n良い技術が埋もれる、と感じたことありますか？",
+        "posts": [
+          "技術は確かなのに、\n検索するとランキング記事に埋もれてしまう。",
+          "患者からすると、\n「広告が上手い院」と「腕がいい院」の\n見分けがつかない。",
+          "そこを患者側から中立に整理して、\n埋もれてる良い施術者に光を当てたい。",
+          "施術はしない。売らない。\nただ、噛み合う患者を質を絞ってお繋ぎする。",
+          "埋もれている自覚のある施術者の方、\n一度話せたら。\nhttps://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-quality",
+          "良い技術が埋もれる、と感じたことありますか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-quality",
+        "cta_used": "https://hisrecoveries.com/partner?utm_source=threads&utm_medium=social&utm_campaign=b2b-quality",
+        "hypothesis_id": "b2b-quality",
+        "hypothesis_name": "仮説C: 埋もれる技術特化を巻き込む",
+        "topic_slug": "b2b-quality",
+        "buzz_score": 8,
+        "source_type": "b2b_thread",
+        "product": null
+      }
     }
   ]
 }
