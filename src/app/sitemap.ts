@@ -92,6 +92,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths: MetadataRoute.Sitemap = [
     "/check",
     "/interview",
+    "/research",
     "/letters",
     "/plan",
     "/areas/confidence",

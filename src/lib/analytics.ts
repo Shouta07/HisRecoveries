@@ -52,7 +52,7 @@ export const CONVERSION_EVENTS = [
   // 街頭ではなく、診断を終えた直後に置いている。
   // ここが伸びるかどうかで、取材の入口として成立しているかが分かる。
   "interview_open", // 取材のページを開いた（props: from）
-  "interview_submit", // 送信した（props: answered＝答えた設問数）
+  "interview_submit", // 送信した（props: answered＝答えた設問数, from）
 
   // ── 行動（RECOVER）──
   // 追いたいのは「診断した人のうち、何人が実際に動いたか」。
