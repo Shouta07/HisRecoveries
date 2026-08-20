@@ -61,6 +61,10 @@ export const CONVERSION_EVENTS = [
   "action_undone", // 終えた印を外した（props: count, total）
   // 満足度。1〜4。「やったか」だけでは次に何を勧めるかが決まらない。
   "action_rated", // 終えた行動に満足度をつけた（props: value）
+  // 一度使った人が、トップから続きに戻った。
+  // ここが動くかどうかで、再訪が「読み物」ではなく「道具」として
+  // 起きているかが分かる。
+  "resume_click", // トップの「続きを見る」を押した（props: left＝残り数）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

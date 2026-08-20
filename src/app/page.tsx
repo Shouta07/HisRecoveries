@@ -15,6 +15,7 @@ import HeroStart from "@/components/check/HeroStart";
 import WhyStuck from "@/components/home/WhyStuck";
 import ScrollReveal from "@/components/ScrollReveal";
 import Moments from "@/components/home/Moments";
+import Resume from "@/components/home/Resume";
 import SampleResult from "@/components/home/SampleResult";
 
 // ══════════════════════════════════════════════════════════════
@@ -235,6 +236,12 @@ export default function HomePage() {
           課題の説明はそのあと。
           見本の中身は本物の evaluate() の戻り値なので、
           診断を変えればここも一緒に変わる。 */}
+      {/* 一度使った人にだけ、続きを出す。
+          初めての人には何も描かない（Resume が null を返す）。
+          いちばん上ではなくヒーローの下に置いているのは、
+          後から差し込むと読み始めた行が動くため。 */}
+      <Resume />
+
       {/* ヒーローの直後に、場面を置く。
           ヒーローで「変わりたい。でも分からない。」と言い当てたあと、
           いきなり「やることは3つだけ」に行くと、答えは早いが
