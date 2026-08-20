@@ -159,13 +159,22 @@ export default function CheckFlow({
       track("check_restored", { first: result.steps[0]?.areaId ?? "none" });
       return;
     }
+    // 年代・予算・期限も残す。
+    //
+    // 実測すると、年代（b1）は順番にも今月やることにも選択肢にも
+    // 一切影響していなかった。そのうえ計測にも乗っていなかったので、
+    // 聞いたきり、どこにも使われていない状態だった。
+    // 使うか、聞くのをやめるかを決めるには、まず誰が答えているかが要る。
     track("check_complete", {
       first: result.steps[0]?.areaId ?? "none",
       untouched: result.untouched,
       focus: focus ?? "none",
       detailed: result.detailed,
+      age: all.b1 ?? "none",
+      budget: all.b4 ?? "none",
+      deadline: all.b5 ?? "none",
     });
-  }, [result, focus, hasRestored, done]);
+  }, [result, focus, hasRestored, done, all]);
 
   if (result)
     return (
