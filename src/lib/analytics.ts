@@ -52,7 +52,13 @@ export const CONVERSION_EVENTS = [
   // 街頭ではなく、診断を終えた直後に置いている。
   // ここが伸びるかどうかで、取材の入口として成立しているかが分かる。
   "interview_open", // 取材のページを開いた（props: from）
-  "interview_submit", // 送信した（props: answered＝答えた設問数）
+  "interview_submit", // 送信した（props: answered＝答えた設問数, from）
+
+  // ── 行動（RECOVER）──
+  // 追いたいのは「診断した人のうち、何人が実際に動いたか」。
+  // 外したときも送る。送らないと、動いた数が実際より多く出る。
+  "action_done", // 今月やることを1つ終えた（props: count, total）
+  "action_undone", // 終えた印を外した（props: count, total）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];
