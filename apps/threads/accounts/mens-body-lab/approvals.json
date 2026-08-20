@@ -1288,6 +1288,35 @@
         "source_type": "b2b_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260820012041095002",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-20T01:20:41.095024",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "本当のところ、\n今すぐ何かした方がいい人ばかりじゃない。\n\n———\n\n調べると「早く始めないと手遅れ」って\n煽る言葉が多いけど、\n\n———\n\n全部がそうじゃない。\n「今はまだ様子見でいい」ことも、普通にある。\n\n———\n\n売る側は「要らない」とは言いにくい。\nでも、言える立場でいたいと思ってる。\n\n———\n\n要る・要らないを、中立で。\n完全守秘で、背中は押さない。\nhttps://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-e-honest\n\n———\n\n「煽られてるな」と感じた経験、ありませんか？",
+        "posts": [
+          "本当のところ、\n今すぐ何かした方がいい人ばかりじゃない。",
+          "調べると「早く始めないと手遅れ」って\n煽る言葉が多いけど、",
+          "全部がそうじゃない。\n「今はまだ様子見でいい」ことも、普通にある。",
+          "売る側は「要らない」とは言いにくい。\nでも、言える立場でいたいと思ってる。",
+          "要る・要らないを、中立で。\n完全守秘で、背中は押さない。\nhttps://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-e-honest",
+          "「煽られてるな」と感じた経験、ありませんか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-e-honest",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-e-honest",
+        "hypothesis_id": "biz-e-honest",
+        "hypothesis_name": "仮説E: 買わなくていいと言える誠実さ",
+        "topic_slug": "biz-e-honest",
+        "buzz_score": 8,
+        "source_type": "biz_thread",
+        "product": null
+      }
     }
   ]
 }
