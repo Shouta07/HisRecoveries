@@ -59,6 +59,8 @@ export const CONVERSION_EVENTS = [
   // 外したときも送る。送らないと、動いた数が実際より多く出る。
   "action_done", // 今月やることを1つ終えた（props: count, total）
   "action_undone", // 終えた印を外した（props: count, total）
+  // 満足度。1〜4。「やったか」だけでは次に何を勧めるかが決まらない。
+  "action_rated", // 終えた行動に満足度をつけた（props: value）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];
