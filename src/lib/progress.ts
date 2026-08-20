@@ -38,6 +38,17 @@ export type Progress = {
     {
       /** 終えた行動の文言。文言で持つのは、順番が変わっても対応が壊れないため */
       done: string[];
+      /**
+       * 終えた行動の満足度。1〜4。
+       *
+       * 「やった」だけでは、次に何を勧めるかが決まらない。
+       * 満足したものは続ける、しなかったものは順番を下げる——
+       * その判断の材料がここ。
+       *
+       * 任意にしてある。押さなくても先に進める。
+       * 必須にすると、思っていない数字が入るだけになる。
+       */
+      rated?: Record<string, number>;
       /** 最後に触った日（YYYY-MM-DD）。「前回から◯日」に使う */
       last: string;
     }
@@ -80,6 +91,34 @@ export function getDone(code: string): string[] {
   return read().byCode[code]?.done ?? [];
 }
 
+/** 満足度の段階。数ではなく言葉で選んでもらう */
+export const RATINGS: { value: number; label: string }[] = [
+  { value: 4, label: "かなり良かった" },
+  { value: 3, label: "良かった" },
+  { value: 2, label: "ふつう" },
+  { value: 1, label: "微妙だった" },
+];
+
+export function getRatings(code: string): Record<string, number> {
+  return read().byCode[code]?.rated ?? {};
+}
+
+/**
+ * 満足度をつける。同じものをもう一度押したら取り消す。
+ * 取り消せない記録は、正直につけてもらえない。
+ */
+export function rate(code: string, text: string, value: number): Record<string, number> {
+  const p = read();
+  const cur = p.byCode[code] ?? { done: [], last: today() };
+  const rated = { ...(cur.rated ?? {}) };
+  if (rated[text] === value) delete rated[text];
+  else rated[text] = value;
+  p.version = VERSION;
+  p.byCode[code] = { ...cur, rated, last: today() };
+  write(p);
+  return rated;
+}
+
 /** 最後に触った日から何日経ったか。まだ一度も触っていなければ null */
 export function daysSince(code: string): number | null {
   const last = read().byCode[code]?.last;
@@ -96,10 +135,14 @@ export function daysSince(code: string): number | null {
  */
 export function toggle(code: string, text: string): string[] {
   const p = read();
-  const cur = p.byCode[code]?.done ?? [];
+  const cur0 = p.byCode[code] ?? { done: [], last: today() };
+  const cur = cur0.done;
   const next = cur.includes(text) ? cur.filter((t) => t !== text) : [...cur, text];
   p.version = VERSION;
-  p.byCode[code] = { done: next, last: today() };
+  // 印を外しても満足度は消さない。
+  // 「やっぱりまだ途中」で外すことがあり、そこで評価まで失うと
+  // 二度と付け直してもらえない。
+  p.byCode[code] = { ...cur0, done: next, last: today() };
   write(p);
   return next;
 }

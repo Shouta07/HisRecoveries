@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDone, toggle, daysSince } from "@/lib/progress";
+import { getDone, toggle, daysSince, getRatings, rate, RATINGS } from "@/lib/progress";
 import { track } from "@/lib/analytics";
 
 // 今月やること3つ。押して終えられるようにした。
@@ -34,14 +34,24 @@ export default function ThisMonth({
   code: string;
 }) {
   const [done, setDone] = useState<string[]>([]);
+  const [rated, setRated] = useState<Record<string, number>>({});
   const [since, setSince] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setDone(getDone(code));
+    setRated(getRatings(code));
     setSince(daysSince(code));
     setReady(true);
   }, [code]);
+
+  function score(text: string, value: number) {
+    const next = rate(code, text, value);
+    setRated(next);
+    // 「やったか」だけでは、次に何を勧めるかが決まらない。
+    // 満足したものは続け、しなかったものは順番を下げる。その材料。
+    if (next[text] !== undefined) track("action_rated", { value });
+  }
 
   function flip(text: string) {
     const next = toggle(code, text);
@@ -106,10 +116,49 @@ export default function ThisMonth({
                   </span>
                 </span>
               </button>
+
+              {/* 終えたものにだけ、満足度を聞く。
+                  1タップ。押さなくても先へ進める。
+                  必須にすると、思っていない数字が入るだけになる。 */}
+              {ready && on && (
+                <div className="flex flex-wrap items-center gap-2 pb-4 pl-[36px]">
+                  <span className="text-[12px] text-ainezu">どうでしたか</span>
+                  {RATINGS.map((x) => {
+                    const picked = rated[a.text] === x.value;
+                    return (
+                      <button
+                        key={x.value}
+                        type="button"
+                        onClick={() => score(a.text, x.value)}
+                        aria-pressed={picked}
+                        className={`border px-2.5 py-1 text-[12.5px] transition-colors ${
+                          picked
+                            ? "border-asagi bg-asagi text-shironeri"
+                            : "border-shironezu bg-shironeri text-keshizumi hover:border-asagi hover:text-asagi"
+                        }`}
+                      >
+                        {x.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </li>
           );
         })}
       </ol>
+
+      {/* 集まった満足度。2件そろうまでは比べない。
+          1件で「傾向」と書くと、それは傾向ではなく感想になる。 */}
+      {ready && Object.keys(rated).length >= 2 && (
+        <p className="mt-5 border-l-2 border-asagi pl-4 text-[14px] leading-[1.95] text-keshizumi">
+          {Object.keys(rated).length}件、満足度を記録しました。
+          <span className="mt-1 block text-[13px] text-ainezu">
+            満足したものは続け、そうでないものは順番を下げます。
+            記録が増えるほど、次に出す順番がこの記録に寄ります。
+          </span>
+        </p>
+      )}
 
       <p className="mt-4 text-[13px] leading-[1.9] text-ainezu">
         押すと、この端末に印が残ります。こちらには送られません。
