@@ -30,6 +30,7 @@ import { track } from "@/lib/analytics";
 import { encodeAnswers, decodeAnswers, isComplete } from "@/lib/checkLink";
 import ShareRow from "@/components/ShareRow";
 import StepOptions from "@/components/check/StepOptions";
+import ThisMonth from "@/components/check/ThisMonth";
 import { buildPlan } from "@/lib/plan";
 import { costLabel } from "@/lib/options";
 import { site } from "@/lib/site";
@@ -172,6 +173,7 @@ export default function CheckFlow({
         r={result}
         articles={articles}
         link={`${site.url}/check?r=${encodeURIComponent(encodeAnswers(all))}`}
+        code={encodeAnswers(all)}
         onRedo={() => {
           // ?r= を消してから初期化する。消さないと、状態を空にした瞬間に
           // URLから同じ結果がまた復元されて、1問目に戻れない。
@@ -309,6 +311,7 @@ function Result({
   onRedo,
   onDetail,
   link,
+  code,
 }: {
   r: ReturnType<typeof evaluate>;
   articles: Record<string, ArticleRef[]>;
@@ -317,6 +320,12 @@ function Result({
   onDetail?: () => void;
   /** この結果を復元できるURL。自分で残すのにも、人に送るのにも使う */
   link: string;
+  /**
+   * 結果のコード（?r= の中身）。行動の記録の鍵にする。
+   * URLではなくコードを渡すのは、ドメインが変わっても
+   * 記録が迷子にならないようにするため。
+   */
+  code: string;
 }) {
   return (
     <div className="pt-4">
@@ -377,22 +386,11 @@ function Result({
         </div>
       ) : null}
 
-      {/* 今月の3つ — 結果の中で、いちばん先に読まれる位置に置く */}
-      <section className="mt-12">
-        <h3 className="text-[18px] sm:text-[20px]" style={{ ...MINCHO, fontWeight: 700 }}>
-          今月やること、3つだけ
-        </h3>
-        <ol className="mt-5 border-t border-shironezu">
-          {r.thisMonth.map((a) => (
-            <li key={a.text} className="flex gap-4 border-b border-shironezu py-4">
-              <span className="w-[3em] shrink-0 pt-[0.15em] text-[12.5px] text-asagi">
-                {a.when}
-              </span>
-              <span className="text-[15px] leading-[1.9] text-keshizumi">{a.text}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {/* 今月の3つ — 結果の中で、いちばん先に読まれる位置に置く。
+          読むだけだったものを、押して終えられるようにした。
+          ここが「診断して終わり」と「やったかどうかを追う」の境目。
+          記録はこの端末の中だけ（lib/progress.ts）。 */}
+      <ThisMonth items={r.thisMonth} code={code} />
 
       {/* 90日ロードマップ。
           順番は優先順位であって予定ではないので、時間軸に展開する。
