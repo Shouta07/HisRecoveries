@@ -87,6 +87,23 @@ function today(): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
+/**
+ * 最後に触った診断結果のコード。
+ *
+ * トップを「初めての人の面」から「続きの面」に変えるために要る。
+ * メディアは全員に同じものを見せ、プロダクトは本人の状態を見せる。
+ * その分かれ目がここ。
+ */
+export function lastCode(): string | null {
+  const p = read();
+  let best: { code: string; last: string } | null = null;
+  for (const [code, v] of Object.entries(p.byCode)) {
+    if (!v?.last) continue;
+    if (!best || v.last > best.last) best = { code, last: v.last };
+  }
+  return best?.code ?? null;
+}
+
 export function getDone(code: string): string[] {
   return read().byCode[code]?.done ?? [];
 }
