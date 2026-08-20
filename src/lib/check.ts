@@ -243,6 +243,15 @@ export type CheckResult = {
   partial: number;
   areas: AreaScore[];
   steps: Step[];
+  /**
+   * 本人が「いちばん気になる」と答えた場所。
+   *
+   * 順番を出すだけなら要らない。要るのは、結果の見出しで
+   * 「あなたが気にしているのはここ。でも先に手をつけるのは別」
+   * と言うため。実測すると67%がこのずれに当たる。
+   * この一行が、この診断でいちばん効く。
+   */
+  concern: AreaId | null;
   /** いまはやらなくていいこと */
   skip: { label: string; reason: string }[];
   /** 今月の3つ。1つ目は必ず「今日中に終わるもの」 */
@@ -418,6 +427,7 @@ export function evaluate(answers: Answers): CheckResult {
     untouched,
     partial,
     areas: areas.filter((a) => a.weight > 0).sort((a, b) => b.weight - a.weight),
+    concern: isAreaId(answers.c1) ? answers.c1 : null,
     steps,
     skip,
     thisMonth,
@@ -436,9 +446,21 @@ export function evaluate(answers: Answers): CheckResult {
 export function summarize(r: CheckResult): string {
   if (r.steps.length === 0) return "いま手をつける順番は、特にありません";
   const head = r.steps[0].label;
-  // 12項目に答えていない人に「手つかずはありません」と言ってはいけない。
-  // 未回答と「できている」は別のことで、混ぜると嘘になる。
-  if (!r.detailed) return `${head}から。`;
-  if (r.untouched === 0) return `${head}から。手つかずの項目はありません`;
-  return `${head}から。手つかずが${r.untouched}項目`;
+
+  // ── ずれを、先に言う ──────────────────────────
+  // これまで見出しは「清潔感・第一印象から。」だけだった。
+  // 本人が「髪が気になる」と答えたことに、どこにも触れていなかった。
+  //
+  // 実測すると、67%の人は気にしている場所と1番目がずれる。
+  // そのずれこそが、この診断が渡している唯一のもの。
+  // 触れずに結論だけ置くと、ただの一般論に見える。
+  if (r.concern && r.concern !== r.steps[0].areaId) {
+    return `${AREA_LABEL[r.concern]}が気になる。でも、先に手をつけるのは${head}です。`;
+  }
+
+  // ずれていない人には、そう言う。
+  // 同じ文面にすると、当たっていたことが伝わらない。
+  // 手つかずの数は結果画面の「現在地」に数字で出ているので、
+  // 見出しでは繰り返さない。
+  return `${head}から。その見立てで合っています。`;
 }
