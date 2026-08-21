@@ -1372,6 +1372,33 @@
         "source_type": "areas_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260821121836633852",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-21T12:18:36.633875",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "見た目を気にするのは、\n浅いことだと思われがち。\n\n———\n\nでも、鏡の前で悩んだ時間って、\nその人が真剣に生きてる時間でもあると思う。\n\n———\n\n「気にしすぎ」って言葉で、\n片付けなくていい。\n\n———\n\n見た目の悩み、誰かに茶化された経験ありますか？",
+        "posts": [
+          "見た目を気にするのは、\n浅いことだと思われがち。",
+          "でも、鏡の前で悩んだ時間って、\nその人が真剣に生きてる時間でもあると思う。",
+          "「気にしすぎ」って言葉で、\n片付けなくていい。",
+          "見た目の悩み、誰かに茶化された経験ありますか？"
+        ],
+        "is_thread": true,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "fan-reversal",
+        "hypothesis_name": "ファン化: 気にするのは浅くない（逆説型・リンク無し）",
+        "topic_slug": "fan-reversal",
+        "buzz_score": 8,
+        "source_type": "fan_thread",
+        "product": null
+      }
     }
   ]
 }
