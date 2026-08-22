@@ -1399,6 +1399,33 @@
         "source_type": "fan_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260822011936210716",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-22T01:19:36.210737",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "夜の蒸しタオル1分を、\n1週間続けてみた。\n\n———\n\n道具はタオルとレンジだけ。\n毎晩かかったのは2分。\n\n———\n\n変化は劇的じゃない。\nでも「自分に手をかけてる」という感覚は、\n思ったより気分を変えた。\n\n———\n\n小さな習慣で気分が変わった経験、ありますか？",
+        "posts": [
+          "夜の蒸しタオル1分を、\n1週間続けてみた。",
+          "道具はタオルとレンジだけ。\n毎晩かかったのは2分。",
+          "変化は劇的じゃない。\nでも「自分に手をかけてる」という感覚は、\n思ったより気分を変えた。",
+          "小さな習慣で気分が変わった経験、ありますか？"
+        ],
+        "is_thread": true,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "fan-record",
+        "hypothesis_name": "ファン化: 小さな習慣の記録（数字型・リンク無し）",
+        "topic_slug": "fan-record",
+        "buzz_score": 8,
+        "source_type": "fan_thread",
+        "product": null
+      }
     }
   ]
 }
