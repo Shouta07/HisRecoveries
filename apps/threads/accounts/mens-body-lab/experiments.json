@@ -22,17 +22,17 @@
     "areas-hair": 2,
     "gift-anniversary": 2,
     "areas-sweat": 1,
-    "gift-wedding": 1,
+    "gift-wedding": 2,
     "areas-self": 1,
     "urgent-interview": 2,
     "areas-face": 2,
     "urgent-tonight": 2
   },
   "cta_post_counts": {
-    "none": 42
+    "none": 43
   },
-  "total_posts": 42,
+  "total_posts": 43,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-23T01:27:05.077717"
+  "last_updated": "2026-08-23T12:12:07.105069"
 }
