@@ -1539,6 +1539,35 @@
         "source_type": "areas_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260824121924136500",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-24T12:19:24.136523",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "父の日、毎年ほんとに迷う。\nモノはもう、一通り贈った気がして。\n\n———\n\n今年は、いつもありがとうの代わりに、\n少しの自信を贈ろうって話になった。\n\n———\n\n見つけたのは、第一印象を1日で整える体験。\nカウンセリングして、メイクして、服も一緒に。\n\n———\n\n完全守秘で、何をするかは本人が決める。\n贈った側にも内容は知らされない。\nだから、構えずに受け取ってもらえる。\n\n———\n\nモノじゃない贈り物を、感謝とともに → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=gift-fathersday\n\n———\n\nお父さんへの贈り物、毎年どうしてますか？",
+        "posts": [
+          "父の日、毎年ほんとに迷う。\nモノはもう、一通り贈った気がして。",
+          "今年は、いつもありがとうの代わりに、\n少しの自信を贈ろうって話になった。",
+          "見つけたのは、第一印象を1日で整える体験。\nカウンセリングして、メイクして、服も一緒に。",
+          "完全守秘で、何をするかは本人が決める。\n贈った側にも内容は知らされない。\nだから、構えずに受け取ってもらえる。",
+          "モノじゃない贈り物を、感謝とともに → https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=gift-fathersday",
+          "お父さんへの贈り物、毎年どうしてますか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=gift-fathersday",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=gift-fathersday",
+        "hypothesis_id": "gift-fathersday",
+        "hypothesis_name": "父の日・クリスマスに贈る",
+        "topic_slug": "gift-fathersday",
+        "buzz_score": 8,
+        "source_type": "gift_thread",
+        "product": null
+      }
     }
   ]
 }
