@@ -1594,6 +1594,33 @@
         "source_type": "fan_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260825121946067135",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-25T12:19:46.067156",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "深夜2時。\n寝ようとしたのに、\nつい検索窓に悩みを打ち込んでいる。\n\n———\n\n昼間は忘れているのに、\nこの時間になると急に気になる。\n\n———\n\n誰にも聞けないから、\nスマホに聞くしかない。\nそういう夜が、たまにある。\n\n———\n\n深夜に、つい悩みを検索してしまうこと、ありませんか？",
+        "posts": [
+          "深夜2時。\n寝ようとしたのに、\nつい検索窓に悩みを打ち込んでいる。",
+          "昼間は忘れているのに、\nこの時間になると急に気になる。",
+          "誰にも聞けないから、\nスマホに聞くしかない。\nそういう夜が、たまにある。",
+          "深夜に、つい悩みを検索してしまうこと、ありませんか？"
+        ],
+        "is_thread": true,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "fan-midnight",
+        "hypothesis_name": "ファン化: 深夜の検索あるある（共感型・リンク無し）",
+        "topic_slug": "fan-midnight",
+        "buzz_score": 8,
+        "source_type": "fan_thread",
+        "product": null
+      }
     }
   ]
 }

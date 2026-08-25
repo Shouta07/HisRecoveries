@@ -4,7 +4,7 @@
     "mother-shukatsu": 1,
     "fan-record": 2,
     "b2b-adcost": 2,
-    "fan-midnight": 1,
+    "fan-midnight": 2,
     "biz-e-honest": 2,
     "b2b-quality": 2,
     "gift-fathersday": 2,
@@ -29,10 +29,10 @@
     "urgent-tonight": 2
   },
   "cta_post_counts": {
-    "none": 46
+    "none": 47
   },
-  "total_posts": 46,
+  "total_posts": 47,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-25T01:21:43.763116"
+  "last_updated": "2026-08-25T12:19:46.065953"
 }
