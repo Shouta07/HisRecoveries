@@ -1705,6 +1705,32 @@
         "source_type": "gift_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260827212008705323",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-27T21:20:08.705352",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「ヒゲ脱毛って、実際どうなんだろう」\n——よさそうでも、迷いはあった。\n\n———\n\n向き不向きや注意点は、人によって違う。\nだから「みんなと同じ」では決められない。\n\n———\n\n判断材料を、中立に並べた記録を\nここに置いている。\nhttps://hisrecoveries.com/areas/body-hair?utm_source=threads&utm_medium=social&utm_campaign=areas-body-hair",
+        "posts": [
+          "「ヒゲ脱毛って、実際どうなんだろう」\n——よさそうでも、迷いはあった。",
+          "向き不向きや注意点は、人によって違う。\nだから「みんなと同じ」では決められない。",
+          "判断材料を、中立に並べた記録を\nここに置いている。\nhttps://hisrecoveries.com/areas/body-hair?utm_source=threads&utm_medium=social&utm_campaign=areas-body-hair"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/areas/body-hair?utm_source=threads&utm_medium=social&utm_campaign=areas-body-hair",
+        "cta_used": "https://hisrecoveries.com/areas/body-hair?utm_source=threads&utm_medium=social&utm_campaign=areas-body-hair",
+        "hypothesis_id": "areas-body-hair",
+        "hypothesis_name": "髭・体毛（/areasへ）",
+        "topic_slug": "body-hair",
+        "buzz_score": 8,
+        "source_type": "areas_thread",
+        "product": null
+      }
     }
   ]
 }
