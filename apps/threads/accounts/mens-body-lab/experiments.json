@@ -16,7 +16,7 @@
     "mother-teen-skin": 1,
     "urgent-wedding": 2,
     "b2b-neutral-referral": 2,
-    "gift-birthday": 1,
+    "gift-birthday": 2,
     "mother-confidence": 2,
     "fan-question": 2,
     "areas-hair": 2,
@@ -29,10 +29,10 @@
     "urgent-tonight": 2
   },
   "cta_post_counts": {
-    "none": 49
+    "none": 50
   },
-  "total_posts": 49,
+  "total_posts": 50,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-26T12:21:20.385732"
+  "last_updated": "2026-08-27T08:09:49.087342"
 }
