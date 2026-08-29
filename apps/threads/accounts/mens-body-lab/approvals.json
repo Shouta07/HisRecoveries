@@ -1787,6 +1787,35 @@
         "source_type": "mother_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260829061211514422",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-08-29T06:12:11.514443",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「ワキガ 治療」で検索して、\n出てくるのがランキング記事ばっかりで、\nそっとタブを閉じたことがある。\n\n———\n\nどれが広告で、どれが本当かも分からない。\n術式も、値段も、保険が効くのかも、\n調べるほど分からなくなる。\n\n———\n\nあの「探す時間」って、\n地味に消耗する。\n\n———\n\n売る側じゃない立場で、\n「これは要る、これは要らない」って\n整理してくれる人がいたらいいのに。\n\n———\n\n売らない前提で、今の状態だけ見る場所を作った。\n完全守秘で、要らないものは要らないと言う。\nhttps://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-a-neutral\n\n———\n\n調べ疲れて、そっとタブを閉じた経験、ありませんか？",
+        "posts": [
+          "「ワキガ 治療」で検索して、\n出てくるのがランキング記事ばっかりで、\nそっとタブを閉じたことがある。",
+          "どれが広告で、どれが本当かも分からない。\n術式も、値段も、保険が効くのかも、\n調べるほど分からなくなる。",
+          "あの「探す時間」って、\n地味に消耗する。",
+          "売る側じゃない立場で、\n「これは要る、これは要らない」って\n整理してくれる人がいたらいいのに。",
+          "売らない前提で、今の状態だけ見る場所を作った。\n完全守秘で、要らないものは要らないと言う。\nhttps://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-a-neutral",
+          "調べ疲れて、そっとタブを閉じた経験、ありませんか？"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-a-neutral",
+        "cta_used": "https://hisrecoveries.com/apply?utm_source=threads&utm_medium=social&utm_campaign=biz-a-neutral",
+        "hypothesis_id": "biz-a-neutral",
+        "hypothesis_name": "仮説A/D2: 中立=探さなくていい安心に価値",
+        "topic_slug": "biz-a-neutral",
+        "buzz_score": 8,
+        "source_type": "biz_thread",
+        "product": null
+      }
     }
   ]
 }
