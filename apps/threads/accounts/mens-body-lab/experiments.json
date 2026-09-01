@@ -17,7 +17,7 @@
     "urgent-wedding": 2,
     "b2b-neutral-referral": 2,
     "gift-birthday": 2,
-    "mother-confidence": 2,
+    "mother-confidence": 3,
     "fan-question": 2,
     "areas-hair": 2,
     "gift-anniversary": 2,
@@ -29,10 +29,10 @@
     "urgent-tonight": 2
   },
   "cta_post_counts": {
-    "none": 59
+    "none": 60
   },
-  "total_posts": 59,
+  "total_posts": 60,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-08-31T18:14:20.830974"
+  "last_updated": "2026-09-01T04:09:33.257052"
 }
