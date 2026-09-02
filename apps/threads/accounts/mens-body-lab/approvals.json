@@ -2013,6 +2013,32 @@
         "source_type": "gift_thread",
         "product": null
       }
+    },
+    {
+      "id": "20260902033115513515",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-09-02T03:31:15.513539",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "「目の下のクマ、これ何だろう」\n——疲れだけじゃない気がしていた。\n\n———\n\nクマにもいくつか種類があって、\n見え方の理由はそれぞれ違うらしい。\n\n———\n\n仕組みを、煽らず中立に書いている。\n続きはここに置いている。\nhttps://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=areas-face",
+        "posts": [
+          "「目の下のクマ、これ何だろう」\n——疲れだけじゃない気がしていた。",
+          "クマにもいくつか種類があって、\n見え方の理由はそれぞれ違うらしい。",
+          "仕組みを、煽らず中立に書いている。\n続きはここに置いている。\nhttps://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=areas-face"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=areas-face",
+        "cta_used": "https://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=areas-face",
+        "hypothesis_id": "areas-face",
+        "hypothesis_name": "顔の印象（/areasへ）",
+        "topic_slug": "face",
+        "buzz_score": 8,
+        "source_type": "areas_thread",
+        "product": null
+      }
     }
   ]
 }
