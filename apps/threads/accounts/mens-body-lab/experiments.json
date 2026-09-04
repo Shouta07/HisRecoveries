@@ -26,13 +26,13 @@
     "areas-self": 2,
     "urgent-interview": 3,
     "areas-face": 3,
-    "urgent-tonight": 2
+    "urgent-tonight": 3
   },
   "cta_post_counts": {
-    "none": 66
+    "none": 67
   },
-  "total_posts": 66,
+  "total_posts": 67,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-04T03:30:51.170465"
+  "last_updated": "2026-09-04T15:11:14.711857"
 }
