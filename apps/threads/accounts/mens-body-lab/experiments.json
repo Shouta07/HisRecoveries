@@ -9,7 +9,7 @@
     "b2b-quality": 2,
     "gift-fathersday": 3,
     "areas-skin": 2,
-    "biz-b-chain": 2,
+    "biz-b-chain": 3,
     "biz-a-neutral": 3,
     "areas-body-hair": 2,
     "gift-career": 2,
@@ -29,10 +29,10 @@
     "urgent-tonight": 3
   },
   "cta_post_counts": {
-    "none": 68
+    "none": 69
   },
-  "total_posts": 68,
+  "total_posts": 69,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-05T03:31:43.912672"
+  "last_updated": "2026-09-05T14:02:00.896568"
 }
