@@ -6,7 +6,7 @@
     "b2b-adcost": 3,
     "fan-midnight": 3,
     "biz-e-honest": 2,
-    "b2b-quality": 2,
+    "b2b-quality": 3,
     "gift-fathersday": 3,
     "areas-skin": 2,
     "biz-b-chain": 3,
@@ -29,10 +29,10 @@
     "urgent-tonight": 3
   },
   "cta_post_counts": {
-    "none": 74
+    "none": 75
   },
-  "total_posts": 74,
+  "total_posts": 75,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-08T03:37:40.238362"
+  "last_updated": "2026-09-08T15:24:41.521124"
 }
