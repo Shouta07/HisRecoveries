@@ -23,16 +23,16 @@
     "gift-anniversary": 3,
     "areas-sweat": 3,
     "gift-wedding": 3,
-    "areas-self": 2,
+    "areas-self": 3,
     "urgent-interview": 3,
     "areas-face": 3,
     "urgent-tonight": 3
   },
   "cta_post_counts": {
-    "none": 73
+    "none": 74
   },
-  "total_posts": 73,
+  "total_posts": 74,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-07T16:41:22.111620"
+  "last_updated": "2026-09-08T03:37:40.238362"
 }
