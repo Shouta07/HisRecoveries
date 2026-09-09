@@ -15,7 +15,7 @@
     "gift-career": 3,
     "mother-teen-skin": 3,
     "urgent-wedding": 3,
-    "b2b-neutral-referral": 2,
+    "b2b-neutral-referral": 3,
     "gift-birthday": 3,
     "mother-confidence": 3,
     "fan-question": 2,
@@ -29,10 +29,10 @@
     "urgent-tonight": 3
   },
   "cta_post_counts": {
-    "none": 75
+    "none": 76
   },
-  "total_posts": 75,
+  "total_posts": 76,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-08T15:24:41.521124"
+  "last_updated": "2026-09-09T03:42:49.111711"
 }
