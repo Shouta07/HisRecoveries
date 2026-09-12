@@ -2,7 +2,7 @@
   "hypothesis_post_counts": {
     "fan-reversal": 3,
     "mother-shukatsu": 3,
-    "fan-record": 3,
+    "fan-record": 4,
     "b2b-adcost": 3,
     "fan-midnight": 3,
     "biz-e-honest": 3,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 82
+    "none": 83
   },
-  "total_posts": 82,
+  "total_posts": 83,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-12T03:42:31.623033"
+  "last_updated": "2026-09-12T14:25:46.680362"
 }
