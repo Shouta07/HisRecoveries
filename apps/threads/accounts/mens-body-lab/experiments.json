@@ -8,7 +8,7 @@
     "biz-e-honest": 3,
     "b2b-quality": 3,
     "gift-fathersday": 3,
-    "areas-skin": 2,
+    "areas-skin": 3,
     "biz-b-chain": 3,
     "biz-a-neutral": 3,
     "areas-body-hair": 3,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 81
+    "none": 82
   },
-  "total_posts": 81,
+  "total_posts": 82,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-11T15:17:30.880928"
+  "last_updated": "2026-09-12T03:42:31.623033"
 }
