@@ -41,7 +41,7 @@ const nextConfig = {
       { source: "/packages", destination: "/#pricing", permanent: true },
       { source: "/packages/:slug*", destination: "/#pricing", permanent: true },
       // 記事一覧はトップに統合した（/areas/:id 以下の記事はそのまま）
-      { source: "/areas", destination: "/#index", permanent: true },
+      { source: "/areas", destination: "/articles", permanent: true },
       // 面を減らした（記事に集中する）。削除したページはトップへ。
       { source: "/stages", destination: "/", permanent: true },
       { source: "/stages/:slug*", destination: "/", permanent: true },
@@ -50,43 +50,45 @@ const nextConfig = {
       { source: "/faq", destination: "/plan", permanent: true },
       { source: "/producer", destination: "/", permanent: true },
       // 編集方針は独立ページをやめ、トップの #about に統合
-      { source: "/why", destination: "/#about", permanent: true },
+      { source: "/why", destination: "/about", permanent: true },
       { source: "/recover", destination: "/", permanent: true },
       { source: "/refine", destination: "/", permanent: true },
       // /areas は第一印象4領域に特化 → 退避した領域はライブラリ index へ
-      { source: "/areas/sweat", destination: "/#index", permanent: true },
-      { source: "/areas/sweat/:slug*", destination: "/#index", permanent: true },
-      { source: "/areas/self", destination: "/#index", permanent: true },
-      { source: "/areas/self/:slug*", destination: "/#index", permanent: true },
+      { source: "/areas/sweat", destination: "/articles", permanent: true },
+      { source: "/areas/sweat/:slug*", destination: "/articles", permanent: true },
+      { source: "/areas/self", destination: "/articles", permanent: true },
+      { source: "/areas/self/:slug*", destination: "/articles", permanent: true },
       // オンライン伴走ページは会員ページ(β)に統合（旧コピーがゼロ入力方針と矛盾のため削除）
       { source: "/online", destination: "/member", permanent: true },
-      { source: "/mechanism", destination: "/#index", permanent: true },
-      { source: "/mechanism/:slug*", destination: "/#index", permanent: true },
-      { source: "/interviews", destination: "/#index", permanent: true },
-      { source: "/interviews/:slug*", destination: "/#index", permanent: true },
+      { source: "/mechanism", destination: "/articles", permanent: true },
+      { source: "/mechanism/:slug*", destination: "/articles", permanent: true },
+      { source: "/interviews", destination: "/articles", permanent: true },
+      { source: "/interviews/:slug*", destination: "/articles", permanent: true },
       // legacy routes also fold into the mechanism library.
-      { source: "/stories", destination: "/#index", permanent: true },
-      { source: "/stories/:slug", destination: "/#index", permanent: true },
-      { source: "/recoveries", destination: "/#index", permanent: true },
-      { source: "/recoveries/:slug*", destination: "/#index", permanent: true },
-      { source: "/territories", destination: "/#index", permanent: true },
-      { source: "/territories/:slug*", destination: "/#index", permanent: true },
+      { source: "/stories", destination: "/articles", permanent: true },
+      { source: "/stories/:slug", destination: "/articles", permanent: true },
+      { source: "/recoveries", destination: "/articles", permanent: true },
+      { source: "/recoveries/:slug*", destination: "/articles", permanent: true },
+      { source: "/territories", destination: "/articles", permanent: true },
+      { source: "/territories/:slug*", destination: "/articles", permanent: true },
       // 旧メディア（記事・コンテンツ）を削除 → 仕組みライブラリ or ホームへ
-      { source: "/articles", destination: "/#index", permanent: true },
-      { source: "/articles/:slug*", destination: "/#index", permanent: true },
-      { source: "/feelings", destination: "/#index", permanent: true },
-      { source: "/feelings/:slug*", destination: "/#index", permanent: true },
-      { source: "/concerns", destination: "/#index", permanent: true },
-      { source: "/concerns/:slug*", destination: "/#index", permanent: true },
-      { source: "/qa", destination: "/#index", permanent: true },
-      { source: "/qa/:slug*", destination: "/#index", permanent: true },
-      { source: "/ask", destination: "/#index", permanent: true },
-      { source: "/experts", destination: "/#index", permanent: true },
-      { source: "/experts/:slug*", destination: "/#index", permanent: true },
-      { source: "/services", destination: "/#index", permanent: true },
-      { source: "/services/:slug*", destination: "/#index", permanent: true },
-      { source: "/screen", destination: "/#index", permanent: true },
-      { source: "/screen/:slug*", destination: "/#index", permanent: true },
+      // :slug* は0個以上にマッチするので /articles 自身も拾ってしまう。
+      // 索引を /articles に置いた結果、自分から自分への308が無限に返っていた。
+      // 下の階層だけを拾うよう :slug+（1個以上）にする。
+      { source: "/articles/:slug+", destination: "/articles", permanent: true },
+      { source: "/feelings", destination: "/articles", permanent: true },
+      { source: "/feelings/:slug*", destination: "/articles", permanent: true },
+      { source: "/concerns", destination: "/articles", permanent: true },
+      { source: "/concerns/:slug*", destination: "/articles", permanent: true },
+      { source: "/qa", destination: "/articles", permanent: true },
+      { source: "/qa/:slug*", destination: "/articles", permanent: true },
+      { source: "/ask", destination: "/articles", permanent: true },
+      { source: "/experts", destination: "/articles", permanent: true },
+      { source: "/experts/:slug*", destination: "/articles", permanent: true },
+      { source: "/services", destination: "/articles", permanent: true },
+      { source: "/services/:slug*", destination: "/articles", permanent: true },
+      { source: "/screen", destination: "/articles", permanent: true },
+      { source: "/screen/:slug*", destination: "/articles", permanent: true },
       // /check は診断ページとして復活させたので、リダイレクトを外した。
       // 旧 308 をブラウザが覚えている場合があるが、実体のあるページが
       // 返るようになれば再クロールで置き換わる。
@@ -106,7 +108,6 @@ const nextConfig = {
       { source: "/animals", destination: "/", permanent: true },
       // /manifesto は思想ページとして復活（リダイレクトを解除）
       // legacy company/legal pages removed — fold into the home / privacy.
-      { source: "/about", destination: "/", permanent: true },
       { source: "/legal", destination: "/privacy", permanent: true },
       // /en mirror removed — Japanese only for now.
       { source: "/en", destination: "/", permanent: true },

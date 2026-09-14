@@ -148,7 +148,10 @@ export default function SearchSheet() {
 
   const show = () => {
     s.setOpen(false);
-    if (window.location.pathname === "/") {
+    // 索引はトップから /articles へ移した。
+    // 以前はここで「/」に飛ばしていたが、その面にもう索引が無いので、
+    // 検索の結果がどこにも着地しなくなる。
+    if (window.location.pathname === "/articles") {
       document.getElementById("results")?.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
       const p = new URLSearchParams();
@@ -157,7 +160,7 @@ export default function SearchSheet() {
       if (s.area) p.set("area", s.area);
       if (s.q.trim()) p.set("q", s.q.trim());
       const qs = p.toString();
-      router.push(`/${qs ? `?${qs}` : ""}#index`);
+      router.push(`/articles${qs ? `?${qs}` : ""}`);
     }
   };
 

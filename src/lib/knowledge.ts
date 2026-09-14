@@ -1,4 +1,5 @@
 import { clusters } from "./clusters";
+import { isTicket } from "./interview";
 import { STAGES, type StageId } from "./journey";
 import type { AgeGroup } from "./journey";
 
@@ -45,7 +46,27 @@ export type Knowledge = {
   asOf?: string;
   /** 編集部の一言。転載ではないことの実体 */
   editorNote?: string;
+  /**
+   * 取材フォーム（/interview）から来たものの受付番号。
+   *
+   * これを持たせる理由は1つだけ。
+   * 取材のページで「受付番号を控えておけば、公開後であっても削除します。
+   * 理由は聞きません」と約束している。
+   * 公開したものと受付番号が結びついていないと、その約束は実行できない。
+   * 番号を聞いても、どれを消せばいいか分からないからです。
+   */
+  sourceTicket?: string;
 };
+
+/**
+ * 取り下げの申し出があった受付番号。
+ *
+ * ここに番号を足すと、その番号から作ったものは公開面から消える。
+ * データを手で探して削除する運用にしない。探し漏らすから。
+ *
+ * 消した記録自体は残す（何を消したかではなく、消したという事実だけ）。
+ */
+export const WITHDRAWN: string[] = [];
 
 /**
  * 既存記事55本を Knowledge に変換する。
@@ -76,7 +97,12 @@ export function fromArticles(): Knowledge[] {
 export const CURATED: Knowledge[] = [];
 
 export function all(): Knowledge[] {
-  return [...fromArticles(), ...CURATED];
+  // 取り下げられたものは、ここから先へ出さない。
+  // 画面ごとに除外すると、必ずどこか1枚が残る。出口を1つにする。
+  const gone = new Set(WITHDRAWN);
+  return [...fromArticles(), ...CURATED].filter(
+    (k) => !(k.sourceTicket && gone.has(k.sourceTicket)),
+  );
 }
 
 /** 段階ごとの在庫数。空の段階を画面で正直に出すために使う */
@@ -115,6 +141,16 @@ for (const k of CURATED) {
   if (external && (!k.source?.name || !k.source?.url)) {
     throw new Error(`Knowledge「${k.id}」: 外部由来なのに出典がありません`);
   }
+  // 経験には、必ず出どころが要る。
+  // 取材フォームから来たなら受付番号、外部の発信なら出典。
+  // どちらも無い経験は、書いた人以外に確かめようがない。
+  // つまり、それらしい経験談をここに置ける道を残さない。
+  if (k.type === "EXPERIENCE" && !k.sourceTicket && !k.source?.url) {
+    throw new Error(
+      `Knowledge「${k.id}」: 経験には受付番号か出典が要ります（出どころの無い経験は載せません）`,
+    );
+  }
+
   // 一人の経験に、全員の正解のような書き方をさせない。
   if (k.type === "EXPERIENCE" && !/一人|その人|この方|個人/.test(k.summary + (k.editorNote ?? ""))) {
     throw new Error(
@@ -124,5 +160,14 @@ for (const k of CURATED) {
   // データには、いつ時点かが要る。日付の無い数字は使えない。
   if ((k.type === "DATA" || k.type === "RESEARCH") && !k.asOf) {
     throw new Error(`Knowledge「${k.id}」: 調査・データには時点（asOf）が要ります`);
+  }
+}
+
+// 取り下げの受付番号が、形として正しいか。
+// 打ち間違えた番号を置くと「消したつもり」で残り続ける。
+// 消えていないことに、こちらは気づけない。
+for (const t of WITHDRAWN) {
+  if (!isTicket(t)) {
+    throw new Error(`取り下げの受付番号「${t}」の形が正しくありません（消し漏れになります）`);
   }
 }

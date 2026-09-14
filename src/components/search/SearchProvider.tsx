@@ -128,16 +128,18 @@ export default function SearchProvider({
     if (open) ensureIndex();
   }, [open, ensureIndex]);
 
-  // 状態 → URL（トップだけ。記事ページのURLに検索条件を足しても意味がない）
+  // 状態 → URL（索引の面だけ。記事ページのURLに検索条件を足しても意味がない）
+  // 索引はトップから /articles へ移した。ここが "/" のままだと、
+  // 条件を変えてもURLに残らず、絞り込んだ結果を共有できなくなる。
   useEffect(() => {
-    if (!urlRead || window.location.pathname !== "/") return;
+    if (!urlRead || window.location.pathname !== "/articles") return;
     const p = new URLSearchParams();
     if (situation) p.set("s", situation);
     if (stage) p.set("age", stage);
     if (area) p.set("area", area);
     if (q.trim()) p.set("q", q.trim());
     const qs = p.toString();
-    window.history.replaceState(null, "", `/${qs ? `?${qs}` : ""}`);
+    window.history.replaceState(null, "", `/articles${qs ? `?${qs}` : ""}`);
   }, [urlRead, q, situation, stage, area]);
 
   const hasFilter = Boolean(q.trim() || situation || stage || area);

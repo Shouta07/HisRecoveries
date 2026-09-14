@@ -1,131 +1,150 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { STAGES, type StageId } from "@/lib/journey";
-import { countByStage, byStage } from "@/lib/knowledge";
+import Link from "next/link";
+import { STAGES, stage as getStage, type StageId } from "@/lib/journey";
+import { byStage } from "@/lib/knowledge";
 import { load, setStage } from "@/lib/relationship";
-import { Card, SectionTitle, Empty, Tag } from "@/components/app/ui";
+import { JourneyLine } from "@/components/app/Line";
+import { Screen, Ask, Head, Label, Note, Rule, Action, Empty, Loading, Mark } from "@/components/app/system";
 import { track } from "@/lib/analytics";
 
-// ジャーニー。8段階の「道」。
+// 道のり（§09・§10）。
 //
-// ── 営業パイプラインにしない ──────────────────────
-// 横並びの矢印・達成率・次のアクション数は出さない。
-// 縦に置いて、いまいるところだけ色を変える。
-// 戻ることも、止まることも、同じ見た目で扱う。
+// ── 進捗管理画面にしない ──────────────────────────
+// 前の版は8段階が縦にカードで並び、右端に件数が出て、開くと畳まれた中身が出た。
+// それは営業のパイプラインの形。下タブからも外した。
 //
-// ── 空を空として出す ──────────────────────────────
-// 8段階中7段階は在庫0。そこを隠さない。
-// 「準備中」ではなく、何が無くて、いつ入るかを書く。
+// ── 一本の静かな道にする ──────────────────────────
+// 線を1本引いて、点を置く。いまいるところだけ少し大きい。
+// 線は塗り分けない。右に行くほど良い、という意味を作らないため。
+//
+// ── 曖昧さを許す ────────────────────────────────
+// 「45% COMPLETE」も「STEP 3」も無い。
+// 出るのは「いまは『会う』のあたり」まで。
 
-export default function JourneyPage() {
+export default function Journey() {
   const [here, setHere] = useState<StageId | null>(null);
-  const [open, setOpen] = useState<StageId | null>(null);
-  const counts = countByStage();
+  const [look, setLook] = useState<StageId | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setHere(load().stage);
+    const s = load();
+    setHere(s.stage);
+    setLook(s.stage ?? "prepare");
+    setReady(true);
   }, []);
 
+  if (!ready || !look) return <Loading />;
+
+  const s = getStage(look);
+  const items = byStage(look).slice(0, 3);
+  const isHere = here === look;
+
   return (
-    <div className="pb-6">
-      <h1 className="mt-4 font-display text-[22px] font-bold text-charcoal">道のり</h1>
-      <p className="mt-2 text-[13.5px] leading-[1.85] text-faint">
-        順位ではありません。戻ることも、止まることもあります。
-      </p>
+    <Screen>
+      <Ask>関係には、いろんな途中がある。</Ask>
+      <div className="mt-4">
+        <Note>
+          順位ではありません。戻ることも、止まることも、やめることもあります。
+          早く次へ進むための道ではありません。
+        </Note>
+      </div>
 
-      <ul className="mt-6 flex flex-col gap-2.5">
-        {STAGES.map((s) => {
-          const now = here === s.id;
-          const isOpen = open === s.id;
-          const n = counts[s.id] ?? 0;
-          return (
-            <li key={s.id}>
-              <Card
-                as="button"
-                selected={now}
-                onClick={() => {
-                  setOpen(isOpen ? null : s.id);
-                  track("app_journey_open", { stage: s.id });
-                }}
-              >
-                <span className="flex items-baseline gap-2.5">
-                  <span
-                    aria-hidden
-                    className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
-                      now ? "bg-coral ring-4 ring-coral-soft" : "bg-hairline"
-                    }`}
-                  />
-                  <span className="min-w-0 flex-1">
-                    <span className="flex items-baseline gap-2">
-                      <span className="text-[15px] font-bold text-charcoal">{s.label}</span>
-                      {now && <span className="text-[11.5px] text-coral">いまここ</span>}
-                    </span>
-                    <span className="mt-1 block text-[13px] leading-[1.8] text-faint">{s.where}</span>
-                  </span>
-                  <span className="shrink-0 text-[11.5px] tabular-nums text-faint">{n}</span>
-                </span>
-              </Card>
+      {/* 線。点を押すと、その時期のことが下に出る */}
+      <div className="mt-10">
+        <JourneyLine
+          current={here}
+          onPick={(id) => {
+            setLook(id);
+            track("app_journey_open", { stage: id });
+          }}
+        />
+        <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <p className="text-[13.5px] text-bodytext">
+            {here ? `いまは「${getStage(here).label}」のあたり` : "現在地は、まだ決めていません"}
+          </p>
+          {!isHere && <Mark>見ているのは「{s.label}」</Mark>}
+        </div>
+      </div>
 
-              {isOpen && (
-                <div className="mt-2 flex flex-col gap-4 rounded-[14px] bg-raised px-4 py-4">
-                  <div>
-                    <p className="text-[12px] text-faint">よくある迷い</p>
-                    <ul className="mt-1.5 flex flex-col gap-1">
-                      {s.doubts.map((d) => (
-                        <li key={d} className="text-[13.5px] leading-[1.8] text-bodytext">
-                          ・{d}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="text-[12px] text-faint">考えてみること</p>
-                    {s.prompts.map((p) => (
-                      <p key={p} className="mt-1.5 text-[13.5px] leading-[1.85] text-charcoal">
-                        {p}
-                      </p>
-                    ))}
-                  </div>
-                  <div>
-                    <SectionTitle note={`${n}件`}>読めるもの</SectionTitle>
-                    <div className="mt-2.5 flex flex-col gap-2">
-                      {n === 0 ? (
-                        <Empty
-                          title="まだ0件です"
-                          body="この段階の経験・専門家の見解・調査は、いま集めているところです。集まっていないものを、それらしく埋めることはしません。"
-                        />
-                      ) : (
-                        byStage(s.id).slice(0, 3).map((k) => (
-                          <Card key={k.id} as="link" href={k.href ?? "#"}>
-                            <Tag>考え方</Tag>
-                            <p className="mt-1.5 text-[14px] font-bold leading-[1.6] text-charcoal">
-                              {k.title}
-                            </p>
-                          </Card>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                  {!now && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setStage(s.id);
-                        setHere(s.id);
-                        track("app_stage_changed", { stage: s.id });
-                      }}
-                      className="min-h-[44px] text-[13px] text-coral underline decoration-coral/40 underline-offset-4"
+      <div className="mt-9">
+        <Rule />
+      </div>
+
+      {/* 見ている時期のこと */}
+      <section className="mt-8">
+        <Label>{isHere ? "いまのあたり" : "この時期"}</Label>
+        <h2 className="mt-2.5 font-display text-[22px] font-bold leading-[1.5] text-charcoal">
+          {s.label}
+        </h2>
+        <p className="mt-2.5 text-[15px] leading-[1.95] text-bodytext">{s.where}</p>
+
+        <div className="mt-8">
+          <Head>よくある迷い</Head>
+          <ul className="mt-3 flex flex-col gap-2">
+            {s.doubts.map((d) => (
+              <li key={d} className="flex gap-2.5 text-[14.5px] leading-[1.9] text-bodytext">
+                <span aria-hidden className="mt-[11px] h-px w-3 shrink-0 bg-hairline" />
+                <span>{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-8">
+          <Head>考えてみること</Head>
+          {s.prompts.map((p) => (
+            <p key={p} className="mt-3 text-[15px] leading-[1.95] text-charcoal">
+              {p}
+            </p>
+          ))}
+        </div>
+
+        <div className="mt-8">
+          <Head>この時期のもの</Head>
+          <div className="mt-4">
+            {items.length === 0 ? (
+              <Empty
+                title="まだありません。"
+                body="この時期の経験・専門家の見解・調査は、いま集めているところです。集まっていないものを、それらしく埋めることはしません。"
+              />
+            ) : (
+              <ul className="flex flex-col gap-5">
+                {items.map((k) => (
+                  <li key={k.id}>
+                    <Link
+                      href={k.href ?? "#"}
+                      onClick={() => track("app_knowledge_open", { stage: look, type: k.type })}
+                      className="block"
                     >
-                      いまはこのあたり、にする
-                    </button>
-                  )}
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+                      <Mark>考え方</Mark>
+                      <p className="mt-1 text-[14.5px] font-bold leading-[1.7] text-charcoal">
+                        {k.title}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        {!isHere && (
+          <div className="mt-10">
+            <Action
+              quiet
+              onClick={() => {
+                setStage(look);
+                setHere(look);
+                track("app_stage_changed", { stage: look });
+              }}
+            >
+              いまは、このあたりにする
+            </Action>
+          </div>
+        )}
+      </section>
+    </Screen>
   );
 }

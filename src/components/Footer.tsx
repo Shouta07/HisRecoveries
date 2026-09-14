@@ -54,7 +54,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
             <p className="text-[12.5px] text-ainezu">読みもの</p>
             <ul className="mt-4 space-y-2.5 text-[14px]">
               <li>
-                <Link href="/#index" className="transition-colors hover:text-asagi">
+                <Link href="/articles" className="transition-colors hover:text-asagi">
                   記事をさがす
                 </Link>
               </li>
@@ -79,7 +79,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
             <p className="text-[12.5px] text-ainezu">His Recoveries</p>
             <ul className="mt-4 space-y-2.5 text-[14px]">
               <li>
-                <Link href="/#about" className="transition-colors hover:text-asagi">
+                <Link href="/about" className="transition-colors hover:text-asagi">
                   編集方針
                 </Link>
               </li>

@@ -113,11 +113,16 @@ export function isStageId(x: unknown): x is StageId {
   return typeof x === "string" && BY_ID.has(x as StageId);
 }
 
-/** オンボーディングで出す順。現在地を選んでもらうだけで、順位は付けない */
+/**
+ * はじめに出す選択肢。現在地を選んでもらうだけで、順位は付けない。
+ *
+ * 6つに絞ってある。8段階すべてを並べると、選ぶ前に読む作業が生まれる。
+ * ここで落とした meet（出会う）と grow（関係を育てる）は、
+ * 道のりの線からいつでも選べる。最初に全部見せる必要はない。
+ */
 export const ONBOARDING_CHOICES: { id: StageId; label: string }[] = [
-  { id: "prepare", label: "これから出会いたい" },
-  { id: "meet", label: "最近マッチした" },
-  { id: "talk", label: "メッセージしている" },
+  { id: "prepare", label: "まだ出会っていない" },
+  { id: "talk", label: "話している" },
   { id: "date", label: "会う予定がある" },
   { id: "again", label: "一度会った" },
   { id: "know", label: "何度か会っている" },

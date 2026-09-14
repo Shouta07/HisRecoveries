@@ -163,7 +163,7 @@ export default function PartnerPage() {
             メディアは公開していますが、ご紹介の実績はこれからです。1件目としてお話しできる方を探しています。
           </p>
           {/* 冷リンクで開いた相手への実在性の証明（メディアを見れば本気度が分かる） */}
-          <Link href="/#index" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#2F6F79] underline underline-offset-4 decoration-[#70B0B0]/50 hover:opacity-70 transition-opacity">
+          <Link href="/articles" className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#2F6F79] underline underline-offset-4 decoration-[#70B0B0]/50 hover:opacity-70 transition-opacity">
             男性向けの専門記事を50本以上発信中 — メディアを見る <span aria-hidden>→</span>
           </Link>
         </div>
@@ -511,7 +511,7 @@ export default function PartnerPage() {
           <Link href="/" className="logo-type text-[17px] font-bold text-[#2E4A66]">His Recoveries</Link>
           <nav className="flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-[#414A50]">
             <Link href="/" className="hover:text-[#2E4A66] transition-colors">ホーム</Link>
-            <Link href="/#index" className="hover:text-[#2E4A66] transition-colors">記事</Link>
+            <Link href="/articles" className="hover:text-[#2E4A66] transition-colors">記事</Link>
             <Link href="/privacy" className="hover:text-[#2E4A66] transition-colors">プライバシー・免責事項</Link>
           </nav>
           <span className="text-[13.5px] text-[#5E6E76]">© 2026 His Recoveries</span>

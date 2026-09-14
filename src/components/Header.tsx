@@ -9,8 +9,8 @@ import { site } from "@/lib/site";
 // 下層ページのヘッダー。トップの GlassNav と同じ見え方に揃える
 // （ロゴ＋肩書き1行、記事が先頭）。メディアが主、サービスが従。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/#index", label: "記事" },
-  { href: "/#about", label: "編集方針", desktopOnly: true },
+  { href: "/articles", label: "記事" },
+  { href: "/about", label: "編集方針", desktopOnly: true },
 ];
 
 export default function Header() {
