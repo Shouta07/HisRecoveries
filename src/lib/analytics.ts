@@ -65,6 +65,16 @@ export const CONVERSION_EVENTS = [
   // ここが動くかどうかで、再訪が「読み物」ではなく「道具」として
   // 起きているかが分かる。
   "resume_click", // トップの「続きを見る」を押した（props: left＝残り数）
+
+  // ── v2（Relationship Companion / /app）──
+  // §22 のKPIに直接対応させる。PVは追わない。
+  // 記録したか、続いているか、どの段階で止まるか。
+  "app_onboard_done", // 現在地と年代を設定し終えた（props: stage, age）
+  "app_checkin", // ホームのチェックインを押した（props: kind）
+  "app_record_saved", // 記録を保存した（props: kind, hasFeel, hasNote）
+  "app_journey_open", // 段階を開いた（props: stage）— どこで迷うかが出る
+  "app_stage_changed", // 現在地を変えた（props: stage）
+  "app_knowledge_open", // Knowledge を開いた（props: stage, type）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

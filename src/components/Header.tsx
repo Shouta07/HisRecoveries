@@ -18,6 +18,9 @@ export default function Header() {
 
   // The home ("/") ships its own glass navbar; /apply and /partner are focused
   // pages that carry their own top bar.
+  // /app 配下は Consumer App の外枠（Shell）が出る。
+  // サイトのヘッダーが重なると、アプリではなくWebサイトに見える。
+  if (pathname?.startsWith("/app")) return null;
   if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
 
   return (

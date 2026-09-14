@@ -13,7 +13,11 @@ import { site } from "@/lib/site";
 // import すると、6領域それぞれの解説文まで丸ごとバンドルに入る。
 // 要るのは id と表示名だけ。
 export default function Footer({ areas }: { areas: { id: string; ja: string }[] }) {
+
   const pathname = usePathname();
+
+  // /app 配下はアプリの外枠を使う。サイトのフッターは出さない。
+  if (pathname?.startsWith("/app")) return null;
   // The home ("/") ships its own footer; /apply and /partner are focused pages
   // that carry their own footer.
   if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
