@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QUESTIONS, CONSENT_VERSION, makeTicket } from "@/lib/interview";
 import { track } from "@/lib/analytics";
+import { site } from "@/lib/site";
 
 // 取材のフォーム。
 //
@@ -65,6 +66,21 @@ export default function InterviewForm() {
         </p>
         <p className="mt-4 select-all border border-shironezu bg-shironeri px-4 py-3 text-center text-[22px] font-bold tabular-nums tracking-[0.18em] text-sumi">
           {ticket}
+        </p>
+        {/* 送り先をここに書く。
+            「番号だけで消せます」と書いておいて、どこに送るかが
+            画面の上のほうにしか無いと、必要になった人が探すことになる。
+            取り消したくなるのは、たいてい落ち着かない気持ちのときなので、
+            探させない。 */}
+        <p className="mt-4 text-[13.5px] leading-[1.95] text-keshizumi">
+          送り先は
+          <a
+            href={`mailto:${site.email}?subject=${encodeURIComponent("取り消しのお願い")}`}
+            className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
+          >
+            {site.email}
+          </a>
+          です。本文は番号だけで構いません。
         </p>
         <p className="mt-4 text-[13px] leading-[1.9] text-ainezu">
           こちらからご連絡することはありません（連絡先をいただいていないので、できません）。
