@@ -3,7 +3,7 @@
     "fan-reversal": 3,
     "mother-shukatsu": 3,
     "fan-record": 4,
-    "b2b-adcost": 3,
+    "b2b-adcost": 4,
     "fan-midnight": 3,
     "biz-e-honest": 3,
     "b2b-quality": 3,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 85
+    "none": 86
   },
-  "total_posts": 85,
+  "total_posts": 86,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-13T15:07:18.409731"
+  "last_updated": "2026-09-14T03:58:02.808901"
 }
