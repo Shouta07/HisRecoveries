@@ -70,9 +70,13 @@ export const CONVERSION_EVENTS = [
   // §22 のKPIに直接対応させる。PVは追わない。
   // 記録したか、続いているか、どの段階で止まるか。
   "app_onboard_done", // 現在地と年代を設定し終えた（props: stage, age）
-  "app_checkin", // ホームのチェックインを押した（props: kind）
-  "app_record_saved", // 記録を保存した（props: kind, hasFeel, hasNote）
-  "app_journey_open", // 段階を開いた（props: stage）— どこで迷うかが出る
+  // 記録の入口と出口を別々に取る。
+  // 始めた数と終えた数が分かれていないと、どこで止まるかが出ない。
+  "app_record_start", // 記録を始めた（props: from＝どこから入ったか）
+  "app_record_saved", // 記録を保存した（props: n＝何問答えたか, first＝1件目か）
+  "app_record_abandon", // 記録を途中でやめた（props: at＝何問目）
+  "app_reflect_open", // 振り返りの問いを開いた（props: from）
+  "app_journey_open", // 道のりを開いた（props: stage）— どこで迷うかが出る
   "app_stage_changed", // 現在地を変えた（props: stage）
   "app_knowledge_open", // Knowledge を開いた（props: stage, type）
 ] as const;
@@ -155,8 +159,37 @@ export function getAttribution(): Record<string, string> {
  * Also forwards a stripped copy to /api/event so it lands in our own DB
  * for the /admin/insights dashboard.
  */
+/**
+ * 計測を止めるための鍵（/app の設定から切り替える）。
+ *
+ * /app の記録そのものは端末の外に出ないので、そこに切るものは無い。
+ * 実際に外へ出ているのは、この匿名の行動計測だけ。
+ * だから「オフにできます」と書くなら、切れるのはここでなければ嘘になる。
+ */
+const OPT_OUT_KEY = "hr_no_stats";
+
+export function statsEnabled(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    return window.localStorage.getItem(OPT_OUT_KEY) !== "1";
+  } catch {
+    return true;
+  }
+}
+
+export function setStatsEnabled(on: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (on) window.localStorage.removeItem(OPT_OUT_KEY);
+    else window.localStorage.setItem(OPT_OUT_KEY, "1");
+  } catch {
+    /* 保存できない環境では、設定だけ諦める */
+  }
+}
+
 export function track(event: ConversionEvent, props: Props = {}): void {
   if (typeof window === "undefined") return;
+  if (!statsEnabled()) return;
 
   const attribution = getAttribution();
   const payload: Props = { ...attribution, ...props };

@@ -13,25 +13,31 @@ const config: Config = {
         // それに合わせて、地も冷たい白に振っている。
         // 以前は生成り・深緑・銅の暖色だったが、ロゴと並ぶと色がぶつかっていた。
         // 詳細と使い分けは DESIGN.md「3. カラーパレット」。
-        // ── v2（Relationship Companion）のトークン ──────────
+        // ── v2（Relationship Companion / /app）のトークン ──────
         // 既存の冷色（白練・墨・浅葱）はそのまま残す。20ルートが使っている。
         // v2 は名前を分けて併存させ、入れ替えの日まで互いに触らせない。
+        // 実測: この下の9色は /app と components/app の外では1箇所も
+        // 使われていない。だからここは自由に組み替えられる。
         //
-        // コーラルは彩度を落としてある。純粋な #FF6B5A は警告色に見え、
-        // かつ恋愛アプリの記号にもなる。ここは「静か」が要件なので外す。
-        ground: "#FBF9F7",      // 温かみのあるオフホワイト — アプリの地
-        surface: "#FFFFFF",     // カードの面
-        raised: "#F4F0EC",      // 一段沈んだ面（見出し帯・タブ）
+        // 地は温かいオフホワイト。白にしないのは、
+        // 白い紙の上に白いカードを置く設計から離れるため。
+        ground: "#FBF9F7",      // アプリの地
+        surface: "#FFFFFF",     // カードの面。使う場所を絞る（選択肢・経験談だけ）
+        raised: "#F4F0EC",      // ごく稀。沈めたい帯
         // 注意: ink という名前は使えない。
         // tailwind に定義が無いまま text-ink が141箇所書かれていて、
         // いまは色が出ていない。ここで定義すると、その141箇所に
         // 突然色が付いて既存ページの見た目が変わる。名前を分ける。
-        charcoal: "#2A2622",    // 温かいチャコール — 見出し
+        charcoal: "#2A2622",    // 見出し・問い
         bodytext: "#5A534C",    // 本文
-        faint: "#8C8378",       // 補足・キャプション
-        hairline: "#EAE4DE",    // 罫線
-        coral: "#D9694F",       // アクセント。1画面に1箇所だけ
-        "coral-soft": "#FBEDE8",
+        faint: "#8C8378",       // 補足・キャプション・日付
+        hairline: "#EAE4DE",    // 線。このプロダクトの主役の一つ
+        // アクセントは1色だけ。
+        // 以前の #D9694F は本文コントラストが 3.33:1 で AA に届かず、
+        // リンク文字に使っていた。沈めて 4.67:1（地の上）/ 4.86:1（白文字）。
+        // 彩度を落とすと、恋愛アプリの記号からも離れる。
+        accent: "#B2543C",
+        "accent-tint": "#F4EAE6", // 選択中の面。塗りつぶしではなく、ごく淡く
         shironeri: "#F1F3F3",   // 白練 — サイトの地（冷たい白）
         hakuji: "#FAFBFB",      // 白磁 — 記事の紙
         sumi: "#1B2024",        // 墨 — 本文（純黒にしない。わずかに青み）
@@ -86,9 +92,27 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        // v2 の動き。ここに無いものは使わない（§29）。
+        // 弾ませない。光らせない。紙が一枚めくれる程度に留める。
+        "hr-rise": {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "hr-fade": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        // 線が引かれる。道のりと記録の時系列に使う唯一の装飾。
+        "hr-draw": {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
       },
       animation: {
         marquee: "marquee 70s linear infinite",
+        "hr-rise": "hr-rise 260ms cubic-bezier(0.22,0.61,0.36,1) both",
+        "hr-fade": "hr-fade 200ms ease-out both",
+        "hr-draw": "hr-draw 420ms cubic-bezier(0.22,0.61,0.36,1) both",
       },
     },
   },
