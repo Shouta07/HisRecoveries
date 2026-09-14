@@ -90,6 +90,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const staticPaths: MetadataRoute.Sitemap = [
+    // 記事の索引と編集方針。もとはトップの中（#index / #about）にあった面で、
+    // トップが /app の入口になったときに独立させた。
+    "/articles",
+    "/about",
     "/check",
     "/interview",
     "/research",

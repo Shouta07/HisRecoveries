@@ -1,552 +1,450 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import GlassNav from "@/components/GlassNav";
-import HomeHero from "@/components/HomeHero";
-import ArticleResults from "@/components/ArticleResults";
-import ArticleList from "@/components/ArticleList";
 import { complexes } from "@/lib/complexes";
-import { clusters } from "@/lib/clusters";
-import { byNewest, formatDate, publishedAt } from "@/lib/articleDates";
-import { readingMinutes } from "@/lib/reading";
 import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
-import HeroStart from "@/components/check/HeroStart";
-import WhyStuck from "@/components/home/WhyStuck";
-import ScrollReveal from "@/components/ScrollReveal";
-import Moments from "@/components/home/Moments";
-import Resume from "@/components/home/Resume";
-import SampleResult from "@/components/home/SampleResult";
+import { STAGES } from "@/lib/journey";
+import RecordDemo from "@/components/home/RecordDemo";
+import FinalCta from "@/components/home/FinalCta";
 
 // ══════════════════════════════════════════════════════════════
-// トップページ = 編集メディアの表紙。
+// トップページ。
 //
-// サービスLPではありません。順番:
-//   Hero（感情 + 診断の1問目）→ なぜ変われないのか → やることは3つ →
-//   新しい記事 → よく読まれている → 全部の順番 → 分野から →
-//   His Recoveriesについて → 記事をさがす（全件索引）→ サービス → Footer
+// ── ここが売るもの ────────────────────────────────
+// 以前のトップは「男の改善は、順番で決まる」を売っていた。
+// ヒーローは男性の写真、選択肢は 清潔感／髪／肌／疲れ顔／ヒゲ／眠り。
+// つまり /app（出会ったあとを、大切にする）とは別のプロダクトだった。
+// 同じ看板で2つのことを言うのをやめ、ここは /app の入口にする。
 //
-// ── ヒーローを感情から始める ─────────────────────
-// 「男の改善は、順番で決まる。」は主張としては強いが、
-// 読み手が自分の話だと気づくまでに一拍かかる。
-// 「変わりたい。でも、何からやればいいか分からない。」は
-// 読み手の内心そのものなので、自己同定が速い。
-// 主張のほうは、ナビの肩書きに残してある。
+// 記事55本・診断・順番・プランは消していない。URLもそのまま。
+// トップからの大量露出だけを外し、導線はフッターと /app/knowledge に残す。
 //
-// ── 全件索引を最後に落とした ────────────────────────
-// 以前は Hero の直後に「記事 全55本」の索引があり、編集が選んだ
-// 「新しい記事」「よく読まれている記事」はそのはるか下にあった。
-// 表紙をめくった最初の面が目次だと、ページは「探す画面」になる。
-// 探しに来た人は下まで行くか検索を使うので、索引は下でいい。
+// ── 順番 ─────────────────────────────────────
+//   具体的な自分ごと → 触れる → 価値を理解 → 思想に共感 → 安心 → 使う
+// ブランドの一文から説明を始めない。
+// 「出会ったあとを、大切にする。」は §14 の位置でいちばん効く。
 //
-// やらないこと：
-//   ・カードで囲まない（記事は地の上に、写真と文字を直接置く）
-//   ・英語のセクション見出しを置かない
-//   ・すべてのセクションを同じ余白にしない（話題の切れ目で1段広げる）
-//   ・ヒーローの中にボタンを置かない（写真と見出しだけ）
+// ── 6つまで ───────────────────────────────────
+//   触れるヒーロー / 出会ったあとの問題 / 残す・振り返る・分かってくる /
+//   道のり / 相手を攻略しない・記録は自分のもの / 最後のCTA
+// 記事一覧もカテゴリ一覧も置かない。
 //
-// 診断はヒーローの直後、記事より先に置く。
-// 以前は「診断の導線を置かない」と決めていたが、それは読み物としての
-// 純度を守るための判断だった。読者に現在地を渡すほうを優先する。
+// ── 見た目 ────────────────────────────────────
+// /app と同じ設計システム（DESIGN-APP.md）。
+// 地は ground、線は hairline、アクセントは #B2543C 一色。
+// カードは押せるものにだけ使う。区切りは 余白 → 線 → カード の順。
 // ══════════════════════════════════════════════════════════════
-
-const MINCHO: React.CSSProperties = {
-  fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
-  fontFeatureSettings: '"palt" 1',
-};
 
 export const metadata: Metadata = {
+  title: "His Recoveries — 出会ったあとを、大切にする。",
+  description:
+    "会ったあと、どうだったかを残しておく。「楽しかった」「また会いたい」「ちょっと違った」。その日の感覚を30秒で記録し、続けるうちに自分がどんな関係を心地よく感じるのかが見えてきます。",
   alternates: { canonical: site.url },
 };
 
+/* ── 小さな部品 ──────────────────────────────────
+   /app の system.tsx と同じ規則で書く。
+   ここはサーバー側なので import せず、同じ値で持つ。 */
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <p className="text-[11.5px] font-medium tracking-[0.12em] text-faint">{children}</p>;
+}
+
+/**
+ * 見出しの候補（§37）。
+ *
+ * あとで差し替えられるように、文面をここに1箇所だけ持つ。
+ * JSXの中に直接書くと、試すたびにレイアウトを触ることになり、
+ * 「文面を変えたのか、組みを変えたのか」が分からなくなる。
+ *
+ * いまは A を出している。B・C は書いてあるだけで、まだ出していない。
+ * 配信の仕組み（誰にどちらを出すか）は作っていないので、
+ * 試すときは、ここを1行入れ替えて、期間で比べる。
+ */
+const HERO = {
+  A: ["会ったあと、", "どうだったかを", "残しておく。"],
+  B: ["また会いたい。", "その理由まで", "覚えていますか？"],
+  C: ["会った日の感覚は、", "意外とすぐ忘れる。"],
+} as const;
+
+const HEADLINE = HERO.A;
+
+function Section({ children, id }: { children: React.ReactNode; id?: string }) {
+  return (
+    <section id={id} className="mx-auto w-full max-w-[720px] px-6 sm:px-10">
+      {children}
+    </section>
+  );
+}
+
+/** 一本の線（§24）。セクションの切れ目に、同じ太さで反復する */
+function Thread() {
+  return (
+    <div className="mx-auto w-full max-w-[720px] px-6 sm:px-10">
+      <span aria-hidden className="block h-px w-full bg-hairline" />
+    </div>
+  );
+}
+
 export default function HomePage() {
-  // 新しい記事。公開日（git の記録）で並べる。
-  // 以前は手で選んだ7本を「新しい記事」として出していたが、
-  // 記事に公開日が無かったので、実際には新しくないものが混ざっていた。
-  const latest = byNewest(clusters).slice(0, 7);
-
-  const [head, ...rest] = latest;
-  const areaLabel = (id: string) => complexes.find((c) => c.id === id)?.ja ?? "";
-
-  const popular = ["seiketsukan-tsukurikata", "aga-hiyou-kangae", "mens-makeup-hajimete", "fuke-mie-genin", "datsumou-hiyou-kangae"]
-    .map((slug) => clusters.find((c) => c.slug === slug))
-    .filter((a): a is NonNullable<typeof a> => Boolean(a));
-
-  // トップは「表紙」であると同時に、全記事の索引でもある。
-  // 検索エンジンとAI検索に、その両方を宣言しておく。
-  const collectionLd = {
+  // 記事の索引は、このページの主役ではなくなった。
+  // 55本を並べた ItemList をここに残すと、1本もリンクしていない面が
+  // 「索引です」と名乗ることになる。記事の発見は sitemap（92URL）が担う。
+  const ld = {
     "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "@id": `${site.url}/#collection`,
+    "@type": "WebPage",
+    "@id": `${site.url}/#webpage`,
     url: site.url,
-    name: `${site.name} — ${site.tagline}`,
-    description: site.description,
+    name: `${site.name} — 出会ったあとを、大切にする。`,
+    description: metadata.description,
     inLanguage: "ja",
     isPartOf: { "@id": `${site.url}/#website` },
-    about: complexes.map((c) => ({ "@type": "Thing", name: c.ja })),
-    mainEntity: {
-      "@type": "ItemList",
-      name: "記事の索引",
-      numberOfItems: clusters.length,
-      itemListElement: clusters.map((a, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        url: `${site.url}/areas/${a.areaId}/${a.slug}`,
-        name: a.title,
-      })),
-    },
   };
 
   return (
-    <div className="bg-shironeri text-sumi">
+    <div className="min-h-screen bg-ground text-charcoal">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
-      />
-      <GlassNav />
-      <ScrollReveal />
-
-      {/* ══════ 1画面目 ══════
-          検索を右上のアイコンに移したので、ここは写真だけ。
-          高さ（100svh）は HomeHero が持つ。ここで渡すのは中身だけ。
-
-          ── 縦組みをやめた ─────────────────────────────
-          縦書きの見出しは、実機で文字が重なった。原因は
-          writing-mode + text-orientation がフォント側の縦組みメトリクスに
-          依存することで、環境によって送り幅が壊れる。こちらの検証環境でも
-          「自」「分」の送り幅が 0 になるのを実測している。
-          直せる保証のない不具合を残すより、横組みにする。
-
-          ── 文字を1箇所にまとめた ────────────────────────
-          以前は右に縦組みの見出し、左下に説明と、離れた2箇所に文字があった。
-          視線が割れるうえ、下端では説明とスクロール表示が重なっていた。
-          左下に、見出し → 説明 の順で1つの塊にする。
-
-          ── 動き ────────────────────────────────────
-          写真がゆっくり寄り、見出しが左から現れる。
-          prefers-reduced-motion のときは全部止まる（globals.css）。 */}
-      {/* ══════ 1画面目 ══════
-          写真だけの1画面をやめ、写真＋入口の帯にした。
-
-          ── なぜ ────────────────────────────────
-          実測したら、ファーストビューの中に押せるものが1つもなかった。
-          訪問→診断のモデルで、最初の画面に行き先がないのは致命的。
-
-          ── なぜ「診断する」ボタンではないのか ──────────
-          ボタンは「これから何かが始まる」という約束にすぎない。
-          1問目そのものを置けば、押した時点でもう始まっている。
-          しかも6つの選択肢が並ぶこと自体が「誰向けのサイトか」を
-          1秒で答えるので、説明のコピーがいらなくなる。
-
-          ── コピーから外したもの ─────────────────
-          「実体験と、専門家への取材をもとに。」を下ろした。
-          取材はまだ0本で、同じページの下の方で自分からそう書いている。
-          言えるようになってから、また置く。
-
-          ── 動き ────────────────────────────────
-          写真がゆっくり寄り、見出しが左から現れ、選択肢が1つずつ立ち上がる。
-          prefers-reduced-motion のときは全部止まる（globals.css）。 */}
-      <HomeHero
-        photo={
-          <>
-            <div className="hr-kenburns absolute inset-0">
-              <Image
-                src="/media/hero/portrait.png"
-                alt=""
-                fill
-                priority
-                sizes="(min-width: 1024px) 52vw, 100vw"
-                className="object-cover object-[54%_14%] lg:object-[46%_26%]"
-              />
-            </div>
-            {/* 狭い画面では、写真の下端と白練の地の境目を少しだけ和らげる。
-                文字を重ねないので、覆いはここだけで足りる。 */}
-            <div
-              aria-hidden
-              className="absolute inset-x-0 bottom-0 h-[22%] lg:hidden"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(241,243,243,0.55) 0%, rgba(241,243,243,0) 100%)",
-              }}
-            />
-          </>
-        }
-        content={
-          <>
-            <h1
-              className="hr-wipe text-[clamp(26px,6.4vw,34px)] leading-[1.42] text-sumi sm:text-[38px] lg:text-[clamp(34px,3.2vw,46px)] lg:leading-[1.36]"
-              style={{ ...MINCHO, fontWeight: 700 }}
-            >
-              変わりたい。でも、
-              <br />
-              何からやればいいか
-              <br />
-              分からない。
-            </h1>
-
-            <p
-              className="hr-rise mt-5 text-[14.5px] leading-[1.95] text-keshizumi sm:mt-6 sm:text-[16px] sm:leading-[2]"
-              style={{ ["--d" as string]: "700ms" }}
-            >
-              見た目、体調、清潔感。
-              <span className="whitespace-nowrap">あなたに必要な改善の順番を、整理します。</span>
-            </p>
-
-            <div className="mt-7 sm:mt-8">
-              <HeroStart />
-            </div>
-
-            {/* 立場の但し書き。
-                コピーの上（見出しのすぐ下）ではなく、選択肢の下に置く。
-                狭い画面では1画面目の高さが写真＋文字で埋まっているので、
-                上に3行足すと入口が画面の外に出る。実測して、ここにした。 */}
-            <p
-              className="hr-rise mt-6 max-w-[30em] text-[12.5px] leading-[1.9] text-ainezu sm:mt-7 sm:text-[13px]"
-              style={{ ["--d" as string]: "1300ms" }}
-            >
-              順番は、公開されている情報と編集部の判断で組んだ暫定版です。
-              これから男性本人・女性・専門家に聞いて、書き換えていきます。
-            </p>
-
-            {/* 下に続きがあることの手がかり。
-                狭い画面は文字が下にあるので自然にスクロールするが、
-                広い画面は左右分割で、1画面目の下端が読み終わりに見える。
-                lg 以上でだけ出す。 */}
-            <span
-              aria-hidden
-              className="hr-rise hr-scrollcue mt-12 hidden lg:block"
-              style={{ ["--d" as string]: "1500ms" }}
-            />
-          </>
-        }
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
 
-      {/* ══════ なぜ変われないのか / やることは3つ ══════
-          記事一覧より先に、このサイトが何を渡すのかを説明する面を置く。
-          ヒーローの次が記事だと、読む場所にしか見えない。 */}
-      {/* ヒーローの下の余白をここでは足さない。
-          実測すると、1回スクロールした位置（873〜1144px）に271pxの空白があり、
-          画面の6割が地の色だけになっていた。
-          内訳は ①ヒーローが 100svh で、中身がそこまで無いぶんの余り
-                 ②ここの mt-[72px]
-                 ③次の節の py-[72px]
-          三重に足していたので、②を外し、③は WhyStuck 側で狭めた。 */}
-      {/* 診断の出力そのものを、説明（やることは3つだけ）の直後に挟む。
-          「何をしてくれるか」を書いたあとに、現物を出す順番。
-          課題の説明はそのあと。
-          見本の中身は本物の evaluate() の戻り値なので、
-          診断を変えればここも一緒に変わる。 */}
-      {/* 一度使った人にだけ、続きを出す。
-          初めての人には何も描かない（Resume が null を返す）。
-          いちばん上ではなくヒーローの下に置いているのは、
-          後から差し込むと読み始めた行が動くため。 */}
-      <Resume />
-
-      {/* ヒーローの直後に、場面を置く。
-          ヒーローで「変わりたい。でも分からない。」と言い当てたあと、
-          いきなり「やることは3つだけ」に行くと、答えは早いが
-          自分の話として受け取る時間がない。
-          場面を5つ挟んで、最後の1行で順番の話に折り返す。 */}
-      <Moments />
-
-      <WhyStuck between={<SampleResult />} />
-
-      {/* ══════ 新しい記事 ══════ */}
-      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[96px] sm:pt-[136px] lg:pt-[184px]">
-        <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
-          新しい記事
-        </h2>
-
-        {/* 1本目だけ大きく。以降は2列。同じ形を並べない。 */}
-        {head && (
-          <Link data-reveal href={`/areas/${head.areaId}/${head.slug}`} className="group mt-10 block border-t border-shironezu pt-10">
-            <p className="text-[13px] text-asagi">{areaLabel(head.areaId)}</p>
-            <h3
-              className="mt-2 max-w-[24em] text-[23px] sm:text-[30px] leading-[1.55] group-hover:text-asagi transition-colors"
-              style={{ ...MINCHO, fontWeight: 700 }}
-            >
-              {head.title}
-            </h3>
-            {/* 導入文ではなく、要点の1本目を出す。
-                リードは「これから説明します」で終わるので、一覧では引きが弱い。
-                要点は結論なので、読む前に持ち帰るものが1つ決まる。 */}
-            <p className="mt-4 max-w-[36em] text-[16px] leading-[2] text-keshizumi">
-              {head.summary[0] ?? head.lead}
-            </p>
-            <p className="mt-5 flex flex-wrap items-baseline gap-x-4 text-[12.5px] text-ainezu">
-              {publishedAt(head.slug) && (
-                <span className="tabular-nums">{formatDate(publishedAt(head.slug)!)}</span>
-              )}
-              <span className="tabular-nums">読了 約{readingMinutes(head)}分</span>
-            </p>
-          </Link>
-        )}
-
-        {/* 狭い画面は横スワイプ、広い画面は2列。
-            縦に6本積むと、それだけで2.3画面ぶんになる（実測）。
-            横に流せば1画面に収まり、続きがあることも端の見切れで分かる。
-            スクロールバーは消すが、指では動く。JSは使わない（scroll-snap）。
-            はみ出しを出さないため、左右の余白ぶんだけ外へ引いてから戻す。 */}
-        <ul data-reveal className="mt-[40px] -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-[72px] sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-10 sm:gap-y-[72px] sm:overflow-visible sm:px-0 sm:pb-0">
-          {rest.map((a) => (
-            <li
-              key={a.slug}
-              className="w-[74vw] shrink-0 snap-start border border-shironezu bg-hakuji sm:w-auto sm:border-0 sm:bg-transparent"
-            >
-              <Link href={`/areas/${a.areaId}/${a.slug}`} className="group block h-full p-4 sm:p-0">
-                <p className="flex items-baseline gap-3 text-[13px] text-asagi">
-                  {areaLabel(a.areaId)}
-                  {publishedAt(a.slug) && (
-                    <span className="tabular-nums text-ainezu">{formatDate(publishedAt(a.slug)!)}</span>
-                  )}
-                </p>
-                <h3
-                  className="mt-1.5 text-[17px] leading-[1.6] transition-colors group-hover:text-asagi sm:text-[18px] sm:leading-[1.65]"
-                  style={{ ...MINCHO, fontWeight: 700 }}
-                >
-                  {a.title}
-                </h3>
-                <p className="mt-2.5 line-clamp-3 text-[14px] leading-[1.9] text-keshizumi sm:text-[14.5px] sm:leading-[1.95]">
-                  {a.summary[0] ?? a.lead}
-                </p>
-                <p className="mt-2.5 text-[12px] tabular-nums text-ainezu">読了 約{readingMinutes(a)}分</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-1 text-[12px] text-ainezu sm:hidden" aria-hidden>
-          → 横にスワイプ
-        </p>
-
-        <p className="mt-14">
-          <a
-            href="#index"
-            className="inline-flex items-baseline gap-2 text-[15px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] hover:decoration-asagi transition-colors"
-          >
-            55本すべてから探す
-            <span aria-hidden>↓</span>
-          </a>
-        </p>
-      </section>
-
-      {/* ══════ よく読まれている記事 ══════ */}
-      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
-        <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
-          よく読まれている記事
-        </h2>
-        <ol data-reveal-stagger className="mt-9 max-w-[42em] border-t border-shironezu">
-          {popular.map((a, i) => (
-            <li key={a.slug} data-reveal className="border-b border-shironezu">
-              <Link
-                href={`/areas/${a.areaId}/${a.slug}`}
-                className="group flex items-baseline gap-5 py-5 hover:text-asagi transition-colors"
-              >
-                <span className="w-[1.6em] shrink-0 text-[13px] tabular-nums text-ainezu">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="flex-1">
-                  <span className="block text-[15.5px] leading-[1.7]" style={{ ...MINCHO, fontWeight: 700 }}>
-                    {a.title}
-                  </span>
-                  <span className="mt-1 block text-[12.5px] text-ainezu">{areaLabel(a.areaId)}</span>
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ol>
-        <p className="mt-5 text-[12.5px] text-ainezu">
-          ※ 閲覧数の集計は準備中です。いまは編集部が選んだ5本を出しています。
-        </p>
-      </section>
-
-      {/* ══════ 全部の順番 ══════
-          サイトの最上位に置く一本。分野の一覧より先に、
-          「どれが何番目か」を渡す面があると伝わる。 */}
-      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
-        <Link
-          data-reveal
-          href="/order"
-          className="group block border border-shironezu bg-hakuji px-5 py-7 transition-colors hover:bg-shironeri sm:px-7 sm:py-8"
-        >
-          <p className="text-[13px] text-asagi">まず1本だけ読むなら</p>
-          <h2
-            className="mt-2.5 text-[21px] leading-[1.55] transition-colors group-hover:text-asagi sm:text-[25px]"
-            style={{ ...MINCHO, fontWeight: 700 }}
-          >
-            男の改善、全部の順番
-          </h2>
-          <p className="mt-3 max-w-[38em] text-[15px] leading-[1.95] text-keshizumi">
-            {clusters.length}本すべてを、順番の上に並べ直した一本です。
-            減点をなくす → 進むものだけ早く知る → 続けるものを絞る → 内側を触る。
-            いまはやらなくていいことも書いています。
-          </p>
-          <span className="mt-4 inline-block text-[14px] font-bold text-asagi">
-            読む<span aria-hidden> →</span>
-          </span>
+      {/* ══════ ヘッダー。極小（§28）══════
+          ナビを並べない。ここに置くものが増えるほど、ヒーローが遅れて届く。 */}
+      <header className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-4 px-6 pb-2 pt-6 sm:px-10">
+        <Link href="/" className="text-[14.5px] font-bold tracking-[0.01em] text-charcoal">
+          {site.name}
         </Link>
-      </section>
+        <nav aria-label="サイト" className="flex items-center gap-5">
+          <Link
+            href="/app/knowledge"
+            className="text-[13px] text-faint transition-colors hover:text-accent"
+          >
+            知る
+          </Link>
+          <Link
+            href="/app"
+            className="inline-flex min-h-[40px] items-center rounded-[8px] border border-hairline px-3.5 text-[13px] text-bodytext transition-colors hover:border-accent hover:text-accent"
+          >
+            記録してみる
+          </Link>
+        </nav>
+      </header>
 
-      {/* ══════ 分野から ══════
-          文字ばかりの縦の流れに、大きさの違う塊をひとつ挟む。
-          6つしかないので、一覧ではなく面として置ける。
-          記事の本数は実数（数合わせで作らないので、少ない分野は少ないまま出す）。 */}
-      <section className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 pt-[72px] sm:pt-[104px] lg:pt-[136px]">
-        <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
-          分野から
-        </h2>
-        {/* モバイルでも2列。1列にすると縦長のタイルが6つ並ぶだけで、
-            結局「スクロールするだけ」の面が1つ増える。 */}
-        <ul data-reveal-stagger className="mt-9 grid grid-cols-2 gap-px border border-shironezu bg-shironezu lg:grid-cols-3">
-          {complexes.map((c) => {
-            const n = clusters.filter((a) => a.areaId === c.id).length;
-            return (
-              <li key={c.id} data-reveal className="bg-shironeri">
-                {/* タイル全体がリンクなので「この分野を見る →」は置かない。
-                    6回繰り返すと、読むものではなく飾りになる。 */}
-                <Link
-                  href={`/areas/${c.id}`}
-                  className="group flex h-full flex-col px-4 py-5 transition-colors hover:bg-hakuji sm:px-6 sm:py-7"
-                >
-                  <div className="flex items-baseline gap-2.5">
-                    <h3
-                      className="text-[17px] leading-[1.45] transition-colors group-hover:text-asagi sm:text-[21px]"
-                      style={{ ...MINCHO, fontWeight: 700 }}
-                    >
-                      {c.ja}
-                    </h3>
-                    <span className="text-[12px] tabular-nums text-ainezu">{n}</span>
-                  </div>
-                  <p className="mt-2 text-[12.5px] leading-[1.8] text-ainezu sm:text-[13.5px]">
-                    {c.system}
-                  </p>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      {/* ══════ His Recoveriesについて — 編集方針もここに置く ══════
-          別ページに分けていたが、読まれない場所に信頼の根拠を置いても意味がない。
-          誰が・どういう立場で書いているかは、記事の索引と同じ画面に出す。 */}
-      <section
-        id="about"
-        className="mt-[96px] sm:mt-[136px] lg:mt-[184px] scroll-mt-20 border-y border-shironezu bg-hakuji"
-      >
-        <div className="mx-auto max-w-[840px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
-          <h2 data-reveal className="text-[19px] sm:text-[23px]" style={{ ...MINCHO, fontWeight: 700 }}>
-            His Recoveriesについて
-          </h2>
-          <div className="mt-7 max-w-[34em] space-y-6 text-[15px] sm:text-[16px] leading-[2.05] text-keshizumi">
-            <p>
-              男性の見た目、体、関係についての改善を、順番として編集しているところです。
-              髪、肌、睡眠、疲れ、体、パートナーとのこと——誰にも相談できないまま
-              検索していることを扱っています。
-            </p>
-            <p>
-              調べても出てくるのは「やったほうがいい」ばかりで、順番も、やらなくていいことも
-              書いてありません。ここでは、
-              <span className="font-bold text-sumi">
-                やらなくていいことは、やらなくていいと書きます。
-              </span>
-              何を先にやって、何を後回しにしていいのかを決められる状態にするのが、仕事です。
-            </p>
-            <p>
-              いまの順番は、公開されている情報と編集部の判断で組んだ暫定版です。
-              取材はこれからです。男性本人、女性、専門家に聞いて、分かったことから順に
-              書き足していきます。順番が変わったら、変わった記録も残します。
+      {/* ══════ 1. ヒーロー ══════
+          Desktop は左に言葉、右に触れる記録。Mobile は縦に。
+          ファーストビューに、見出し・説明・記録・CTA 以外を置かない。 */}
+      <Section>
+        {/* 縦の並びは 見出し → 説明 → 触れる記録 → CTA（§9）。
+            スマホでCTAを先に置くと、触れるものが折り返しの下に落ちる。
+            押す前に触らせたいので、順番のほうを直す。
+            広い画面では、言葉が左、触れる記録が右。 */}
+        <div className="grid items-start gap-7 pb-16 pt-6 sm:pt-10 lg:grid-cols-[1fr_340px] lg:gap-x-14 lg:gap-y-8">
+          <div className="lg:col-start-1 lg:row-start-1">
+            <h1
+              className="font-display font-bold leading-[1.35] tracking-[-0.015em] text-charcoal [text-wrap:balance]"
+              style={{ fontSize: "clamp(34px, 9.4vw, 60px)" }}
+            >
+              {HEADLINE.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </h1>
+            <p className="mt-6 max-w-[30em] text-[15.5px] leading-[2] text-bodytext sm:text-[16.5px]">
+              「楽しかった」「また会いたい」「ちょっと違った」。
+              その日の感覚を30秒で記録。
+              続けるうちに、自分がどんな相手・関係を心地よく感じるのかが、
+              少しずつ見えてきます。
             </p>
           </div>
 
-          {/* 編集方針。当たり前のことは書かない。守れないことも書かない。
-              「聞いていないことは聞いていないと書く」を先頭に置いた。
-              取材0本の状態で信頼を主張できる根拠は、いまはこれしかない。 */}
-          <ul className="mt-9 max-w-[34em] space-y-2.5 text-[15px] leading-[1.95] text-keshizumi">
-            <li>聞いていないことは、聞いていないと書きます。</li>
-            <li>「やったほうがいい」を全部は並べません。いまはやらなくていいものは、そう書きます。</li>
-            {/* 約束だけ書いて置き場所が無いと、確かめようがない。
-                記録そのものへリンクする。 */}
-            <li>
-              順番が変わったら、変わった記録を残します（
-              <Link
-                href="/updates"
-                className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
-              >
-                更新記録
-              </Link>
-              ）。
-            </li>
-            <li>効果や結果は保証しません。医療的な判断は、医師の領域です。</li>
-            <li>掲載の順番を、報酬額で決めません。</li>
-          </ul>
-          <p className="mt-8 max-w-[34em] text-[15px] leading-[1.95] text-keshizumi">
-            順番が変わったときだけ、お知らせを送っています。多くて月2回で、
-            開かれない状態が続いたら、こちらから止めます。
+          {/* その場で触れる。スマホの絵を置かない（§7）*/}
+          <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <RecordDemo />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 lg:col-start-1 lg:row-start-2">
             <Link
-              href="/letters"
-              className="ml-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
+              href="/app/new"
+              className="inline-flex min-h-[54px] items-center justify-center rounded-[8px] bg-accent px-7 text-[15.5px] font-bold text-white transition-colors duration-200 hover:bg-accent/90"
             >
-              お便りについて
+              30秒で記録してみる
+            </Link>
+            <Link
+              href="#what"
+              className="inline-flex min-h-[44px] items-center text-[14px] text-bodytext transition-colors hover:text-accent"
+            >
+              どんなサービス？
+            </Link>
+          </div>
+        </div>
+      </Section>
+
+      <Thread />
+
+      {/* ══════ 2. 出会ったあとの問題 ══════ */}
+      <Section id="what">
+        <div className="py-20 sm:py-28">
+          <h2 className="max-w-[18em] font-display text-[24px] font-bold leading-[1.6] text-charcoal sm:text-[30px] [text-wrap:balance]">
+            出会う方法は、たくさんある。
+            <br />
+            出会ったあとを考える場所は、あまりない。
+          </h2>
+          <div className="mt-9 max-w-[26em] text-[16px] leading-[2.1] text-bodytext">
+            <p>
+              マッチした。話した。会った。楽しかった。
+              <br />
+              でも、そのあと。
+            </p>
+            <p className="mt-6">
+              また会いたいのか。何が良かったのか。少し違ったのか。
+              <br />
+              自分でも、意外と分からない。
+            </p>
+          </div>
+          <p className="mt-9 border-l border-accent pl-4 text-[16.5px] font-bold leading-[1.95] text-charcoal">
+            His Recoveries は、その感覚を残しておく場所です。
+          </p>
+        </div>
+      </Section>
+
+      <Thread />
+
+      {/* ══════ 3. 残す → 振り返る → 分かってくる ══════
+          横並びの3枚カードにしない（§12）。縦に、線でつないで、順に変わっていく。 */}
+      <Section>
+        <div className="py-20 sm:py-28">
+          <ol className="relative ml-1 flex flex-col gap-16 border-l border-hairline pl-7 sm:gap-20 sm:pl-10">
+            <li className="relative">
+              <span
+                aria-hidden
+                className="absolute left-[-32px] top-[9px] block h-[9px] w-[9px] rounded-full bg-accent sm:left-[-44px]"
+              />
+              <Eyebrow>残す</Eyebrow>
+              <h3 className="mt-3 font-display text-[21px] font-bold leading-[1.6] text-charcoal sm:text-[24px]">
+                その日の感覚を、残す。
+              </h3>
+              <p className="mt-4 max-w-[26em] text-[15.5px] leading-[2.05] text-bodytext">
+                長い日記はいりません。「楽しかった」「また会いたい」「まだ分からない」。
+                まずはそれだけでも。
+              </p>
+              <div className="mt-6 max-w-[380px] rounded-[14px] border border-hairline bg-surface p-4">
+                <p className="text-[15px] font-bold leading-[1.6] text-charcoal">
+                  今日は、どうでしたか？
+                </p>
+                <div className="mt-3.5 flex flex-col gap-2">
+                  {["楽しかった", "もう一度会いたい", "まだ分からない", "少し違った"].map(
+                    (t, i) => (
+                      <span
+                        key={t}
+                        className={`block rounded-[10px] border px-3.5 py-3 text-[14px] ${
+                          i === 1
+                            ? "border-accent bg-accent-tint text-charcoal"
+                            : "border-hairline bg-ground text-bodytext"
+                        }`}
+                      >
+                        {t}
+                      </span>
+                    ),
+                  )}
+                </div>
+              </div>
+            </li>
+
+            <li className="relative">
+              <span
+                aria-hidden
+                className="absolute left-[-32px] top-[9px] block h-[9px] w-[9px] rounded-full border border-hairline bg-ground sm:left-[-44px]"
+              />
+              <Eyebrow>振り返る</Eyebrow>
+              <h3 className="mt-3 font-display text-[21px] font-bold leading-[1.6] text-charcoal sm:text-[24px]">
+                答えではなく、問いが返ってくる。
+              </h3>
+              <p className="mt-4 max-w-[26em] text-[15.5px] leading-[2.05] text-bodytext">
+                相手の気持ちを予測するのではなく、自分の感覚を少しだけ振り返る手助けをします。
+              </p>
+              <div className="mt-6 max-w-[380px] rounded-[14px] border border-hairline bg-surface p-4">
+                <p className="text-[11.5px] font-medium tracking-[0.12em] text-faint">
+                  少し振り返ってみる
+                </p>
+                <p className="mt-2.5 text-[15.5px] font-bold leading-[1.8] text-charcoal">
+                  もう一度会いたいと思ったのは、どんなところでしたか？
+                </p>
+                <p className="mt-2 text-[12.5px] text-faint">理由のほうが先に薄れます。</p>
+              </div>
+            </li>
+
+            <li className="relative">
+              <span
+                aria-hidden
+                className="absolute left-[-32px] top-[9px] block h-[9px] w-[9px] rounded-full border border-hairline bg-ground sm:left-[-44px]"
+              />
+              <Eyebrow>分かってくる</Eyebrow>
+              <h3 className="mt-3 font-display text-[21px] font-bold leading-[1.6] text-charcoal sm:text-[24px]">
+                続けると、自分のことが少し分かる。
+              </h3>
+              <p className="mt-4 max-w-[26em] text-[15.5px] leading-[2.05] text-bodytext">
+                どんな時間が心地よかったのか。どんなとき自然体だったのか。
+                記録が増えると、自分自身の傾向が少しずつ見えてきます。
+              </p>
+              <div className="mt-6 max-w-[380px] rounded-[14px] border border-hairline bg-surface p-4">
+                <p className="text-[11.5px] font-medium tracking-[0.12em] text-faint">
+                  最近のあなた
+                </p>
+                <p className="mt-2.5 border-l border-accent pl-3.5 text-[15px] leading-[1.95] text-charcoal">
+                  自然体でいられた日に、「楽しかった」「もう一度会いたい」と書いていることが多いようです。
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </Section>
+
+      <Thread />
+
+      {/* ══════ 4. 道のり ══════ */}
+      <Section>
+        <div className="py-20 sm:py-28">
+          <h2 className="font-display text-[24px] font-bold leading-[1.6] text-charcoal sm:text-[30px]">
+            関係には、いろんな途中がある。
+          </h2>
+
+          {/* /app と同じ線。ここでも塗り分けない */}
+          <div className="mt-10">
+            <div className="relative">
+              <span
+                aria-hidden
+                className="absolute left-0 right-0 top-[4px] block h-px bg-hairline"
+              />
+              <ul className="relative flex items-start justify-between">
+                {STAGES.map((s, i) => (
+                  <li key={s.id} className="flex flex-col items-center">
+                    <span
+                      aria-hidden
+                      className={`block rounded-full ${
+                        i === 4 ? "-mt-[3px] h-[11px] w-[11px] bg-accent" : "h-[5px] w-[5px] bg-hairline"
+                      }`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-2.5 flex items-baseline justify-between">
+              <span className="text-[11px] text-faint">{STAGES[0]?.label}</span>
+              <span className="text-[11px] text-faint">{STAGES[STAGES.length - 1]?.label}</span>
+            </div>
+          </div>
+
+          <p className="mt-10 max-w-[27em] text-[16px] leading-[2.1] text-bodytext">
+            His Recoveries は、早く次へ進むためのサービスではありません。
+            その途中で、自分が何を感じているのかを見失わないための場所です。
+          </p>
+
+          {/* 知るへの導線は Secondary（§15）。記事のカードは並べない */}
+          <p className="mt-8 text-[14px] leading-[1.9] text-faint">
+            迷ったときは、他の人の経験や知識も。
+            <Link
+              href="/app/knowledge"
+              className="ml-2 inline-flex min-h-[44px] items-center text-bodytext underline decoration-hairline underline-offset-4 transition-colors hover:text-accent"
+            >
+              知る →
             </Link>
           </p>
-          <p className="mt-6 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
-            専門家への取材記事は、まだ0本です。記事の誤りは
-            <a
-              href={`mailto:${site.email}`}
-              className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
-            >
-              {site.email}
-            </a>
-            までお知らせください。
-          </p>
         </div>
-      </section>
+      </Section>
 
-      {/* ══════ 記事をさがす（全件索引）══════
-          ここまでで読むものが決まらなかった人のための面。先頭には置かない。 */}
-      <ArticleResults list={<ArticleList />} />
+      <Thread />
 
-      {/* ══════ サービス — 最後。静かに ══════ */}
-      <section className="border-t border-shironezu">
-        <div className="mx-auto max-w-[1080px] px-5 sm:px-8 lg:px-12 py-[72px] sm:py-[104px]">
-          <h2 className="text-[17px] sm:text-[19px]" style={{ ...MINCHO, fontWeight: 700 }}>
-            サービス
+      {/* ══════ 5. ブランド + 信頼 + 記録の扱い ══════
+          ブランドの一文は、ここで初めて大きく出す（§14）。 */}
+      <Section>
+        <div className="py-20 sm:py-28">
+          <h2
+            className="font-display font-bold leading-[1.45] tracking-[-0.015em] text-charcoal"
+            style={{ fontSize: "clamp(30px, 8.2vw, 54px)" }}
+          >
+            出会ったあとを、
+            <br />
+            大切にする。
           </h2>
-          <p className="mt-4 max-w-[32em] text-[14px] leading-[1.95] text-keshizumi">
-            記事はすべて無料で公開しています。読むだけで進む方もいます。
-            一人だと止まってしまう場合だけ、こちらをご覧ください。
+          <p className="mt-7 max-w-[26em] text-[16px] leading-[2.1] text-bodytext">
+            出会うためのサービスはたくさんあります。
+            His Recoveries は、その先にある時間を支えます。
           </p>
-          <div className="mt-9 max-w-[34em]">
-            <h3 className="text-[16px]" style={{ ...MINCHO, fontWeight: 700 }}>
-              第一印象改善プラン（30日）
+
+          <div className="mt-16">
+            <h3 className="font-display text-[20px] font-bold leading-[1.6] text-charcoal sm:text-[22px]">
+              相手を攻略するためのサービスではありません。
             </h3>
-            <p className="mt-2.5 text-[14px] leading-[1.95] text-keshizumi">
-              眉・メイク・服選び・髪型の提案・撮影を1日で行い、手順の動画とサイズ表をお渡しします。
-              東京都内・土日のみ。費用はご相談のうえで個別にお見積りします。
+            <p className="mt-4 max-w-[26em] text-[15.5px] leading-[2.05] text-bodytext">
+              大切にするのは、相手を思い通りに動かすことではなく、
+              自分自身がその関係をどう感じているかを知ることです。
             </p>
-            <p className="mt-4">
+            <ul className="mt-7 max-w-[24em] divide-y divide-hairline border-y border-hairline">
+              {[
+                "脈ありスコアを出さない",
+                "相手の感情を断定しない",
+                "相手を点数化しない",
+                "無理に関係を進めない",
+                "恋愛成功率を出さない",
+              ].map((t) => (
+                <li key={t} className="py-3 text-[14.5px] leading-[1.8] text-bodytext">
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-16">
+            <h3 className="font-display text-[20px] font-bold leading-[1.6] text-charcoal sm:text-[22px]">
+              自分のことだから、
+              <br />
+              自分で決める。
+            </h3>
+            <p className="mt-4 max-w-[27em] text-[15.5px] leading-[2.05] text-bodytext">
+              関係の記録は、とても個人的なものです。
+              His Recoveries は記録をサーバーに預かりません。
+              あなたの端末の中にだけ残るので、こちらから読むことも、
+              復元することもできません。相手の名前・写真・連絡先は、
+              そもそも入力する場所を作っていません。
+            </p>
+            <ul className="mt-6 max-w-[27em] text-[14.5px] leading-[2.05] text-faint">
+              <li>・1件ずつ消せます。まとめても消せます</li>
+              <li>・匿名の利用計測は、設定でオフにできます</li>
+              <li>・登録もログインも要りません</li>
+            </ul>
+            <p className="mt-6 text-[13.5px] text-faint">
               <Link
-                href="/plan"
-                className="inline-flex items-baseline gap-2 text-[14px] font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] hover:decoration-asagi transition-colors"
+                href="/privacy"
+                className="underline decoration-hairline underline-offset-4 transition-colors hover:text-accent"
               >
-                詳しく見る
-                <span aria-hidden>→</span>
+                プライバシー・免責事項
               </Link>
             </p>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* ══════ Footer ══════ */}
-      <footer className="border-t border-shironezu bg-hakuji">
-        <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12 py-14">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-5">
-            <div className="col-span-2">
-              <p className="text-[12.5px] text-ainezu">分野</p>
-              <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
+      <Thread />
+
+      {/* ══════ 6. 最後のCTA ══════ */}
+      <FinalCta />
+
+      {/* ══════ フッター ══════
+          記事・診断・順番・プランへの導線は、1本も減らしていない。
+          トップから外したのは露出であって、リンクではない。 */}
+      <footer className="border-t border-hairline">
+        <div className="mx-auto w-full max-w-[720px] px-6 py-16 sm:px-10">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+            <div className="col-span-2 sm:col-span-1">
+              <p className="text-[12px] text-faint">分野</p>
+              <ul className="mt-3.5 grid grid-cols-2 gap-x-6 gap-y-2 text-[13.5px] sm:grid-cols-1">
                 {complexes.map((c) => (
                   <li key={c.id}>
-                    <Link href={`/areas/${c.id}`} className="-my-1 block py-1 hover:text-asagi transition-colors">
+                    <Link
+                      href={`/areas/${c.id}`}
+                      className="-my-1 block py-1 text-bodytext transition-colors hover:text-accent"
+                    >
                       {c.ja}
                     </Link>
                   </li>
@@ -554,11 +452,14 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <p className="text-[12.5px] text-ainezu">状況からさがす</p>
-              <ul className="mt-4 space-y-2.5 text-[14px]">
+              <p className="text-[12px] text-faint">状況からさがす</p>
+              <ul className="mt-3.5 space-y-2 text-[13.5px]">
                 {SITUATIONS.map((x) => (
                   <li key={x.id}>
-                    <Link href={`/situations/${x.id}`} className="-my-1 block py-1 hover:text-asagi transition-colors">
+                    <Link
+                      href={`/situations/${x.id}`}
+                      className="-my-1 block py-1 text-bodytext transition-colors hover:text-accent"
+                    >
                       {x.label}
                     </Link>
                   </li>
@@ -566,38 +467,59 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <p className="text-[12.5px] text-ainezu">読みもの</p>
-              <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><a href="/#index" className="-my-1 block py-1 hover:text-asagi transition-colors">記事をさがす</a></li>
-                <li><Link href="/skip" className="-my-1 block py-1 hover:text-asagi transition-colors">やらなくていいこと</Link></li>
-                <li>
-                  <Link href="/letters" className="-my-1 block py-1 hover:text-asagi transition-colors">
-                    お便りについて
-                  </Link>
-                </li>
-                <li><a href="/feed.xml" className="-my-1 block py-1 hover:text-asagi transition-colors">RSS</a></li>
+              <p className="text-[12px] text-faint">読みもの</p>
+              <ul className="mt-3.5 space-y-2 text-[13.5px]">
+                {[
+                  ["/app/knowledge", "知る"],
+                  ["/check", "現在地を測る"],
+                  ["/order", "男の改善、全部の順番"],
+                  ["/skip", "やらなくていいこと"],
+                  ["/letters", "お便りについて"],
+                  ["/feed.xml", "RSS"],
+                ].map(([href, label]) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className="-my-1 block py-1 text-bodytext transition-colors hover:text-accent"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
-              <p className="text-[12.5px] text-ainezu">His Recoveries</p>
-              <ul className="mt-4 space-y-2.5 text-[14px]">
-                <li><a href="#about" className="-my-1 block py-1 hover:text-asagi transition-colors">編集方針</a></li>
-                <li><Link href="/updates" className="-my-1 block py-1 hover:text-asagi transition-colors">更新記録</Link></li>
-                <li><Link href="/disclosure" className="-my-1 block py-1 hover:text-asagi transition-colors">広告と収益について</Link></li>
-                <li><Link href="/research" className="-my-1 block py-1 hover:text-asagi transition-colors">調査</Link></li>
-                <li><Link href="/interview" className="-my-1 block py-1 hover:text-asagi transition-colors">取材にご協力いただけませんか</Link></li>
-                <li><Link href="/partner" className="-my-1 block py-1 hover:text-asagi transition-colors">取材・掲載について</Link></li>
-                <li><Link href="/plan" className="-my-1 block py-1 hover:text-asagi transition-colors">第一印象改善プラン</Link></li>
-                <li><Link href="/privacy" className="-my-1 block py-1 hover:text-asagi transition-colors">プライバシー・免責事項</Link></li>
+              <p className="text-[12px] text-faint">His Recoveries</p>
+              <ul className="mt-3.5 space-y-2 text-[13.5px]">
+                {[
+                  ["/about", "編集方針"],
+                  ["/updates", "更新記録"],
+                  ["/disclosure", "広告と収益について"],
+                  ["/research", "調査"],
+                  ["/interview", "取材にご協力いただけませんか"],
+                  ["/partner", "取材・掲載について"],
+                  ["/plan", "第一印象改善プラン"],
+                  ["/privacy", "プライバシー・免責事項"],
+                ].map(([href, label]) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className="-my-1 block py-1 text-bodytext transition-colors hover:text-accent"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
-          <div className="mt-14 flex flex-col gap-3 border-t border-shironezu pt-7 sm:flex-row sm:items-baseline sm:justify-between">
-            <Link href="/" className="logo-type text-[19px]">
-              His Recoveries
+
+          <div className="mt-14 flex flex-col gap-3 border-t border-hairline pt-7 sm:flex-row sm:items-baseline sm:justify-between">
+            <Link href="/" className="text-[16px] font-bold text-charcoal">
+              {site.name}
             </Link>
-            <p className="text-[12.5px] text-ainezu">
-              © 2026 His Recoveries — 男性の美容・健康・恋愛を、編集部が調べて書いています。
+            <p className="text-[12px] text-faint">
+              © 2026 His Recoveries — 出会ったあとを、大切にする。
             </p>
           </div>
         </div>

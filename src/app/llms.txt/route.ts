@@ -115,7 +115,7 @@ ${areaBlocks}
 
 - 新着記事（RSS）: ${site.url}/feed.xml
 - サイトマップ: ${site.url}/sitemap.xml
-- 編集方針: ${site.url}/#about
+- 編集方針: ${site.url}/about
 - お便りについて: ${site.url}/letters
   無料。多くて月2回。セール・流行・既読の催促は送らない。3回続けて開かれなければ配信側から停止する。
 - 更新記録: ${site.url}/updates

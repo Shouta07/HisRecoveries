@@ -69,6 +69,13 @@ export const CONVERSION_EVENTS = [
   // ── v2（Relationship Companion / /app）──
   // §22 のKPIに直接対応させる。PVは追わない。
   // 記録したか、続いているか、どの段階で止まるか。
+  // ── トップページ → /app の導線 ──
+  // 追いたいのは「着地した人のうち、何人が最初の1件を残したか」。
+  // 滞在時間もPVも追わない。
+  "hero_option_selected", // ヒーローで選択肢を押した（props: feel）
+  "hero_continue_click", // ヒーローから「続きを記録する」（props: feel）
+  "final_cta_click", // ページ末尾のCTA（props: —）
+
   "app_onboard_done", // 現在地と年代を設定し終えた（props: stage, age）
   // 記録の入口と出口を別々に取る。
   // 始めた数と終えた数が分かれていないと、どこで止まるかが出ない。

@@ -137,7 +137,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
         <nav aria-label="パンくず" className="text-[12.5px] text-ainezu">
           <Link href="/" className="transition-colors hover:text-asagi">ホーム</Link>
           <span className="mx-1.5" aria-hidden>/</span>
-          <Link href="/#index" className="transition-colors hover:text-asagi">記事をさがす</Link>
+          <Link href="/articles" className="transition-colors hover:text-asagi">記事をさがす</Link>
         </nav>
 
         <header className="mt-7">
@@ -355,7 +355,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
 
           <p className="mt-10 text-[14px]">
             <Link
-              href="/#index"
+              href="/articles"
               className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               ほかの分野からさがす<span aria-hidden> →</span>

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { addEntry, load, FEEL_LABEL, NATURAL_LABEL, type Feel, type Natural } from "@/lib/relationship";
-import { Choice, Action, Ask, Note } from "@/components/app/system";
+import { Choice, Action, Ask, Note, Loading } from "@/components/app/system";
 import { track } from "@/lib/analytics";
 
 // 記録（§11・§12）。ここがこのプロダクトで最も磨く画面。
@@ -27,10 +27,19 @@ const FEELS: Feel[] = ["fun", "again", "unsure", "off"];
 const NATURALS: Natural[] = ["yes", "some", "little"];
 const STEPS = 4;
 
-export default function NewRecord() {
+function isFeel(x: unknown): x is Feel {
+  return typeof x === "string" && x in FEEL_LABEL;
+}
+
+function Flow() {
   const router = useRouter();
-  const [i, setI] = useState(0);
-  const [feel, setFeel] = useState<Feel | null>(null);
+  // トップページで1問目を押した人は、その答えを持ってここへ来る。
+  // 同じ問いをもう一度出すと、さっき押したことが無かったことになる。
+  const seeded = useSearchParams().get("feel");
+  const pre = isFeel(seeded) ? seeded : null;
+
+  const [i, setI] = useState(pre ? 1 : 0);
+  const [feel, setFeel] = useState<Feel | null>(pre);
   const [natural, setNatural] = useState<Natural | null>(null);
   const [noticed, setNoticed] = useState("");
   const [note, setNote] = useState("");
@@ -175,5 +184,13 @@ export default function NewRecord() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function NewRecord() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Flow />
+    </Suspense>
   );
 }

@@ -434,7 +434,7 @@ export default function PlanPage() {
 
         <p className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-shironezu pt-8 text-[14px]">
           <Link
-            href="/#index"
+            href="/articles"
             className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
           >
             記事をさがす<span aria-hidden> →</span>

@@ -139,7 +139,7 @@ export default function UpdatesPage() {
         <p className="mt-14 text-[14.5px] leading-[1.95] text-keshizumi">
           何をどう決めているかは
           <Link
-            href="/#about"
+            href="/about"
             className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
           >
             編集方針

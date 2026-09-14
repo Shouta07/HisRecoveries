@@ -14,8 +14,8 @@ import { track } from "@/lib/analytics";
 // lg 以上では最初から明るい地として描く。
 // 狭い画面はいまも写真が上に来るので、透明のままでよい。
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/#index", label: "記事" },
-  { href: "/#about", label: "編集方針", desktopOnly: true },
+  { href: "/articles", label: "記事" },
+  { href: "/about", label: "編集方針", desktopOnly: true },
 ];
 
 /** Home navbar — inline items (no hamburger). Transparent over the hero,

@@ -164,7 +164,7 @@ export default function SituationPage({ params }: { params: { id: string } }) {
           </ul>
           <p className="mt-8 text-[14px]">
             <Link
-              href="/#index"
+              href="/articles"
               className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               年代・分野からもさがす<span aria-hidden> →</span>

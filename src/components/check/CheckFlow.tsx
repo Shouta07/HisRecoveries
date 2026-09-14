@@ -554,7 +554,7 @@ function Result({
           もう一度やる
         </button>
         <Link
-          href="/#index"
+          href="/articles"
           className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
         >
           記事をさがす<span aria-hidden> →</span>

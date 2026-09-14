@@ -139,7 +139,7 @@ export default function RootLayout({
     description: site.description,
     slogan: site.promise,
     foundingDate: "2026",
-    publishingPrinciples: `${site.url}/#about`,
+    publishingPrinciples: `${site.url}/about`,
     knowsAbout: [
       "男性の美容",
       "男性の健康",

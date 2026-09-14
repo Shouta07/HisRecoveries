@@ -510,7 +510,7 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
               {c.ja}の記事をすべて見る<span aria-hidden> →</span>
             </Link>
             <Link
-              href="/#index"
+              href="/articles"
               className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[6px] transition-colors hover:decoration-asagi"
             >
               ほかの分野からさがす<span aria-hidden> →</span>
