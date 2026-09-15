@@ -5,7 +5,7 @@
     "fan-record": 4,
     "b2b-adcost": 4,
     "fan-midnight": 3,
-    "biz-e-honest": 3,
+    "biz-e-honest": 4,
     "b2b-quality": 3,
     "gift-fathersday": 3,
     "areas-skin": 3,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 88
+    "none": 89
   },
-  "total_posts": 88,
+  "total_posts": 89,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-15T03:57:12.572273"
+  "last_updated": "2026-09-15T15:44:18.198810"
 }
