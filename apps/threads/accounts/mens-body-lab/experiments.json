@@ -21,7 +21,7 @@
     "fan-question": 4,
     "areas-hair": 3,
     "gift-anniversary": 3,
-    "areas-sweat": 3,
+    "areas-sweat": 4,
     "gift-wedding": 4,
     "areas-self": 3,
     "urgent-interview": 4,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 97
+    "none": 98
   },
-  "total_posts": 97,
+  "total_posts": 98,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-19T14:51:48.100269"
+  "last_updated": "2026-09-20T03:59:29.204097"
 }
