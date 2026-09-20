@@ -12,7 +12,7 @@
     "biz-b-chain": 4,
     "biz-a-neutral": 4,
     "areas-body-hair": 3,
-    "gift-career": 3,
+    "gift-career": 4,
     "mother-teen-skin": 4,
     "urgent-wedding": 4,
     "b2b-neutral-referral": 4,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 98
+    "none": 99
   },
-  "total_posts": 98,
+  "total_posts": 99,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-20T03:59:29.204097"
+  "last_updated": "2026-09-20T14:56:40.034093"
 }
