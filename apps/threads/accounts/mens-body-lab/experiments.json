@@ -11,7 +11,7 @@
     "areas-skin": 3,
     "biz-b-chain": 4,
     "biz-a-neutral": 4,
-    "areas-body-hair": 3,
+    "areas-body-hair": 4,
     "gift-career": 4,
     "mother-teen-skin": 4,
     "urgent-wedding": 4,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 99
+    "none": 100
   },
-  "total_posts": 99,
+  "total_posts": 100,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-20T14:56:40.034093"
+  "last_updated": "2026-09-21T03:57:23.334196"
 }
