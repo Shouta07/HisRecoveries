@@ -7,7 +7,7 @@
     "fan-midnight": 4,
     "biz-e-honest": 4,
     "b2b-quality": 4,
-    "gift-fathersday": 3,
+    "gift-fathersday": 4,
     "areas-skin": 3,
     "biz-b-chain": 4,
     "biz-a-neutral": 4,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 102
+    "none": 103
   },
-  "total_posts": 102,
+  "total_posts": 103,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-22T03:54:31.926382"
+  "last_updated": "2026-09-22T15:46:48.557228"
 }
