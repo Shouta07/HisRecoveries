@@ -19,7 +19,7 @@
     "gift-birthday": 3,
     "mother-confidence": 4,
     "fan-question": 4,
-    "areas-hair": 3,
+    "areas-hair": 4,
     "gift-anniversary": 4,
     "areas-sweat": 4,
     "gift-wedding": 4,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 101
+    "none": 102
   },
-  "total_posts": 101,
+  "total_posts": 102,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-21T17:13:51.269223"
+  "last_updated": "2026-09-22T03:54:31.926382"
 }
