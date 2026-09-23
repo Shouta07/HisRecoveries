@@ -25,14 +25,14 @@
     "gift-wedding": 4,
     "areas-self": 3,
     "urgent-interview": 4,
-    "areas-face": 3,
+    "areas-face": 4,
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 103
+    "none": 104
   },
-  "total_posts": 103,
+  "total_posts": 104,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-22T15:46:48.557228"
+  "last_updated": "2026-09-23T03:52:11.123659"
 }
