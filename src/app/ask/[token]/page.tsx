@@ -69,7 +69,7 @@ const AGE_LABEL: Record<string, string> = {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-bone text-void">
+    <div data-brand className="min-h-screen bg-bone text-void">
       <header className="border-b border-rule">
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
           <Link href="/" className="text-[14px] font-black uppercase tracking-[0.1em]">

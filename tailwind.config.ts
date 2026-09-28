@@ -102,6 +102,11 @@ const config: Config = {
         ],
         logo: ["Cormorant Garamond", "Crimson Pro", "serif"],
       },
+      // 360px 前後で折り返しを変えたい場所がある。
+      // Tailwind の既定は sm=640px からで、そこまで何も切り替わらない。
+      screens: {
+        xs: "380px",
+      },
       maxWidth: {
         reading: "680px",
       },

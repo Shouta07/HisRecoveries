@@ -189,6 +189,43 @@ export function attrLabel(id: string): string {
   return ATTRS.find((a) => a.id === id)?.label ?? id;
 }
 
+/* ── 回答する側 ────────────────────────────────
+   登録画面（/join）で聞くこと。相談側とは分けて持つ。 */
+
+/**
+ * 回答者として登録できる年代。
+ *
+ * 18-19 を入れていないのは、相談者が指定できる年代（PANEL_AGES）が
+ * 20-24 からだから。登録できても一度も依頼が届かないことになる。
+ * 選べるのに出番が来ない、を作らない。
+ */
+export const RESPONDER_AGES = [
+  { id: "20-24", label: "20〜24歳" },
+  { id: "25-29", label: "25〜29歳" },
+  { id: "30-34", label: "30〜34歳" },
+  { id: "35-39", label: "35〜39歳" },
+  { id: "40-49", label: "40代" },
+  { id: "50+", label: "50歳以上" },
+] as const;
+
+export type ResponderAge = (typeof RESPONDER_AGES)[number]["id"];
+
+export function isResponderAge(x: unknown): x is ResponderAge {
+  return typeof x === "string" && RESPONDER_AGES.some((a) => a.id === x);
+}
+
+/**
+ * 登録時に聞く属性。
+ *
+ * 相談者がまだ指定できないもの（ATTRS の open: false）も聞く。
+ * 集まっていないから指定させられないだけなので、
+ * 集めるほうを先にやらないと、いつまでも増えない。
+ */
+export function cleanResponderAttrs(x: unknown): AttrId[] {
+  if (!Array.isArray(x)) return [];
+  return [...new Set(x.filter((v): v is AttrId => isAttrId(v)))];
+}
+
 /** 何人に聞くか。MVP は 3 と 5 だけ出す（招待した回答者がまだ少ないため） */
 export const PANEL_SIZES = [3, 5, 10] as const;
 export type PanelSize = (typeof PANEL_SIZES)[number];
@@ -409,6 +446,18 @@ if (Object.values(PRICE_YEN).some((v) => v <= 0)) {
 for (const id of Object.keys(SECOND_ASK)) {
   if (!BY_CATEGORY.has(id as CategoryId)) {
     throw new Error(`もう1つの問いが、存在しないカテゴリ「${id}」に付いています`);
+  }
+}
+
+// 回答者として登録できる年代が、相談者が指定できる年代と噛み合っているか。
+// ここがずれると、登録しても一度も依頼が届かない人が出る。
+{
+  const panel = new Set(PANEL_AGES.filter((p) => p.id !== "any").map((p) => p.id));
+  const reachable = RESPONDER_AGES.filter(
+    (a) => panel.has(a.id as never) || (a.id.startsWith("3") && panel.has("30s" as never)),
+  );
+  if (reachable.length === 0) {
+    throw new Error("登録できる年代のうち、相談者が指定できるものが1つもありません");
   }
 }
 

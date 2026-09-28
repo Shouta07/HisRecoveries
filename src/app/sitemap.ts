@@ -94,6 +94,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // トップが /app の入口になったときに独立させた。
     "/articles",
     "/about",
+    // 回答する側の入口。検索から直接来てほしい面なので載せる。
+    "/join",
     "/check",
     "/interview",
     "/research",

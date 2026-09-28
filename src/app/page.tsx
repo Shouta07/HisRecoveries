@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { complexes } from "@/lib/complexes";
-import { SITUATIONS } from "@/lib/situations";
 import { site } from "@/lib/site";
 import { CATEGORIES } from "@/lib/ask/model";
 import {
@@ -89,7 +87,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-bone text-void">
+    <div data-brand className="min-h-screen bg-bone text-void">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
@@ -109,8 +107,14 @@ export default function HomePage() {
               Read
             </Link>
             <Link
+              href="/join"
+              className="hidden text-[11px] font-bold uppercase tracking-[0.18em] text-ash transition-colors hover:text-void sm:inline"
+            >
+              回答する
+            </Link>
+            <Link
               href="/ask"
-              className="inline-flex min-h-[44px] items-center bg-void px-5 text-[12px] font-bold uppercase tracking-[0.16em] text-bone transition-colors hover:bg-ash-soft hover:text-void"
+              className="inline-flex min-h-[44px] items-center bg-void px-5 text-[12px] font-bold uppercase tracking-[0.16em] text-bone transition-colors hover:bg-lime hover:text-void"
             >
               人に聞く
             </Link>
@@ -569,29 +573,42 @@ export default function HomePage() {
         </Wrap>
       </section>
 
-      {/* ── フッター ── */}
+      {/* ── フッター ──
+          以前はここに33本のリンクが並んでいた（分野6・状況9・読みもの7・運営8＋）。
+          トップの最後で読む人に、33の行き先は多すぎる。
+          いちばん押してほしいもの（聞く／答える）が、同じ大きさで埋もれていた。
+
+          8本に絞った。外したものは消えていない。
+          記事20ルートには従来どおりのフッター（components/Footer.tsx）が出るので、
+          分野・状況・調査・プランへの内部リンクはサイト内に残っている。
+          ここから外したのは露出であって、リンクそのものではない。 */}
       <footer className="bg-void text-bone">
         <Wrap className="py-16">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+          {/* 押してほしい2つを、先に大きく置く */}
+          <div className="grid gap-px border border-rule-dark bg-rule-dark sm:grid-cols-2">
             {[
-              {
-                h: "分野",
-                items: complexes.map((c) => [`/areas/${c.id}`, c.ja] as const),
-              },
-              {
-                h: "状況からさがす",
-                items: SITUATIONS.map((x) => [`/situations/${x.id}`, x.label] as const),
-              },
+              { href: "/ask", en: "Ask", ja: "人に聞く", d: "相手に近い人たちのリアルな反応を。" },
+              { href: "/join", en: "Answer", ja: "回答する", d: "あなたの感覚が、誰かの判断材料になる。" },
+            ].map((x) => (
+              <Link key={x.href} href={x.href} className="group block bg-void p-7 sm:p-9">
+                <span className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-ash-soft">
+                  {x.en}
+                </span>
+                <span className="mt-4 block text-[26px] font-black leading-[1.2] transition-colors group-hover:text-lime sm:text-[32px]">
+                  {x.ja}
+                </span>
+                <span className="mt-3 block text-[13.5px] leading-[1.85] text-ash-soft">{x.d}</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-14 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
+            {[
               {
                 h: "読みもの",
                 items: [
                   ["/articles", "記事をさがす"],
                   ["/app", "出会ったあとの記録"],
-                  ["/check", "現在地を測る"],
-                  ["/order", "男の改善、全部の順番"],
-                  ["/skip", "やらなくていいこと"],
-                  ["/letters", "お便りについて"],
-                  ["/feed.xml", "RSS"],
                 ] as const,
               },
               {
@@ -599,24 +616,21 @@ export default function HomePage() {
                 items: [
                   ["/about", "編集方針"],
                   ["/updates", "更新記録"],
+                ] as const,
+              },
+              {
+                h: "決まりごと",
+                items: [
                   ["/disclosure", "広告と収益について"],
-                  ["/research", "調査"],
-                  ["/interview", "取材にご協力いただけませんか"],
-                  ["/partner", "取材・掲載について"],
-                  ["/plan", "第一印象改善プラン"],
                   ["/privacy", "プライバシー・免責事項"],
                 ] as const,
               },
             ].map((col) => (
-              <div key={col.h} className={col.h === "分野" ? "col-span-2 sm:col-span-1" : ""}>
+              <div key={col.h}>
                 <p className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-ash-soft">
                   {col.h}
                 </p>
-                <ul
-                  className={`mt-4 gap-x-6 gap-y-2 text-[13.5px] ${
-                    col.h === "分野" ? "grid grid-cols-2 sm:grid-cols-1" : "flex flex-col"
-                  }`}
-                >
+                <ul className="mt-4 flex flex-col gap-2 text-[13.5px]">
                   {col.items.map(([href, label]) => (
                     <li key={href}>
                       <Link
@@ -632,7 +646,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="mt-14 border-t border-rule-dark pt-7">
+          <div className="mt-14">
             <Hairline tone="dark" />
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
               <Link href="/" className="text-[17px] font-black uppercase tracking-[0.08em]">
