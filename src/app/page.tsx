@@ -2,65 +2,66 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { CATEGORIES, PRICE_YEN, BILLING_ENABLED } from "@/lib/ask/model";
-import {
-  Eyebrow, AttributeChip, ReactionCard, ResultDistribution, Hairline,
-  type Reaction,
-} from "@/components/brand/kit";
+import { AttributeChip, ReactionCard, ResultDistribution, type Reaction } from "@/components/brand/kit";
 import { HumanCard, type Human } from "@/components/brand/market";
 import LiveMarket from "@/components/brand/LiveMarket";
 import Reveal from "@/components/brand/Reveal";
+import Tashikame from "@/components/brand/Tashikame";
+import Says from "@/components/brand/Says";
+import { INVITE } from "@/lib/tashikame";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ。
 //
-// ── 6ブロックに絞った ────────────────────────────
-//   1 Hero              2 Human Reaction Demo
-//   3 C2Cの仕組み        4 Who You Ask Matters
-//   5 Ask / Respond      6 Final CTA
+// ── B2Bに見えていたのを直す ──────────────────────
+// 直前の版は、角が全部 0px、ラベルが英字の大文字、
+// 見出しが 80〜132px、黒い面が5つ、影なしの細い罫線。
+// これは広告代理店やSaaSの見た目で、消費者向けのC2Cには硬すぎた。
 //
-// 9ブロックあったものを削った。落としたのは、
-// 運営の事情・回答者が少ない理由・画像を受け付けていない技術的な理由・
-// 免責の細かいところ・AI思想の長文。
+// 変えたこと
+//   角丸      0px → カード16px / ボタンはピル
+//   ラベル    英字の大文字 → 日本語
+//   見出し    最大132px → 最大52px
+//   黒い面    5つ → 0（アクセントはライムのカード1枚）
+//   影        無し → やわらかい影（濃くしない。濃いと管理画面に戻る）
+//   タシカメ  1箇所 → 各所。声で案内させる
 //
-// 消してはいない。/safety に移した。
-// C2C で相手が見えない以上、「何をしないか」は探せば必ず出てくる場所に要る。
-// ただし、製品が何なのかを理解する前に言い訳を読ませない。
-//
-// ── 無い実績を作らない ────────────────────────────
-// いま回答者は0人、相談も0件、課金もしていない。
-// 「128 ANSWERS」「3 / 5 responses」をそれらしく置くと、
-// 偽るのはデザインではなく市場の厚みになる。
-//   ・流れている件数は LiveMarket が実データから出す（0件なら0件）
-//   ・見本には必ず「見本」と書く
-//   ・金額には「無料」を必ず添える
+// ── 変えていないこと ──────────────────────────────
+// 実績を作らない。流れている件数は実データ（0件なら0件）。
+// 見本には「見本」と書く。金額には「いまは無料」を添える。
 // ══════════════════════════════════════════════════════════════
 
-// 流れている相談は実データから出す。静的に焼くと、いつまでも空のままになる。
 export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "His Recoveries — そのLINE、送る前に5人に聞く。",
   description:
-    "相手に近い実在の人から、リアルな反応をもらう。匿名・登録不要・ベータ期間中無料。人の視点が流通するC2Cプラットフォームです。",
+    "相手に近い実在の人から、リアルな反応をもらう。匿名・登録不要・ベータ期間中無料。人の本音を、タシカメる。",
   alternates: { canonical: site.url },
 };
 
-/* 見本。実在の回答者ではないので、置く場所には必ずその旨を書く */
 const SAMPLE_HUMANS: Human[] = [
-  { age: "25", gender: "Woman", area: "東京", attrs: ["app_user"], specialties: ["message", "date"], answered: 0 },
-  { age: "27", gender: "Woman", area: "関西", attrs: ["single"], specialties: ["photo"], answered: 0 },
-  { age: "26", gender: "Man", area: "東京", attrs: ["app_user"], specialties: ["signal"], answered: 0 },
+  { age: "25", gender: "女性", area: "東京", attrs: ["app_user"], specialties: ["message", "date"], answered: 0 },
+  { age: "27", gender: "女性", area: "関西", attrs: ["single"], specialties: ["photo"], answered: 0 },
+  { age: "26", gender: "男性", area: "東京", attrs: ["app_user"], specialties: ["signal"], answered: 0 },
 ];
 
 const DEMO: Reaction[] = [
-  { age: 25, attrs: ["Woman", "App User"], verdict: "Send it", positive: true, comment: "私は普通に嬉しい。" },
-  { age: 27, attrs: ["Woman", "Single"], verdict: "Hmm", comment: "最後の一文だけ少し重いかも。" },
-  { age: 29, attrs: ["Woman", "App User"], verdict: "Send it", positive: true, comment: "好意がある相手なら全然あり。" },
+  { age: 25, attrs: ["女性", "アプリ経験あり"], verdict: "送っていい", positive: true, comment: "私は普通に嬉しい。" },
+  { age: 27, attrs: ["女性", "恋人なし"], verdict: "うーん", comment: "最後の一文だけ少し重いかも。" },
+  { age: 29, attrs: ["女性", "アプリ経験あり"], verdict: "送っていい", positive: true, comment: "好意がある相手なら全然あり。" },
 ];
 
 function Wrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`mx-auto w-full max-w-[1100px] px-5 sm:px-8 ${className}`}>{children}</div>;
+}
+
+function Head({ children, note }: { children: React.ReactNode; note?: string }) {
   return (
-    <div className={`mx-auto w-full max-w-[1180px] px-6 sm:px-10 ${className}`}>{children}</div>
+    <div>
+      <h2 className="text-big font-black text-void">{children}</h2>
+      {note && <p className="mt-3 max-w-[30em] text-[15px] leading-[1.9] text-ash">{note}</p>}
+    </div>
   );
 }
 
@@ -81,172 +82,205 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
 
       {/* ── ヘッダー ── */}
-      <header className="border-b border-rule">
-        <Wrap className="flex items-center justify-between gap-4 py-4">
-          <Link href="/" className="text-[15px] font-black uppercase tracking-[0.1em]">
-            His Recoveries
+      <header className="sticky top-0 z-40 border-b border-rule bg-bone/95 backdrop-blur">
+        <Wrap className="flex items-center justify-between gap-4 py-3">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Tashikame size={30} />
+            <span className="whitespace-nowrap text-[15.5px] font-black tracking-[0.01em]">
+              His Recoveries
+            </span>
           </Link>
-          <nav aria-label="サイト" className="flex items-center gap-3 sm:gap-5">
+          <nav aria-label="サイト" className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/join"
-              className="text-[11px] font-bold uppercase tracking-[0.18em] text-ash transition-colors hover:text-void"
+              className="hidden whitespace-nowrap text-[13.5px] font-bold text-ash transition-colors hover:text-void sm:inline"
             >
-              回答者について
+              答える人になる
             </Link>
             <Link
               href="/ask"
-              className="inline-flex min-h-[44px] items-center bg-void px-5 text-[12px] font-bold uppercase tracking-[0.16em] text-bone transition-colors hover:bg-lime hover:text-void"
+              className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-lime px-5 text-[13.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
             >
-              人に聞く
+              聞いてみる
             </Link>
           </nav>
         </Wrap>
       </header>
 
-      {/* ══ 1. HERO ══
-          5秒で何のサービスか分かること。
-          相談 → 届く → 返る を、言葉ではなくUIで置く。 */}
-      <section className="border-b border-rule">
-        <Wrap className="grid gap-12 pb-16 pt-12 lg:grid-cols-[1.08fr_0.92fr] lg:pb-24 lg:pt-20">
+      {/* ══ 1. HERO ══ */}
+      <section>
+        <Wrap className="grid gap-10 pb-12 pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pb-20 lg:pt-16">
           <div>
-            <Eyebrow>You ask. Real people respond. You decide.</Eyebrow>
-            <h1
-              className="mt-6 font-black leading-[0.98] tracking-[-0.04em] text-void"
-              style={{ fontSize: "clamp(38px, 5.4vw, 80px)" }}
-            >
+            <p className="flex items-center gap-2">
+              <Tashikame size={26} />
+              <span className="text-[13.5px] font-bold text-ash">{INVITE.ask.text}</span>
+            </p>
+
+            <h1 className="mt-5 text-mega font-black text-void">
               そのLINE、
               <br />
               送る前に5人に聞く。
             </h1>
-            <p className="mt-8 max-w-[24em] text-[17px] font-medium leading-[1.9] text-ash sm:text-[19px]">
-              相手に近い実在の人から、リアルな反応をもらう。
+
+            <p className="mt-6 max-w-[24em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
+              相手に近い実在の人から、リアルな反応をもらえます。
+              AIの一般論ではなく、人の本音です。
             </p>
 
-            <div className="mt-10">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/ask"
-                className="inline-flex min-h-[64px] w-full items-center justify-center bg-void px-10 text-[15px] font-bold uppercase tracking-[0.12em] text-bone transition-colors hover:bg-lime hover:text-void sm:w-auto"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-lime px-9 text-[16px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
               >
-                人に聞いてみる
+                聞いてみる
+              </Link>
+              <Link
+                href="/join"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-rule bg-card px-9 text-[16px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
+              >
+                答える人になる
               </Link>
             </div>
 
-            <ul className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-bold uppercase tracking-[0.12em] text-ash">
+            <ul className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12.5px] text-ash">
               <li>匿名</li>
               <li aria-hidden>·</li>
               <li>登録不要</li>
               <li aria-hidden>·</li>
-              <li>実在する回答者</li>
+              <li>実在の人が回答</li>
               {!BILLING_ENABLED && (
                 <>
                   <li aria-hidden>·</li>
-                  <li>ベータ期間中無料</li>
+                  <li className="font-bold text-void">ベータ期間中は無料</li>
                 </>
               )}
             </ul>
-
-            <ul className="mt-9 flex flex-wrap gap-2">
-              {CATEGORIES.filter((c) => c.id !== "other")
-                .slice(0, 6)
-                .map((c) => (
-                  <li key={c.id}>
-                    <Link href={`/ask?c=${c.id}`}>
-                      <AttributeChip>{c.label}</AttributeChip>
-                    </Link>
-                  </li>
-                ))}
-            </ul>
           </div>
 
-          {/* 相談 → 届く → 返る。そのまま縦に置く */}
+          {/* 聞く → 届く → 返る。1枚のカードに */}
           <Reveal>
-            <div className="border border-void">
+            <div className="overflow-hidden rounded-card border border-rule bg-card shadow-card">
               <div className="border-b border-rule p-5">
-                <Eyebrow>01 — 聞く</Eyebrow>
-                <p className="mt-3 text-[16px] font-bold leading-[1.6]">
+                <p className="text-[12.5px] font-bold text-ash">1. 聞く</p>
+                <p className="mt-2.5 text-[16px] font-bold leading-[1.6]">
                   「このLINE、今日送っていい？」
                 </p>
-                <ul className="mt-3.5 flex flex-wrap gap-1.5">
-                  {["25–29", "女性", "アプリ経験あり", "5人"].map((t) => (
-                    <li
-                      key={t}
-                      className="border border-rule px-2 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-ash"
-                    >
+                <ul className="mt-3 flex flex-wrap gap-1.5">
+                  {["25〜29歳", "女性", "アプリ経験あり", "5人"].map((t) => (
+                    <li key={t} className="rounded-pill bg-bone-soft px-2.5 py-1 text-[11.5px] text-ash">
                       {t}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="border-b border-rule bg-void p-5 text-bone">
-                <Eyebrow tone="lime">02 — 届く</Eyebrow>
-                <p className="mt-3 text-[14px] leading-[1.8] text-ash-soft">
-                  条件に合う回答者にだけ配られます。
-                  回答者どうしも、出すまで他の回答は見えません。
-                </p>
+              <div className="flex items-center gap-3 border-b border-rule bg-bone-soft p-5">
+                <Tashikame size={40} mood="going" />
+                <div>
+                  <p className="text-[12.5px] font-bold text-ash">2. 届く</p>
+                  <p className="mt-1 text-[14px] leading-[1.75] text-ash">
+                    条件に合う人にだけ配られます。
+                  </p>
+                </div>
               </div>
 
               <div className="p-5">
-                <Eyebrow>03 — 返る</Eyebrow>
+                <p className="text-[12.5px] font-bold text-ash">3. 返る</p>
                 <div className="mt-4">
                   <ResultDistribution
                     total={5}
                     slices={[
-                      { label: "Send it", n: 4, positive: true },
-                      { label: "Not yet", n: 1 },
+                      { label: "送っていい", n: 4, positive: true },
+                      { label: "ちょっと待った", n: 1 },
                     ]}
                   />
                 </div>
               </div>
             </div>
-            <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-ash">
-              ※ 画面の見本
-            </p>
+            <p className="mt-2.5 text-[11.5px] text-ash">※ 画面の見本</p>
           </Reveal>
         </Wrap>
       </section>
 
-      {/* ══ 2. HUMAN REACTION DEMO ══ */}
-      <section className="border-b border-rule">
-        <Wrap className="py-20 sm:py-28">
-          <Reveal>
-            <Eyebrow>Human reaction report</Eyebrow>
-            <h2 className="mt-6 max-w-[16em] text-huge font-black text-void">
-              多数決と、
-              <br />
-              一人ひとりの理由。
-            </h2>
-          </Reveal>
+      {/* ══ 2. カテゴリから ══ */}
+      <section className="border-t border-rule bg-bone-soft">
+        <Wrap className="py-12 sm:py-16">
+          <Head>何について聞く？</Head>
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {CATEGORIES.filter((c) => c.id !== "other").map((c) => (
+              <li key={c.id}>
+                <Link
+                  href={`/ask?c=${c.id}`}
+                  className="flex h-full flex-col rounded-card border border-rule bg-card p-4 shadow-card transition-shadow hover:shadow-card-hover"
+                >
+                  <span className="text-[15px] font-bold leading-[1.5]">{c.label}</span>
+                  <span className="mt-2 text-[12.5px] leading-[1.75] text-ash">{c.hint}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Wrap>
+      </section>
 
-          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* ══ 3. タシカメ ══ */}
+      <section className="border-t border-rule">
+        <Wrap className="py-14 sm:py-20">
+          <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <Reveal>
+              <div className="flex items-end gap-4">
+                <Tashikame size={104} mood="report" />
+                <Tashikame size={68} mood="thinking" className="mb-1" />
+                <Tashikame size={52} mood="idle" />
+              </div>
+              <p className="mt-5 text-[13px] font-bold text-ash">タシカメ / TASHIKAME</p>
+            </Reveal>
+
+            <Reveal delay={110}>
+              <Head>人の本音を、タシカメる。</Head>
+              <div className="mt-5 flex max-w-[28em] flex-col gap-4 text-[15.5px] leading-[1.95] text-ash">
+                <p>
+                  タシカメは、答えを出しません。
+                  あなたの代わりにいろんな人へ聞いて、リアルな反応を集めてきます。
+                </p>
+                <p>
+                  <strong className="font-bold text-void">
+                    正解じゃない。人の反応を、集めてくる。
+                  </strong>
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </Wrap>
+      </section>
+
+      {/* ══ 4. どう返ってくるか ══ */}
+      <section className="border-t border-rule bg-bone-soft">
+        <Wrap className="py-14 sm:py-20">
+          <Head note="数だけだと理由が分かりません。一人ひとりの言葉も、そのまま並べます。">
+            多数決と、一人ひとりの理由。
+          </Head>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {DEMO.map((r, i) => (
-              <Reveal key={i} delay={i * 90}>
-                <ReactionCard r={r} tilt={i === 1 ? 0.8 : -0.8} className="h-full max-w-none" />
+              <Reveal key={i} delay={i * 80}>
+                <ReactionCard r={r} className="h-full max-w-none" />
               </Reveal>
             ))}
           </div>
+          <p className="mt-4 text-[11.5px] text-ash">※ 画面の見本。実際の回答ではありません</p>
 
           <Reveal>
-            <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.16em] text-ash">
-              ※ 画面の見本。実際の回答ではありません
-            </p>
-          </Reveal>
-
-          <Reveal>
-            <div className="mt-14 border-t-2 border-void pt-10">
-              <div className="grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-14">
-                <p className="text-[44px] font-black leading-[0.9] tracking-[-0.04em] tabular-nums sm:text-[64px]">
-                  60<span className="text-[0.42em] align-super">%</span>
-                  <span className="mx-3 text-ash">/</span>
-                  40<span className="text-[0.42em] align-super">%</span>
+            <div className="mt-8 rounded-card border border-rule bg-card p-5 shadow-card sm:p-7">
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+                <p className="text-[30px] font-black leading-none tracking-[-0.03em] tabular-nums sm:text-[40px]">
+                  60<span className="text-[0.45em] align-super">%</span>
+                  <span className="mx-2 text-ash">/</span>
+                  40<span className="text-[0.45em] align-super">%</span>
                 </p>
-                <div>
-                  <p className="text-[20px] font-bold leading-[1.6] sm:text-[24px]">
-                    割れることも、答えのうち。
-                  </p>
-                  <p className="mt-3 max-w-[30em] text-[15px] leading-[1.9] text-ash">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[17px] font-bold leading-[1.6]">割れることも、答えのうち。</p>
+                  <p className="mt-2 max-w-[28em] text-[14px] leading-[1.85] text-ash">
                     相手によって受け取り方が変わる、ということが分かります。
-                    唯一の正解を出す場所ではありません。
                   </p>
                 </div>
               </div>
@@ -255,87 +289,23 @@ export default function HomePage() {
         </Wrap>
       </section>
 
-      {/* ══ 3. C2Cの仕組み ══ */}
-      <section className="bg-void text-bone">
-        <Wrap className="py-20 sm:py-28">
-          <Reveal>
-            <Eyebrow tone="lime">The marketplace</Eyebrow>
-            <h2 className="mt-6 text-huge font-black text-bone">人が、人に答える。</h2>
-          </Reveal>
-
-          <div className="mt-14 grid gap-px border border-rule-dark bg-rule-dark lg:grid-cols-3">
-            {[
-              { en: "Asker", ja: "聞きたいことを送る。", d: "誰に聞きたいかも、自分で選びます。" },
-              {
-                en: "His Recoveries",
-                ja: "条件に合う人へ安全に届ける。",
-                d: "個人情報は送る前に伏せます。扱えない相談はここで止まります。",
-                mid: true,
-              },
-              {
-                en: "Responders",
-                ja: "実在する人が、自分の感覚で答える。",
-                d: "専門家である必要はありません。立場と経験そのものに価値があります。",
-              },
-            ].map((x, i) => (
-              <div key={x.en} className="bg-void p-7 sm:p-8">
-                <Reveal delay={i * 100}>
-                  <Eyebrow tone={x.mid ? "lime" : "light"}>{x.en}</Eyebrow>
-                  <p className="mt-5 text-[19px] font-bold leading-[1.55] sm:text-[21px]">{x.ja}</p>
-                  <p className="mt-4 text-[13.5px] leading-[1.9] text-ash-soft">{x.d}</p>
-                </Reveal>
-              </div>
-            ))}
-          </div>
-
-          <Reveal>
-            <p className="mt-12 max-w-[26em] text-big font-black text-bone">
-              答えを決めるのは、
-              <br />
-              <span className="text-lime">あなたです。</span>
-            </p>
-          </Reveal>
-
-          {/* AIとの違いは短く。長い思想の話はここに置かない */}
-          <Reveal>
-            <div className="mt-16 border-t border-rule-dark pt-10">
-              <Eyebrow tone="light">AIの予測じゃない。実際の人の反応。</Eyebrow>
-              <p className="mt-5 max-w-[32em] text-[15.5px] leading-[1.95] text-ash-soft">
-                AIに聞けば、一般論は返ってきます。でも「25歳前後の女性が実際どう感じるか」は、
-                実在する25歳前後の女性に聞くしかありません。
-                AIはその手間を下げるために、裏側だけで使っています。
-              </p>
-            </div>
-          </Reveal>
-        </Wrap>
-      </section>
-
-      {/* ══ いま流れているもの（実データ）══ */}
-      <section className="border-b border-rule">
-        <Wrap className="py-16 sm:py-20">
+      {/* ══ 5. いま流れているもの（実データ）══ */}
+      <section className="border-t border-rule">
+        <Wrap className="py-12 sm:py-16">
           <LiveMarket tone="light" />
         </Wrap>
       </section>
 
-      {/* ══ 4. WHO YOU ASK MATTERS ══ */}
-      <section className="border-b border-rule">
-        <Wrap className="py-20 sm:py-28">
-          <Reveal>
-            <Eyebrow>Who you ask matters</Eyebrow>
-            <h2 className="mt-6 max-w-[14em] text-huge font-black text-void">
-              誰に聞くかが、
-              <br />
-              答えを変える。
-            </h2>
-            <p className="mt-8 max-w-[28em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
-              誰の意見か分からない掲示板ではありません。
-              個人は特定できないまま、どういう人が言ったのかは分かります。
-            </p>
-          </Reveal>
+      {/* ══ 6. 誰に聞くか ══ */}
+      <section className="border-t border-rule bg-bone-soft">
+        <Wrap className="py-14 sm:py-20">
+          <Head note="誰の意見か分からない掲示板ではありません。個人は特定できないまま、どういう人が言ったのかは分かります。">
+            誰に聞くかで、答えは変わる。
+          </Head>
 
-          <Reveal delay={90}>
-            <ul className="mt-10 flex flex-wrap gap-2.5">
-              {["25–29", "女性", "マッチングアプリ経験あり", "いまは恋人がいない", "5人"].map(
+          <Reveal delay={80}>
+            <ul className="mt-7 flex flex-wrap gap-2">
+              {["25〜29歳", "女性", "マッチングアプリ経験あり", "いまは恋人がいない", "5人"].map(
                 (t, i) => (
                   <li key={t}>
                     <AttributeChip on={i < 3}>{t}</AttributeChip>
@@ -345,138 +315,125 @@ export default function HomePage() {
             </ul>
           </Reveal>
 
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {SAMPLE_HUMANS.map((h, i) => (
-              <Reveal key={i} delay={i * 90}>
-                <HumanCard h={h} tilt={i === 1 ? 0.6 : -0.6} className="h-full" />
+              <Reveal key={i} delay={i * 80}>
+                <HumanCard h={h} className="h-full" />
               </Reveal>
             ))}
           </div>
 
-          <Reveal>
-            <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.16em] text-ash">
-              ※ 画面の見本。実在の回答者ではありません
-            </p>
-            <div className="mt-8">
-              <Link
-                href="/answerers"
-                className="inline-flex min-h-[52px] items-center border border-void px-7 text-[13px] font-bold uppercase tracking-[0.12em] transition-colors hover:bg-void hover:text-bone"
-              >
-                いま登録している回答者を見る
-              </Link>
-            </div>
-          </Reveal>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+            <p className="text-[11.5px] text-ash">※ 画面の見本。実在の回答者ではありません</p>
+            <Link
+              href="/answerers"
+              className="inline-flex min-h-[46px] items-center rounded-pill border border-rule bg-card px-6 text-[13.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
+            >
+              いる人を見る
+            </Link>
+          </div>
         </Wrap>
       </section>
 
-      {/* ══ 5. ASK / RESPOND ══ */}
-      <section className="border-b border-rule">
-        <Wrap className="py-20 sm:py-28">
-          <div className="grid gap-px border border-void bg-rule sm:grid-cols-2">
-            <div className="bg-bone p-8 sm:p-10">
-              <Reveal>
-                <Eyebrow>Ask</Eyebrow>
-                <p className="mt-6 text-big font-black">
+      {/* ══ 7. 聞く / 答える ══ */}
+      <section className="border-t border-rule">
+        <Wrap className="py-14 sm:py-20">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Reveal>
+              <div className="flex h-full flex-col rounded-card border border-rule bg-card p-6 shadow-card sm:p-8">
+                <p className="text-[13px] font-bold text-ash">聞く人</p>
+                <p className="mt-4 text-[22px] font-black leading-[1.45]">
                   迷った瞬間に、
                   <br />
-                  相手に近い人へ聞く。
+                  相手に近い人へ。
                 </p>
-                <p className="mt-6 max-w-[22em] text-[15px] leading-[1.95] text-ash">
+                <p className="mt-4 text-[14.5px] leading-[1.9] text-ash">
                   LINEを送る前。写真を選ぶ前。デートに誘う前。30秒で聞けます。
                 </p>
-                <div className="mt-8">
-                  <Link
-                    href="/ask"
-                    className="inline-flex min-h-[56px] w-full items-center justify-center bg-void px-8 text-[14px] font-bold uppercase tracking-[0.12em] text-bone transition-colors hover:bg-lime hover:text-void"
-                  >
-                    質問する
-                  </Link>
-                </div>
 
-                {/* 課金は将来。いまは無料だと必ず添える */}
-                <dl className="mt-8 divide-y divide-rule border-y border-rule">
+                <dl className="mt-6 flex flex-col gap-1.5">
                   {[
-                    ["3人", PRICE_YEN[3]],
-                    ["5人", PRICE_YEN[5]],
-                    ["10人", PRICE_YEN[10]],
+                    ["3人に聞く", PRICE_YEN[3]],
+                    ["5人に聞く", PRICE_YEN[5]],
+                    ["10人に聞く", PRICE_YEN[10]],
                   ].map(([label, yen]) => (
                     <div
                       key={String(label)}
-                      className="flex items-baseline justify-between gap-3 py-2.5"
+                      className="flex items-center justify-between gap-3 rounded-soft bg-bone-soft px-3.5 py-2.5"
                     >
-                      <dt className="text-[13.5px] text-ash">{label}に聞く</dt>
+                      <dt className="text-[13.5px] text-ash">{label}</dt>
                       <dd className="text-[13.5px] font-bold tabular-nums">
                         ¥{Number(yen).toLocaleString()}
                         {!BILLING_ENABLED && (
-                          <span className="ml-2.5 bg-lime px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.1em] text-void">
-                            無料
+                          <span className="ml-2 rounded-pill bg-lime px-2 py-0.5 text-[11px] font-bold text-void">
+                            いまは無料
                           </span>
                         )}
                       </dd>
                     </div>
                   ))}
                 </dl>
-                <p className="mt-4 text-[12px] leading-[1.8] text-ash">
-                  いまは請求していません。詳しくは{" "}
-                  <Link href="/safety" className="underline decoration-rule underline-offset-4 hover:text-void">
-                    安全とできないこと
-                  </Link>
-                  。
-                </p>
-              </Reveal>
-            </div>
 
-            <div className="bg-void p-8 text-bone sm:p-10">
-              <Reveal delay={120}>
-                <Eyebrow tone="lime">Respond</Eyebrow>
-                <p className="mt-6 text-big font-black text-bone">
+                <div className="mt-6 flex-1" />
+                <Link
+                  href="/ask"
+                  className="inline-flex min-h-[54px] items-center justify-center rounded-pill bg-lime px-8 text-[15.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
+                >
+                  聞いてみる
+                </Link>
+              </div>
+            </Reveal>
+
+            <Reveal delay={110}>
+              <div className="flex h-full flex-col rounded-card border border-rule bg-card p-6 shadow-card sm:p-8">
+                <p className="text-[13px] font-bold text-ash">答える人</p>
+                <p className="mt-4 text-[22px] font-black leading-[1.45]">
                   あなたの感覚が、
                   <br />
                   誰かの判断材料になる。
                 </p>
-                <p className="mt-6 max-w-[22em] text-[15px] leading-[1.95] text-ash-soft">
-                  専門家じゃなくていい。あなたの年齢、経験、価値観、立場そのものに
-                  価値があります。1件1〜2分です。
+                <p className="mt-4 text-[14.5px] leading-[1.9] text-ash">
+                  専門家じゃなくていい。年齢、経験、価値観、立場そのものに価値があります。
+                  1件1〜2分です。
                 </p>
-                <div className="mt-8">
-                  <Link
-                    href="/join"
-                    className="inline-flex min-h-[56px] w-full items-center justify-center bg-lime px-8 text-[14px] font-bold uppercase tracking-[0.12em] text-void transition-opacity hover:opacity-85"
-                  >
-                    回答者について
-                  </Link>
+
+                <div className="mt-6">
+                  <Says text={INVITE.join.text} mood={INVITE.join.mood} size={44} />
                 </div>
-                <p className="mt-6 text-[12.5px] leading-[1.85] text-ash-soft">
-                  ご登録のあと、こちらで確認してから相談が届きます。
-                  ノルマも期限もありません。
-                </p>
-              </Reveal>
-            </div>
+
+                <div className="mt-6 flex-1" />
+                <Link
+                  href="/join"
+                  className="inline-flex min-h-[54px] items-center justify-center rounded-pill bg-void px-8 text-[15.5px] font-bold text-bone transition-opacity hover:opacity-90"
+                >
+                  答える人になる
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </Wrap>
       </section>
 
-      {/* ══ Safety は短く。詳細は /safety ══ */}
-      <section className="border-b border-rule">
-        <Wrap className="py-14">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <Eyebrow>Private by design</Eyebrow>
-              <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[13.5px] text-ash">
-                {[
-                  "匿名",
-                  "個人情報は非公開",
-                  "回答者の属性を確認",
-                  "18歳未満に関する相談は不可",
-                  "非同意・晒し・特定は不可",
-                ].map((t) => (
-                  <li key={t}>{t}</li>
-                ))}
-              </ul>
-            </div>
+      {/* ══ 8. 安全（短く）══ */}
+      <section className="border-t border-rule bg-bone-soft">
+        <Wrap className="py-10">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <ul className="flex flex-wrap gap-2 text-[13px] text-ash">
+              {[
+                "匿名",
+                "個人情報は非公開",
+                "回答者の属性を確認",
+                "18歳未満に関する相談は不可",
+                "晒し・特定は不可",
+              ].map((t) => (
+                <li key={t} className="rounded-pill bg-card px-3 py-1.5 shadow-card">
+                  {t}
+                </li>
+              ))}
+            </ul>
             <Link
               href="/safety"
-              className="inline-flex min-h-[48px] shrink-0 items-center border border-void px-6 text-[12px] font-bold uppercase tracking-[0.12em] transition-colors hover:bg-void hover:text-bone"
+              className="inline-flex min-h-[44px] shrink-0 items-center text-[13.5px] font-bold text-ash underline decoration-rule underline-offset-4 transition-colors hover:text-void"
             >
               詳しく
             </Link>
@@ -484,94 +441,80 @@ export default function HomePage() {
         </Wrap>
       </section>
 
-      {/* ══ 6. FINAL CTA ══ */}
-      <section className="bg-lime text-void">
-        <Wrap className="py-24 sm:py-32">
-          <Reveal>
-            <Eyebrow>Real people. Real reactions.</Eyebrow>
-            <h2 className="mt-7 max-w-[14em] text-mega font-black text-void">
-              相談じゃない。
-              <br />
-              確かめる。
-            </h2>
-            <p className="mt-9 max-w-[24em] text-[17px] font-medium leading-[1.9] sm:text-[19px]">
-              LINEを送る前。写真を選ぶ前。デートに誘う前。関係を進める前。
-              迷った瞬間に、相手側の人たちへ聞く。
-            </p>
-            <div className="mt-11">
+      {/* ══ 9. 最後 ══ */}
+      <section className="border-t border-rule">
+        <Wrap className="py-16 sm:py-24">
+          <div className="rounded-card bg-lime p-8 text-void shadow-card sm:p-14">
+            <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="flex items-center gap-2.5">
+                  <Tashikame size={34} tone="lime" />
+                  <span className="text-[13.5px] font-bold">{INVITE.ask.text}</span>
+                </p>
+                <p className="mt-5 text-huge font-black">
+                  相談じゃない。
+                  <br />
+                  確かめる。
+                </p>
+                <p className="mt-4 max-w-[22em] text-[15px] leading-[1.9]">
+                  迷った瞬間に、相手側の人たちへ聞く。30秒で終わります。
+                </p>
+              </div>
               <Link
                 href="/ask"
-                className="inline-flex min-h-[64px] w-full items-center justify-center bg-void px-12 text-[15px] font-bold uppercase tracking-[0.12em] text-bone transition-opacity hover:opacity-85 sm:w-auto"
+                className="inline-flex min-h-[58px] shrink-0 items-center justify-center rounded-pill bg-void px-10 text-[16px] font-bold text-bone transition-opacity hover:opacity-85"
               >
-                人に聞いてみる
+                聞いてみる
               </Link>
             </div>
-            <p className="mt-5 text-[12.5px] font-bold uppercase tracking-[0.12em]">
-              匿名 / 登録不要 / 実在する回答者 / ベータ期間中無料
-            </p>
-          </Reveal>
+          </div>
         </Wrap>
       </section>
 
       {/* ── フッター ── */}
-      <footer className="bg-void text-bone">
-        <Wrap className="py-16">
-          <div className="grid gap-px border border-rule-dark bg-rule-dark sm:grid-cols-2">
-            {[
-              { href: "/ask", en: "Ask", ja: "人に聞く", d: "相手に近い人たちのリアルな反応を。" },
-              {
-                href: "/join",
-                en: "Respond",
-                ja: "回答者について",
-                d: "あなたの感覚が、誰かの判断材料になる。",
-              },
-            ].map((x) => (
-              <Link key={x.href} href={x.href} className="group block bg-void p-7 sm:p-9">
-                <span className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-ash-soft">
-                  {x.en}
-                </span>
-                <span className="mt-4 block text-[26px] font-black leading-[1.2] transition-colors group-hover:text-lime sm:text-[32px]">
-                  {x.ja}
-                </span>
-                <span className="mt-3 block text-[13.5px] leading-[1.85] text-ash-soft">{x.d}</span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-14 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
+      <footer className="border-t border-rule bg-bone-soft">
+        <Wrap className="py-12">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4">
             {[
               {
-                h: "マーケットプレイス",
+                h: "使う",
                 items: [
-                  ["/answerers", "回答者を見る"],
-                  ["/safety", "安全とできないこと"],
+                  ["/ask", "聞いてみる"],
+                  ["/join", "答える人になる"],
+                  ["/answerers", "いる人を見る"],
                 ] as const,
               },
               {
-                h: "読みもの",
+                h: "知る",
                 items: [
+                  ["/safety", "安全とできないこと"],
                   ["/articles", "記事をさがす"],
                   ["/app", "出会ったあとの記録"],
                 ] as const,
               },
               {
-                h: "His Recoveries",
+                h: "運営",
                 items: [
                   ["/about", "編集方針"],
+                  ["/updates", "更新記録"],
+                ] as const,
+              },
+              {
+                h: "決まりごと",
+                items: [
+                  ["/disclosure", "広告と収益について"],
                   ["/privacy", "プライバシー・免責事項"],
                 ] as const,
               },
             ].map((col) => (
               <div key={col.h}>
-                <p className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-ash-soft">
-                  {col.h}
-                </p>
-                <ul className="mt-4 flex flex-col gap-2 text-[13.5px]">
+                <p className="text-[12.5px] font-bold text-ash">{col.h}</p>
+                <ul className="mt-3.5 flex flex-col gap-2 text-[13.5px]">
                   {col.items.map(([href, label]) => (
                     <li key={href}>
                       <Link
                         href={href}
-                        className="-my-1 block py-1 text-bone/75 transition-colors hover:text-lime"
+                        className="-my-1 block py-1 text-void/75 transition-colors hover:text-void"
                       >
                         {label}
                       </Link>
@@ -582,16 +525,12 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="mt-14">
-            <Hairline tone="dark" />
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
-              <Link href="/" className="text-[17px] font-black uppercase tracking-[0.08em]">
-                His Recoveries
-              </Link>
-              <p className="text-[11.5px] text-ash-soft">
-                © 2026 His Recoveries — Real people. Real reactions. Real perspectives.
-              </p>
-            </div>
+          <div className="mt-12 flex flex-col gap-3 border-t border-rule pt-7 sm:flex-row sm:items-center sm:justify-between">
+            <Link href="/" className="flex items-center gap-2.5">
+              <Tashikame size={26} />
+              <span className="text-[15px] font-black">His Recoveries</span>
+            </Link>
+            <p className="text-[12px] text-ash">© 2026 His Recoveries — 人の本音を、タシカメる。</p>
           </div>
         </Wrap>
       </footer>

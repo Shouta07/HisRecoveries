@@ -41,10 +41,10 @@ export function Eyebrow({
   children: ReactNode;
   tone?: "dark" | "light" | "lime";
 }) {
+  // 英字を大文字にして字間を広げると、広告代理店の見た目になる。
+  // 日本語のラベルがそのまま読める形にする。
   const c = tone === "light" ? "text-ash-soft" : tone === "lime" ? "text-lime" : "text-ash";
-  return (
-    <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${c}`}>{children}</p>
-  );
+  return <p className={`text-[13px] font-bold tracking-[0.02em] ${c}`}>{children}</p>;
 }
 
 /** 属性チップ。「誰に聞くか」がこの製品の価値なので、いちばん目立つ小部品にする */
@@ -60,12 +60,12 @@ export function AttributeChip({
   onClick?: () => void;
 }) {
   const base =
-    "inline-flex min-h-[44px] items-center px-4 text-[12.5px] font-bold uppercase tracking-[0.12em] transition-colors duration-200";
+    "inline-flex min-h-[42px] items-center rounded-pill px-4 text-[13.5px] font-bold transition-colors duration-200";
   const look = on
     ? "bg-lime text-void"
     : tone === "light"
       ? "border border-rule-dark text-bone hover:border-lime hover:text-lime"
-      : "border border-void text-void hover:bg-void hover:text-bone";
+      : "border border-rule bg-card text-void hover:border-void";
 
   if (!onClick) return <span className={`${base} ${look}`}>{children}</span>;
   return (
@@ -126,8 +126,8 @@ export function ReactionCard({
           {r.age}
         </span>
         <span
-          className={`px-2 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] ${
-            r.positive ? "bg-lime text-void" : dark ? "bg-bone text-void" : "bg-void text-bone"
+          className={`rounded-pill px-3 py-1 text-[11.5px] font-bold ${
+            r.positive ? "bg-lime text-void" : dark ? "bg-bone text-void" : "bg-bone-soft text-ash"
           }`}
         >
           {r.verdict}
@@ -138,8 +138,8 @@ export function ReactionCard({
         {r.attrs.slice(0, 3).map((a) => (
           <li
             key={a}
-            className={`px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.12em] ${
-              dark ? "border border-rule-dark text-ash-soft" : "border border-rule text-ash"
+            className={`rounded-pill px-2 py-0.5 text-[11px] ${
+              dark ? "border border-rule-dark text-ash-soft" : "bg-bone-soft text-ash"
             }`}
           >
             {a}
@@ -151,11 +151,11 @@ export function ReactionCard({
 
       {typeof r.helpful === "number" && (
         <p
-          className={`mt-3.5 border-t pt-2.5 text-[10.5px] font-bold uppercase tracking-[0.14em] ${
+          className={`mt-3.5 border-t pt-2.5 text-[12px] font-bold ${
             dark ? "border-rule-dark text-ash-soft" : "border-rule text-ash"
           }`}
         >
-          Helpful {r.helpful}%
+          役に立った {r.helpful}%
         </p>
       )}
     </article>
@@ -183,7 +183,7 @@ export function ResultDistribution({
   return (
     <div>
       {/* 1本のバーに全部を積む。円グラフにしない */}
-      <div className={`flex h-3 w-full overflow-hidden ${dark ? "bg-rule-dark" : "bg-rule"}`}>
+      <div className={`flex h-3 w-full overflow-hidden rounded-pill ${dark ? "bg-rule-dark" : "bg-bone-soft"}`}>
         {shown.map((s) => (
           <span
             key={s.label}
@@ -199,7 +199,7 @@ export function ResultDistribution({
         {shown.map((s) => (
           <li key={s.label} className="flex items-baseline gap-4">
             <span
-              className={`text-[44px] font-black leading-[0.85] tracking-[-0.04em] tabular-nums sm:text-[56px] ${
+              className={`text-[34px] font-black leading-[1] tracking-[-0.03em] tabular-nums sm:text-[42px] ${
                 s.positive ? (dark ? "text-lime" : "text-void") : dark ? "text-bone" : "text-ash"
               }`}
             >
@@ -208,9 +208,7 @@ export function ResultDistribution({
             </span>
             <span className="min-w-0">
               <span
-                className={`block text-[12px] font-bold uppercase tracking-[0.16em] ${
-                  dark ? "text-bone" : "text-void"
-                }`}
+                className={`block text-[14px] font-bold ${dark ? "text-bone" : "text-void"}`}
               >
                 {s.label}
               </span>
@@ -248,9 +246,7 @@ export function Stat({
         {unit && <span className="text-[0.38em] align-super">{unit}</span>}
       </p>
       <p
-        className={`mt-2 text-[11px] font-bold uppercase tracking-[0.2em] ${
-          dark ? "text-ash-soft" : "text-ash"
-        }`}
+        className={`mt-2 text-[13px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}
       >
         {label}
       </p>
@@ -293,10 +289,10 @@ export function Choice({
       type="button"
       onClick={onClick}
       aria-pressed={on}
-      className={`flex min-h-[60px] w-full items-center border px-5 py-4 text-left text-[15.5px] transition-colors duration-200 ${
+      className={`flex min-h-[60px] w-full items-center rounded-card border px-5 py-4 text-left text-[15.5px] transition-all duration-200 ${
         on
-          ? "border-void bg-lime text-void"
-          : "border-rule bg-transparent text-void hover:border-void"
+          ? "border-lime bg-lime text-void shadow-card"
+          : "border-rule bg-card text-void shadow-card hover:shadow-card-hover"
       }`}
     >
       {children}
@@ -318,10 +314,10 @@ export function Action({
   disabled?: boolean;
   quiet?: boolean;
 }) {
-  const cls = `inline-flex min-h-[58px] w-full items-center justify-center px-6 text-[14px] font-bold uppercase tracking-[0.14em] transition-colors duration-200 ${
+  const cls = `inline-flex min-h-[56px] w-full items-center justify-center rounded-pill px-7 text-[15.5px] font-bold transition-all duration-200 ${
     quiet
-      ? "border border-void text-void hover:bg-void hover:text-bone"
-      : "bg-void text-bone hover:bg-lime hover:text-void disabled:bg-rule disabled:text-ash"
+      ? "border border-rule bg-card text-void shadow-card hover:shadow-card-hover"
+      : "bg-lime text-void shadow-card hover:shadow-card-hover disabled:bg-bone-soft disabled:text-ash disabled:shadow-none"
   }`;
   if (href) {
     return (
@@ -339,14 +335,14 @@ export function Action({
 
 /** 自由入力。枠を細く、文字を大きく */
 export const inputClass =
-  "w-full border border-rule bg-transparent px-4 py-3.5 text-[16px] leading-[1.9] text-void outline-none transition-colors duration-200 placeholder:text-ash-soft focus:border-void";
+  "w-full rounded-card border border-rule bg-card px-4 py-3.5 text-[16px] leading-[1.9] text-void outline-none transition-colors duration-200 placeholder:text-ash-soft focus:border-lime focus:ring-2 focus:ring-lime/40";
 
 /** 進み具合。数字にしない。線が伸びるだけ */
 export function Progress({ step, of }: { step: number; of: number }) {
   return (
-    <div className="h-[2px] w-full bg-rule">
+    <div className="h-[6px] w-full overflow-hidden rounded-pill bg-bone-soft">
       <div
-        className="h-[2px] bg-void transition-[width] duration-300 ease-out"
+        className="h-[6px] rounded-pill bg-lime transition-[width] duration-300 ease-out"
         style={{ width: `${(step / of) * 100}%` }}
       />
     </div>

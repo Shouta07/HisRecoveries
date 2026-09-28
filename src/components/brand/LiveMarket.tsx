@@ -1,6 +1,8 @@
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { PANEL_AGES } from "@/lib/ask/model";
 import { QuestionCard, LiveBadge, type Question } from "./market";
+import Says from "./Says";
+import { EMPTY } from "@/lib/tashikame";
 
 // いま動いているもの。
 //
@@ -48,15 +50,15 @@ export default async function LiveMarket({ tone = "dark" }: { tone?: "light" | "
   return (
     <div>
       <div className="flex items-baseline justify-between gap-4">
-        <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${dark ? "text-ash-soft" : "text-ash"}`}>
-          Questions happening now
+        <p className={`text-[13px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+          いま流れている相談
         </p>
         <LiveBadge on={live} tone={tone} />
       </div>
 
       {questions.length > 0 ? (
         <>
-          <div className={`mt-7 border-t ${dark ? "border-rule-dark" : "border-rule"}`}>
+          <div className="mt-6 flex flex-col gap-3">
             {questions.map((q) => (
               <QuestionCard key={q.id} q={q} tone={tone} />
             ))}
@@ -67,11 +69,13 @@ export default async function LiveMarket({ tone = "dark" }: { tone?: "light" | "
           </p>
         </>
       ) : (
-        <div className={`mt-7 border-t pt-8 ${dark ? "border-rule-dark" : "border-rule"}`}>
-          <p className={`text-[22px] font-bold leading-[1.5] sm:text-[26px] ${dark ? "text-bone" : "text-void"}`}>
-            まだ、1件も流れていません。
-          </p>
-          <p className={`mt-4 max-w-[30em] text-[15px] leading-[1.95] ${dark ? "text-ash-soft" : "text-ash"}`}>
+        <div className="mt-6">
+          <Says
+            text={EMPTY.noQuestions.text}
+            mood={EMPTY.noQuestions.mood}
+            tone={dark ? "dark" : "light"}
+          />
+          <p className={`mt-6 max-w-[30em] text-[15px] leading-[1.95] ${dark ? "text-ash-soft" : "text-ash"}`}>
             はじまったばかりなので、ここは空です。
             件数をそれらしく埋めることはしません。
             相談が出て、誰かが答えたら、この場所が動きます。

@@ -4,6 +4,8 @@ import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { site } from "@/lib/site";
 import { Eyebrow, Hairline } from "@/components/brand/kit";
 import { HumanCard, type Human } from "@/components/brand/market";
+import Says from "@/components/brand/Says";
+import { EMPTY } from "@/lib/tashikame";
 
 // 回答者の一覧。マーケットプレイスの供給側。
 //
@@ -71,7 +73,7 @@ export default async function AnswerersPage() {
           </Link>
           <Link
             href="/ask"
-            className="inline-flex min-h-[44px] items-center bg-void px-5 text-[12px] font-bold uppercase tracking-[0.16em] text-bone transition-colors hover:bg-lime hover:text-void"
+            className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-lime px-5 text-[13.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
           >
             人に聞く
           </Link>
@@ -103,10 +105,8 @@ export default async function AnswerersPage() {
           </>
         ) : (
           <div className="mt-12 border-t-2 border-void pt-10">
-            <p className="text-[26px] font-black leading-[1.35] sm:text-[34px]">
-              まだ、1人も登録していません。
-            </p>
-            <p className="mt-6 max-w-[30em] text-[15.5px] leading-[1.95] text-ash">
+            <Says text={EMPTY.noAnswerers.text} mood={EMPTY.noAnswerers.mood} size={72} />
+            <p className="mt-8 max-w-[30em] text-[15.5px] leading-[1.95] text-ash">
               はじまったばかりなので、ここは空です。
               それらしい人を並べることはしません。
               登録して確認が済んだ方から、この場所に出ます。
@@ -114,13 +114,13 @@ export default async function AnswerersPage() {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/join"
-                className="inline-flex min-h-[58px] items-center justify-center bg-void px-8 text-[14px] font-bold uppercase tracking-[0.12em] text-bone transition-colors hover:bg-lime hover:text-void"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-lime px-9 text-[15.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
               >
                 回答者として参加する
               </Link>
               <Link
                 href="/ask"
-                className="inline-flex min-h-[58px] items-center justify-center border border-void px-8 text-[14px] font-bold uppercase tracking-[0.12em] transition-colors hover:bg-void hover:text-bone"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-rule bg-card px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
               >
                 先に聞いてみる
               </Link>

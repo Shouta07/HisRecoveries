@@ -78,7 +78,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           </Link>
           <Link
             href="/ask"
-            className="inline-flex min-h-[40px] items-center border border-void px-4 text-[11.5px] font-bold uppercase tracking-[0.14em] transition-colors hover:bg-void hover:text-bone"
+            className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill border border-rule bg-card px-5 text-[13.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
           >
             もう1件聞く
           </Link>
@@ -197,7 +197,7 @@ export default async function ResultPage({
 
       {t.total > 0 ? (
         <>
-          <section className="mt-12 border border-void p-6 sm:p-9">
+          <section className="mt-12 rounded-card border border-rule bg-card p-6 shadow-card sm:p-9">
             <ResultDistribution slices={slices} total={t.total} />
 
             {/* 2つ目の問い。カテゴリによっては、ここが本当に知りたいこと */}
@@ -313,7 +313,7 @@ export default async function ResultPage({
       <div className="mt-12">
         <Link
           href="/ask"
-          className="inline-flex min-h-[58px] w-full items-center justify-center bg-void px-8 text-[14px] font-bold uppercase tracking-[0.14em] text-bone transition-colors hover:bg-lime hover:text-void"
+          className="inline-flex min-h-[56px] w-full items-center justify-center rounded-pill bg-lime px-8 text-[15.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
         >
           もう1件聞く
         </Link>

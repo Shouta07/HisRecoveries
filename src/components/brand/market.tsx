@@ -68,11 +68,11 @@ export function HumanCard({
         </span>
         {(h.verifiedAge || h.verifiedProfile) && (
           <span
-            className={`px-2 py-1 text-[9.5px] font-bold uppercase tracking-[0.12em] ${
-              dark ? "bg-lime text-void" : "bg-void text-bone"
+            className={`rounded-pill px-2.5 py-1 text-[11px] font-bold ${
+              dark ? "bg-lime text-void" : "bg-lime text-void"
             }`}
           >
-            Verified
+            確認済み
           </span>
         )}
       </div>
@@ -82,8 +82,8 @@ export function HumanCard({
           {[h.area, ...(h.attrs ?? []).map(attrLabel)].filter(Boolean).map((t) => (
             <li
               key={String(t)}
-              className={`px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.1em] ${
-                dark ? "border border-rule-dark text-ash-soft" : "border border-rule text-ash"
+              className={`rounded-pill px-2 py-0.5 text-[11px] ${
+                dark ? "border border-rule-dark text-ash-soft" : "bg-bone-soft text-ash"
               }`}
             >
               {t}
@@ -93,7 +93,7 @@ export function HumanCard({
       )}
 
       {h.specialties && h.specialties.length > 0 && (
-        <p className={`mt-3 text-[10.5px] font-bold uppercase tracking-[0.12em] ${dark ? "text-lime" : "text-void"}`}>
+        <p className={`mt-3 text-[12px] font-bold ${dark ? "text-lime" : "text-ash"}`}>
           {h.specialties
             .map((s) => {
               try {
@@ -114,23 +114,23 @@ export function HumanCard({
         }`}
       >
         <div>
-          <dt className={`text-[9.5px] font-bold uppercase tracking-[0.14em] ${dark ? "text-ash-soft" : "text-ash"}`}>
-            Answers
+          <dt className={`text-[11.5px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+            回答
           </dt>
           <dd className="text-[19px] font-black tabular-nums leading-tight">{h.answered ?? 0}</dd>
         </div>
         {typeof h.helpfulRate === "number" && (
           <div>
-            <dt className={`text-[9.5px] font-bold uppercase tracking-[0.14em] ${dark ? "text-ash-soft" : "text-ash"}`}>
-              Helpful
+            <dt className={`text-[11.5px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+              役に立った
             </dt>
             <dd className="text-[19px] font-black tabular-nums leading-tight">{h.helpfulRate}%</dd>
           </div>
         )}
         {typeof h.replyMinutes === "number" && (
           <div>
-            <dt className={`text-[9.5px] font-bold uppercase tracking-[0.14em] ${dark ? "text-ash-soft" : "text-ash"}`}>
-              Reply
+            <dt className={`text-[11.5px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+              返信
             </dt>
             <dd className="text-[19px] font-black tabular-nums leading-tight">{h.replyMinutes}m</dd>
           </div>
@@ -141,9 +141,9 @@ export function HumanCard({
     </>
   );
 
-  const cls = `block w-full border p-4 transition-colors ${
-    dark ? "border-rule-dark bg-void text-bone" : "border-void bg-bone text-void"
-  } ${href ? (dark ? "hover:border-lime" : "hover:bg-void hover:text-bone") : ""} ${
+  const cls = `block w-full rounded-card border p-4 transition-all ${
+    dark ? "border-rule-dark bg-void text-bone" : "border-rule bg-card text-void shadow-card"
+  } ${href ? (dark ? "hover:border-lime" : "hover:shadow-card-hover") : ""} ${
     float === "slow" ? "motion-safe:animate-float-slow" : float ? "motion-safe:animate-float" : ""
   } ${className}`;
 
@@ -188,13 +188,13 @@ export function QuestionCard({ q, tone = "light" }: { q: Question; tone?: "light
 
   return (
     <article
-      className={`flex items-center justify-between gap-5 border-b py-5 ${
-        dark ? "border-rule-dark text-bone" : "border-rule text-void"
+      className={`flex items-center justify-between gap-5 rounded-card border px-5 py-4 ${
+        dark ? "border-rule-dark bg-void text-bone" : "border-rule bg-card text-void shadow-card"
       }`}
     >
       <div className="min-w-0">
         <p className="text-[16px] font-bold leading-[1.5] sm:text-[18px]">{label}</p>
-        <p className={`mt-1.5 text-[10.5px] font-bold uppercase tracking-[0.14em] ${dark ? "text-ash-soft" : "text-ash"}`}>
+        <p className={`mt-1.5 text-[12.5px] ${dark ? "text-ash-soft" : "text-ash"}`}>
           {q.panel}
           {q.attrs && q.attrs.length > 0 && ` / ${q.attrs.map(attrLabel).join(" / ")}`}
         </p>
@@ -204,8 +204,8 @@ export function QuestionCard({ q, tone = "light" }: { q: Question; tone?: "light
           {q.answered}
           <span className={dark ? "text-ash-soft" : "text-ash"}>/{q.of}</span>
         </p>
-        <p className={`mt-1.5 text-[9.5px] font-bold uppercase tracking-[0.14em] ${done ? (dark ? "text-lime" : "text-void") : dark ? "text-ash-soft" : "text-ash"}`}>
-          {done ? "Complete" : "Answering"}
+        <p className={`mt-1.5 text-[11.5px] font-bold ${done ? (dark ? "text-lime" : "text-void") : dark ? "text-ash-soft" : "text-ash"}`}>
+          {done ? "集まりました" : "回答中"}
         </p>
         {typeof q.priceYen === "number" && (
           <p className="mt-1 text-[11px] font-bold tabular-nums">¥{q.priceYen.toLocaleString()}</p>
@@ -228,11 +228,11 @@ export function LiveBadge({ on, tone = "light" }: { on: boolean; tone?: "light" 
         }`}
       />
       <span
-        className={`text-[10.5px] font-bold uppercase tracking-[0.2em] ${
+        className={`text-[12px] font-bold ${
           dark ? (on ? "text-lime" : "text-ash-soft") : "text-ash"
         }`}
       >
-        {on ? "Live" : "Idle"}
+        {on ? "回答中" : "待機中"}
       </span>
     </span>
   );
@@ -256,11 +256,11 @@ export function FlowStep({
 }) {
   const dark = tone === "dark";
   return (
-    <div className={`border-t-2 pt-5 ${dark ? "border-lime" : "border-void"}`}>
-      <p className={`text-[9.5px] font-bold uppercase tracking-[0.2em] ${dark ? "text-ash-soft" : "text-ash"}`}>
-        {n} — {label}
+    <div className={`rounded-card border p-5 ${dark ? "border-rule-dark" : "border-rule bg-card shadow-card"}`}>
+      <p className={`text-[12px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+        {n} {label}
       </p>
-      <p className="mt-3 text-[30px] font-black leading-[0.95] tracking-[-0.03em] tabular-nums sm:text-[38px]">
+      <p className="mt-3 text-[28px] font-black leading-[1.1] tracking-[-0.02em] tabular-nums sm:text-[34px]">
         {value}
       </p>
       {note && (
