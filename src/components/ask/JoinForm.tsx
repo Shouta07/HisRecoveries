@@ -62,15 +62,15 @@ export default function JoinForm() {
 
   if (state === "done") {
     return (
-      <div className="border-l-2 border-void pl-6">
+      <div className="border-l-2 border-slate pl-6">
         <p className="text-[24px] font-black leading-[1.4] sm:text-[30px]">
           ありがとうございます。
         </p>
-        <p className="mt-5 max-w-[28em] text-[15.5px] leading-[2] text-ash">
+        <p className="mt-5 max-w-[28em] text-[15.5px] leading-[2] text-steel">
           いただいた内容を確認したうえで、こちらからご連絡します。
           確認が終わるまでは、相談は届きません。
         </p>
-        <p className="mt-5 max-w-[28em] text-[15.5px] leading-[2] text-ash">
+        <p className="mt-5 max-w-[28em] text-[15.5px] leading-[2] text-steel">
           やめたくなったら、届いたメールに「やめます」とだけ返してください。
           理由は聞きません。
         </p>
@@ -184,21 +184,21 @@ export default function JoinForm() {
         />
       </div>
 
-      <label className="mt-12 flex cursor-pointer items-start gap-3 border-t border-rule pt-8">
+      <label className="mt-12 flex cursor-pointer items-start gap-3 border-t border-line pt-8">
         <input
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-1 h-5 w-5 shrink-0 accent-[#0A0A0A]"
         />
-        <span className="text-[14px] leading-[1.9] text-ash">
+        <span className="text-[14px] leading-[1.9] text-steel">
           18歳以上です。上に書かれている扱いに同意します。
           登録後も、メール1通でいつでもやめられることを確認しました。
         </span>
       </label>
 
       {error && (
-        <p className="mt-6 border-l-2 border-void pl-4 text-[14.5px] leading-[1.9] text-void">
+        <p className="mt-6 border-l-2 border-slate pl-4 text-[14.5px] leading-[1.9] text-slate">
           {error}
         </p>
       )}

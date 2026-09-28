@@ -1,0 +1,228 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { site } from "@/lib/site";
+import { PLANS, FLOW, ENTRY_PLAN } from "@/lib/ask/plans";
+import Tashikame from "@/components/brand/Tashikame";
+import PlanCta from "@/components/brand/PlanCta";
+
+// 仕組み。
+//
+// ── トップから降ろしたものの行き先 ────────────────
+// 「誰と誰をつないでいるか」「回答者はどう選ばれるか」
+// 「AIは何に使っているか」。
+// これらはトップに置くと、何のサービスかを理解する前に
+// 仕組みの話を読ませることになる。
+//
+// ただし消さない。人にお金を払ってもらう以上、
+// 「誰が、どうやって答えるのか」は、探せば必ず出てくる場所に要る。
+
+export const metadata: Metadata = {
+  title: "仕組み — His Recoveries",
+  description:
+    "誰が答えるのか。どうやって届くのか。AIは何に使っているのか。His Recoveries の裏側をまとめています。",
+  alternates: { canonical: `${site.url}/how` },
+};
+
+const AI_USES = [
+  "書かれた質問を、回答者が読みやすい形に整える",
+  "個人を特定できる情報を、保存する前に伏せる",
+  "条件に合う回答者を探す手助けをする",
+  "回答の中身が規約に反していないか確かめる",
+  "複数の回答に共通していた点を取り出す",
+  "直しどころと、直した案を組み立てる",
+];
+
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="border-t border-line pt-9">
+      <h2 className="text-big font-black text-slate">{title}</h2>
+      <div className="mt-5 flex flex-col gap-4 text-[15px] leading-[1.95] text-steel">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+export default function HowPage() {
+  return (
+    <div data-brand className="min-h-screen bg-paper text-slate">
+      <header className="border-b border-line bg-paper">
+        <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3.5 sm:px-10">
+          <Link href="/" className="flex min-w-0 items-center gap-2.5">
+            <Tashikame size={26} />
+            <span className="truncate text-[14.5px] font-black">His Recoveries</span>
+          </Link>
+          <PlanCta
+            plan={ENTRY_PLAN}
+            from="how"
+            className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
+          >
+            人に聞いてみる
+          </PlanCta>
+        </div>
+      </header>
+
+      <div className="mx-auto w-full max-w-[860px] px-5 pb-24 pt-12 sm:px-10">
+        <h1 className="text-huge font-black">仕組み。</h1>
+        <p className="mt-6 max-w-[32em] text-[16px] leading-[1.95] text-steel">
+          本番の前に、相手に近い実在の人に見てもらうサービスです。
+          誰が答えるのか、どうやって届くのか、AIを何に使っているのかをまとめています。
+        </p>
+
+        <div className="mt-14 flex flex-col gap-12">
+          <Sec title="何をしているサービスか">
+            <p>
+              聞きたいことを預かって、条件に合う実在の人に見てもらい、
+              その反応をまとめてお返ししています。
+              相談に乗るサービスではありません。答えを出すサービスでもありません。
+              出すのは、実際の人がどう感じたかだけです。
+            </p>
+            <p>
+              判断はあなたがします。こちらは「こうすべき」とは書きません。
+            </p>
+          </Sec>
+
+          <Sec title="流れ">
+            <ol className="flex flex-col gap-3">
+              {FLOW.map((f, i) => (
+                <li
+                  key={f.tag}
+                  className="flex gap-4 rounded-card border border-line bg-paper p-5 shadow-card"
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-tint text-[13px] font-black tabular-nums text-brand-deep">
+                    {i + 1}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[15.5px] font-bold text-slate">{f.label}</span>
+                    <span className="mt-1.5 block text-[13.5px] leading-[1.8] text-steel">
+                      {f.note}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p>
+              どこまで進めるかは、選んだ内容によります。
+              一度確かめるだけで終えることも、直してもう一度確かめることもできます。
+            </p>
+          </Sec>
+
+          <Sec title="誰が答えるのか">
+            <p>
+              専門家ではありません。本人確認と年齢確認を済ませた、ふつうの人です。
+              その人の年齢・経験・いまの立場・感覚そのものが、判断の材料になります。
+            </p>
+            <p>
+              登録しただけでは相談は届きません。確認が済んだ方にだけお送りしています。
+              回答の質は、回答までの時間・役に立ったと言われた割合・通報の有無で記録しています。
+              順位を公開して競わせることはしません。
+            </p>
+            <p>
+              回答者の連絡先は、依頼をお送りするためだけに使います。
+              相談した人に渡す経路を作っていません。逆もありません。
+            </p>
+          </Sec>
+
+          <Sec title="AIは何に使っているか">
+            <p>裏側では使っています。使っているのは、次のところです。</p>
+            <ul className="flex flex-col gap-2">
+              {AI_USES.map((t) => (
+                <li
+                  key={t}
+                  className="flex items-start gap-3 rounded-soft bg-mist px-4 py-3 text-[14px] leading-[1.8]"
+                >
+                  <span aria-hidden className="mt-[3px] text-[11px] font-black text-ok-text">
+                    ✓
+                  </span>
+                  <span className="min-w-0">{t}</span>
+                </li>
+              ))}
+            </ul>
+            <p>
+              ただし、お渡ししているのはAIの意見ではありません。
+              実際の人がどう感じたかです。そこだけは、人が書いたものをそのままお見せします。
+            </p>
+          </Sec>
+
+          <Sec title="料金の考え方">
+            <p>
+              人数では分けていません。どこまで仕上げるかで分けています。
+              試すだけにするか、直すところまでやるか、直したものをもう一度確かめるか。
+            </p>
+            <ul className="flex flex-col gap-2">
+              {PLANS.map((p) => (
+                <li
+                  key={p.id}
+                  className="flex items-baseline justify-between gap-4 border-b border-line py-3"
+                >
+                  <span className="min-w-0 text-[14.5px] text-slate">
+                    {p.name}
+                    {!p.available && (
+                      <span className="ml-2 text-[12px] text-steel">受付前</span>
+                    )}
+                  </span>
+                  <span className="shrink-0 text-[14.5px] font-bold tabular-nums text-slate">
+                    ¥{p.yen.toLocaleString()}
+                    {p.from && "〜"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p>
+              月額も入会金もありません。必要なときだけ、1件ごとにお支払いいただきます。
+              条件は{" "}
+              <Link
+                href="/legal"
+                className="font-bold text-brand underline decoration-line underline-offset-4"
+              >
+                特定商取引法に基づく表記
+              </Link>{" "}
+              に書いています。
+            </p>
+          </Sec>
+
+          <Sec title="お金の流れ">
+            <p>
+              お支払いは Stripe が扱います。カード番号はこちらに残りません。
+              お支払いが確認できてから、回答者への募集を始めます。
+              確認できる前に配ることはありません。
+            </p>
+            <p>
+              回答者には、1件ごとに謝礼をお渡ししています。
+              金額と方法は、登録後に個別にご相談しています。
+              決まっていないものを、決まったように書かないことにしています。
+            </p>
+          </Sec>
+
+          <Sec title="できないこと">
+            <p>
+              相手本人に聞くことはできません。相手を特定することもできません。
+              相手の名前・写真・連絡先・やりとりの全文は保存しません。
+              晒す目的、追跡する目的、18歳未満に関するものはお受けしていません。
+            </p>
+            <p>
+              詳しくは{" "}
+              <Link
+                href="/safety"
+                className="font-bold text-brand underline decoration-line underline-offset-4"
+              >
+                安心・安全
+              </Link>{" "}
+              に書いています。
+            </p>
+          </Sec>
+        </div>
+
+        <div className="mt-16">
+          <PlanCta
+            plan={ENTRY_PLAN}
+            from="how_bottom"
+            className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
+          >
+            人に聞いてみる
+          </PlanCta>
+        </div>
+      </div>
+    </div>
+  );
+}

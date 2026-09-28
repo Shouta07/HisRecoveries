@@ -240,65 +240,59 @@ export function cleanResponderAttrs(x: unknown): AttrId[] {
   return [...new Set(x.filter((v): v is AttrId => isAttrId(v)))];
 }
 
-/** 何人に聞くか。MVP は 3 と 5 だけ出す（招待した回答者がまだ少ないため） */
+/** 何人に聞くか。実際に何人になるかはプランが決める（ask/plans.ts） */
 export const PANEL_SIZES = [3, 5, 10] as const;
 export type PanelSize = (typeof PANEL_SIZES)[number];
-
-/**
- * いま実際に募集できる人数。
- *
- * 10人を選べるように見せて集まらないと、待たせたうえで返せない。
- * 招待した回答者が増えたら、ここを上げる。
- */
-export const PANEL_SIZES_OPEN: readonly PanelSize[] = [3, 5];
 
 export function isPanelSize(x: unknown): x is PanelSize {
   return typeof x === "number" && (PANEL_SIZES as readonly number[]).includes(x);
 }
 
-/* ── 料金 ──────────────────────────────────────
-   いまは請求しない。特定商取引法に基づく表記（事業者の氏名・所在地・
-   電話番号・価格）が揃っていないため、日本の消費者から代金を受け取れない。
-   表を先に持っておくのは、あとで金額を決め直すときに
-   画面のあちこちを探さなくて済むようにするため。 */
+/* ── 料金はここに置かない ──────────────────────
+   金額・人数・条件を指定できるかは ask/plans.ts の PLANS が唯一の出どころ。
+   ここに表を持つと二重管理になり、画面とサーバーで違う金額を見る日が来る。
+   価格を引くのは priceOf(planId)、人数は plan(planId).answers。
 
-export const PRICE_YEN: Record<PanelSize, number> = { 3: 490, 5: 890, 10: 1980 };
-
-/** 年齢以外の属性を指定したときの上乗せ。条件に合う人を探す手間の分 */
-export const ATTR_SURCHARGE_YEN = 400;
-
-export function priceFor(size: PanelSize, attrs: AttrId[]): number {
-  return PRICE_YEN[size] + (attrs.length > 0 ? ATTR_SURCHARGE_YEN : 0);
-}
-
-/**
- * 課金しているか。
- * 特商法の4項目が揃い、Stripe の設定が入るまで false のまま。
- * ここが false の間、画面には金額を出さない（出すと請求すると読める）。
- */
-export const BILLING_ENABLED = false;
+   請求できるかどうかは lib/legal.ts の canCharge() が決める。
+   特定商取引法に基づく表記が揃い、Stripe の鍵が入るまで false のまま。 */
 
 /* ── 相談の状態 ──────────────────────────────── */
 
 export type Status =
   | "draft"
+  | "payment_pending"
   | "review"
   | "recruiting"
   | "collecting"
   | "completed"
+  | "refunded"
   | "cancelled";
 
 export const STATUS_LABEL: Record<Status, string> = {
-  draft: "下書き",
+  draft: "お支払い前",
+  payment_pending: "お支払いの確認中",
   review: "確認中",
   recruiting: "募集中",
   collecting: "回答が集まっています",
   completed: "回答が揃いました",
+  refunded: "返金済み",
   cancelled: "取り下げ",
 };
 
 /**
- * review を挟む理由。
+ * 相談を受け取った直後の状態。
+ *
+ * 有料にしたので、受け取った時点ではまだ何も配らない。
+ * 必ず draft から始まり、Stripe の Webhook が支払いを確認してから
+ * 募集に進む。ここで recruiting を返すと、払っていない相談が
+ * 回答者に配られる。
+ */
+export function initialStatus(): Status {
+  return "draft";
+}
+
+/**
+ * 人が見てから配るかどうか。
  *
  * 画像を添えられる以上、そこに相手の顔・LINE ID・アカウント名が
  * 写っている可能性が常にある。文字なら機械で伏せられるが、
@@ -306,12 +300,13 @@ export const STATUS_LABEL: Record<Status, string> = {
  *
  * 消せないものを「たぶん大丈夫」で回答者に配ると、
  * 晒されるのは相談者ではなく、写っている第三者になる。
- * だから画像がある相談は、人が見てから募集に進む。
+ * だから画像がある相談は、支払いのあとも人が見てから募集に進む。
  *
- * 文字だけの相談は review を通さず、そのまま募集に入る。
+ * 支払いの確認が draft → recruiting を動かすので、
+ * この判断は相談を受け取った時点で保存しておく必要がある。
  */
-export function initialStatus(hasImage: boolean): Status {
-  return hasImage ? "review" : "recruiting";
+export function needsReview(hasImage: boolean): boolean {
+  return hasImage;
 }
 
 /* ── 回答 ────────────────────────────────────── */
@@ -442,16 +437,10 @@ const BANNED = [
   }
 }
 
-// 募集できる人数は、必ず選べる人数の一部であること。
-// ここがずれると、画面に無い人数が保存され、集まらないまま止まる。
-for (const n of PANEL_SIZES_OPEN) {
-  if (!(PANEL_SIZES as readonly number[]).includes(n)) {
-    throw new Error(`募集中の人数 ${n} が、選択肢に含まれていません`);
-  }
-}
-
-if (Object.values(PRICE_YEN).some((v) => v <= 0)) {
-  throw new Error("料金表の値が不正です");
+// 受け取った直後に配れる状態になっていないこと。
+// ここが recruiting に戻ると、払っていない相談が回答者に流れる。
+if (initialStatus() !== "draft") {
+  throw new Error("相談は必ず draft から始めてください（支払い前に配らない）");
 }
 
 // もう1つの問いは、必ず実在するカテゴリに付いていること。

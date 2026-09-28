@@ -77,7 +77,7 @@ export default function TabBar() {
   return (
     <nav
       aria-label="メイン"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-rule bg-bone/97 backdrop-blur sm:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-paper/97 backdrop-blur sm:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="mx-auto grid max-w-[560px] grid-cols-4">
@@ -89,9 +89,9 @@ export default function TabBar() {
                 <Link
                   href={t.href}
                   aria-current={on ? "page" : undefined}
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-pill bg-lime px-4 text-[13px] font-bold text-void shadow-card"
+                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-pill bg-brand px-4 text-[13px] font-bold text-paper shadow-card"
                 >
-                  <Tashikame size={20} tone="lime" />
+                  <Tashikame size={20} tone="brand" />
                   {t.label}
                 </Link>
               </li>
@@ -105,7 +105,7 @@ export default function TabBar() {
                 className="flex h-[58px] flex-col items-center justify-center gap-1"
               >
                 <Glyph name={t.label} on={on} />
-                <span className={`text-[10.5px] ${on ? "font-bold text-void" : "text-ash"}`}>
+                <span className={`text-[10.5px] ${on ? "font-bold text-slate" : "text-steel"}`}>
                   {t.label}
                 </span>
               </Link>

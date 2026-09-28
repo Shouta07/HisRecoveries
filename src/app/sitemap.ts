@@ -99,8 +99,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // 回答者の一覧。マーケットプレイスの供給側。
     "/answerers",
     "/mine",
+    // 特定商取引法に基づく表記。課金する以上、検索から辿れる必要がある。
+    "/legal",
     // 安全と、いまできないこと。トップから降ろしたものの行き先。
     "/safety",
+    // 仕組み。誰が答えるか・AIを何に使うか。トップから降ろした説明の行き先。
+    "/how",
     "/check",
     "/interview",
     "/research",

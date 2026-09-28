@@ -62,8 +62,8 @@ export default function RespondForm({
 
   if (state === "done") {
     return (
-      <div className="mt-10 border-l border-void pl-4">
-        <p className="text-[16px] font-bold text-void">ありがとうございました。</p>
+      <div className="mt-10 border-l border-slate pl-4">
+        <p className="text-[16px] font-bold text-slate">ありがとうございました。</p>
         <p className="mt-3 text-[14.5px] leading-[2] text-bodytext">
           相談した方に、匿名で届きます。お伝えするのは年代だけです。
           新しい相談が来たら、またお知らせします。
@@ -103,8 +103,8 @@ export default function RespondForm({
                 aria-pressed={second === x.id}
                 className={`inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[10px] border text-[15px] transition-colors duration-200 ${
                   second === x.id
-                    ? "border-void bg-lime text-void"
-                    : "border-rule bg-transparent text-void hover:border-void"
+                    ? "border-slate bg-brand text-paper"
+                    : "border-line bg-transparent text-slate hover:border-slate"
                 }`}
               >
                 {x.label}
@@ -123,13 +123,13 @@ export default function RespondForm({
           placeholder="思ったことを、そのまま書いてください。丁寧に整えなくて構いません。"
           className={`mt-3 ${inputClass}`}
         />
-        <p className="mt-2 text-right text-[12px] tabular-nums text-ash">
+        <p className="mt-2 text-right text-[12px] tabular-nums text-steel">
           {comment.trim().length} / {COMMENT_MIN}文字以上
         </p>
       </div>
 
       {error && (
-        <p className="mt-5 border-l border-void pl-3.5 text-[14px] leading-[1.9] text-void">
+        <p className="mt-5 border-l border-slate pl-3.5 text-[14px] leading-[1.9] text-slate">
           {error}
         </p>
       )}

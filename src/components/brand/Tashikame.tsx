@@ -25,7 +25,7 @@ export type Mood = "normal" | "thinking" | "going" | "report" | "idle";
  * tone
  *   light  明るい地の上（線が黒）
  *   dark   黒い地の上（線が白）
- *   lime   ライムの面の上（線が黒）
+ *   brand  青い面の上（線が白）
  */
 export default function Tashikame({
   mood = "normal",
@@ -35,14 +35,14 @@ export default function Tashikame({
   label,
 }: {
   mood?: Mood;
-  tone?: "light" | "dark" | "lime";
+  tone?: "light" | "dark" | "brand";
   size?: number;
   className?: string;
   /** 読み上げ用。飾りのときは省く */
   label?: string;
 }) {
-  const stroke = tone === "dark" ? "#F2F0EC" : "#0A0A0A";
-  const fill = tone === "dark" ? "#0A0A0A" : tone === "lime" ? "#CCFF00" : "#F2F0EC";
+  const stroke = tone === "light" ? "#0F172A" : "#FFFFFF";
+  const fill = tone === "dark" ? "#0F172A" : tone === "brand" ? "#2563EB" : "#FFFFFF";
 
   return (
     <svg

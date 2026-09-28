@@ -56,8 +56,8 @@ export default function HelpfulButton({
         aria-pressed={value === true}
         className={`inline-flex min-h-[40px] items-center px-3 text-[10.5px] font-bold uppercase tracking-[0.12em] transition-colors ${
           value === true
-            ? "bg-lime text-void"
-            : "border border-rule text-ash hover:border-void hover:text-void"
+            ? "bg-brand text-paper"
+            : "border border-line text-steel hover:border-slate hover:text-slate"
         }`}
       >
         役に立った
@@ -68,8 +68,8 @@ export default function HelpfulButton({
         aria-pressed={value === false}
         className={`inline-flex min-h-[40px] items-center px-3 text-[10.5px] font-bold uppercase tracking-[0.12em] transition-colors ${
           value === false
-            ? "bg-void text-bone"
-            : "border border-rule text-ash hover:border-void hover:text-void"
+            ? "bg-slate text-paper"
+            : "border border-line text-steel hover:border-slate hover:text-slate"
         }`}
       >
         そうでもない

@@ -90,13 +90,32 @@ export const CONVERSION_EVENTS = [
   // ── 「女性に聞く」──
   // 追うのは「着地した人のうち、何人が相談を出し、何人が回答を受け取ったか」。
   // 滞在時間もPVも追わない。
-  "ask_submitted", // 相談を出した（props: category, size, ab）
+  "ask_submitted", // 相談を出した（props: category, plan, ab）
   "ask_blocked", // 扱えない内容で止まった（props: category）— 何を止めているかを見る
   "ask_result_viewed", // 結果を開いた（props: answered, of）
   "respond_opened", // 回答者がリンクを開いた
   "respond_submitted", // 回答者が回答を出した
   "helpful_marked", // 相談者が回答に「役に立った」を付けた（props: helpful）
   "join_submitted", // 回答者として登録した（props: age, attrs＝選んだ属性の数）
+
+  // ── 有料化（Stripe）──
+  // 検証したいのは1点だけ。
+  // 「ChatGPT が無料で使える時代に、実在の人の反応に金を払うか」。
+  // だから無料の利用者数は見ない。見るのは下の5つだけ。
+  //   Checkout開始率  plan_viewed → checkout_started
+  //   決済完了率      checkout_started → purchase_paid
+  //   プラン別購入率  purchase_paid の props.plan の分布
+  //   再購入率        purchase_paid の props.nth が 2 以上の割合
+  //   返金率          purchase_refunded / purchase_paid
+  "plan_viewed", // 料金を見た（props: from＝どこから）
+  "plan_selected", // プランを選び直した（props: plan, from）
+  "checkout_started", // 決済画面へ送った（props: plan）
+  "checkout_blocked", // 決済を開始できなかった（props: plan, why）— 法令・設定の不足を見る
+  "checkout_abandoned", // 決済画面から戻ってきた（props: plan）
+  // 支払い済みの画面に到達した。確定は Webhook 側なので、
+  // ここは「利用者が完了まで進んだ」の意味に限る（props: plan, nth）
+  "purchase_paid",
+  "purchase_refunded", // 返金された（props: plan）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

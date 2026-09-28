@@ -379,7 +379,8 @@ create table if not exists consultations (
   -- 年齢以外に指定された属性。空なら指定なし。
   panel_attrs jsonb default '[]'::jsonb,
   panel_size int not null default 3,
-  status text not null default 'recruiting', -- draft/review/recruiting/collecting/completed/cancelled
+  -- 既定は下で 'draft' に変える（有料化。支払い前に配らない）
+  status text not null default 'recruiting', -- draft/payment_pending/review/recruiting/collecting/completed/refunded/cancelled
   -- 伏せ字で何を消したか。相談者に「これは消しました」と見せるため。
   -- 消した中身そのものは持たない。
   redacted_kinds jsonb default '[]'::jsonb,
@@ -532,3 +533,81 @@ left join responses r on r.consultation_id = c.id
 where c.status in ('recruiting', 'collecting', 'completed')
 group by c.id
 order by c.created_at desc;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 有料化（Stripe）
+--
+-- 無料ベータをやめ、都度課金にする。
+-- 検証したいのは「ChatGPT が無料で使える時代に、
+-- 実在の人の反応に 1,980〜2,980円 払うか」の1点なので、
+-- 無料の利用者数は指標にしない。
+--
+-- ── 決済が終わるまで配らない ────────────────────
+-- consultations.status は payment_pending から動かさない。
+-- recruiting へ進めるのは Webhook が支払いを確認したときだけ。
+-- success_url では進めない（URLは手で叩ける）。
+-- ═══════════════════════════════════════════════════════════════
+
+alter table consultations add column if not exists product_type text;   -- human_check / target_check / human_test
+alter table consultations add column if not exists price int;           -- 請求した金額（円）。サーバーが入れる
+alter table consultations add column if not exists asker_id uuid;       -- 会員を入れたときのため。いまは null
+alter table consultations add column if not exists paid_at timestamptz; -- 支払いが確認できた時刻
+-- 人が見てから配るか。画像つきの相談は、払われても自動では配らない。
+-- 支払いの確認が draft → recruiting を動かすので、
+-- この判断は相談を受け取った時点で持っておく必要がある。
+alter table consultations add column if not exists needs_review boolean not null default false;
+-- 検証の核心。「ChatGPT が無料で使えるのに、それでも払ったか」。
+-- 任意の設問なので、答えなかった人は null。null を false と混ぜない。
+alter table consultations add column if not exists asked_ai boolean;
+-- 結果を見たあとに聞く「なぜ人にも聞いたか」。選択式。答えなければ空。
+alter table consultations add column if not exists ask_reasons jsonb default '[]'::jsonb;
+
+-- 既定値を draft に変える。
+-- recruiting のままだと、列を書き忘れた経路から
+-- 払っていない相談が募集に入る。
+alter table consultations alter column status set default 'draft';
+
+-- 状態:
+--   draft → payment_pending → paid(内部) → recruiting → collecting → completed
+--   review は画像つきの相談が支払い後に入る（人が見てから recruiting へ）
+--   cancelled / refunded
+-- 決済前は recruiting に入らない。
+
+alter table payments add column if not exists stripe_checkout_session_id text;
+alter table payments add column if not exists stripe_payment_intent_id text;
+alter table payments add column if not exists currency text default 'jpy';
+alter table payments add column if not exists refunded_at timestamptz;
+
+-- 同じ Checkout を二度記録しない。Webhook は再送される前提。
+create unique index if not exists payments_session_uniq
+  on payments (stripe_checkout_session_id)
+  where stripe_checkout_session_id is not null;
+
+create unique index if not exists payments_intent_uniq
+  on payments (stripe_payment_intent_id)
+  where stripe_payment_intent_id is not null;
+
+create index if not exists payments_consultation_idx on payments (consultation_id, payment_status);
+
+-- 回答者への謝礼。
+-- MVP では Stripe Connect を使わず、手で精算する。
+-- ただし後から Connect へ移せるよう、送金先と状態の列だけ用意しておく。
+alter table rewards add column if not exists consultation_id uuid references consultations(id) on delete set null;
+alter table rewards add column if not exists status text default 'pending';  -- pending / paid / void
+alter table rewards add column if not exists payout_ref text;                -- 手で振り込んだときの控え。将来は Connect の transfer id
+
+-- 売上と、回答がどこで止まっているか。
+create or replace view sales_board as
+select
+  date_trunc('day', p.paid_at) as day,
+  c.product_type,
+  count(*) filter (where p.payment_status = 'paid') as paid_count,
+  sum(p.amount) filter (where p.payment_status = 'paid') as paid_yen,
+  count(*) filter (where p.payment_status = 'refunded') as refunded_count,
+  count(*) filter (where c.status = 'completed') as completed_count
+from payments p
+join consultations c on c.id = p.consultation_id
+where p.paid_at is not null
+group by 1, 2
+order by 1 desc;

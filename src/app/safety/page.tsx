@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { PRICE_YEN, ATTR_SURCHARGE_YEN, BILLING_ENABLED } from "@/lib/ask/model";
+import { PLANS } from "@/lib/ask/plans";
+import { canCharge, whyCannotCharge } from "@/lib/legal";
 import { Eyebrow, Hairline } from "@/components/brand/kit";
 
 // 安全と、いまの制約。
@@ -11,7 +12,7 @@ import { Eyebrow, Hairline } from "@/components/brand/kit";
 // 免責の細かいところ。これらはトップに置くと、
 // 製品が何なのかを理解する前に言い訳を読ませることになる。
 //
-// ただし消さない。C2C で相手が見えない以上、
+// ただし消さない。相手の顔が見えない以上、
 // 「何をしないか」「いま何ができないか」は、
 // 探せば必ず出てくる場所に置いておく必要がある。
 //
@@ -27,10 +28,10 @@ export const metadata: Metadata = {
 
 function Section({ title, en, children }: { title: string; en: string; children: React.ReactNode }) {
   return (
-    <section className="border-t border-rule pt-10">
+    <section className="border-t border-line pt-10">
       <Eyebrow>{en}</Eyebrow>
-      <h2 className="mt-5 text-big font-black text-void">{title}</h2>
-      <div className="mt-6 flex max-w-[34em] flex-col gap-5 text-[15.5px] leading-[1.95] text-ash">
+      <h2 className="mt-5 text-big font-black text-slate">{title}</h2>
+      <div className="mt-6 flex max-w-[34em] flex-col gap-5 text-[15.5px] leading-[1.95] text-steel">
         {children}
       </div>
     </section>
@@ -39,15 +40,15 @@ function Section({ title, en, children }: { title: string; en: string; children:
 
 export default function SafetyPage() {
   return (
-    <div data-brand className="min-h-screen bg-bone pb-28 text-void sm:pb-0">
-      <header className="border-b border-rule">
+    <div data-brand className="min-h-screen bg-paper pb-28 text-slate sm:pb-0">
+      <header className="border-b border-line">
         <div className="mx-auto flex w-full max-w-[900px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
           <Link href="/" className="text-[14px] font-black">
             His Recoveries
           </Link>
           <Link
             href="/ask"
-            className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-lime px-5 text-[13.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
+            className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
           >
             人に聞く
           </Link>
@@ -56,12 +57,12 @@ export default function SafetyPage() {
 
       <main className="mx-auto w-full max-w-[900px] px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
         <Eyebrow>匿名でつかえます</Eyebrow>
-        <h1 className="mt-6 max-w-[16em] text-huge font-black text-void">
+        <h1 className="mt-6 max-w-[16em] text-huge font-black text-slate">
           何をして、
           <br />
           何をしないか。
         </h1>
-        <p className="mt-8 max-w-[32em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
+        <p className="mt-8 max-w-[32em] text-[16px] leading-[1.95] text-steel sm:text-[17px]">
           見ず知らずの人どうしが、相手を特定できないまま言葉をやりとりする場所です。
           安全の話を後ろに回さないために、ここにまとめています。
         </p>
@@ -127,8 +128,8 @@ export default function SafetyPage() {
               年齢とプロフィールを確かめた方に「確認済み」の印を付けています。
             </p>
             <p>
-              いま登録している人数が少ないため、3人と5人だけ受け付けています。
-              10人は、集まってから開けます。選べるのに集まらない状態を作らないためです。
+              条件に合う人が集まらなかった場合は、集まらなかった分をご返金します。
+              先に人数を売っておいて、集まらないまま待たせることはしません。
             </p>
             <p>
               回答の質は、回答数・役に立ったと言われた割合・回答までの時間・通報の有無で
@@ -137,41 +138,37 @@ export default function SafetyPage() {
           </Section>
 
           <Section en="料金" title="料金">
-            {BILLING_ENABLED ? (
-              <p>下記の料金でご利用いただけます。</p>
+            {canCharge() ? (
+              <p>下記の料金でご利用いただけます。1件ごとのお支払いです。</p>
             ) : (
               <p>
-                <strong className="font-bold text-void">いまは請求していません。</strong>
-                特定商取引法に基づく表記（事業者の氏名・所在地・電話番号・価格）が
-                揃っていないため、代金を受け取れる状態にないからです。
-                揃うまでは無料で、下記は予定している金額です。
+                <strong className="font-bold text-slate">いまお支払いは受け付けていません。</strong>
+                {whyCannotCharge()}。
+                揃うまで、決済を開始できないようにしてあります。
               </p>
             )}
-            <dl className="divide-y divide-rule border-y border-rule">
-              {[
-                ["3人に聞く", PRICE_YEN[3]],
-                ["5人に聞く", PRICE_YEN[5]],
-                ["10人に聞く", PRICE_YEN[10]],
-              ].map(([label, yen]) => (
-                <div key={String(label)} className="flex items-baseline justify-between gap-4 py-3">
-                  <dt className="text-[15px] text-void">{label}</dt>
-                  <dd className="text-[15px] font-bold tabular-nums text-void">
-                    ¥{Number(yen).toLocaleString()}
-                    {!BILLING_ENABLED && (
-                      <span className="ml-3 text-[11px] font-bold text-ash">
-                        ベータ期間中無料
-                      </span>
-                    )}
+            <dl className="divide-y divide-line border-y border-line">
+              {PLANS.map((p) => (
+                <div key={p.id} className="flex items-baseline justify-between gap-4 py-3">
+                  <dt className="text-[15px] text-slate">
+                    {p.name}
+                    {!p.available && <span className="ml-2 text-[12px] text-steel">受付前</span>}
+                  </dt>
+                  <dd className="text-[15px] font-bold tabular-nums text-slate">
+                    ¥{p.yen.toLocaleString()}
+                    {p.from && "〜"}
                   </dd>
                 </div>
               ))}
-              <div className="flex items-baseline justify-between gap-4 py-3">
-                <dt className="text-[15px] text-void">年代以外の条件を指定する</dt>
-                <dd className="text-[15px] font-bold tabular-nums text-void">
-                  +¥{ATTR_SURCHARGE_YEN.toLocaleString()}
-                </dd>
-              </div>
             </dl>
+            <p>
+              月額はありません。入会金もありません。必要なときだけ、1件ごとにお支払いいただきます。
+              募集を始める前であればキャンセルできます。詳しくは{" "}
+              <Link href="/legal" className="underline decoration-line underline-offset-4 hover:text-slate">
+                特定商取引法に基づく表記
+              </Link>{" "}
+              に書いています。
+            </p>
             <p>
               回答者への謝礼は、1件ごとにお渡ししています。
               金額と方法は、登録後に個別にご相談しています。
@@ -190,7 +187,7 @@ export default function SafetyPage() {
             </p>
             <p>
               扱いの全般は{" "}
-              <Link href="/privacy" className="underline decoration-rule underline-offset-4 hover:text-void">
+              <Link href="/privacy" className="underline decoration-line underline-offset-4 hover:text-slate">
                 プライバシー・免責事項
               </Link>{" "}
               に書いています。
@@ -215,13 +212,13 @@ export default function SafetyPage() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/ask"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-lime px-9 text-[15.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-brand px-9 text-[15.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
             >
               人に聞いてみる
             </Link>
             <Link
               href="/join"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-rule bg-card px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-line bg-paper px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
             >
               回答者について
             </Link>
@@ -229,12 +226,12 @@ export default function SafetyPage() {
         </div>
       </main>
 
-      <footer className="border-t border-rule">
+      <footer className="border-t border-line">
         <div className="mx-auto flex w-full max-w-[900px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
           <Link href="/" className="text-[15px] font-black">
             His Recoveries
           </Link>
-          <p className="text-[11.5px] text-ash">
+          <p className="text-[11.5px] text-steel">
             © 2026 His Recoveries — Real people. Real reactions.
           </p>
         </div>

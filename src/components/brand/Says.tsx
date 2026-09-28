@@ -33,14 +33,14 @@ export default function Says({
       <div className="min-w-0 flex-1">
         <div
           className={`relative rounded-card border px-5 py-4 ${
-            dark ? "border-rule-dark bg-void text-bone" : "border-rule bg-card text-void shadow-card"
+            dark ? "border-line-dark bg-slate text-paper" : "border-line bg-paper text-slate shadow-card"
           }`}
         >
           {/* 吹き出しのしっぽ。左向きの三角を、線で作る */}
           <span
             aria-hidden
             className={`absolute -left-[7px] top-6 block h-3 w-3 rotate-45 border-b border-l ${
-              dark ? "border-rule-dark bg-void" : "border-rule bg-card"
+              dark ? "border-line-dark bg-slate" : "border-line bg-paper"
             }`}
           />
           <p className="relative text-[15.5px] font-bold leading-[1.7]">{text}</p>

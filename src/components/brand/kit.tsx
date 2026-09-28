@@ -8,15 +8,21 @@
 // ════════════════════════════════════════════════
 // 色の規則（破ると、見えない文字ができる）
 // ════════════════════════════════════════════════
-//   bone  #F2F0EC  地
-//   void  #0A0A0A  反転面・大見出し
-//   ash   #6E6A63  本文（地の上で 4.77:1）
-//   lime  #CCFF00  アクセント1色
+//   paper   #FFFFFF  地
+//   mist    #F4F7FB  帯・へこませたい面
+//   slate   #0F172A  見出し・濃い文字
+//   steel   #5B6676  本文（白の上で 6.1:1）
+//   brand   #2563EB  主色
+//   ok      #16A34A  良い側の反応
+//   line    #E4E9F0  罫線
 //
-//   ライムは地の上で 1.04:1 しかない。
-//   ・明るい地の上 → 面として塗り、上は黒文字（16.9:1）
-//   ・黒の上      → 文字に使ってよい（17.8:1）
-//   ライムを明るい地の文字色にしない。
+//   brand は濃い色。面に塗ったら、上は白文字（5.17:1）。
+//   白地の文字色に使うのもよい（5.17:1）。
+//   ok は白地で 3.16:1 しかない。リングと面だけに使い、
+//   文字にするときは ok-text（#15803D, 4.54:1）を使う。
+//
+//   2026-09 に、生成り + ライムからこの配色へ入れ替えた。
+//   前の配色は目を引いたが、読み解く一拍を要求していた。
 //
 // ════════════════════════════════════════════════
 // 文字
@@ -39,11 +45,14 @@ export function Eyebrow({
   tone = "dark",
 }: {
   children: ReactNode;
-  tone?: "dark" | "light" | "lime";
+  tone?: "dark" | "light" | "brand" | "onDark";
 }) {
   // 英字を大文字にして字間を広げると、広告代理店の見た目になる。
   // 日本語のラベルがそのまま読める形にする。
-  const c = tone === "light" ? "text-ash-soft" : tone === "lime" ? "text-lime" : "text-ash";
+  //
+  // onDark は暗い面の上。brand(#2563EB) は slate の上で 3.45:1 しかなく、
+  // 小さな文字では AA に届かない。暗い面では必ずこちらを使う。
+  const c = tone === "onDark" ? "text-steel-dark" : tone === "brand" ? "text-brand" : "text-steel";
   return <p className={`text-[13px] font-bold tracking-[0.02em] ${c}`}>{children}</p>;
 }
 
@@ -62,10 +71,10 @@ export function AttributeChip({
   const base =
     "inline-flex min-h-[42px] items-center rounded-pill px-4 text-[13.5px] font-bold transition-colors duration-200";
   const look = on
-    ? "bg-lime text-void"
+    ? "bg-brand text-paper"
     : tone === "light"
-      ? "border border-rule-dark text-bone hover:border-lime hover:text-lime"
-      : "border border-rule bg-card text-void hover:border-void";
+      ? "border border-slate text-paper hover:border-brand hover:text-brand-tint"
+      : "border border-line bg-paper text-slate hover:border-slate";
 
   if (!onClick) return <span className={`${base} ${look}`}>{children}</span>;
   return (
@@ -111,7 +120,7 @@ export function ReactionCard({
     <article
       style={{ "--tilt": `${tilt}deg`, transform: `rotate(${tilt}deg)` } as React.CSSProperties}
       className={`w-full max-w-[290px] border p-4 ${
-        dark ? "border-rule-dark bg-void text-bone" : "border-void bg-bone text-void"
+        dark ? "border-line-dark bg-slate text-paper" : "border-line bg-paper text-slate"
       } ${
         float === "slow"
           ? "motion-safe:animate-float-slow"
@@ -127,7 +136,7 @@ export function ReactionCard({
         </span>
         <span
           className={`rounded-pill px-3 py-1 text-[11.5px] font-bold ${
-            r.positive ? "bg-lime text-void" : dark ? "bg-bone text-void" : "bg-bone-soft text-ash"
+            r.positive ? "bg-brand text-paper" : dark ? "bg-paper text-slate" : "bg-mist text-steel"
           }`}
         >
           {r.verdict}
@@ -139,7 +148,7 @@ export function ReactionCard({
           <li
             key={a}
             className={`rounded-pill px-2 py-0.5 text-[11px] ${
-              dark ? "border border-rule-dark text-ash-soft" : "bg-bone-soft text-ash"
+              dark ? "border border-slate text-steel" : "bg-mist text-steel"
             }`}
           >
             {a}
@@ -152,7 +161,7 @@ export function ReactionCard({
       {typeof r.helpful === "number" && (
         <p
           className={`mt-3.5 border-t pt-2.5 text-[12px] font-bold ${
-            dark ? "border-rule-dark text-ash-soft" : "border-rule text-ash"
+            dark ? "border-slate text-steel" : "border-line text-steel"
           }`}
         >
           役に立った {r.helpful}%
@@ -183,12 +192,12 @@ export function ResultDistribution({
   return (
     <div>
       {/* 1本のバーに全部を積む。円グラフにしない */}
-      <div className={`flex h-3 w-full overflow-hidden rounded-pill ${dark ? "bg-rule-dark" : "bg-bone-soft"}`}>
+      <div className={`flex h-3 w-full overflow-hidden rounded-pill ${dark ? "bg-line" : "bg-mist"}`}>
         {shown.map((s) => (
           <span
             key={s.label}
             className={`block origin-left motion-safe:animate-bar-grow ${
-              s.positive ? "bg-lime" : dark ? "bg-bone" : "bg-void"
+              s.positive ? "bg-brand" : dark ? "bg-paper" : "bg-slate"
             }`}
             style={{ width: `${(s.n / Math.max(1, total)) * 100}%` }}
           />
@@ -200,7 +209,7 @@ export function ResultDistribution({
           <li key={s.label} className="flex items-baseline gap-4">
             <span
               className={`text-[34px] font-black leading-[1] tracking-[-0.03em] tabular-nums sm:text-[42px] ${
-                s.positive ? (dark ? "text-lime" : "text-void") : dark ? "text-bone" : "text-ash"
+                s.positive ? (dark ? "text-brand-tint" : "text-slate") : dark ? "text-paper" : "text-steel"
               }`}
             >
               {Math.round((s.n / Math.max(1, total)) * 100)}
@@ -208,11 +217,11 @@ export function ResultDistribution({
             </span>
             <span className="min-w-0">
               <span
-                className={`block text-[14px] font-bold ${dark ? "text-bone" : "text-void"}`}
+                className={`block text-[14px] font-bold ${dark ? "text-paper" : "text-slate"}`}
               >
                 {s.label}
               </span>
-              <span className={`block text-[12.5px] ${dark ? "text-ash-soft" : "text-ash"}`}>
+              <span className={`block text-[12.5px] ${dark ? "text-steel" : "text-steel"}`}>
                 {s.n}人 / {total}人
               </span>
             </span>
@@ -240,13 +249,13 @@ export function Stat({
   return (
     <div>
       <p
-        className={`text-stat font-black tabular-nums ${dark ? "text-lime" : "text-void"}`}
+        className={`text-stat font-black tabular-nums ${dark ? "text-brand-tint" : "text-slate"}`}
       >
         {value}
         {unit && <span className="text-[0.38em] align-super">{unit}</span>}
       </p>
       <p
-        className={`mt-2 text-[13px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}
+        className={`mt-2 text-[13px] font-bold ${dark ? "text-steel" : "text-steel"}`}
       >
         {label}
       </p>
@@ -260,18 +269,18 @@ export function Stat({
 
 /** 画面にひとつだけ置く問い */
 export function BigAsk({ children }: { children: ReactNode }) {
-  return <h1 className="text-big font-black text-void">{children}</h1>;
+  return <h1 className="text-big font-black text-slate">{children}</h1>;
 }
 
 /** 入力欄の上に置く小さなラベル */
 export function FieldLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-ash">{children}</p>
+    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-steel">{children}</p>
   );
 }
 
 export function Note({ children }: { children: ReactNode }) {
-  return <p className="text-[12.5px] leading-[1.85] text-ash">{children}</p>;
+  return <p className="text-[12.5px] leading-[1.85] text-steel">{children}</p>;
 }
 
 /** 選択肢。押せるものだけ面として独立させる */
@@ -291,8 +300,8 @@ export function Choice({
       aria-pressed={on}
       className={`flex min-h-[60px] w-full items-center rounded-card border px-5 py-4 text-left text-[15.5px] transition-all duration-200 ${
         on
-          ? "border-lime bg-lime text-void shadow-card"
-          : "border-rule bg-card text-void shadow-card hover:shadow-card-hover"
+          ? "border-brand bg-brand text-paper shadow-card"
+          : "border-line bg-paper text-slate shadow-card hover:shadow-card-hover"
       }`}
     >
       {children}
@@ -316,8 +325,8 @@ export function Action({
 }) {
   const cls = `inline-flex min-h-[56px] w-full items-center justify-center rounded-pill px-7 text-[15.5px] font-bold transition-all duration-200 ${
     quiet
-      ? "border border-rule bg-card text-void shadow-card hover:shadow-card-hover"
-      : "bg-lime text-void shadow-card hover:shadow-card-hover disabled:bg-bone-soft disabled:text-ash disabled:shadow-none"
+      ? "border border-line bg-paper text-slate shadow-card hover:shadow-card-hover"
+      : "bg-brand text-paper shadow-card hover:shadow-card-hover disabled:bg-mist disabled:text-steel disabled:shadow-none"
   }`;
   if (href) {
     return (
@@ -335,14 +344,14 @@ export function Action({
 
 /** 自由入力。枠を細く、文字を大きく */
 export const inputClass =
-  "w-full rounded-card border border-rule bg-card px-4 py-3.5 text-[16px] leading-[1.9] text-void outline-none transition-colors duration-200 placeholder:text-ash-soft focus:border-lime focus:ring-2 focus:ring-lime/40";
+  "w-full rounded-card border border-line bg-paper px-4 py-3.5 text-[16px] leading-[1.9] text-slate outline-none transition-colors duration-200 placeholder:text-steel focus:border-brand focus:ring-2 focus:ring-brand/30";
 
 /** 進み具合。数字にしない。線が伸びるだけ */
 export function Progress({ step, of }: { step: number; of: number }) {
   return (
-    <div className="h-[6px] w-full overflow-hidden rounded-pill bg-bone-soft">
+    <div className="h-[6px] w-full overflow-hidden rounded-pill bg-mist">
       <div
-        className="h-[6px] rounded-pill bg-lime transition-[width] duration-300 ease-out"
+        className="h-[6px] rounded-pill bg-brand transition-[width] duration-300 ease-out"
         style={{ width: `${(step / of) * 100}%` }}
       />
     </div>
@@ -355,7 +364,7 @@ export function Hairline({ tone = "light" }: { tone?: "light" | "dark" }) {
   return (
     <span
       aria-hidden
-      className={`block h-px w-full ${tone === "dark" ? "bg-rule-dark" : "bg-rule"}`}
+      className={`block h-px w-full ${tone === "dark" ? "bg-line-dark" : "bg-line"}`}
     />
   );
 }

@@ -65,15 +65,15 @@ export default async function AnswerersPage() {
   }));
 
   return (
-    <div data-brand className="min-h-screen bg-bone pb-28 text-void sm:pb-0">
-      <header className="border-b border-rule">
+    <div data-brand className="min-h-screen bg-paper pb-28 text-slate sm:pb-0">
+      <header className="border-b border-line">
         <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
           <Link href="/" className="text-[15px] font-black">
             His Recoveries
           </Link>
           <Link
             href="/ask"
-            className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-lime px-5 text-[13.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
+            className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
           >
             人に聞く
           </Link>
@@ -82,19 +82,19 @@ export default async function AnswerersPage() {
 
       <div className="mx-auto w-full max-w-[1180px] px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
         <Eyebrow>答える人たち</Eyebrow>
-        <h1 className="mt-6 max-w-[14em] text-huge font-black text-void">
+        <h1 className="mt-6 max-w-[14em] text-huge font-black text-slate">
           答えるのは、
           <br />
           実在する人です。
         </h1>
-        <p className="mt-8 max-w-[30em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
+        <p className="mt-8 max-w-[30em] text-[16px] leading-[1.95] text-steel sm:text-[17px]">
           年代・地域・立場・得意な話題まで見てから聞けます。
           名前も連絡先も出しません。出す仕組み自体を作っていません。
         </p>
 
         {people.length > 0 ? (
           <>
-            <p className="mt-10 text-[11px] font-bold text-ash">
+            <p className="mt-10 text-[11px] font-bold text-steel">
               {people.length} people
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,9 +104,9 @@ export default async function AnswerersPage() {
             </div>
           </>
         ) : (
-          <div className="mt-12 border-t-2 border-void pt-10">
+          <div className="mt-12 border-t-2 border-slate pt-10">
             <Says text={EMPTY.noAnswerers.text} mood={EMPTY.noAnswerers.mood} size={72} />
-            <p className="mt-8 max-w-[30em] text-[15.5px] leading-[1.95] text-ash">
+            <p className="mt-8 max-w-[30em] text-[15.5px] leading-[1.95] text-steel">
               はじまったばかりなので、ここは空です。
               それらしい人を並べることはしません。
               登録して確認が済んだ方から、この場所に出ます。
@@ -114,13 +114,13 @@ export default async function AnswerersPage() {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/join"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-lime px-9 text-[15.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-brand px-9 text-[15.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
               >
                 回答者として参加する
               </Link>
               <Link
                 href="/ask"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-rule bg-card px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-line bg-paper px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
               >
                 先に聞いてみる
               </Link>
@@ -130,7 +130,7 @@ export default async function AnswerersPage() {
 
         <div className="mt-20">
           <Hairline />
-          <p className="mt-7 max-w-[34em] text-[13px] leading-[1.9] text-ash">
+          <p className="mt-7 max-w-[34em] text-[13px] leading-[1.9] text-steel">
             「確認済み」の印が付くのは、運営が年齢とプロフィールを確かめた方だけです。
             回答数と、役に立ったと言われた割合は、実際に貯まったものだけを出します。
             まだ評価が1件も付いていない方には、割合を表示しません。
@@ -138,17 +138,17 @@ export default async function AnswerersPage() {
         </div>
       </div>
 
-      <footer className="border-t border-rule">
+      <footer className="border-t border-line">
         <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
           <div className="flex items-baseline gap-6">
             <Link href="/" className="text-[15px] font-black">
               His Recoveries
             </Link>
-            <Link href="/safety" className="text-[12px] text-ash transition-colors hover:text-void">
+            <Link href="/safety" className="text-[12px] text-steel transition-colors hover:text-slate">
               安全とできないこと
             </Link>
           </div>
-          <p className="text-[11.5px] text-ash">
+          <p className="text-[11.5px] text-steel">
             © 2026 His Recoveries — Powered by AI. Answered by humans.
           </p>
         </div>
