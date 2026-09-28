@@ -119,6 +119,46 @@ export async function createCheckout(
   return { ok: r.ok, session: r.data, error: r.error };
 }
 
+/**
+ * Checkout の結果を、Stripe に直接聞く。
+ *
+ * ── なぜ要るか ────────────────────────────────────
+ * 支払いが済んだのに「確認しています」と待たせるのをやめたい。
+ * かといって success_url を信じるわけにはいかない（URLは手で叩ける）。
+ *
+ * だから、戻ってきた時点で Stripe に聞く。
+ * Stripe が paid と言ったら、その場で配信を始めてよい。
+ * Webhook は取りこぼしの受け皿として残す（どちらから来ても
+ * 同じ処理が1回だけ走るようにしてある）。
+ */
+export async function retrieveCheckout(
+  sessionId: string,
+): Promise<{ ok: boolean; session?: CheckoutSession & {
+  payment_status?: string;
+  status?: string;
+  amount_total?: number;
+  currency?: string;
+  payment_intent?: string | null;
+  client_reference_id?: string | null;
+}; error?: string }> {
+  if (!KEY) return { ok: false, error: "stripe not configured" };
+  try {
+    const res = await fetch(`${API}/checkout/sessions/${encodeURIComponent(sessionId)}`, {
+      headers: { Authorization: `Bearer ${KEY}` },
+      cache: "no-store",
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      const msg = data?.error?.message ?? `stripe ${res.status}`;
+      console.error("[stripe] retrieve", msg);
+      return { ok: false, error: msg };
+    }
+    return { ok: true, session: data };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "stripe failed" };
+  }
+}
+
 export async function refund(
   paymentIntentId: string,
   idempotencyKey: string,

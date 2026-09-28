@@ -63,11 +63,75 @@ export type RewardBand = {
  * 幅の外には出さない（下は回答者のため、上は採算のため）。
  */
 export const REWARDS: RewardBand[] = [
-  { kind: "quick", label: "すぐ答える", min: 150, max: 250, note: "1〜3分で1件" },
-  { kind: "priority", label: "急ぎに答える", min: 250, max: 400, note: "急ぎの依頼" },
+  { kind: "quick", label: "すぐ答える", min: 150, max: 200, note: "空いた2分で1件" },
+  { kind: "priority", label: "急ぎに答える", min: 250, max: 300, note: "急ぎの依頼" },
   { kind: "talk", label: "話す", min: 1500, max: 2500, note: "20〜30分" },
   { kind: "improve", label: "直しに関わる", min: 800, max: 1500, note: "改善案づくり" },
 ];
+
+/* ── 回答者の段 ──────────────────────────────
+   良い回答をすると、単価の高い仕事が回ってくる。
+   順位を competing させるゲームにはしない。
+   見ているのは、役に立ったと言われた割合・速さ・通報の有無。 */
+
+export type Tier = { id: "bronze" | "trusted" | "top"; label: string; quickYen: number };
+
+export const TIERS: Tier[] = [
+  { id: "bronze", label: "はじめたばかり", quickYen: 180 },
+  { id: "trusted", label: "信頼されている", quickYen: 220 },
+  { id: "top", label: "とても評価が高い", quickYen: 260 },
+];
+
+/** 条件が珍しいときの上乗せ */
+export const RARE_BONUS = { min: 50, max: 150 };
+
+/**
+ * 1注文で、回答者に払ってよい合計の上限。
+ *
+ * 1人いくら、を固定にしない。
+ * 誰かに 300 円払ったら、残りの人の平均を下げて、合計をここに収める。
+ * 顧客の価格から逆算して、供給の原価を管理する。
+ */
+export const REWARD_CAP: Record<PlanId, number> = {
+  final_check: 1050,
+  talk: 1800,
+  improve: 2100,
+  retest: 3000,
+  date_ready: 5200,
+};
+
+/**
+ * 実際に配る額を決める。
+ *
+ * 望ましい額をそのまま足すと上限を超えることがある
+ * （評価の高い人ばかり当たった、珍しい条件が重なった、など）。
+ * 超えたら、全体を比例で縮めて上限に収める。
+ * 縮めても下限（MIN_REWARD_YEN）は割らない。割るくらいなら人数を減らす。
+ */
+export function allocate(
+  id: PlanId,
+  wanted: number[],
+): { paid: number[]; total: number; capped: boolean } {
+  const cap = REWARD_CAP[id];
+  const sum = wanted.reduce((n, x) => n + x, 0);
+  if (sum <= cap) return { paid: wanted, total: sum, capped: false };
+
+  // 下限の合計が上限を超えるなら、そもそもこの人数を配れない。
+  const floor = MIN_REWARD_YEN * wanted.length;
+  if (floor > cap) {
+    throw new Error(
+      `${id}: ${wanted.length}人に下限（${MIN_REWARD_YEN}円）で払っても上限（${cap}円）を超えます`,
+    );
+  }
+
+  // 下限より上の分だけを縮める。
+  const room = cap - floor;
+  const over = sum - floor;
+  const paid = wanted.map((w) =>
+    Math.max(MIN_REWARD_YEN, MIN_REWARD_YEN + Math.floor(((w - MIN_REWARD_YEN) * room) / over)),
+  );
+  return { paid, total: paid.reduce((n, x) => n + x, 0), capped: true };
+}
 
 export function reward(kind: RewardKind): RewardBand {
   const r = REWARDS.find((x) => x.kind === kind);
@@ -83,8 +147,17 @@ export const MIN_REWARD_YEN = 150;
 /** 変動費が売価に占める割合の上限 */
 export const MAX_VARIABLE_RATE = 0.4;
 
-/** 限界利益率の下限 */
+/**
+ * 限界利益率の下限。2段で見る。
+ *
+ *   MIN_MARGIN_RATE     見込みの単価で払ったとき（ふだん）
+ *   MIN_MARGIN_AT_CAP   上限いっぱいまで払ったとき（いちばん厳しい）
+ *
+ * 1段だけだと、上限を上げれば通ってしまうか、
+ * ふだんの採算を必要以上に締めるかの、どちらかになる。
+ */
 export const MIN_MARGIN_RATE = 0.6;
+export const MIN_MARGIN_AT_CAP = 0.55;
 
 /* ── プランごとの原価の組み立て ──────────────── */
 
@@ -116,7 +189,7 @@ export const COSTS: Record<PlanId, CostModel> = {
   // 5人 ＋ 直しに関わる1人
   improve: { parts: [{ kind: "quick", n: 5, atYen: 180 }, { kind: "improve", n: 1, atYen: 900 }] },
   // 5人 ＋ 直し ＋ 別の5人
-  retest: { parts: [{ kind: "quick", n: 10, atYen: 180 }, { kind: "improve", n: 1, atYen: 1400 }] },
+  retest: { parts: [{ kind: "quick", n: 10, atYen: 180 }, { kind: "improve", n: 1, atYen: 800 }] },
   // まとめて見る分
   date_ready: {
     parts: [
@@ -151,8 +224,11 @@ export type Urgency = {
 
 export const URGENCY: Urgency[] = [
   { id: "normal", label: "通常", addYen: 0, toResponderRate: 0, available: true },
-  { id: "fast", label: "急ぎ", addYen: 1000, toResponderRate: 0.5, available: false },
-  { id: "now", label: "大至急", addYen: 2000, toResponderRate: 0.5, available: false },
+  // +1,000円のうち 300円を回答者へ、700円がこちらに残る。
+  // 買う人は速さに払い、答える人は急ぎだから多くもらい、
+  // こちらは通常より利益額が増える。
+  { id: "fast", label: "急ぎ", addYen: 1000, toResponderRate: 0.3, available: false },
+  { id: "now", label: "大至急", addYen: 2000, toResponderRate: 0.3, available: false },
 ];
 
 /**
@@ -187,6 +263,9 @@ export type Unit = {
   marginRate: number;
   /** 1注文あたりの原価上限。案件を作るときはこれを超えさせない */
   capYen: number;
+  /** 上限いっぱいまで払ったときの限界利益 */
+  marginAtCap: number;
+  marginRateAtCap: number;
 };
 
 export function unit(id: PlanId): Unit {
@@ -202,6 +281,10 @@ export function unit(id: PlanId): Unit {
   const variable = rewardMax + payment + AI_COST_YEN + refund + MISC_COST_YEN;
   const margin = p.yen - variable;
 
+  const capYen = REWARD_CAP[id];
+  const variableAtCap = capYen + payment + AI_COST_YEN + refund + MISC_COST_YEN;
+  const marginAtCap = p.yen - variableAtCap;
+
   return {
     plan: p,
     rewardMax,
@@ -214,7 +297,9 @@ export function unit(id: PlanId): Unit {
     margin,
     marginRate: p.yen > 0 ? margin / p.yen : 0,
     // 案件を作るときの上限。報酬を動かしてよいのはここまで。
-    capYen: rewardMax,
+    capYen,
+    marginAtCap,
+    marginRateAtCap: p.yen > 0 ? marginAtCap / p.yen : 0,
   };
 }
 
@@ -238,13 +323,13 @@ export type Wave = { n: number; afterMinutes: number };
  */
 export function waves(need: number): Wave[] {
   if (need < 1) return [];
-  const first = Math.ceil(need * 1.6);
-  const second = Math.ceil(need * 0.8);
-  const third = Math.ceil(need * 0.8);
+  // 5人ほしいなら、まず8人。2分待って足りなければ5人。
+  // 「5人要るから50人へ一斉通知」はしない。
+  // 通知が当たり前になると、回答者は通知を見なくなる。
   return [
-    { n: first, afterMinutes: 0 },
-    { n: second, afterMinutes: 10 },
-    { n: third, afterMinutes: 30 },
+    { n: Math.ceil(need * 1.6), afterMinutes: 0 },
+    { n: need, afterMinutes: 2 },
+    { n: need, afterMinutes: 10 },
   ];
 }
 
@@ -273,6 +358,22 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
         `プラン「${p.id}」の変動費が売価の ${Math.round(rate * 100)}% です（${Math.round(
           MAX_VARIABLE_RATE * 100,
         )}% まで）`,
+      );
+    }
+
+    // 上限いっぱいまで払っても、55% を下回らないこと。
+    if (u.marginRateAtCap < MIN_MARGIN_AT_CAP) {
+      throw new Error(
+        `プラン「${p.id}」は、上限（${u.capYen}円）まで払うと限界利益率が ${Math.round(
+          u.marginRateAtCap * 100,
+        )}% になります（${Math.round(MIN_MARGIN_AT_CAP * 100)}% 以上）`,
+      );
+    }
+
+    // 上限が、見込みより下がっていないこと。下がっていたら上限の意味が無い。
+    if (u.capYen < u.rewardMax) {
+      throw new Error(
+        `プラン「${p.id}」の上限（${u.capYen}円）が、見込み（${u.rewardMax}円）を下回っています`,
       );
     }
 

@@ -16,6 +16,15 @@ import { Choice, Action, Note, FieldLabel as Label, inputClass } from "@/compone
 // ── 理由を必須にする ──────────────────────────────
 // 選択肢だけだと、相談者に届くのは数字だけになる。
 // この製品の価値は「なぜそう感じたか」のほうにある。
+//
+// ── 送ったあと、稼げたことが見えること ────────────
+// 「ありがとうございました」で終わらせない。
+// 確認を通った瞬間に残高へ入るので、その額と今日の合計を出す。
+// 答える側から見て「答えたらすぐ稼げた」が手触りとして残る。
+//
+// 銀行への振り込みは毎回はしない（1件ごとに振り込むと
+// 送金の手数料と手間だけが積み上がる）。そのことも書く。
+// 「すぐ入った」と「まだ振り込まれていない」を混同させない。
 
 export default function RespondForm({
   token,
@@ -33,6 +42,11 @@ export default function RespondForm({
   const [comment, setComment] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  // 送信の返事に入っていれば出す。入っていなければ額は出さない
+  // （金額を勝手に見せると、入っていない報酬を見せることになる）。
+  const [paid, setPaid] = useState<{ yen: number; todayYen: number; todayCount: number } | null>(
+    null,
+  );
 
   const chosen = isAb ? pick !== null : verdict !== null;
   const long = comment.trim().length >= COMMENT_MIN;
@@ -53,6 +67,13 @@ export default function RespondForm({
         setState("error");
         return;
       }
+      if (
+        typeof json.paidYen === "number" &&
+        typeof json.todayYen === "number" &&
+        typeof json.todayCount === "number"
+      ) {
+        setPaid({ yen: json.paidYen, todayYen: json.todayYen, todayCount: json.todayCount });
+      }
       setState("done");
     } catch {
       setError("通信できませんでした。もう一度お試しください。");
@@ -62,9 +83,25 @@ export default function RespondForm({
 
   if (state === "done") {
     return (
-      <div className="mt-10 border-l border-slate pl-4">
-        <p className="text-[16px] font-bold text-slate">ありがとうございました。</p>
-        <p className="mt-3 text-[14.5px] leading-[2] text-bodytext">
+      <div className="mt-10">
+        {paid && paid.yen > 0 && (
+          <div className="motion-safe:animate-hr-rise rounded-card border border-ok bg-ok-tint p-6">
+            <p className="text-[34px] font-black tabular-nums leading-none text-ok-text">
+              +¥{paid.yen.toLocaleString()}
+            </p>
+            <p className="mt-3 text-[13px] font-bold text-slate">
+              今日の報酬 ¥{paid.todayYen.toLocaleString()}
+              <span className="ml-2 font-normal text-steel">{paid.todayCount}件</span>
+            </p>
+            <p className="mt-4 text-[12px] leading-[1.85] text-steel">
+              残高に入りました。銀行へのお振り込みは、まとまってからまとめて行います
+              （1件ずつだと送金の手数料のほうが大きくなるためです）。
+            </p>
+          </div>
+        )}
+
+        <p className="mt-7 text-[16px] font-bold text-slate">ありがとうございました。</p>
+        <p className="mt-3 text-[14.5px] leading-[2] text-steel">
           相談した方に、匿名で届きます。お伝えするのは年代だけです。
           新しい相談が来たら、またお知らせします。
         </p>

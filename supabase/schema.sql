@@ -647,3 +647,94 @@ create table if not exists talk_waitlist (
   notified_at timestamptz,
   created_at timestamptz default now()
 );
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 回答者の残高
+--
+-- 報酬が確定するのは即時。銀行への出金はまとめて。
+-- 1件200円を毎回振り込むと、送金の手数料と手間だけが積み上がる。
+--
+--   答えた → 品質の確認を通った瞬間 → 残高に入る（即時）
+--   残高   → まとまったら出金申請   → まとめて振り込む
+--
+-- 回答者から見れば「答えたらすぐ稼げた」。
+-- 裏ではまとめて精算できる。
+-- ═══════════════════════════════════════════════════════════════
+
+-- 何波目で声をかけたか。1波目で足りなければ2波目を作る。
+alter table response_invites add column if not exists wave int not null default 1;
+
+-- 回答者の段。良い回答をすると、単価の高い仕事が回ってくる。
+-- 順位を公開して競わせることはしない。
+alter table responders add column if not exists tier text not null default 'bronze';
+  -- bronze / trusted / top
+alter table responders add column if not exists helpful_rate numeric(4,3);
+alter table responders add column if not exists reports_count int not null default 0;
+
+-- 残高。1行1回答者。
+create table if not exists responder_balances (
+  responder_id uuid primary key references responders(id) on delete cascade,
+  -- 確定していて、まだ出金していない額
+  available_yen int not null default 0,
+  -- 出金申請中で、振り込み待ちの額
+  pending_yen int not null default 0,
+  -- これまでに稼いだ合計（表示用。減らさない）
+  lifetime_yen int not null default 0,
+  updated_at timestamptz default now()
+);
+
+-- 残高が動いた記録。増減は必ずここを通す。
+-- 残高テーブルだけを直接書き換えると、合わない日が来たときに追えない。
+create table if not exists responder_ledger (
+  id uuid primary key default gen_random_uuid(),
+  responder_id uuid not null references responders(id) on delete cascade,
+  -- earn: 回答の報酬 / bonus: 上乗せ / payout: 出金 / adjust: 訂正
+  kind text not null,
+  yen int not null,                   -- 増えるときは正、減るときは負
+  response_id uuid references responses(id) on delete set null,
+  consultation_id uuid references consultations(id) on delete set null,
+  note text,
+  created_at timestamptz default now()
+);
+
+create index if not exists responder_ledger_who_idx
+  on responder_ledger (responder_id, created_at desc);
+
+-- 同じ回答に二度払わない。
+create unique index if not exists responder_ledger_earn_uniq
+  on responder_ledger (response_id)
+  where kind = 'earn' and response_id is not null;
+
+-- 出金申請。まとめて振り込むための単位。
+create table if not exists payouts (
+  id uuid primary key default gen_random_uuid(),
+  responder_id uuid not null references responders(id) on delete cascade,
+  yen int not null,
+  -- requested / sent / failed
+  status text not null default 'requested',
+  -- 振り込んだときの控え。将来 Connect に移すときは transfer id
+  ref text,
+  requested_at timestamptz default now(),
+  sent_at timestamptz
+);
+
+create index if not exists payouts_status_idx on payouts (status, requested_at);
+
+-- 回答ごとに、いくら払うことになっているか。
+-- 案件を作った時点で決まる（動的に決めるので、回答ごとに違う）。
+alter table response_invites add column if not exists reward_yen int;
+
+-- 今日いくら稼いだか。回答者の画面に出す。
+create or replace view responder_today as
+select
+  responder_id,
+  sum(yen) filter (where kind in ('earn','bonus')) as earned_yen,
+  count(*) filter (where kind = 'earn') as answered
+from responder_ledger
+where created_at >= date_trunc('day', now())
+group by responder_id;
+
+-- 条件を広げて続行した時刻。二度広げない／広げた事実を残すため。
+alter table consultations add column if not exists widened_at timestamptz;
+-- 一部だけ返金した状態。payments.payment_status に partially_refunded が入る。
