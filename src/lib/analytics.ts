@@ -86,6 +86,15 @@ export const CONVERSION_EVENTS = [
   "app_journey_open", // 道のりを開いた（props: stage）— どこで迷うかが出る
   "app_stage_changed", // 現在地を変えた（props: stage）
   "app_knowledge_open", // Knowledge を開いた（props: stage, type）
+
+  // ── 「女性に聞く」──
+  // 追うのは「着地した人のうち、何人が相談を出し、何人が回答を受け取ったか」。
+  // 滞在時間もPVも追わない。
+  "ask_submitted", // 相談を出した（props: category, size, ab）
+  "ask_blocked", // 扱えない内容で止まった（props: category）— 何を止めているかを見る
+  "ask_result_viewed", // 結果を開いた（props: answered, of）
+  "respond_opened", // 回答者がリンクを開いた
+  "respond_submitted", // 回答者が回答を出した
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

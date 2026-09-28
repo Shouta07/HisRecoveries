@@ -44,6 +44,46 @@ export async function dbInsert(
 }
 
 /**
+ * 入れた行をそのまま返す INSERT。
+ *
+ * dbInsert は Prefer: return=minimal なので、入れた行の id が返らない。
+ * 相談を1件入れてから、その id で回答依頼を何行か作る、という流れでは
+ * id が要る。token で引き直すと往復が1回増え、その間に失敗すると
+ * 相談だけあって誰にも配られていない行が残る。
+ *
+ * 書き込みなので service key を使う（server 専用）。
+ */
+export async function dbInsertReturning<T = unknown>(
+  table: string,
+  row: RowPayload
+): Promise<{ ok: boolean; rows: T[]; error?: string }> {
+  if (!dbAdminEnabled) {
+    console.log(`[db:noop] insert into ${table}`, row);
+    return { ok: true, rows: [] };
+  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_SERVICE_KEY!,
+        Authorization: `Bearer ${SUPABASE_SERVICE_KEY!}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+      body: JSON.stringify(row),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`[db] insert failed (${res.status})`, text);
+      return { ok: false, rows: [], error: text };
+    }
+    return { ok: true, rows: (await res.json()) as T[] };
+  } catch (e) {
+    return { ok: false, rows: [], error: e instanceof Error ? e.message : "insert failed" };
+  }
+}
+
+/**
  * Admin SELECT helper — uses the service key, server-only.
  * Reads a view or table via the REST API.
  */
