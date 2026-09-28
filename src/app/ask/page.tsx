@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import AskFlow from "@/components/ask/AskFlow";
-import { Loading } from "@/components/app/system";
+
 
 export const metadata: Metadata = {
   title: "女性に聞く — His Recoveries",
@@ -11,13 +11,9 @@ export const metadata: Metadata = {
 
 export default function AskPage() {
   return (
-    <div className="min-h-screen bg-ground">
+    <div className="min-h-screen bg-bone">
       <Suspense
-        fallback={
-          <div className="mx-auto w-full max-w-[560px] px-5 pt-10 sm:px-8">
-            <Loading />
-          </div>
-        }
+        fallback={<div className="h-[60vh]" />}
       >
         <AskFlow />
       </Suspense>

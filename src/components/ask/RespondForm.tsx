@@ -5,7 +5,7 @@ import {
   VERDICTS, PICKS, SECONDS, COMMENT_MIN, COMMENT_MAX,
   type Verdict, type Pick, type Second,
 } from "@/lib/ask/model";
-import { Choice, Action, Note, Label } from "@/components/app/system";
+import { Choice, Action, Note, FieldLabel as Label, inputClass } from "@/components/brand/kit";
 
 // 回答の入力。
 //
@@ -62,8 +62,8 @@ export default function RespondForm({
 
   if (state === "done") {
     return (
-      <div className="mt-10 border-l border-accent pl-4">
-        <p className="text-[16px] font-bold text-charcoal">ありがとうございました。</p>
+      <div className="mt-10 border-l border-void pl-4">
+        <p className="text-[16px] font-bold text-void">ありがとうございました。</p>
         <p className="mt-3 text-[14.5px] leading-[2] text-bodytext">
           相談した方に、匿名で届きます。お伝えするのは年代だけです。
           新しい相談が来たら、またお知らせします。
@@ -103,8 +103,8 @@ export default function RespondForm({
                 aria-pressed={second === x.id}
                 className={`inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[10px] border text-[15px] transition-colors duration-200 ${
                   second === x.id
-                    ? "border-accent bg-accent-tint text-charcoal"
-                    : "border-hairline bg-surface text-charcoal hover:border-faint/50"
+                    ? "border-void bg-lime text-void"
+                    : "border-rule bg-transparent text-void hover:border-void"
                 }`}
               >
                 {x.label}
@@ -121,15 +121,15 @@ export default function RespondForm({
           value={comment}
           onChange={(e) => setComment(e.target.value.slice(0, COMMENT_MAX))}
           placeholder="思ったことを、そのまま書いてください。丁寧に整えなくて構いません。"
-          className="mt-3 w-full rounded-[8px] border border-hairline bg-surface px-4 py-3.5 text-[15px] leading-[1.95] text-charcoal outline-none transition-colors duration-200 placeholder:text-faint/70 focus:border-accent"
+          className={`mt-3 ${inputClass}`}
         />
-        <p className="mt-2 text-right text-[12px] tabular-nums text-faint">
+        <p className="mt-2 text-right text-[12px] tabular-nums text-ash">
           {comment.trim().length} / {COMMENT_MIN}文字以上
         </p>
       </div>
 
       {error && (
-        <p className="mt-5 border-l border-accent pl-3.5 text-[14px] leading-[1.9] text-charcoal">
+        <p className="mt-5 border-l border-void pl-3.5 text-[14px] leading-[1.9] text-void">
           {error}
         </p>
       )}

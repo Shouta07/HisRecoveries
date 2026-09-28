@@ -8,7 +8,10 @@ import {
   type CategoryId, type AgeBand, type RelationId, type PanelAge, type PanelSize, type AttrId,
 } from "@/lib/ask/model";
 import { redact, mayContainName } from "@/lib/ask/redact";
-import { Ask, Choice, Chip, Action, Note, Label } from "@/components/app/system";
+import {
+  BigAsk as Ask, Choice, AttributeChip as Chip, Action, Note, FieldLabel as Label,
+  Progress, inputClass,
+} from "@/components/brand/kit";
 import { track } from "@/lib/analytics";
 
 // 相談を出す。
@@ -82,17 +85,12 @@ export default function AskFlow() {
 
   return (
     <div className="mx-auto w-full max-w-[560px] px-5 pb-16 pt-6 sm:px-8">
-      <div className="h-px w-full bg-hairline">
-        <div
-          className="h-px bg-accent transition-[width] duration-300 ease-out"
-          style={{ width: `${((i + 1) / STEPS) * 100}%` }}
-        />
-      </div>
+      <Progress step={i + 1} of={STEPS} />
 
       <button
         type="button"
         onClick={back}
-        className="mt-4 inline-flex min-h-[44px] items-center text-[13.5px] text-faint transition-colors hover:text-accent"
+        className="mt-4 inline-flex min-h-[44px] items-center text-[13.5px] text-ash transition-colors hover:text-void"
       >
         ← {i === 0 ? "やめる" : "ひとつ戻る"}
       </button>
@@ -114,7 +112,7 @@ export default function AskFlow() {
                 >
                   <span className="min-w-0">
                     <span className="block font-bold">{c.label}</span>
-                    <span className="mt-0.5 block text-[12.5px] leading-[1.7] text-faint">
+                    <span className="mt-0.5 block text-[12.5px] leading-[1.7] text-ash">
                       {c.hint}
                     </span>
                   </span>
@@ -145,7 +143,7 @@ export default function AskFlow() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder={getCategory(cat).placeholder}
-                className="mt-5 w-full rounded-[8px] border border-hairline bg-surface px-4 py-3.5 text-[15px] leading-[1.95] text-charcoal outline-none transition-colors duration-200 placeholder:text-faint/70 focus:border-accent"
+                className={`mt-5 ${inputClass}`}
               />
             ) : (
               <div className="mt-5 flex flex-col gap-4">
@@ -157,7 +155,7 @@ export default function AskFlow() {
                       value={v}
                       onChange={(e) => set(e.target.value)}
                       placeholder={`${l} の内容`}
-                      className="mt-1.5 w-full rounded-[8px] border border-hairline bg-surface px-4 py-3.5 text-[15px] leading-[1.95] text-charcoal outline-none transition-colors duration-200 placeholder:text-faint/70 focus:border-accent"
+                      className={`mt-1.5 ${inputClass}`}
                     />
                   </label>
                 ))}
@@ -166,13 +164,13 @@ export default function AskFlow() {
 
             {/* 伏せ字は、書いている横で見せる */}
             {preview.findings.length > 0 && (
-              <p className="mt-4 border-l border-accent pl-3.5 text-[13px] leading-[1.9] text-bodytext">
+              <p className="mt-4 border-l border-void pl-3.5 text-[13px] leading-[1.9] text-bodytext">
                 {preview.findings.map((f) => f.label).join("、")}
                 を見つけました。回答者には伏せた形で渡します。
               </p>
             )}
             {nameWarn && (
-              <p className="mt-3 border-l border-hairline pl-3.5 text-[13px] leading-[1.9] text-faint">
+              <p className="mt-3 border-l border-rule pl-3.5 text-[13px] leading-[1.9] text-ash">
                 名前らしいものが含まれているかもしれません。
                 こちらでは判断できないので、消すかどうかはご自身で決めてください。
               </p>
@@ -238,7 +236,7 @@ export default function AskFlow() {
               <button
                 type="button"
                 onClick={() => setI(3)}
-                className="min-h-[44px] text-[13.5px] text-faint transition-colors hover:text-accent"
+                className="min-h-[44px] text-[13.5px] text-ash transition-colors hover:text-void"
               >
                 答えずに進む
               </button>
@@ -311,14 +309,14 @@ export default function AskFlow() {
           <>
             <Ask>これで送ります。</Ask>
 
-            <div className="mt-7 border-l border-accent pl-4">
+            <div className="mt-7 border-l border-void pl-4">
               <Label>{getCategory(cat).label}</Label>
-              <p className="mt-2 whitespace-pre-wrap text-[15px] leading-[1.95] text-charcoal">
+              <p className="mt-2 whitespace-pre-wrap text-[15px] leading-[1.95] text-void">
                 {isAb ? `A: ${redact(a).text}\nB: ${redact(b).text}` : preview.text}
               </p>
             </div>
 
-            <dl className="mt-7 divide-y divide-hairline border-y border-hairline text-[14px]">
+            <dl className="mt-7 divide-y divide-rule border-y border-rule text-[14px]">
               {[
                 ["聞く相手", PANEL_AGES.find((p) => p.id === panelAge)?.label ?? ""],
                 ["条件", panelAttrs.length ? panelAttrs.map(attrLabel).join("・") : "指定なし"],
@@ -328,14 +326,14 @@ export default function AskFlow() {
                 ["関係", RELATIONS.find((r) => r.id === relation)?.label ?? "未回答"],
               ].map(([k, v]) => (
                 <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
-                  <dt className="text-faint">{k}</dt>
-                  <dd className="text-charcoal">{v}</dd>
+                  <dt className="text-ash">{k}</dt>
+                  <dd className="text-void">{v}</dd>
                 </div>
               ))}
             </dl>
 
             {error && (
-              <p className="mt-5 border-l border-accent pl-3.5 text-[14px] leading-[1.9] text-charcoal">
+              <p className="mt-5 border-l border-void pl-3.5 text-[14px] leading-[1.9] text-void">
                 {error}
               </p>
             )}
