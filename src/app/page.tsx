@@ -8,6 +8,7 @@ import LiveMarket from "@/components/brand/LiveMarket";
 import Reveal from "@/components/brand/Reveal";
 import Tashikame from "@/components/brand/Tashikame";
 import Says from "@/components/brand/Says";
+import Ticker from "@/components/brand/Ticker";
 import { INVITE } from "@/lib/tashikame";
 
 // ══════════════════════════════════════════════════════════════
@@ -122,17 +123,19 @@ export default function HomePage() {
               送る前に5人に聞く。
             </h1>
 
-            <p className="mt-6 max-w-[24em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
-              相手に近い実在の人から、リアルな反応をもらえます。
-              AIの一般論ではなく、人の本音です。
+            {/* 説明を2行に詰める。読ませるより、先に押させる。 */}
+            <p className="mt-5 text-[17px] font-bold leading-[1.75] text-ash sm:text-[19px]">
+              AIは、一般論。
+              <br />
+              ほしいのは、本音。
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/ask"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-lime px-9 text-[16px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
+                className="inline-flex min-h-[58px] items-center justify-center rounded-pill bg-lime px-9 text-[16.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
               >
-                聞いてみる
+                30秒で聞いてみる
               </Link>
               <Link
                 href="/join"
@@ -142,19 +145,23 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <ul className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12.5px] text-ash">
-              <li>匿名</li>
-              <li aria-hidden>·</li>
-              <li>登録不要</li>
-              <li aria-hidden>·</li>
-              <li>実在の人が回答</li>
-              {!BILLING_ENABLED && (
-                <>
-                  <li aria-hidden>·</li>
-                  <li className="font-bold text-void">ベータ期間中は無料</li>
-                </>
-              )}
-            </ul>
+            {/* 数字を絵として出す。説明より速い */}
+            <dl className="mt-7 flex flex-wrap gap-x-9 gap-y-4">
+              {[
+                ["30秒", "で聞ける"],
+                ["5人", "が答える"],
+                [BILLING_ENABLED ? "¥890" : "¥0", BILLING_ENABLED ? "5人に聞く" : "ベータ中は無料"],
+              ].map(([n, label]) => (
+                <div key={label}>
+                  <dt className="text-[30px] font-black leading-none tracking-[-0.03em] tabular-nums sm:text-[36px]">
+                    {n}
+                  </dt>
+                  <dd className="mt-1.5 text-[12.5px] text-ash">{label}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <p className="mt-5 text-[12.5px] text-ash">匿名 · 登録不要 · 答えるのは実在の人</p>
           </div>
 
           {/* 聞く → 届く → 返る。1枚のカードに */}
@@ -202,10 +209,20 @@ export default function HomePage() {
         </Wrap>
       </section>
 
+      {/* ══ 質問の例が流れる帯 ══
+          説明を3行読ませるより、「このLINE、重い？」が流れているほうが速い。
+          ここに並ぶのは聞けることの例で、誰かが実際に聞いた相談ではない。 */}
+      <section className="border-t border-rule bg-bone-soft py-8 sm:py-10">
+        <Wrap className="mb-4">
+          <p className="text-[13px] font-bold text-ash">たとえば、こんなこと。</p>
+        </Wrap>
+        <Ticker />
+      </section>
+
       {/* ══ 2. カテゴリから ══ */}
       <section className="border-t border-rule bg-bone-soft">
         <Wrap className="py-12 sm:py-16">
-          <Head>何について聞く？</Head>
+          <Head>何を、タシカメる？</Head>
           <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {CATEGORIES.filter((c) => c.id !== "other").map((c) => (
               <li key={c.id}>
@@ -256,8 +273,8 @@ export default function HomePage() {
       {/* ══ 4. どう返ってくるか ══ */}
       <section className="border-t border-rule bg-bone-soft">
         <Wrap className="py-14 sm:py-20">
-          <Head note="数だけだと理由が分かりません。一人ひとりの言葉も、そのまま並べます。">
-            多数決と、一人ひとりの理由。
+          <Head note="何人がどう言ったか。そして、なぜそう思ったか。">
+            数字と、理由。両方くる。
           </Head>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -299,8 +316,8 @@ export default function HomePage() {
       {/* ══ 6. 誰に聞くか ══ */}
       <section className="border-t border-rule bg-bone-soft">
         <Wrap className="py-14 sm:py-20">
-          <Head note="誰の意見か分からない掲示板ではありません。個人は特定できないまま、どういう人が言ったのかは分かります。">
-            誰に聞くかで、答えは変わる。
+          <Head note="誰の意見か分からない掲示板とは違います。名前は出ないまま、どういう人かは分かります。">
+            誰に聞くかで、変わる。
           </Head>
 
           <Reveal delay={80}>
@@ -348,7 +365,7 @@ export default function HomePage() {
                   相手に近い人へ。
                 </p>
                 <p className="mt-4 text-[14.5px] leading-[1.9] text-ash">
-                  LINEを送る前。写真を選ぶ前。デートに誘う前。30秒で聞けます。
+                  送る前に。選ぶ前に。誘う前に。30秒で聞けます。
                 </p>
 
                 <dl className="mt-6 flex flex-col gap-1.5">
@@ -456,15 +473,15 @@ export default function HomePage() {
                   <br />
                   確かめる。
                 </p>
-                <p className="mt-4 max-w-[22em] text-[15px] leading-[1.9]">
-                  迷った瞬間に、相手側の人たちへ聞く。30秒で終わります。
+                <p className="mt-4 max-w-[22em] text-[16px] font-bold leading-[1.85]">
+                  送る前に。選ぶ前に。誘う前に。
                 </p>
               </div>
               <Link
                 href="/ask"
-                className="inline-flex min-h-[58px] shrink-0 items-center justify-center rounded-pill bg-void px-10 text-[16px] font-bold text-bone transition-opacity hover:opacity-85"
+                className="inline-flex min-h-[60px] shrink-0 items-center justify-center rounded-pill bg-void px-10 text-[16.5px] font-bold text-bone transition-opacity hover:opacity-85"
               >
-                聞いてみる
+                30秒で聞いてみる
               </Link>
             </div>
           </div>
