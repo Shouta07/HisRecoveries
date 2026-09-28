@@ -94,6 +94,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // トップが /app の入口になったときに独立させた。
     "/articles",
     "/about",
+    // 回答する側の入口。検索から直接来てほしい面なので載せる。
+    "/join",
+    // 回答者の一覧。マーケットプレイスの供給側。
+    "/answerers",
+    // 安全と、いまできないこと。トップから降ろしたものの行き先。
+    "/safety",
     "/check",
     "/interview",
     "/research",

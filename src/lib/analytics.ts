@@ -95,6 +95,8 @@ export const CONVERSION_EVENTS = [
   "ask_result_viewed", // 結果を開いた（props: answered, of）
   "respond_opened", // 回答者がリンクを開いた
   "respond_submitted", // 回答者が回答を出した
+  "helpful_marked", // 相談者が回答に「役に立った」を付けた（props: helpful）
+  "join_submitted", // 回答者として登録した（props: age, attrs＝選んだ属性の数）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

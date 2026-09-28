@@ -48,10 +48,10 @@ export default async function RespondPage({ params }: { params: { token: string 
   if (!dbAdminEnabled) {
     return (
       <Shell>
-        <h1 className="font-display text-[22px] font-bold text-charcoal">
+        <h1 className="font-display text-[22px] font-bold text-void">
           いま、この環境では回答できません。
         </h1>
-        <p className="mt-4 text-[15px] leading-[2] text-bodytext">
+        <p className="mt-4 text-[15px] leading-[2] text-ash">
           データベースに接続されていないため、相談を読み出せません。
           接続設定が入ると、この画面に相談が表示されます。
         </p>
@@ -69,10 +69,10 @@ export default async function RespondPage({ params }: { params: { token: string 
   if (invite.answered_at) {
     return (
       <Shell>
-        <h1 className="font-display text-[22px] font-bold text-charcoal">
+        <h1 className="font-display text-[22px] font-bold text-void">
           この相談には、もう回答いただいています。
         </h1>
-        <p className="mt-4 text-[15px] leading-[2] text-bodytext">
+        <p className="mt-4 text-[15px] leading-[2] text-ash">
           ありがとうございました。新しい相談が来たら、またお知らせします。
         </p>
       </Shell>
@@ -82,10 +82,10 @@ export default async function RespondPage({ params }: { params: { token: string 
   if (c.status === "completed" || c.status === "cancelled") {
     return (
       <Shell>
-        <h1 className="font-display text-[22px] font-bold text-charcoal">
+        <h1 className="font-display text-[22px] font-bold text-void">
           この相談は締め切られました。
         </h1>
-        <p className="mt-4 text-[15px] leading-[2] text-bodytext">
+        <p className="mt-4 text-[15px] leading-[2] text-ash">
           先に必要な人数の回答が集まりました。お手間をかけてすみません。
         </p>
       </Shell>
@@ -96,20 +96,20 @@ export default async function RespondPage({ params }: { params: { token: string 
 
   return (
     <Shell>
-      <p className="text-[11.5px] font-medium tracking-[0.12em] text-faint">
+      <p className="text-[11.5px] font-medium tracking-[0.12em] text-ash">
         {category(c.category as never).label}
       </p>
 
       {/* 判断に要る状況。ここに無いものは、相談者も出していない */}
-      <dl className="mt-5 divide-y divide-hairline border-y border-hairline text-[14px]">
+      <dl className="mt-5 divide-y divide-rule border-y border-rule text-[14px]">
         {[
           ["相談した人", c.asker_age_band ? `${c.asker_age_band}歳の男性` : "年代は未回答"],
           ["相手", c.other_age_band ? `${c.other_age_band}歳` : "年代は未回答"],
           ["関係", rel ?? "未回答"],
         ].map(([k, v]) => (
           <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
-            <dt className="text-faint">{k}</dt>
-            <dd className="text-charcoal">{v}</dd>
+            <dt className="text-ash">{k}</dt>
+            <dd className="text-void">{v}</dd>
           </div>
         ))}
       </dl>
@@ -119,16 +119,16 @@ export default async function RespondPage({ params }: { params: { token: string 
         {c.is_ab ? (
           <div className="flex flex-col gap-4">
             {([["A", c.option_a], ["B", c.option_b]] as const).map(([l, v]) => (
-              <div key={l} className="border-l border-accent pl-4">
-                <p className="text-[11.5px] font-medium tracking-[0.12em] text-faint">{l}</p>
-                <p className="mt-1.5 whitespace-pre-wrap text-[15.5px] leading-[2] text-charcoal">
+              <div key={l} className="border-l border-void pl-4">
+                <p className="text-[11.5px] font-medium tracking-[0.12em] text-ash">{l}</p>
+                <p className="mt-1.5 whitespace-pre-wrap text-[15.5px] leading-[2] text-void">
                   {v}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="whitespace-pre-wrap border-l border-accent pl-4 text-[15.5px] leading-[2] text-charcoal">
+          <p className="whitespace-pre-wrap border-l border-void pl-4 text-[15.5px] leading-[2] text-void">
             {c.body}
           </p>
         )}
@@ -145,7 +145,7 @@ export default async function RespondPage({ params }: { params: { token: string 
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-ground">
+    <div className="min-h-screen bg-bone">
       <div className="mx-auto w-full max-w-[520px] px-5 pb-20 pt-8 sm:px-8 sm:pt-12">
         {children}
       </div>

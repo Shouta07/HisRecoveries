@@ -789,3 +789,22 @@ html {
     transform: none;
   }
 }
+
+/* ── ブランド面（トップ・人に聞く・回答する）の見出しの折り返し ──────
+   上の h1..h6 に word-break: keep-all がある。
+   記事では「単語の途中で切れない」ほうが読みやすいので、それは残す。
+
+   ただしブランド面の見出しは clamp で 34–132px まで大きくなるので、
+   折り返せない1行がそのままコンテナを押し広げる。
+   実測: 390px 幅で「誰かの判断材料になる。」（11文字 × 35px ≒ 385px）が
+   342px の中身に収まらず、ページ全体が横スクロールした。
+
+   ブランド面だけ、日本語の通常の折り返しに戻す。 */
+[data-brand] h1,
+[data-brand] h2,
+[data-brand] h3 {
+  /* 日本語は word-break: normal で文字間に改行が入る（CJKの既定）。
+     anywhere にすると英単語まで途中で割れるので break-word に留める。 */
+  word-break: normal;
+  overflow-wrap: break-word;
+}

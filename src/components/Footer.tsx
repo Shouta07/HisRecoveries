@@ -19,7 +19,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
   // /app 配下はアプリの外枠を使う。サイトのフッターは出さない。
   if (pathname?.startsWith("/app")) return null;
   // 「女性に聞く」の面は、それ自体がプロダクト。記事サイトのフッターは出さない。
-  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/")) return null;
+  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/") || pathname === "/join" || pathname?.startsWith("/answerers") || pathname === "/safety") return null;
   // The home ("/") ships its own footer; /apply and /partner are focused pages
   // that carry their own footer.
   if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
@@ -60,6 +60,20 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
                   記事をさがす
                 </Link>
               </li>
+              {/* トップのフッターを8本に絞ったとき、/skip と /research への
+                  内部リンクがサイト内から0本になった（トップが唯一の入口だった）。
+                  サイトマップには載っていても、0本はさすがに孤立している。
+                  記事20ルートに出るこちらのフッターへ移す。 */}
+              <li>
+                <Link href="/skip" className="transition-colors hover:text-asagi">
+                  やらなくていいこと
+                </Link>
+              </li>
+              <li>
+                <Link href="/order" className="transition-colors hover:text-asagi">
+                  男の改善、全部の順番
+                </Link>
+              </li>
               <li>
                 <a
                   href="/letters"
@@ -80,9 +94,31 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
           <div>
             <p className="text-[12.5px] text-ainezu">His Recoveries</p>
             <ul className="mt-4 space-y-2.5 text-[14px]">
+              {/* 回答する側の入口。記事から来た人にも見えるように、
+                  サイト全体のフッターに置く。 */}
+              <li>
+                <Link href="/join" className="transition-colors hover:text-asagi">
+                  回答する（女性の方へ）
+                </Link>
+              </li>
               <li>
                 <Link href="/about" className="transition-colors hover:text-asagi">
                   編集方針
+                </Link>
+              </li>
+              <li>
+                <Link href="/updates" className="transition-colors hover:text-asagi">
+                  更新記録
+                </Link>
+              </li>
+              <li>
+                <Link href="/research" className="transition-colors hover:text-asagi">
+                  調査
+                </Link>
+              </li>
+              <li>
+                <Link href="/interview" className="transition-colors hover:text-asagi">
+                  取材にご協力いただけませんか
                 </Link>
               </li>
               <li>

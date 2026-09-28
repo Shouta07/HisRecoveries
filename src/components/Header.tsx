@@ -24,27 +24,36 @@ export default function Header() {
   // 「女性に聞く」の面（相談・結果・回答）は、それ自体がプロダクト。
   // 記事サイトのヘッダー（男の改善は、順番で決まる／現在地を測る）が重なると、
   // 何のサービスを使っているのか分からなくなる。
-  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/")) return null;
+  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/") || pathname === "/join" || pathname?.startsWith("/answerers") || pathname === "/safety") return null;
   if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-shironezu bg-hakuji/85 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-5 py-3.5 sm:px-8 sm:py-4 lg:px-12">
-        <Link href="/" aria-label={`${site.name} ホーム`} className="shrink-0 leading-none">
-          <span className="logo-type block text-base font-bold tracking-tight text-sumi transition-colors hover:text-asagi sm:text-xl">
+      {/* 320px では px-5（左右40px）が入らない。
+          ロゴ＋現在地を測る＋検索で、あと8px足りなかった。
+          いちばん狭いところだけ余白を詰める。 */}
+      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-4 py-3.5 xs:px-5 sm:px-8 sm:py-4 lg:px-12">
+        {/* 縮まないようにしていたので、狭い画面では右側が押し出されていた。
+            縮めるようにして、肩書きのほうを切る。ロゴの文字は切らない。 */}
+        <Link href="/" aria-label={`${site.name} ホーム`} className="min-w-0 leading-none">
+          <span className="logo-type block whitespace-nowrap text-base font-bold tracking-tight text-sumi transition-colors hover:text-asagi sm:text-xl">
             {site.name}
           </span>
           {/* 肩書きを「メディア」から変えた。読んで終わる場所だと
               こちらから宣言していたので、期待値がそこで止まっていた。 */}
-          <span className="mt-1.5 block text-[10px] tracking-[0.12em] text-ainezu sm:text-[11px]">
+          <span className="mt-1.5 block truncate text-[10px] tracking-[0.12em] text-ainezu sm:text-[11px]">
             男の改善は、順番で決まる
           </span>
         </Link>
 
-        <div className="flex items-center gap-5 sm:gap-7">
-          <ul className="flex items-center gap-5 sm:gap-7">
+        {/* 320px の端末で、この行が 53px はみ出していた。
+            ロゴ＋肩書き＋記事＋現在地を測る＋検索は、その幅には入らない。
+            いちばん狭いところでは「記事」を落とす（検索ボタンから同じ場所へ行ける）。
+            間隔も詰める。 */}
+        <div className="flex min-w-0 items-center gap-3 xs:gap-5 sm:gap-7">
+          <ul className="flex items-center gap-3 xs:gap-5 sm:gap-7">
             {LINKS.map((l) => (
-              <li key={l.href} className={l.desktopOnly ? "hidden md:block" : ""}>
+              <li key={l.href} className={l.desktopOnly ? "hidden md:block" : "hidden xs:block"}>
                 <Link
                   href={l.href}
                   className="whitespace-nowrap text-[14.5px] font-normal text-keshizumi transition-colors hover:text-asagi sm:text-[15px]"
