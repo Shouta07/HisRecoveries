@@ -10,6 +10,7 @@ import {
 import { tally, type Answer } from "@/lib/ask/aggregate";
 import { Eyebrow, ReactionCard, ResultDistribution, AttributeChip } from "@/components/brand/kit";
 import CopyLink from "@/components/ask/CopyLink";
+import HelpfulButton from "@/components/ask/HelpfulButton";
 
 // 結果 — Human Reaction Report。
 //
@@ -130,8 +131,9 @@ export default async function ResultPage({
     pick: Answer["pick"];
     second: Answer["second"];
     comment: string;
+    helpful: boolean | null;
   }>(
-    `responses?consultation_id=eq.${c.id}&select=id,display_age_band,verdict,pick,second,comment&order=created_at.asc`,
+    `responses?consultation_id=eq.${c.id}&select=id,display_age_band,verdict,pick,second,comment,helpful&order=created_at.asc`,
   );
 
   const list: Answer[] = answers.map((a) => ({
@@ -257,8 +259,8 @@ export default async function ResultPage({
           <Eyebrow>それぞれの反応</Eyebrow>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {list.map((a, i) => (
+              <div key={a.id}>
               <ReactionCard
-                key={a.id}
                 className="max-w-none"
                 tilt={i % 2 === 0 ? -0.6 : 0.6}
                 r={{
@@ -272,8 +274,20 @@ export default async function ResultPage({
                   comment: a.comment,
                 }}
               />
+                {/* この評価が、回答者の helpful率の唯一の出どころになる。
+                    押さなくてもよい。未評価は割合の分母に入れない。 */}
+                <HelpfulButton
+                  token={params.token}
+                  responseId={a.id}
+                  initial={answers.find((x) => x.id === a.id)?.helpful ?? null}
+                />
+              </div>
             ))}
           </div>
+          <p className="mt-6 text-[12.5px] leading-[1.85] text-ash">
+            役に立った回答に印を付けると、その人の実績になります。
+            押さなくても構いません。未評価は割合の計算に入れていません。
+          </p>
         </section>
       )}
 

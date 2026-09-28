@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { RESPONDER_AGES, ATTRS, type ResponderAge, type AttrId } from "@/lib/ask/model";
+import {
+  RESPONDER_AGES, ATTRS, AREAS, CATEGORIES,
+  type ResponderAge, type AttrId, type Area, type CategoryId,
+} from "@/lib/ask/model";
 import { AttributeChip, Action, FieldLabel, Note, inputClass } from "@/components/brand/kit";
 import { track } from "@/lib/analytics";
 
@@ -22,6 +25,8 @@ import { track } from "@/lib/analytics";
 export default function JoinForm() {
   const [age, setAge] = useState<ResponderAge | null>(null);
   const [attrs, setAttrs] = useState<AttrId[]>([]);
+  const [area, setArea] = useState<Area | null>(null);
+  const [specialties, setSpecialties] = useState<CategoryId[]>([]);
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
   const [consent, setConsent] = useState(false);
@@ -37,7 +42,9 @@ export default function JoinForm() {
       const res = await fetch("/api/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ age, attrs, email: email.trim(), note, consent: true }),
+        body: JSON.stringify({
+          age, attrs, area, specialties, email: email.trim(), note, consent: true,
+        }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -45,7 +52,7 @@ export default function JoinForm() {
         setState("error");
         return;
       }
-      track("join_submitted", { age: age ?? "none", attrs: attrs.length });
+      track("join_submitted", { age: age ?? "none", attrs: attrs.length, spec: specialties.length });
       setState("done");
     } catch {
       setError("通信できませんでした。もう一度お試しください。");
@@ -108,6 +115,42 @@ export default function JoinForm() {
           <Note>
             近い立場の人に聞きたい、という相談があります。選ばなくても登録できます。
           </Note>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <FieldLabel>お住まいの地域（任意）</FieldLabel>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {AREAS.map((a) => (
+            <AttributeChip key={a} on={area === a} onClick={() => setArea(area === a ? null : a)}>
+              {a}
+            </AttributeChip>
+          ))}
+        </div>
+        <div className="mt-3">
+          <Note>都道府県より粗い単位にしています。市区町村は聞きません。</Note>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <FieldLabel>答えやすい話題（任意）</FieldLabel>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {CATEGORIES.filter((c) => c.id !== "other").map((c) => (
+            <AttributeChip
+              key={c.id}
+              on={specialties.includes(c.id)}
+              onClick={() =>
+                setSpecialties((prev) =>
+                  prev.includes(c.id) ? prev.filter((x) => x !== c.id) : [...prev, c.id],
+                )
+              }
+            >
+              {c.label}
+            </AttributeChip>
+          ))}
+        </div>
+        <div className="mt-3">
+          <Note>選んだ話題の相談が、優先的に届きます。選ばなくても登録できます。</Note>
         </div>
       </div>
 

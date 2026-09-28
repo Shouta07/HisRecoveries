@@ -96,6 +96,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about",
     // 回答する側の入口。検索から直接来てほしい面なので載せる。
     "/join",
+    // 回答者の一覧。マーケットプレイスの供給側。
+    "/answerers",
     "/check",
     "/interview",
     "/research",

@@ -215,6 +215,20 @@ export function isResponderAge(x: unknown): x is ResponderAge {
 }
 
 /**
+ * 地域。都道府県より粗くする。
+ * 市区町村まで持つと、年代と得意分野と合わせて個人が絞れてしまう。
+ */
+export const AREAS = [
+  "東京", "神奈川・千葉・埼玉", "関西", "東海", "北海道・東北",
+  "北陸・甲信越", "中国・四国", "九州・沖縄", "国外",
+] as const;
+export type Area = (typeof AREAS)[number];
+
+export function isArea(x: unknown): x is Area {
+  return typeof x === "string" && (AREAS as readonly string[]).includes(x);
+}
+
+/**
  * 登録時に聞く属性。
  *
  * 相談者がまだ指定できないもの（ATTRS の open: false）も聞く。

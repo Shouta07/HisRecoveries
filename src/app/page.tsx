@@ -1,70 +1,96 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { CATEGORIES } from "@/lib/ask/model";
+import { CATEGORIES, PRICE_YEN, BILLING_ENABLED } from "@/lib/ask/model";
 import {
-  Eyebrow, AttributeChip, ReactionCard, ResultDistribution, Stat, Hairline,
+  Eyebrow, AttributeChip, ReactionCard, ResultDistribution, Hairline,
   type Reaction,
 } from "@/components/brand/kit";
+import { HumanCard, FlowStep, type Human } from "@/components/brand/market";
+import LiveMarket from "@/components/brand/LiveMarket";
 import Reveal from "@/components/brand/Reveal";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ。
 //
 // ── 何に見せるか ──────────────────────────────────
-// 恋愛相談サイトに見せない。AIサービスにも見せない。
-// 「人間の反応を測るプロダクト」に見せる。
+// 「誰かに相談できるサイト」ではなく、
+// 「人の視点が流通するマーケットプレイス」に見せる。
 //
-// Editorial（大胆なタイポグラフィ）
-//   × Dating App（触りたくなるUI）
-//   × Human Research Lab（属性・分布・A/B）
+// そのために、回答結果だけでなく回答者そのものを主役にする。
+// 聞く側と答える側を対等に置く（CTAも2本出す）。
 //
-// ── ここに出す数字は、全部つくりもの ────────────────
-// 実績がまだ無いので、出せる実数は1つも無い。
-// だから数字を出す場所には、必ず「見本」と書く。
-// 「94% HELPFUL」を実績のように置いた瞬間、このサイトは嘘になる。
+// ── 無い実績を作らない ────────────────────────────
+// いま回答者は0人、相談も0件、課金もしていない。
+// 「128 ANSWERS」「HELPFUL 94%」「3 / 5 responses」を
+// それらしく置くと、偽るのはデザインではなく市場の厚みになる。
+// 「答える人がいるから聞く価値がある」という前提そのものが嘘になる。
 //
-// ── ライムの扱い ──────────────────────────────────
-// 明るい地の上では面としてだけ使う（文字にすると 1.04:1 で読めない）。
-// 黒の面の上でだけ、文字色に使う。
+// だから
+//   ・流れている件数は LiveMarket が実データから出す（0件なら0件）
+//   ・見本のカードには必ず「見本」と書く
+//   ・金額は課金していない間、予定としてしか出さない
 //
 // ── 構成 ──────────────────────────────────────────
-//   1 Hero            2 AI vs HUMAN     3 Reaction Report
-//   4 Who You Ask     5 A/B TEST        6 How It Works
-//   7 Private         8 CTA
+//   1 Hero             2 Live Marketplace   3 AI vs Human
+//   4 How It Works     5 Human Cards        6 Reaction Report
+//   7 Answer & Earn    8 Trust              9 CTA
 // ══════════════════════════════════════════════════════════════
+
+// 流れている相談は実データから出す。静的に焼くと、いつまでも空のままになる。
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "His Recoveries — AIに聞く前に、人に聞く。",
   description:
-    "そのLINE、その写真、その誘い方。相手に近い人たちのリアルな反応を、匿名で確かめられます。AIは予測する。His Recoveries は、人間の反応を測る。",
+    "人の視点が流通するマーケットプレイス。相手に近い属性の人から、リアルな反応を集められます。聞く側としても、答える側としても参加できます。",
   alternates: { canonical: site.url },
 };
 
-/* 見本に使う反応。実在の回答ではないので、置く場所には必ずその旨を書く */
-const SAMPLE: Reaction[] = [
+/* 見本。実在の回答者ではないので、置く場所には必ずその旨を書く */
+const SAMPLE_HUMANS: Human[] = [
+  {
+    age: "24",
+    gender: "Woman",
+    area: "Tokyo",
+    attrs: ["app_user"],
+    specialties: ["message", "date"],
+    answered: 0,
+    latest: "私は全然あり。",
+  },
+  {
+    age: "27",
+    gender: "Woman",
+    area: "Osaka",
+    attrs: ["single"],
+    specialties: ["photo"],
+    answered: 0,
+    latest: "少し重いかも。",
+  },
+  {
+    age: "26",
+    gender: "Man",
+    area: "Tokyo",
+    attrs: ["app_user"],
+    specialties: ["signal"],
+    answered: 0,
+    latest: "次の誘い方は自然だと思う。",
+  },
+];
+
+const SAMPLE_REACTIONS: Reaction[] = [
   {
     age: 25,
     attrs: ["Woman", "App User", "Tokyo"],
     verdict: "Good",
     positive: true,
-    comment: "私は全然あり。むしろこれくらい来てほしい。",
-    helpful: 94,
+    comment: "このくらいなら嬉しい。ただ、最後の1行はいらないかも。",
   },
   {
     age: 27,
-    attrs: ["Woman", "App User"],
+    attrs: ["Woman", "Osaka"],
     verdict: "Hmm",
-    comment: "前半はいいけど、最後の2行は少し長いかも。",
-    helpful: 88,
-  },
-  {
-    age: 24,
-    attrs: ["Woman", "Single"],
-    verdict: "Good",
-    positive: true,
-    comment: "次も会いたい相手なら、普通に嬉しいと思う。",
-    helpful: 91,
+    comment: "前半はいいけど、次の約束まで一気に入れると少し重い。",
   },
 ];
 
@@ -99,16 +125,10 @@ export default function HomePage() {
           <Link href="/" className="text-[15px] font-black uppercase tracking-[0.1em]">
             His Recoveries
           </Link>
-          <nav aria-label="サイト" className="flex items-center gap-2 sm:gap-4">
-            <Link
-              href="/articles"
-              className="hidden text-[11px] font-bold uppercase tracking-[0.18em] text-ash transition-colors hover:text-void sm:inline"
-            >
-              Read
-            </Link>
+          <nav aria-label="サイト" className="flex items-center gap-3 sm:gap-5">
             <Link
               href="/join"
-              className="hidden text-[11px] font-bold uppercase tracking-[0.18em] text-ash transition-colors hover:text-void sm:inline"
+              className="text-[11px] font-bold uppercase tracking-[0.18em] text-ash transition-colors hover:text-void"
             >
               回答する
             </Link>
@@ -124,32 +144,37 @@ export default function HomePage() {
 
       {/* ══ 1. HERO ══ */}
       <section className="border-b border-rule">
-        <Wrap className="grid gap-14 pb-16 pt-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pb-24 lg:pt-20">
+        <Wrap className="grid gap-12 pb-16 pt-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:pb-24 lg:pt-20">
           <div>
-            <Eyebrow>Don&rsquo;t guess. Ask.</Eyebrow>
-            <h1 className="mt-6 text-mega font-black text-void">
+            <Eyebrow>Human perspective marketplace</Eyebrow>
+            {/* text-mega（最大132px）は画面いっぱいのときの寸法。
+                ここは右にカードを置く半分の幅なので、7文字が1行に入らず
+                1440px で4行に割れていた。この列の幅に合わせて詰める。 */}
+            <h1
+              className="mt-6 font-black leading-[0.95] tracking-[-0.04em] text-void"
+              style={{ fontSize: "clamp(40px, 5.8vw, 84px)" }}
+            >
               AIに聞く前に、
               <br />
               人に聞く。
             </h1>
             <p className="mt-8 max-w-[24em] text-[17px] font-medium leading-[1.9] text-ash sm:text-[19px]">
-              このLINE、この写真、この誘い方。
-              <br />
-              相手に近い人たちの、リアルな反応を確かめよう。
+              相手に近い人の、リアルな反応を集めよう。
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            {/* 聞く側と答える側を対等に置く */}
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/ask"
-                className="inline-flex min-h-[62px] items-center justify-center bg-void px-10 text-[15px] font-bold uppercase tracking-[0.14em] text-bone transition-colors hover:bg-lime hover:text-void"
+                className="inline-flex min-h-[62px] flex-1 items-center justify-center bg-void px-6 text-center text-[14px] font-bold uppercase tracking-[0.12em] text-bone transition-colors hover:bg-lime hover:text-void"
               >
                 人に聞いてみる
               </Link>
               <Link
-                href="#how"
-                className="inline-flex min-h-[44px] items-center text-[13px] font-bold uppercase tracking-[0.16em] text-ash underline decoration-rule underline-offset-[6px] transition-colors hover:text-void"
+                href="/join"
+                className="inline-flex min-h-[62px] flex-1 items-center justify-center border border-void px-6 text-center text-[14px] font-bold uppercase tracking-[0.12em] text-void transition-colors hover:bg-void hover:text-bone"
               >
-                How it works
+                回答者として参加する
               </Link>
             </div>
 
@@ -166,72 +191,89 @@ export default function HomePage() {
             </ul>
           </div>
 
-          {/* 回答カード。
-              広い画面では浮かせて重ねる。整列しすぎると資料に見えるので少し傾ける。
-              スマホでは重ねない。幅が足りず、下のカードが上のカードを隠してしまう。
-              「動いて見えること」より「読めること」を優先する。 */}
-          <div className="relative flex flex-col gap-4 lg:block lg:min-h-[540px]">
-            <div className="w-full lg:absolute lg:left-0 lg:top-0 lg:max-w-[300px]">
-              <Reveal delay={0}>
-                <ReactionCard r={SAMPLE[0]} tilt={-2} float="normal" className="max-w-none lg:max-w-[300px]" />
-              </Reveal>
-            </div>
-            <div className="w-full lg:absolute lg:right-0 lg:top-[150px] lg:max-w-[290px]">
-              <Reveal delay={140}>
-                <ReactionCard r={SAMPLE[1]} tilt={1.6} float="slow" className="max-w-none lg:max-w-[290px]" />
-              </Reveal>
-            </div>
-            <div className="w-full lg:absolute lg:bottom-6 lg:left-[7%] lg:max-w-[295px]">
-              <Reveal delay={280}>
-                <ReactionCard r={SAMPLE[2]} tilt={-1.2} float="normal" className="max-w-none lg:max-w-[295px]" />
-              </Reveal>
-            </div>
+          {/* 回答者のカード。整列しすぎると名簿に見えるので少し傾ける。
+              スマホでは重ねない（幅が足りず、下が上を隠す） */}
+          <div className="relative flex flex-col gap-4 lg:block lg:min-h-[800px]">
+            {SAMPLE_HUMANS.map((h, i) => (
+              <div
+                key={i}
+                className={[
+                  "w-full lg:absolute lg:max-w-[300px]",
+                  i === 0 ? "lg:left-0 lg:top-0" : "",
+                  // 端だけ重ねる。深く重ねると、下のカードの中身が隠れて
+                  // 「回答数」も「一言」も読めなくなる（実際に隠れていた）。
+                  i === 1 ? "lg:right-0 lg:top-[268px]" : "",
+                  i === 2 ? "lg:left-[4%] lg:top-[536px]" : "",
+                ].join(" ")}
+              >
+                <Reveal delay={i * 130}>
+                  <HumanCard h={h} tilt={i === 1 ? 1.6 : -1.6} float={i === 1 ? "slow" : "normal"} />
+                </Reveal>
+              </div>
+            ))}
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ash lg:absolute lg:bottom-0 lg:right-0">
-              ※ 画面の見本
+              ※ 画面の見本。実在の回答者ではありません
             </p>
           </div>
         </Wrap>
       </section>
 
-      {/* ══ 2. AI vs HUMAN ══ */}
+      {/* ══ 2. LIVE MARKETPLACE ══ */}
       <section className="bg-void text-bone">
+        <Wrap className="py-20 sm:py-24">
+          <LiveMarket tone="dark" />
+        </Wrap>
+      </section>
+
+      {/* ══ 3. AI vs HUMAN ══ */}
+      <section className="border-b border-rule">
         <Wrap className="py-20 sm:py-28">
           <Reveal>
-            <Eyebrow tone="lime">One AI answer. Many human reactions.</Eyebrow>
-            <h2 className="mt-6 max-w-[14em] text-huge font-black text-bone">
+            <Eyebrow>Don&rsquo;t simulate people. Ask them.</Eyebrow>
+            <h2 className="mt-6 max-w-[14em] text-huge font-black text-void">
               AIは答えを出す。
               <br />
-              人間は、違う。
+              人間は、割れる。
             </h2>
-            <p className="mt-7 max-w-[26em] text-[16px] leading-[1.95] text-ash-soft sm:text-[17px]">
-              その違いこそが、知りたいことになる。
+            <p className="mt-7 max-w-[26em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
+              その割れ方こそが、知りたいことになる。
             </p>
           </Reveal>
 
           <div className="mt-14 grid gap-10 lg:grid-cols-2 lg:gap-14">
             <Reveal>
-              <div className="border border-rule-dark p-6 sm:p-8">
-                <Eyebrow tone="light">AI</Eyebrow>
+              <div className="h-full border border-rule p-6 sm:p-8">
+                <div className="flex items-baseline justify-between gap-3">
+                  <Eyebrow>AI</Eyebrow>
+                  <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ash">
+                    One answer
+                  </span>
+                </div>
                 <p className="mt-6 text-[19px] font-medium leading-[1.85] sm:text-[21px]">
                   「一般的には、好意的に受け取られる可能性があります。」
                 </p>
-                <p className="mt-8 border-t border-rule-dark pt-5 text-[13px] leading-[1.85] text-ash-soft">
-                  もっともらしく、外れてもいない。でも、あなたが送る相手のことは
-                  何ひとつ知らないまま書かれています。
+                <p className="mt-8 border-t border-rule pt-5 text-[13px] leading-[1.85] text-ash">
+                  もっともらしく、外れてもいない。
+                  でも、あなたが送る相手のことは何ひとつ知らないまま書かれています。
                 </p>
               </div>
             </Reveal>
 
             <Reveal delay={120}>
-              <div className="border border-lime p-6 sm:p-8">
-                <Eyebrow tone="lime">Real people</Eyebrow>
+              <div className="h-full border-2 border-void p-6 sm:p-8">
+                <div className="flex items-baseline justify-between gap-3">
+                  <Eyebrow>Humans</Eyebrow>
+                  <span className="bg-lime px-2 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-void">
+                    5 reactions
+                  </span>
+                </div>
                 <ul className="mt-6 flex flex-col gap-4">
                   {[
-                    "私は嬉しい",
-                    "ちょっと重い",
-                    "相手による",
-                    "私は返信しないかも",
-                    "むしろ具体的に誘ってほしい",
+                    "私は嬉しい。",
+                    "ちょっと重い。",
+                    "好きなら全然あり。",
+                    "最後の一文はいらない。",
+                    "私は返信したい。",
                   ].map((t, i) => (
                     <li
                       key={t}
@@ -242,7 +284,7 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-8 border-t border-rule-dark pt-5 text-[13px] leading-[1.85] text-ash-soft">
+                <p className="mt-8 border-t border-rule pt-5 text-[13px] leading-[1.85] text-ash">
                   全員が同じことを言うわけではありません。
                   ばらつくこと自体が、あなたの知りたい情報です。
                 </p>
@@ -254,13 +296,97 @@ export default function HomePage() {
             <p className="mt-16 text-big font-black">
               AIは予測する。
               <br />
-              <span className="text-lime">人間は反応する。</span>
+              人は、反応する。
+            </p>
+            <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-ash">
+              Powered by AI. Answered by humans.
             </p>
           </Reveal>
         </Wrap>
       </section>
 
-      {/* ══ 3. HUMAN REACTION REPORT ══ */}
+      {/* ══ 4. HOW IT WORKS ══ */}
+      <section id="how" className="border-b border-rule">
+        <Wrap className="py-20 sm:py-28">
+          <Reveal>
+            <Eyebrow>How it works</Eyebrow>
+            <h2 className="mt-6 text-huge font-black text-void">5つ。</h2>
+          </Reveal>
+
+          <ol className="mt-14 grid gap-px border border-rule bg-rule sm:grid-cols-2 lg:grid-cols-5">
+            {[
+              { n: "01", en: "Ask", ja: "質問を投稿する。", d: "カテゴリを選んで書くだけ。30秒。" },
+              { n: "02", en: "Choose", ja: "誰に聞きたいか選ぶ。", d: "年代と、近い条件を指定する。" },
+              { n: "03", en: "Match", ja: "条件に合う人へ届く。", d: "当てはまる回答者にだけ配られます。" },
+              { n: "04", en: "React", ja: "実在する人が答える。", d: "回答者どうしも、出すまで他は見えない。" },
+              { n: "05", en: "Decide", ja: "自分で決める。", d: "送る。変える。待つ。やめる。" },
+            ].map((s, i) => (
+              <li key={s.n} className="bg-bone p-6">
+                <Reveal delay={i * 70}>
+                  <span className="block text-[40px] font-black leading-[0.85] tracking-[-0.04em] tabular-nums text-ash">
+                    {s.n}
+                  </span>
+                  <span className="mt-5 block text-[11px] font-bold uppercase tracking-[0.2em] text-ash">
+                    {s.en}
+                  </span>
+                  <p className="mt-2.5 text-[16px] font-bold leading-[1.55]">{s.ja}</p>
+                  <p className="mt-3 text-[13px] leading-[1.85] text-ash">{s.d}</p>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
+
+          <Reveal>
+            <p className="mt-10 max-w-[30em] text-[15px] leading-[1.95] text-ash">
+              His Recoveries が答えを決めるわけではありません。
+              集まった反応を並べるところまでが、こちらの仕事です。
+            </p>
+          </Reveal>
+        </Wrap>
+      </section>
+
+      {/* ══ 5. HUMAN CARDS ══ */}
+      <section className="border-b border-rule">
+        <Wrap className="py-20 sm:py-28">
+          <Reveal>
+            <Eyebrow>Who you ask matters</Eyebrow>
+            <h2 className="mt-6 max-w-[14em] text-huge font-black text-void">
+              誰に聞くかで、
+              <br />
+              答えは変わる。
+            </h2>
+            <p className="mt-8 max-w-[28em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
+              「誰か女性に聞いた」と「気になっている相手に近い5人に聞いた」は、
+              同じ回答数でも、受け取り方がまるで違います。
+              年代・地域・立場・得意な話題まで見てから聞けます。
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {SAMPLE_HUMANS.map((h, i) => (
+              <Reveal key={i} delay={i * 90}>
+                <HumanCard h={h} tilt={i === 1 ? 0.7 : -0.7} className="h-full" />
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal>
+            <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.16em] text-ash">
+              ※ 画面の見本。実在の回答者ではありません
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/answerers"
+                className="inline-flex min-h-[52px] items-center border border-void px-7 text-[13px] font-bold uppercase tracking-[0.12em] transition-colors hover:bg-void hover:text-bone"
+              >
+                いま登録している回答者を見る
+              </Link>
+            </div>
+          </Reveal>
+        </Wrap>
+      </section>
+
+      {/* ══ 6. REACTION REPORT ══ */}
       <section className="border-b border-rule">
         <Wrap className="py-20 sm:py-28">
           <Reveal>
@@ -276,8 +402,8 @@ export default function HomePage() {
             <Reveal>
               <div className="border border-void p-6 sm:p-8">
                 <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-5">
-                  <span className="text-[12px] font-bold uppercase tracking-[0.16em]">
-                    25–29 / Women / 5 people
+                  <span className="text-[11.5px] font-bold uppercase tracking-[0.16em]">
+                    25–29 / Women / 5 responses
                   </span>
                   <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ash">
                     見本
@@ -288,8 +414,8 @@ export default function HomePage() {
                   <ResultDistribution
                     total={5}
                     slices={[
-                      { label: "Send it", n: 4, positive: true },
-                      { label: "Not for me", n: 1 },
+                      { label: "Would reply", n: 4, positive: true },
+                      { label: "Would not", n: 1 },
                     ]}
                   />
                 </div>
@@ -297,10 +423,7 @@ export default function HomePage() {
                 <div className="mt-9 border-t border-rule pt-6">
                   <Eyebrow>共通していた反応</Eyebrow>
                   <ul className="mt-4 flex flex-col gap-2.5">
-                    {[
-                      "文章自体は自然",
-                      "次回の約束まで一気に入れると少し重い",
-                    ].map((t) => (
+                    {["文章自体は自然", "次回の約束まで一気に入れると少し重い"].map((t) => (
                       <li key={t} className="text-[15.5px] font-medium leading-[1.8]">
                         {t}
                       </li>
@@ -312,206 +435,99 @@ export default function HomePage() {
 
             <Reveal delay={120}>
               <div className="flex flex-col gap-4">
-                {SAMPLE.map((r, i) => (
-                  <ReactionCard key={i} r={r} tilt={i === 1 ? 1 : -0.8} className="max-w-none" />
+                {SAMPLE_REACTIONS.map((r, i) => (
+                  <ReactionCard key={i} r={r} tilt={i === 1 ? 0.8 : -0.8} className="max-w-none" />
                 ))}
-                <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-ash">
-                  ※ 画面の見本。実際の回答ではありません
-                </p>
+
+                {/* 割れていることを、悪いことにしない */}
+                <div className="mt-6 border-t-2 border-void pt-7">
+                  <p className="text-[40px] font-black leading-[0.9] tracking-[-0.04em] tabular-nums sm:text-[52px]">
+                    60<span className="text-[0.42em] align-super">%</span>
+                    <span className="mx-3 text-ash">/</span>
+                    40<span className="text-[0.42em] align-super">%</span>
+                  </p>
+                  <p className="mt-4 text-[18px] font-bold leading-[1.6]">意見が割れました。</p>
+                  <p className="mt-3 max-w-[28em] text-[14.5px] leading-[1.9] text-ash">
+                    この違いから、相手によって受け取り方が変わることが分かります。
+                    唯一の正解を出すサービスではありません。
+                  </p>
+                </div>
               </div>
             </Reveal>
           </div>
-
-          {/* ばらつきを良くないことにしない */}
-          <Reveal>
-            <div className="mt-16 border-t border-void pt-10">
-              <div className="grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-14">
-                <p className="text-[40px] font-black leading-[0.9] tracking-[-0.04em] tabular-nums sm:text-[64px]">
-                  60<span className="text-[0.44em] align-super">%</span>
-                  <span className="mx-3 text-ash">/</span>
-                  40<span className="text-[0.44em] align-super">%</span>
-                </p>
-                <div>
-                  <p className="text-[19px] font-bold leading-[1.6] sm:text-[22px]">
-                    意見が割れました。
-                  </p>
-                  <p className="mt-3 max-w-[30em] text-[15px] leading-[1.9] text-ash">
-                    この違いから、相手によって受け取り方が変わることが分かります。
-                    His Recoveries は、唯一の正解を出すサービスではありません。
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Reveal>
         </Wrap>
       </section>
 
-      {/* ══ 4. WHO YOU ASK MATTERS ══ */}
-      <section className="border-b border-rule">
-        <Wrap className="py-20 sm:py-28">
-          <Reveal>
-            <Eyebrow>Who you ask matters</Eyebrow>
-            <h2 className="mt-6 max-w-[14em] text-huge font-black text-void">誰に聞くかで、
-              <br />
-              答えは変わる。
-            </h2>
-            <p className="mt-8 max-w-[28em] text-[16px] leading-[1.95] text-ash sm:text-[17px]">
-              「誰か女性に聞いた」と「気になっている相手に近い5人に聞いた」は、
-              同じ回答数でも、受け取り方がまるで違います。
-            </p>
-          </Reveal>
-
-          <Reveal delay={100}>
-            <ul className="mt-12 flex flex-wrap gap-2.5">
-              {[
-                ["25–29", true],
-                ["Women", true],
-                ["Dating app user", true],
-                ["Single", false],
-                ["Tokyo", false],
-                ["5 people", true],
-              ].map(([label, on]) => (
-                <li key={String(label)}>
-                  <AttributeChip on={Boolean(on)}>{label}</AttributeChip>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-
-          <Reveal delay={180}>
-            <div className="mt-14 grid gap-10 border-t border-rule pt-12 sm:grid-cols-3">
-              <Stat value="25–29" label="Age band" />
-              <Stat value={5} unit="" label="People" />
-              <Stat value="2" unit="" label="Conditions" />
-            </div>
-            <p className="mt-6 text-[14px] leading-[1.9] text-ash">
-              いま選べる条件は「マッチングアプリ経験あり」「いまは恋人がいない」の2つだけです。
-              回答してくれる人が増えるごとに増やします。
-              選べるのに集まらない状態を作らないためです。
-            </p>
-          </Reveal>
-        </Wrap>
-      </section>
-
-      {/* ══ 5. A/B TEST ══ */}
+      {/* ══ 7. ANSWER & EARN ══ */}
       <section className="bg-void text-bone">
         <Wrap className="py-20 sm:py-28">
           <Reveal>
-            <Eyebrow tone="lime">Which one?</Eyebrow>
-            <h2 className="mt-6 text-huge font-black text-bone">
-              2つで迷ったら、
+            <Eyebrow tone="lime">Your perspective has value.</Eyebrow>
+            <h2 className="mt-6 max-w-[14em] text-huge font-black text-bone">
+              答える側にも、
               <br />
-              <span className="text-lime">聞いて決める。</span>
+              返ってくる。
             </h2>
+            <p className="mt-8 max-w-[28em] text-[16px] leading-[1.95] text-ash-soft sm:text-[17px]">
+              専門家である必要はありません。
+              あなたの年齢、経験、立場、感覚そのものに価値があります。
+            </p>
           </Reveal>
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2">
+          {/* 何が誰に流れているかを、言葉ではなくUIで見せる */}
+          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { l: "A", n: 3, w: false },
-              { l: "B", n: 7, w: true },
-            ].map((x) => (
-              <Reveal key={x.l} delay={x.l === "B" ? 120 : 0}>
-                <div
-                  className={`flex h-full flex-col justify-between border p-6 sm:p-8 ${
-                    x.w ? "border-lime" : "border-rule-dark"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-[72px] font-black leading-[0.8] tracking-[-0.05em] sm:text-[96px]">
-                      {x.l}
-                    </span>
-                    <span
-                      className={`px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.16em] ${
-                        x.w ? "bg-lime text-void" : "border border-rule-dark text-ash-soft"
-                      }`}
-                    >
-                      Profile {x.l}
-                    </span>
-                  </div>
-                  <div className="mt-10">
-                    <span
-                      className={`block text-[52px] font-black leading-[0.85] tracking-[-0.04em] tabular-nums sm:text-[68px] ${
-                        x.w ? "text-lime" : "text-ash-soft"
-                      }`}
-                    >
-                      {x.n * 10}
-                      <span className="text-[0.4em] align-super">%</span>
-                    </span>
-                    <span className="mt-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-ash-soft">
-                      {x.n} / 10 people
-                    </span>
-                  </div>
-                </div>
+              {
+                n: "01",
+                label: "Ask",
+                value: BILLING_ENABLED ? `¥${PRICE_YEN[5].toLocaleString()}` : "質問",
+                note: "聞きたいことを出す",
+              },
+              { n: "02", label: "Match", value: "5", note: "条件に合う人へ配られる" },
+              { n: "03", label: "React", value: "5", note: "実在する人が答える" },
+              { n: "04", label: "Reward", value: "?", note: "回答1件ごとにお渡しします" },
+            ].map((s, i) => (
+              <Reveal key={s.n} delay={i * 80}>
+                <FlowStep n={s.n} label={s.label} value={s.value} note={s.note} tone="dark" />
               </Reveal>
             ))}
           </div>
 
-          <Reveal delay={200}>
-            <div className="mt-12 border-t border-rule-dark pt-10">
-              <Eyebrow tone="lime">Why?</Eyebrow>
-              <ul className="mt-6 flex flex-col gap-4">
-                {["Bの方が自然", "Aは少しキメすぎ", "Bの方が会ってみたい"].map((t, i) => (
-                  <li
-                    key={t}
-                    className="text-[19px] font-medium leading-[1.6] sm:text-[22px]"
-                    style={{ paddingLeft: `${i * 18}px` }}
-                  >
-                    「{t}」
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-8 text-[11px] font-bold uppercase tracking-[0.16em] text-ash-soft">
-                ※ 画面の見本
+          <Reveal>
+            <div className="mt-12 border border-rule-dark p-6 sm:p-8">
+              <Eyebrow tone="light">料金と謝礼について</Eyebrow>
+              <p className="mt-5 max-w-[34em] text-[15px] leading-[1.95] text-ash-soft">
+                いまは請求していません。特定商取引法に基づく表記（事業者の氏名・所在地・
+                電話番号・価格）が揃っていないためです。揃うまでは無料で、
+                回答者への謝礼の金額と方法も、登録後に個別にご相談しています。
+                決まっていないものを、決まったように書かないことにしています。
               </p>
+              <p className="mt-5 text-[13px] leading-[1.85] text-ash-soft">
+                予定している料金：3人 ¥{PRICE_YEN[3].toLocaleString()} ／ 5人 ¥
+                {PRICE_YEN[5].toLocaleString()} ／ 10人 ¥{PRICE_YEN[10].toLocaleString()}
+                （属性を指定する場合は上乗せ）
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal>
+            <div className="mt-10">
+              <Link
+                href="/join"
+                className="inline-flex min-h-[58px] items-center justify-center bg-lime px-9 text-[14px] font-bold uppercase tracking-[0.12em] text-void transition-opacity hover:opacity-85"
+              >
+                回答者として参加する
+              </Link>
             </div>
           </Reveal>
         </Wrap>
       </section>
 
-      {/* ══ 6. HOW IT WORKS ══ */}
-      <section id="how" className="border-b border-rule">
-        <Wrap className="py-20 sm:py-28">
-          <Reveal>
-            <Eyebrow>How it works</Eyebrow>
-            <h2 className="mt-6 text-huge font-black text-void">4ステップ。</h2>
-          </Reveal>
-
-          <ol className="mt-14 grid gap-px border border-rule bg-rule sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { n: "01", en: "Ask", ja: "聞きたいことを送る。", d: "カテゴリを選んで書くだけ。30秒。" },
-              { n: "02", en: "Choose", ja: "誰に聞くか選ぶ。", d: "年代と、近い条件を指定する。" },
-              { n: "03", en: "React", ja: "実在する人が答える。", d: "回答者どうしも、出すまで他は見えない。" },
-              { n: "04", en: "Decide", ja: "結果を見て、自分で決める。", d: "送る。変える。待つ。やめる。" },
-            ].map((s, i) => (
-              <li key={s.n} className="bg-bone p-6 sm:p-7">
-                <Reveal delay={i * 90}>
-                  <span className="block text-[46px] font-black leading-[0.85] tracking-[-0.04em] tabular-nums text-ash">
-                    {s.n}
-                  </span>
-                  <span className="mt-5 block text-[11px] font-bold uppercase tracking-[0.2em] text-ash">
-                    {s.en}
-                  </span>
-                  <p className="mt-2.5 text-[17px] font-bold leading-[1.55]">{s.ja}</p>
-                  <p className="mt-3 text-[13.5px] leading-[1.85] text-ash">{s.d}</p>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
-
-          <Reveal>
-            <p className="mt-10 max-w-[30em] text-[15px] leading-[1.95] text-ash">
-              His Recoveries が答えを決めるわけではありません。
-              集まった反応を並べるところまでが、こちらの仕事です。
-            </p>
-          </Reveal>
-        </Wrap>
-      </section>
-
-      {/* ══ 7. PRIVATE BY DESIGN ══ */}
+      {/* ══ 8. TRUST ══ */}
       <section className="border-b border-rule">
         <Wrap className="py-20 sm:py-28">
           <Reveal>
-            <Eyebrow>Private by design</Eyebrow>
+            <Eyebrow>Trust</Eyebrow>
             <h2 className="mt-6 max-w-[14em] text-big font-black text-void">
               名前も連絡先も、
               <br />
@@ -522,9 +538,9 @@ export default function HomePage() {
           <Reveal delay={100}>
             <ul className="mt-12 grid gap-px border border-rule bg-rule sm:grid-cols-2 lg:grid-cols-4">
               {[
-                ["匿名", "相談者も回答者も、名前を出しません"],
+                ["年齢の確認", "運営が確かめた人にだけ、確認済みの印を付けます"],
+                ["回答の確認", "配る前に、こちらで中身を見ています"],
                 ["自動で伏せる", "電話番号・ID・住所は、送る前に伏せます"],
-                ["登録なし", "アカウントを作らずに使えます"],
                 ["扱わない相談", "同意のない行為・晒し・18歳未満は受け付けません"],
               ].map(([t, d]) => (
                 <li key={t} className="bg-bone p-6">
@@ -537,7 +553,7 @@ export default function HomePage() {
 
           <Reveal>
             <p className="mt-8 max-w-[34em] text-[13.5px] leading-[1.9] text-ash">
-              回答しているのは、こちらが招待した女性メンバーです。いまは人数が少ないため、
+              回答者は、こちらが招待・確認した人だけです。いまは人数が少ないため、
               3人と5人だけ受け付けています。画像の中の文字と顔は機械では消せないので、
               画像の受け付けは、安全に扱える形が整うまで止めています。
             </p>
@@ -545,7 +561,7 @@ export default function HomePage() {
         </Wrap>
       </section>
 
-      {/* ══ 8. CTA ══ */}
+      {/* ══ 9. CTA ══ */}
       <section className="bg-lime text-void">
         <Wrap className="py-24 sm:py-32">
           <Reveal>
@@ -555,36 +571,30 @@ export default function HomePage() {
               <br />
               本当に送る？
             </p>
-            <p className="mt-9 max-w-[24em] text-[17px] font-medium leading-[1.9] sm:text-[19px]">
-              一人で考えるより、聞いたほうが早い。30秒で聞けます。
-            </p>
-            <div className="mt-11">
+            <div className="mt-11 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/ask"
-                className="inline-flex min-h-[64px] items-center justify-center bg-void px-12 text-[15px] font-bold uppercase tracking-[0.14em] text-bone transition-opacity hover:opacity-85"
+                className="inline-flex min-h-[64px] items-center justify-center bg-void px-9 text-center text-[14px] font-bold uppercase tracking-[0.12em] text-bone transition-opacity hover:opacity-85"
               >
                 人に聞いてみる
               </Link>
+              <Link
+                href="/join"
+                className="inline-flex min-h-[64px] items-center justify-center border-2 border-void px-9 text-center text-[14px] font-bold uppercase tracking-[0.12em] text-void transition-colors hover:bg-void hover:text-lime"
+              >
+                回答者として参加する
+              </Link>
             </div>
-            <p className="mt-5 text-[12.5px] font-bold uppercase tracking-[0.14em]">
-              匿名 / 登録なし / ベータ中につき無料
+            <p className="mt-5 text-[12.5px] font-bold uppercase tracking-[0.12em]">
+              匿名 / 登録なしで聞ける / ベータ中につき無料
             </p>
           </Reveal>
         </Wrap>
       </section>
 
-      {/* ── フッター ──
-          以前はここに33本のリンクが並んでいた（分野6・状況9・読みもの7・運営8＋）。
-          トップの最後で読む人に、33の行き先は多すぎる。
-          いちばん押してほしいもの（聞く／答える）が、同じ大きさで埋もれていた。
-
-          8本に絞った。外したものは消えていない。
-          記事20ルートには従来どおりのフッター（components/Footer.tsx）が出るので、
-          分野・状況・調査・プランへの内部リンクはサイト内に残っている。
-          ここから外したのは露出であって、リンクそのものではない。 */}
+      {/* ── フッター ── */}
       <footer className="bg-void text-bone">
         <Wrap className="py-16">
-          {/* 押してほしい2つを、先に大きく置く */}
           <div className="grid gap-px border border-rule-dark bg-rule-dark sm:grid-cols-2">
             {[
               { href: "/ask", en: "Ask", ja: "人に聞く", d: "相手に近い人たちのリアルな反応を。" },
@@ -605,10 +615,10 @@ export default function HomePage() {
           <div className="mt-14 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
             {[
               {
-                h: "読みもの",
+                h: "マーケットプレイス",
                 items: [
+                  ["/answerers", "回答者を見る"],
                   ["/articles", "記事をさがす"],
-                  ["/app", "出会ったあとの記録"],
                 ] as const,
               },
               {
@@ -653,7 +663,7 @@ export default function HomePage() {
                 His Recoveries
               </Link>
               <p className="text-[11.5px] text-ash-soft">
-                © 2026 His Recoveries — AIは予測する。人間は反応する。
+                © 2026 His Recoveries — Powered by AI. Answered by humans.
               </p>
             </div>
           </div>

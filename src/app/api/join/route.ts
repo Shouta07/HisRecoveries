@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbInsertReturning, dbAdminEnabled, parseAttribution } from "@/lib/db";
-import { RESPONDER_AGES, isResponderAge, cleanResponderAttrs } from "@/lib/ask/model";
+import {
+  RESPONDER_AGES, isResponderAge, cleanResponderAttrs, isArea, isCategoryId,
+} from "@/lib/ask/model";
 
 // 回答者の登録。
 //
@@ -76,6 +78,11 @@ export async function POST(req: NextRequest) {
   const ins = await dbInsertReturning("responders", {
     display_age_band: age,
     attrs: cleanResponderAttrs(body.attrs),
+    area: isArea(body.area) ? body.area : null,
+    // 得意な話題。画面に無いカテゴリは通さない。
+    specialties: Array.isArray(body.specialties)
+      ? [...new Set(body.specialties.filter(isCategoryId))]
+      : [],
     email,
     note: str(body.note, NOTE_MAX),
     // 運営が確かめるまで配らない。

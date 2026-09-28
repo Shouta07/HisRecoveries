@@ -339,6 +339,14 @@ create table if not exists responders (
   -- 回答実績。良い回答者に優先して配るために使う（MVP では記録のみ）。
   answered_count int default 0,
   rating_avg numeric(3,2),
+  -- 公開プロフィールに出すもの。個人は特定できない粒度だけ。
+  area text,                          -- 東京 / 大阪 など。市区町村までは持たない
+  specialties jsonb default '[]'::jsonb, -- 得意なカテゴリ ["message","date"]
+  -- 確認済みかどうか。C2C で相手が見えない以上、ここは表示に使う。
+  -- 年齢は自己申告なので「確認済み」と書けるのは運営が確かめた人だけ。
+  verified_age boolean default false,
+  verified_profile boolean default false,
+  avg_reply_minutes int,              -- 依頼から回答までの中央値。実績が出るまで null
   line_user_id text,                  -- LINE 通知先。未連携なら null
   email text,                         -- LINE を使わない人向け
   note text,                          -- 運営メモ（どこから来た人か等）
@@ -431,6 +439,9 @@ create table if not exists responses (
   -- カテゴリごとの2つ目の問い（例: 返信したいと思うか）。yes / no
   second text,
   comment text not null,
+  -- 相談した人が「役に立った」と押したか。押されるまでは null。
+  -- helpful率を名乗れるのは、これが貯まってから。
+  helpful boolean,
   created_at timestamptz default now()
 );
 
@@ -476,5 +487,48 @@ select
 from consultations c
 left join response_invites i on i.consultation_id = c.id
 left join responses r on r.consultation_id = c.id
+group by c.id
+order by c.created_at desc;
+
+
+-- 回答者の公開プロフィール。
+-- email と line_user_id をここに含めない。含めた瞬間に事故になる。
+-- active（運営が確認済み）の人だけを出す。
+create or replace view responder_profiles as
+select
+  r.id,
+  r.display_age_band,
+  r.area,
+  r.attrs,
+  r.specialties,
+  r.verified_age,
+  r.verified_profile,
+  r.avg_reply_minutes,
+  count(res.id) as answered,
+  count(res.id) filter (where res.helpful is true) as helpful_yes,
+  count(res.id) filter (where res.helpful is not null) as helpful_rated,
+  max(res.created_at) as last_answered_at
+from responders r
+-- 回答は invite 経由で回答者に紐づく。直接の外部キーは持っていない
+left join response_invites inv on inv.responder_id = r.id
+left join responses res on res.invite_id = inv.id
+where r.active = true
+group by r.id;
+
+-- いま流れている相談。本文は出さない（相談者のものなので）。
+-- 出すのは「どんな問いが、誰に向けて、何件集まっているか」だけ。
+create or replace view live_questions as
+select
+  c.id,
+  c.created_at,
+  c.category,
+  c.panel_age,
+  c.panel_attrs,
+  c.panel_size,
+  c.status,
+  count(r.id) as answered
+from consultations c
+left join responses r on r.consultation_id = c.id
+where c.status in ('recruiting', 'collecting', 'completed')
 group by c.id
 order by c.created_at desc;
