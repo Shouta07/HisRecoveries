@@ -16,6 +16,8 @@ import CopyLink from "@/components/ask/CopyLink";
 import HelpfulButton from "@/components/ask/HelpfulButton";
 import PayButton from "@/components/ask/PayButton";
 import WhyAsked from "@/components/ask/WhyAsked";
+import LiveAnswers from "@/components/ask/LiveAnswers";
+import NextStep from "@/components/ask/NextStep";
 
 // 結果 — Human Reaction Report。
 //
@@ -221,6 +223,36 @@ export default async function ResultPage({
   }));
   const t = tally(list, c.is_ab);
   const waiting = Math.max(0, c.panel_size - t.total);
+
+  // まだそろっていないあいだは、結果の体裁にしない。
+  // 「受付完了」とだけ出して閉じると、いちばん面白いところが見えない。
+  // 届いた順に1枚ずつ増える画面を出す。
+  if (waiting > 0 && c.status !== "cancelled" && c.status !== "refunded") {
+    return (
+      <Shell>
+        <LiveAnswers token={params.token} panel={c.panel_size} />
+
+        <section className="mt-12 border-t border-line pt-9">
+          <p className="text-[12px] font-bold text-steel">聞いている内容</p>
+          <p className="mt-3 whitespace-pre-wrap text-[15.5px] leading-[1.85]">
+            {c.is_ab ? `A: ${c.option_a}\nB: ${c.option_b}` : c.body}
+          </p>
+          <ul className="mt-5 flex flex-wrap gap-1.5">
+            {whoChips.map((x) => (
+              <li key={x} className="rounded-pill bg-mist px-2.5 py-1 text-[12px] text-steel">
+                {x}
+              </li>
+            ))}
+            <li className="rounded-pill bg-mist px-2.5 py-1 text-[12px] font-bold text-steel">
+              {c.panel_size}人
+            </li>
+          </ul>
+        </section>
+
+        <CopyLink token={params.token} />
+      </Shell>
+    );
+  }
   const panelLabel = PANEL_AGES.find((p) => p.id === c.panel_age)?.label ?? "女性";
 
   const slices = (c.is_ab ? t.byPick : t.byVerdict)
@@ -298,12 +330,6 @@ export default async function ResultPage({
               </div>
             )}
           </section>
-
-          {waiting > 0 && (
-            <p className="mt-5 text-[12.5px] font-bold text-steel">
-              あと{waiting}人の回答を待っています
-            </p>
-          )}
 
           {/* 割れていることを、悪いことにしない */}
           {t.split && t.total > 1 && (
@@ -384,6 +410,9 @@ export default async function ResultPage({
         </section>
       )}
 
+      {/* 次、どうする？ 押し売りにしない。何も買わない選択肢が最初に来る */}
+      {t.total > 0 && <NextStep token={params.token} />}
+
       {/* 結果を見たあとに1問だけ。任意 */}
       {t.total > 0 && <WhyAsked token={params.token} />}
 
@@ -407,14 +436,6 @@ export default async function ResultPage({
 
       <CopyLink token={params.token} />
 
-      <div className="mt-10">
-        <Link
-          href="/ask"
-          className="inline-flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-8 text-[15.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
-        >
-          もう1件聞く
-        </Link>
-      </div>
     </Shell>
   );
 }

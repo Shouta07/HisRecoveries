@@ -116,6 +116,18 @@ export const CONVERSION_EVENTS = [
   // ここは「利用者が完了まで進んだ」の意味に限る（props: plan, nth）
   "purchase_paid",
   "purchase_refunded", // 返金された（props: plan）
+
+  // ── 届くまで・そのあと ──
+  // いちばん知りたいのは「結果を見た人が、次に何を選ぶか」。
+  // 押し売りにしないぶん、ここが伸びるかどうかで
+  // 次の商品が要るものかどうかが分かる。
+  "live_opened", // 届くまでの画面を開いた（props: plan）
+  "live_completed", // 全員そろうまで見ていた（props: n）
+  "next_step_picked", // 結果のあとに次を選んだ（props: step）
+  "assist_opened", // うまく書けない、から整理へ入った（props: from）
+  "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
+  "talk_waitlist", // 話す商品の順番待ちに登録した
+  "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

@@ -25,10 +25,10 @@
 
 import { isPanelSize, type AttrId, type PanelAge } from "./model";
 
-export type PlanId = "final_check" | "improve" | "retest" | "date_ready";
+export type PlanId = "final_check" | "talk" | "improve" | "retest" | "date_ready";
 
 /** どこまで仕上げるか。深いほど後ろの工程まで含む */
-export type Depth = 1 | 2 | 3 | 4;
+export type Depth = 1 | 2 | 3 | 4 | 5;
 
 export type Plan = {
   id: PlanId;
@@ -54,6 +54,10 @@ export type Plan = {
   available: boolean;
   /** 対面での確認を含むか */
   offline?: boolean;
+  /** 実在する人と1対1で話すことを含むか */
+  talk?: boolean;
+  /** トップの料金に出すか。出さないものは、必要になった場面でだけ出す */
+  onTop: boolean;
   /** 一覧で目立たせるか */
   featured?: boolean;
 };
@@ -61,8 +65,8 @@ export type Plan = {
 export const PLANS: Plan[] = [
   {
     id: "final_check",
-    name: "確かめる",
-    tagline: "まず一度、相手に近い人で確かめる。",
+    name: "今すぐ聞く",
+    tagline: "相手に近い5人へ、今聞く。",
     yen: 2980,
     depth: 1,
     answers: 5,
@@ -77,14 +81,40 @@ export const PLANS: Plan[] = [
     ],
     fits: ["LINE", "写真", "誘い方", "服装", "店選び"],
     available: true,
+    onTop: true,
+    featured: true,
   },
   {
-    id: "improve",
-    name: "直して返す",
-    tagline: "聞いて終わりじゃない。良くして返す。",
+    // 書けない人の逃げ道。全員に自分で言語化させない。
+    // 実在する人と1対1で話す以上、時間を決めた受け入れ手順と
+    // その場を見る体制が要る。用意できるまで available は false。
+    id: "talk",
+    name: "話す",
+    tagline: "20〜30分、実在する人と話す。",
     yen: 4980,
     from: true,
     depth: 2,
+    answers: 1,
+    rounds: 1,
+    targeting: true,
+    includes: [
+      "実在する人と20〜30分",
+      "状況をそのまま話す",
+      "相手側から質問してもらう",
+      "次の一手の整理",
+    ],
+    fits: ["うまく書けない", "何を聞けばいいか分からない", "考えが回っている"],
+    available: false,
+    talk: true,
+    onTop: true,
+  },
+  {
+    id: "improve",
+    name: "一緒に直す",
+    tagline: "人の反応を受けて、改善まで。",
+    yen: 5980,
+    from: true,
+    depth: 3,
     answers: 5,
     rounds: 1,
     targeting: true,
@@ -97,15 +127,15 @@ export const PLANS: Plan[] = [
     ],
     fits: ["文面を直したい", "写真を選び直したい", "プロフィールを書き直したい"],
     available: true,
-    featured: true,
+    onTop: false,
   },
   {
     id: "retest",
-    name: "直して、もう一度",
-    tagline: "良くなったことまで、人で確かめる。",
-    yen: 7980,
+    name: "直して、もう一度聞く",
+    tagline: "直したものを、別の人にもう一度見せる。",
+    yen: 9800,
     from: true,
-    depth: 3,
+    depth: 4,
     answers: 5,
     rounds: 2,
     targeting: true,
@@ -117,6 +147,7 @@ export const PLANS: Plan[] = [
     ],
     fits: ["一度しかない一手", "本命への連絡", "勝負のプロフィール"],
     available: true,
+    onTop: true,
   },
   {
     id: "date_ready",
@@ -124,7 +155,7 @@ export const PLANS: Plan[] = [
     tagline: "大事な日の前に、必要なところをまとめて。",
     yen: 14800,
     from: true,
-    depth: 4,
+    depth: 5,
     answers: 10,
     rounds: 2,
     targeting: true,
@@ -139,6 +170,7 @@ export const PLANS: Plan[] = [
     // 「買えるが届かない」を作らないため、ここは false のまま。
     available: false,
     offline: true,
+    onTop: false,
   },
 ];
 
@@ -157,6 +189,15 @@ export function isPlanId(x: unknown): x is PlanId {
 /** いま買えるものだけ */
 export function sellable(): Plan[] {
   return PLANS.filter((p) => p.available);
+}
+
+/**
+ * トップの料金に出すもの。
+ * 全部並べない。3つを超えると、選ぶ前に読む量が増える。
+ * 「一緒に直す」と対面は、必要になった場面でだけ出す。
+ */
+export function topPlans(): Plan[] {
+  return PLANS.filter((p) => p.onTop);
 }
 
 export function isSellable(id: unknown): id is PlanId {
@@ -263,8 +304,12 @@ export const USE_CASES: {
     if (!Number.isInteger(p.yen)) throw new Error(`プラン「${p.id}」の金額が整数ではありません`);
     // 保存できない人数を売らない。売ったあとに弾かれると、
     // 払ったのに配られない相談ができる。
-    if (!isPanelSize(p.answers)) {
+    // 1対1で話す商品は、そもそも人数を集めないので対象外。
+    if (!p.talk && !isPanelSize(p.answers)) {
       throw new Error(`プラン「${p.id}」の人数 ${p.answers} は保存できません（PANEL_SIZES 外）`);
+    }
+    if (p.talk && p.answers !== 1) {
+      throw new Error(`プラン「${p.id}」は1対1です。人数は1にしてください`);
     }
     if (p.rounds < 1) throw new Error(`プラン「${p.id}」の回数が不正です`);
     // 金額だけ見せると高く感じる。何が返ってくるかを必ず持たせる。
@@ -289,6 +334,20 @@ export const USE_CASES: {
     if (byYen[i].depth <= byYen[i - 1].depth) {
       throw new Error(
         `「${byYen[i].id}」は「${byYen[i - 1].id}」より高いのに、仕上げが浅くなっています`,
+      );
+    }
+  }
+  // トップに並べるのは3つまで。増やすと、選ぶ前に読む量が増える。
+  if (topPlans().length > 3) {
+    throw new Error(`トップの料金が ${topPlans().length} 個あります（3つまで）`);
+  }
+  if (topPlans().length === 0) throw new Error("トップに出すプランがありません");
+  // 1対1で話すものを、受け入れ手順が無いまま売らない。
+  // 相手も実在の人なので、時間を決めた手順とその場を見る体制が要る。
+  for (const p of PLANS) {
+    if (p.talk && p.available) {
+      throw new Error(
+        `プラン「${p.id}」は1対1で話す商品です。受け入れ手順が用意できるまで available は false にしてください`,
       );
     }
   }
