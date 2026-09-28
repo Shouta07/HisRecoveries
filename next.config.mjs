@@ -110,7 +110,9 @@ const nextConfig = {
       { source: "/animals", destination: "/", permanent: true },
       // /manifesto は思想ページとして復活（リダイレクトを解除）
       // legacy company/legal pages removed — fold into the home / privacy.
-      { source: "/legal", destination: "/privacy", permanent: true },
+      // /legal は特定商取引法に基づく表記の実ページになった。転送を外す。
+      // 課金する以上、この表記に到達できないのは法令上まずい。
+      // （/check・/interview・/articles・/ask に続いて5件目の同じ事故）
       // /en mirror removed — Japanese only for now.
       { source: "/en", destination: "/", permanent: true },
       { source: "/en/:slug*", destination: "/", permanent: true },

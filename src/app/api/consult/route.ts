@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbInsertReturning, dbAdminEnabled, parseAttribution } from "@/lib/db";
+import { dbInsertReturning, parseAttribution } from "@/lib/db";
 import {
-  isCategoryId, isAgeBand, isRelationId, isPanelAge, isPanelSize,
-  PANEL_SIZES_OPEN, COMMENT_MAX, screen, initialStatus, cleanAttrs,
+  isCategoryId, isAgeBand, isRelationId, isPanelAge,
+  COMMENT_MAX, screen, initialStatus, needsReview, cleanAttrs,
 } from "@/lib/ask/model";
+import { isSellable, plan, clampTargeting, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { redact } from "@/lib/ask/redact";
-import { makeConsultToken, makeReplyToken } from "@/lib/ask/token";
+import { makeConsultToken } from "@/lib/ask/token";
 
 // 相談を受け取る。
 //
@@ -19,6 +20,15 @@ import { makeConsultToken, makeReplyToken } from "@/lib/ask/token";
 //
 // ── 扱わない相談は、ここで止める ──────────────────
 // 止めたら理由を返す。黙って捨てると、本人は送れたと思ったまま待つ。
+//
+// ── ここでは回答依頼を作らない ────────────────────
+// 有料にした。人数と金額はプランが決め、配るのは支払いが
+// 確認できてから（api/stripe/webhook）。
+// ここで依頼を作ると、払っていない相談が回答者に届く。
+//
+// ── 人数も条件も、画面の言い値で保存しない ────────
+// 人数はプランの answers。条件はプランで許されている範囲に丸める。
+// 丸めないと、安いプランを選んで高いプランの機能が使える。
 
 export const runtime = "edge";
 
@@ -76,13 +86,17 @@ export async function POST(req: NextRequest) {
     ...new Set([...(rBody?.findings ?? []), ...(rA?.findings ?? []), ...(rB?.findings ?? [])].map((f) => f.kind)),
   ];
 
-  const panelSize = isPanelSize(body.panelSize) ? body.panelSize : 3;
-  if (!PANEL_SIZES_OPEN.includes(panelSize)) {
-    return NextResponse.json(
-      { error: "いまはその人数を募集していません" },
-      { status: 400 },
-    );
-  }
+  // 人数と金額はプランが決める。画面から金額は受け取らない。
+  const planId = isSellable(body.plan) ? body.plan : DEFAULT_PLAN;
+  const p = plan(planId);
+  const panelSize = p.answers;
+
+  // そのプランで指定してよい範囲に丸める。
+  const want = clampTargeting(
+    planId,
+    isPanelAge(body.panelAge) ? body.panelAge : "any",
+    cleanAttrs(body.panelAttrs),
+  );
 
   const token = makeConsultToken();
   const attribution = parseAttribution(req);
@@ -98,12 +112,18 @@ export async function POST(req: NextRequest) {
     asker_age_band: isAgeBand(body.askerAge) ? body.askerAge : null,
     other_age_band: isAgeBand(body.otherAge) ? body.otherAge : null,
     relation: isRelationId(body.relation) ? body.relation : null,
-    panel_age: isPanelAge(body.panelAge) ? body.panelAge : "any",
+    panel_age: want.panelAge,
     // 画面に出していない属性が送られてきても通さない。
     // 選べないものが保存されると、条件に合う回答者がいないまま止まる。
-    panel_attrs: cleanAttrs(body.panelAttrs),
+    panel_attrs: want.attrs,
     panel_size: panelSize,
-    status: initialStatus(hasImage),
+    product_type: planId,
+    price: p.yen,
+    status: initialStatus(),
+    needs_review: needsReview(hasImage),
+    // 任意の1問。答えなかったら null のまま。
+    // 「ChatGPTが無料で使えるのに、それでも払うか」を見るのに要る。
+    asked_ai: typeof body.askedAi === "boolean" ? body.askedAi : null,
     redacted_kinds: kinds,
     utm_source: attribution.utm_source ?? null,
     referrer_host: attribution.referrer_host ?? null,
@@ -113,21 +133,14 @@ export async function POST(req: NextRequest) {
   const ins = await dbInsertReturning<Row>("consultations", row);
   if (!ins.ok) return NextResponse.json({ error: ins.error }, { status: 500 });
 
-  // 回答依頼を先に作っておく。
-  // 誰に割り当てるか（responder_id）は運営が決めるので、ここでは鍵だけ用意する。
-  // 相談だけ入って依頼が0件、という状態を作らないために同じ処理の中でやる。
-  const id = ins.rows[0]?.id;
-  if (id && dbAdminEnabled) {
-    const invites = Array.from({ length: panelSize }, () => ({
-      consultation_id: id,
-      token: makeReplyToken(),
-    }));
-    await dbInsertReturning("response_invites", invites as unknown as Record<string, unknown>);
-  }
+  // 回答依頼はここでは作らない。
+  // 作るのは Webhook が支払いを確認したあと（api/stripe/webhook の onPaid）。
 
   return NextResponse.json({
     ok: true,
     token,
+    plan: planId,
+    yen: p.yen,
     redacted: [...new Set([...(rBody?.findings ?? []), ...(rA?.findings ?? []), ...(rB?.findings ?? [])].map((f) => f.label))],
   });
 }

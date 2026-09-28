@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function AskPage() {
   return (
-    <div className="min-h-screen bg-bone">
+    <div className="min-h-screen bg-paper">
       <Suspense
         fallback={<div className="h-[60vh]" />}
       >

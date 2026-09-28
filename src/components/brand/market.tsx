@@ -69,7 +69,7 @@ export function HumanCard({
         {(h.verifiedAge || h.verifiedProfile) && (
           <span
             className={`rounded-pill px-2.5 py-1 text-[11px] font-bold ${
-              dark ? "bg-lime text-void" : "bg-lime text-void"
+              dark ? "bg-brand text-paper" : "bg-brand text-paper"
             }`}
           >
             確認済み
@@ -83,7 +83,7 @@ export function HumanCard({
             <li
               key={String(t)}
               className={`rounded-pill px-2 py-0.5 text-[11px] ${
-                dark ? "border border-rule-dark text-ash-soft" : "bg-bone-soft text-ash"
+                dark ? "border border-slate text-steel" : "bg-mist text-steel"
               }`}
             >
               {t}
@@ -93,7 +93,7 @@ export function HumanCard({
       )}
 
       {h.specialties && h.specialties.length > 0 && (
-        <p className={`mt-3 text-[12px] font-bold ${dark ? "text-lime" : "text-ash"}`}>
+        <p className={`mt-3 text-[12px] font-bold ${dark ? "text-brand-tint" : "text-steel"}`}>
           {h.specialties
             .map((s) => {
               try {
@@ -110,18 +110,18 @@ export function HumanCard({
       {/* 実績。貯まっていないものは出さない */}
       <dl
         className={`mt-4 grid grid-cols-2 gap-x-3 gap-y-2 border-t pt-3.5 ${
-          dark ? "border-rule-dark" : "border-rule"
+          dark ? "border-slate" : "border-line"
         }`}
       >
         <div>
-          <dt className={`text-[11.5px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+          <dt className={`text-[11.5px] font-bold ${dark ? "text-steel" : "text-steel"}`}>
             回答
           </dt>
           <dd className="text-[19px] font-black tabular-nums leading-tight">{h.answered ?? 0}</dd>
         </div>
         {typeof h.helpfulRate === "number" && (
           <div>
-            <dt className={`text-[11.5px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+            <dt className={`text-[11.5px] font-bold ${dark ? "text-steel" : "text-steel"}`}>
               役に立った
             </dt>
             <dd className="text-[19px] font-black tabular-nums leading-tight">{h.helpfulRate}%</dd>
@@ -129,7 +129,7 @@ export function HumanCard({
         )}
         {typeof h.replyMinutes === "number" && (
           <div>
-            <dt className={`text-[11.5px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+            <dt className={`text-[11.5px] font-bold ${dark ? "text-steel" : "text-steel"}`}>
               返信
             </dt>
             <dd className="text-[19px] font-black tabular-nums leading-tight">{h.replyMinutes}m</dd>
@@ -142,8 +142,8 @@ export function HumanCard({
   );
 
   const cls = `block w-full rounded-card border p-4 transition-all ${
-    dark ? "border-rule-dark bg-void text-bone" : "border-rule bg-card text-void shadow-card"
-  } ${href ? (dark ? "hover:border-lime" : "hover:shadow-card-hover") : ""} ${
+    dark ? "border-line-dark bg-slate text-paper" : "border-line bg-paper text-slate shadow-card"
+  } ${href ? (dark ? "hover:border-brand" : "hover:shadow-card-hover") : ""} ${
     float === "slow" ? "motion-safe:animate-float-slow" : float ? "motion-safe:animate-float" : ""
   } ${className}`;
 
@@ -189,12 +189,12 @@ export function QuestionCard({ q, tone = "light" }: { q: Question; tone?: "light
   return (
     <article
       className={`flex items-center justify-between gap-5 rounded-card border px-5 py-4 ${
-        dark ? "border-rule-dark bg-void text-bone" : "border-rule bg-card text-void shadow-card"
+        dark ? "border-line-dark bg-slate text-paper" : "border-line bg-paper text-slate shadow-card"
       }`}
     >
       <div className="min-w-0">
         <p className="text-[16px] font-bold leading-[1.5] sm:text-[18px]">{label}</p>
-        <p className={`mt-1.5 text-[12.5px] ${dark ? "text-ash-soft" : "text-ash"}`}>
+        <p className={`mt-1.5 text-[12.5px] ${dark ? "text-steel" : "text-steel"}`}>
           {q.panel}
           {q.attrs && q.attrs.length > 0 && ` / ${q.attrs.map(attrLabel).join(" / ")}`}
         </p>
@@ -202,9 +202,9 @@ export function QuestionCard({ q, tone = "light" }: { q: Question; tone?: "light
       <div className="shrink-0 text-right">
         <p className="text-[22px] font-black tabular-nums leading-none sm:text-[26px]">
           {q.answered}
-          <span className={dark ? "text-ash-soft" : "text-ash"}>/{q.of}</span>
+          <span className={dark ? "text-steel" : "text-steel"}>/{q.of}</span>
         </p>
-        <p className={`mt-1.5 text-[11.5px] font-bold ${done ? (dark ? "text-lime" : "text-void") : dark ? "text-ash-soft" : "text-ash"}`}>
+        <p className={`mt-1.5 text-[11.5px] font-bold ${done ? (dark ? "text-brand-tint" : "text-slate") : dark ? "text-steel" : "text-steel"}`}>
           {done ? "集まりました" : "回答中"}
         </p>
         {typeof q.priceYen === "number" && (
@@ -224,12 +224,12 @@ export function LiveBadge({ on, tone = "light" }: { on: boolean; tone?: "light" 
       <span
         aria-hidden
         className={`block h-[7px] w-[7px] rounded-full ${
-          on ? "bg-lime motion-safe:animate-pulse" : dark ? "bg-rule-dark" : "bg-rule"
+          on ? "bg-brand motion-safe:animate-pulse" : dark ? "bg-line" : "bg-line"
         }`}
       />
       <span
         className={`text-[12px] font-bold ${
-          dark ? (on ? "text-lime" : "text-ash-soft") : "text-ash"
+          dark ? (on ? "text-brand-tint" : "text-steel") : "text-steel"
         }`}
       >
         {on ? "回答中" : "待機中"}
@@ -256,15 +256,15 @@ export function FlowStep({
 }) {
   const dark = tone === "dark";
   return (
-    <div className={`rounded-card border p-5 ${dark ? "border-rule-dark" : "border-rule bg-card shadow-card"}`}>
-      <p className={`text-[12px] font-bold ${dark ? "text-ash-soft" : "text-ash"}`}>
+    <div className={`rounded-card border p-5 ${dark ? "border-slate" : "border-line bg-paper shadow-card"}`}>
+      <p className={`text-[12px] font-bold ${dark ? "text-steel" : "text-steel"}`}>
         {n} {label}
       </p>
       <p className="mt-3 text-[28px] font-black leading-[1.1] tracking-[-0.02em] tabular-nums sm:text-[34px]">
         {value}
       </p>
       {note && (
-        <p className={`mt-2.5 text-[12.5px] leading-[1.8] ${dark ? "text-ash-soft" : "text-ash"}`}>
+        <p className={`mt-2.5 text-[12.5px] leading-[1.8] ${dark ? "text-steel" : "text-steel"}`}>
           {note}
         </p>
       )}
