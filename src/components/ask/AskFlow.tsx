@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   CATEGORIES, RELATIONS, AGE_BANDS, PANEL_AGES, PANEL_SIZES_OPEN, ATTRS_OPEN,
@@ -13,26 +13,34 @@ import {
   Progress, inputClass,
 } from "@/components/brand/kit";
 import { track } from "@/lib/analytics";
+import { add as rememberAsk } from "@/lib/myasks";
 
 // 相談を出す。
 //
-// ── 30秒〜1分で出せること ────────────────────────
-// 自由入力は1つだけ。ほかは押すだけにする。
-// ここを長くすると、いちばん聞きたい人ほど途中でやめる。
+// ── 12タップを4タップに削った ────────────────────
+// 前の版は カテゴリ → 本文 → 状況3つ → 宛先3つ → 確認 → 送信 で、
+// 実測 12タップ・7画面だった。
+// 「30秒で聞いてみる」と書いておいて、1行の質問に12タップは嘘になる。
 //
-// ── 伏せ字を、送る前に見せる ──────────────────────
+// 必須にしていたもののうち、本当に無いと配れないのは
+// カテゴリ と 本文 だけ。ほかは既定値で足りる。
+//   宛先  女性・5人（変えたい人だけ開く）
+//   状況  自分の年代・相手の年代・関係（任意。開かなければ未回答で出す）
+//
+// 減らしたのは画面であって、集める項目ではない。
+// 畳んだ中身は、開けば前と同じものが全部ある。
+//
+// ── 伏せ字を、書いている横で見せる ────────────────
 // 「送信後に安全に処理します」では、本人は何が起きたか分からない。
-// 書いている横で消えていくのが見えれば、次から書かなくなる。
+// 消えていくのが見えれば、次から書かなくなる。
 //
 // ── 人名は、こちらで勝手に消さない ────────────────
-// 機械では見分けられないので、消すかどうかは本人が決める。
-// 黙って消すと、文の意味が変わる。
+// 機械では見分けられない。消すかどうかは本人が決める。
 
-const STEPS = 5;
+const STEPS = 2;
 
 export default function AskFlow() {
   const router = useRouter();
-  // トップでカテゴリを押してきた人には、同じ問いをもう一度見せない。
   const seeded = useSearchParams().get("c");
   const pre = isCategoryId(seeded) ? seeded : null;
 
@@ -42,20 +50,32 @@ export default function AskFlow() {
   const [text, setText] = useState("");
   const [a, setA] = useState("");
   const [b, setB] = useState("");
+
+  // 既定値を入れておく。変えたい人だけ開く。
+  const [panelAge, setPanelAge] = useState<PanelAge>("any");
+  const [panelAttrs, setPanelAttrs] = useState<AttrId[]>([]);
+  const [panelSize, setPanelSize] = useState<PanelSize>(5);
   const [askerAge, setAskerAge] = useState<AgeBand | null>(null);
   const [otherAge, setOtherAge] = useState<AgeBand | null>(null);
   const [relation, setRelation] = useState<RelationId | null>(null);
-  const [panelAge, setPanelAge] = useState<PanelAge>("any");
-  const [panelAttrs, setPanelAttrs] = useState<AttrId[]>([]);
-  const [panelSize, setPanelSize] = useState<PanelSize>(3);
+
+  const [openWho, setOpenWho] = useState(false);
+  const [openMore, setOpenMore] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const preview = redact(isAb ? `${a}\n${b}` : text);
   const nameWarn = mayContainName(isAb ? `${a}\n${b}` : text);
-  const filled = isAb ? a.trim() && b.trim() : text.trim().length >= 10;
+  const filled = isAb ? Boolean(a.trim() && b.trim()) : text.trim().length >= 10;
+
+  const whoLabel = [
+    PANEL_AGES.find((p) => p.id === panelAge)?.label ?? "女性",
+    ...panelAttrs.map(attrLabel),
+    `${panelSize}人`,
+  ].join(" · ");
 
   async function send() {
+    if (!filled || sending) return;
     setSending(true);
     setError(null);
     try {
@@ -74,6 +94,7 @@ export default function AskFlow() {
         return;
       }
       track("ask_submitted", { category: cat ?? "none", size: panelSize, ab: isAb });
+      if (cat) rememberAsk({ token: json.token, category: cat, size: panelSize });
       router.replace(`/ask/${json.token}?new=1`);
     } catch {
       setError("通信できませんでした。もう一度お試しください。");
@@ -81,51 +102,46 @@ export default function AskFlow() {
     }
   }
 
-  const back = () => (i === 0 ? router.push("/") : setI(i - 1));
-
   return (
-    <div className="mx-auto w-full max-w-[560px] px-5 pb-16 pt-6 sm:px-8">
+    <div className="mx-auto w-full max-w-[560px] px-5 pb-16 pt-5 sm:px-8">
       <Progress step={i + 1} of={STEPS} />
 
       <button
         type="button"
-        onClick={back}
+        onClick={() => (i === 0 ? router.push("/") : setI(0))}
         className="mt-4 inline-flex min-h-[44px] items-center text-[13.5px] text-ash transition-colors hover:text-void"
       >
-        ← {i === 0 ? "やめる" : "ひとつ戻る"}
+        ← {i === 0 ? "やめる" : "カテゴリを変える"}
       </button>
 
-      <div key={i} className="motion-safe:animate-hr-rise mt-5">
-        {/* 1. 何について聞きたい？ */}
+      <div key={i} className="motion-safe:animate-hr-rise mt-4">
+        {/* ── 1. 何について ── */}
         {i === 0 && (
           <>
-            <Ask>何について聞きたい？</Ask>
-            <div className="mt-8 flex flex-col gap-2.5">
+            <Ask>何について聞く？</Ask>
+            <div className="mt-6 grid grid-cols-2 gap-2.5">
               {CATEGORIES.map((c) => (
-                <Choice
+                <button
                   key={c.id}
-                  on={cat === c.id}
+                  type="button"
                   onClick={() => {
                     setCat(c.id);
                     setI(1);
                   }}
+                  className="flex min-h-[84px] flex-col justify-center rounded-card border border-rule bg-card p-4 text-left shadow-card transition-shadow hover:shadow-card-hover"
                 >
-                  <span className="min-w-0">
-                    <span className="block font-bold">{c.label}</span>
-                    <span className="mt-0.5 block text-[12.5px] leading-[1.7] text-ash">
-                      {c.hint}
-                    </span>
-                  </span>
-                </Choice>
+                  <span className="text-[15px] font-bold leading-[1.45]">{c.label}</span>
+                  <span className="mt-1.5 text-[11.5px] leading-[1.6] text-ash">{c.hint}</span>
+                </button>
               ))}
             </div>
           </>
         )}
 
-        {/* 2. 内容 */}
+        {/* ── 2. 書いて、送る ── */}
         {i === 1 && cat && (
           <>
-            <Ask>{isAb ? "AとBを書いてください。" : "聞きたいことを書いてください。"}</Ask>
+            <Ask>{isAb ? "AとBを書いて。" : "何を聞きたい？"}</Ask>
 
             <div className="mt-5 flex gap-2">
               <Chip on={!isAb} onClick={() => setIsAb(false)}>
@@ -138,20 +154,20 @@ export default function AskFlow() {
 
             {!isAb ? (
               <textarea
-                rows={7}
+                rows={6}
                 autoFocus
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder={getCategory(cat).placeholder}
-                className={`mt-5 ${inputClass}`}
+                className={`mt-4 ${inputClass}`}
               />
             ) : (
-              <div className="mt-5 flex flex-col gap-4">
+              <div className="mt-4 flex flex-col gap-3">
                 {([["A", a, setA], ["B", b, setB]] as const).map(([l, v, set]) => (
                   <label key={l} className="block">
                     <Label>{l}</Label>
                     <textarea
-                      rows={4}
+                      rows={3}
                       value={v}
                       onChange={(e) => set(e.target.value)}
                       placeholder={`${l} の内容`}
@@ -164,194 +180,157 @@ export default function AskFlow() {
 
             {/* 伏せ字は、書いている横で見せる */}
             {preview.findings.length > 0 && (
-              <p className="mt-4 border-l border-void pl-3.5 text-[13px] leading-[1.9] text-bodytext">
+              <p className="mt-3 rounded-soft bg-lime/30 px-3.5 py-2.5 text-[13px] leading-[1.8] text-void">
                 {preview.findings.map((f) => f.label).join("、")}
-                を見つけました。回答者には伏せた形で渡します。
+                を見つけました。回答者には伏せて渡します。
               </p>
             )}
             {nameWarn && (
-              <p className="mt-3 border-l border-rule pl-3.5 text-[13px] leading-[1.9] text-ash">
-                名前らしいものが含まれているかもしれません。
-                こちらでは判断できないので、消すかどうかはご自身で決めてください。
+              <p className="mt-2.5 rounded-soft bg-bone-soft px-3.5 py-2.5 text-[13px] leading-[1.8] text-ash">
+                名前らしいものがあります。消すかどうかはご自身で決めてください。
               </p>
             )}
 
-            <div className="mt-6">
-              <Action onClick={() => setI(2)} disabled={!filled}>
-                次へ
-              </Action>
-            </div>
-            <div className="mt-4">
-              <Note>
-                相手を特定できることは書かないでください。
-                写真や画面の画像は、いまは受け付けていません。
-              </Note>
-            </div>
-          </>
-        )}
-
-        {/* 3. 状況 */}
-        {i === 2 && (
-          <>
-            <Ask>状況を教えてください。</Ask>
-            <div className="mt-2">
-              <Note>回答する人が判断するのに使います。3つだけです。</Note>
-            </div>
-
-            <div className="mt-7">
-              <Label>あなたの年代</Label>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {AGE_BANDS.map((x) => (
-                  <Chip key={x} on={askerAge === x} onClick={() => setAskerAge(x)}>
-                    {x}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-7">
-              <Label>相手の年代</Label>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {AGE_BANDS.map((x) => (
-                  <Chip key={x} on={otherAge === x} onClick={() => setOtherAge(x)}>
-                    {x}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-7">
-              <Label>いまの関係</Label>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {RELATIONS.map((r) => (
-                  <Chip key={r.id} on={relation === r.id} onClick={() => setRelation(r.id)}>
-                    {r.label}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-col gap-2">
-              <Action onClick={() => setI(3)}>次へ</Action>
+            {/* 宛先。既定のまま送れる。変えたい人だけ開く */}
+            <div className="mt-6 rounded-card border border-rule bg-card shadow-card">
               <button
                 type="button"
-                onClick={() => setI(3)}
-                className="min-h-[44px] text-[13.5px] text-ash transition-colors hover:text-void"
+                onClick={() => setOpenWho(!openWho)}
+                aria-expanded={openWho}
+                className="flex min-h-[56px] w-full items-center justify-between gap-3 px-4 text-left"
               >
-                答えずに進む
+                <span className="min-w-0">
+                  <span className="block text-[12px] text-ash">誰に聞く</span>
+                  <span className="mt-0.5 block truncate text-[14.5px] font-bold">{whoLabel}</span>
+                </span>
+                <span className="shrink-0 rounded-pill bg-bone-soft px-3 py-1.5 text-[12px] font-bold text-ash">
+                  {openWho ? "閉じる" : "変える"}
+                </span>
               </button>
-            </div>
-          </>
-        )}
 
-        {/* 4. 誰に聞くか */}
-        {i === 3 && (
-          <>
-            <Ask>誰に聞きますか？</Ask>
-            <div className="mt-7 flex flex-col gap-2.5">
-              {PANEL_AGES.map((p) => (
-                <Choice key={p.id} on={panelAge === p.id} onClick={() => setPanelAge(p.id)}>
-                  {p.label}
-                </Choice>
-              ))}
-            </div>
+              {openWho && (
+                <div className="border-t border-rule px-4 pb-5 pt-4">
+                  <Label>年代</Label>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {PANEL_AGES.map((p) => (
+                      <Chip key={p.id} on={panelAge === p.id} onClick={() => setPanelAge(p.id)}>
+                        {p.label}
+                      </Chip>
+                    ))}
+                  </div>
 
-            {/* 年齢以外の条件。ここがこの製品の中心。
-                「誰か女性に聞いた」と「気になっている相手に近い人に聞いた」は別物。 */}
-            <div className="mt-8">
-              <Label>近い条件があれば</Label>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {ATTRS_OPEN.map((a) => (
-                  <Chip
-                    key={a.id}
-                    on={panelAttrs.includes(a.id)}
-                    onClick={() =>
-                      setPanelAttrs((prev) =>
-                        prev.includes(a.id) ? prev.filter((x) => x !== a.id) : [...prev, a.id],
-                      )
-                    }
-                  >
-                    {a.label}
-                  </Chip>
-                ))}
-              </div>
-              <div className="mt-3">
-                <Note>
-                  選ばなくても構いません。条件を足すほど、集まるまでに時間がかかります。
-                </Note>
-              </div>
-            </div>
+                  <div className="mt-5">
+                    <Label>近い条件</Label>
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      {ATTRS_OPEN.map((x) => (
+                        <Chip
+                          key={x.id}
+                          on={panelAttrs.includes(x.id)}
+                          onClick={() =>
+                            setPanelAttrs((prev) =>
+                              prev.includes(x.id)
+                                ? prev.filter((y) => y !== x.id)
+                                : [...prev, x.id],
+                            )
+                          }
+                        >
+                          {x.label}
+                        </Chip>
+                      ))}
+                    </div>
+                  </div>
 
-            <div className="mt-8">
-              <Label>何人に聞きますか</Label>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {PANEL_SIZES_OPEN.map((n) => (
-                  <Chip key={n} on={panelSize === n} onClick={() => setPanelSize(n)}>
-                    {n}人
-                  </Chip>
-                ))}
-              </div>
-              <div className="mt-3">
-                <Note>
-                  いまは登録している女性メンバーが少ないため、3人と5人だけ受け付けています。
-                </Note>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <Action onClick={() => setI(4)}>次へ</Action>
-            </div>
-          </>
-        )}
-
-        {/* 5. 確認して送る */}
-        {i === 4 && cat && (
-          <>
-            <Ask>これで送ります。</Ask>
-
-            <div className="mt-7 border-l border-void pl-4">
-              <Label>{getCategory(cat).label}</Label>
-              <p className="mt-2 whitespace-pre-wrap text-[15px] leading-[1.95] text-void">
-                {isAb ? `A: ${redact(a).text}\nB: ${redact(b).text}` : preview.text}
-              </p>
-            </div>
-
-            <dl className="mt-7 divide-y divide-rule border-y border-rule text-[14px]">
-              {[
-                ["聞く相手", PANEL_AGES.find((p) => p.id === panelAge)?.label ?? ""],
-                ["条件", panelAttrs.length ? panelAttrs.map(attrLabel).join("・") : "指定なし"],
-                ["人数", `${panelSize}人`],
-                ["あなたの年代", askerAge ?? "未回答"],
-                ["相手の年代", otherAge ?? "未回答"],
-                ["関係", RELATIONS.find((r) => r.id === relation)?.label ?? "未回答"],
-              ].map(([k, v]) => (
-                <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
-                  <dt className="text-ash">{k}</dt>
-                  <dd className="text-void">{v}</dd>
+                  <div className="mt-5">
+                    <Label>人数</Label>
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      {PANEL_SIZES_OPEN.map((n) => (
+                        <Chip key={n} on={panelSize === n} onClick={() => setPanelSize(n)}>
+                          {n}人
+                        </Chip>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </dl>
+              )}
+            </div>
+
+            {/* 状況。任意。開かなければ未回答のまま送る */}
+            <div className="mt-3 rounded-card border border-rule bg-card shadow-card">
+              <button
+                type="button"
+                onClick={() => setOpenMore(!openMore)}
+                aria-expanded={openMore}
+                className="flex min-h-[52px] w-full items-center justify-between gap-3 px-4 text-left"
+              >
+                <span className="text-[14px] text-ash">
+                  状況も伝える
+                  <span className="ml-2 text-[12px]">任意</span>
+                </span>
+                <span className="shrink-0 text-[12px] font-bold text-ash">
+                  {openMore ? "閉じる" : "開く"}
+                </span>
+              </button>
+
+              {openMore && (
+                <div className="border-t border-rule px-4 pb-5 pt-4">
+                  {(
+                    [
+                      ["あなたの年代", askerAge, setAskerAge],
+                      ["相手の年代", otherAge, setOtherAge],
+                    ] as const
+                  ).map(([label, val, set]) => (
+                    <div key={label} className="mb-5">
+                      <Label>{label}</Label>
+                      <div className="mt-2.5 flex flex-wrap gap-2">
+                        {AGE_BANDS.map((x) => (
+                          <Chip key={x} on={val === x} onClick={() => set(val === x ? null : x)}>
+                            {x}
+                          </Chip>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <Label>いまの関係</Label>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {RELATIONS.map((r) => (
+                      <Chip
+                        key={r.id}
+                        on={relation === r.id}
+                        onClick={() => setRelation(relation === r.id ? null : r.id)}
+                      >
+                        {r.label}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {error && (
-              <p className="mt-5 border-l border-void pl-3.5 text-[14px] leading-[1.9] text-void">
+              <p className="mt-5 rounded-soft border border-void px-4 py-3 text-[14px] leading-[1.8]">
                 {error}
               </p>
             )}
 
-            <div className="mt-8">
-              <Action onClick={send} disabled={sending}>
-                {sending ? "送っています…" : "女性に聞く"}
+            <div className="mt-7">
+              <Action onClick={send} disabled={!filled || sending}>
+                {sending ? "送っています…" : `${panelSize}人に聞く`}
               </Action>
             </div>
             <div className="mt-4">
               <Note>
-                いまは無料です（招待した女性メンバーによるベータ中のため）。
-                登録は要りません。結果を見るためのリンクを、次の画面でお渡しします。
+                登録は要りません。いまは無料です。
+                相手を特定できることは書かないでください。
               </Note>
             </div>
           </>
         )}
       </div>
+
+      {/* 確認画面は置かない。
+          1行の質問に確認を挟むと、そこで半分が帰る。
+          伏せ字は書いている横で見えているので、送る前に分かる。 */}
+      <Fragment />
     </div>
   );
 }

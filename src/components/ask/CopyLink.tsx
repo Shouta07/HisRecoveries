@@ -20,7 +20,7 @@ export default function CopyLink({ token }: { token: string }) {
       <p className="text-[14px] font-bold text-void">このリンクを控えてください。</p>
       <p className="mt-2 text-[13px] leading-[1.9] text-ash">
         登録をしていないので、回答が集まったことをこちらからお知らせできません。
-        このリンクが、結果に戻れる唯一の場所です。
+        同じ端末なら「自分」からも戻れますが、端末を変えるとこのリンクだけが手がかりになります。
       </p>
       <p className="mt-3.5 select-all break-all border border-rule bg-transparent px-3 py-2.5 text-[12.5px] text-ash">
         {url || `/ask/${token}`}

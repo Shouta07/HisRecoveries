@@ -70,10 +70,10 @@ const AGE_LABEL: Record<string, string> = {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div data-brand className="min-h-screen bg-bone text-void">
+    <div data-brand className="min-h-screen bg-bone pb-28 text-void sm:pb-0">
       <header className="border-b border-rule">
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
-          <Link href="/" className="text-[14px] font-black uppercase tracking-[0.1em]">
+          <Link href="/" className="text-[14px] font-black">
             His Recoveries
           </Link>
           <Link
@@ -106,7 +106,7 @@ export default async function ResultPage({
   if (!dbAdminEnabled) {
     return (
       <Shell>
-        <Eyebrow>Received</Eyebrow>
+        <Eyebrow>受け付けました</Eyebrow>
         <h1 className="mt-6 text-big font-black text-void">相談を受け付けました。</h1>
         <p className="mt-7 max-w-[30em] text-[16px] leading-[1.95] text-ash">
           ただし、いまこの環境はデータベースに接続されていません。
@@ -159,7 +159,7 @@ export default async function ResultPage({
 
   return (
     <Shell>
-      {isNew && <Eyebrow>Sent</Eyebrow>}
+      {isNew && <Eyebrow>送りました</Eyebrow>}
 
       <h1 className="mt-5 text-huge font-black text-void">
         {t.total > 0 ? (
@@ -183,7 +183,7 @@ export default async function ResultPage({
           <AttributeChip on>{AGE_LABEL[c.panel_age] ?? "—"}</AttributeChip>
         </li>
         <li>
-          <AttributeChip on>Women</AttributeChip>
+          <AttributeChip on>女性</AttributeChip>
         </li>
         {(c.panel_attrs ?? []).map((a) => (
           <li key={a}>
@@ -209,7 +209,7 @@ export default async function ResultPage({
                 <p className="mt-3 text-[44px] font-black leading-[0.9] tracking-[-0.04em] tabular-nums text-void sm:text-[56px]">
                   {t.second.yes}
                   <span className="text-ash"> / {t.second.total}</span>
-                  <span className="ml-3 text-[0.32em] font-bold uppercase tracking-[0.16em] align-middle">
+                  <span className="ml-3 text-[0.32em] font-bold align-middle">
                     Yes
                   </span>
                 </p>
@@ -218,7 +218,7 @@ export default async function ResultPage({
           </section>
 
           {waiting > 0 && (
-            <p className="mt-5 text-[12.5px] font-bold uppercase tracking-[0.14em] text-ash">
+            <p className="mt-5 text-[12.5px] font-bold text-ash">
               あと{waiting}人の回答を待っています
             </p>
           )}
@@ -294,7 +294,7 @@ export default async function ResultPage({
       {/* 聞いた内容 */}
       <section className="mt-16 border-t border-rule pt-10">
         <Eyebrow>聞いた内容</Eyebrow>
-        <p className="mt-3 text-[12px] font-bold uppercase tracking-[0.14em] text-ash">
+        <p className="mt-3 text-[12px] font-bold text-ash">
           {category(c.category as CategoryId).label} / {panelLabel} {c.panel_size}
           {c.relation && ` / ${RELATIONS.find((r) => r.id === c.relation)?.label}`}
         </p>
