@@ -47,7 +47,7 @@ export default function SafetyPage() {
           </Link>
           <Link
             href="/ask"
-            className="inline-flex min-h-[44px] items-center bg-void px-5 text-[12px] font-bold uppercase tracking-[0.16em] text-bone transition-colors hover:bg-lime hover:text-void"
+            className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-lime px-5 text-[13.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
           >
             人に聞く
           </Link>
@@ -215,13 +215,13 @@ export default function SafetyPage() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/ask"
-              className="inline-flex min-h-[58px] items-center justify-center bg-void px-8 text-[14px] font-bold uppercase tracking-[0.12em] text-bone transition-colors hover:bg-lime hover:text-void"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-lime px-9 text-[15.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
             >
               人に聞いてみる
             </Link>
             <Link
               href="/join"
-              className="inline-flex min-h-[58px] items-center justify-center border border-void px-8 text-[14px] font-bold uppercase tracking-[0.12em] transition-colors hover:bg-void hover:text-bone"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-rule bg-card px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
             >
               回答者について
             </Link>

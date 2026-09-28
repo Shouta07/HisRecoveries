@@ -36,6 +36,11 @@ const config: Config = {
         ash: "#6E6A63",         // 温かいグレー — 本文（地の上で 4.77:1、AA）
         "ash-soft": "#9A948B",  // 装飾・キャプションだけ。本文に使わない
         lime: "#CCFF00",        // アクセント1色。面と、黒地の上の文字だけ
+        // C2C の親しみやすさ用。
+        // 角を落として白いカードを並べると、硬い罫線より柔らかい影が要る。
+        // 影は濃くしない。濃いと「管理画面」に戻る。
+        card: "#FFFFFF",        // カードの面
+        "bone-soft": "#F7F5F2", // 帯・へこませたい面
         rule: "#DCD8D1",        // 明るい地の罫線
         "rule-dark": "#2A2A28", // 黒地の罫線
 
@@ -163,14 +168,26 @@ const config: Config = {
         "card-in": "card-in 520ms cubic-bezier(0.22,0.61,0.36,1) both",
         "bar-grow": "bar-grow 900ms cubic-bezier(0.22,0.61,0.36,1) both",
       },
+      // 角丸。0px の直角は編集的で強いが、消費者向けだと硬く見える。
+      borderRadius: {
+        card: "16px",
+        soft: "12px",
+        pill: "999px",
+      },
+      boxShadow: {
+        card: "0 1px 2px rgba(10,10,10,0.04), 0 4px 16px rgba(10,10,10,0.05)",
+        "card-hover": "0 2px 6px rgba(10,10,10,0.06), 0 10px 28px rgba(10,10,10,0.08)",
+      },
       fontSize: {
         // 本文と見出しのサイズ差を大きくする。
         // 画面幅で伸ばすので、スマホでも大見出しが大見出しのままになる。
-        mega: ["clamp(44px, 13vw, 132px)", { lineHeight: "0.92", letterSpacing: "-0.04em" }],
-        huge: ["clamp(34px, 9vw, 84px)", { lineHeight: "1.04", letterSpacing: "-0.035em" }],
-        big: ["clamp(26px, 6.4vw, 56px)", { lineHeight: "1.15", letterSpacing: "-0.025em" }],
+        // 80〜132px は広告の寸法で、アプリでは威圧的に見える。
+        // 読める大きさまで落として、丸みと余白で印象を作る。
+        mega: ["clamp(30px, 6.2vw, 52px)", { lineHeight: "1.25", letterSpacing: "-0.025em" }],
+        huge: ["clamp(26px, 4.6vw, 40px)", { lineHeight: "1.35", letterSpacing: "-0.02em" }],
+        big: ["clamp(21px, 3.2vw, 28px)", { lineHeight: "1.45", letterSpacing: "-0.015em" }],
         // 数字そのものをデザインの要素として扱う
-        stat: ["clamp(48px, 16vw, 140px)", { lineHeight: "0.88", letterSpacing: "-0.05em" }],
+        stat: ["clamp(34px, 7vw, 56px)", { lineHeight: "1", letterSpacing: "-0.03em" }],
       },
     },
   },

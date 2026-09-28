@@ -64,7 +64,7 @@ export default function JoinPage() {
             <div className="mt-9">
               <Link
                 href="#form"
-                className="inline-flex min-h-[58px] items-center justify-center bg-void px-10 text-[14px] font-bold uppercase tracking-[0.14em] text-bone transition-colors hover:bg-lime hover:text-void"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-lime px-9 text-[15.5px] font-bold text-void shadow-card transition-shadow hover:shadow-card-hover"
               >
                 登録する
               </Link>
