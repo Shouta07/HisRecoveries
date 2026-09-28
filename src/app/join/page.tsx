@@ -183,9 +183,14 @@ export default function JoinPage() {
 
       <footer className="border-t border-rule">
         <div className="mx-auto flex w-full max-w-[900px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
-          <Link href="/" className="text-[15px] font-black uppercase tracking-[0.08em]">
-            His Recoveries
-          </Link>
+          <div className="flex items-baseline gap-6">
+            <Link href="/" className="text-[15px] font-black uppercase tracking-[0.08em]">
+              His Recoveries
+            </Link>
+            <Link href="/safety" className="text-[12px] text-ash transition-colors hover:text-void">
+              安全とできないこと
+            </Link>
+          </div>
           <p className="text-[11.5px] text-ash">
             © 2026 His Recoveries — AIは予測する。人間は反応する。
           </p>
