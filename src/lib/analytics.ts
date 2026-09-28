@@ -128,6 +128,8 @@ export const CONVERSION_EVENTS = [
   "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
   "talk_waitlist", // 話す商品の順番待ちに登録した
   "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
+  // 集まらなかったときに何を選んだか。供給が足りない度合いが出る。
+  "shortfall_picked", // 足りないときの選択（props: choice, got, of）
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

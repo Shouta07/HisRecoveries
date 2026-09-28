@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbSelect, dbInsertReturning, dbUpdate, dbAdminEnabled } from "@/lib/db";
 import { isVerdict, isPick, isSecond, COMMENT_MIN, COMMENT_MAX } from "@/lib/ask/model";
 import { redact } from "@/lib/ask/redact";
+import { isPlanId } from "@/lib/ask/plans";
+import { credit, rateFor, balanceOf, type Tier } from "@/lib/responder/balance";
 import { isReplyToken } from "@/lib/ask/token";
 
 // 回答を受け取る。
@@ -21,11 +23,19 @@ export const runtime = "edge";
 type Invite = {
   id: string;
   consultation_id: string;
+  responder_id: string | null;
   answered_at: string | null;
-  responders: { display_age_band: string } | null;
+  responders: { display_age_band: string; tier: string | null } | null;
 };
 
-type Consult = { id: string; is_ab: boolean; panel_size: number; status: string; category: string };
+type Consult = {
+  id: string;
+  is_ab: boolean;
+  panel_size: number;
+  status: string;
+  category: string;
+  product_type: string | null;
+};
 
 export async function POST(req: NextRequest, { params }: { params: { token: string } }) {
   const token = params.token;
@@ -47,7 +57,7 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
   }
 
   const invites = await dbSelect<Invite>(
-    `response_invites?token=eq.${encodeURIComponent(token)}&select=id,consultation_id,answered_at,responders(display_age_band)`,
+    `response_invites?token=eq.${encodeURIComponent(token)}&select=id,consultation_id,responder_id,answered_at,responders(display_age_band,tier)`,
   );
   const invite = invites[0];
   if (!invite) {
@@ -58,7 +68,7 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
   }
 
   const cs = await dbSelect<Consult>(
-    `consultations?id=eq.${invite.consultation_id}&select=id,is_ab,panel_size,status,category`,
+    `consultations?id=eq.${invite.consultation_id}&select=id,is_ab,panel_size,status,category,product_type`,
   );
   const c = cs[0];
   if (!c) return NextResponse.json({ error: "相談が見つかりません" }, { status: 404 });
@@ -85,7 +95,7 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
     return NextResponse.json({ error: "評価を選んでください" }, { status: 400 });
   }
 
-  const ins = await dbInsertReturning("responses", {
+  const ins = await dbInsertReturning<{ id: string }>("responses", {
     consultation_id: c.id,
     invite_id: invite.id,
     display_age_band: invite.responders?.display_age_band ?? "any",
@@ -97,6 +107,35 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
   if (!ins.ok) return NextResponse.json({ error: ins.error }, { status: 500 });
 
   await dbUpdate("response_invites", invite.id, { answered_at: new Date().toISOString() });
+
+  // 報酬を、その場で確定させる。
+  //
+  // 「あとで運営から連絡します」にしない。答えた手応えが残らない。
+  // 確認を通った時点で残高に入れ、いくら入ったかをこの返事で返す。
+  // 銀行への振り込みは、まとまってからまとめて行う（balance.ts）。
+  //
+  // 予算の残りが足りなければ払わない。黙って0円にはせず、
+  // 画面には額を出さない（入っていない報酬を見せない）。
+  let paidYen = 0;
+  let todayYen = 0;
+  let todayCount = 0;
+  const responseId = ins.rows?.[0]?.id;
+  const responderId = invite.responder_id;
+
+  if (responseId && responderId && isPlanId(c.product_type)) {
+    const tier = (invite.responders?.tier ?? "bronze") as Tier;
+    const r = await credit({
+      responderId,
+      yen: rateFor({ tier }),
+      responseId,
+      consultationId: c.id,
+      planId: c.product_type,
+    });
+    paidYen = r.paid;
+    const b = await balanceOf(responderId);
+    todayYen = b.todayYen;
+    todayCount = b.todayCount;
+  }
 
   // 何件集まったかを数え直して、揃っていれば閉じる。
   const done = await dbSelect<{ id: string }>(
@@ -112,5 +151,5 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
     await dbUpdate("consultations", c.id, { status: "collecting" });
   }
 
-  return NextResponse.json({ ok: true, answered: n, of: c.panel_size });
+  return NextResponse.json({ ok: true, answered: n, of: c.panel_size, paidYen, todayYen, todayCount });
 }

@@ -130,7 +130,13 @@ function Heart() {
 
 export default function HomePage() {
   const paid = canCharge();
-  const tops = topPlans();
+  const entry = topPlans()[0];
+  // 必要になった場面でだけ出すもの。トップでは名前と目安だけ。
+  const LATER = [
+    { id: "talk", name: "話す", when: "もう少し話したいとき", yen: getPlan("talk").yen },
+    { id: "improve", name: "一緒に直す", when: "直したいとき", yen: getPlan("improve").yen },
+    { id: "retest", name: "もう一度聞く", when: "直したあと", yen: getPlan("retest").yen },
+  ];
 
   const ld = {
     "@context": "https://schema.org",
@@ -276,7 +282,7 @@ export default function HomePage() {
                   人と話す
                 </span>
                 <span className="mt-0.5 pl-[30px] text-[12px] font-bold text-steel">
-                  女性と直接相談 ¥{getPlan("talk").yen.toLocaleString()}〜
+                  まだ言葉になっていないとき
                 </span>
               </Link>
             </div>
@@ -463,76 +469,69 @@ export default function HomePage() {
       {/* ══ 料金プラン ══ */}
       <section id="price" className="scroll-mt-20 bg-paper">
         <Wrap className="py-14 sm:py-16">
-          <H>プランはシンプルに。</H>
+          <H>料金はひとつだけ。</H>
 
-          <div className="mt-7 grid gap-4 lg:grid-cols-3">
-            {tops.map((p, i) => {
-              const first = i === 0;
-              return (
-                <Reveal key={p.id} delay={i * 60}>
-                  <div
-                    className={`flex h-full flex-col rounded-card border bg-paper p-6 shadow-card ${
-                      first ? "border-rose" : "border-line"
-                    }`}
+          {/* 料金表を並べない。
+              最初から選ばせると、「何に迷っているか」より先に
+              「どれを買うか」を考えさせることになる。
+              ほかの商品は、必要になった場面でだけ出す。 */}
+          <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
+            <div className="rounded-card border border-rose bg-paper p-7 shadow-card">
+              <p className="text-[18px] font-black text-slate">{entry.name}</p>
+              <p className="mt-2 text-[40px] font-black leading-none tabular-nums text-rose-text">
+                ¥{entry.yen.toLocaleString()}
+              </p>
+              <p className="mt-3.5 text-[13.5px] leading-[1.8] text-steel">{entry.tagline}</p>
+
+              <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-5">
+                {entry.includes.map((x) => (
+                  <li key={x} className="flex items-start gap-2 text-[13px] leading-[1.7]">
+                    <span aria-hidden className="mt-[2px] shrink-0 text-[12px] font-black text-brand">
+                      ✓
+                    </span>
+                    <span className="min-w-0 text-steel">{x}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <PlanCta
+                plan={entry.id}
+                from="price"
+                className="mt-6 min-h-[54px] w-full rounded-pill bg-rose-fill px-5 text-[15px] !text-paper shadow-card"
+              >
+                今すぐ女性に聞く <span aria-hidden className="ml-1.5">→</span>
+              </PlanCta>
+
+              <p className="mt-4 text-[12px] leading-[1.75] text-steel">
+                お支払いが済んだ瞬間に、条件に合う方へ配りはじめます。
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[15.5px] font-bold leading-[1.8]">
+                足りなければ、そのときに。
+              </p>
+              <p className="mt-3 text-[13.5px] leading-[1.9] text-steel">
+                回答を見て「もう少し話したい」「直したい」と思ったときだけ、
+                次が出てきます。最初から全部は並べません。
+              </p>
+              <ul className="mt-5 flex flex-col gap-2">
+                {LATER.map((l) => (
+                  <li
+                    key={l.id}
+                    className="flex items-baseline justify-between gap-3 border-b border-line py-2.5"
                   >
-                    <p className="text-[17px] font-black text-slate">{p.name}</p>
-                    <p
-                      className={`mt-2 text-[30px] font-black leading-none tabular-nums ${
-                        first ? "text-rose-text" : "text-brand"
-                      }`}
-                    >
-                      ¥{p.yen.toLocaleString()}
-                      <span className="text-[19px]">〜</span>
-                    </p>
-                    <p className="mt-3.5 text-[13px] leading-[1.8] text-steel">{p.tagline}</p>
-
-                    <div className="mt-5">
-                      {p.available ? (
-                        <PlanCta
-                          plan={p.id}
-                          from="price"
-                          className={`min-h-[50px] w-full rounded-pill px-5 text-[14.5px] shadow-card ${
-                            first
-                              ? "bg-rose-fill !text-paper"
-                              : "border border-brand bg-paper !text-brand"
-                          }`}
-                        >
-                          {first ? "今すぐ女性に聞く" : "改善案を依頼する"}{" "}
-                          <span aria-hidden className="ml-1.5">
-                            →
-                          </span>
-                        </PlanCta>
-                      ) : (
-                        <Link
-                          href="#talk"
-                          className="inline-flex min-h-[50px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-5 text-[14.5px] font-bold text-brand"
-                        >
-                          今すぐ話せる人を探す <span aria-hidden className="ml-1.5">→</span>
-                        </Link>
-                      )}
-                    </div>
-
-                    <ul className="mt-5 flex flex-col gap-2">
-                      {p.includes.slice(0, 3).map((x) => (
-                        <li key={x} className="flex items-start gap-2 text-[12.5px] leading-[1.7]">
-                          <span aria-hidden className="mt-[2px] shrink-0 text-[12px] font-black text-brand">
-                            ✓
-                          </span>
-                          <span className="min-w-0 text-steel">{x}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {!p.available && (
-                      <p className="mt-4 rounded-soft bg-mist px-3.5 py-2.5 text-[11.5px] leading-[1.7] text-steel">
-                        いまは順番待ちのみ。相手も実在の人なので、時間の決め方と
-                        その場を見る体制が用意できてから開きます。
-                      </p>
-                    )}
-                  </div>
-                </Reveal>
-              );
-            })}
+                    <span className="min-w-0 text-[13.5px] text-slate">
+                      {l.name}
+                      <span className="ml-2 text-[12px] text-steel">{l.when}</span>
+                    </span>
+                    <span className="shrink-0 text-[13.5px] font-bold tabular-nums text-steel">
+                      ¥{l.yen.toLocaleString()}〜
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           <p className="mt-6 text-[12px] leading-[1.9] text-steel">

@@ -8,6 +8,8 @@ import {
   type Status, type CategoryId,
 } from "@/lib/ask/model";
 import { isPlanId, plan as getPlan } from "@/lib/ask/plans";
+import { retrieveCheckout, stripeEnabled } from "@/lib/stripe";
+import { fulfil, paymentByConsultation } from "@/lib/ask/fulfil";
 import { tally, type Answer } from "@/lib/ask/aggregate";
 import { AttributeChip } from "@/components/brand/kit";
 import Donut from "@/components/brand/Donut";
@@ -18,6 +20,8 @@ import PayButton from "@/components/ask/PayButton";
 import WhyAsked from "@/components/ask/WhyAsked";
 import LiveAnswers from "@/components/ask/LiveAnswers";
 import NextStep from "@/components/ask/NextStep";
+import Shortfall from "@/components/ask/Shortfall";
+import { needsChoice } from "@/lib/ask/shortfall";
 
 // 結果 — Human Reaction Report。
 //
@@ -38,9 +42,13 @@ import NextStep from "@/components/ask/NextStep";
 // 有料にした。払う前の相談は「お支払いへ進む」だけを出す。
 // 進めない理由があるときは、その理由を出す。
 //
-// ── success_url を信用しない ──────────────────────
-// ?paid=1 は「Stripe から戻ってきた」以上の意味を持たない。
-// URL は手で叩ける。確定させるのは Webhook だけ。
+// ── 支払い済みなら、待たせない ────────────────────
+// ?paid=1 で戻ってきたら、その場で Stripe に聞く。
+// paid と返ってきたら、そこで配りはじめる。
+// 「確認しています」と待たせるのは、ただ遅いだけ。
+//
+// URL は手で叩けるので、?paid=1 自体は何の証拠にもならない。
+// 信じるのは Stripe の答えだけ。Webhook は取りこぼしの受け皿。
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +72,8 @@ type Row = {
   panel_size: number;
   status: Status;
   product_type: string | null;
+  paid_at: string | null;
+  widened_at: string | null;
   redacted_kinds: string[] | null;
   summary: string | null;
   created_at: string;
@@ -133,11 +143,27 @@ export default async function ResultPage({
     );
   }
 
-  const rows = await dbSelect<Row>(
+  let rows = await dbSelect<Row>(
     `consultations?token=eq.${encodeURIComponent(params.token)}&select=*`,
   );
-  const c = rows[0];
+  let c = rows[0];
   if (!c) notFound();
+
+  // 決済から戻ってきた。待たせずに、その場で確かめて配りはじめる。
+  if (justPaid && UNPAID.includes(c.status) && stripeEnabled) {
+    const pay = await paymentByConsultation(c.id);
+    if (pay?.stripe_checkout_session_id && pay.payment_status !== "paid") {
+      const r = await retrieveCheckout(pay.stripe_checkout_session_id);
+      // Stripe が paid と言ったときだけ進む。URL は証拠にしない。
+      if (r.ok && r.session?.payment_status === "paid") {
+        await fulfil(pay, (r.session.payment_intent as string | null) ?? null);
+        rows = await dbSelect<Row>(
+          `consultations?token=eq.${encodeURIComponent(params.token)}&select=*`,
+        );
+        c = rows[0] ?? c;
+      }
+    }
+  }
 
   const planName = isPlanId(c.product_type) ? getPlan(c.product_type).name : null;
   const whoChips = [
@@ -151,31 +177,22 @@ export default async function ResultPage({
     return (
       <Shell>
         <h1 className="text-big font-black">
-          {justPaid ? "お支払いを確認しています。" : "あとは、お支払いだけ。"}
+          {justPaid ? "カード会社の確認を待っています。" : "あとは、お支払いだけ。"}
         </h1>
 
         {justPaid ? (
-          <>
-            <p className="mt-6 max-w-[30em] text-[15.5px] leading-[1.95] text-steel">
-              カード会社からの確認を待っています。ふつうは数秒から数分で終わります。
-              確認が取れると、この画面に募集の状況が出ます。
-              少しあとに、このページを読み込み直してください。
-            </p>
-            <p className="mt-5 text-[13px] leading-[1.85] text-steel">
-              お支払いが済んだかどうかは、こちらで確認してから確定します。
-              この画面を開いただけでは確定しません。
-            </p>
-          </>
+          <p className="mt-6 max-w-[30em] text-[15.5px] leading-[1.95] text-steel">
+            めずらしく時間がかかっています。確認が取れ次第、この画面に募集の状況が出ます。
+            下のボタンからやり直すこともできます。二重には請求されません。
+          </p>
         ) : (
           <p className="mt-6 max-w-[30em] text-[15.5px] leading-[1.95] text-steel">
-            聞きたいことは保存しました。お支払いが済むと、条件に合う方へ募集を始めます。
+            聞きたいことは保存しました。お支払いが済んだ瞬間に、条件に合う方へ配りはじめます。
             お支払いの前に回答者へ配ることはありません。
           </p>
         )}
 
-        {!justPaid && (
-          <PayButton token={params.token} planId={c.product_type} canceled={canceled} />
-        )}
+        <PayButton token={params.token} planId={c.product_type} canceled={canceled} />
 
         <section className="mt-12 border-t border-line pt-9">
           <p className="text-[12px] font-bold text-steel">聞く内容</p>
@@ -228,9 +245,25 @@ export default async function ResultPage({
   // 「受付完了」とだけ出して閉じると、いちばん面白いところが見えない。
   // 届いた順に1枚ずつ増える画面を出す。
   if (waiting > 0 && c.status !== "cancelled" && c.status !== "refunded") {
+    // 待たせすぎていたら、こちらから選択肢を出す。
+    // 問い合わせを待たない。黙ったままにしない。
+    const stuck =
+      isPlanId(c.product_type) &&
+      needsChoice(c.paid_at ?? null, t.total, c.panel_size) &&
+      !c.widened_at;
+
     return (
       <Shell>
         <LiveAnswers token={params.token} panel={c.panel_size} />
+
+        {stuck && isPlanId(c.product_type) && (
+          <Shortfall
+            token={params.token}
+            planId={c.product_type}
+            got={t.total}
+            want={c.panel_size}
+          />
+        )}
 
         <section className="mt-12 border-t border-line pt-9">
           <p className="text-[12px] font-bold text-steel">聞いている内容</p>

@@ -106,7 +106,7 @@ export const PLANS: Plan[] = [
     fits: ["うまく書けない", "何を聞けばいいか分からない", "考えが回っている"],
     available: false,
     talk: true,
-    onTop: true,
+    onTop: false,
   },
   {
     id: "improve",
@@ -133,7 +133,7 @@ export const PLANS: Plan[] = [
     id: "retest",
     name: "直して、もう一度聞く",
     tagline: "直したものを、別の人にもう一度見せる。",
-    yen: 9800,
+    yen: 7980,
     from: true,
     depth: 4,
     answers: 5,
@@ -147,7 +147,7 @@ export const PLANS: Plan[] = [
     ],
     fits: ["一度しかない一手", "本命への連絡", "勝負のプロフィール"],
     available: true,
-    onTop: true,
+    onTop: false,
   },
   {
     id: "date_ready",
@@ -193,8 +193,16 @@ export function sellable(): Plan[] {
 
 /**
  * トップの料金に出すもの。
- * 全部並べない。3つを超えると、選ぶ前に読む量が増える。
- * 「一緒に直す」と対面は、必要になった場面でだけ出す。
+ *
+ * 1つだけにする。
+ * 最初から料金表を並べると、選ぶ前に読む量が増えて、
+ * 「何に迷っているか」より先に「どれを買うか」を考えさせることになる。
+ *
+ * ほかの商品は、必要になった場面でだけ出す。
+ *   話す      → 回答を見て「もう少し話したい」と思ったとき
+ *   直す      → 引っかかった点が出たとき
+ *   もう一度  → 直したあと
+ * 買う人にファネルを見せない。次に要ることだけが出てくる。
  */
 export function topPlans(): Plan[] {
   return PLANS.filter((p) => p.onTop);
@@ -337,11 +345,14 @@ export const USE_CASES: {
       );
     }
   }
-  // トップに並べるのは3つまで。増やすと、選ぶ前に読む量が増える。
-  if (topPlans().length > 3) {
-    throw new Error(`トップの料金が ${topPlans().length} 個あります（3つまで）`);
+  // トップに出すのは1つだけ。
+  // 料金表を並べた時点で、買う人に選択を押し付けることになる。
+  if (topPlans().length !== 1) {
+    throw new Error(`トップの料金が ${topPlans().length} 個あります（1つだけにしてください）`);
   }
-  if (topPlans().length === 0) throw new Error("トップに出すプランがありません");
+  if (!topPlans()[0].available) {
+    throw new Error("トップに出すプランが買えません");
+  }
   // 1対1で話すものを、受け入れ手順が無いまま売らない。
   // 相手も実在の人なので、時間を決めた手順とその場を見る体制が要る。
   for (const p of PLANS) {
