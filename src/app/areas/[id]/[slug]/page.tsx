@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AskCta from "@/components/ask/AskCta";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { complexById } from "@/lib/complexes";
@@ -441,6 +442,11 @@ export default function ClusterArticlePage({ params }: { params: { id: string; s
             </Link>
             にまとめてあります。
           </p>
+
+          {/* 読み終わりを行き止まりにしない。
+              記事で分かるのは調べて分かる範囲まで。
+              実際にどう受け取られるかは、その人たちに聞かないと分からない。 */}
+          <AskCta areaId={a.areaId} />
 
           {/* 同じ状況の人が読んでいる記事 — 分野をまたぐ導線 */}
           {situationBlocks.map((b) => (

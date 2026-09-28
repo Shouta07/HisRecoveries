@@ -307,3 +307,174 @@ select
 from events
 group by 1
 order by 2 desc;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 「女性に聞く」（Ask a woman）
+--
+-- 男性が匿名で相談を投稿し、招待した女性回答者が匿名で答える。
+-- 価値は「生身の人間が実際にどう感じるか」にあるので、
+-- ここに保存するのは人が書いた言葉であって、機械の判定ではない。
+--
+-- ── 会員登録を前提にしない ──────────────────────
+-- MVP では相談者も回答者もアカウントを作らない。
+-- URL に入っている鍵（token）を知っていることが、そのまま権限になる。
+-- だから鍵は 32 文字で、漏れたら作り直す前提にする。
+--
+-- ── 相手（第三者）を保存しない ──────────────────
+-- 相談に写り込む「相手」は、このサービスの利用者ではない。
+-- その人の名前・連絡先・SNS を列として持たない。置き場所を作らない。
+-- 本文に混ざったものは保存前に伏せ字にする（src/lib/ask/redact.ts）。
+-- ═══════════════════════════════════════════════════════════════
+
+-- 回答してくれる女性。運営が招待して1行ずつ入れる。
+-- 本人の連絡先は通知に要るので持つが、相談者には一切出さない。
+create table if not exists responders (
+  id uuid primary key default gen_random_uuid(),
+  display_age_band text not null,     -- 相談者に見せる年代 (20-24 / 25-29 / 30s ...)
+  -- 属性のラベル。「誰に聞くか」を選べることが、この製品の価値そのもの。
+  -- 配列で持つのは、後から種類を足すときにテーブルを変えないため。
+  -- 例: ["app_user","single"]
+  attrs jsonb default '[]'::jsonb,
+  -- 回答実績。良い回答者に優先して配るために使う（MVP では記録のみ）。
+  answered_count int default 0,
+  rating_avg numeric(3,2),
+  line_user_id text,                  -- LINE 通知先。未連携なら null
+  email text,                         -- LINE を使わない人向け
+  note text,                          -- 運営メモ（どこから来た人か等）
+  active boolean default true,
+  invited_at timestamptz default now(),
+  last_replied_at timestamptz,
+  created_at timestamptz default now()
+);
+
+create index if not exists responders_active_idx on responders (active, display_age_band);
+
+-- 相談1件。
+create table if not exists consultations (
+  id uuid primary key default gen_random_uuid(),
+  token text unique not null,         -- 相談者が結果を見るための鍵（c + 32文字）
+  category text not null,             -- message / signal / date / photo / style / romance / distance / other
+  -- 本文は伏せ字をかけた後のもの。原文は保存しない。
+  -- 「原文も確認できる」ようにすると、伏せた意味が無くなる。
+  body text not null,
+  -- A/B のときだけ使う。どちらも本文と同じく伏せ字済み。
+  option_a text,
+  option_b text,
+  is_ab boolean default false,
+  -- 回答者が判断するのに要る最小限の状況
+  asker_age_band text,
+  other_age_band text,
+  relation text,
+  -- 誰に何人聞くか
+  panel_age text not null default 'any',
+  -- 年齢以外に指定された属性。空なら指定なし。
+  panel_attrs jsonb default '[]'::jsonb,
+  panel_size int not null default 3,
+  status text not null default 'recruiting', -- draft/review/recruiting/collecting/completed/cancelled
+  -- 伏せ字で何を消したか。相談者に「これは消しました」と見せるため。
+  -- 消した中身そのものは持たない。
+  redacted_kinds jsonb default '[]'::jsonb,
+  -- 回答文をまとめた一文。まとめる仕組みが動いたときだけ入る。
+  -- null の間は、画面にその欄ごと出さない。
+  summary text,
+  completed_at timestamptz,
+  utm_source text,
+  referrer_host text,
+  landing_path text,
+  created_at timestamptz default now()
+);
+
+create index if not exists consultations_status_idx on consultations (status, created_at desc);
+
+-- 相談に添えた画像。
+-- 画像の中の顔と文字は機械で消せないので、
+-- 画像がある相談は status='review' から始まり、人が見てから募集に入る。
+create table if not exists consultation_assets (
+  id uuid primary key default gen_random_uuid(),
+  consultation_id uuid not null references consultations(id) on delete cascade,
+  storage_path text not null,         -- Supabase Storage のパス
+  slot text default 'main',           -- main / a / b
+  approved boolean default false,     -- 人が見て、配ってよいと判断した
+  created_at timestamptz default now()
+);
+
+create index if not exists consultation_assets_c_idx on consultation_assets (consultation_id);
+
+-- 誰にこの相談を配ったか。1行が1つの回答依頼になる。
+-- 鍵はここに持つ。相談ごと・回答者ごとに違う鍵になるので、
+-- 1つ漏れても他の相談は開けない。
+create table if not exists response_invites (
+  id uuid primary key default gen_random_uuid(),
+  consultation_id uuid not null references consultations(id) on delete cascade,
+  responder_id uuid references responders(id) on delete set null,
+  token text unique not null,         -- 回答用の鍵（r + 32文字）
+  notified_at timestamptz,
+  opened_at timestamptz,
+  answered_at timestamptz,
+  created_at timestamptz default now()
+);
+
+create index if not exists response_invites_c_idx on response_invites (consultation_id);
+
+-- 回答。
+-- 回答者どうしは、自分が出すまで他の回答を見られない。
+-- （見えると、先に出た意見に引っ張られる）
+create table if not exists responses (
+  id uuid primary key default gen_random_uuid(),
+  consultation_id uuid not null references consultations(id) on delete cascade,
+  invite_id uuid unique references response_invites(id) on delete set null,
+  -- 相談者に見せるのは年代だけ。誰が書いたかは出さない。
+  display_age_band text not null,
+  verdict text,                       -- good / ok / meh / stop
+  pick text,                          -- a / b / neither （A/B のときだけ）
+  -- カテゴリごとの2つ目の問い（例: 返信したいと思うか）。yes / no
+  second text,
+  comment text not null,
+  created_at timestamptz default now()
+);
+
+create index if not exists responses_c_idx on responses (consultation_id, created_at);
+
+-- 回答者への謝礼。MVP では記録だけ持ち、支払いは運営が手で行う。
+create table if not exists rewards (
+  id uuid primary key default gen_random_uuid(),
+  responder_id uuid references responders(id) on delete set null,
+  response_id uuid references responses(id) on delete set null,
+  amount_yen int not null default 0,
+  paid_at timestamptz,
+  created_at timestamptz default now()
+);
+
+-- 相談の代金。
+-- 特定商取引法に基づく表記（事業者の氏名・所在地・電話番号・価格）が
+-- 揃うまで請求しないので、MVP ではこの表に行が入らない。
+-- 先に作っておくのは、後から列を足す作業を相談の本体に持ち込まないため。
+create table if not exists payments (
+  id uuid primary key default gen_random_uuid(),
+  consultation_id uuid references consultations(id) on delete set null,
+  provider text default 'stripe',
+  provider_ref text,
+  amount_yen int not null,
+  status text default 'pending',      -- pending / paid / refunded / failed
+  paid_at timestamptz,
+  created_at timestamptz default now()
+);
+
+-- 運営が見る一覧。いま何件が、どの段階で止まっているか。
+create or replace view consultation_board as
+select
+  c.id,
+  c.created_at,
+  c.status,
+  c.category,
+  c.panel_age,
+  c.panel_size,
+  count(distinct i.id) as invited,
+  count(distinct r.id) as answered,
+  c.panel_size - count(distinct r.id) as remaining
+from consultations c
+left join response_invites i on i.consultation_id = c.id
+left join responses r on r.consultation_id = c.id
+group by c.id
+order by c.created_at desc;

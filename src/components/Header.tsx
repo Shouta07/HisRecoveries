@@ -21,6 +21,10 @@ export default function Header() {
   // /app 配下は Consumer App の外枠（Shell）が出る。
   // サイトのヘッダーが重なると、アプリではなくWebサイトに見える。
   if (pathname?.startsWith("/app")) return null;
+  // 「女性に聞く」の面（相談・結果・回答）は、それ自体がプロダクト。
+  // 記事サイトのヘッダー（男の改善は、順番で決まる／現在地を測る）が重なると、
+  // 何のサービスを使っているのか分からなくなる。
+  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/")) return null;
   if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
 
   return (

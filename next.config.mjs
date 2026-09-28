@@ -82,7 +82,9 @@ const nextConfig = {
       { source: "/concerns/:slug*", destination: "/articles", permanent: true },
       { source: "/qa", destination: "/articles", permanent: true },
       { source: "/qa/:slug*", destination: "/articles", permanent: true },
-      { source: "/ask", destination: "/articles", permanent: true },
+      // /ask は実在のページ（女性に聞く）になった。転送を外す。
+      // 残すと 308 が返り、プロダクトの入口ごと到達できなくなる。
+      // この事故はこのプロジェクトで /check・/interview・/articles に続いて4件目。
       { source: "/experts", destination: "/articles", permanent: true },
       { source: "/experts/:slug*", destination: "/articles", permanent: true },
       { source: "/services", destination: "/articles", permanent: true },
