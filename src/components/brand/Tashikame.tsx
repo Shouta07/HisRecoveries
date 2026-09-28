@@ -61,7 +61,7 @@ export default function Tashikame({
     >
       {/* 甲羅を背負った丸い体。左右非対称にして、置物に見えないようにする */}
       <path
-        d="M50 5C73 5 91 21 92.5 43.5C94 64 80.5 80.5 57 83C31 85.5 10.5 73 7.5 50.5C4.5 28 26 5 50 5Z"
+        d="M49 4C71 4 88.5 18.5 91.5 39C94.5 59.5 84 78 62 84C40 90 16 81 9 61.5C2 42 12 17 29 8.5C35.5 5.2 42 4 49 4Z"
         fill={fill}
       />
       <Face mood={mood} stroke={stroke} />
@@ -73,8 +73,8 @@ function Face({ mood, stroke }: { mood: Mood; stroke: string }) {
   // 目。開いているときは縦長の楕円、閉じているときは弧。
   const open = (
     <>
-      <ellipse cx="37" cy="43" rx="3.6" ry="6.4" fill={stroke} stroke="none" />
-      <ellipse cx="63" cy="41" rx="3.6" ry="6.4" fill={stroke} stroke="none" />
+      <ellipse cx="35" cy="41" rx="3.4" ry="6.6" fill={stroke} stroke="none" />
+      <ellipse cx="62" cy="39" rx="3.4" ry="6.6" fill={stroke} stroke="none" />
     </>
   );
   const closed = (
@@ -131,7 +131,7 @@ function Face({ mood, stroke }: { mood: Mood; stroke: string }) {
   return (
     <>
       {open}
-      <path d="M44 60h8" />
+      <path d="M40 58c2.5 2.5 5.5 2.5 8 0" />
     </>
   );
 }

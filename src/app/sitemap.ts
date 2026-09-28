@@ -98,6 +98,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/join",
     // 回答者の一覧。マーケットプレイスの供給側。
     "/answerers",
+    "/mine",
     // 安全と、いまできないこと。トップから降ろしたものの行き先。
     "/safety",
     "/check",

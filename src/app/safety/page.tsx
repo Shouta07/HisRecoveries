@@ -39,10 +39,10 @@ function Section({ title, en, children }: { title: string; en: string; children:
 
 export default function SafetyPage() {
   return (
-    <div data-brand className="min-h-screen bg-bone text-void">
+    <div data-brand className="min-h-screen bg-bone pb-28 text-void sm:pb-0">
       <header className="border-b border-rule">
         <div className="mx-auto flex w-full max-w-[900px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
-          <Link href="/" className="text-[14px] font-black uppercase tracking-[0.1em]">
+          <Link href="/" className="text-[14px] font-black">
             His Recoveries
           </Link>
           <Link
@@ -55,7 +55,7 @@ export default function SafetyPage() {
       </header>
 
       <main className="mx-auto w-full max-w-[900px] px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
-        <Eyebrow>Private by design</Eyebrow>
+        <Eyebrow>匿名でつかえます</Eyebrow>
         <h1 className="mt-6 max-w-[16em] text-huge font-black text-void">
           何をして、
           <br />
@@ -67,7 +67,7 @@ export default function SafetyPage() {
         </p>
 
         <div className="mt-16 flex flex-col gap-14">
-          <Section en="Anonymity" title="匿名について">
+          <Section en="匿名について" title="匿名について">
             <p>
               相談した人の名前も連絡先も、回答者には渡りません。
               回答者の名前も連絡先も、相談した人には渡りません。
@@ -79,7 +79,7 @@ export default function SafetyPage() {
             </p>
           </Section>
 
-          <Section en="Masking" title="個人情報の伏せ方">
+          <Section en="個人情報の伏せ方" title="個人情報の伏せ方">
             <p>
               送信の前に、電話番号・メールアドレス・LINE ID・SNSのアカウント名・
               リンク・郵便番号・番地までの住所を見つけて伏せます。
@@ -93,7 +93,7 @@ export default function SafetyPage() {
             </p>
           </Section>
 
-          <Section en="Not accepted" title="扱わない相談">
+          <Section en="扱わない相談" title="扱わない相談">
             <ul className="flex list-disc flex-col gap-2.5 pl-5">
               <li>同意のない撮影・行為に関するもの</li>
               <li>相手の判断力を奪う方法に関するもの</li>
@@ -109,7 +109,7 @@ export default function SafetyPage() {
             </p>
           </Section>
 
-          <Section en="Images" title="画像を受け付けていない理由">
+          <Section en="画像について" title="画像を受け付けていない理由">
             <p>
               画像の中に写り込んだ顔と文字は、こちらでは確実に消せません。
               消せないまま配ると、晒されるのは相談した本人ではなく、写っている第三者になります。
@@ -121,7 +121,7 @@ export default function SafetyPage() {
             </p>
           </Section>
 
-          <Section en="Responders" title="回答者について">
+          <Section en="回答者について" title="回答者について">
             <p>
               回答者は、こちらが確認した人だけです。登録しただけでは相談は届きません。
               年齢とプロフィールを確かめた方に「確認済み」の印を付けています。
@@ -136,7 +136,7 @@ export default function SafetyPage() {
             </p>
           </Section>
 
-          <Section en="Pricing" title="料金">
+          <Section en="料金" title="料金">
             {BILLING_ENABLED ? (
               <p>下記の料金でご利用いただけます。</p>
             ) : (
@@ -158,7 +158,7 @@ export default function SafetyPage() {
                   <dd className="text-[15px] font-bold tabular-nums text-void">
                     ¥{Number(yen).toLocaleString()}
                     {!BILLING_ENABLED && (
-                      <span className="ml-3 text-[11px] font-bold uppercase tracking-[0.12em] text-ash">
+                      <span className="ml-3 text-[11px] font-bold text-ash">
                         ベータ期間中無料
                       </span>
                     )}
@@ -179,7 +179,7 @@ export default function SafetyPage() {
             </p>
           </Section>
 
-          <Section en="Your data" title="記録の扱い">
+          <Section en="記録の扱い" title="記録の扱い">
             <p>
               相談の内容は、回答を届けるためと、サービスを直すためにだけ使います。
               第三者に提供しません。広告の配信には使いません。
@@ -197,7 +197,7 @@ export default function SafetyPage() {
             </p>
           </Section>
 
-          <Section en="Limits" title="できないこと">
+          <Section en="できないこと" title="できないこと">
             <p>
               集まるのは、その人たちがそう感じた、ということだけです。
               そのとおりにすれば思いどおりになる、という話ではありません。
@@ -231,7 +231,7 @@ export default function SafetyPage() {
 
       <footer className="border-t border-rule">
         <div className="mx-auto flex w-full max-w-[900px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
-          <Link href="/" className="text-[15px] font-black uppercase tracking-[0.08em]">
+          <Link href="/" className="text-[15px] font-black">
             His Recoveries
           </Link>
           <p className="text-[11.5px] text-ash">

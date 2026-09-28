@@ -79,7 +79,7 @@ export default function HomePage() {
   };
 
   return (
-    <div data-brand className="min-h-screen bg-bone text-void">
+    <div data-brand className="min-h-screen bg-bone pb-28 text-void sm:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
 
       {/* ── ヘッダー ── */}
@@ -123,11 +123,13 @@ export default function HomePage() {
               送る前に5人に聞く。
             </h1>
 
-            {/* 説明を2行に詰める。読ませるより、先に押させる。 */}
+            {/* ファーストビューで AI の話をしない。
+                主役から外したいものを、いちばん目立つ場所で話していた。
+                ここは「誰に聞けるのか」だけを言う。 */}
             <p className="mt-5 text-[17px] font-bold leading-[1.75] text-ash sm:text-[19px]">
-              AIは、一般論。
+              25歳の女性が、
               <br />
-              ほしいのは、本音。
+              実際どう思うか。
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">

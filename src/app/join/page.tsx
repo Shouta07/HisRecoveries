@@ -30,16 +30,16 @@ export const metadata: Metadata = {
 
 export default function JoinPage() {
   return (
-    <div data-brand className="min-h-screen bg-bone text-void">
+    <div data-brand className="min-h-screen bg-bone pb-28 text-void sm:pb-0">
       {/* ヘッダー */}
       <header className="border-b border-rule">
         <div className="mx-auto flex w-full max-w-[900px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
-          <Link href="/" className="text-[14px] font-black uppercase tracking-[0.1em]">
+          <Link href="/" className="text-[14px] font-black">
             His Recoveries
           </Link>
           <Link
             href="/ask"
-            className="text-[11.5px] font-bold uppercase tracking-[0.16em] text-ash transition-colors hover:text-void"
+            className="text-[11.5px] font-bold text-ash transition-colors hover:text-void"
           >
             聞く側はこちら
           </Link>
@@ -50,7 +50,7 @@ export default function JoinPage() {
       <section className="border-b border-rule">
         <div className="mx-auto grid w-full max-w-[900px] gap-12 px-6 pb-16 pt-12 sm:px-10 sm:pt-20 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <Eyebrow>Your perspective has value.</Eyebrow>
+            <Eyebrow>あなたの感覚に、価値があります</Eyebrow>
             <h1 className="mt-6 text-big font-black text-void">
               あなたの感覚が、
               <br />
@@ -87,7 +87,7 @@ export default function JoinPage() {
                 }}
               />
             </Reveal>
-            <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.16em] text-ash">
+            <p className="mt-4 text-[10px] font-bold text-ash">
               ※ 画面の見本。相談した人にはこう見えます
             </p>
           </div>
@@ -98,7 +98,7 @@ export default function JoinPage() {
       <section className="border-b border-rule">
         <div className="mx-auto w-full max-w-[900px] px-6 py-16 sm:px-10 sm:py-24">
           <Reveal>
-            <Eyebrow>What you do</Eyebrow>
+            <Eyebrow>やること</Eyebrow>
             <h2 className="mt-6 text-big font-black text-void">1件、1〜2分。</h2>
           </Reveal>
           <ol className="mt-12 grid gap-px border border-rule bg-rule sm:grid-cols-3">
@@ -125,7 +125,7 @@ export default function JoinPage() {
       <section className="bg-void text-bone">
         <div className="mx-auto w-full max-w-[900px] px-6 py-16 sm:px-10 sm:py-24">
           <Reveal>
-            <Eyebrow tone="lime">Before you sign up</Eyebrow>
+            <Eyebrow tone="lime">登録の前に</Eyebrow>
             <h2 className="mt-6 text-big font-black text-bone">
               先に、はっきりさせておきます。
             </h2>
@@ -155,7 +155,7 @@ export default function JoinPage() {
       <section id="form" className="scroll-mt-4">
         <div className="mx-auto w-full max-w-[720px] px-6 py-16 sm:px-10 sm:py-24">
           <Reveal>
-            <Eyebrow>Sign up</Eyebrow>
+            <Eyebrow>登録</Eyebrow>
             <h2 className="mt-6 text-big font-black text-void">登録する。</h2>
             <p className="mt-6 max-w-[28em] text-[15px] leading-[1.95] text-ash">
               聞くのは4つだけです。確認が終わるまで、相談は届きません。
@@ -184,7 +184,7 @@ export default function JoinPage() {
       <footer className="border-t border-rule">
         <div className="mx-auto flex w-full max-w-[900px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
           <div className="flex items-baseline gap-6">
-            <Link href="/" className="text-[15px] font-black uppercase tracking-[0.08em]">
+            <Link href="/" className="text-[15px] font-black">
               His Recoveries
             </Link>
             <Link href="/safety" className="text-[12px] text-ash transition-colors hover:text-void">

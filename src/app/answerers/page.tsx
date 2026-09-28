@@ -65,10 +65,10 @@ export default async function AnswerersPage() {
   }));
 
   return (
-    <div data-brand className="min-h-screen bg-bone text-void">
+    <div data-brand className="min-h-screen bg-bone pb-28 text-void sm:pb-0">
       <header className="border-b border-rule">
         <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
-          <Link href="/" className="text-[15px] font-black uppercase tracking-[0.1em]">
+          <Link href="/" className="text-[15px] font-black">
             His Recoveries
           </Link>
           <Link
@@ -81,7 +81,7 @@ export default async function AnswerersPage() {
       </header>
 
       <div className="mx-auto w-full max-w-[1180px] px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
-        <Eyebrow>The people who answer</Eyebrow>
+        <Eyebrow>答える人たち</Eyebrow>
         <h1 className="mt-6 max-w-[14em] text-huge font-black text-void">
           答えるのは、
           <br />
@@ -94,7 +94,7 @@ export default async function AnswerersPage() {
 
         {people.length > 0 ? (
           <>
-            <p className="mt-10 text-[11px] font-bold uppercase tracking-[0.2em] text-ash">
+            <p className="mt-10 text-[11px] font-bold text-ash">
               {people.length} people
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -141,7 +141,7 @@ export default async function AnswerersPage() {
       <footer className="border-t border-rule">
         <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
           <div className="flex items-baseline gap-6">
-            <Link href="/" className="text-[15px] font-black uppercase tracking-[0.08em]">
+            <Link href="/" className="text-[15px] font-black">
               His Recoveries
             </Link>
             <Link href="/safety" className="text-[12px] text-ash transition-colors hover:text-void">

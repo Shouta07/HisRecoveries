@@ -18,6 +18,7 @@ import type { Metadata, Viewport } from "next";
 // fontsource のサブセット分割は、日本語ではこの症状が必ず出る。
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TabBar from "@/components/brand/TabBar";
 import Analytics from "@/components/Analytics";
 import SearchProvider from "@/components/search/SearchProvider";
 import { clusters } from "@/lib/clusters";
@@ -184,6 +185,8 @@ export default function RootLayout({
             {children}
           </main>
           <Footer areas={complexes.map((c) => ({ id: c.id, ja: c.ja }))} />
+          {/* C2C の面にだけ出る下タブ。出す場所の判断は TabBar が持つ */}
+          <TabBar />
         </SearchProvider>
         <Analytics />
       </body>
