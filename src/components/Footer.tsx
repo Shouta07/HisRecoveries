@@ -19,7 +19,7 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
   // /app 配下はアプリの外枠を使う。サイトのフッターは出さない。
   if (pathname?.startsWith("/app")) return null;
   // 「女性に聞く」の面は、それ自体がプロダクト。記事サイトのフッターは出さない。
-  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/") || pathname === "/join" || pathname?.startsWith("/answerers") || pathname === "/safety" || pathname === "/mine" || pathname === "/legal" || pathname === "/how") return null;
+  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/") || pathname === "/join" || pathname?.startsWith("/answerers") || pathname === "/safety" || pathname === "/mine" || pathname === "/legal" || pathname === "/how" || pathname === "/talk") return null;
   // The home ("/") ships its own footer; /apply and /partner are focused pages
   // that carry their own footer.
   if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;

@@ -105,6 +105,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/safety",
     // 仕組み。誰が答えるか・AIを何に使うか。トップから降ろした説明の行き先。
     "/how",
+    // 人と話す。受付前だが、順番待ちの入口として検索から来てほしい。
+    "/talk",
     "/check",
     "/interview",
     "/research",

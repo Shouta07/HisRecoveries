@@ -563,6 +563,29 @@ alter table consultations add column if not exists asked_ai boolean;
 -- 結果を見たあとに聞く「なぜ人にも聞いたか」。選択式。答えなければ空。
 alter table consultations add column if not exists ask_reasons jsonb default '[]'::jsonb;
 
+-- ── 届くまでを見せる ────────────────────────────
+-- 「1人目が見ています」を本当の数から出すために、開いた時刻を持つ。
+-- 誰が開いたかは相談者に渡さない。数えるためだけに使う。
+alter table response_invites add column if not exists opened_at timestamptz;
+create index if not exists response_invites_consultation_idx
+  on response_invites (consultation_id);
+
+-- ── 直して、もう一度聞く ────────────────────────
+-- 2回目は別の相談として作り、1回目にぶら下げる。
+-- 同じ行を上書きすると、前と後を並べられなくなる。
+alter table consultations add column if not exists round int not null default 1;
+alter table consultations add column if not exists parent_id uuid
+  references consultations(id) on delete set null;
+create index if not exists consultations_parent_idx on consultations (parent_id);
+
+-- ── 今、答えられる人 ────────────────────────────
+-- 回答者が自分で ON / OFF する。切れる時刻も持つ。
+-- 切れる時刻が無いと、ONのまま放置された人に配り続けることになる。
+alter table responders add column if not exists available boolean not null default false;
+alter table responders add column if not exists available_until timestamptz;
+create index if not exists responders_available_idx
+  on responders (available, display_age_band);
+
 -- 既定値を draft に変える。
 -- recruiting のままだと、列を書き忘れた経路から
 -- 払っていない相談が募集に入る。
@@ -611,3 +634,16 @@ join consultations c on c.id = p.consultation_id
 where p.paid_at is not null
 group by 1, 2
 order by 1 desc;
+
+
+-- 「話す」の順番待ち。
+-- まだ売れない商品の需要だけ先に測る。お金は受け取らない。
+-- 何に迷っているかは聞かない（買えないものの入口で悩みを預からせない）。
+create table if not exists talk_waitlist (
+  id uuid primary key default gen_random_uuid(),
+  email text unique not null,
+  utm_source text,
+  referrer_host text,
+  notified_at timestamptz,
+  created_at timestamptz default now()
+);

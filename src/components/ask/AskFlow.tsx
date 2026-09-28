@@ -15,6 +15,8 @@ import {
   BigAsk as Ask, Choice, AttributeChip as Chip, Action, Note, FieldLabel as Label,
   Progress, inputClass,
 } from "@/components/brand/kit";
+import AskAssist from "@/components/ask/AskAssist";
+import AvailableNow from "@/components/ask/AvailableNow";
 import { track } from "@/lib/analytics";
 import { add as rememberAsk } from "@/lib/myasks";
 
@@ -82,6 +84,7 @@ export default function AskFlow() {
   const [relation, setRelation] = useState<RelationId | null>(null);
   const [askedAi, setAskedAi] = useState<boolean | null>(null);
 
+  const [assist, setAssist] = useState(false);
   const [openMore, setOpenMore] = useState(false);
   const [openPlan, setOpenPlan] = useState(false);
   const [sending, setSending] = useState(false);
@@ -177,7 +180,7 @@ export default function AskFlow() {
         {/* ── 1. 何について ── */}
         {i === 0 && (
           <>
-            <Ask>何について聞く？</Ask>
+            <Ask>何に迷ってる？</Ask>
             <div className="mt-6 grid grid-cols-2 gap-2.5">
               {CATEGORIES.map((c) => (
                 <button
@@ -249,6 +252,33 @@ export default function AskFlow() {
                 名前らしいものがあります。消すかどうかはご自身で決めてください。
               </p>
             )}
+
+            {/* うまく書けない人の逃げ道。
+                全員に自分で言語化させると、書ける人しか通れない。 */}
+            {!isAb &&
+              (assist ? (
+                <AskAssist
+                  onClose={() => setAssist(false)}
+                  onDone={(t) => {
+                    setText((prev) => (prev.trim() ? `${prev}\n${t}` : t));
+                    setAssist(false);
+                  }}
+                />
+              ) : (
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <span className="text-[13.5px] text-steel">うまく書けない？</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAssist(true);
+                      track("assist_opened", { from: cat ?? "none" });
+                    }}
+                    className="inline-flex min-h-[44px] items-center rounded-pill border border-brand bg-paper px-4 text-[13.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
+                  >
+                    一緒に整理する
+                  </button>
+                </div>
+              ))}
 
             {/* 状況。任意。開かなければ未回答のまま送る */}
             <div className="mt-6 rounded-card border border-line bg-paper shadow-card">
@@ -351,6 +381,11 @@ export default function AskFlow() {
                     ))}
                   </div>
                 </div>
+
+                {/* 条件を変えるたびに、いま答えられる人数が動く。
+                    0人のまま買わせない。一人ひとりのカードは出さない
+                    （条件を変えて叩くと個人が絞り込めてしまう）。 */}
+                <AvailableNow age={panelAge} attrs={panelAttrs} need={p.answers} />
               </>
             ) : (
               <div className="mt-6 rounded-card border border-line bg-paper p-5 shadow-card">
