@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   RESPONDER_AGES, ATTRS, AREAS, CATEGORIES,
   type ResponderAge, type AttrId, type Area, type CategoryId,
@@ -33,6 +34,13 @@ export default function JoinForm() {
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
+  // 友達から来たときのコード。画面には出さず、そのまま送る。
+  // 「誰かの紹介です」と大きく出すと、紹介でない人が気にする。
+  const ref = useSearchParams().get("ref");
+  useEffect(() => {
+    if (ref) track("invite_opened", {});
+  }, [ref]);
+
   const canSend = Boolean(age) && email.trim() !== "" && consent && state !== "sending";
 
   async function send() {
@@ -43,6 +51,7 @@ export default function JoinForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          ref,
           age, attrs, area, specialties, email: email.trim(), note, consent: true,
         }),
       });

@@ -130,6 +130,16 @@ export const CONVERSION_EVENTS = [
   "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
   // 集まらなかったときに何を選んだか。供給が足りない度合いが出る。
   "shortfall_picked", // 足りないときの選択（props: choice, got, of）
+
+  // ── 広がり ──
+  // 相談する側は人に言わない（使う瞬間が恥ずかしい瞬間なので）。
+  // 言えるのは A/B の結果だけ。回答する側は言える。
+  // どちらがどれだけ回るかを、別々に見る。
+  "share_created", // A/B の共有リンクを作った
+  "share_sent", // 実際に渡した（props: how）
+  "share_opened", // 共有された側が開いた
+  "invite_opened", // 紹介リンクから回答者の登録を開いた
+  "invite_joined", // 紹介から登録した
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

@@ -21,6 +21,7 @@ export default function PlanCta({
   from,
   children,
   category,
+  assist = false,
   className = "",
 }: {
   plan: PlanId;
@@ -28,11 +29,14 @@ export default function PlanCta({
   from: string;
   children: ReactNode;
   category?: string;
+  /** 質問を書く画面で「一緒に整理する」を開いた状態から始める */
+  assist?: boolean;
   className?: string;
 }) {
-  const href = category
-    ? `/ask?c=${encodeURIComponent(category)}&plan=${plan}`
-    : `/ask?plan=${plan}`;
+  const q = new URLSearchParams({ plan });
+  if (category) q.set("c", category);
+  if (assist) q.set("assist", "1");
+  const href = `/ask?${q.toString()}`;
 
   return (
     <Link

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { topPlans, plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
 import { canCharge } from "@/lib/legal";
+import { ONE_LINER, SUB } from "@/lib/voice";
+import { supply, shortMessage } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
 import Slot from "@/components/brand/Slot";
@@ -128,9 +130,13 @@ function Heart() {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
   const paid = canCharge();
   const entry = topPlans()[0];
+  // 答えられる人が足りないあいだは、買うボタンを出さない。
+  // 決済だけ通って誰にも届かないのが、いちばん信用を失う。
+  const sup = await supply(entry.answers);
+  const open = paid && sup.open;
   // 必要になった場面でだけ出すもの。トップでは名前と目安だけ。
   const LATER = [
     { id: "talk", name: "話す", when: "もう少し話したいとき", yen: getPlan("talk").yen },
@@ -167,13 +173,10 @@ export default function HomePage() {
                 ))}
               </span>
             </span>
-            <span className="min-w-0 leading-tight">
-              <span className="block truncate text-[17px] font-black text-slate">
-                His Recoveries
-              </span>
-              <span className="hidden text-[10px] text-steel sm:block">
-                男性の恋愛を、みんなでサポート
-              </span>
+            {/* 肩書きを置かない。名乗りは h1 の1つだけ。
+                ここにもう1行置くと、名乗りが2つになる。 */}
+            <span className="min-w-0 truncate text-[17px] font-black text-slate">
+              His Recoveries
             </span>
           </Link>
 
@@ -205,9 +208,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-sky">
         <Wrap className="grid gap-10 pb-12 pt-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-8 lg:pb-14 lg:pt-12">
           <div className="relative z-10">
-            <p className="text-[14.5px] font-bold text-slate">送る前に、女性の本音を。</p>
-
-            <h1 className="mt-4 text-mega font-black leading-[1.22] text-slate">
+            <h1 className="text-mega font-black leading-[1.22] text-slate">
               これ、
               <br />
               <span className="relative inline-block">
@@ -223,13 +224,18 @@ export default function HomePage() {
             <p className="mt-7 max-w-[24em] text-[15.5px] leading-[1.9] text-steel sm:text-[16.5px]">
               LINEのメッセージ、写真、デートの誘い、服装…
               <br className="hidden sm:block" />
-              迷ったら、実際の女性たちに聞いてみよう。
+              {SUB}AIじゃなく、本物の人の反応が返ってくる。
             </p>
 
             <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               {[
                 ["実際の女性が回答", "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6"],
-                ["最短数分で返信", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"],
+                // 速さは実測できるまで名乗らない。
+                // この製品のいちばんの売りだからこそ、
+                // 担保できないうちに書くと、そこが最初の嘘になる。
+                sup.canPromiseSpeed
+                  ? (["最短数分で返信", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const)
+                  : (["答えるのは実在の人", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const),
                 ["匿名で気軽に相談", "M5 11V8a7 7 0 0 1 14 0v3 M4 11h16v9H4z"],
               ].map(([label, d]) => (
                 <li key={label} className="flex items-center gap-2">
@@ -254,6 +260,14 @@ export default function HomePage() {
               ))}
             </ul>
 
+            {!open && (
+              <p className="mt-7 rounded-card border border-line bg-paper px-5 py-4 text-[13.5px] leading-[1.85] text-slate shadow-card">
+                {!paid
+                  ? "いまお支払いを受け付けていません。特定商取引法に基づく表記が整い次第、始めます。"
+                  : shortMessage(sup, entry.answers)}
+              </p>
+            )}
+
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <PlanCta
                 plan={ENTRY_PLAN}
@@ -271,20 +285,25 @@ export default function HomePage() {
                 </span>
               </PlanCta>
 
-              <Link
-                href="#talk"
-                className="flex min-h-[70px] flex-col justify-center rounded-[18px] border border-line bg-paper px-7 py-3 shadow-card transition-shadow hover:shadow-card-hover"
+              {/* 2つ目は、押したら買えるものにする。
+                  受付前のページへ送ると、いちばん目立つボタンで
+                  「買えません」に着く。 */}
+              <PlanCta
+                plan={ENTRY_PLAN}
+                from="hero_assist"
+                assist
+                className="!flex-col !items-start min-h-[70px] rounded-[18px] border border-line bg-paper px-7 py-3 shadow-card"
               >
                 <span className="flex items-center gap-2.5 text-[17px] font-black text-slate">
-                  <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 text-slate" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
-                    <path d="M4 14v-3a8 8 0 0 1 16 0v3 M4 14a2 2 0 0 0 2 2h1v-5H6a2 2 0 0 0-2 2Z M20 14a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2Z" />
+                  <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 text-slate" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 19v-3 M9 5.5A3.5 3.5 0 1 1 13.5 9c-1 .6-1.5 1.5-1.5 2.5v1" />
                   </svg>
-                  人と話す
+                  うまく書けない
                 </span>
                 <span className="mt-0.5 pl-[30px] text-[12px] font-bold text-steel">
-                  まだ言葉になっていないとき
+                  3つ聞いて、一緒に質問をつくる
                 </span>
-              </Link>
+              </PlanCta>
             </div>
           </div>
 
@@ -610,9 +629,9 @@ export default function HomePage() {
         <Wrap className="py-14 sm:py-16">
           <div className="grid gap-7 lg:grid-cols-[1fr_1fr_0.62fr] lg:items-center">
             <p className="border-l-[5px] border-brand pl-5 text-[22px] font-black leading-[1.55] text-slate sm:text-[26px]">
-              相談じゃない。
+              答えるのは、
               <br />
-              実際の女性が答える。
+              実際の女性です。
             </p>
 
             <p className="text-[14px] leading-[1.95] text-steel">
@@ -786,7 +805,7 @@ export default function HomePage() {
               <span className="text-[15px] font-black text-slate">His Recoveries</span>
             </Link>
             <p className="text-[12px] text-steel">
-              © 2026 His Recoveries — 男性の恋愛を、みんなでサポート
+              © 2026 His Recoveries
             </p>
           </div>
         </Wrap>

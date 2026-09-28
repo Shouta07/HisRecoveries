@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { Eyebrow, ReactionCard, Hairline } from "@/components/brand/kit";
 import Reveal from "@/components/brand/Reveal";
+import { Suspense } from "react";
 import JoinForm from "@/components/ask/JoinForm";
 
 // 回答する側の入口。
@@ -163,7 +164,11 @@ export default function JoinPage() {
           </Reveal>
 
           <div className="mt-12">
-            <JoinForm />
+            {/* JoinForm は ?ref= を読む。
+                読む側を Suspense で包まないと、この面が事前生成できない。 */}
+            <Suspense fallback={<div className="h-[520px]" />}>
+              <JoinForm />
+            </Suspense>
           </div>
 
           <div className="mt-14">

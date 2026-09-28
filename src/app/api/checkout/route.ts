@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbSelect, dbUpdate, dbInsertReturning, dbAdminEnabled } from "@/lib/db";
 import { isSellable, plan } from "@/lib/ask/plans";
 import { canCharge, whyCannotCharge } from "@/lib/legal";
+import { supply, shortMessage } from "@/lib/supply";
 import { createCheckout, stripeEnabled } from "@/lib/stripe";
 import { isConsultToken } from "@/lib/ask/token";
 import { site } from "@/lib/site";
@@ -74,6 +75,17 @@ export async function POST(req: NextRequest) {
   }
 
   const p = plan(planId);
+
+  // 答えられる人がいないのに売らない。
+  // 決済だけ通って誰にも届かないのが、いちばん信用を失う。
+  // 返金すれば済む話ではない。
+  const sup = await supply(p.answers);
+  if (!sup.open) {
+    return NextResponse.json(
+      { error: shortMessage(sup, p.answers), waitlist: true },
+      { status: 409 },
+    );
+  }
 
   // 作りかけの決済が残っていれば、それを返す。新しく作らない。
   const existing = await dbSelect<Payment>(

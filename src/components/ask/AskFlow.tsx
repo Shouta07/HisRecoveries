@@ -84,7 +84,8 @@ export default function AskFlow() {
   const [relation, setRelation] = useState<RelationId | null>(null);
   const [askedAi, setAskedAi] = useState<boolean | null>(null);
 
-  const [assist, setAssist] = useState(false);
+  // ヒーローの「うまく書けない」から来たら、最初から開いておく。
+  const [assist, setAssist] = useState(params.get("assist") === "1");
   const [openMore, setOpenMore] = useState(false);
   const [openPlan, setOpenPlan] = useState(false);
   const [sending, setSending] = useState(false);

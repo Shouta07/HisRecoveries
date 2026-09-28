@@ -33,11 +33,58 @@ export function makeConsultToken(): string {
 }
 
 /** 回答者1人・相談1件ごとの鍵。使い回さない */
+/**
+ * 回答者ひとりに1つ渡す鍵。
+ * 自分の画面（今答えられる / 残高 / 紹介）を開くために使う。
+ * 相談の鍵・回答の鍵とは別物にして、取り違えを型で防ぐ。
+ */
+export function makeResponderToken(): string {
+  return make("p");
+}
+
+/**
+ * 友達を呼ぶときのコード。
+ * 短くする（口頭でも伝えられる長さ）。鍵ではないので推測されてよい。
+ * これ単体では何もできない。登録のときに「誰から来たか」を示すだけ。
+ */
+export function makeReferralCode(): string {
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  let out = "";
+  for (const b of bytes) out += ALPHABET[b % ALPHABET.length];
+  return out.toUpperCase();
+}
+
+// 使う文字は ALPHABET を大文字にしたもの。
+// 紛らわしい文字（l / 1 / 0 / o）は ALPHABET の時点で外してあるので、
+// ここで別の除外リストを書かない。書くと二重管理になって食い違う
+// （実際、I を弾く形にしていてビルドが落ちた。I は i 由来で正しい文字）。
+const CODE_SHAPE = new RegExp(`^[${ALPHABET.toUpperCase()}]{6}$`);
+
+export function isReferralCode(x: unknown): x is string {
+  return typeof x === "string" && CODE_SHAPE.test(x);
+}
+
+/**
+ * 共有用の鍵。
+ *
+ * 相談の鍵（c...）は持ち主の鍵なので、共有させない。
+ * 共有すると、本文も次の操作もすべて渡すことになる。
+ * 開けるのは A/B の割れ方とひとことだけ、という別の鍵を作る。
+ */
+export function makeShareToken(): string {
+  return make("s");
+}
+
+export function isShareToken(x: unknown): boolean {
+  return isToken(x) && typeof x === "string" && x.startsWith("s");
+}
+
 export function makeReplyToken(): string {
   return make("r");
 }
 
-const SHAPE = new RegExp(`^[cr][${ALPHABET}]{${LEN}}$`);
+const SHAPE = new RegExp(`^[crps][${ALPHABET}]{${LEN}}$`);
 
 export function isToken(x: unknown): x is string {
   return typeof x === "string" && SHAPE.test(x);
@@ -50,6 +97,10 @@ export function isConsultToken(x: unknown): boolean {
   return isToken(x) && x.startsWith("c");
 }
 
+export function isResponderToken(x: unknown): boolean {
+  return isToken(x) && x.startsWith("p");
+}
+
 export function isReplyToken(x: unknown): boolean {
   return isToken(x) && x.startsWith("r");
 }
@@ -58,6 +109,27 @@ export function isReplyToken(x: unknown): boolean {
 {
   const c = makeConsultToken();
   const r = makeReplyToken();
+  const pp = makeResponderToken();
+  if (!isResponderToken(pp)) throw new Error(`回答者の鍵の形が不正です: ${pp}`);
+  if (isConsultToken(pp) || isReplyToken(pp)) throw new Error("回答者の鍵が他と区別できていません");
+  if (isResponderToken(c) || isResponderToken(r)) throw new Error("鍵の種類が混ざっています");
+
+  const sh = makeShareToken();
+  if (!isShareToken(sh)) throw new Error(`共有の鍵の形が不正です: ${sh}`);
+  // 共有の鍵で相談を開けないこと。ここが通ると全文が漏れる。
+  if (isConsultToken(sh)) throw new Error("共有の鍵が相談の鍵として通っています");
+  if (isShareToken(c)) throw new Error("相談の鍵が共有の鍵として通っています");
+
+  // 何度か作って、どの出方でも通ること。
+  // 1回だけだと、たまたま通る文字並びで見逃す。
+  for (let i = 0; i < 50; i++) {
+    const code = makeReferralCode();
+    if (!isReferralCode(code)) throw new Error(`紹介コードの形が不正です: ${code}`);
+    if (isToken(code)) throw new Error("紹介コードが鍵として通っています");
+  }
+  const code = makeReferralCode();
+  // 紹介コードを鍵として受け入れないこと。
+  if (isToken(code)) throw new Error("紹介コードが鍵として通っています");
   if (!isConsultToken(c)) throw new Error(`相談の鍵の形が不正です: ${c}`);
   if (!isReplyToken(r)) throw new Error(`回答の鍵の形が不正です: ${r}`);
   // 種類を取り違えると、回答用のURLで結果が見えてしまう。

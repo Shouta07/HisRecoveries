@@ -21,6 +21,7 @@ import WhyAsked from "@/components/ask/WhyAsked";
 import LiveAnswers from "@/components/ask/LiveAnswers";
 import NextStep from "@/components/ask/NextStep";
 import Shortfall from "@/components/ask/Shortfall";
+import ShareAb from "@/components/ask/ShareAb";
 import { needsChoice } from "@/lib/ask/shortfall";
 
 // 結果 — Human Reaction Report。
@@ -441,6 +442,21 @@ export default async function ResultPage({
             押さなくても構いません。未評価は割合の計算に入れていません。
           </p>
         </section>
+      )}
+
+      {/* A/B のときだけ共有を出す。
+          「このLINE、送っていい？」は晒せない（本文が本人のものだから）。
+          「この2枚、5人中4人がB」は晒せる。
+          晒せないものに共有ボタンを出すと、押した人が後悔する。 */}
+      {c.is_ab && t.total > 0 && (
+        <ShareAb
+          token={params.token}
+          a={t.byPick.find((x) => x.id === "a")?.n ?? 0}
+          b={t.byPick.find((x) => x.id === "b")?.n ?? 0}
+          total={t.total}
+          labelA={t.byPick.find((x) => x.id === "a")?.label ?? "A"}
+          labelB={t.byPick.find((x) => x.id === "b")?.label ?? "B"}
+        />
       )}
 
       {/* 次、どうする？ 押し売りにしない。何も買わない選択肢が最初に来る */}
