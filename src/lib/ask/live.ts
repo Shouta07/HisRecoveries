@@ -90,6 +90,51 @@ export function subline(c: LiveCounts, phase: Phase): string | null {
   }
 }
 
+// ── いまどこまで進んだか、全体も見せる ────────────
+// 一行だけだと、あと何が残っているのか分からない。
+// 払ったあとに何が起きるかを4つに切って、そのうちどこかを出す。
+// 段は増やさない。細かくすると、止まっているように見える。
+
+export type Stage = {
+  id: "pay" | "send" | "read" | "collect";
+  label: string;
+  /** その段で何が起きているか */
+  note: string;
+};
+
+export const STAGES: Stage[] = [
+  { id: "pay", label: "お支払い", note: "確認できるまで、回答者には渡していません。" },
+  { id: "send", label: "回答者へ配信", note: "条件に合う人にだけ配ります。" },
+  { id: "read", label: "読んでもらう", note: "受け取った人が、順番に読みます。" },
+  { id: "collect", label: "回答がそろう", note: "届いた順に、この画面に増えます。" },
+];
+
+/**
+ * いま動いている段。終わっていれば null。
+ * これより前の段は、終わったものとして扱う。
+ */
+export function stageNow(phase: Phase): number | null {
+  switch (phase) {
+    case "paying":
+      return 0;
+    case "sending":
+      return 1;
+    case "sent":
+    case "opened":
+      return 2;
+    case "first":
+    case "collecting":
+      return 3;
+    case "done":
+      return null;
+  }
+}
+
+/** 終わった段の数 */
+export function stageDone(phase: Phase): number {
+  return stageNow(phase) ?? STAGES.length;
+}
+
 /** 進み具合。0〜1 */
 export function progress(c: LiveCounts): number {
   if (c.panel <= 0) return 0;
@@ -130,5 +175,31 @@ export function isLive(phase: Phase): boolean {
   }
   if (!headline({ ...c, answered: 2 }, "collecting").includes("3")) {
     throw new Error("残りの数が、実際の数と違います");
+  }
+
+  // 払ったあとの道筋が、全部の段で出せること。
+  // どこかが抜けると、進行中なのに空の段が出る。
+  const PHASES: Phase[] = [
+    "paying", "sending", "sent", "opened", "first", "collecting", "done",
+  ];
+  for (const ph of PHASES) {
+    const n = stageNow(ph);
+    if (ph === "done") {
+      if (n !== null) throw new Error("そろったのに、まだ進行中の段が出ています");
+      continue;
+    }
+    if (n === null || n < 0 || n >= STAGES.length) {
+      throw new Error(`段階「${ph}」に対応する進行の段がありません`);
+    }
+  }
+  // 最初の段は必ず支払い。ここを飛ばすと、払う前に配った形で出る。
+  if (STAGES[0].id !== "pay") throw new Error("進行の最初が、お支払いになっていません");
+  if (STAGES.length !== 4) throw new Error("進行の段は4つにする（細かくすると止まって見えます）");
+  // 段の数が進み具合と逆行しないこと。
+  if (stageDone("sending") <= stageDone("paying")) {
+    throw new Error("進行の段が進んでいません");
+  }
+  if (stageDone("done") !== STAGES.length) {
+    throw new Error("そろったのに、終わった段の数が足りません");
   }
 }

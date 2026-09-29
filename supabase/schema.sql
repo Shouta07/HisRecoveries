@@ -356,6 +356,11 @@ create table if not exists responders (
   created_at timestamptz default now()
 );
 
+-- 誰が読んだのかを、粗いカテゴリで見せる（任意）。
+-- 会社名も細かい職種も持たない。年代・地域と3つ揃うと個人が絞れるため。
+alter table responders add column if not exists job_band text;   -- model.ts の JobBand
+alter table responders add column if not exists tone text;       -- model.ts の Tone（回答の書き方）
+
 create index if not exists responders_active_idx on responders (active, display_age_band);
 
 -- 相談1件。
@@ -525,6 +530,8 @@ select
   r.area,
   r.attrs,
   r.specialties,
+  r.job_band,
+  r.tone,
   r.verified_age,
   r.verified_profile,
   r.avg_reply_minutes,
@@ -563,7 +570,7 @@ order by c.created_at desc;
 --
 -- 無料ベータをやめ、都度課金にする。
 -- 検証したいのは「ChatGPT が無料で使える時代に、
--- 実在の人の反応に 1,980〜2,980円 払うか」の1点なので、
+-- 実在の人の反応に 5,980円 以上払うか」の1点なので、
 -- 無料の利用者数は指標にしない。
 --
 -- ── 決済が終わるまで配らない ────────────────────
@@ -574,10 +581,10 @@ order by c.created_at desc;
 
 alter table consultations add column if not exists product_type text;   -- human_check / target_check / human_test
 alter table consultations add column if not exists price int;           -- 請求した金額（円）。サーバーが入れる
--- 選んだオプション（plans.ts の OptionId）。
--- 金額も人数も、プランとこの列から server 側で引き直す。
+-- オプション（「もう一度」「話す」を基本相談に付け足す売り方）は廃止した。
+-- 商品は plans.ts の5つだけで、金額も人数も product_type から server 側で引き直す。
 -- 画面から来た金額は保存しない。
-alter table consultations add column if not exists options text[] default '{}';
+-- 既に options 列がある環境はそのまま残してよい（読み書きしない）。
 alter table consultations add column if not exists asker_id uuid;       -- 会員を入れたときのため。いまは null
 alter table consultations add column if not exists paid_at timestamptz; -- 支払いが確認できた時刻
 -- 人が見てから配るか。画像つきの相談は、払われても自動では配らない。

@@ -24,9 +24,15 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, type AttrId, type PanelAge } from "./model";
-import { assertWeight, assertWhoReads, assertPlain } from "../voice";
+import { assertWeight, assertWhoReads, assertPlain, assertNotCheap } from "../voice";
 
-export type PlanId = "standard" | "call" | "date_ready";
+/**
+ * 売るもの。
+ *
+ * 値段の差は、聞く人数ではなく「本番にどれだけ近いか」。
+ *   見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する
+ */
+export type PlanId = "review" | "reaction" | "mockchat" | "session" | "mockdate";
 
 /**
  * 何を見てもらうか。
@@ -107,83 +113,130 @@ export type Plan = {
 
 export const PLANS: Plan[] = [
   {
-    // 売るものは、これ1つ。あとはオプションで足す。
-    //
-    // ¥980 の入口は畳んだ。安い入口があると「安い恋愛相談」に見えて、
-    // ¥2,980 のほうが高く感じる。3人ぶんの反応が ¥2,980、の一本にする。
-    id: "standard",
-    name: "基本相談",
-    tagline: "送る前のものを、実在の女性3人に読んでもらう。",
-    value: "送っていいかどうかを、出す前に確かめる。",
-    yen: 2980,
-    depth: 2,
+    // いま売れるのはこれだけ。文字で受け取って、文字で返す。
+    // ほかの4つは、動画・チャット・通話の受け入れ手順が要る。
+    id: "review",
+    name: "女性目線レビュー",
+    tagline: "女性から見てどう映っているかを、直し方までまとめて返す。",
+    value: "感想ではなく、どこをどう直すかまで受け取る。",
+    yen: 5980,
+    depth: 1,
     answers: 3,
     rounds: 1,
     targeting: true,
     subjects: ["photo", "message"],
     includes: [
-      "実在の女性3人が読む",
-      "一人ひとりの第一印象",
-      "このままでOK / 少し気になる / 変えた方がいい",
-      "なぜそう感じたか",
+      "女性から見た第一印象",
+      "良いところ",
+      "気になったところ",
+      "女性側がそう感じる理由",
+      "具体的な改善案",
+      "そのまま使える修正文",
+      "次にやること",
     ],
-    fits: ["本命への一手", "次の誘い", "自己紹介文"],
+    fits: ["プロフィールと自己紹介文", "送る前のLINE", "誘い方", "デートの前後"],
     available: true,
     onTop: true,
     featured: true,
   },
-
   {
-    // 実在の女性と、その場で話す。
-    // 時間を決めた受け入れ方と、その場を見る体制が要る。
-    // 用意できるまで available は false のまま。
-    id: "call",
-    name: "電話の練習",
-    tagline: "本番の前に、5〜15分だけ話してみる。",
-    value: "文字では分からないところを、話す前に確かめておく。",
-    // 指定は 6,980〜9,800。
-    // 6,980 にすると「直して、もう一度」と同額になり、
-    // どちらが深いのか値段から読めなくなる。上限側に置く。
+    // 文字では出ない、見た瞬間の顔と声。
+    // 収録・保管・再生・確認の仕組みが要る。まだ無い。
+    id: "reaction",
+    name: "リアル反応レビュー",
+    tagline: "見た瞬間の表情と声まで、動画で受け取る。",
+    value: "文章では分からない、その瞬間の反応を見る。",
     yen: 9800,
-    from: true,
+    depth: 2,
+    answers: 1,
+    rounds: 1,
+    targeting: true,
+    includes: [
+      "見ているところの動画",
+      "どこで引っかかったか",
+      "どこで良いと思ったか",
+      "声のトーンと間",
+      "要点のまとめ",
+      "改善案と、次の一手",
+    ],
+    fits: ["何度直しても反応が変わらないとき", "自分では違いが分からないとき"],
+    available: false,
+    onTop: true,
+  },
+  {
+    // 実在の女性と、その場で文字のやりとりをする。
+    // 1対1でつながるので、いまの約束（直接つながらない）を
+    // 満たしたまま開くには、中で完結する仕組みと見守りが要る。
+    id: "mockchat",
+    name: "会話の練習",
+    tagline: "本番の前に、一度だけ女性相手にやりとりしてみる。",
+    value: "読んで覚えるのではなく、一度やってみる。",
+    yen: 12800,
+    depth: 3,
+    answers: 1,
+    rounds: 1,
+    targeting: true,
+    talk: true,
+    includes: [
+      "実在の女性とのやりとり",
+      "話の間合いと、返す速さ",
+      "聞き方と、自分の話の量",
+      "相手への興味の示し方",
+      "誘うところの切り出し方",
+      "実際なら会いたいと思ったか",
+    ],
+    fits: ["マッチしてからが続かないとき", "会う約束まで進まないとき"],
+    available: false,
+    onTop: true,
+  },
+  {
+    // 1対1で話す。時間を決めた受け入れ方と、その場を見る体制が要る。
+    id: "session",
+    name: "作戦会議",
+    tagline: "この相手とどうするかを、30〜45分で決める。",
+    value: "一般論ではなく、目の前の一人について決める。",
+    yen: 14800,
     depth: 4,
     answers: 1,
     rounds: 1,
     targeting: true,
-    subjects: ["call"],
-    includes: [
-      "実在の女性と5〜15分",
-      "第一印象と、声の感じ",
-      "話す速さと、間の取り方",
-      "質問の仕方と、圧を感じたところ",
-      "直したほうがいいところ",
-    ],
-    fits: ["はじめての電話", "告白の前", "関係を確かめる前"],
-    available: false,
     talk: true,
-    onTop: false,
+    includes: [
+      "実在の女性と30〜45分",
+      "いまやること",
+      "やらないこと",
+      "次に送る内容",
+      "次に見るところ",
+    ],
+    fits: ["告白の前", "2回目の前", "進めるか迷っているとき"],
+    available: false,
+    onTop: true,
   },
   {
-    id: "date_ready",
-    name: "会う日の前に、まとめて",
-    tagline: "自己紹介文もメッセージも話し方も、ひと通り見てもらう。",
-    value: "会う日の前に、要るところをまとめて見てもらう。",
-    yen: 14800,
-    from: true,
+    // 本番を再現する。いちばん深い。
+    id: "mockdate",
+    name: "デートの練習",
+    tagline: "初デートをそのまま一度、通しでやってみる。",
+    value: "本番で初めて気づくのを、先に済ませておく。",
+    yen: 19800,
     depth: 5,
-    answers: 10,
-    rounds: 2,
+    answers: 1,
+    rounds: 1,
     targeting: true,
-    includes: [
-      "「直して、もう一度」の内容すべて",
-      "自己紹介文・メッセージ・当日の流れ",
-      "第一印象・話し方・距離感",
-      "必要なら、電話の練習も",
-    ],
-    fits: ["初めて会う日の前", "大事な日の前"],
-    available: false,
+    talk: true,
     offline: true,
-    onTop: false,
+    includes: [
+      "20〜30分の通し",
+      "そのあと10分の振り返り",
+      "話の流れと、話題の選び方",
+      "沈黙のときの振る舞い",
+      "距離の取り方",
+      "本番でやること / やめること",
+      "相手側から見た居心地",
+    ],
+    fits: ["初めて会う日の前", "一度しかない日の前"],
+    available: false,
+    onTop: true,
   },
 ];
 
@@ -246,145 +299,17 @@ export const DEFAULT_PLAN: PlanId = (
 /** いちばん安い、買えるプラン。入口に出す */
 export const ENTRY_PLAN: PlanId = [...sellable()].sort((a, b) => a.yen - b.yen)[0].id;
 
-/* ══════════════════════════════════════════════════
-   オプション
-   ══════════════════════════════════════════════════
-
-   プランを何本も並べない。基本相談 ¥2,980 から始めて、
-   減らしたい不安のぶんだけ足す。
-
-   ── 「追加で払わせる」の形にしない ──────────────
-   どれも「不安をもう一段減らす」ものとして並べる。
-   増やすのは金額ではなく、確かめられる範囲。
-
-   ── 速さは約束しない ────────────────────────────
-   優先対応は「先に回す」であって「何分で返る」ではない。
-   実測で速さを担保できるまで、時間を書かない（supply.ts の判定）。 */
-
-export type OptionId = "more" | "write" | "rush" | "recheck";
-
-export type Option = {
-  id: OptionId;
-  name: string;
-  yen: number;
-  /** どんな不安のときに選ぶか。売り文句ではなく、選ぶ理由 */
-  why: string;
-  /** 何が変わるか */
-  effect: string;
-  /** 読む人数が増えるぶん */
-  addAnswers?: number;
-  /** もう一度確かめる工程が付くか */
-  extraRound?: boolean;
-  available: boolean;
-};
-
-export const OPTIONS: Option[] = [
-  {
-    id: "more",
-    name: "女性5人に増やす",
-    yen: 1000,
-    why: "意見の偏りを減らしたい",
-    effect: "3人ではなく5人の反応を見る",
-    addAnswers: 2,
-    available: true,
-  },
-  {
-    id: "write",
-    name: "文章まで作ってもらう",
-    yen: 1500,
-    why: "自分で直すのが不安",
-    effect: "どう直すかだけでなく、そのまま送れる文章まで",
-    available: true,
-  },
-  {
-    id: "rush",
-    name: "優先して回す",
-    yen: 1000,
-    why: "今日中に送りたい",
-    effect: "ほかの相談より先に、回答をお願いする",
-    available: true,
-  },
-  {
-    id: "recheck",
-    name: "直して、もう一度確かめる",
-    yen: 4000,
-    why: "直したあとも本当に大丈夫か確かめたい",
-    effect: "直した案を、別の女性3人にもう一度読んでもらう",
-    extraRound: true,
-    available: true,
-  },
-];
-
-const BY_OPTION = new Map(OPTIONS.map((o) => [o.id, o]));
-
-export function option(id: OptionId): Option {
-  const o = BY_OPTION.get(id);
-  if (!o) throw new Error(`未定義のオプション: ${id}`);
-  return o;
-}
-
-export function isOptionId(x: unknown): x is OptionId {
-  return typeof x === "string" && BY_OPTION.has(x as OptionId);
-}
-
-/** 画面から来た配列を、受け付けてよいものだけに絞る（重複も落とす） */
-export function cleanOptions(x: unknown): OptionId[] {
-  if (!Array.isArray(x)) return [];
-  const ok = x.filter(isOptionId).filter((id) => option(id).available);
-  return OPTIONS.filter((o) => ok.includes(o.id)).map((o) => o.id);
-}
-
 /**
  * 実際に請求する金額。
  *
- * 画面から来た金額は一切見ない。プランIDとオプションIDだけを受け取って、
- * ここで引く。金額を受け取れる形にすると、1円で Checkout を作られる。
+ * 画面から来た金額は一切見ない。プランIDだけを受け取って、ここで引く。
+ * 金額を受け取れる形にすると、1円で Checkout を作られる。
+ *
+ * オプションは持たない。値段の差は、商品そのものの深さで付ける
+ * （見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する）。
  */
-export function priceOf(id: PlanId, options: OptionId[] = []): number {
-  return cleanOptions(options).reduce((n, o) => n + option(o).yen, plan(id).yen);
-}
-
-/** 何人が読むか。オプションで増えるぶんを足す */
-export function answersFor(id: PlanId, options: OptionId[] = []): number {
-  return cleanOptions(options).reduce((n, o) => n + (option(o).addAnswers ?? 0), plan(id).answers);
-}
-
-/* ── 買いやすい組み合わせ ────────────────────────
-   オプションを1つずつ選ばせるだけだと、何を足せばいいか決まらない。
-   よく効く組み合わせを、先に3つだけ見せる。
-
-   「人気No.1」とは書かない。まだ1件も売れていないので、
-   それは実績の捏造になる（monetization.ts の判定が落とす）。 */
-
-export type Set = {
-  id: string;
-  name: string;
-  options: OptionId[];
-  /** どんな人向けか */
-  fits: string;
-  /** いちばん勧めるもの */
-  pick?: boolean;
-};
-
-export const SETS: Set[] = [
-  { id: "base", name: "基本のまま", options: [], fits: "まず一度、反応を見てみる" },
-  {
-    id: "pick",
-    name: "5人に増やして、文章まで",
-    options: ["more", "write"],
-    fits: "本命への一手。偏りも減らしたい",
-    pick: true,
-  },
-  {
-    id: "thorough",
-    name: "直して、もう一度",
-    options: ["recheck"],
-    fits: "一度しかない場面。直したあとも確かめる",
-  },
-];
-
-export function setPrice(s: Set): number {
-  return priceOf(DEFAULT_PLAN, s.options);
+export function priceOf(id: PlanId): number {
+  return plan(id).yen;
 }
 
 /** そのプランで、年代以外の条件を指定してよいか */
@@ -509,18 +434,15 @@ export const USE_CASES: {
       );
     }
   }
-  // トップに出すのは3つまで。
+  // トップに出すのは5つまで。
   //
-  // 一度は1つに絞っていた。ただし商品が「深さ」だけで分かれていたので、
-  // 1つに絞ると、深いほうへ行く道が結果の画面にしか無くなっていた。
+  // 段そのものが商品になった。
+  //   見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する
+  // この並びを見せないと、値段の差が説明できない。
   //
-  // いまは 入口（980円）→ 主力（2,980円）→ 直して再確認（5,980円〜）で、
-  // 値段そのものが「どこまでやるか」を表している。
-  // 3つ並べても、選ぶのに読む量は増えない。
-  //
-  // 4つ目からは増やさない。模擬電話と総点検は、必要になった場面で出す。
-  if (topPlans().length > 3) {
-    throw new Error(`トップの料金が ${topPlans().length} 個あります（3つまで）`);
+  // 6つ目からは増やさない。増やすなら、どれかを畳む。
+  if (topPlans().length > 5) {
+    throw new Error(`トップの料金が ${topPlans().length} 個あります（5つまで）`);
   }
   if (topPlans().length === 0) throw new Error("トップに出すプランがありません");
   if (!topPlans()[0].available) {
@@ -536,9 +458,11 @@ export const USE_CASES: {
     }
   }
   // 再テストを謳う以上、2回以上聞くプランが要る。
-  if (!PLANS.some((p) => p.rounds >= 2)) {
-    throw new Error("もう一度試すプランがありません");
-  }
+  // 「直して、もう一度」は独立した商品ではなくなった。
+  // 直し方と修正文は「女性目線レビュー」に含まれる。
+  // 別の人にもう一度見てもらう工程を売るなら、そのときに
+  // 値段と原価を作り直すこと（いまの ¥5,980 では原価が出ない）。
+
   // 目立たせるプランは1つ。2つあると、どれを選べばいいか分からない。
   if (PLANS.filter((p) => p.featured).length !== 1) {
     throw new Error("おすすめのプランは1つだけにしてください");
@@ -566,6 +490,8 @@ export const USE_CASES: {
     }
     // 値段を否定する言葉を、買う人の画面に出さない。
     assertWeight(t, "商品の説明");
+    // 安さで売らない。原価は答える女性への支払い。
+    assertNotCheap(t, "商品の説明");
     // 誰が読むのかを濁さない。「人」と書くと、誰でもよくなる。
     assertWhoReads(t, "商品の説明");
     // 硬い言葉を混ぜない。読むのは29歳の会社員。

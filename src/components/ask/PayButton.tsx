@@ -15,6 +15,12 @@ import Yen from "@/components/brand/Yen";
 // ── 理由を隠さない ────────────────────────────────
 // 「エラーが発生しました」では、待てばよいのか諦めるのかが分からない。
 // API が返した理由をそのまま出す。
+//
+// ── 押す直前に、何が返ってくるかを書く ────────────
+// 商品名と金額だけを出して押させない。
+// 押す人が最後に見る画面はここなので、
+// 何人が読むのか、何が返ってくるのか、揃わなかったらどうなるのかを
+// この枠の中で完結させる。別のページに飛ばさない。
 
 export default function PayButton({
   token,
@@ -86,6 +92,31 @@ export default function PayButton({
         </p>
       </div>
       <p className="mt-2 text-[12px] text-steel">税込 / 1回のみ。月額はありません。</p>
+
+      {/* 押す直前に、返ってくるものを出す。別のページに戻らせない */}
+      <div className="mt-5 rounded-soft bg-mist px-4 py-4">
+        <p className="text-[12px] font-bold text-steel">
+          {p.talk
+            ? "この相談で受け取るもの"
+            : `実在の女性${p.answers}人が読んで、返ってくるもの`}
+        </p>
+        <ul className="mt-2.5 flex flex-col gap-1.5">
+          {p.includes.map((x) => (
+            <li key={x} className="flex items-start gap-2 text-[13px] leading-[1.7]">
+              <span aria-hidden className="mt-[3px] text-[11px] font-black text-ok-text">
+                ✓
+              </span>
+              <span className="min-w-0 text-slate">{x}</span>
+            </li>
+          ))}
+        </ul>
+        {!p.talk && (
+          <p className="mt-3 border-t border-line pt-3 text-[12px] leading-[1.8] text-steel">
+            {p.answers}人そろわなかったときは、足りない分をお返しします。
+            全額返してもらうことも選べます。
+          </p>
+        )}
+      </div>
 
       {error && (
         <p className="mt-4 rounded-soft border border-slate px-4 py-3 text-[13.5px] leading-[1.85]">

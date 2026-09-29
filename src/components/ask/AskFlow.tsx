@@ -8,9 +8,8 @@ import {
   type CategoryId, type AgeBand, type RelationId, type PanelAge, type AttrId,
 } from "@/lib/ask/model";
 import {
-  sellable, plan as getPlan, isSellable, allowsTargeting, DEFAULT_PLAN, ENTRY_PLAN,
-  OPTIONS, option as getOption, isOptionId, cleanOptions, priceOf, answersFor,
-  type PlanId, type OptionId,
+  plan as getPlan, isSellable, allowsTargeting, priceOf, DEFAULT_PLAN, ENTRY_PLAN,
+  type PlanId,
 } from "@/lib/ask/plans";
 import { redact, mayContainName } from "@/lib/ask/redact";
 import {
@@ -94,26 +93,14 @@ export default function AskFlow() {
   const [thread, setThread] = useState<string | null>(null);
   const [threadLabel, setThreadLabel] = useState("");
   const [openMore, setOpenMore] = useState(false);
-  // 足すかどうかは、相談を書いたあとに選ぶ。
-  // 最初に選ばせると、何が要るのか決められない。
-  const [opts, setOpts] = useState<OptionId[]>(() =>
-    cleanOptions(params.getAll("opt")),
-  );
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const p = getPlan(planId);
   const canTarget = allowsTargeting(planId);
-  // 金額も人数も、選んだものから毎回引き直す。画面に数字を直書きしない。
-  const total = priceOf(planId, opts);
-  const answers = answersFor(planId, opts);
-
-  function toggleOption(id: OptionId) {
-    setOpts((prev) =>
-      cleanOptions(prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]),
-    );
-    track("plan_selected", { plan: planId, from: "option", option: id });
-  }
+  // 金額も人数も、プランから引き直す。画面に数字を直書きしない。
+  const total = priceOf(planId);
+  const answers = p.answers;
 
   const preview = redact(isAb ? `${a}\n${b}` : text);
   const nameWarn = mayContainName(isAb ? `${a}\n${b}` : text);
@@ -139,7 +126,6 @@ export default function AskFlow() {
           step: stepId,
           // 金額は送らない。プランIDと、選んだオプションのIDだけ。
           plan: planId,
-          options: opts,
         }),
       });
       const json = await res.json();
@@ -150,7 +136,7 @@ export default function AskFlow() {
         return;
       }
 
-      track("ask_submitted", { category: cat ?? "none", plan: planId, ab: isAb, options: opts.join("-") });
+      track("ask_submitted", { category: cat ?? "none", plan: planId, ab: isAb });
       if (cat) {
         rememberAsk({
           token: json.token,
@@ -164,7 +150,7 @@ export default function AskFlow() {
 
       // 支払いへ。作れなかったときは相談の画面へ送る。
       // そこに「お支払いへ進む」と、進めない理由が出る。
-      track("checkout_started", { plan: planId, options: opts.join("-"), value: total });
+      track("checkout_started", { plan: planId, value: total });
       const pay = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -463,56 +449,6 @@ export default function AskFlow() {
               </div>
             </div>
 
-            {/* ── オプション ── */}
-            {/* 追加で払わせる並べ方にしない。
-                どれも「どの不安を減らすか」で選べるようにする。 */}
-            <div className="mt-8">
-              <Label>足すかどうか（任意）</Label>
-              <ul className="mt-3 flex flex-col gap-2">
-                {OPTIONS.filter((o) => o.available).map((o) => {
-                  const on = opts.includes(o.id);
-                  return (
-                    <li key={o.id}>
-                      <button
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => toggleOption(o.id)}
-                        className={`flex w-full items-start gap-3 rounded-card border p-4 text-left transition-shadow ${
-                          on
-                            ? "border-brand bg-brand-tint shadow-card"
-                            : "border-line bg-paper shadow-card hover:shadow-card-hover"
-                        }`}
-                      >
-                        <span
-                          aria-hidden
-                          className={`mt-[2px] flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-2 ${
-                            on ? "border-brand bg-brand text-paper" : "border-line"
-                          }`}
-                        >
-                          {on && (
-                            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="flex items-baseline justify-between gap-3">
-                            <span className="text-[14.5px] font-bold text-slate">{o.name}</span>
-                            <span className="shrink-0 text-[13.5px] font-black text-slate">
-                              <Yen yen={o.yen} plus />
-                            </span>
-                          </span>
-                          <span className="mt-1 block text-[12.5px] leading-[1.7] text-steel">
-                            {o.why}／{o.effect}
-                          </span>
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-
             {/* ── 料金確認 ── */}
             <div className="mt-8 rounded-card border border-brand bg-paper shadow-card">
               <div className="border-b border-line px-5 py-4">
@@ -527,14 +463,6 @@ export default function AskFlow() {
                       <Yen yen={p.yen} />
                     </dd>
                   </div>
-                  {opts.map((id) => (
-                    <div key={id} className="flex items-baseline justify-between gap-3">
-                      <dt className="min-w-0 text-steel">{getOption(id).name}</dt>
-                      <dd className="shrink-0 text-steel">
-                        <Yen yen={getOption(id).yen} plus />
-                      </dd>
-                    </div>
-                  ))}
                 </dl>
 
                 <div className="mt-3.5 flex items-baseline justify-between gap-3 border-t border-line pt-3.5">

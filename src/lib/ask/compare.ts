@@ -21,6 +21,14 @@
 // ── 全部の行で勝とうとしない ──────────────────────
 // 勝てない行は勝てないまま出す。
 // 全部に丸が付いている表は、読む人がいちばん信じない。
+//
+// ── 「どちらが良いか」の表にしない ────────────────
+// マッチングアプリも、恋愛コンサルも、結婚相談所も、
+// やっていることが違う。安いほうが良い、という表にすると
+// こちらの値段まで「安さ」で見られる。
+// 書くのは「提供している範囲が違う」までにする。
+
+import { assertNotCheap } from "../voice";
 
 export type Alternative = {
   id: string;
@@ -31,6 +39,8 @@ export type Alternative = {
 
 export const ALTERNATIVES: Alternative[] = [
   { id: "us", label: "タシカメ", us: true },
+  { id: "app", label: "マッチングアプリ" },
+  { id: "coach", label: "恋愛コンサル" },
   { id: "agency", label: "結婚相談所" },
   { id: "friend", label: "友達に聞く" },
   { id: "ai", label: "AIに聞く" },
@@ -49,6 +59,8 @@ export const COMPARE: CompareRow[] = [
     label: "使うとき",
     cells: {
       us: "送る前・会う前に、そのつど",
+      app: "出会いを探すとき",
+      coach: "期間を決めて相談する",
       agency: "入会して、続けて使う",
       friend: "相手の都合がつくとき",
       ai: "いつでも",
@@ -59,6 +71,8 @@ export const COMPARE: CompareRow[] = [
     label: "料金のかたち",
     cells: {
       us: "1回ごと。月額なし",
+      app: "月額や都度課金があるものが多い",
+      coach: "期間や回数でまとめて払うのが一般的",
       agency: "入会金と月会費がかかるのが一般的",
       friend: "かからない",
       ai: "無料で使えるものが多い",
@@ -69,6 +83,8 @@ export const COMPARE: CompareRow[] = [
     label: "返ってくるもの",
     cells: {
       us: "実在の女性が読んで、実際にどう受け取ったか",
+      app: "相手からの返信、または無反応",
+      coach: "担当者の助言と、進め方の計画",
       agency: "担当者の助言",
       friend: "その人の意見。多くは同性の目線",
       ai: "こう思われるだろう、という予測",
@@ -79,6 +95,8 @@ export const COMPARE: CompareRow[] = [
     label: "扱う範囲",
     cells: {
       us: "送る前のLINE、自己紹介文、誘い方",
+      app: "出会いの場をつくる",
+      coach: "進め方そのものを、期間を通して一緒に見る",
       agency: "結婚を前提にした出会いと、その進め方",
       friend: "その人に話せる範囲",
       ai: "文章を作る。考えをまとめる",
@@ -89,12 +107,23 @@ export const COMPARE: CompareRow[] = [
     label: "知られるか",
     cells: {
       us: "匿名。相手にも知り合いにも伝わらない",
+      app: "相手には自分のプロフィールが見える",
+      coach: "担当者には自分のことを話す",
       agency: "入会のときに本人確認がある",
       friend: "知り合いに知られる",
       ai: "知られない",
     },
   },
 ];
+
+/**
+ * 表の上に必ず出す一文。
+ *
+ * 値段の差を「安い・高い」で読ませないための行。
+ * 範囲が違うから金額のかたちも違う、という順で書く。
+ */
+export const COMPARE_SCOPE =
+  "どれが良いかではなく、引き受けている範囲が違います。範囲が違うので、料金のかたちも違います。";
 
 /** 表の下に必ず出す断り書き。消すとビルドが落ちる */
 export const COMPARE_NOTE =
@@ -123,7 +152,8 @@ export const COMPARE_NOTE =
       }
 
       // 相手を断定で悪く書かない。
-      const UNFAIR = /できない|使えない|意味がない|役に立たない|劣る|ダメ|最悪/;
+      const UNFAIR =
+        /できない|使えない|意味がない|役に立たない|劣る|ダメ|最悪|無駄|時代遅れ|やめたほうが|割に合わない|高すぎ/;
       if (other && UNFAIR.test(v)) {
         throw new Error(`比較の「${r.label}」で ${id} を断定で悪く書いています（${v}）`);
       }
@@ -141,4 +171,20 @@ export const COMPARE_NOTE =
     throw new Error("比較の断り書きが弱くなっています");
   }
   if (COMPARE.length < 4) throw new Error("比較の行が少なすぎます");
+
+  // 値段の差を「安い・高い」で読ませないための一文が、消えていないこと。
+  if (!/範囲が違う/.test(COMPARE_SCOPE)) {
+    throw new Error("比較の前置きから「範囲が違う」が消えています");
+  }
+  if (/優れ|勝っ|上位|下位|安さ/.test(COMPARE_SCOPE)) {
+    throw new Error(`比較の前置きが優劣の話になっています（${COMPARE_SCOPE}）`);
+  }
+  // 安さの言葉は voice.ts が持っている。ここで並べ直さない。
+  assertNotCheap(COMPARE_SCOPE, "比較の前置き");
+  for (const r of COMPARE) assertNotCheap(r.cells.us ?? "", `比較の「${r.label}」`);
+  // 「料金のかたち」の行は、必ず持っていること。
+  // ここを消すと、値段の違いが説明されないまま表が出る。
+  if (!COMPARE.some((r) => r.id === "price")) {
+    throw new Error("比較に「料金のかたち」の行がありません");
+  }
 }

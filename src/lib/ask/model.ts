@@ -260,6 +260,90 @@ export function isResponderAge(x: unknown): x is ResponderAge {
 }
 
 /**
+ * 職業のカテゴリ。
+ *
+ * ── なぜ聞くか ──────────────────────────────
+ * 「女性3人が読みました」と「25〜29歳・医療・福祉の人が読みました」は、
+ * 同じ回答でも受け取り方が変わる。誰が読んだのかが分かることが、
+ * 匿名掲示板との違いそのもの。
+ *
+ * ── どこで止めるか ──────────────────────────
+ * 会社名も、細かい職種も持たない。
+ * 年代・地域・職業が細かいまま3つ揃うと、それで個人が絞れる。
+ * だからカテゴリの粗さで止める。任意の項目にする。
+ */
+export const JOB_BANDS = [
+  { id: "office", label: "事務・オフィスワーク" },
+  { id: "sales", label: "営業・販売" },
+  { id: "medical", label: "医療・福祉" },
+  { id: "edu", label: "教育・保育" },
+  { id: "beauty", label: "美容・アパレル" },
+  { id: "creative", label: "IT・クリエイティブ" },
+  { id: "pro", label: "専門職" },
+  { id: "student", label: "学生" },
+  { id: "other", label: "その他" },
+] as const;
+
+export type JobBand = (typeof JOB_BANDS)[number]["id"];
+
+export function isJobBand(x: unknown): x is JobBand {
+  return typeof x === "string" && JOB_BANDS.some((j) => j.id === x);
+}
+
+export function jobLabel(id: string | null): string | null {
+  return JOB_BANDS.find((j) => j.id === id)?.label ?? null;
+}
+
+/**
+ * 回答の書き方。
+ *
+ * ── 「恋愛スタイル」は聞かない ──────────────────
+ * どんな恋愛をする人かを並べると、回答者を品ぞろえとして見せることになる。
+ * ここで売っているのは回答者の恋愛観ではなく、
+ * 「読んで、どう感じたかを言葉にして返す」仕事。
+ * だから聞くのは、その仕事の癖だけにする。
+ */
+export const TONES = [
+  { id: "straight", label: "はっきり書く" },
+  { id: "gentle", label: "やわらかく書く" },
+  { id: "reason", label: "理由をていねいに書く" },
+] as const;
+
+export type Tone = (typeof TONES)[number]["id"];
+
+export function isTone(x: unknown): x is Tone {
+  return typeof x === "string" && TONES.some((t) => t.id === x);
+}
+
+export function toneLabel(id: string | null): string | null {
+  return TONES.find((t) => t.id === id)?.label ?? null;
+}
+
+/* ── 回答者の見せ方で、止めること ─────────────────
+   回答者を「品ぞろえ」として見せない。
+   ここに色気・癒し・疑似恋愛の言葉が入った時点で、別の商売になる。 */
+{
+  const WRONG = /色気|セクシー|癒|甘え|かわいい|美人|ギャル|お姉さん|清楚|巨乳|スタイル抜群/;
+  for (const t of [...JOB_BANDS.map((j) => j.label), ...TONES.map((x) => x.label)]) {
+    if (WRONG.test(t)) {
+      throw new Error(`回答者の見せ方が、人を品ぞろえにしています（${t}）`);
+    }
+  }
+  // 会社名・学校名を聞く形になっていないこと。
+  for (const j of JOB_BANDS) {
+    if (/株式会社|大学名|勤務先|会社名/.test(j.label)) {
+      throw new Error(`職業の選択肢が細かすぎます（${j.label}）`);
+    }
+  }
+  if (new Set(JOB_BANDS.map((j) => j.id)).size !== JOB_BANDS.length) {
+    throw new Error("職業カテゴリのIDが重複しています");
+  }
+  if (new Set(TONES.map((t) => t.id)).size !== TONES.length) {
+    throw new Error("回答の書き方のIDが重複しています");
+  }
+}
+
+/**
  * 地域。都道府県より粗くする。
  * 市区町村まで持つと、年代と得意分野と合わせて個人が絞れてしまう。
  */
@@ -286,7 +370,14 @@ export function cleanResponderAttrs(x: unknown): AttrId[] {
 }
 
 /** 何人に聞くか。実際に何人になるかはプランが決める（ask/plans.ts） */
-export const PANEL_SIZES = [3, 5, 10] as const;
+/**
+ * 何人が担当するか。
+ *
+ * 1 を足したのは、1人が深く担当する商品ができたため
+ * （動画の反応、会話の練習、作戦会議、デートの練習）。
+ * これらは人数ではなく、本番への近さで値段が決まる。
+ */
+export const PANEL_SIZES = [1, 3, 5, 10] as const;
 export type PanelSize = (typeof PANEL_SIZES)[number];
 
 export function isPanelSize(x: unknown): x is PanelSize {

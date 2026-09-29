@@ -3,6 +3,7 @@ import { dbInsertReturning, dbSelect, dbAdminEnabled, parseAttribution } from "@
 import { makeResponderToken, makeReferralCode, isReferralCode } from "@/lib/ask/token";
 import {
   RESPONDER_AGES, isResponderAge, cleanResponderAttrs, isArea, isCategoryId,
+  isJobBand, isTone,
 } from "@/lib/ask/model";
 
 // 回答者の登録。
@@ -91,6 +92,9 @@ export async function POST(req: NextRequest) {
     display_age_band: age,
     attrs: cleanResponderAttrs(body.attrs),
     area: isArea(body.area) ? body.area : null,
+    // 職業カテゴリと回答の書き方。どちらも任意。合わないものは null で落とす。
+    job_band: isJobBand(body.job) ? body.job : null,
+    tone: isTone(body.tone) ? body.tone : null,
     // 得意な話題。画面に無いカテゴリは通さない。
     specialties: Array.isArray(body.specialties)
       ? [...new Set(body.specialties.filter(isCategoryId))]

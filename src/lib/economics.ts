@@ -21,10 +21,7 @@
 // 下限（MIN_REWARD）を置いてあるのは、そのため。
 // ここを割る設定はビルドで落ちる。
 
-import {
-  PLANS, SETS, plan, priceOf, answersFor, OPTIONS, option, DEFAULT_PLAN,
-  type Plan, type PlanId, type OptionId,
-} from "./ask/plans";
+import { PLANS, plan, type Plan, type PlanId } from "./ask/plans";
 
 /* ── 変動費の率 ──────────────────────────────── */
 
@@ -66,15 +63,14 @@ export type RewardBand = {
  * 幅の外には出さない（下は回答者のため、上は採算のため）。
  */
 export const REWARDS: RewardBand[] = [
-  // 1件ぶんの反応。第一印象・このままでOKか・気になった点・その理由。
-  // 幅の上（300円）は、評価の高い人に当たったとき。
-  { kind: "quick", label: "反応を返す", min: 200, max: 300, note: "1件ぶんの反応" },
-  { kind: "priority", label: "先に回す", min: 260, max: 360, note: "優先して回した依頼" },
-  { kind: "talk", label: "話す", min: 1500, max: 2500, note: "20〜30分" },
-  // 直した案・そのまま送れる文章を書く。
-  // 上限を 800 に下げてある。これ以上は、買う人の価格から出ない
-  // （REWARD_CAP を見てください）。
-  { kind: "improve", label: "文章を書く", min: 500, max: 800, note: "直した案づくり" },
+  // 1件ぶんの反応。第一印象・気になったところ・その理由。
+  // 以前は 200〜300 円だったが、商品が ¥5,980 になったので引き上げる。
+  { kind: "quick", label: "反応を返す", min: 400, max: 700, note: "1件ぶんの反応" },
+  { kind: "priority", label: "先に回す", min: 500, max: 850, note: "優先して回した依頼" },
+  // 30〜45分、実在の女性と話す・やりとりする
+  { kind: "talk", label: "話す・やりとりする", min: 3000, max: 7000, note: "30〜45分" },
+  // 改善案とそのまま使える修正文を書く
+  { kind: "improve", label: "直し方を書く", min: 400, max: 900, note: "改善案と修正文" },
 ];
 
 /* ── 回答者の段 ──────────────────────────────
@@ -98,9 +94,9 @@ export type Tier = {
  * 順位を公開して競わせることはしない。
  */
 export const TIERS: Tier[] = [
-  { id: "bronze", label: "レギュラー回答者", quickYen: 200, can: "反応を返す" },
-  { id: "trusted", label: "高評価回答者", quickYen: 250, can: "優先して回る依頼も受けられる" },
-  { id: "top", label: "リード回答者", quickYen: 300, can: "文章づくりと、新しい人の回答の確認も" },
+  { id: "bronze", label: "レギュラー回答者", quickYen: 450, can: "反応を返す" },
+  { id: "trusted", label: "高評価回答者", quickYen: 550, can: "優先して回る依頼も受けられる" },
+  { id: "top", label: "リード回答者", quickYen: 700, can: "直し方を書き、新しい人の回答も確認する" },
 ];
 
 /** 条件が珍しいときの上乗せ */
@@ -114,27 +110,17 @@ export const RARE_BONUS = { min: 50, max: 150 };
  * 顧客の価格から逆算して、供給の原価を管理する。
  */
 export const REWARD_CAP: Record<PlanId, number> = {
-  standard: 900,
-  call: 2400,
-  date_ready: 5200,
+  // ¥5,980 の 40% から手数料を引いた額が、払える上限。
+  // 売っているのはこれだけ。¥5,980 の 40% から手数料を引いた額。
+  review: 1960,
+  // ここから下は受付前。開通するときに、売価と一緒に引き直すこと。
+  // いまは見込みの報酬と同じ額を置いてある。
+  reaction: 3240,
+  mockchat: 4240,
+  session: 5000,
+  mockdate: 7000,
 };
 
-/**
- * オプションを足したぶんの上限。
- *
- * 上限は「払ってよい額」であって「払う額」ではない。
- * 全員が評価の高い人に当たると見込みを超えるので、そのときは
- * allocate() が比例で縮めて、ここに収める。
- *
- * 数字は買う人の価格から逆算してある。上限いっぱいまで払っても
- * 限界利益率が MIN_MARGIN_AT_CAP を割らない額。
- */
-export const OPTION_REWARD_CAP: Record<OptionId, number> = {
-  more: 500,
-  write: 560,
-  rush: 350,
-  recheck: 1500,
-};
 
 /**
  * 実際に配る額を決める。
@@ -213,44 +199,25 @@ export type CostModel = {
 };
 
 export const COSTS: Record<PlanId, CostModel> = {
-  // 売る本体。3人。
-  //
-  // 見込み単価は 230 円（段の平均あたり）。
-  // 幅は 200〜300 円で、評価の高い人には上のほうを払う。
-  // 300 円を見込みに置くと、オプションを重ねた組み合わせで
-  // 限界利益率が 60% を割る（「5人＋文章」で 60.0%）。
-  standard: { parts: [{ kind: "quick", n: 3, atYen: 230 }] },
-  // 1人と5〜15分
-  call: { parts: [{ kind: "talk", n: 1, atYen: 2000 }] },
-  // まとめて
-  date_ready: {
+  // 3人が読んで反応を返し、1人が直し方を書く。
+  // 合計 ¥1,950。指定の「女性目線レビュー 1,500〜2,500円」の中。
+  // 1件ぶんの反応は ¥230 → ¥500 になる。
+  review: {
     parts: [
-      { kind: "quick", n: 10, atYen: 230 },
-      { kind: "improve", n: 1, atYen: 700 },
-      { kind: "talk", n: 1, atYen: 1500 },
+      { kind: "quick", n: 3, atYen: 500 },
+      { kind: "improve", n: 1, atYen: 450 },
     ],
   },
+  // 1人が動画で反応を返す
+  reaction: { parts: [{ kind: "talk", n: 1, atYen: 3000 }] },
+  // 1人と、その場でやりとり
+  mockchat: { parts: [{ kind: "talk", n: 1, atYen: 4000 }] },
+  // 1人と30〜45分
+  session: { parts: [{ kind: "talk", n: 1, atYen: 5000 }] },
+  // 1人と、通しで
+  mockdate: { parts: [{ kind: "talk", n: 1, atYen: 7000 }] },
 };
 
-/** オプションを足したぶんの原価 */
-export const OPTION_COSTS: Record<OptionId, CostModel> = {
-  // 読む人が2人増える
-  more: { parts: [{ kind: "quick", n: 2, atYen: 230 }] },
-  // 文章を書く人が1人
-  write: { parts: [{ kind: "improve", n: 1, atYen: 580 }] },
-  // 上乗せの一部を、先に回した人へ。残りはこちらに残る
-  rush: { parts: [{ kind: "priority", n: 0, atYen: 0 }] },
-  // 直した案を作って、別の3人に読んでもらう
-  recheck: {
-    parts: [
-      { kind: "quick", n: 3, atYen: 230 },
-      { kind: "improve", n: 1, atYen: 580 },
-    ],
-  },
-};
-
-/** 優先して回すときに、回答者へ回す割合 */
-export const RUSH_TO_RESPONDER = 0.35;
 
 /* ── 急ぎの上乗せ ────────────────────────────
    速さそのものを売るのは、実際に速く返せるようになってから。
@@ -363,70 +330,6 @@ export function unit(id: PlanId): Unit {
   };
 }
 
-/**
- * 注文まるごとの採算。基本相談＋選んだオプション。
- *
- * オプション単体で見ると成立しない組み合わせがある
- * （「5人に増やす」は +¥1,000 で2人ぶんの報酬が出ていく）。
- * 買う人が払うのは合計なので、採算も合計で見る。
- */
-export type Order = {
-  planId: PlanId;
-  options: OptionId[];
-  yen: number;
-  answers: number;
-  reward: number;
-  capYen: number;
-  variable: number;
-  margin: number;
-  marginRate: number;
-  marginRateAtCap: number;
-};
-
-export function order(planId: PlanId, options: OptionId[] = []): Order {
-  const yen = priceOf(planId, options);
-
-  const partsOf = (m: CostModel) => m.parts.reduce((n, x) => n + x.atYen * x.n, 0);
-  let reward = partsOf(COSTS[planId]);
-  let capYen = REWARD_CAP[planId];
-  for (const o of options) {
-    reward += partsOf(OPTION_COSTS[o]);
-    capYen += OPTION_REWARD_CAP[o];
-    // 優先して回すぶんは、上乗せの一部を回答者へ回す
-    if (o === "rush") reward += Math.round(option(o).yen * RUSH_TO_RESPONDER);
-  }
-
-  const fixed =
-    Math.round(yen * PAYMENT_RATE) + Math.round(yen * REFUND_RATE) + AI_COST_YEN + MISC_COST_YEN;
-  const variable = reward + fixed;
-  const margin = yen - variable;
-
-  return {
-    planId,
-    options,
-    yen,
-    answers: answersFor(planId, options),
-    reward,
-    capYen,
-    variable,
-    margin,
-    marginRate: margin / yen,
-    marginRateAtCap: (yen - (capYen + fixed)) / yen,
-  };
-}
-
-/** 売っている組み合わせを全部。単体オプションと、見せている組み合わせ */
-export function allOrders(): Order[] {
-  const base = DEFAULT_PLAN;
-  const singles = OPTIONS.filter((o) => o.available).map((o) => order(base, [o.id]));
-  const sets = SETS.map((x) => order(base, x.options));
-  const everything = order(
-    base,
-    OPTIONS.filter((o) => o.available).map((o) => o.id),
-  );
-  return [order(base, []), ...singles, ...sets, everything];
-}
-
 export function allUnits(): Unit[] {
   return PLANS.map((p) => unit(p.id));
 }
@@ -465,27 +368,23 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
 /* ── 公開の前に止めること ─────────────────────
    値段を触ったときに、採算が崩れたまま出ていかないようにする。 */
 {
-  // 売っている組み合わせを、1つずつ通す。
-  // オプションは単体では成立しないものがある（「5人に増やす」は
-  // +¥1,000 で2人ぶんの報酬が出る）。見るのは合計のほう。
-  for (const o of allOrders()) {
-    const label = o.options.length ? `基本＋${o.options.join("＋")}` : "基本";
-    if (o.marginRate < MIN_MARGIN_RATE) {
-      throw new Error(
-        `「${label}」（¥${o.yen}）の限界利益率が ${Math.round(o.marginRate * 100)}% です` +
-          `（下限 ${Math.round(MIN_MARGIN_RATE * 100)}%）。値段かオプションの原価を見直してください`,
-      );
-    }
-    if (o.marginRateAtCap < MIN_MARGIN_AT_CAP) {
-      throw new Error(
-        `「${label}」（¥${o.yen}）は、上限（${o.capYen}円）まで払うと ` +
-          `${Math.round(o.marginRateAtCap * 100)}% になります（${Math.round(MIN_MARGIN_AT_CAP * 100)}% 以上）`,
-      );
-    }
-  }
+
+  /**
+   * 受付前の商品に許す限界利益率。
+   *
+   * 受け入れ手順がまだ無いものは、値段も報酬も見込みでしかない。
+   * ここで 60% を課すと、値段を決めて置いておくことができない。
+   *
+   * ただし「売り物にするとき（available: true）」は 60% を満たすこと。
+   * 下の判定が、その時点で必ず落ちる。
+   */
+  const PLANNING_FLOOR = 0.55;
 
   for (const p of PLANS) {
     const u = unit(p.id);
+    // 受付前のうちは、見込みとして置いておける下限まで緩める
+    const floorFor = (base: number) =>
+      p.available ? base : Math.min(base, PLANNING_FLOOR);
 
     // いちばん厳しい見方（報酬を上限で払った場合）で赤字にならないこと。
     if (u.margin <= 0) {
@@ -496,7 +395,8 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
 
     // 変動費が売価に占める割合。
     // 入口の商品だけ、限界利益率の下限に合わせて緩める。
-    const maxRate = p.marginFloor !== undefined ? 1 - p.marginFloor : MAX_VARIABLE_RATE;
+    const maxRate =
+      1 - floorFor(p.marginFloor !== undefined ? p.marginFloor : 1 - MAX_VARIABLE_RATE);
     const rate = u.variable / p.yen;
     if (rate > maxRate) {
       throw new Error(
@@ -507,7 +407,9 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
     }
 
     // 上限いっぱいまで払っても、下限を大きく割らないこと。
-    const capFloor = p.marginFloor !== undefined ? p.marginFloor - 0.05 : MIN_MARGIN_AT_CAP;
+    const capFloor = floorFor(
+      p.marginFloor !== undefined ? p.marginFloor - 0.05 : MIN_MARGIN_AT_CAP,
+    ) - (p.available ? 0 : 0.05);
     if (u.marginRateAtCap < capFloor) {
       throw new Error(
         `プラン「${p.id}」は、上限（${u.capYen}円）まで払うと限界利益率が ${Math.round(
@@ -523,15 +425,14 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
       );
     }
 
-    // 限界利益率。入口の商品だけ、下限を下げてよい（plan.marginFloor）。
+    // 限界利益率。
     //
-    // ¥980 で実在の人3人に払うと、どう組んでも 60% には届かない。
-    //   980 − (180×3) − 決済35 − AI20 − 返金29 − その他10 = 386（39.4%）
-    // 下限で払っても 450 なので、44% が上限。
+    // 売っているものは 60% を満たすこと。
+    // 受付前のものは、値段も報酬もまだ見込みなので 55% まで許す。
+    // 売り物にした瞬間に、ここが 60% で落ちる。
     //
-    // だからここは「入口は利益を取らない商品」と決めて通す。
-    // 報酬を削って率を作ると、良い回答者から抜けていく。
-    const floor = p.marginFloor ?? MIN_MARGIN_RATE;
+    // 報酬を削って率を作らない。良い回答者から抜けていく。
+    const floor = floorFor(p.marginFloor ?? MIN_MARGIN_RATE);
     if (u.marginRate < floor) {
       throw new Error(
         `プラン「${p.id}」の限界利益率が ${Math.round(u.marginRate * 100)}% です（${Math.round(

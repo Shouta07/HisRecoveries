@@ -31,8 +31,14 @@ import type { PlanId } from "@/lib/ask/plans";
 
 export type Tier = (typeof TIERS)[number]["id"];
 
-/** 出金を受け付ける下限。これより小さいと送金の手数料に負ける */
-export const PAYOUT_MIN_YEN = 3000;
+/**
+ * 出金を受け付ける下限。これより小さいと送金の手数料に負ける。
+ *
+ * 1件あたりの報酬が ¥230 → ¥500〜700 に上がったので、
+ * 下限も一緒に上げる。¥3,000 のままだと 5件で出金できてしまい、
+ * 「まとめて精算する」という作りが崩れる。
+ */
+export const PAYOUT_MIN_YEN = 4000;
 
 /**
  * この回答者に、この案件でいくら払うか。

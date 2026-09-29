@@ -17,7 +17,7 @@ import { EMPTY } from "@/lib/tashikame";
 // 実在の登録者だけを出す。0人なら0人と書く。
 //
 // ── 出すものと出さないもの ────────────────────────
-// 出す: 年代・地域・立場・得意な話題・回答数・確認済みかどうか
+// 出す: 年代・地域・職業のカテゴリ・立場・得意な話題・書き方・回答数・確認済みかどうか
 // 出さない: 連絡先・氏名・細かい居住地
 // 読むのは responder_profiles ビューで、そこに連絡先の列は無い。
 
@@ -38,6 +38,8 @@ type Row = {
   area: string | null;
   attrs: string[] | null;
   specialties: string[] | null;
+  job_band: string | null;
+  tone: string | null;
   verified_age: boolean;
   verified_profile: boolean;
   avg_reply_minutes: number | null;
@@ -64,6 +66,8 @@ export default async function AnswerersPage() {
     area: r.area,
     attrs: r.attrs ?? [],
     specialties: r.specialties ?? [],
+    job: r.job_band,
+    tone: r.tone,
     answered: Number(r.answered) || 0,
     // 評価が1件も付いていないうちは、割合を名乗らない。
     helpfulRate:
