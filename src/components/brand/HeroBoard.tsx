@@ -1,7 +1,7 @@
 import Slot from "@/components/brand/Slot";
 import { DEMO } from "@/lib/ask/demo";
 import { VERDICTS } from "@/lib/ask/model";
-import { plan as getPlan, DEFAULT_PLAN, USE_CASES } from "@/lib/ask/plans";
+import { plan as getPlan, DEFAULT_PLAN } from "@/lib/ask/plans";
 import type { ImageKey } from "@/lib/images";
 
 // ファーストビューの絵。
@@ -15,10 +15,18 @@ import type { ImageKey } from "@/lib/images";
 //   送る前の文面 → 実在の女性◯人が読むと → 返ってきた反応
 // 上から下に1本の線で読める形にする。
 //
+// ── 写真に文字を重ねない ──────────────────────────
+// 写真の下端に「このLINE、今送っていい？」を載せていた。
+// 何のサービスかは、写真の上に置いた一文が先に言うようになったので、
+// ここで同じ役目をもう一度やると、頭に2つ入ってどちらも残らない。
+// 文字を外したので、暗く落としていた帯も要らない。
+//
 // ── 写真は、気分のほう ────────────────────────────
 // 元の写真は 522×682 の縦。全幅に敷くと 2.6 倍に拡大されるので、
 // 顔と手元のスマホを同時に入れることはできない。
 // 意味はカードが持つ。写真は「自分と同じ人がいる」だけを受け持つ。
+// 文字を外したぶん高さも下げた。上に説明の一文が増えたので、
+// ここで取り返しておかないと、押す場所がさらに下へ行く。
 //
 // ── 顔に肩書きを付けない ──────────────────────────
 // 顔写真に「26歳 会社員」と添えると、実在の回答者の名簿に見える。
@@ -38,9 +46,6 @@ const PICKS = [
   DEMO.says.find((s) => s.verdict === "slight"),
   DEMO.says.find((s) => s.verdict === "as_is"),
 ].filter((s): s is (typeof DEMO.says)[number] => Boolean(s));
-
-/** 手が止まっている瞬間の一言。USE_CASES の1つめをそのまま使う */
-const HOOK = USE_CASES[0].q;
 
 const TONE: Record<string, string> = {
   change: "bg-rose-fill text-paper",
@@ -144,26 +149,12 @@ export default function HeroBoard() {
     <div>
       {/* 狭い画面。写真を帯で敷いて、その下に流れを1枚で置く */}
       <div className="lg:hidden">
-        <div className="relative">
-          <Slot
-            name="hero"
-            rounded=""
-            position="center 22%"
-            className="h-[182px] w-full sm:h-[300px]"
-          />
-          {/* 手が止まっている瞬間の一言。
-              写真だけだと「落ち着いた男性の写真」にしか見えず、
-              自分の話だと気づかれない。下端だけ暗く落として重ねる
-              （顔は上のほうにあるので隠れない）。
-              文は USE_CASES から引く。ここで新しく書かない。 */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-slate/95 via-slate/55 to-transparent"
-          />
-          <p className="absolute inset-x-5 bottom-4 text-[17px] font-bold leading-[1.5] text-paper sm:inset-x-8 sm:bottom-5 sm:text-[20px]">
-            「{HOOK}」
-          </p>
-        </div>
+        <Slot
+          name="hero"
+          rounded=""
+          position="center 22%"
+          className="h-[156px] w-full sm:h-[280px]"
+        />
 
         <div className="mt-2 px-5 sm:px-8">
           <Story />
@@ -172,16 +163,7 @@ export default function HeroBoard() {
 
       {/* 広い画面。左に自分、右に流れ */}
       <div className="mx-auto hidden max-w-[1120px] grid-cols-[minmax(0,420px)_1fr] items-center gap-10 px-12 pt-6 lg:grid">
-        <div className="relative">
-          <Slot name="hero" position="center 18%" className="h-[380px] w-full" />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%] rounded-b-card bg-gradient-to-t from-slate/95 via-slate/55 to-transparent"
-          />
-          <p className="absolute inset-x-6 bottom-6 whitespace-nowrap text-[19px] font-bold leading-[1.5] text-paper">
-            「{HOOK}」
-          </p>
-        </div>
+        <Slot name="hero" position="center 18%" className="h-[380px] w-full" />
         <Story />
       </div>
     </div>
