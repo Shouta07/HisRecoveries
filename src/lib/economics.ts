@@ -117,6 +117,10 @@ export const REWARD_CAP: Record<PlanId, number> = {
   // いまは見込みの報酬と同じ額を置いてある。
   reaction: 3240,
   mockchat: 4240,
+  // 15分の通話。話す帯の下限（¥3,000）をそのまま上限にしている。
+  // 15分で ¥3,000 は時給に直すと ¥12,000。
+  // 売価 ¥7,980 に対して変動費 37.6%。下げる余地はここには無い。
+  call15: 3000,
   session: 5000,
   mockdate: 7000,
 };
@@ -212,6 +216,8 @@ export const COSTS: Record<PlanId, CostModel> = {
   reaction: { parts: [{ kind: "talk", n: 1, atYen: 3000 }] },
   // 1人と、その場でやりとり
   mockchat: { parts: [{ kind: "talk", n: 1, atYen: 4000 }] },
+  // 1人と15分
+  call15: { parts: [{ kind: "talk", n: 1, atYen: 3000 }] },
   // 1人と30〜45分
   session: { parts: [{ kind: "talk", n: 1, atYen: 5000 }] },
   // 1人と、通しで

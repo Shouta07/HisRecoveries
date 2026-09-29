@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
+import { openPlanIds } from "@/lib/call/gate";
 import { plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN, OPEN_USE_CASES } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
 import { ALTERNATIVES, COMPARE, COMPARE_NOTE, COMPARE_SCOPE } from "@/lib/ask/compare";
@@ -1014,7 +1015,7 @@ export default async function HomePage() {
         </p>
 
         <div className="mt-8">
-          <PlanCards from="price" />
+          <PlanCards from="price" openIds={openPlanIds()} />
         </div>
 
         <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">

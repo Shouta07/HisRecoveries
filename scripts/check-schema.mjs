@@ -109,7 +109,10 @@ for (const file of walk(path.join(root, "src"))) {
 
   // dbInsert / dbInsertReturning / dbUpdate("table", { ... })
   for (const m of src.matchAll(
-    /db(?:Insert|InsertReturning|Update|Upsert)[^(]*\(\s*[`"']([a-z_][a-z0-9_]*)[`"']\s*,\s*\{([\s\S]{0,900}?)\n\s*\}\)/g,
+    // 閉じ括弧の手前に型の言い換え（as unknown as Record<...>）が入ることがある。
+    // 許していないと、そこで止まらずに次のオブジェクトまで読んでしまい、
+    // 別の表の列を、この表の列として数えてしまう。
+    /db(?:Insert|InsertReturning|Update|Upsert)[^(]*\(\s*[`"']([a-z_][a-z0-9_]*)[`"']\s*,\s*\{([\s\S]{0,900}?)\n\s*\}(?:\s+as\s+[^)]{0,120})?\s*\)/g,
   )) {
     const t = m[1].toLowerCase();
     const cols = tables.get(t);

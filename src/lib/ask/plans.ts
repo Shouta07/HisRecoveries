@@ -32,7 +32,7 @@ import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotSca
  * 値段の差は、聞く人数ではなく「本番にどれだけ近いか」。
  *   見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する
  */
-export type PlanId = "review" | "reaction" | "mockchat" | "session" | "mockdate";
+export type PlanId = "review" | "reaction" | "mockchat" | "call15" | "session" | "mockdate";
 
 /**
  * 何を見てもらうか。
@@ -63,8 +63,13 @@ export const SUBJECTS: { id: Subject; label: string; lead: string; body: string 
   },
 ];
 
-/** どこまで仕上げるか。深いほど後ろの工程まで含む */
-export type Depth = 1 | 2 | 3 | 4 | 5;
+/**
+ * どこまで仕上げるか。深いほど後ろの工程まで含む。
+ *
+ * 値段の順と同じにすること（下の判定が見ている）。
+ * 高いのに浅い商品があると、高いほうを選ぶ理由が無くなる。
+ */
+export type Depth = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type Plan = {
   id: PlanId;
@@ -105,6 +110,15 @@ export type Plan = {
   offline?: boolean;
   /** 実在する人と1対1で話すことを含むか */
   talk?: boolean;
+  /**
+   * 声で話す商品なら、その分数。
+   *
+   * ここに数を書いた商品だけが、通話の仕組み（lib/call）に乗る。
+   * 終わる時刻はサーバーが持つので、画面から分数を送らせない。
+   * 「30〜45分」のような幅は持たせない。幅があると、
+   * 何分で切ってよいのかが決まらない。
+   */
+  callMinutes?: 15 | 30;
   /** トップの料金に出すか。出さないものは、必要になった場面でだけ出す */
   onTop: boolean;
   /** 一覧で目立たせるか */
@@ -147,7 +161,7 @@ export const PLANS: Plan[] = [
     tagline: "見た瞬間の表情と声まで、動画で受け取る。",
     value: "文章では分からない、その瞬間の反応を見る。",
     yen: 9800,
-    depth: 2,
+    depth: 3,
     answers: 1,
     rounds: 1,
     targeting: true,
@@ -161,7 +175,9 @@ export const PLANS: Plan[] = [
     ],
     fits: ["何度直しても反応が変わらないとき", "自分では違いが分からないとき"],
     available: false,
-    onTop: true,
+    // 動画を撮る・預かる・見せる仕組みが1つも無い。
+    // 6つのうち、いちばん遠い。トップの5枠は使わない（/plans には出る）。
+    onTop: false,
   },
   {
     // 実在の女性と、その場で文字のやりとりをする。
@@ -172,7 +188,7 @@ export const PLANS: Plan[] = [
     tagline: "本番の前に、一度だけ女性相手にやりとりしてみる。",
     value: "読んで覚えるのではなく、一度やってみる。",
     yen: 12800,
-    depth: 3,
+    depth: 4,
     answers: 1,
     rounds: 1,
     targeting: true,
@@ -190,19 +206,46 @@ export const PLANS: Plan[] = [
     onTop: true,
   },
   {
-    // 1対1で話す。時間を決めた受け入れ方と、その場を見る体制が要る。
-    id: "session",
-    name: "作戦会議",
-    tagline: "この相手とどうするかを、30〜45分で決める。",
-    value: "一般論ではなく、目の前の一人について決める。",
-    yen: 14800,
-    depth: 4,
+    // いちばん短い通話。次の一手を1つだけ決めるためのもの。
+    // 「相談」ではなく「1つ決める」。15分でできることを超えない。
+    id: "call15",
+    name: "15分だけ、声で聞く",
+    tagline: "次の一手を1つだけ、声で決める。",
+    value: "書いて待たずに、その場で聞いて決める。",
+    yen: 7980,
+    depth: 2,
     answers: 1,
     rounds: 1,
     targeting: true,
     talk: true,
+    callMinutes: 15,
     includes: [
-      "実在の女性と30〜45分",
+      "実在の女性と15分",
+      "いま迷っていることへの反応",
+      "そう感じた理由",
+      "次にやること1つ",
+    ],
+    fits: ["このLINEを送っていいか", "今日誘っていいか", "デートの後どう動くか"],
+    available: false,
+    onTop: true,
+  },
+  {
+    // 1対1で話す。時間を決めた受け入れ方と、その場を見る体制が要る。
+    // 「30〜45分」の幅をやめて30分にした。
+    // 幅があると、何分で切ってよいのかが決まらない。
+    id: "session",
+    name: "作戦会議",
+    tagline: "この相手とどうするかを、30分で決める。",
+    value: "一般論ではなく、目の前の一人について決める。",
+    yen: 14800,
+    depth: 5,
+    answers: 1,
+    rounds: 1,
+    targeting: true,
+    talk: true,
+    callMinutes: 30,
+    includes: [
+      "実在の女性と30分",
       "いまやること",
       "やらないこと",
       "次に送る内容",
@@ -219,7 +262,7 @@ export const PLANS: Plan[] = [
     tagline: "初デートをそのまま一度、通しでやってみる。",
     value: "本番で初めて気づくのを、先に済ませておく。",
     yen: 19800,
-    depth: 5,
+    depth: 6,
     answers: 1,
     rounds: 1,
     targeting: true,
@@ -282,6 +325,12 @@ export function sellable(): Plan[] {
  *   直す      → 引っかかった点が出たとき
  *   もう一度  → 直したあと
  * 買う人にファネルを見せない。次に要ることだけが出てくる。
+ */
+/**
+ * トップの料金に出すもの。
+ *
+ * ここを画面が使っていないと、上限の判定が何も守らなくなる。
+ * トップは topPlans()、/plans は PLANS を出す。
  */
 export function topPlans(): Plan[] {
   return PLANS.filter((p) => p.onTop);
@@ -460,6 +509,8 @@ export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category)
   // この並びを見せないと、値段の差が説明できない。
   //
   // 6つ目からは増やさない。増やすなら、どれかを畳む。
+  // 実際、通話を15分と30分に分けたときに6つになったので、
+  // 動画の商品（reaction）を onTop: false にして5つに戻した。
   if (topPlans().length > 5) {
     throw new Error(`トップの料金が ${topPlans().length} 個あります（5つまで）`);
   }
@@ -529,6 +580,30 @@ export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category)
     if (/脈あり\?|脈あり？|この子|本命|好きかどうか|気持ちを当て/.test(u.q)) {
       throw new Error(`使う瞬間「${u.q}」が、相手の気持ちの判定になっています`);
     }
+  }
+
+  // 声で話す商品の決まりごと。
+  // 通話は1対1で、分数はサーバーが持つ。ここが崩れると時間を切れない。
+  for (const p of PLANS) {
+    if (p.callMinutes === undefined) continue;
+    if (!p.talk) throw new Error(`プラン「${p.id}」に分数があるのに、話す商品になっていません`);
+    if (p.answers !== 1) throw new Error(`プラン「${p.id}」は通話です。人数は1にしてください`);
+    if (p.offline) throw new Error(`プラン「${p.id}」は通話です。対面と混ぜないでください`);
+    // 何分かを、買う人の画面にも必ず書く。書いていないと、
+    // 切れたときに「まだ話せると思っていた」になる。
+    if (!p.includes.some((x) => x.includes(`${p.callMinutes}分`))) {
+      throw new Error(`プラン「${p.id}」に「${p.callMinutes}分」と書かれていません`);
+    }
+    // 幅で書かない。幅があると、何分で切ってよいのかが決まらない。
+    if (/〜\s*\d+分|\d+\s*〜\s*\d+/.test(p.tagline)) {
+      throw new Error(`プラン「${p.id}」の分数が幅になっています（${p.tagline}）`);
+    }
+  }
+  // 通話の商品が2つあること（15分と30分）。
+  // 1つだけだと、短く試してから深く、が作れない。
+  const mins = PLANS.filter((p) => p.callMinutes).map((p) => p.callMinutes);
+  for (const m of [15, 30] as const) {
+    if (!mins.includes(m)) throw new Error(`${m}分の通話プランがありません`);
   }
 
   // 「5回答でいくら」と書かない。個数を売るとアンケートに見える。

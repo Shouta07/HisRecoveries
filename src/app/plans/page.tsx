@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
+import { openPlanIds } from "@/lib/call/gate";
 import { NAME, TAGLINE } from "@/lib/voice";
 import { plan as getPlan, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { canCharge } from "@/lib/legal";
@@ -75,7 +76,7 @@ export default function PlansPage() {
         </p>
 
         <div className="mt-9">
-          <PlanCards from="plans" />
+          <PlanCards from="plans" all openIds={openPlanIds()} />
         </div>
 
         {/* 買えない状態を隠さない。買う場所に置く */}

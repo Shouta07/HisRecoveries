@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PLANS } from "@/lib/ask/plans";
+import { PLANS, topPlans } from "@/lib/ask/plans";
 import PlanCta from "@/components/brand/PlanCta";
 import Reveal from "@/components/brand/Reveal";
 import Yen from "@/components/brand/Yen";
@@ -35,10 +35,30 @@ const LADDER_WHY: Record<string, string> = {
   mockdate: "本番を再現する",
 };
 
-export default function PlanCards({ from }: { from: string }) {
+export default function PlanCards({
+  from,
+  all = false,
+  openIds,
+}: {
+  from: string;
+  all?: boolean;
+  /**
+   * いま実際に買えるIDの一覧（サーバーが call/gate.ts から作る）。
+   *
+   * 声で話す商品は、コードの available が false のままでも、
+   * 鍵が揃っていれば買える。その判定は環境を見るので、
+   * サーバー側で作ってここへ渡す（client で見ると答えが変わる）。
+   */
+  openIds?: string[];
+}) {
+  // トップは5つまで（topPlans）。/plans は全部。
+  // ここを PLANS 固定にすると、onTop の上限判定が何も守らなくなる。
+  const list = all ? PLANS : topPlans();
+  const isOpen = (id: string) => (openIds ? openIds.includes(id) : false);
+
   return (
     <ul className="flex flex-col gap-3.5">
-      {PLANS.map((p, i) => (
+      {list.map((p, i) => (
         <li key={p.id}>
           <Reveal delay={i * 60}>
             <div
@@ -50,7 +70,7 @@ export default function PlanCards({ from }: { from: string }) {
                 <span className="text-[11px] font-bold tabular-nums text-steel">
                   {LADDER_WHY[p.id]}
                 </span>
-                {p.available ? (
+                {isOpen(p.id) ? (
                   <span className="rounded-pill bg-brand-tint px-2.5 py-1 text-[10.5px] font-bold text-brand-deep">
                     いま受付中
                   </span>
@@ -85,7 +105,7 @@ export default function PlanCards({ from }: { from: string }) {
                     <Yen yen={p.yen} from={p.from} />
                   </span>
                 </p>
-                {p.available ? (
+                {isOpen(p.id) ? (
                   <PlanCta
                     plan={p.id}
                     from={from}
