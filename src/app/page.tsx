@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { topPlans, plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
+import { CASES } from "@/lib/ask/cases";
 import { STEPS as JOURNEY } from "@/lib/ask/journey";
 import { VERDICTS } from "@/lib/ask/model";
 import { canCharge } from "@/lib/legal";
@@ -119,6 +120,11 @@ function Block({
       <Wrap className="py-14 sm:py-20">{children}</Wrap>
     </section>
   );
+}
+
+/** 英字の小見出し。日本語の見出しの上に、小さく添えるだけ */
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <p className="text-[11.5px] font-bold tracking-[0.14em] text-steel">{children}</p>;
 }
 
 function H({ children }: { children: React.ReactNode }) {
@@ -439,45 +445,121 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 3. 3つの対象 ══ */}
+      {/* ══ 3. こんな相談が来ています ══ */}
       <Block tint>
-        <H>見てもらえるのは、この3つ。</H>
+        <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
+        <h2 className="mt-2 text-huge font-black text-slate">
+          こんな相談が
+          <br className="sm:hidden" />
+          来ています。
+        </h2>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
-          どこで迷っていても、出すものはこの3つのどれかです。
+          マッチングアプリ・LINE・デート前後・会話など、いろいろな場面で使われます。
         </p>
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {SUBJECTS.map((s, i) => {
-            const usable = s.id !== "call";
-            return (
-              <Reveal key={s.id} delay={i * 60}>
-                <div className="flex h-full flex-col rounded-card border border-line bg-paper p-6 shadow-card">
-                  <span className="text-[11px] font-bold tracking-[0.14em] text-steel">
-                    {s.label.toUpperCase()}
+
+        {/* 何を見てもらえるか */}
+        <ul className="mt-7 grid gap-3 rounded-card border border-line bg-paper p-5 shadow-card sm:grid-cols-3">
+          {SUBJECTS.map((sub) => (
+            <li key={sub.id} className="text-center">
+              <p className="text-[14px] font-black text-slate">{sub.label}</p>
+              <p className="mt-1 text-[12px] leading-[1.7] text-steel">
+                {sub.id === "photo"
+                  ? "マッチの機会を増やす"
+                  : sub.id === "message"
+                    ? "返信をもらいやすくする"
+                    : "本番の前に練習する"}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        {/* 相談の種類。特定の誰かの体験談ではない */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {CASES.map((c, i) => (
+            <Reveal key={c.id} delay={i * 50}>
+              <div className="flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper shadow-card">
+                <div className="relative">
+                  <Slot name={c.img} rounded="" className="aspect-[226/162] w-full" />
+                  <span className="absolute bottom-2.5 left-2.5 rounded-pill bg-slate/85 px-3 py-1.5 text-[11.5px] font-bold text-paper">
+                    {c.tag}
                   </span>
-                  <p className="mt-2.5 text-[19px] font-black leading-[1.5] text-slate">{s.lead}</p>
-                  <p className="mt-3.5 text-[13.5px] leading-[1.85] text-steel">{s.body}</p>
-                  <div className="mt-6 flex-1" />
-                  {usable ? (
+                </div>
+                <div className="flex flex-1 flex-col p-5">
+                  <p className="text-[14.5px] font-black leading-[1.6] text-slate">
+                    「{c.worry}」
+                  </p>
+                  <p className="mt-2.5 text-[12.5px] leading-[1.8] text-steel">{c.what}</p>
+                  <div className="mt-4 flex-1" />
+                  {c.open ? (
                     <PlanCta
                       plan={DEFAULT_PLAN}
-                      from={`subject_${s.id}`}
-                      category={s.id === "photo" ? "photo" : "message"}
-                      className="min-h-[50px] rounded-pill bg-brand px-5 text-[14.5px] !text-paper shadow-card"
+                      from={`case_${c.id}`}
+                      category={c.category}
+                      className="!justify-start min-h-[40px] p-0 text-[13px] !text-brand"
                     >
-                      {s.label}を見てもらう <span aria-hidden className="ml-1.5">→</span>
+                      この相談をする <span aria-hidden className="ml-1.5">→</span>
                     </PlanCta>
                   ) : (
                     <Link
                       href="/talk"
-                      className="inline-flex min-h-[50px] items-center justify-center rounded-pill border border-line bg-paper px-5 text-[14px] font-bold text-slate"
+                      className="inline-flex min-h-[40px] items-center text-[13px] font-bold text-steel"
                     >
-                      受付前・順番待ちに入る
+                      受付前・順番待ちに入る <span aria-hidden className="ml-1.5">→</span>
                     </Link>
                   )}
                 </div>
-              </Reveal>
-            );
-          })}
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 写真はイメージです。特定の利用者の体験談ではありません。
+        </p>
+      </Block>
+
+      {/* ══ 3.5 実在の女性が回答します ══ */}
+      <Block>
+        <Eyebrow>WOMEN&apos;S EXAMPLE</Eyebrow>
+        <h2 className="mt-2 text-huge font-black text-slate">
+          実在の女性が
+          <br className="sm:hidden" />
+          回答してくれます。
+        </h2>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+          20代〜30代の、さまざまな恋愛経験を持つ実在の女性が、率直な意見をお伝えします。
+        </p>
+
+        <ul className="mt-7 grid gap-3 rounded-card border border-rose bg-rose-tint p-5 sm:grid-cols-3">
+          {[
+            { t: "20〜30代", d: "マッチングアプリ経験あり" },
+            { t: "さまざまな恋愛観", d: "正直な意見" },
+            { t: "本人確認済み", d: "安心して相談できる" },
+          ].map((x) => (
+            <li key={x.t} className="text-center">
+              <p className="text-[14px] font-black text-slate">{x.t}</p>
+              <p className="mt-1 text-[12px] leading-[1.7] text-steel">{x.d}</p>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6">
+          <WhoReads />
+        </div>
+
+        <div className="mt-6 flex flex-col items-start gap-4 rounded-card border border-line bg-paper p-6 shadow-card sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[15px] font-bold leading-[1.75] text-slate">
+            あなたの悩みに合わせて
+            <br />
+            実在の女性から回答が届きます。
+          </p>
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="women_cta"
+            className="min-h-[52px] shrink-0 rounded-pill bg-brand px-7 text-[15px] !text-paper shadow-card"
+          >
+            今の悩みを相談する <span aria-hidden className="ml-2">→</span>
+          </PlanCta>
         </div>
       </Block>
 
