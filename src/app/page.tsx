@@ -117,7 +117,7 @@ function Block({
 }) {
   return (
     <section id={id} className={`scroll-mt-20 ${tint ? "bg-mist" : "bg-paper"}`}>
-      <Wrap className="py-14 sm:py-20">{children}</Wrap>
+      <Wrap className="py-12 sm:py-16 lg:py-20">{children}</Wrap>
     </section>
   );
 }
@@ -232,7 +232,19 @@ export default async function HomePage() {
           <span className="absolute inset-y-0 left-0 w-[38%] bg-gradient-to-r from-sky to-transparent" />
         </div>
 
-        <Wrap className="relative pb-12 pt-11 sm:pb-16 sm:pt-14">
+        {/* 狭い画面では、写真を最初に出す。
+            文字の下に置くと、最初の画面に絵が1枚も無い。
+            この製品は「いま手が止まっている人」が開くので、
+            自分を見つけられる絵が最初に要る。
+            顔の位置で切るため、見せる位置をずらしている。 */}
+        <Slot
+          name="hero"
+          rounded=""
+          position="center 22%"
+          className="h-[210px] w-full sm:h-[260px] lg:hidden"
+        />
+
+        <Wrap className="relative pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pt-14">
           <div className="lg:max-w-[34em]">
             <p className="inline-flex items-center gap-2 rounded-pill border border-brand/40 bg-paper px-4 py-2 text-[12.5px] font-bold text-brand shadow-card">
               <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -354,12 +366,6 @@ export default async function HomePage() {
           </div>
         </Wrap>
 
-        {/* 狭い画面では、文字の裏ではなく、独立した帯として見せる */}
-        <Slot
-          name="hero"
-          rounded=""
-          className="mt-2 h-[340px] w-full sm:h-[420px] lg:hidden"
-        />
       </section>
 
       {/* ══ 2. 今どこで悩んでいますか ══ */}
@@ -394,7 +400,7 @@ export default async function HomePage() {
                       <span className="mt-1.5 block text-[13.5px] font-normal leading-[1.8] text-steel">
                         {j.pain}
                       </span>
-                      <span className="mt-2.5 flex flex-wrap gap-1.5">
+                      <span className="mt-2.5 hidden flex-wrap gap-1.5 sm:flex">
                         {j.items.map((t) => (
                           <span
                             key={t}
@@ -549,7 +555,9 @@ export default async function HomePage() {
             名前も職業も居住地も付けない。付けた時点で
             「この人が読みます」になり、登録が0人だと事実でなくなる。
             付けてあるのは、実際に選べる条件だけ。 */}
-        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {/* スマホで2列に積むと3行になり、それだけで1画面を超える。
+            横に流して1行に収める。 */}
+        <ul className="-mx-5 mt-6 flex snap-x gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
           {(
             [
               { img: "w1", chips: ["マッチングアプリ経験あり", "カジュアルな恋愛経験"] },
@@ -560,7 +568,7 @@ export default async function HomePage() {
             ] as const
           ).map((w, i) => (
             <Reveal key={w.img} delay={i * 45}>
-              <li className="flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper shadow-card">
+              <li className="flex h-full w-[150px] shrink-0 snap-start flex-col overflow-hidden rounded-card border border-line bg-paper shadow-card sm:w-auto">
                 <Slot name={w.img} rounded="" className="aspect-square w-full" />
                 <div className="flex flex-1 flex-col gap-1.5 p-3.5">
                   {w.chips.map((c) => (
@@ -587,7 +595,16 @@ export default async function HomePage() {
         </p>
 
         <div className="mt-6">
-          <WhoReads />
+          <WhoReads compact />
+        </div>
+
+        <p className="mt-6 max-w-[34em] text-[14.5px] leading-[1.95] text-steel">
+          恋愛の専門家ではありません。正解を教えてくれる人でもありません。
+          一人の女性として、実際にどう思ったかを書いてくれる人です。
+        </p>
+
+        <div className="mt-5">
+          <OnlineCount />
         </div>
 
         <div className="mt-6 flex flex-col items-start gap-4 rounded-card border border-line bg-paper p-6 shadow-card sm:flex-row sm:items-center sm:justify-between">
@@ -671,27 +688,32 @@ export default async function HomePage() {
         </div>
       </Block>
 
-      {/* ══ 5. 反応のまとめ方 ══ */}
-      <Block tint>
-        <H>点数はつきません。</H>
-        <div className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { t: "何人がどう答えたか", d: "このままでOK / 少し気になる / 変えた方がいい。実際の人数だけを出します。" },
-            { t: "みんなが気にしたところ", d: "何人も同じところに触れていたら、そこが直したほうがいいところです。" },
-            { t: "意見が分かれたところ", d: "割れることもあります。人によって受け取り方が違う、ということです。" },
-            { t: "書かれた言葉そのまま", d: "まとめだけで終わらせません。書いてもらった文を、そのまま出します。" },
-          ].map((x) => (
-            <div key={x.t} className="rounded-card border border-line bg-paper p-5 shadow-card">
-              <p className="text-[14.5px] font-black leading-[1.5]">{x.t}</p>
-              <p className="mt-2.5 text-[12.5px] leading-[1.8] text-steel">{x.d}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-7 max-w-[34em] text-[14px] leading-[1.9] text-steel">
-          「失敗する確率」みたいな数字は出しません。数えようがないからです。
-          出すのは「5人中3人」だけ。その5人がそう感じた、という話であって、女性みんなの答えではありません。
-        </p>
-      </Block>
+      {/* 返ってくるもの。節を分けず、Before/After の下に短く置く */}
+      <section className="bg-paper">
+        <Wrap className="pb-14 sm:pb-16">
+          <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["何人がどう答えたか", "実際の人数だけ"],
+              ["みんなが気にしたところ", "何人も触れていたら、そこ"],
+              ["意見が分かれたところ", "人によって受け取り方が違う"],
+              ["書かれた言葉そのまま", "まとめだけで終わらせない"],
+            ].map(([t, d]) => (
+              <li
+                key={t}
+                className="rounded-card border border-line bg-paper px-5 py-4 shadow-card"
+              >
+                <p className="text-[13.5px] font-black leading-[1.5]">{t}</p>
+                <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">{d}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 max-w-[34em] text-[13px] leading-[1.9] text-steel">
+            「失敗する確率」みたいな数字は出しません。数えようがないからです。
+            出すのは「5人中3人」だけ。その5人がそう感じた、という話であって、
+            女性みんなの答えではありません。
+          </p>
+        </Wrap>
+      </section>
 
       {/* ══ 6. なぜAIではないか ══ */}
       <Block>
@@ -753,19 +775,26 @@ export default async function HomePage() {
       </Block>
 
       {/* ══ 7. 使い方 ══ */}
+      {/* カードを4枚積むと、スマホで4画面分になる。
+          1行ずつの帯にして、1画面に収める。 */}
       <Block tint id="how">
         <H>やることは、4つ。</H>
-        <ol className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s) => (
-            <li key={s.n} className="rounded-card border border-line bg-paper p-5 shadow-card">
+        <ol className="mt-7 overflow-hidden rounded-card border border-line bg-paper shadow-card">
+          {STEPS.map((st, i) => (
+            <li
+              key={st.n}
+              className={`flex items-start gap-4 p-4 sm:p-5 ${i > 0 ? "border-t border-line" : ""}`}
+            >
               <span
                 aria-hidden
-                className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-brand-tint text-[13px] font-black tabular-nums text-brand-deep"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-tint text-[11.5px] font-black tabular-nums text-brand-deep"
               >
-                {s.n}
+                {i + 1}
               </span>
-              <p className="mt-3 text-[15.5px] font-black leading-[1.5]">{s.t}</p>
-              <p className="mt-2 text-[12.5px] leading-[1.8] text-steel">{s.d}</p>
+              <span className="min-w-0">
+                <span className="block text-[14.5px] font-black leading-[1.5]">{st.t}</span>
+                <span className="mt-1 block text-[12.5px] leading-[1.75] text-steel">{st.d}</span>
+              </span>
             </li>
           ))}
         </ol>
@@ -856,42 +885,6 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 9. 答える女性 ══ */}
-      <Block tint>
-        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div>
-            <H>答えるのは、恋愛の専門家ではありません。</H>
-            <p className="mt-5 max-w-[32em] text-[15px] leading-[1.95] text-steel">
-              正解を教えてくれる人でもありません。一人の女性として、
-              実際にどう思ったかを書いてくれる人です。
-            </p>
-            <p className="mt-4 max-w-[32em] text-[15px] leading-[1.95] text-steel">
-              ただし、登録すれば誰でも読めるわけではありません。
-              年齢と立場を確認して、通った人にだけお願いしています。
-              年代・恋愛観・いまの立場を選んで、気になる相手に近い人に見てもらえます。
-            </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/answerers"
-                className="inline-flex min-h-[50px] items-center justify-center rounded-pill border border-line bg-paper px-6 text-[14px] font-bold text-slate shadow-card transition-shadow hover:shadow-card-hover"
-              >
-                誰が読むのか
-              </Link>
-              <Link
-                href="/join"
-                className="inline-flex min-h-[50px] items-center justify-center rounded-pill bg-slate px-6 text-[14px] font-bold text-paper transition-opacity hover:opacity-90"
-              >
-                答えてくれる女性へ
-              </Link>
-            </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            <WhoReads />
-            <OnlineCount />
-          </div>
-        </div>
-      </Block>
-
       {/* ══ 10. 安心・安全 ══ */}
       <Block>
         <H>安心・安全のために。</H>
@@ -906,7 +899,7 @@ export default async function HomePage() {
           ].map((t) => (
             <li
               key={t}
-              className="flex items-start gap-3 rounded-soft bg-mist px-4 py-3.5 text-[13.5px] leading-[1.8] text-steel"
+              className="flex items-start gap-2.5 rounded-soft bg-mist px-3.5 py-3 text-[13px] leading-[1.75] text-steel"
             >
               <span aria-hidden className="mt-[3px] text-[13px] font-black text-ok-text">
                 ✓
@@ -924,16 +917,26 @@ export default async function HomePage() {
       </Block>
 
       {/* ══ 11. よくある質問 ══ */}
+      {/* 6つ全部開いていると、それだけで3画面分になる。
+          見出しだけ並べて、読みたいものだけ開く。 */}
       <Block tint id="faq">
         <H>よくある質問。</H>
-        <dl className="mt-8 grid gap-3 lg:grid-cols-2">
-          {FAQ.map((f) => (
-            <div key={f.q} className="rounded-card border border-line bg-paper p-5 shadow-card">
-              <dt className="text-[15px] font-black leading-[1.6]">{f.q}</dt>
-              <dd className="mt-2.5 text-[13.5px] leading-[1.85] text-steel">{f.a}</dd>
-            </div>
+        <div className="mt-7 overflow-hidden rounded-card border border-line bg-paper shadow-card">
+          {FAQ.map((f, i) => (
+            <details key={f.q} className={`group ${i > 0 ? "border-t border-line" : ""}`}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 text-[14.5px] font-bold leading-[1.6] text-slate sm:p-5">
+                {f.q}
+                <span
+                  aria-hidden
+                  className="shrink-0 text-[18px] leading-none text-steel transition-transform group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="px-4 pb-5 text-[13.5px] leading-[1.9] text-steel sm:px-5">{f.a}</p>
+            </details>
           ))}
-        </dl>
+        </div>
       </Block>
 
       {/* ══ 12. 最後 ══ */}

@@ -15,11 +15,17 @@ export default function Slot({
   name,
   className = "",
   rounded = "rounded-card",
+  /**
+   * 写真のどこを見せるか。
+   * 横長に切り出すと、既定の中央では顔が切れることがある。
+   */
+  position = "center",
   children,
 }: {
   name: ImageKey;
   className?: string;
   rounded?: string;
+  position?: string;
   children?: React.ReactNode;
 }) {
   const img = IMAGES[name];
@@ -30,7 +36,7 @@ export default function Slot({
       style={{
         backgroundImage: `url(${img.src})`,
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: position,
       }}
       role={img.alt ? "img" : undefined}
       aria-label={img.alt || undefined}
