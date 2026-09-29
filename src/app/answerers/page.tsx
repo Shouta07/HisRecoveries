@@ -8,6 +8,11 @@ import { HumanCard, type Human } from "@/components/brand/market";
 import Says from "@/components/brand/Says";
 import WhoReads from "@/components/brand/WhoReads";
 import { EMPTY } from "@/lib/tashikame";
+import { plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
+
+// 見出しの人数は、実際に売っている人数から引く。
+// 手で「5人」と書くと、商品を組み直した日に古い数字が残る。
+const entryAnswers = getPlan(ENTRY_PLAN).answers;
 
 // 答えてくれる女性の一覧。マーケットプレイスの供給側。
 //
@@ -90,7 +95,7 @@ export default async function AnswerersPage() {
             href="/ask"
             className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
           >
-            女性5人に相談する
+            女性{entryAnswers}人に相談する
           </Link>
         </div>
       </header>

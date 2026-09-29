@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
+import { PLANS, plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
 import TalkWaitlist from "@/components/ask/TalkWaitlist";
 import PlanCta from "@/components/brand/PlanCta";
 import Yen from "@/components/brand/Yen";
@@ -12,6 +12,11 @@ import Yen from "@/components/brand/Yen";
 // ── 買えないものを、買えるように見せない ──────────
 // ボタンは「順番待ちに入る」。金額は目安として出す。
 // 押した人が課金画面に行かないことが、押す前に分かるようにする。
+//
+// ── 受付前のものを、1つだけ出さない ──────────────
+// 以前はここに「会話の練習」だけを出していた。
+// いま受付前なのは4つあって、どれを待てばいいのかが分からなくなる。
+// 待てるもの全部を、値段の目安と一緒に並べる。
 //
 // ── 使えるものを、先に出す ────────────────────────
 // 「うまく書けない」の解き方は、いまも用意してある。
@@ -27,7 +32,9 @@ export const metadata: Metadata = {
 };
 
 export default function TalkPage() {
-  const talk = getPlan("mockchat");
+  const entryAnswers = getPlan(ENTRY_PLAN).answers;
+  // 受付前のもの。plans.ts から引くので、開いた日にここから消える。
+  const waiting = PLANS.filter((p) => !p.available);
 
   return (
     <div data-brand className="min-h-screen bg-paper text-slate">
@@ -41,7 +48,7 @@ export default function TalkPage() {
             from="talk_page"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            女性5人に相談する
+            女性{entryAnswers}人に相談する
           </PlanCta>
         </div>
       </header>
@@ -83,13 +90,22 @@ export default function TalkPage() {
 
         <div className="mt-10 rounded-card border border-line bg-paper p-6 shadow-card">
           <p className="text-[12.5px] font-bold text-steel">開いたときの目安</p>
-          <p className="mt-2 text-[30px] font-black tabular-nums leading-none">
-            <Yen yen={talk.yen} />
-            <span className="ml-1 text-[16px] text-steel">〜 / 20分〜</span>
-          </p>
+
+          <ul className="mt-4 flex flex-col divide-y divide-line">
+            {waiting.map((w) => (
+              <li key={w.id} className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 py-3 first:pt-0">
+                <span className="min-w-0 text-[14.5px] font-bold">{w.name}</span>
+                <span className="shrink-0 text-[19px] font-black tabular-nums leading-none">
+                  <Yen yen={w.yen} />
+                  {w.from && <span className="ml-1 text-[13px] text-steel">〜</span>}
+                </span>
+                <span className="w-full text-[12.5px] leading-[1.7] text-steel">{w.tagline}</span>
+              </li>
+            ))}
+          </ul>
 
           <p className="mt-6 text-[14px] leading-[1.9] text-steel">
-            まだ受け付けていません。相手も実在の女性なので、時間の決め方と、
+            どれもまだ受け付けていません。相手も実在の女性なので、時間の決め方と、
             その場を見る体制が用意できてから開きます。
             先に売って、あとから体制を整えることはしません。
           </p>

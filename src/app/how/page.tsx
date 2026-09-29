@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { PLANS, FLOW, ENTRY_PLAN } from "@/lib/ask/plans";
+import { PLANS, FLOW, ENTRY_PLAN, plan as getPlan } from "@/lib/ask/plans";
+
+// 見出しの人数は、実際に売っている人数から引く。
+// 手で「5人」と書くと、商品を組み直した日に古い数字が残る。
+const entryAnswers = getPlan(ENTRY_PLAN).answers;
 import Tashikame from "@/components/brand/Tashikame";
 import PlanCta from "@/components/brand/PlanCta";
 import Yen from "@/components/brand/Yen";
@@ -61,7 +65,7 @@ export default function HowPage() {
             from="how"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            女性5人に相談する
+            女性{entryAnswers}人に相談する
           </PlanCta>
         </div>
       </header>
@@ -233,7 +237,7 @@ export default function HowPage() {
             from="how_bottom"
             className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
           >
-            女性5人に相談する
+            女性{entryAnswers}人に相談する
           </PlanCta>
         </div>
       </div>
