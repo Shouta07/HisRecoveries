@@ -22,8 +22,13 @@
 
 export type Mood = "normal" | "thinking" | "going" | "report" | "idle";
 
-/** 全身と、頭だけ。切り替える大きさ */
-const HEAD_BELOW = 40;
+/**
+ * 全身と、頭だけ。切り替える大きさ。
+ *
+ * 全身の絵は、64px を切ると何の生き物か分からなくなる。
+ * ヘッダーは 46px なので、そこは頭と虫めがねだけを出す。
+ */
+const HEAD_BELOW = 64;
 
 export default function Tashikame({
   size = 56,

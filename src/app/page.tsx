@@ -15,6 +15,7 @@ import { supply, shortMessage } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
 import Tashikame from "@/components/brand/Tashikame";
+import TashikameGuide from "@/components/brand/TashikameGuide";
 import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
@@ -149,14 +150,19 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function H({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <h2
-      className={`flex items-center gap-2 text-[24px] font-black leading-[1.35] tracking-[-0.02em] sm:text-[28px] ${
-        dark ? "text-paper" : "text-slate"
-      }`}
-    >
-      <span>{children}</span>
-      <Flourish className={dark ? "text-brand-tint" : "text-brand"} />
-    </h2>
+    // 全部スクロールで読むページなので、節の頭で1回だけ動かす。
+    // 派手にしない。上に10px、それだけ（Reveal が持っている）。
+    // 動きを止めている人には出したまま何もしない。
+    <Reveal>
+      <h2
+        className={`flex items-center gap-2 text-[24px] font-black leading-[1.35] tracking-[-0.02em] sm:text-[28px] ${
+          dark ? "text-paper" : "text-slate"
+        }`}
+      >
+        <span>{children}</span>
+        <Flourish className={dark ? "text-brand-tint" : "text-brand"} />
+      </h2>
+    </Reveal>
   );
 }
 
@@ -208,7 +214,7 @@ export default async function HomePage() {
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <Wrap className="flex items-center justify-between gap-4 py-3">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={38} />
+            <Tashikame size={46} />
             <span className="min-w-0 truncate text-[19px] font-black tracking-[0.02em] text-slate">
               {NAME}
             </span>
@@ -253,11 +259,14 @@ export default async function HomePage() {
         <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
 
+            {/* 言いたいことは1つ。
+                写真の上の「このLINE、今送っていい？」は、その人の頭の中。
+                こちらはそれへの答え。大きさで主従をはっきりさせる。 */}
             <h1 className="text-mega font-black leading-[1.15] text-slate">
-              送る前に、
+              迷ったら、
               <br />
               <span className="relative inline-block">
-                実在の女性に聞ける。
+                女性に聞けばいい。
                 <span
                   aria-hidden
                   className="absolute -bottom-0.5 left-0 -z-10 h-[0.42em] w-full rounded-[2px] bg-brand/25"
@@ -291,7 +300,7 @@ export default async function HomePage() {
             </ul>
 
             {/* 押す場所も、スクロールさせない */}
-            <div className="mt-5 max-w-[24em]">
+            <div data-hero-cta className="mt-5 max-w-[24em]">
               <PlanCta
                 plan={DEFAULT_PLAN}
                 from="hero"
@@ -400,7 +409,8 @@ export default async function HomePage() {
             人を合成したり、表情を作ったりはしていない。 */}
         <div className="mt-8 grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1fr] lg:gap-5">
           {/* ── 相談前 ── */}
-          <div className="overflow-hidden rounded-card border border-line bg-mist shadow-card">
+          <Reveal className="h-full">
+          <div className="h-full overflow-hidden rounded-card border border-line bg-mist shadow-card">
             <div className="relative">
               <Slot name="hero" rounded="" position="center 22%" className="h-[190px] w-full" />
               <span className="absolute left-4 top-4 rounded-soft bg-slate/85 px-3.5 py-1.5 text-[13px] font-black text-paper">
@@ -445,6 +455,8 @@ export default async function HomePage() {
             </div>
           </div>
 
+          </Reveal>
+
           <p
             aria-hidden
             className="justify-self-center self-center text-[26px] font-black text-brand lg:text-[30px]"
@@ -454,7 +466,8 @@ export default async function HomePage() {
           </p>
 
           {/* ── 相談後 ── */}
-          <div className="overflow-hidden rounded-card border border-brand bg-brand-tint shadow-card">
+          <Reveal className="h-full" delay={140}>
+          <div className="h-full overflow-hidden rounded-card border border-brand bg-brand-tint shadow-card">
             <div className="relative">
               <Slot name="heroTall" rounded="" position="center 24%" className="h-[190px] w-full" />
               <span className="absolute left-4 top-4 rounded-soft bg-brand px-3.5 py-1.5 text-[13px] font-black text-paper">
@@ -501,6 +514,7 @@ export default async function HomePage() {
               </ul>
             </div>
           </div>
+          </Reveal>
         </div>
 
         {/* 何をもとに直したのか。数は demo.ts の中で数え直している */}
@@ -1168,6 +1182,9 @@ export default async function HomePage() {
           </div>
         </Wrap>
       </section>
+
+      {/* スクロールを先導するタシカメ。進み具合と、押す場所を兼ねる */}
+      <TashikameGuide />
 
       {/* ══ 13. 両面 ══ */}
       {/* この製品は、買う人だけでは成り立たない。

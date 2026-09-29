@@ -386,6 +386,21 @@ a {
 }
 
 /* Soft float — gentle infinite vertical breathing */
+/* 先導するタシカメの揺れ。歩いているように、ゆっくり上下する */
+@keyframes tashikame-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(2deg);
+  }
+}
+
+.tashikame-bob {
+  animation: tashikame-bob 2.8s ease-in-out infinite;
+}
+
 @keyframes soft-float {
   0%,
   100% {
@@ -442,7 +457,8 @@ html {
   }
   .marquee-track,
   .draw-in,
-  .soft-float {
+  .soft-float,
+  .tashikame-bob {
     animation: none !important;
     transform: none !important;
   }
