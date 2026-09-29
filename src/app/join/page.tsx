@@ -70,6 +70,31 @@ export default function JoinPage() {
               専門家である必要はありません。
               あなたの経験、感覚、立場そのものに価値があります。
             </p>
+
+            {/* 3つとも、下まで読まないと分からない場所に置いてあった。
+                いちばん最初に気になるのはここなので、上に出す。
+                金額は economics.ts の段（TIERS）から引く。手で書かない */}
+            <ul className="mt-7 flex flex-col gap-2.5 sm:max-w-[26em]">
+              {[
+                [
+                  "1件の金額",
+                  `¥${TIERS[0].quickYen.toLocaleString()} 〜 ¥${TIERS[TIERS.length - 1].quickYen.toLocaleString()}`,
+                  "役に立ったと言われた回答が増えると上がります",
+                ],
+                ["資格", "要りません", "普通に生活している人の感覚に価値があります"],
+                ["顔", "出さなくて構いません", "名前も連絡先も、相談した人には渡りません"],
+              ].map(([k, v, note]) => (
+                <li
+                  key={k}
+                  className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-card border border-line bg-paper px-4 py-3 shadow-card"
+                >
+                  <span className="text-[11.5px] font-bold text-steel">{k}</span>
+                  <span className="text-[16px] font-black tabular-nums text-slate">{v}</span>
+                  <span className="w-full text-[12px] leading-[1.7] text-steel">{note}</span>
+                </li>
+              ))}
+            </ul>
+
             <div className="mt-9">
               <Link
                 href="#form"
