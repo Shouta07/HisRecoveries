@@ -66,8 +66,8 @@ export default function Header() {
             href="/ask"
             className="inline-flex shrink-0 whitespace-nowrap rounded-full bg-[#2563EB] px-3.5 py-2 text-[12.5px] font-bold text-white transition-opacity hover:opacity-90 sm:px-4 sm:text-[13.5px]"
           >
-            <span className="sm:hidden">相談する</span>
-            <span className="hidden sm:inline">女性に相談する</span>
+            <span className="sm:hidden">確かめる</span>
+            <span className="hidden sm:inline">女性に確かめる</span>
           </Link>
           <SearchButton />
           {/* フッターを外したので、ほかの面への行き先はここに畳んである。

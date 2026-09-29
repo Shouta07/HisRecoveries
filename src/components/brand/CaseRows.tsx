@@ -7,6 +7,11 @@ import type { ImageKey } from "@/lib/images";
 
 // 「こういう時に使う」を、場面ごとに1行ずつ。
 //
+// ── 形は、分岐点 → 出すもの → 反応 → 決めたこと ────
+// 迷っている選択を頭に置き、材料を見せ、最後に本人が決める。
+// この順番が崩れると、ただの添削の見本になる。
+// 最後の行をこちらの指図にしない。決めるのは読んでいる人。
+//
 // ── 送るものと、返ってくるものを並べる ────────────
 // 説明を読ませるより、送る文面と返ってきた言葉を横に置くほうが早い。
 // 左が自分の出すもの、右が返ってくるもの。それだけの絵にする。
@@ -29,6 +34,8 @@ const FACES: ImageKey[][] = [
   ["w1", "w2"],
   ["w3", "w4"],
   ["w5", "w1"],
+  ["w2", "w3"],
+  ["w4", "w5"],
 ];
 
 const TONE: Record<string, string> = {
@@ -45,8 +52,10 @@ export default function CaseRows() {
           key={c.id}
           className="rounded-card border border-line bg-paper p-3.5 shadow-card sm:p-5"
         >
-          <h3 className="text-[17px] font-black leading-[1.5] text-slate sm:text-[19px]">
-            {c.scene}
+          {/* 迷っている選択を、いちばん上に。場面名だけだと品書きになる */}
+          <p className="text-[11.5px] font-bold text-steel">{c.scene}</p>
+          <h3 className="mt-1 text-[17px] font-black leading-[1.5] text-slate sm:text-[19px]">
+            {c.decision}
           </h3>
           {/* 狭い画面では出さない。見出しとほぼ同じことを言っていて、
               1行ぶんが3回積み上がると、それだけで1画面近くになる。 */}
@@ -91,13 +100,20 @@ export default function CaseRows() {
             </ul>
           </div>
 
+          {/* 材料を見たあと、決めるのは本人。
+              ここをこちらの結論にすると、判断を預ける商売になる */}
+          <p className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-line pt-3 text-[12.5px] leading-[1.7]">
+            <span className="font-bold text-steel">見て、決めたこと</span>
+            <span className="min-w-0 font-bold text-slate">{c.decided}</span>
+          </p>
+
           <PlanCta
             plan={DEFAULT_PLAN}
             from={`case_${c.id}`}
             category={c.category}
-            className="!justify-start mt-2.5 min-h-[40px] p-0 text-[13.5px] !text-brand"
+            className="!justify-start mt-2 min-h-[40px] p-0 text-[13.5px] !text-brand"
           >
-            この相談をする <span aria-hidden className="ml-1.5">&rarr;</span>
+            この分岐点を確かめる <span aria-hidden className="ml-1.5">&rarr;</span>
           </PlanCta>
         </article>
       ))}
