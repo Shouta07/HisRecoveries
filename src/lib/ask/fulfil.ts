@@ -70,6 +70,41 @@ export async function fulfil(pay: Payment, intentId: string | null): Promise<Ful
   // 1対1で話す商品は、人数を集めるものではない。依頼は作らない。
   const isTalk = isPlanId(c.product_type) && Boolean(plan(c.product_type).talk);
 
+  // ── まとめ売り（5回パス）を買ったとき ──
+  //
+  // ここが抜けていると、払っても1回分も付かない。
+  // 決済は通るのに何も持っていない、がいちばん悪い。
+  //
+  // 作るのは払いが確認できたあとだけ。
+  // 先に作ると、決済をやめた人にも回数が残る。
+  if (isPlanId(c.product_type) && plan(c.product_type).uses) {
+    const uses = plan(c.product_type).uses!;
+    // 同じ相談で二度作らない（Webhook は再送される）。
+    const already = await dbSelect<{ id: string }>(
+      `pass_uses?consultation_id=eq.${c.id}&select=id&limit=1`,
+    );
+    if (already.length === 0) {
+      const passToken = makeConsultToken();
+      const made = await dbInsertReturning<{ id: string }>("ask_passes", {
+        token: passToken,
+        plan_id: c.product_type,
+        uses_total: uses,
+        price: priceOf(c.product_type),
+        stripe_payment_id: intentId,
+        paid_at: new Date().toISOString(),
+      });
+      // 買ったその相談に、1回目を使う。
+      // ここを飛ばすと、5回買って5回残ったまま1件目が配られる。
+      const passId = made.rows[0]?.id;
+      if (passId) {
+        await dbInsertReturning("pass_uses", {
+          pass_id: passId,
+          consultation_id: c.id,
+        } as unknown as Record<string, unknown>);
+      }
+    }
+  }
+
   // 声で話す商品は、ここで通話の1件を作る。
   // 払う前には作らない（作れてしまうと、ただで部屋が取れる）。
   // 日時と担当は、このあと運営が決める。

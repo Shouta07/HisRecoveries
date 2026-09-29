@@ -9,9 +9,14 @@ import { Choice, Action, Note, FieldLabel as Label, inputClass } from "@/compone
 
 // 回答の入力。
 //
-// ── 選ぶ → 理由を書く、の2つだけ ──────────────────
+// ── 3〜5分で終わること ────────────────────────────
+// 選ぶ → 理由 → どう変わると自然か。それだけ。
 // ここに項目を足すほど、回答は集まらなくなる。
 // 足したくなったら、代わりに何を落とすかを考える場所にする。
+//
+// 長い文章を書いてもらう仕事にはしない。
+// 長文を書けるかどうかで人を選ぶと、
+// いちばん来てほしい「ふつうに感じたことを言える人」が来なくなる。
 //
 // ── 理由を必須にする ──────────────────────────────
 // 選択肢だけだと、相談者に届くのは数字だけになる。
@@ -40,6 +45,9 @@ export default function RespondForm({
   const [pick, setPick] = useState<Pick | null>(null);
   const [second, setSecond] = useState<Second | null>(null);
   const [comment, setComment] = useState("");
+  // どう変われば自然か。任意。
+  // 書かれていれば、相談した人に「直し方」として届く。
+  const [fix, setFix] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   // 送信の返事に入っていれば出す。入っていなければ額は出さない
@@ -59,7 +67,7 @@ export default function RespondForm({
       const res = await fetch(`/api/respond/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ verdict, pick, second, comment: comment.trim() }),
+        body: JSON.stringify({ verdict, pick, second, comment: comment.trim(), fix: fix.trim() }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -162,6 +170,22 @@ export default function RespondForm({
         />
         <p className="mt-2 text-right text-[12px] tabular-nums text-steel">
           {comment.trim().length} / {COMMENT_MIN}文字以上
+        </p>
+      </div>
+
+      {/* 直し方。思いつけば書く。思いつかなければ空でよい。
+          ここを AI に書かせない。そう感じた本人が書いたものに価値がある */}
+      <div className="mt-9">
+        <Label>どう変われば自然ですか</Label>
+        <textarea
+          rows={3}
+          value={fix}
+          onChange={(e) => setFix(e.target.value.slice(0, COMMENT_MAX))}
+          placeholder="思いつけば、一言で。思いつかなければ空のままで構いません。"
+          className={`mt-3 ${inputClass}`}
+        />
+        <p className="mt-2 text-[12px] leading-[1.7] text-steel">
+          任意です。整えなくて構いません。
         </p>
       </div>
 

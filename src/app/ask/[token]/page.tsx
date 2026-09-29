@@ -19,6 +19,7 @@ import CopyLink from "@/components/ask/CopyLink";
 import HelpfulButton from "@/components/ask/HelpfulButton";
 import PayButton from "@/components/ask/PayButton";
 import PaidPing from "@/components/ask/PaidPing";
+import RememberPass from "@/components/ask/RememberPass";
 import WhyAsked from "@/components/ask/WhyAsked";
 import LiveAnswers from "@/components/ask/LiveAnswers";
 import NextStep from "@/components/ask/NextStep";
@@ -168,6 +169,24 @@ export default async function ResultPage({
     }
   }
 
+  // この相談に使ったパス。あれば、その鍵を端末に覚えさせる。
+  // ここで覚えておかないと、次の相談でまた決済の画面が出る。
+  let passToken: string | null = null;
+  let passLeft: number | null = null;
+  if (dbAdminEnabled && c.id) {
+    const used = await dbSelect<{ pass_id: string }>(
+      `pass_uses?consultation_id=eq.${encodeURIComponent(c.id)}&select=pass_id&limit=1`,
+    );
+    const pid = used[0]?.pass_id;
+    if (pid) {
+      const bal = await dbSelect<{ token: string; remaining: number }>(
+        `pass_balance?id=eq.${encodeURIComponent(pid)}&select=token,remaining&limit=1`,
+      );
+      passToken = bal[0]?.token ?? null;
+      passLeft = bal[0] ? Math.max(0, Number(bal[0].remaining)) : null;
+    }
+  }
+
   const planName = isPlanId(c.product_type) ? getPlan(c.product_type).name : null;
   const whoChips = [
     AGE_LABEL[c.panel_age] ?? "指定なし",
@@ -227,9 +246,10 @@ export default async function ResultPage({
     pick: Answer["pick"];
     second: Answer["second"];
     comment: string;
+    fix: string | null;
     helpful: boolean | null;
   }>(
-    `responses?consultation_id=eq.${c.id}&select=id,display_age_band,verdict,pick,second,comment,helpful&order=created_at.asc`,
+    `responses?consultation_id=eq.${c.id}&select=id,display_age_band,verdict,pick,second,comment,fix,helpful&order=created_at.asc`,
   );
 
   const list: Answer[] = answers.map((a) => ({
@@ -239,6 +259,7 @@ export default async function ResultPage({
     pick: a.pick,
     second: a.second,
     comment: a.comment,
+    fix: a.fix,
     attrs: [],
   }));
   const t = tally(list, c.is_ab);
@@ -315,6 +336,23 @@ export default async function ResultPage({
         plan={c.product_type ?? "unknown"}
         yen={isPlanId(c.product_type) ? getPlan(c.product_type).yen : 0}
       />
+      {/* 買った5回パスの鍵を、この端末に覚えさせる。
+          覚えないと、次の相談でまた決済の画面が出る */}
+      {passToken && <RememberPass token={passToken} />}
+
+      {passLeft !== null && (
+        <div className="mb-7 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand bg-brand-tint px-5 py-4">
+          <p className="text-[14.5px] font-black text-brand-deep">
+            {passLeft > 0 ? `あと${passLeft}回 確かめられます` : "5回すべて使いました"}
+          </p>
+          <Link
+            href={passLeft > 0 ? "/ask" : "/plans"}
+            className="shrink-0 text-[13px] font-bold text-brand underline decoration-line underline-offset-4"
+          >
+            {passLeft > 0 ? "＋ 新しく確かめる" : "5回追加する"}
+          </Link>
+        </div>
+      )}
       {c.status === "refunded" && (
         <p className="mb-7 rounded-card border border-line bg-mist px-5 py-4 text-[13.5px] leading-[1.85] text-steel">
           この相談は返金済みです。
@@ -440,6 +478,16 @@ export default async function ResultPage({
                     </span>
                   </div>
                   <p className="mt-3 text-[15px] leading-[1.9]">{a.comment}</p>
+                  {/* 直し方。書かれていれば出す。
+                      書いたのは、そう感じた本人（AIが足したものではない） */}
+                  {a.fix && (
+                    <div className="mt-3.5 rounded-card bg-brand-tint px-4 py-3">
+                      <p className="text-[11.5px] font-bold text-brand-deep">
+                        どう変われば自然か
+                      </p>
+                      <p className="mt-1.5 text-[14px] leading-[1.85] text-slate">{a.fix}</p>
+                    </div>
+                  )}
                   {/* この評価が、回答者の実績の唯一の出どころになる。
                       押さなくてもよい。未評価は割合の分母に入れない。 */}
                   <HelpfulButton
