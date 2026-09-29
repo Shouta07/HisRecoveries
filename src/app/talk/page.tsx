@@ -40,7 +40,7 @@ export default function TalkPage() {
             from="talk_page"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            女性5人の目を通す
+            女性5人に相談する
           </PlanCta>
         </div>
       </header>

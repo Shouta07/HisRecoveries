@@ -37,16 +37,16 @@ export type PlanId =
  * 何を見てもらうか。
  *
  * 商品は「深さ」で分けるが、使う人が持ってくるものはこの3つ。
- * 写真 → メッセージ → 電話 の順に、本番へ近づいていく。
+ * 自己紹介文 → メッセージ → 電話 の順に、本番へ近づいていく。
  */
 export type Subject = "photo" | "message" | "call";
 
 export const SUBJECTS: { id: Subject; label: string; lead: string; body: string }[] = [
   {
     id: "photo",
-    label: "写真",
-    lead: "その写真で、最初から損してない？",
-    body: "アプリでもSNSでも、最初に見られるのは写真です。会う前どころか、話す前に決まっています。",
+    label: "自己紹介文",
+    lead: "その自己紹介文で、最初から損してない？",
+    body: "アプリで写真の次に読まれるのが、自己紹介の文章です。会う前どころか、返信が来る前に決まっています。",
   },
   {
     id: "message",
@@ -116,7 +116,7 @@ export const PLANS: Plan[] = [
     // ここで利益を取らない（marginFloor を下げてある）。
     id: "quick",
     name: "ちょっと相談",
-    tagline: "写真1枚か、メッセージ1件を3人に見てもらう。",
+    tagline: "送る前のLINE1件を、3人に読んでもらう。",
     value: "まず一度、実在の女性がどう受け取るかを見てみる。",
     yen: 980,
     depth: 1,
@@ -153,7 +153,7 @@ export const PLANS: Plan[] = [
       "みんなが同じことを言ったところ",
       "意見が分かれたところ",
     ],
-    fits: ["本命への一手", "次の誘い", "プロフィール写真"],
+    fits: ["本命への一手", "次の誘い", "自己紹介文"],
     available: true,
     onTop: true,
     featured: true,
@@ -218,7 +218,7 @@ export const PLANS: Plan[] = [
   {
     id: "date_ready",
     name: "会う日の前に、まとめて",
-    tagline: "写真もメッセージも話し方も、ひと通り見てもらう。",
+    tagline: "自己紹介文もメッセージも話し方も、ひと通り見てもらう。",
     value: "会う日の前に、要るところをまとめて見てもらう。",
     yen: 14800,
     from: true,
@@ -228,7 +228,7 @@ export const PLANS: Plan[] = [
     targeting: true,
     includes: [
       "「直して、もう一度」の内容すべて",
-      "写真・メッセージ・当日の流れ",
+      "自己紹介文・メッセージ・当日の流れ",
       "第一印象・話し方・距離感",
       "必要なら、電話の練習も",
     ],
@@ -365,7 +365,7 @@ export const USE_CASES: {
   },
   {
     tag: "出す前",
-    q: "プロフィール写真、AとBどっち？",
+    q: "自己紹介文、AとBどっち？",
     body: "特徴は説明できる。「どちらなら会いたいと思うか」は、女性側にしか分からない。",
     category: "photo",
   },

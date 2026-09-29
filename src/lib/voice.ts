@@ -61,7 +61,7 @@ export const OPERATOR = "His Recoveries";
 export const ONE_LINER = "失敗する前に、相談できる。";
 
 /** 名乗りの下に1行だけ添えてよい説明 */
-export const SUB = "写真・メッセージ・電話。本番の前に、実在女性の反応を確認。";
+export const SUB = "送る前のLINE、アプリの自己紹介文。実在の女性の反応が返ります。";
 
 /**
  * 引退させた名乗り。

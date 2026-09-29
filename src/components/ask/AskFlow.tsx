@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  CATEGORIES, RELATIONS, AGE_BANDS, PANEL_AGES, ATTRS_OPEN,
+  OPEN_CATEGORIES, RELATIONS, AGE_BANDS, PANEL_AGES, ATTRS_OPEN,
   category as getCategory, isCategoryId, attrLabel,
   type CategoryId, type AgeBand, type RelationId, type PanelAge, type AttrId,
 } from "@/lib/ask/model";
@@ -21,6 +21,7 @@ import { track } from "@/lib/analytics";
 import { add as rememberAsk, cleanThreadLabel, type Thread } from "@/lib/myasks";
 import Continue from "@/components/ask/Continue";
 import { isStepId, step as getStep } from "@/lib/ask/journey";
+import { WAIT_MINUTES } from "@/lib/ask/shortfall";
 
 // 相談を出す。
 //
@@ -68,7 +69,9 @@ export default function AskFlow() {
   const router = useRouter();
   const params = useSearchParams();
   const seeded = params.get("c");
-  const pre = isCategoryId(seeded) ? seeded : null;
+  // 受付を止めたカテゴリへのリンクが残っていても、そこから始めない。
+  const pre =
+    isCategoryId(seeded) && OPEN_CATEGORIES.some((c) => c.id === seeded) ? seeded : null;
   const seededPlan = params.get("plan");
 
   const [i, setI] = useState(pre ? 1 : 0);
@@ -224,7 +227,7 @@ export default function AskFlow() {
             )}
 
             <div className="mt-6 grid grid-cols-2 gap-2.5">
-              {CATEGORIES.map((c) => (
+              {OPEN_CATEGORIES.map((c) => (
                 <button
                   key={c.id}
                   type="button"
@@ -446,6 +449,25 @@ export default function AskFlow() {
               </div>
             )}
 
+            {/* 任意の1問。答えなくても進める */}
+            <div className="mt-5 rounded-card border border-line bg-mist p-4">
+              <p className="text-[13.5px] font-bold">
+                AIにも聞きましたか？
+                <span className="ml-2 text-[12px] font-normal text-steel">任意</span>
+              </p>
+              <div className="mt-3 flex gap-2">
+                <Chip on={askedAi === true} onClick={() => setAskedAi(askedAi === true ? null : true)}>
+                  聞いた
+                </Chip>
+                <Chip
+                  on={askedAi === false}
+                  onClick={() => setAskedAi(askedAi === false ? null : false)}
+                >
+                  聞いていない
+                </Chip>
+              </div>
+            </div>
+
             {/* ── 料金確認 ── */}
             <div className="mt-8 rounded-card border border-brand bg-paper shadow-card">
               <div className="border-b border-line px-5 py-4">
@@ -458,6 +480,29 @@ export default function AskFlow() {
                 </div>
                 <p className="mt-2 text-[12px] text-steel">税込 / 1回のみ。月額はありません。</p>
               </div>
+
+              {/* 払う直前に、何を買うのかをもう一度出す。
+                  ここを読まずに押した人が、あとで「そんな話は聞いていない」になる。
+                  人数・返るもの・追加料金・集まらなかったとき。この4つだけ。 */}
+              <dl className="divide-y divide-line border-b border-line text-[13px] leading-[1.75]">
+                {[
+                  ["読む人", `実在の女性 ${p.answers}人`],
+                  [
+                    "返るもの",
+                    "一人ひとりの「このままでOK／少し気になる／変えた方がいい」と、そう思った理由",
+                  ],
+                  ["追加料金", "なし。これ以上かかりません"],
+                  [
+                    "集まらないとき",
+                    `${WAIT_MINUTES}分たっても${p.answers}人に届かなければ、集まった分だけ受け取る／条件を広げて待つ／全額返してもらう、から選べます`,
+                  ],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex gap-3 px-5 py-3">
+                    <dt className="w-[5.5em] shrink-0 font-bold text-steel">{k}</dt>
+                    <dd className="min-w-0 flex-1 text-slate">{v}</dd>
+                  </div>
+                ))}
+              </dl>
 
               <button
                 type="button"
@@ -490,25 +535,6 @@ export default function AskFlow() {
               )}
             </div>
 
-            {/* 任意の1問。答えなくても進める */}
-            <div className="mt-5 rounded-card border border-line bg-mist p-4">
-              <p className="text-[13.5px] font-bold">
-                AIにも聞きましたか？
-                <span className="ml-2 text-[12px] font-normal text-steel">任意</span>
-              </p>
-              <div className="mt-3 flex gap-2">
-                <Chip on={askedAi === true} onClick={() => setAskedAi(askedAi === true ? null : true)}>
-                  聞いた
-                </Chip>
-                <Chip
-                  on={askedAi === false}
-                  onClick={() => setAskedAi(askedAi === false ? null : false)}
-                >
-                  聞いていない
-                </Chip>
-              </div>
-            </div>
-
             {error && (
               <p className="mt-5 rounded-soft border border-slate px-4 py-3 text-[14px] leading-[1.8]">
                 {error}
@@ -517,7 +543,7 @@ export default function AskFlow() {
 
             <div className="mt-7">
               <Action onClick={send} disabled={sending}>
-                {sending ? "お支払いへ進みます…" : `¥${p.yen.toLocaleString()} を支払って聞く`}
+                {sending ? "お支払いへ進みます…" : `¥${p.yen.toLocaleString()} を支払って相談する`}
               </Action>
             </div>
             <div className="mt-4">

@@ -56,7 +56,7 @@ import WhoReads from "@/components/brand/WhoReads";
 
 export const metadata: Metadata = {
   title: `${NAME} — 送る前に、会う前に、話す前に。`,
-  description: `${SUB} 写真・メッセージ・電話を、送る前・会う前・話す前に確認できます。`,
+  description: `${SUB} 送る前・会う前・話す前に、実在の女性の反応を確認できます。`,
   alternates: { canonical: site.url },
 };
 
@@ -69,7 +69,7 @@ const NAV = [
 ] as const;
 
 const STEPS = [
-  { n: "01", t: "送る前のものを出す", d: "写真1枚か、メッセージ1件。そのまま貼るだけです。" },
+  { n: "01", t: "送る前のものを出す", d: "送る前のLINE、または自己紹介文。そのまま貼るだけです。" },
   { n: "02", t: "条件に合う女性に届く", d: "年代や立場を選べます。確認が済んだ女性にだけ届きます。" },
   { n: "03", t: "一人ずつ返ってくる", d: "このままでOK / 少し気になる / 変えた方がいい と、そう思った理由。" },
   { n: "04", t: "直すか、そのまま出すか決める", d: "大丈夫そうならそのまま。気になる点が出たら、直してから。" },
@@ -267,19 +267,40 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            <p className="mt-6 max-w-[24em] text-[15px] leading-[1.9] text-steel sm:text-[16.5px]">
-              写真・メッセージ・会話。
+            <p className="mt-5 max-w-[25em] text-[15px] leading-[1.9] text-steel sm:text-[16.5px]">
+              送る前のLINE、アプリの自己紹介文。
               <br />
-              迷った瞬間に、実在女性の反応をもとに次の一手を考えられます。
+              AIの予想ではなく、実在の女性{main.answers}人が読んで、正直に返します。
             </p>
 
+            {/* いくらなのかを、スクロールさせずに出す。
+                値段が下にあると、それだけで帰られる。 */}
+            <ul className="mt-5 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[13.5px] font-bold text-slate">
+              <li className="tabular-nums">¥{entry.yen.toLocaleString()}から</li>
+              <li aria-hidden className="text-line">|</li>
+              <li>1回ごと・月額なし</li>
+              <li aria-hidden className="text-line">|</li>
+              <li>匿名</li>
+            </ul>
+
+            {/* 押す場所も、スクロールさせない */}
+            <div className="mt-6 max-w-[24em]">
+              <PlanCta
+                plan={DEFAULT_PLAN}
+                from="hero"
+                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card"
+              >
+                今すぐ相談する <span aria-hidden className="ml-2">&rarr;</span>
+              </PlanCta>
+            </div>
+
             {/* 何を見てもらえるか。押すとその場面から始まる */}
-            <ul className="mt-6 flex flex-wrap gap-2">
+            <ul className="mt-5 flex flex-wrap gap-2">
               {SUBJECTS.map((sub) => {
                 const usable = sub.id !== "call";
                 const icon =
                   sub.id === "photo"
-                    ? "M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 6"
+                    ? "M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h4"
                     : sub.id === "message"
                       ? "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"
                       : "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6";
@@ -323,25 +344,12 @@ export default async function HomePage() {
               </p>
             )}
 
-            <div className="mt-7 max-w-[24em]">
-              <PlanCta
-                plan={DEFAULT_PLAN}
-                from="hero"
-                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card"
-              >
-                今すぐ相談する <span aria-hidden className="ml-2">→</span>
-              </PlanCta>
-            </div>
-
             <ul className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] font-bold text-steel">
-              <li>匿名</li>
-              <li>都度払い</li>
-              <li>実在女性が回答</li>
+              <li>ぜんぶ匿名</li>
+              <li>回答は{main.answers}人ぶん</li>
+              <li>追加料金なし</li>
               {sup.canPromiseSpeed && <li>最短数分</li>}
             </ul>
-            <p className="mt-2.5 text-[12px] text-steel">
-              {entry.name} ¥{entry.yen.toLocaleString()} から
-            </p>
 
             {/* 送る前のやりとり。顔は置かず、言葉だけ */}
             <div className="relative z-10 mt-8 w-full max-w-[22em] rounded-card border border-line bg-paper p-4 shadow-card">
@@ -712,6 +720,21 @@ export default async function HomePage() {
             出すのは「5人中3人」だけ。その5人がそう感じた、という話であって、
             女性みんなの答えではありません。
           </p>
+
+          {/* ここから料金の節まで、スマホで5画面ぶん押す場所が無かった。
+              見本を読み終えた直後がいちばん近いので、ここに1つ置く。 */}
+          <div className="mt-9 max-w-[24em]">
+            <PlanCta
+              plan={DEFAULT_PLAN}
+              from="after_demo"
+              className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+            >
+              自分のも見てもらう <span aria-hidden className="ml-2">&rarr;</span>
+            </PlanCta>
+            <p className="mt-3 text-[12.5px] text-steel">
+              ¥{entry.yen.toLocaleString()}から / 1回ごと / 匿名
+            </p>
+          </div>
         </Wrap>
       </section>
 
@@ -817,7 +840,7 @@ export default async function HomePage() {
               >
                 {p.featured ? (
                   <span className="mb-3 inline-flex w-fit rounded-pill bg-rose-fill px-3 py-1 text-[11px] font-bold text-paper">
-                    いちばん使われています
+                    迷ったら、これ
                   </span>
                 ) : (
                   <span aria-hidden className="mb-3 block h-[25px]" />
@@ -891,7 +914,7 @@ export default async function HomePage() {
         <ul className="mt-8 grid gap-2.5 sm:grid-cols-2">
           {[
             "匿名で使えます。名前もメールアドレスも要りません",
-            "相手の名前・写真・連絡先は保存しません",
+            "相手の名前・連絡先は保存しません",
             "送る前に、個人情報は自動で伏せます",
             "答えてくれた女性と直接つながる仕組みはありません",
             "年齢と立場を確認した女性だけが見ます",

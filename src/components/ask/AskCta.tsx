@@ -18,11 +18,13 @@ import { CATEGORIES, type CategoryId } from "@/lib/ask/model";
 
 /** 記事の分野 → 聞くカテゴリと、その場の問い */
 const BY_AREA: Record<string, { c: CategoryId; q: string }> = {
-  impression: { c: "photo", q: "その写真、女性から見て印象はどうなんだろう。" },
-  hair: { c: "style", q: "その髪型、女性から見てどう見えているんだろう。" },
-  skin: { c: "style", q: "その見た目、女性はどこを見ているんだろう。" },
-  face: { c: "photo", q: "その顔写真、女性から見て会いたいと思うだろうか。" },
-  "body-hair": { c: "style", q: "そこ、女性は実際どう感じているんだろう。" },
+  // 画像を受け取る口がまだ無いので、見た目そのものは聞けない。
+  // 文字で答えられる問いに振り直してある（model.ts の available を参照）。
+  impression: { c: "photo", q: "その自己紹介文、女性から見て印象はどうなんだろう。" },
+  hair: { c: "romance", q: "見た目を気にしていること、女性はどう受け取るんだろう。" },
+  skin: { c: "romance", q: "そこを気にしているのは、女性から見て変なんだろうか。" },
+  face: { c: "photo", q: "その自己紹介文、女性は会ってみたいと思うだろうか。" },
+  "body-hair": { c: "distance", q: "そこ、女性は実際どう感じているんだろう。" },
   mind: { c: "romance", q: "その距離の取り方、女性からはどう見えるんだろう。" },
 };
 
@@ -49,7 +51,7 @@ export default function AskCta({ areaId }: { areaId?: string }) {
           href={`/ask?c=${c}`}
           className="inline-flex min-h-[52px] items-center justify-center rounded-[8px] bg-accent px-7 text-[15px] font-bold text-white transition-colors duration-200 hover:bg-accent/90"
         >
-          女性に聞いてみる
+          女性に相談する
         </Link>
       </div>
       <p className="mt-3.5 text-[12.5px] leading-[1.8] text-faint">

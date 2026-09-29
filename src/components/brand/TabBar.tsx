@@ -25,7 +25,7 @@ import Tashikame from "./Tashikame";
 const TABS = [
   { href: "/", label: "ホーム" },
   { href: "/answerers", label: "誰が読む" },
-  { href: "/ask", label: "通す", primary: true },
+  { href: "/ask", label: "相談する", primary: true },
   { href: "/mine", label: "自分" },
 ];
 
@@ -75,12 +75,16 @@ export default function TabBar() {
   }
 
   return (
-    <nav
-      aria-label="メイン"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-paper/97 backdrop-blur sm:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-    >
-      <ul className="mx-auto grid max-w-[560px] grid-cols-4">
+    <>
+      {/* タブは fixed なので、そのぶん下を空ける。
+          空けないと、ページ末尾のボタンがタブの裏に入って押せない。 */}
+      <div aria-hidden className="h-[66px] sm:hidden" />
+      <nav
+        aria-label="メイン"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-paper/97 backdrop-blur sm:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        <ul className="mx-auto grid max-w-[560px] grid-cols-4">
         {TABS.map((t) => {
           const on = t.href === "/" ? path === "/" : path.startsWith(t.href);
           if (t.primary) {
@@ -89,7 +93,7 @@ export default function TabBar() {
                 <Link
                   href={t.href}
                   aria-current={on ? "page" : undefined}
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-pill bg-brand px-4 text-[13px] font-bold text-paper shadow-card"
+                  className="inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-pill bg-brand px-3.5 text-[12.5px] font-bold text-paper shadow-card"
                 >
                   <Tashikame size={20} tone="brand" />
                   {t.label}
@@ -112,7 +116,8 @@ export default function TabBar() {
             </li>
           );
         })}
-      </ul>
-    </nav>
+        </ul>
+      </nav>
+    </>
   );
 }

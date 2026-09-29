@@ -38,7 +38,7 @@ export default function MinePage() {
             href="/ask"
             className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card"
           >
-            聞いてみる
+            相談する
           </Link>
         </div>
       </header>
@@ -64,7 +64,7 @@ export default function MinePage() {
                 href="/ask"
                 className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-brand px-9 text-[15.5px] font-bold text-paper shadow-card"
               >
-                30秒で聞いてみる
+                30秒で相談する
               </Link>
             </div>
           </div>

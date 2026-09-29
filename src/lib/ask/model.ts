@@ -28,6 +28,14 @@ export type Category = {
   hint: string;
   /** その場で出す例文。空欄を前にして固まるのを防ぐ */
   placeholder: string;
+  /**
+   * いま受け付けているか。
+   *
+   * 画像を受け取る口が無いので、写真を見ないと答えられない相談は
+   * 受けない。受けると、払った人に「写真をください」と言えないまま
+   * 止まる。選ばせないところで止める。
+   */
+  available: boolean;
 };
 
 export const CATEGORIES: Category[] = [
@@ -36,52 +44,84 @@ export const CATEGORIES: Category[] = [
     label: "LINE・メッセージ",
     hint: "送る前に見てほしい／返信をどう受け取られるか",
     placeholder: "送ろうとしている文面を、そのまま貼ってください。",
+    available: true,
   },
   {
     id: "signal",
     label: "脈あり・相手の反応",
     hint: "この反応をどう感じるか",
     placeholder: "相手のどんな反応が気になっているか、書いてください。",
+    available: true,
   },
   {
     id: "date",
     label: "デート",
     hint: "誘い方／店選び／当日のふるまい",
     placeholder: "どこに誘おうとしているか、何が不安かを書いてください。",
+    available: true,
   },
   {
     id: "photo",
-    label: "写真・プロフィール",
-    hint: "アプリの写真や自己紹介文の印象",
-    placeholder: "プロフィール文をそのまま貼るか、どちらの写真か書いてください。",
+    label: "自己紹介文",
+    hint: "アプリのプロフィール文の印象",
+    placeholder: "いまの自己紹介文を、そのまま貼ってください。",
+    available: true,
   },
   {
+    // 服装は、見ないと答えようがない。画像を受け取る口ができるまでは出さない。
     id: "style",
     label: "見た目・服装",
     hint: "服装や身だしなみの印象",
     placeholder: "その日の服装や、迷っている点を書いてください。",
+    available: false,
   },
   {
     id: "romance",
     label: "恋愛",
     hint: "関係の進め方／距離の取り方",
     placeholder: "いま迷っていることを、そのまま書いてください。",
+    available: true,
   },
   {
     id: "distance",
     label: "性・距離感",
     hint: "身体的な距離の取り方について",
     placeholder: "聞きたいことを書いてください。相手を特定できる内容は書かないでください。",
+    available: true,
   },
   {
     id: "other",
     label: "その他",
     hint: "上のどれにも当てはまらないもの",
     placeholder: "聞きたいことを、そのまま書いてください。",
+    available: true,
   },
 ];
 
 const BY_CATEGORY = new Map(CATEGORIES.map((c) => [c.id, c]));
+
+/** いま選べるカテゴリ。画面はこれだけ出す */
+export const OPEN_CATEGORIES = CATEGORIES.filter((c) => c.available);
+
+/* ── 受け取れないものを、聞かない ─────────────────
+   相談に画像を添える口はまだ無い（api/consult は文字だけ受ける）。
+   それなのに「写真を送って」と書いてあると、払った人が送れずに止まる。
+   受け付けているカテゴリの文面から、画像を求める言葉を禁じる。
+
+   画像を受け取れるようにしたら、この判定を外してよい。
+   外すまでは、ここがビルドを落とす。 */
+{
+  const asksForImage = /写真|画像|スクショ|スクリーンショット|添付/;
+  for (const c of OPEN_CATEGORIES) {
+    const where = [c.label, c.hint, c.placeholder].find((t) => asksForImage.test(t));
+    if (where) {
+      throw new Error(
+        `「${c.label}」が画像を求めています（${where}）。いまは文字しか受け取れません`,
+      );
+    }
+  }
+  if (OPEN_CATEGORIES.length < 3) throw new Error("選べるカテゴリが少なすぎます");
+}
 
 export function category(id: CategoryId): Category {
   const c = BY_CATEGORY.get(id);
@@ -91,6 +131,11 @@ export function category(id: CategoryId): Category {
 
 export function isCategoryId(x: unknown): x is CategoryId {
   return typeof x === "string" && BY_CATEGORY.has(x as CategoryId);
+}
+
+/** いま受け付けているカテゴリか。API はこちらで判定する */
+export function isOpenCategory(x: unknown): x is CategoryId {
+  return isCategoryId(x) && category(x).available;
 }
 
 /* ── 状況（回答者が判断するのに要る最小限）──────────

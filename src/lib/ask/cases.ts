@@ -37,9 +37,9 @@ export type Case = {
 export const CASES: Case[] = [
   {
     id: "photo",
-    tag: "写真・プロフィール",
-    worry: "どの写真をメインにするといいか分からない",
-    what: "マッチしても続かないので、女性の目で写真を見てほしい。",
+    tag: "自己紹介文",
+    worry: "自己紹介文に何を書けばいいか分からない",
+    what: "マッチしても続かないので、女性の目で自己紹介文を読んでほしい。",
     img: "casePhoto",
     category: "photo",
     open: true,

@@ -147,7 +147,7 @@ export default async function SharePage({ params }: { params: { token: string } 
             from="share_cta"
             className="mt-6 min-h-[54px] w-full rounded-pill bg-paper px-6 text-[15.5px] !text-brand-deep"
           >
-            自分も聞いてみる <span aria-hidden className="ml-1.5">→</span>
+            自分も相談する <span aria-hidden className="ml-1.5">→</span>
           </PlanCta>
         </div>
       </div>
