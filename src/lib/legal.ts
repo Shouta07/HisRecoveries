@@ -30,20 +30,37 @@ export type LegalField = {
  * ── まだ無いもの ─────────────────────────
  * 代表者名 と 電話番号。この2つが入れば決済を開けられる。
  * 社名・所在地・メール・価格は site.ts に既にある。
+ *
+ * ── 個人の情報を git に置かない ──────────────
+ * 代表者名と電話番号は、このファイルに直接書いてもよいが、
+ * そうすると公開リポジトリに個人の電話番号が残る。
+ * 環境変数からも読めるようにしてある。
+ *
+ *   LEGAL_REP_NAME  代表者名
+ *   LEGAL_TEL       電話番号
+ *
+ * Vercel の環境変数に入れれば、git には入らない。
+ * どちらでも動く（ファイルに書いてあれば、そちらが優先）。
  */
+
+/** 環境変数から読む。空文字は「無い」として扱う */
+function fromEnv(name: string): string | null {
+  const v = process.env[name];
+  return v && v.trim() ? v.trim() : null;
+}
 export const LEGAL: LegalField[] = [
   { key: "seller", label: "販売事業者", value: site.company.name, required: true },
-  // ▼ ここに代表者名を入れてください（例: "山本 翔太"）
-  { key: "rep", label: "代表者", value: null, required: true },
+  // ▼ 代表者名。ここに直接書くか、LEGAL_REP_NAME に入れる
+  { key: "rep", label: "代表者", value: fromEnv("LEGAL_REP_NAME"), required: true },
   {
     key: "address",
     label: "所在地",
     value: `${site.company.postalCode} ${site.company.address}`,
     required: true,
   },
-  // ▼ ここに電話番号を入れてください（例: "03-0000-0000"）
+  // ▼ 電話番号。ここに直接書くか、LEGAL_TEL に入れる
   //    請求があったら遅滞なく開示する運用にする場合も、番号自体は必要です。
-  { key: "tel", label: "電話番号", value: null, required: true },
+  { key: "tel", label: "電話番号", value: fromEnv("LEGAL_TEL"), required: true },
   { key: "email", label: "メールアドレス", value: site.company.email, required: true },
   {
     key: "price",
