@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { category, attrLabel, type CategoryId } from "@/lib/ask/model";
+import { category, attrLabel, jobLabel, toneLabel, type CategoryId } from "@/lib/ask/model";
 
 // マーケットプレイスの部品。
 //
@@ -27,6 +27,10 @@ export type Human = {
   area?: string | null;
   attrs?: string[];
   specialties?: string[];
+  /** 職業のカテゴリ。会社名も細かい職種も持たない */
+  job?: string | null;
+  /** 回答の書き方の癖 */
+  tone?: string | null;
   /** 回答した数。0 のときは「まだ回答なし」と出す */
   answered?: number;
   /** 役に立ったと言われた割合。評価が付くまでは undefined */
@@ -77,18 +81,20 @@ export function HumanCard({
         )}
       </div>
 
-      {(h.area || (h.attrs && h.attrs.length > 0)) && (
+      {(h.area || h.job || (h.attrs && h.attrs.length > 0)) && (
         <ul className="mt-3 flex flex-wrap gap-1.5">
-          {[h.area, ...(h.attrs ?? []).map(attrLabel)].filter(Boolean).map((t) => (
+          {[jobLabel(h.job ?? null), h.area, ...(h.attrs ?? []).map(attrLabel)]
+            .filter(Boolean)
+            .map((t) => (
             <li
               key={String(t)}
               className={`rounded-pill px-2 py-0.5 text-[11px] ${
                 dark ? "border border-slate text-steel" : "bg-mist text-steel"
               }`}
-            >
-              {t}
-            </li>
-          ))}
+              >
+                {t}
+              </li>
+            ))}
         </ul>
       )}
 
@@ -104,6 +110,12 @@ export function HumanCard({
             })
             .slice(0, 3)
             .join(" / ")}
+        </p>
+      )}
+
+      {toneLabel(h.tone ?? null) && (
+        <p className={`mt-1.5 text-[11.5px] ${dark ? "text-steel" : "text-steel"}`}>
+          書き方は「{toneLabel(h.tone ?? null)}」
         </p>
       )}
 

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbSelect, dbUpdate, dbInsertReturning, dbAdminEnabled } from "@/lib/db";
-import {
-  isSellable, plan, priceOf, answersFor, cleanOptions, type OptionId,
-} from "@/lib/ask/plans";
+import { isSellable, plan, priceOf } from "@/lib/ask/plans";
 import { canCharge, whyCannotCharge } from "@/lib/legal";
 import { supply, shortMessage } from "@/lib/supply";
 import { createCheckout, stripeEnabled } from "@/lib/stripe";
@@ -29,13 +27,7 @@ import { site } from "@/lib/site";
 
 export const runtime = "edge";
 
-type Consult = {
-  id: string;
-  token: string;
-  status: string;
-  category: string;
-  options: OptionId[] | null;
-};
+type Consult = { id: string; token: string; status: string; category: string };
 type Payment = { id: string; stripe_checkout_session_id: string | null; payment_status: string };
 
 export async function POST(req: NextRequest) {
@@ -69,7 +61,7 @@ export async function POST(req: NextRequest) {
   }
 
   const cs = await dbSelect<Consult>(
-    `consultations?token=eq.${encodeURIComponent(token as string)}&select=id,token,status,category,options`,
+    `consultations?token=eq.${encodeURIComponent(token as string)}&select=id,token,status,category`,
   );
   const c = cs[0];
   if (!c) return NextResponse.json({ error: "この相談は見つかりません" }, { status: 404 });
@@ -84,12 +76,8 @@ export async function POST(req: NextRequest) {
 
   const p = plan(planId);
 
-  // オプションは、相談を保存したときに決まっている。
-  // 決済のリクエストからは取らない。取ると、相談を作ったあとに
-  // オプションだけ外して安く買える。
-  const options = cleanOptions(c.options);
-  const yen = priceOf(planId, options);
-  const answers = answersFor(planId, options);
+  const yen = priceOf(planId);
+  const answers = p.answers;
 
   // 答えられる人がいないのに売らない。
   // 決済だけ通って誰にも届かないのが、いちばん信用を失う。
@@ -116,7 +104,7 @@ export async function POST(req: NextRequest) {
     successUrl: `${base}/ask/${c.token}?paid=1`,
     cancelUrl: `${base}/ask/${c.token}?canceled=1`,
     // 相談1件につき1つの鍵。押し直しても課金は1回。
-    idempotencyKey: `consult_${c.id}_${planId}_${options.join("-")}`,
+    idempotencyKey: `consult_${c.id}_${planId}`,
   });
 
   if (!r.ok || !r.session) {

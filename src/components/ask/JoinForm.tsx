@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  RESPONDER_AGES, ATTRS, AREAS, CATEGORIES,
+  RESPONDER_AGES, ATTRS, AREAS, CATEGORIES, JOB_BANDS, TONES,
   type ResponderAge, type AttrId, type Area, type CategoryId,
+  type JobBand, type Tone,
 } from "@/lib/ask/model";
 import { AttributeChip, Action, FieldLabel, Note, inputClass } from "@/components/brand/kit";
 import { track } from "@/lib/analytics";
@@ -28,6 +29,8 @@ export default function JoinForm() {
   const [attrs, setAttrs] = useState<AttrId[]>([]);
   const [area, setArea] = useState<Area | null>(null);
   const [specialties, setSpecialties] = useState<CategoryId[]>([]);
+  const [job, setJob] = useState<JobBand | null>(null);
+  const [tone, setTone] = useState<Tone | null>(null);
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
   const [consent, setConsent] = useState(false);
@@ -52,7 +55,7 @@ export default function JoinForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ref,
-          age, attrs, area, specialties, email: email.trim(), note, consent: true,
+          age, attrs, area, specialties, job, tone, email: email.trim(), note, consent: true,
         }),
       });
       const json = await res.json();
@@ -160,6 +163,38 @@ export default function JoinForm() {
         </div>
         <div className="mt-3">
           <Note>選んだ話題の相談が、優先的に届きます。選ばなくても登録できます。</Note>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <FieldLabel>お仕事のカテゴリ（任意）</FieldLabel>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {JOB_BANDS.map((j) => (
+            <AttributeChip key={j.id} on={job === j.id} onClick={() => setJob(job === j.id ? null : j.id)}>
+              {j.label}
+            </AttributeChip>
+          ))}
+        </div>
+        <div className="mt-3">
+          <Note>
+            会社名も、細かい職種も聞きません。相談した人に出るのは、この粗さのままです。
+          </Note>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <FieldLabel>書き方の癖（任意）</FieldLabel>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {TONES.map((t) => (
+            <AttributeChip key={t.id} on={tone === t.id} onClick={() => setTone(tone === t.id ? null : t.id)}>
+              {t.label}
+            </AttributeChip>
+          ))}
+        </div>
+        <div className="mt-3">
+          <Note>
+            どれが良いというものではありません。3人に届くとき、書き方が偏らないように使います。
+          </Note>
         </div>
       </div>
 

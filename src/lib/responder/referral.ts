@@ -34,11 +34,14 @@ import { TIERS } from "@/lib/economics";
 /** 紹介された人が、これだけ答えたら成立 */
 export const REQUIRED_ANSWERS = 5;
 
+// 1件の報酬が ¥230 → ¥500〜700 に上がったので、紹介の額も上げる。
+// 1件ぶんより小さいと、呼ぶ手間に見合わない。
+
 /** 呼んだ人に払う */
-export const INVITER_YEN = 500;
+export const INVITER_YEN = 1500;
 
 /** 呼ばれた人に払う */
-export const INVITEE_YEN = 500;
+export const INVITEE_YEN = 1500;
 
 /** 1人が呼べる上限。ここを外すと、配るだけの人が出る */
 export const MAX_INVITES = 20;
@@ -103,10 +106,14 @@ export function paybackAnswers(marginPerOrder: number, answersPerOrder: number):
   if (MAX_INVITES > 50) throw new Error("紹介の上限が高すぎます");
 
   // 1人増やす費用が、その人が最初に生む回答で回収できる見込みであること。
-  // 「今すぐ聞く」の1件あたり限界利益 ¥1,854 / 5人 = 1回答あたり約¥370。
-  // 費用 ¥1,000 は約3回答で回収できる。紹介の条件が5回答なので、
+  //
+  // 「女性目線レビュー」（¥5,980）の1件あたり限界利益は約 ¥3,600。
+  // 1件を3人で担当するので、1回答あたり約 ¥1,200。
+  // 費用 ¥3,000 は約3回答で回収できる。条件が5回答なので、
   // 成立した時点ですでに回収できている。
-  const need = paybackAnswers(1854, 5);
+  //
+  // 商品の値段を変えたら、この数字も一緒に変えること。
+  const need = paybackAnswers(3600, 3);
   if (need > REQUIRED_ANSWERS) {
     throw new Error(
       `紹介の費用を回収するのに ${need} 回答が要りますが、成立の条件は ${REQUIRED_ANSWERS} 回答です`,

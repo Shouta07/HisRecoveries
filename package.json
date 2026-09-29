@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "video:studio": "npm -w @hr/video run studio",
     "check:schema": "node scripts/check-schema.mjs",
-    "prebuild": "node scripts/check-schema.mjs"
+    "check:copy": "node scripts/check-copy.mjs",
+    "prebuild": "node scripts/check-schema.mjs && node scripts/check-copy.mjs"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",

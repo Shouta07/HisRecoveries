@@ -68,7 +68,7 @@ export async function fulfil(pay: Payment, intentId: string | null): Promise<Ful
   if (!c) return { ok: false, why: "相談が見つかりません" };
 
   // 1対1で話す商品は、人数を集めるものではない。依頼は作らない。
-  const isTalk = isPlanId(c.product_type) && c.product_type === "call";
+  const isTalk = isPlanId(c.product_type) && c.product_type === "mockchat";
 
   if (!isTalk) {
     // 既に作ってあるなら作り直さない。

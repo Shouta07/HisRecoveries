@@ -1,4 +1,4 @@
-import { plan, type PlanId } from "./plans";
+import { plan, DEFAULT_PLAN, type PlanId } from "./plans";
 
 // 人数が集まらなかったとき。
 //
@@ -80,27 +80,28 @@ export function needsChoice(paidAt: string | null, got: number, want: number): b
 /* ── 公開の前に止めること ───────────────────────── */
 {
   // 端数がこちらに有利にならないこと。
-  // 2,980円で3/5なら、返すのは1,192円。切り捨てると1,192→1,192。
-  // 端数が出る組み合わせで確かめる。
-  if (refundFor(2980, 3, 5) !== 1192) {
-    throw new Error(`足りない分の返金額が合いません: ${refundFor(2980, 3, 5)}`);
+  // ¥5,980 で3人のうち1人しか届かなければ、返すのは2人分。
+  // 5980 × 2 ÷ 3 = 3986.66… を切り上げて 3,987円。
+  // 切り捨てると1円こちらに残る。そういう丸め方をしない。
+  if (refundFor(5980, 1, 3) !== 3987) {
+    throw new Error(`足りない分の返金額が合いません: ${refundFor(5980, 1, 3)}`);
   }
-  if (refundFor(2980, 4, 5) !== 596) {
-    throw new Error("4/5 のときの返金額が合いません");
+  if (refundFor(5980, 2, 3) !== 1994) {
+    throw new Error("2/3 のときの返金額が合いません");
   }
   // 1件も届いていないなら全額。
-  if (refundFor(2980, 0, 5) !== 2980) throw new Error("0件のときに全額になっていません");
+  if (refundFor(5980, 0, 3) !== 5980) throw new Error("0件のときに全額になっていません");
   // 揃っていたら返さない。
-  if (refundFor(2980, 5, 5) !== 0) throw new Error("揃っているのに返金額が出ています");
+  if (refundFor(5980, 3, 3) !== 0) throw new Error("揃っているのに返金額が出ています");
 
   // 全額返金の選択肢が、必ずあること。
   // ここを外すと、返してもらえない設計になる。
-  const c = choices("standard", 3, 5);
+  const c = choices(DEFAULT_PLAN, 1, 3);
   if (!c.some((x) => x.id === "full")) {
     throw new Error("全額返金の選択肢がありません");
   }
   // 1件も無いのに「集まった分を受け取る」を出さないこと。
-  if (choices("standard", 0, 5).some((x) => x.id === "partial")) {
+  if (choices(DEFAULT_PLAN, 0, 3).some((x) => x.id === "partial")) {
     throw new Error("0件なのに「集まった分を受け取る」が出ています");
   }
 }

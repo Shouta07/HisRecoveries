@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import {
-  plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN,
-  OPTIONS, SETS, setPrice,
-} from "@/lib/ask/plans";
+import { PLANS, plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
-import { ALTERNATIVES, COMPARE, COMPARE_NOTE } from "@/lib/ask/compare";
-import { STEPS as JOURNEY } from "@/lib/ask/journey";
+import { ALTERNATIVES, COMPARE, COMPARE_NOTE, COMPARE_SCOPE } from "@/lib/ask/compare";
+import { STEPS as JOURNEY, isOpen as stepOpen } from "@/lib/ask/journey";
 import { VERDICTS } from "@/lib/ask/model";
 import { canCharge } from "@/lib/legal";
 import { NAME, ONE_LINER, SUB } from "@/lib/voice";
@@ -40,8 +37,9 @@ import { LADDER } from "@/lib/responder/policy";
 // 全部が「いいと思います」なら、聞く必要が無かったことになる。
 //
 // いまの見本は、必ず何かが引っかかっている。
-// そして直して、もう一度通して、消えたところまで見せる。
+// そして、引っかかったところを直した文面と、なぜそう直したかまで見せる。
 // これが、この製品にお金が発生する唯一の理由。
+// 直したものをもう一度別の人に通す工程は売っていないので、見本にも出さない。
 //
 // ── ただし悪いところ探しのサービスにしない ────────────────
 // 問題が無ければ「このままで問題なさそう」も、ちゃんと結果。
@@ -53,8 +51,8 @@ import { LADDER } from "@/lib/responder/policy";
 //
 // ── 出さない数字 ──────────────────────────────────
 // 「失敗確率72%」は出さない。根拠が無い。
-// 出すのは「5人中3人」だけ。数えられるものしか出さない。
-// 5人の反応を、女性全体のみんなの答えとして書かない。
+// 出すのは「3人中2人」だけ。数えられるものしか出さない。
+// 3人の反応を、女性全体のみんなの答えとして書かない。
 //
 // ── 構成（12） ────────────────────────────────────
 //   1 ファーストビュー   2 こんな瞬間   3 3つの対象
@@ -178,6 +176,15 @@ function Who({ age, size = 36 }: { age: number; size?: number }) {
     </span>
   );
 }
+
+/** 値段が上がる理由。段の意味を1行で */
+const LADDER_WHY: Record<string, string> = {
+  review: "見てもらう",
+  reaction: "反応を見る",
+  mockchat: "会話を試す",
+  session: "一人について決める",
+  mockdate: "本番を再現する",
+};
 
 const TONE: Record<string, string> = {
   as_is: "bg-ok-tint text-ok-text",
@@ -538,13 +545,11 @@ export default async function HomePage() {
           {DEMO.split && (
             <p className="mt-1.5 text-[12.5px] leading-[1.7] text-steel">{DEMO.split}</p>
           )}
-          <p className="mt-3 border-t border-line pt-3 text-[13px] leading-[1.7] text-steel">
-            直した案を別の女性{DEMO.retest.of}人に見てもらったところ、
-            <span className="font-black text-ok-text">
-              {DEMO.retest.n} / {DEMO.retest.of}
-            </span>
-            が「{DEMO.retest.say.replace(/^\d+人とも「|」と答えました$/g, "")}」と答えました。
-          </p>
+          {/* 入っているのは、直し方と修正文まで。2巡目は売っていないので見本にも出さない */}
+          <div className="mt-3 border-t border-line pt-3">
+            <p className="text-[12px] font-bold text-steel">なぜ、そう直したか</p>
+            <p className="mt-1.5 text-[13px] leading-[1.8] text-slate">{DEMO.why}</p>
+          </div>
         </div>
 
         <p className="mt-4 text-[12px] leading-[1.75] text-steel">
@@ -605,9 +610,9 @@ export default async function HomePage() {
           {JOURNEY.map((j, i) => (
             <Reveal key={j.id} delay={i * 45}>
               <li>
-                {j.open ? (
+                {stepOpen(j) ? (
                   <PlanCta
-                    plan={DEFAULT_PLAN}
+                    plan={j.plan}
                     from={`step_${j.id}`}
                     category={j.category}
                     step={j.id}
@@ -636,6 +641,18 @@ export default async function HomePage() {
                           </span>
                         ))}
                       </span>
+                      {/* この段で何を買うのか。段だけ見せて商品を隠さない */}
+                      <span className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[12.5px]">
+                        <span className="font-bold text-brand-deep">{getPlan(j.plan).name}</span>
+                        <span className="font-bold tabular-nums text-slate">
+                          ¥{getPlan(j.plan).yen.toLocaleString()}
+                        </span>
+                        {j.next && !getPlan(j.next).available && (
+                          <span className="font-normal text-steel">
+                            / {getPlan(j.next).name}は受付前
+                          </span>
+                        )}
+                      </span>
                     </span>
                     <span aria-hidden className="mt-1 shrink-0 text-[15px] text-brand">
                       →
@@ -657,6 +674,10 @@ export default async function HomePage() {
                         </span>
                       </p>
                       <p className="mt-1.5 text-[13.5px] leading-[1.8] text-steel">{j.pain}</p>
+                      <p className="mt-2 text-[12.5px] leading-[1.8] text-steel">
+                        ここは<span className="font-bold text-slate">{getPlan(j.plan).name}</span>
+                        で受け付けます。相手も実在の人なので、時間を決めた受け入れ方が用意できてから開きます。
+                      </p>
                       <Link
                         href="/talk"
                         className="mt-3 inline-flex min-h-[40px] items-center text-[13px] font-bold text-brand underline decoration-line underline-offset-4"
@@ -903,120 +924,91 @@ export default async function HomePage() {
       </Block>
 
       {/* ══ 8. 料金 ══ */}
-      {/* プランを何本も並べない。基本相談 ¥2,980 から始めて、
-          減らしたい不安のぶんだけ足す。
-          金額はすべて plans.ts から引く（画面に直書きしない）。 */}
+      {/* 値段の差は、聞く人数ではなく「本番にどれだけ近いか」。
+          見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する。
+          値段より先に、何が返ってくるかを出す。 */}
       <Block id="price">
-        <H>必要なときだけ、1回ごと。</H>
-        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
-          月額はありません。入会金もありません。ここぞという場面の前にだけ使うものです。
+        <H>必要なところだけ、1回ごと。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          月額はありません。値段が上がるのは人数が増えるからではなく、
+          本番に近いところまでやるからです。
         </p>
 
-        {/* ① 基本。ここが主役 */}
-        <div className="mt-8 rounded-card border-2 border-brand bg-paper p-6 shadow-card sm:p-8">
-          <p className="text-[17px] font-black text-slate">{main.name}</p>
-          <p className="mt-2 flex items-baseline gap-2">
-            <span className="text-stat font-black text-slate">
-              <Yen yen={main.yen} />
-            </span>
-            <span className="text-[13px] font-bold text-steel">税込 / 1回</span>
-          </p>
-          <p className="mt-3 text-[15px] font-bold leading-[1.7] text-slate">
-            実在の女性{main.answers}人が読んで、反応が返ります。
-          </p>
-          <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-5">
-            {main.includes.map((x) => (
-              <li key={x} className="flex items-start gap-2.5 text-[13.5px] leading-[1.75]">
-                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
-                  ✓
-                </span>
-                <span className="min-w-0 text-steel">{x}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6">
-            <PlanCta
-              plan={DEFAULT_PLAN}
-              from="price"
-              className="min-h-[56px] w-full rounded-pill bg-brand px-6 text-[16px] !text-paper shadow-card"
-            >
-              この内容で相談する <span aria-hidden className="ml-1.5">&rarr;</span>
-            </PlanCta>
-          </div>
-        </div>
+        <ul className="mt-8 flex flex-col gap-3.5">
+          {PLANS.map((p, i) => (
+            <li key={p.id}>
+              <Reveal delay={i * 60}>
+                <div
+                  className={`flex h-full flex-col rounded-card border bg-paper p-5 shadow-card sm:p-6 ${
+                    p.featured ? "border-2 border-brand" : "border-line"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold tabular-nums text-steel">
+                      {LADDER_WHY[p.id]}
+                    </span>
+                    {!p.available && (
+                      <span className="rounded-pill bg-mist px-2.5 py-1 text-[10.5px] font-bold text-steel">
+                        受付前
+                      </span>
+                    )}
+                  </div>
 
-        {/* ② 足すもの。相談を書いたあとに選べる */}
-        <p className="mt-8 text-[14.5px] font-black text-slate">
-          足すかどうかは、相談を書いたあとに選べます
-        </p>
-        <ul className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
-          {OPTIONS.filter((o) => o.available).map((o) => (
-            <li
-              key={o.id}
-              className="rounded-card border border-line bg-paper px-4 py-3.5 shadow-card"
-            >
-              <p className="flex items-baseline justify-between gap-3">
-                <span className="min-w-0 text-[14px] font-bold text-slate">{o.name}</span>
-                <span className="shrink-0 text-[14px] font-black text-slate">
-                  <Yen yen={o.yen} plus />
-                </span>
-              </p>
-              <p className="mt-1.5 text-[12.5px] leading-[1.7] text-steel">{o.why}</p>
+                  {/* 値段より先に、何をするものかを出す */}
+                  <p className="mt-2 text-[18px] font-black leading-[1.5] text-slate sm:text-[20px]">
+                    {p.tagline}
+                  </p>
+                  <p className="mt-2.5 text-[13.5px] leading-[1.8] text-steel">{p.value}</p>
+
+                  <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">
+                    {p.includes.map((x) => (
+                      <li key={x} className="flex items-start gap-2 text-[12.5px] leading-[1.7]">
+                        <span
+                          aria-hidden
+                          className="mt-[3px] shrink-0 text-[11px] font-black text-brand"
+                        >
+                          ✓
+                        </span>
+                        <span className="min-w-0 text-steel">{x}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+                    <p className="text-[15px] font-black text-slate">
+                      {p.name}
+                      <span className="ml-2.5 text-[22px]">
+                        <Yen yen={p.yen} from={p.from} />
+                      </span>
+                    </p>
+                    {p.available ? (
+                      <PlanCta
+                        plan={p.id}
+                        from="price"
+                        className="min-h-[48px] shrink-0 rounded-pill bg-brand px-6 text-[14.5px] !text-paper shadow-card"
+                      >
+                        この内容で相談する <span aria-hidden className="ml-1.5">&rarr;</span>
+                      </PlanCta>
+                    ) : (
+                      <Link
+                        href="/talk"
+                        className="inline-flex min-h-[48px] shrink-0 items-center justify-center rounded-pill border border-line bg-paper px-6 text-[14px] font-bold text-steel"
+                      >
+                        順番待ちに入る <span aria-hidden className="ml-1.5">&rarr;</span>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </Reveal>
             </li>
           ))}
         </ul>
 
-        {/* ③ よくある組み合わせ。何を足せばいいか決められない人向け */}
-        <p className="mt-8 text-[14.5px] font-black text-slate">よくある組み合わせ</p>
-        <ul className="mt-3.5 grid gap-2.5 sm:grid-cols-3">
-          {SETS.map((x) => (
-            <li
-              key={x.id}
-              className={`rounded-card border bg-paper p-4 shadow-card ${
-                x.pick ? "border-rose" : "border-line"
-              }`}
-            >
-              {x.pick ? (
-                <span className="mb-2.5 inline-flex rounded-pill bg-rose-fill px-2.5 py-1 text-[10.5px] font-bold text-paper">
-                  迷ったら、これ
-                </span>
-              ) : (
-                <span aria-hidden className="mb-2.5 block h-[23px]" />
-              )}
-              <p className="text-[14.5px] font-black text-slate">{x.name}</p>
-              <p className="mt-1.5 text-[22px] font-black leading-none text-slate">
-                <Yen yen={setPrice(x)} />
-              </p>
-              <p className="mt-2.5 text-[12.5px] leading-[1.7] text-steel">{x.fits}</p>
-              <PlanCta
-                plan={DEFAULT_PLAN}
-                from={`set_${x.id}`}
-                options={x.options}
-                className="!justify-start mt-3 min-h-[40px] p-0 text-[13px] !text-brand"
-              >
-                これで相談する <span aria-hidden className="ml-1.5">&rarr;</span>
-              </PlanCta>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-8 flex flex-wrap items-baseline justify-between gap-3 rounded-card border border-line bg-mist px-5 py-4">
-          <p className="text-[13.5px] font-bold">
-            {getPlan("call").name}
-            <span className="ml-2 rounded-pill bg-paper px-2 py-0.5 text-[10.5px] font-bold text-steel">
-              受付前
-            </span>
-          </p>
-          <p className="text-[13.5px] text-steel">
-            <Yen yen={getPlan("call").yen} from /> ·{" "}
-            <Link href="/talk" className="font-bold text-brand underline decoration-line underline-offset-4">
-              順番待ちに入る
-            </Link>
-          </p>
-        </div>
-
-        <p className="mt-5 text-[12.5px] leading-[1.85] text-steel">
-          税込。募集を始める前ならキャンセルできます。人数が集まらなかった場合は、集まらなかった分をご返金します。
+        <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
+          税込。いま受け付けているのは「{main.name}」だけです。ほかの4つは、
+          その場で会話する・動画を受け取るための手順が用意できてから開きます。
+          募集を始める前ならキャンセルできます。人数が集まらなかった場合は、
+          集まらなかった分をご返金します。
           <Link
             href="/legal"
             className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
@@ -1033,12 +1025,17 @@ export default async function HomePage() {
       <Block tint>
         <H>ほかの選び方と、どう違うか。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          どれかが優れているという話ではありません。
-          送る前のひと手間だけを引き受けるのが、この製品です。
+          {COMPARE_SCOPE}
+          送る前・会う前のひと手間だけを引き受けるのが、この製品です。
         </p>
 
-        <div className="mt-7 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
-          <table className="w-full min-w-[640px] border-collapse overflow-hidden rounded-card border border-line bg-paper shadow-card">
+        {/* 列が6つあるので、スマホでは必ず切れる。切れていることを書く */}
+        <p className="mt-6 flex items-center gap-1.5 text-[11.5px] text-steel lg:hidden">
+          <span aria-hidden>↔</span> 表は横にスクロールできます
+        </p>
+
+        <div className="mt-3 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0 lg:mt-7">
+          <table className="w-full min-w-[880px] border-collapse overflow-hidden rounded-card border border-line bg-paper shadow-card">
             <thead>
               <tr>
                 <th scope="col" className="w-[6.5em] bg-paper px-3 py-3" />

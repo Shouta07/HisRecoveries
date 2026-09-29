@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  headline, subline, progress, type LiveCounts, type Phase,
+  headline, subline, progress, STAGES, stageNow, stageDone,
+  type LiveCounts, type Phase,
 } from "@/lib/ask/live";
 
 // 届くまでの画面。
@@ -22,6 +23,10 @@ import {
 //
 // ── 見えないところで静かに待つ ────────────────────
 // タブが裏にある間は問い合わせない。戻ってきたら、すぐ1回聞く。
+//
+// ── 全体の道筋も出す ──────────────────────────────
+// 一行だけだと、あと何が残っているのか分からない。
+// 払ったあとに何が起きるかを4つ出して、いまどこかを示す。
 
 type Answer = { id: string; ageBand: string; comment: string };
 
@@ -151,6 +156,50 @@ export default function LiveAnswers({
           {counts.answered} / {counts.panel}
         </p>
       </div>
+
+      {/* 払ったあとの道筋。いまどこで、あと何が残っているか */}
+      <ol className="mt-6 flex flex-col gap-0">
+        {STAGES.map((st, i) => {
+          const now = stageNow(phase) === i;
+          const past = i < stageDone(phase);
+          return (
+            <li key={st.id} className="flex gap-3">
+              <span className="flex flex-col items-center" aria-hidden>
+                <span
+                  className={`mt-1 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[9px] font-black ${
+                    past
+                      ? "bg-brand text-paper"
+                      : now
+                        ? "bg-brand-tint text-brand-deep ring-2 ring-brand"
+                        : "bg-mist text-steel"
+                  }`}
+                >
+                  {past ? "✓" : i + 1}
+                </span>
+                {i < STAGES.length - 1 && (
+                  <span
+                    className={`w-[2px] flex-1 ${past ? "bg-brand" : "bg-mist"}`}
+                    style={{ minHeight: 14 }}
+                  />
+                )}
+              </span>
+              <span className={`pb-3 ${i === STAGES.length - 1 ? "pb-0" : ""}`}>
+                <span
+                  className={`block text-[13px] leading-[1.5] ${
+                    now ? "font-black text-brand-deep" : past ? "font-bold text-slate" : "font-bold text-steel"
+                  }`}
+                >
+                  {st.label}
+                  {now && <span className="ml-2 text-[11px] font-bold text-brand">いまここ</span>}
+                </span>
+                {now && (
+                  <span className="mt-1 block text-[12px] leading-[1.75] text-steel">{st.note}</span>
+                )}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
 
       {/* 届いた順に1枚ずつ */}
       {shown.length > 0 && (
