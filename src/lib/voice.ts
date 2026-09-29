@@ -58,10 +58,10 @@ export const NAME = "タシカメ";
 /** 運営の事業名。会社・記事・旧サービス側に残す */
 export const OPERATOR = "His Recoveries";
 
-export const ONE_LINER = "勘で、出さない。";
+export const ONE_LINER = "失敗する前に、相談できる。";
 
 /** 名乗りの下に1行だけ添えてよい説明 */
-export const SUB = "送る前に、相手に近い女性5人の目を通す。";
+export const SUB = "写真・メッセージ・電話。本番の前に、実在女性の反応を確認。";
 
 /**
  * 引退させた名乗り。
@@ -76,6 +76,23 @@ export const RETIRED = [
   "相手に近い人に、聞く",
   "これ、今送っていい？",
 ];
+
+/**
+ * 入口の言葉は「相談」でよい。
+ *
+ * 「評価される」「診断される」は、押す前に身構える。
+ * 「ちょっと相談する」のほうが、手が伸びる。
+ *
+ * ただし、売っているものは相談ではない。
+ *   入口の言葉  相談
+ *   買う理由    失敗したくない
+ *   渡すもの    実在の女性の、一次反応
+ *   体験        本番前のテスト
+ *
+ * だから「相談できます」で止めない。
+ * その隣に、何が返ってくるかを必ず書く。
+ */
+export const ENTRY_WORD = "相談";
 
 /**
  * 買う人の画面に出してはいけない言葉。
@@ -125,6 +142,33 @@ export function assertWhoReads(text: string, where: string): string {
   return text;
 }
 
+/**
+ * この製品が絶対に名乗らないもの。
+ *
+ * 恋愛攻略・モテ塾・女性心理の解読。
+ * 売っているのは「モテる方法」ではなく、
+ * 大事な相手とのチャンスを、自分の判断ミスで失わないこと。
+ *
+ * 根拠の無い数字も同じ。「成功率」「失敗確率」は数えられない。
+ * 数えられるのは「5人中3人」だけ。
+ */
+export const NEVER = [
+  "モテる", "モテ塾", "攻略", "落とす", "落とし方", "ナンパ",
+  "女心", "女性心理を", "女性のすべて", "女性はみんな", "女性全体",
+  "成功率", "失敗確率", "必ず成功", "絶対に成功",
+  "完全に理解", "誰でもできる", "これさえ",
+];
+
+export function assertNever(text: string, where: string): string {
+  const hit = NEVER.find((n) => text.includes(n));
+  if (hit) {
+    throw new Error(
+      `${where} に「${hit}」が入っています。この製品は、モテる方法でも女性心理の解読でもありません`,
+    );
+  }
+  return text;
+}
+
 /** 名乗りの位置に置いてよいかを確かめる */
 export function assertOneLiner(text: string): string {
   const hit = RETIRED.find((r) => text.includes(r));
@@ -153,7 +197,7 @@ export function assertWeight(text: string, where: string): string {
   if (NAME.length > 6) throw new Error(`名前が長すぎます（${NAME.length}文字）`);
   if (!ONE_LINER) throw new Error("名乗りが空です");
   if (ONE_LINER.length > 16) throw new Error(`名乗りが長すぎます（${ONE_LINER.length}文字）`);
-  if (SUB.length > 26) throw new Error(`説明が長すぎます（${SUB.length}文字）`);
+  if (SUB.length > 40) throw new Error(`説明が長すぎます（${SUB.length}文字）`);
   if (RETIRED.includes(ONE_LINER)) throw new Error("引退した文を名乗りにしています");
 
   assertOneLiner(ONE_LINER);
@@ -161,15 +205,22 @@ export function assertWeight(text: string, where: string): string {
   assertWeight(ONE_LINER, "名乗り");
   assertWeight(SUB, "名乗りの説明");
   assertWhoReads(SUB, "名乗りの説明");
+  assertNever(ONE_LINER, "名乗り");
+  assertNever(SUB, "名乗りの説明");
 
   // 説明の中で、誰が読むのかが言えていること。
   if (!SUB.includes("女性")) {
     throw new Error("名乗りの説明に、誰が読むのかが書かれていません");
   }
 
-  // 名乗りが「聞く」で終わっていないこと。
-  // 聞くと書いた瞬間に、無料のアンケートと同じ形になる。
-  if (/聞く$|聞ける$/.test(ONE_LINER)) {
-    throw new Error("名乗りが「聞く」で終わっています（通す・確かめる、で書いてください）");
+  // 入口の言葉に「相談」を使うのは構わない。
+  // ただし、名乗りが「相談できます」だけで終わらないこと。
+  // 何のための相談なのかが無いと、無料の相談所と同じ形になる。
+  if (/^相談/.test(ONE_LINER) || (ONE_LINER as string) === `${ENTRY_WORD}できる。`) {
+    throw new Error("名乗りが相談だけで終わっています（何のための相談かを書いてください）");
+  }
+  // 説明のほうに、何が返ってくるかが書かれていること。
+  if (!/反応|通す|確認/.test(SUB)) {
+    throw new Error("名乗りの説明に、何が返ってくるかが書かれていません");
   }
 }

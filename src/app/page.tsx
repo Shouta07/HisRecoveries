@@ -1,104 +1,121 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { topPlans, plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
+import { topPlans, plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
+import { DEMO, count } from "@/lib/ask/demo";
+import { VERDICTS } from "@/lib/ask/model";
 import { canCharge } from "@/lib/legal";
 import { NAME, OPERATOR, ONE_LINER, SUB } from "@/lib/voice";
 import { supply, shortMessage } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
 import Tashikame from "@/components/brand/Tashikame";
-import Slot from "@/components/brand/Slot";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
 
 // ══════════════════════════════════════════════════════════════
-// トップページ。見本のとおりに組んだ。
+// トップページ。
 //
-// ── 見本と変えたところは3つだけ ──────────────────
+// ── 売っているもの ────────────────────────────────
+// モテる方法ではない。
+// 大事な相手とのチャンスを、自分の判断ミスで失わないこと。
 //
-// 1. 人物写真
-//    こちらで用意しない。素材サイトの写真も、生成した人物も置かない。
-//    とくに、回答者として顔を並べるなら、その人が実在して掲載に
-//    同意していることが要る。実在しない顔を「回答している女性」として
-//    並べると、まだ登録が0の状態で、いる人の数を偽ることになる。
-//    枠は見本どおりに置いてあるので、public/img/ に写真を置けば
-//    その瞬間から見本と同じ絵になる（lib/images.ts）。
+// ── いちばん大きく直したところ ────────────────────
+// 前の見本は、回答が肯定的なものばかりだった。
+//   「いいと思います！」「好印象です！」「送って大丈夫です！」
+// これを見た人が、お金を払う理由は無い。
+// 全部が「いいと思います」なら、聞く必要が無かったことになる。
 //
-// 2. 「今、回答できる女性 128人」
-//    実データから出す（OnlineCount）。いまは0人と出る。
-//    ここに固定の数字を書くと、この画面はその瞬間から全部うそになる。
+// いまの見本は、必ず何かが引っかかっている。
+// そして直して、もう一度通して、消えたところまで見せる。
+// これが、この製品にお金が発生する唯一の理由。
 //
-// 3. ログイン
-//    このサービスに会員登録が無い。結果は URL の鍵だけで開く。
-//    押しても行き先が無いので置いていない。
+// ── ただし粗探しのサービスにしない ────────────────
+// 問題が無ければ「このままで問題なさそう」も、ちゃんと結果。
 //
-// ── 配色 ──────────────────────────────────────────
-// 青は「聞く」、赤は「買う」。見本の使い分けをそのまま踏襲。
+// ── 入口の言葉は「相談」 ──────────────────────────
+// 「評価される」「診断される」は、押す前に身構える。
+// 「ちょっと相談する」のほうが手が伸びる。
+// ただし相談で止めない。何が返ってくるかを隣に必ず書く。
+//
+// ── 出さない数字 ──────────────────────────────────
+// 「失敗確率72%」は出さない。根拠が無い。
+// 出すのは「5人中3人」だけ。数えられるものしか出さない。
+// 5人の反応を、女性全体の総意として書かない。
+//
+// ── 構成（12） ────────────────────────────────────
+//   1 ファーストビュー   2 こんな瞬間   3 3つの対象
+//   4 Before / After     5 反応のまとめ  6 なぜAIではないか
+//   7 使い方             8 料金          9 答える女性
+//   10 安心・安全        11 FAQ          12 最後
 // ══════════════════════════════════════════════════════════════
 
 export const metadata: Metadata = {
-  title: `タシカメ — 勘で、出さない。`,
-  description:
-    "送る前に、相手に近い女性5人の目を通す。LINEの文面、写真、誘い方、服装、プロフィール。読むのは審査を通った女性だけです。",
+  title: `${NAME} — ${ONE_LINER}`,
+  description: `${SUB} 写真・メッセージ・電話を、送る前・会う前・話す前に確認できます。`,
   alternates: { canonical: site.url },
 };
 
 const NAV = [
-  ["#how", "通す工程"],
-  ["#voices", "返ってくる所見"],
+  ["#moments", "こんなとき"],
+  ["#before-after", "実例"],
   ["#price", "料金"],
-  ["/answerers", "誰が読むのか"],
-] as const;
-
-/* 画面の見本。実際の回答ではない */
-const PHONE = [
-  { age: 25, say: "いいと思います！\nこのメッセージは丁寧で好印象です" },
-  { age: 27, say: "もう少しカジュアルにしても\nいいかも！最後に質問を入れると◎" },
-  { age: 23, say: "良いです！\nぜひ送ってみてください！" },
-  { age: 29, say: "すごくいいと思います！\n私だったら返信したくなります" },
-  { age: 26, say: "この流れは自然で好印象です。\n送って大丈夫です！" },
-];
-
-const CASES = [
-  { img: "caseMessage", tag: "LINEのメッセージ", q: "これ、今送っていい？", c: "message" },
-  { img: "caseDate", tag: "デートの誘い", q: "この誘い方で大丈夫？", c: "signal" },
-  { img: "casePhoto", tag: "プロフィール写真", q: "この写真どう思う？", c: "photo" },
-  { img: "caseStyle", tag: "デートの服装", q: "このコーデでいい？", c: "style" },
-  { img: "caseProfile", tag: "プロフィール", q: "この自己紹介いい？", c: "photo" },
-  { img: "caseWords", tag: "うまく言葉にできない", q: "どう伝えればいい？", c: "other" },
+  ["#faq", "よくある質問"],
+  ["/join", "回答する女性へ"],
 ] as const;
 
 const STEPS = [
-  { n: "01", t: "出すものを預ける", d: "送る直前のLINE、出す直前の写真。そのまま預けます。" },
-  { n: "02", t: "女性の目で読まれる", d: "審査を通った女性5人が、相手に近い立場で読みます。" },
-  { n: "03", t: "所見が一人ずつ届く", d: "通したか、引っかかったか。その理由まで書かれます。" },
-  { n: "04", t: "決める", d: "そのまま出すか、直してから出すか。決めるのはあなたです。" },
-] as const;
+  { n: "01", t: "送る前のものを預ける", d: "写真1枚、またはメッセージ1件。そのまま貼るだけです。" },
+  { n: "02", t: "条件に合う女性に届く", d: "年代や立場を指定できます。確認を通った方にだけ届きます。" },
+  { n: "03", t: "一人ずつ返ってくる", d: "このままでOK / 少し気になる / 変えた方がいい と、その理由。" },
+  { n: "04", t: "直すか、出すか決める", d: "問題が無ければそのまま。気になる点が出たら、直してから。" },
+];
 
-const VOICES = [
+const FAQ = [
   {
-    tag: "LINEのメッセージ",
-    kind: "message" as const,
-    sent: "来週の土曜あたり\nご飯でもどうですか？\nよかったらぜひ！",
-    time: "19:24",
-    says: [
-      { age: 25, say: "いいと思います！\nシンプルで誘いやすいです" },
-      { age: 27, say: "いいですね！土曜でもいいけど、\nお店の提案があるともっと嬉しいかも！" },
-    ],
+    q: "AIに聞くのと何が違いますか？",
+    a: "AIは一般論と改善案を出せます。ここで返ってくるのは、実在の女性が実際にどう受け取ったかです。予測ではなく、一次反応です。",
   },
   {
-    tag: "プロフィール写真",
-    kind: "photo" as const,
-    says: [
-      { age: 23, say: "この写真すごくいいです！\n自然な笑顔で好印象です。" },
-      { age: 26, say: "清潔感があって素敵です！\nこの写真をメインにしていいと思います。" },
-    ],
+    q: "5人が言えば、それが女性全体の意見ですか？",
+    a: "違います。5人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。総意として扱わないでください。",
+  },
+  {
+    q: "悪いところを無理に探されませんか？",
+    a: "探しません。問題が無ければ「このままで問題なさそう」と返ります。それも結果です。粗探しが仕事になると、何を直せばいいか分からなくなります。",
+  },
+  {
+    q: "相手に知られませんか？",
+    a: "知られません。匿名で、相手の名前・写真・連絡先は保存していません。回答する方とあなたが直接つながる経路も作っていません。",
+  },
+  {
+    q: "どのくらいで返ってきますか？",
+    a: "条件に合う方の数によります。実績が貯まるまで、所要時間は約束しません。届くまでの様子は画面で見えるようにしてあります。",
+  },
+  {
+    q: "集まらなかったら？",
+    a: "集まらなかった分は返金します。条件を広げて待つか、全額返金かを選んでいただけます。こちらで勝手に決めません。",
   },
 ];
 
 function Wrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={`mx-auto w-full max-w-[1120px] px-5 sm:px-8 ${className}`}>{children}</div>;
+}
+
+function Block({
+  children,
+  tint = false,
+  id,
+}: {
+  children: React.ReactNode;
+  tint?: boolean;
+  id?: string;
+}) {
+  return (
+    <section id={id} className={`scroll-mt-20 ${tint ? "bg-mist" : "bg-paper"}`}>
+      <Wrap className="py-14 sm:py-20">{children}</Wrap>
+    </section>
+  );
 }
 
 function H({ children }: { children: React.ReactNode }) {
@@ -110,7 +127,7 @@ function H({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** 年齢だけで人を表す。顔は置かない */
+/** 年齢だけで表す。顔は置かない */
 function Who({ age, size = 36 }: { age: number; size?: number }) {
   return (
     <span
@@ -123,37 +140,32 @@ function Who({ age, size = 36 }: { age: number; size?: number }) {
   );
 }
 
-function Heart() {
-  return (
-    <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-rose" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 20.5 3.8 12.3a5 5 0 0 1 7.1-7.1l1.1 1.1 1.1-1.1a5 5 0 0 1 7.1 7.1Z" />
-    </svg>
-  );
+const TONE: Record<string, string> = {
+  as_is: "bg-ok-tint text-ok-text",
+  slight: "bg-mist text-steel",
+  change: "bg-rose-tint text-rose-text",
+};
+
+function label(v: string) {
+  return VERDICTS.find((x) => x.id === v)?.label ?? v;
 }
 
 export default async function HomePage() {
   const paid = canCharge();
-  const entry = topPlans()[0];
-  // 答えられる人が足りないあいだは、買うボタンを出さない。
-  // 決済だけ通って誰にも届かないのが、いちばん信用を失う。
-  const sup = await supply(entry.answers);
+  const tops = topPlans();
+  const entry = getPlan(ENTRY_PLAN);
+  const main = getPlan(DEFAULT_PLAN);
+  const sup = await supply(main.answers);
   const open = paid && sup.open;
-  // 必要になった場面でだけ出すもの。トップでは名前と目安だけ。
-  const LATER = [
-    { id: "talk", name: "相談", when: "話しながら整理したいとき", yen: getPlan("talk").yen },
-    { id: "improve", name: "改善", when: "直したいとき", yen: getPlan("improve").yen },
-    { id: "retest", name: "再確認", when: "直したあと", yen: getPlan("retest").yen },
-  ];
 
   const ld = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `${site.url}/#webpage`,
-    url: site.url,
-    name: `${site.name} — これ、今送っていい？`,
-    description: metadata.description,
-    inLanguage: "ja",
-    isPartOf: { "@id": `${site.url}/#website` },
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   };
 
   return (
@@ -165,46 +177,43 @@ export default async function HomePage() {
         <Wrap className="flex items-center justify-between gap-4 py-3">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
             <Tashikame size={34} />
-            {/* 肩書きを置かない。名乗りは h1 の1つだけ。
-                ここにもう1行置くと、名乗りが2つになる。 */}
             <span className="min-w-0 truncate text-[19px] font-black tracking-[0.02em] text-slate">
               {NAME}
             </span>
           </Link>
-
-          <nav aria-label="サイト" className="flex shrink-0 items-center gap-6">
-            <ul className="hidden items-center gap-7 lg:flex">
-              {NAV.map(([href, label]) => (
+          <nav aria-label="サイト" className="flex shrink-0 items-center gap-5">
+            <ul className="hidden items-center gap-6 lg:flex">
+              {NAV.map(([href, l]) => (
                 <li key={href}>
                   <Link
                     href={href}
-                    className="whitespace-nowrap text-[13.5px] font-bold text-slate transition-colors hover:text-brand"
+                    className="whitespace-nowrap text-[13.5px] font-bold text-steel transition-colors hover:text-brand"
                   >
-                    {label}
+                    {l}
                   </Link>
                 </li>
               ))}
             </ul>
             <PlanCta
-              plan={ENTRY_PLAN}
+              plan={DEFAULT_PLAN}
               from="header"
-              className="min-h-[42px] rounded-pill bg-brand px-6 text-[13.5px] !text-paper shadow-card"
+              className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
             >
-              女性5人の目を通す
+              相談する
             </PlanCta>
           </nav>
         </Wrap>
       </header>
 
-      {/* ══ ヒーロー ══ */}
-      <section className="relative overflow-hidden bg-sky">
-        <Wrap className="grid gap-10 pb-12 pt-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-8 lg:pb-14 lg:pt-12">
-          <div className="relative z-10">
-            <h1 className="text-mega font-black leading-[1.22] text-slate">
-              勘で、
+      {/* ══ 1. ファーストビュー ══ */}
+      <section className="bg-sky">
+        <Wrap className="grid gap-10 pb-12 pt-11 lg:grid-cols-[1fr_0.95fr] lg:items-start lg:gap-12 lg:pb-16 lg:pt-14">
+          <div>
+            <h1 className="text-mega font-black leading-[1.25] text-slate">
+              失敗する前に、
               <br />
               <span className="relative inline-block">
-                出さない。
+                相談できる。
                 <span
                   aria-hidden
                   className="absolute -bottom-1 left-0 h-[10px] w-full -skew-x-6 rounded-pill bg-brand/25"
@@ -212,515 +221,525 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            <p className="mt-7 max-w-[24em] text-[15.5px] leading-[1.9] text-steel sm:text-[16.5px]">
-              {SUB}
+            <p className="mt-7 max-w-[24em] text-[15.5px] leading-[1.95] text-steel sm:text-[16.5px]">
+              写真・メッセージ・電話。
               <br className="hidden sm:block" />
-              LINEの文面、写真、誘い方、服装、プロフィール。
-              通ったか、通らなかったか。その理由まで返ってきます。
+              本番の前に、実在女性の反応を確認。
             </p>
-
-            <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-              {[
-                ["審査を通った女性だけが読む", "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6"],
-                // 速さは実測できるまで名乗らない。
-                // この製品のいちばんの売りだからこそ、
-                // 担保できないうちに書くと、そこが最初の嘘になる。
-                sup.canPromiseSpeed
-                  ? (["その日のうちに所見が届く", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const)
-                  : (["読むのは実在の女性", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const),
-                ["匿名。相手のことは保存しない", "M5 11V8a7 7 0 0 1 14 0v3 M4 11h16v9H4z"],
-              ].map(([label, d]) => (
-                <li key={label} className="flex items-center gap-2">
-                  <span
-                    aria-hidden
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper shadow-card"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-4 w-4 text-brand"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.9"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d={d} />
-                    </svg>
-                  </span>
-                  <span className="text-[12.5px] font-bold text-steel">{label}</span>
-                </li>
-              ))}
-            </ul>
 
             {!open && (
               <p className="mt-7 rounded-card border border-line bg-paper px-5 py-4 text-[13.5px] leading-[1.85] text-slate shadow-card">
                 {!paid
                   ? "いまお支払いを受け付けていません。特定商取引法に基づく表記が整い次第、始めます。"
-                  : shortMessage(sup, entry.answers)}
+                  : shortMessage(sup, main.answers)}
               </p>
             )}
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8">
               <PlanCta
-                plan={ENTRY_PLAN}
+                plan={DEFAULT_PLAN}
                 from="hero"
-                className="!flex-col !items-start min-h-[70px] rounded-[18px] bg-brand px-7 py-3 !text-paper shadow-card"
+                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card sm:w-auto"
               >
-                <span className="flex items-center gap-2.5 text-[17px] font-black">
-                  <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z" />
-                  </svg>
-                  女性5人の目を通す
-                </span>
-                <span className="mt-0.5 pl-[30px] text-[12px] font-bold opacity-90">
-                  事前確認 ¥{getPlan(ENTRY_PLAN).yen.toLocaleString()}
-                </span>
-              </PlanCta>
-
-              {/* 2つ目は、押したら買えるものにする。
-                  受付前のページへ送ると、いちばん目立つボタンで
-                  「買えません」に着く。 */}
-              <PlanCta
-                plan={ENTRY_PLAN}
-                from="hero_assist"
-                assist
-                className="!flex-col !items-start min-h-[70px] rounded-[18px] border border-line bg-paper px-7 py-3 shadow-card"
-              >
-                <span className="flex items-center gap-2.5 text-[17px] font-black text-slate">
-                  <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 text-slate" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 19v-3 M9 5.5A3.5 3.5 0 1 1 13.5 9c-1 .6-1.5 1.5-1.5 2.5v1" />
-                  </svg>
-                  うまく書けない
-                </span>
-                <span className="mt-0.5 pl-[30px] text-[12px] font-bold text-steel">
-                  3つ聞いて、一緒に質問をつくる
-                </span>
+                今すぐ女性に相談する <span aria-hidden className="ml-2">→</span>
               </PlanCta>
             </div>
-          </div>
 
-          {/* 右: 写真 ＋ スマホの画面 */}
-          <div className="relative">
-            <Slot name="hero" className="aspect-[4/3] w-full lg:aspect-[5/4]" />
-
-            {/* 吹き出し */}
-            <p className="absolute left-4 top-5 rotate-[-6deg] text-[12.5px] font-bold leading-[1.6] text-slate sm:left-8">
-              これで送って
-              <br />
-              大丈夫かな…？
+            <ul className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] font-bold text-steel">
+              <li>匿名</li>
+              <li>都度払い</li>
+              <li>実在女性が回答</li>
+              {sup.canPromiseSpeed && <li>最短数分</li>}
+            </ul>
+            <p className="mt-3 text-[12px] text-steel">
+              {entry.name} ¥{entry.yen.toLocaleString()} から
             </p>
+          </div>
 
-            {/* スマホ */}
-            <div className="mt-4 overflow-hidden rounded-[22px] border-[6px] border-slate bg-paper shadow-card lg:absolute lg:-right-2 lg:top-2 lg:mt-0 lg:w-[62%]">
-              <div className="flex items-center justify-between px-4 pb-1.5 pt-2 text-[10px] font-bold text-slate">
-                <span>12:34</span>
-                <span className="flex gap-1" aria-hidden>
-                  <span className="h-2 w-3 rounded-[2px] bg-slate/70" />
-                  <span className="h-2 w-3 rounded-[2px] bg-slate/70" />
-                  <span className="h-2 w-4 rounded-[2px] bg-slate/70" />
+          {/* 何が返ってくるかを、説明より先に見せる */}
+          <Reveal>
+            <div className="overflow-hidden rounded-card border border-line bg-paper shadow-card">
+              <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-3.5">
+                <p className="text-[12.5px] font-bold text-brand">{DEMO.says.length}人の反応</p>
+                <span className="shrink-0 rounded-pill bg-mist px-2.5 py-1 text-[10.5px] text-steel">
+                  画面の見本
                 </span>
               </div>
-              <div className="flex items-center gap-2 border-b border-line px-4 pb-2.5">
-                <span aria-hidden className="text-[13px] text-steel">
-                  ‹
-                </span>
-                <p className="text-[13px] font-black">5人の女性の反応</p>
+
+              <div className="border-b border-line px-5 py-4">
+                <p className="text-[11.5px] font-bold text-steel">送ろうとしていた文面</p>
+                <p className="mt-2 rounded-card rounded-tl-[4px] bg-brand-tint px-4 py-3 text-[15px] leading-[1.7] text-slate">
+                  {DEMO.before}
+                </p>
               </div>
-              <ul className="divide-y divide-line">
-                {PHONE.map((r) => (
-                  <li key={r.age} className="flex items-start gap-2.5 px-4 py-2.5">
-                    <Who age={r.age} size={30} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[10.5px] font-black text-rose-text">
-                        {r.age}歳 <span className="text-steel">女性</span>
-                      </span>
-                      <span className="mt-0.5 block whitespace-pre-line text-[11px] leading-[1.6] text-slate">
-                        {r.say}
-                      </span>
-                    </span>
-                    <Heart />
-                  </li>
-                ))}
-              </ul>
-              <p className="border-t border-line px-4 py-2 text-center text-[10px] text-steel">
-                画面の見本
-              </p>
-            </div>
-          </div>
-        </Wrap>
-      </section>
 
-      {/* ══ こんなときに ══ */}
-      <section id="cases" className="scroll-mt-20 bg-paper">
-        <Wrap className="py-14 sm:py-16">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <H>出す直前に、手が止まるもの。</H>
-            <Link
-              href="/ask"
-              className="text-[12.5px] font-bold text-steel transition-colors hover:text-brand"
-            >
-              すべて見る <span aria-hidden>→</span>
-            </Link>
-          </div>
-
-          <div className="mt-7 grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-6">
-            {CASES.map((c, i) => (
-              <Reveal key={c.tag} delay={i * 40}>
-                <PlanCta
-                  plan={ENTRY_PLAN}
-                  from="case"
-                  category={c.c}
-                  className="!flex h-full !flex-col !items-stretch overflow-hidden rounded-card border border-line bg-paper !p-0 text-left shadow-card"
-                >
-                  <Slot name={c.img} rounded="" className="aspect-[4/3] w-full" />
-                  <span className="flex flex-1 flex-col p-3">
-                    <span className="flex items-center justify-between gap-1.5">
-                      <span className="min-w-0 truncate text-[12.5px] font-black text-slate">
-                        {c.tag}
-                      </span>
-                      <span aria-hidden className="shrink-0 text-[12px] text-steel">
-                        ›
-                      </span>
-                    </span>
-                    <span className="mt-1 block text-[11.5px] leading-[1.6] text-steel">
-                      {c.q}
-                    </span>
-                  </span>
-                </PlanCta>
-              </Reveal>
-            ))}
-          </div>
-        </Wrap>
-      </section>
-
-      {/* ══ 使い方 ══ */}
-      <section id="how" className="scroll-mt-20 bg-sky">
-        <Wrap className="py-14 sm:py-16">
-          <H>通す、という工程です。</H>
-
-          <ol className="mt-7 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s, i) => (
-              <Reveal key={s.n} delay={i * 60}>
-                <li className="flex h-full flex-col rounded-card border border-line bg-paper p-5 shadow-card">
-                  <div className="flex items-start gap-3">
-                    <span
-                      aria-hidden
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-brand-tint text-[13px] font-black tabular-nums text-brand-deep"
+              <ul className="flex divide-x divide-line border-b border-line text-center">
+                {VERDICTS.map((v) => (
+                  <li key={v.id} className="flex-1 px-2 py-4">
+                    <p
+                      className={`text-[26px] font-black tabular-nums leading-none ${
+                        v.id === "change" ? "text-rose-text" : v.id === "as_is" ? "text-ok-text" : "text-slate"
+                      }`}
                     >
-                      {s.n}
-                    </span>
+                      {count(DEMO, v.id)}
+                      <span className="text-[13px] text-steel">人</span>
+                    </p>
+                    <p className="mt-1.5 text-[10.5px] leading-[1.4] text-steel">{v.label}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="border-b border-line bg-rose-tint px-5 py-4">
+                <p className="text-[11px] font-bold text-rose-text">共通して気になったこと</p>
+                <p className="mt-1.5 text-[14.5px] font-bold leading-[1.7] text-slate">
+                  {DEMO.common}
+                </p>
+              </div>
+
+              <ul className="flex flex-col gap-3.5 px-5 py-5">
+                {DEMO.says.slice(0, 3).map((s) => (
+                  <li key={s.age} className="flex items-start gap-3">
+                    <Who age={s.age} size={32} />
                     <span className="min-w-0">
-                      <span className="block text-[15.5px] font-black text-slate">{s.t}</span>
-                      <span className="mt-1.5 block text-[12.5px] leading-[1.75] text-steel">
-                        {s.d}
+                      <span className="flex flex-wrap items-center gap-2">
+                        <span className="text-[11.5px] font-bold text-slate">{s.age}歳・女性</span>
+                        <span
+                          className={`rounded-pill px-2 py-0.5 text-[10px] font-bold ${TONE[s.verdict]}`}
+                        >
+                          {label(s.verdict)}
+                        </span>
+                      </span>
+                      <span className="mt-1 block text-[13.5px] leading-[1.7] text-steel">
+                        {s.say}
                       </span>
                     </span>
-                  </div>
-
-                  {/* 各段の絵 */}
-                  <div className="mt-4 flex-1">
-                    {i === 0 && (
-                      <div className="relative">
-                        <Slot name="step1" className="aspect-[5/3] w-full" />
-                        <span className="absolute -bottom-1 right-1 rounded-card bg-paper px-3 py-2 text-[10.5px] font-bold leading-[1.5] shadow-card">
-                          このメッセージ
-                          <br />
-                          送っていい？
-                        </span>
-                      </div>
-                    )}
-                    {i === 1 && (
-                      <div className="flex items-center justify-center gap-2 py-3">
-                        {[24, 27, 25].map((a, k) => (
-                          <span key={a} className={k === 1 ? "translate-y-2" : ""}>
-                            <Who age={a} size={40} />
-                          </span>
-                        ))}
-                        <svg
-                          aria-hidden
-                          viewBox="0 0 24 24"
-                          className="h-7 w-7 shrink-0 text-brand"
-                          fill="currentColor"
-                        >
-                          <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
-                        </svg>
-                      </div>
-                    )}
-                    {i === 2 && (
-                      <div className="flex items-start gap-2 rounded-card bg-mist p-3">
-                        <Who age={25} size={28} />
-                        <span className="min-w-0">
-                          <span className="block text-[10.5px] font-black text-rose-text">
-                            25歳 <span className="text-steel">女性</span>
-                          </span>
-                          <span className="mt-0.5 block text-[11px] leading-[1.6] text-slate">
-                            いいと思います！
-                            <br />
-                            このまま送って大丈夫です
-                          </span>
-                        </span>
-                      </div>
-                    )}
-                    {i === 3 && (
-                      <div className="relative">
-                        <Slot name="step4" className="aspect-[5/3] w-full" />
-                        <span className="absolute bottom-2 right-2 text-[12px] font-black text-brand">
-                          よし、これで送ろう！
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  </li>
+                ))}
+                <li className="text-[12.5px] font-bold text-brand">
+                  他の反応も見る <span aria-hidden>→</span>
                 </li>
-              </Reveal>
-            ))}
-          </ol>
+              </ul>
+            </div>
+          </Reveal>
         </Wrap>
       </section>
 
-      {/* ══ 料金プラン ══ */}
-      <section id="price" className="scroll-mt-20 bg-paper">
-        <Wrap className="py-14 sm:py-16">
-          <H>料金はひとつだけ。</H>
-
-          {/* 料金表を並べない。
-              最初から選ばせると、「何に迷っているか」より先に
-              「どれを買うか」を考えさせることになる。
-              ほかの商品は、必要になった場面でだけ出す。 */}
-          <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
-            <div className="rounded-card border border-rose bg-paper p-7 shadow-card">
-              <p className="text-[18px] font-black text-slate">{entry.name}</p>
-              <p className="mt-2 text-[40px] font-black leading-none tabular-nums text-rose-text">
-                ¥{entry.yen.toLocaleString()}
-              </p>
-              <p className="mt-3.5 text-[13.5px] leading-[1.8] text-steel">{entry.tagline}</p>
-
-              <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-5">
-                {entry.includes.map((x) => (
-                  <li key={x} className="flex items-start gap-2 text-[13px] leading-[1.7]">
-                    <span aria-hidden className="mt-[2px] shrink-0 text-[12px] font-black text-brand">
-                      ✓
-                    </span>
-                    <span className="min-w-0 text-steel">{x}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <PlanCta
-                plan={entry.id}
-                from="price"
-                className="mt-6 min-h-[54px] w-full rounded-pill bg-rose-fill px-5 text-[15px] !text-paper shadow-card"
-              >
-                女性5人の目を通す <span aria-hidden className="ml-1.5">→</span>
-              </PlanCta>
-
-              <p className="mt-4 text-[12px] leading-[1.75] text-steel">
-                お支払いが済んだ瞬間に、条件に合う方へ配りはじめます。
-              </p>
-            </div>
-
-            <div>
-              <p className="text-[15.5px] font-bold leading-[1.8]">
-                足りなければ、そのときに。
-              </p>
-              <p className="mt-3 text-[13.5px] leading-[1.9] text-steel">
-                所見を読んで「直したい」「もう一度通したい」と思ったときだけ、
-                次が出てきます。最初から全部は並べません。
-              </p>
-              <ul className="mt-5 flex flex-col gap-2">
-                {LATER.map((l) => (
-                  <li
-                    key={l.id}
-                    className="flex items-baseline justify-between gap-3 border-b border-line py-2.5"
-                  >
-                    <span className="min-w-0 text-[13.5px] text-slate">
-                      {l.name}
-                      <span className="ml-2 text-[12px] text-steel">{l.when}</span>
-                    </span>
-                    <span className="shrink-0 text-[13.5px] font-bold tabular-nums text-steel">
-                      ¥{l.yen.toLocaleString()}〜
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <p className="mt-6 text-[12px] leading-[1.9] text-steel">
-            税込。月額も入会金もありません。募集を始める前ならキャンセルできます。
-            人数が集まらなかった場合は、集まらなかった分をご返金します。
-            <Link
-              href="/legal"
-              className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
+      {/* ══ 2. こんな瞬間 ══ */}
+      <Block id="moments">
+        <H>こんな瞬間、ありませんか。</H>
+        <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            "送信ボタンの前で、指が止まる",
+            "今誘っていいのか、判断がつかない",
+            "この写真で損をしていないか分からない",
+            "返信が遅い。追いLINEしていいのか",
+            "ChatGPTには聞いた。でも実際どうなのか",
+            "友達に聞くには、気を使わせてしまう",
+          ].map((t) => (
+            <li
+              key={t}
+              className="rounded-card border border-line bg-paper px-5 py-4 text-[14.5px] leading-[1.7] shadow-card"
             >
-              特定商取引法に基づく表記
-            </Link>
-          </p>
+              {t}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-7 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+          相手のことは、もう十分に考えています。足りていないのは、
+          相手側から見たらどう映るか、という一次情報だけです。
+        </p>
+      </Block>
 
-          {!paid && (
-            <p className="mt-4 rounded-card border border-brand bg-paper p-4 text-[13px] leading-[1.9] text-slate shadow-card">
-              いまお支払いは受け付けていません。特定商取引法に基づく表記が整うまで、
-              決済を開始できないようにしてあります。
-            </p>
-          )}
-        </Wrap>
-      </section>
-
-      {/* ══ 実際にこんな反応が届きます ══ */}
-      <section id="voices" className="scroll-mt-20 bg-sky">
-        <Wrap className="py-14 sm:py-16">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <H>こういう所見が返ってきます。</H>
-            <p className="text-[11px] text-steel">※ 画面の見本です</p>
-          </div>
-
-          <div className="mt-7 grid gap-4 lg:grid-cols-2">
-            {VOICES.map((v) => (
-              <div
-                key={v.tag}
-                className="grid gap-4 rounded-card border border-line bg-paper p-5 shadow-card sm:grid-cols-[0.85fr_1.15fr]"
-              >
-                <div>
-                  <span className="inline-flex rounded-pill bg-slate px-3 py-1.5 text-[11px] font-bold text-paper">
-                    {v.tag}
+      {/* ══ 3. 3つの対象 ══ */}
+      <Block tint>
+        <H>見てもらえるのは、この3つ。</H>
+        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          {SUBJECTS.map((s, i) => {
+            const usable = s.id !== "call";
+            return (
+              <Reveal key={s.id} delay={i * 60}>
+                <div className="flex h-full flex-col rounded-card border border-line bg-paper p-6 shadow-card">
+                  <span className="text-[11px] font-bold tracking-[0.14em] text-steel">
+                    {s.label.toUpperCase()}
                   </span>
-                  {v.kind === "message" ? (
-                    <div className="mt-3 rounded-card rounded-tl-[4px] bg-brand-tint p-3.5">
-                      <p className="whitespace-pre-line text-[12.5px] leading-[1.75] text-slate">
-                        {v.sent}
-                      </p>
-                      <p className="mt-2 text-right text-[10px] text-steel">{v.time}</p>
-                    </div>
+                  <p className="mt-2.5 text-[19px] font-black leading-[1.5] text-slate">{s.lead}</p>
+                  <p className="mt-3.5 text-[13.5px] leading-[1.85] text-steel">{s.body}</p>
+                  <div className="mt-6 flex-1" />
+                  {usable ? (
+                    <PlanCta
+                      plan={DEFAULT_PLAN}
+                      from={`subject_${s.id}`}
+                      category={s.id === "photo" ? "photo" : "message"}
+                      className="min-h-[50px] rounded-pill bg-brand px-5 text-[14.5px] !text-paper shadow-card"
+                    >
+                      {s.label}を相談する <span aria-hidden className="ml-1.5">→</span>
+                    </PlanCta>
                   ) : (
-                    <Slot name="casePhoto" className="mt-3 aspect-[4/3] w-full" />
+                    <Link
+                      href="/talk"
+                      className="inline-flex min-h-[50px] items-center justify-center rounded-pill border border-line bg-paper px-5 text-[14px] font-bold text-slate"
+                    >
+                      受付前・順番待ちに入る
+                    </Link>
                   )}
                 </div>
+              </Reveal>
+            );
+          })}
+        </div>
+      </Block>
 
-                <ul className="flex flex-col justify-center gap-3.5">
-                  {v.says.map((s) => (
-                    <li key={s.age} className="flex items-start gap-2.5">
-                      <Who age={s.age} size={32} />
-                      <span className="min-w-0">
-                        <span className="block text-[10.5px] font-black text-rose-text">
-                          {s.age}歳 <span className="text-steel">女性</span>
-                        </span>
-                        <span className="mt-0.5 block whitespace-pre-line text-[12px] leading-[1.7] text-slate">
-                          {s.say}
-                        </span>
+      {/* ══ 4. Before / After ══ */}
+      <Block id="before-after">
+        <H>直す前と、直したあと。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+          自分では気づかなかったところが、本番の前に出てきます。
+          問題が無ければ「このままで問題なさそう」と返ります。無理に探しません。
+        </p>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
+          <div className="rounded-card border border-rose bg-paper p-6 shadow-card">
+            <p className="text-[11px] font-bold tracking-[0.14em] text-rose-text">BEFORE</p>
+            <p className="mt-3 rounded-card rounded-tl-[4px] bg-mist px-4 py-3.5 text-[16px] leading-[1.7]">
+              {DEMO.before}
+            </p>
+            <ul className="mt-5 flex flex-col gap-3">
+              {DEMO.says.map((s) => (
+                <li key={s.age} className="flex items-start gap-2.5">
+                  <Who age={s.age} size={30} />
+                  <span className="min-w-0">
+                    <span className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-[11px] font-bold text-slate">{s.age}歳</span>
+                      <span
+                        className={`rounded-pill px-2 py-0.5 text-[10px] font-bold ${TONE[s.verdict]}`}
+                      >
+                        {label(s.verdict)}
                       </span>
+                    </span>
+                    <span className="mt-1 block text-[13px] leading-[1.7] text-steel">{s.say}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-5 rounded-soft bg-rose-tint px-4 py-3">
+              <p className="text-[11px] font-bold text-rose-text">共通して気になったこと</p>
+              <p className="mt-1 text-[13.5px] font-bold leading-[1.7]">{DEMO.common}</p>
+            </div>
+            {DEMO.split && (
+              <p className="mt-3 text-[12px] leading-[1.7] text-steel">{DEMO.split}</p>
+            )}
+          </div>
+
+          <p aria-hidden className="justify-self-center text-[24px] text-steel lg:rotate-0">
+            →
+          </p>
+
+          <div className="rounded-card border border-ok bg-paper p-6 shadow-card">
+            <p className="text-[11px] font-bold tracking-[0.14em] text-ok-text">AFTER</p>
+            <p className="mt-3 rounded-card rounded-tl-[4px] bg-ok-tint px-4 py-3.5 text-[16px] leading-[1.7]">
+              {DEMO.after}
+            </p>
+            <div className="mt-6 border-t border-line pt-5">
+              <p className="text-[11.5px] font-bold text-steel">別の女性{DEMO.retest.of}人に、もう一度</p>
+              <p className="mt-2.5 text-[34px] font-black tabular-nums leading-none text-ok-text">
+                {DEMO.retest.n}
+                <span className="text-steel"> / {DEMO.retest.of}</span>
+              </p>
+              <p className="mt-2 text-[14px] leading-[1.7]">{DEMO.retest.say}</p>
+            </div>
+            <p className="mt-5 text-[12px] leading-[1.75] text-steel">
+              ※ 画面の見本です。実際の回答ではありません。
+            </p>
+          </div>
+        </div>
+      </Block>
+
+      {/* ══ 5. 反応のまとめ方 ══ */}
+      <Block tint>
+        <H>点数ではなく、反応で返します。</H>
+        <div className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { t: "何人がどう答えたか", d: "このままでOK / 少し気になる / 変えた方がいい。実際の人数だけを出します。" },
+            { t: "共通して気になったこと", d: "複数人が同じ箇所に触れたら、そこが直すところです。" },
+            { t: "意見が分かれたところ", d: "割れたことも結果です。相手によって受け取り方が変わる、ということです。" },
+            { t: "一人ひとりの生の声", d: "まとめだけにしません。書かれた文をそのまま出します。" },
+          ].map((x) => (
+            <div key={x.t} className="rounded-card border border-line bg-paper p-5 shadow-card">
+              <p className="text-[14.5px] font-black leading-[1.5]">{x.t}</p>
+              <p className="mt-2.5 text-[12.5px] leading-[1.8] text-steel">{x.d}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-7 max-w-[34em] text-[14px] leading-[1.9] text-steel">
+          「失敗確率」のような数字は出しません。根拠がないからです。
+          出すのは「5人中3人」だけ。そして5人がそう感じたことを、女性全体の総意としては書きません。
+        </p>
+      </Block>
+
+      {/* ══ 6. なぜAIではないか ══ */}
+      <Block>
+        <H>AIではなく、実在の女性である理由。</H>
+        <div className="mt-8 grid items-stretch gap-3.5 lg:grid-cols-[1fr_auto_1.1fr]">
+          <div className="rounded-card border border-line bg-paper p-5 shadow-card">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-soft bg-mist text-[13px] font-black text-steel">
+                AI
+              </span>
+              <p className="text-[14.5px] font-bold text-slate">AIに聞くと</p>
+            </div>
+            <p className="mt-5 text-[15.5px] leading-[1.85] text-steel">
+              「丁寧で好印象だと思います。相手に配慮が伝わる自然な文面です。」
+            </p>
+            <p className="mt-5 text-right">
+              <span className="rounded-pill bg-mist px-2.5 py-1 text-[11px] font-bold text-steel">
+                予測
+              </span>
+            </p>
+          </div>
+
+          <p aria-hidden className="justify-self-center self-center text-[22px] text-steel">
+            →
+          </p>
+
+          <div className="rounded-card border border-brand bg-paper p-5 shadow-card">
+            <p className="text-[14.5px] font-black text-brand">実在の女性5人</p>
+            <ul className="mt-5 flex flex-col gap-3">
+              {DEMO.says.slice(0, 3).map((s) => (
+                <li key={s.age} className="flex items-start gap-3">
+                  <Who age={s.age} size={30} />
+                  <span className="min-w-0">
+                    <span className="block text-[11px] font-bold text-slate">{s.age}歳・女性</span>
+                    <span className="block text-[14px] leading-[1.7] text-steel">{s.say}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 text-right">
+              <span className="rounded-pill bg-brand px-2.5 py-1 text-[11px] font-bold text-paper">
+                実際の反応
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-9 text-[21px] font-black leading-[1.6] text-slate sm:text-[25px]">
+          AIは予測する。
+          <br />
+          女性は、実際に受け取る。
+        </p>
+        <span aria-hidden className="mt-2.5 block h-1 w-[150px] rounded-pill bg-brand sm:w-[180px]" />
+        <p className="mt-7 max-w-[32em] text-[15px] leading-[1.95] text-steel">
+          まずAIに聞いていい。文面を作るのも、考えを整理するのもAIが得意です。
+          それでも最後に残る「実際どう思われるか」だけ、人に確かめます。
+          AIは裏側で、回答の整理と共通点の抽出に使っています。
+        </p>
+      </Block>
+
+      {/* ══ 7. 使い方 ══ */}
+      <Block tint id="how">
+        <H>やることは、4つ。</H>
+        <ol className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((s) => (
+            <li key={s.n} className="rounded-card border border-line bg-paper p-5 shadow-card">
+              <span
+                aria-hidden
+                className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-brand-tint text-[13px] font-black tabular-nums text-brand-deep"
+              >
+                {s.n}
+              </span>
+              <p className="mt-3 text-[15.5px] font-black leading-[1.5]">{s.t}</p>
+              <p className="mt-2 text-[12.5px] leading-[1.8] text-steel">{s.d}</p>
+            </li>
+          ))}
+        </ol>
+      </Block>
+
+      {/* ══ 8. 料金 ══ */}
+      <Block id="price">
+        <H>必要なときだけ、1回ごと。</H>
+        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.95] text-steel">
+          月額はありません。入会金もありません。大事な局面の前にだけ使うものです。
+        </p>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          {tops.map((p, i) => (
+            <Reveal key={p.id} delay={i * 60}>
+              <div
+                className={`flex h-full flex-col rounded-card border bg-paper p-6 shadow-card ${
+                  p.featured ? "border-rose" : "border-line"
+                }`}
+              >
+                {p.featured ? (
+                  <span className="mb-3 inline-flex w-fit rounded-pill bg-rose-fill px-3 py-1 text-[11px] font-bold text-paper">
+                    いちばん使われています
+                  </span>
+                ) : (
+                  <span aria-hidden className="mb-3 block h-[25px]" />
+                )}
+                <p className="text-[17px] font-black text-slate">{p.name}</p>
+                <p
+                  className={`mt-2.5 text-[32px] font-black leading-none tabular-nums ${
+                    p.featured ? "text-rose-text" : "text-slate"
+                  }`}
+                >
+                  ¥{p.yen.toLocaleString()}
+                  {p.from && <span className="ml-1 text-[16px] text-steel">〜</span>}
+                </p>
+                <p className="mt-3.5 text-[13.5px] leading-[1.8] text-steel">{p.tagline}</p>
+
+                <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-4">
+                  {p.includes.map((x) => (
+                    <li key={x} className="flex items-start gap-2 text-[12.5px] leading-[1.7]">
+                      <span aria-hidden className="mt-[2px] shrink-0 text-[11px] font-black text-brand">
+                        ✓
+                      </span>
+                      <span className="min-w-0 text-steel">{x}</span>
                     </li>
                   ))}
                 </ul>
+
+                <div className="mt-6 flex-1" />
+                <PlanCta
+                  plan={p.id}
+                  from="price"
+                  className={`min-h-[52px] rounded-pill px-5 text-[15px] shadow-card ${
+                    p.featured ? "bg-rose-fill !text-paper" : "border border-brand bg-paper !text-brand"
+                  }`}
+                >
+                  これで相談する <span aria-hidden className="ml-1.5">→</span>
+                </PlanCta>
               </div>
-            ))}
-          </div>
-        </Wrap>
-      </section>
+            </Reveal>
+          ))}
+        </div>
 
-      {/* ══ 相談じゃない。実際の女性が答える。 ══ */}
-      <section className="bg-paper">
-        <Wrap className="py-14 sm:py-16">
-          <div className="grid gap-7 lg:grid-cols-[1fr_1fr_0.62fr] lg:items-center">
-            <p className="border-l-[5px] border-brand pl-5 text-[22px] font-black leading-[1.55] text-slate sm:text-[26px]">
-              相手本人には、
-              <br />
-              聞けない。
+        <div className="mt-6 flex flex-wrap items-baseline justify-between gap-3 rounded-card border border-line bg-mist px-5 py-4">
+          <p className="text-[13.5px] font-bold">
+            {getPlan("call").name}
+            <span className="ml-2 rounded-pill bg-paper px-2 py-0.5 text-[10.5px] font-bold text-steel">
+              受付前
+            </span>
+          </p>
+          <p className="text-[13.5px] text-steel">
+            ¥{getPlan("call").yen.toLocaleString()}〜 ·{" "}
+            <Link href="/talk" className="font-bold text-brand underline decoration-line underline-offset-4">
+              順番待ちに入る
+            </Link>
+          </p>
+        </div>
+
+        <p className="mt-5 text-[12.5px] leading-[1.9] text-steel">
+          税込。募集を始める前ならキャンセルできます。人数が集まらなかった場合は、集まらなかった分をご返金します。
+          <Link
+            href="/legal"
+            className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
+          >
+            特定商取引法に基づく表記
+          </Link>
+        </p>
+      </Block>
+
+      {/* ══ 9. 答える女性 ══ */}
+      <Block tint>
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+          <div>
+            <H>答えるのは、恋愛の専門家ではありません。</H>
+            <p className="mt-5 max-w-[32em] text-[15px] leading-[1.95] text-steel">
+              正解を教える人でもありません。一人の実在の女性として、
+              実際にどう感じたかを書く方です。
             </p>
-
-            <p className="text-[14px] leading-[1.95] text-steel">
-              友達の女性は、あなたを知っているぶん気を使います。AIは女性ではありません。
-              だから、相手と同じ側に立つ、あなたを知らない女性に読んでもらう。
-              毎日使うものではありません。一度しかない一手を出す直前だけです。
+            <p className="mt-4 max-w-[32em] text-[15px] leading-[1.95] text-steel">
+              ただし、登録すれば読めるようにはしていません。
+              年齢と立場を確認し、通った方にだけ依頼をお送りしています。
+              年代・恋愛観・いまの立場を指定して、相手に近い方に読んでもらえます。
             </p>
-
-            {/* 数は実データ。固定の数字は書かない */}
-            <OnlineCount />
-          </div>
-        </Wrap>
-      </section>
-
-      {/* ══ 人と話す ══ */}
-      <section id="talk" className="scroll-mt-20 bg-sky">
-        <Wrap className="py-14 sm:py-16">
-          <H>うまく言葉にできないときは。</H>
-
-          <div className="mt-7 grid gap-4 lg:grid-cols-2">
-            <div className="rounded-card border border-line bg-paper p-6 shadow-card">
-              <p className="text-[17px] font-black">一緒に整理する</p>
-              <span className="mt-2 inline-flex rounded-pill bg-ok-tint px-2.5 py-1 text-[11px] font-bold text-ok-text">
-                いま使えます
-              </span>
-              <p className="mt-3.5 text-[14px] leading-[1.9] text-steel">
-                質問の画面で「うまく書けない？」から進めます。3つ聞いて、こちらで質問を組み立てます。
-                できた文は入力欄に入るだけなので、直せます。
-              </p>
-              <PlanCta
-                plan={ENTRY_PLAN}
-                from="assist"
-                className="mt-5 min-h-[50px] w-full rounded-pill bg-brand px-5 text-[14.5px] !text-paper shadow-card"
-              >
-                質問をつくる <span aria-hidden className="ml-1.5">→</span>
-              </PlanCta>
-            </div>
-
-            <div className="rounded-card border border-line bg-paper p-6 shadow-card">
-              <div className="flex items-center gap-2.5">
-                <p className="text-[17px] font-black">人と話す</p>
-                <span className="rounded-pill bg-mist px-2.5 py-1 text-[11px] font-bold text-steel">
-                  受付前
-                </span>
-              </div>
-              <p className="mt-3 text-[15px] font-bold leading-[1.7]">
-                まだ、うまく言葉になってなくてもいい。
-              </p>
-              <p className="mt-3 text-[14px] leading-[1.9] text-steel">
-                実在する女性と話しながら、状況を話して、相手側から聞かれて、
-                自分が何に迷っているのかを見つける。
-              </p>
-              <p className="mt-3.5 text-[12.5px] leading-[1.85] text-steel">
-                相手も実在の女性なので、時間の決め方と、その場を見る体制が用意できてから開きます。
-                いまは順番待ちだけ受けています。目安 ¥
-                {getPlan("talk").yen.toLocaleString()}〜 / 20分〜
-              </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/talk"
-                className="mt-5 inline-flex min-h-[50px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-5 text-[14.5px] font-bold text-brand"
+                href="/answerers"
+                className="inline-flex min-h-[50px] items-center justify-center rounded-pill border border-line bg-paper px-6 text-[14px] font-bold text-slate shadow-card transition-shadow hover:shadow-card-hover"
               >
-                順番待ちに入る <span aria-hidden className="ml-1.5">→</span>
+                誰が読むのか
+              </Link>
+              <Link
+                href="/join"
+                className="inline-flex min-h-[50px] items-center justify-center rounded-pill bg-slate px-6 text-[14px] font-bold text-paper transition-opacity hover:opacity-90"
+              >
+                回答する女性へ
               </Link>
             </div>
           </div>
-        </Wrap>
-      </section>
+          <OnlineCount />
+        </div>
+      </Block>
 
-      {/* ══ 最後 ══ */}
+      {/* ══ 10. 安心・安全 ══ */}
+      <Block>
+        <H>安心・安全のために。</H>
+        <ul className="mt-8 grid gap-2.5 sm:grid-cols-2">
+          {[
+            "匿名で使えます。名前もメールアドレスも要りません",
+            "相手の名前・写真・連絡先は保存しません",
+            "送る前に、個人情報は自動で伏せます",
+            "回答する方とあなたが直接つながる経路はありません",
+            "年齢と立場を確認した方だけが読みます",
+            "18歳未満に関する相談はお受けしていません",
+          ].map((t) => (
+            <li
+              key={t}
+              className="flex items-start gap-3 rounded-soft bg-mist px-4 py-3.5 text-[13.5px] leading-[1.8] text-steel"
+            >
+              <span aria-hidden className="mt-[3px] text-[13px] font-black text-ok-text">
+                ✓
+              </span>
+              <span className="min-w-0">{t}</span>
+            </li>
+          ))}
+        </ul>
+        <Link
+          href="/safety"
+          className="mt-7 inline-flex min-h-[44px] items-center text-[13.5px] font-bold text-brand underline decoration-line underline-offset-4"
+        >
+          できないことも含めて、詳しく
+        </Link>
+      </Block>
+
+      {/* ══ 11. よくある質問 ══ */}
+      <Block tint id="faq">
+        <H>よくある質問。</H>
+        <dl className="mt-8 grid gap-3 lg:grid-cols-2">
+          {FAQ.map((f) => (
+            <div key={f.q} className="rounded-card border border-line bg-paper p-5 shadow-card">
+              <dt className="text-[15px] font-black leading-[1.6]">{f.q}</dt>
+              <dd className="mt-2.5 text-[13.5px] leading-[1.85] text-steel">{f.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </Block>
+
+      {/* ══ 12. 最後 ══ */}
       <section className="bg-paper">
         <Wrap className="pb-20 pt-6 sm:pb-24">
           <div className="rounded-card bg-brand p-8 text-paper shadow-card sm:p-14">
-            <p className="text-huge font-black">大事な一手を、勘で出さない。</p>
-            <p className="mt-5 text-[16px] font-bold leading-[1.85]">
-              送る前。出す前。会う前。押してしまう前に。
+            <p className="text-huge font-black">送る前に、会う前に、話す前に。</p>
+            <p className="mt-5 max-w-[26em] text-[16px] leading-[1.85]">
+              大事な相手とのチャンスを、自分の判断ミスで失わないために。
             </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-9">
               <PlanCta
-                plan={ENTRY_PLAN}
+                plan={DEFAULT_PLAN}
                 from="final"
-                className="min-h-[58px] rounded-pill bg-paper px-9 text-[16px] !text-brand-deep"
+                className="min-h-[60px] w-full rounded-pill bg-paper px-9 text-[16.5px] !text-brand-deep sm:w-auto"
               >
-                女性5人の目を通す <span aria-hidden className="ml-2">→</span>
+                今すぐ女性に相談する <span aria-hidden className="ml-2">→</span>
               </PlanCta>
-              <Link
-                href="#talk"
-                className="inline-flex min-h-[58px] items-center justify-center rounded-pill border border-paper/60 px-8 text-[15.5px] font-bold text-paper transition-opacity hover:opacity-80"
-              >
-                人と話す
-              </Link>
             </div>
-
-            <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[13px] font-bold text-paper">
+            <ul className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] font-bold text-paper">
               <li>匿名</li>
               <li>都度払い</li>
-              <li>審査を通った女性だけが読む</li>
+              <li>実在女性が回答</li>
+              <li>
+                {entry.name} ¥{entry.yen.toLocaleString()} から
+              </li>
             </ul>
           </div>
         </Wrap>
@@ -734,9 +753,9 @@ export default async function HomePage() {
               {
                 h: "使う",
                 items: [
-                  ["/ask", "女性5人の目を通す"],
-                  ["/talk", "人と話す"],
-                  ["/mine", "聞いたこと"],
+                  ["/ask", "相談する"],
+                  ["/talk", "模擬電話"],
+                  ["/mine", "相談したこと"],
                 ] as const,
               },
               {
@@ -751,7 +770,7 @@ export default async function HomePage() {
               {
                 h: "参加する",
                 items: [
-                  ["/join", "回答者になる"],
+                  ["/join", "回答する女性へ"],
                   ["/about", "編集方針"],
                   ["/updates", "更新記録"],
                 ] as const,
@@ -768,13 +787,13 @@ export default async function HomePage() {
               <div key={col.h}>
                 <p className="text-[12.5px] font-bold text-steel">{col.h}</p>
                 <ul className="mt-3.5 flex flex-col gap-2 text-[13.5px]">
-                  {col.items.map(([href, label]) => (
+                  {col.items.map(([href, l]) => (
                     <li key={href}>
                       <Link
                         href={href}
                         className="-my-1 block py-1 text-slate/80 transition-colors hover:text-brand"
                       >
-                        {label}
+                        {l}
                       </Link>
                     </li>
                   ))}
@@ -788,9 +807,7 @@ export default async function HomePage() {
               <Tashikame size={28} />
               <span className="text-[15px] font-black text-slate">{NAME}</span>
             </Link>
-            <p className="text-[12px] text-steel">
-              © 2026 {OPERATOR}
-            </p>
+            <p className="text-[12px] text-steel">© 2026 {OPERATOR}</p>
           </div>
         </Wrap>
       </footer>

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default function TalkPage() {
-  const talk = getPlan("talk");
+  const talk = getPlan("call");
 
   return (
     <div data-brand className="min-h-screen bg-paper text-slate">

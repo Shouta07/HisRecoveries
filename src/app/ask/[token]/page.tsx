@@ -295,7 +295,7 @@ export default async function ResultPage({
     .map((x) => ({
       label: x.label,
       n: x.n,
-      positive: c.is_ab ? x.id === "a" : x.id === "good" || x.id === "ok",
+      positive: c.is_ab ? x.id === "a" : x.id === "as_is",
     }));
   const good = slices.filter((s) => s.positive);
   const bad = slices.filter((s) => !s.positive);
@@ -404,7 +404,7 @@ export default async function ResultPage({
             {list.map((a) => {
               const positive = c.is_ab
                 ? a.pick === "a"
-                : a.verdict === "good" || a.verdict === "ok";
+                : a.verdict === "as_is";
               const verdictLabel =
                 (c.is_ab ? t.byPick : t.byVerdict).find(
                   (x) => x.id === (c.is_ab ? a.pick : a.verdict),

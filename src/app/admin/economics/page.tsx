@@ -285,7 +285,7 @@ export default async function EconomicsPage() {
                     <td className="px-2 py-2 font-bold">{u.label}</td>
                     <td className="px-2 py-2 tabular-nums">+{yen(u.addYen)}</td>
                     <td className="px-2 py-2 tabular-nums text-steel">
-                      1人 +{yen(priorityBonus("final_check", u))}
+                      1人 +{yen(priorityBonus("standard", u))}
                     </td>
                     <td className="px-2 py-2 text-steel">
                       {u.available ? "販売中" : "販売前"}

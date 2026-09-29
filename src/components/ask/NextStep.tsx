@@ -40,13 +40,13 @@ const CHOICES: Choice[] = [
     id: "retest",
     label: "もう少し人に聞きたい",
     note: "直したものを、別の5人に見せる。",
-    plan: "retest",
+    plan: "improve",
   },
   {
     id: "talk",
     label: "誰かと話したい",
     note: "話しながら、何に迷っているのかを見つける。",
-    plan: "talk",
+    plan: "call",
   },
 ];
 

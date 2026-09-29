@@ -311,14 +311,31 @@ export function needsReview(hasImage: boolean): boolean {
 
 /* ── 回答 ────────────────────────────────────── */
 
-export type Verdict = "good" | "ok" | "meh" | "stop";
+/**
+ * 評価ではなく、次の行動で答えてもらう。
+ *
+ * ── なぜ「良い／微妙」をやめたか ────────────────
+ * 「かなり良い／良い／微妙／やめた方がいい」は、点数を付ける言葉だった。
+ * 点数だけ返しても、相談した人は次に何をすればいいか分からない。
+ * そして回答する側も、点を付けるつもりになると甘い側に寄る
+ * （知らない人に低い点を付けるのは、気が重い）。
+ *
+ * 聞きたいのは「このまま出していいか」だけ。
+ * 3段にして、真ん中に「少し気になる」を置く。
+ * ここが押しやすいと、引っかかった点が出てくる。
+ */
+export type Verdict = "as_is" | "slight" | "change";
 
-export const VERDICTS: { id: Verdict; label: string }[] = [
-  { id: "good", label: "かなり良い" },
-  { id: "ok", label: "良い" },
-  { id: "meh", label: "微妙" },
-  { id: "stop", label: "やめた方がいい" },
+export const VERDICTS: { id: Verdict; label: string; hint: string }[] = [
+  { id: "as_is", label: "このままでOK", hint: "直さなくていいと思う" },
+  { id: "slight", label: "少し気になる", hint: "出せるが、引っかかるところがある" },
+  { id: "change", label: "変えた方がいい", hint: "このままだと損をしそう" },
 ];
+
+/** 直さずに出していい、と言われた側か */
+export function isFine(v: Verdict | null): boolean {
+  return v === "as_is";
+}
 
 export function isVerdict(x: unknown): x is Verdict {
   return typeof x === "string" && VERDICTS.some((v) => v.id === x);

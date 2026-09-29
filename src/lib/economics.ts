@@ -93,10 +93,10 @@ export const RARE_BONUS = { min: 50, max: 150 };
  * 顧客の価格から逆算して、供給の原価を管理する。
  */
 export const REWARD_CAP: Record<PlanId, number> = {
-  final_check: 1050,
-  talk: 1800,
-  improve: 2100,
-  retest: 3000,
+  quick: 520,
+  standard: 1050,
+  improve: 2600,
+  call: 2400,
   date_ready: 5200,
 };
 
@@ -177,20 +177,24 @@ export type CostModel = {
 };
 
 export const COSTS: Record<PlanId, CostModel> = {
-  // 5人にすぐ答えてもらう
-  // ¥200 だと変動費が売価の41%になり、限界利益率が59%に落ちる。
-  // ¥180 で 62%・1件あたり約¥1,850。これはこの商品の狙い（¥1,700〜¥2,000）の中。
-  final_check: { parts: [{ kind: "quick", n: 5, atYen: 180 }] },
-  // 1人と20〜30分
-  // ¥4,980 で限界利益率60%を保てる報酬の上限は約¥1,590。
-  // ¥2,000 払うなら、売価は¥5,980前後が要る。
-  // いまは報酬¥1,500（20〜30分なので時給換算 ¥3,000〜¥4,500）で置く。
-  talk: { parts: [{ kind: "talk", n: 1, atYen: 1500 }] },
-  // 5人 ＋ 直しに関わる1人
-  improve: { parts: [{ kind: "quick", n: 5, atYen: 180 }, { kind: "improve", n: 1, atYen: 900 }] },
+  // 入口。3人。利益を取る商品ではない。
+  // 入口。3人。
+  //
+  // 980円で3人に180円ずつ払うと、変動費が売価の65%になる。
+  // 165円でも40%にわずかに届かない。160円で41.4%。
+  //
+  // 主力より単価が低いのは、頼んでいることが軽いから
+  // （第一印象とひとこと。理由を書き切るところまで求めない）。
+  // 幅（150〜200円）の中なので、買い叩いてはいない。
+  quick: { parts: [{ kind: "quick", n: 3, atYen: 160 }] },
+  // 主力。5人。
+  standard: { parts: [{ kind: "quick", n: 5, atYen: 180 }] },
   // 5人 ＋ 直し ＋ 別の5人
-  retest: { parts: [{ kind: "quick", n: 10, atYen: 180 }, { kind: "improve", n: 1, atYen: 800 }] },
-  // まとめて見る分
+  // 初回5人 ＋ 直しの手間 ＋ 再確認3人
+  improve: { parts: [{ kind: "quick", n: 8, atYen: 180 }, { kind: "improve", n: 1, atYen: 800 }] },
+  // 1人と5〜15分
+  call: { parts: [{ kind: "talk", n: 1, atYen: 2000 }] },
+  // まとめて
   date_ready: {
     parts: [
       { kind: "quick", n: 10, atYen: 180 },
@@ -243,7 +247,15 @@ export function priorityBonus(id: PlanId, u: Urgency): number {
     .filter((x) => x.kind === "quick")
     .reduce((n, x) => n + x.n, 0);
   if (quick === 0) return 0;
-  return Math.floor((u.addYen * u.toResponderRate) / quick);
+
+  const share = Math.floor((u.addYen * u.toResponderRate) / quick);
+
+  // 上乗せた結果が「急ぎに答える」の幅を超えないようにする。
+  // 人数の少ない商品（入口の3人）だと、1人あたりの取り分が
+  // 大きくなりすぎて幅の外に出る。余った分はこちらに残す。
+  const base = COSTS[id].parts.find((x) => x.kind === "quick")?.atYen ?? 0;
+  const room = Math.max(0, reward("priority").max - base);
+  return Math.min(share, room);
 }
 
 export type Unit = {
@@ -351,22 +363,25 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
       );
     }
 
-    // 変動費が売価の 40% を超えないこと。
+    // 変動費が売価に占める割合。
+    // 入口の商品だけ、限界利益率の下限に合わせて緩める。
+    const maxRate = p.marginFloor !== undefined ? 1 - p.marginFloor : MAX_VARIABLE_RATE;
     const rate = u.variable / p.yen;
-    if (rate > MAX_VARIABLE_RATE) {
+    if (rate > maxRate) {
       throw new Error(
         `プラン「${p.id}」の変動費が売価の ${Math.round(rate * 100)}% です（${Math.round(
-          MAX_VARIABLE_RATE * 100,
+          maxRate * 100,
         )}% まで）`,
       );
     }
 
-    // 上限いっぱいまで払っても、55% を下回らないこと。
-    if (u.marginRateAtCap < MIN_MARGIN_AT_CAP) {
+    // 上限いっぱいまで払っても、下限を大きく割らないこと。
+    const capFloor = p.marginFloor !== undefined ? p.marginFloor - 0.05 : MIN_MARGIN_AT_CAP;
+    if (u.marginRateAtCap < capFloor) {
       throw new Error(
         `プラン「${p.id}」は、上限（${u.capYen}円）まで払うと限界利益率が ${Math.round(
           u.marginRateAtCap * 100,
-        )}% になります（${Math.round(MIN_MARGIN_AT_CAP * 100)}% 以上）`,
+        )}% になります（${Math.round(capFloor * 100)}% 以上）`,
       );
     }
 
@@ -377,13 +392,28 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
       );
     }
 
-    // 限界利益率 60% 以上。
-    if (u.marginRate < MIN_MARGIN_RATE) {
+    // 限界利益率。入口の商品だけ、下限を下げてよい（plan.marginFloor）。
+    //
+    // ¥980 で実在の人3人に払うと、どう組んでも 60% には届かない。
+    //   980 − (180×3) − 決済35 − AI20 − 返金29 − その他10 = 386（39.4%）
+    // 下限で払っても 450 なので、44% が上限。
+    //
+    // だからここは「入口は利益を取らない商品」と決めて通す。
+    // 報酬を削って率を作ると、良い回答者から抜けていく。
+    const floor = p.marginFloor ?? MIN_MARGIN_RATE;
+    if (u.marginRate < floor) {
       throw new Error(
         `プラン「${p.id}」の限界利益率が ${Math.round(u.marginRate * 100)}% です（${Math.round(
-          MIN_MARGIN_RATE * 100,
+          floor * 100,
         )}% 以上にしてください）`,
       );
+    }
+    // 下限を下げてよいのは、いちばん安い商品だけ。
+    if (p.marginFloor !== undefined) {
+      const cheapest = [...PLANS].sort((a, b) => a.yen - b.yen)[0];
+      if (p.id !== cheapest.id) {
+        throw new Error(`プラン「${p.id}」は入口ではないので、限界利益率の下限を下げられません`);
+      }
     }
   }
 
