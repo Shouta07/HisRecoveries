@@ -1,8 +1,7 @@
 import Slot from "@/components/brand/Slot";
-import Tashikame from "@/components/brand/Tashikame";
 import { DEMO } from "@/lib/ask/demo";
 import { VERDICTS } from "@/lib/ask/model";
-import { plan as getPlan, DEFAULT_PLAN } from "@/lib/ask/plans";
+import { plan as getPlan, DEFAULT_PLAN, USE_CASES } from "@/lib/ask/plans";
 import type { ImageKey } from "@/lib/images";
 
 // ファーストビューの絵。
@@ -40,6 +39,9 @@ const PICKS = [
   DEMO.says.find((s) => s.verdict === "as_is"),
 ].filter((s): s is (typeof DEMO.says)[number] => Boolean(s));
 
+/** 手が止まっている瞬間の一言。USE_CASES の1つめをそのまま使う */
+const HOOK = USE_CASES[0].q;
+
 const TONE: Record<string, string> = {
   change: "bg-rose-fill text-paper",
   slight: "bg-brand-tint text-brand",
@@ -56,7 +58,7 @@ function Story() {
   const answers = getPlan(DEFAULT_PLAN).answers;
 
   return (
-    <div className="overflow-hidden rounded-card border border-line bg-paper shadow-card">
+    <div className="overflow-hidden rounded-card border border-line bg-paper shadow-card-hover">
       <div className="px-4 pb-3.5 pt-3.5 lg:px-5 lg:pt-4">
         <p className="text-[10.5px] font-bold leading-none text-steel lg:text-[11.5px]">
           送る前の文面
@@ -68,8 +70,8 @@ function Story() {
 
       {/* ここが製品。上と下を繋ぐ言葉を、線の上に載せる */}
       <div className="relative border-t border-line">
-        <span className="absolute -top-[9px] left-4 inline-flex items-center gap-1.5 rounded-pill bg-brand px-2.5 py-1 text-[10px] font-bold leading-none text-paper lg:left-5 lg:text-[11px]">
-          <svg aria-hidden viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <span className="absolute -top-[11px] left-4 inline-flex items-center gap-1.5 rounded-pill bg-brand px-3 py-1.5 text-[11.5px] font-black leading-none text-paper shadow-card lg:left-5 lg:text-[12.5px]">
+          <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M6 13l6 6 6-6" />
           </svg>
           実在の女性{answers}人が読むと
@@ -93,7 +95,7 @@ function Story() {
                     {s.age}歳
                   </span>
                   <span
-                    className={`ml-auto shrink-0 rounded-pill px-2 py-1 text-[10px] font-bold leading-none lg:text-[11px] ${TONE[s.verdict] ?? "bg-mist text-steel"}`}
+                    className={`ml-auto shrink-0 rounded-pill px-2.5 py-1.5 text-[11px] font-black leading-none lg:text-[12px] ${TONE[s.verdict] ?? "bg-mist text-steel"}`}
                   >
                     {v?.label}
                   </span>
@@ -134,16 +136,24 @@ export default function HeroBoard() {
           <Slot
             name="hero"
             rounded=""
-            position="center 26%"
-            className="h-[154px] w-full sm:h-[260px]"
+            position="center 22%"
+            className="h-[158px] w-full sm:h-[280px]"
           />
-          {/* マークは写真の左上（背景なので顔に掛からない） */}
-          <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-paper shadow-card sm:h-14 sm:w-14">
-            <Tashikame size={34} className="sm:!h-10 sm:!w-10" />
-          </span>
+          {/* 手が止まっている瞬間の一言。
+              写真だけだと「落ち着いた男性の写真」にしか見えず、
+              自分の話だと気づかれない。下端だけ暗く落として重ねる
+              （顔は上のほうにあるので隠れない）。
+              文は USE_CASES から引く。ここで新しく書かない。 */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-slate/95 via-slate/55 to-transparent"
+          />
+          <p className="absolute inset-x-5 bottom-3 text-[22px] font-black leading-[1.3] text-paper sm:inset-x-8 sm:bottom-5 sm:text-[30px]">
+            {HOOK}
+          </p>
         </div>
 
-        <div className="mt-2.5 px-5 sm:px-8">
+        <div className="mt-2 px-5 sm:px-8">
           <Story />
         </div>
       </div>
@@ -152,9 +162,13 @@ export default function HeroBoard() {
       <div className="mx-auto hidden max-w-[1120px] grid-cols-[minmax(0,420px)_1fr] items-center gap-10 px-12 pt-6 lg:grid">
         <div className="relative">
           <Slot name="hero" position="center 18%" className="h-[380px] w-full" />
-          <span className="absolute left-5 top-5 flex h-16 w-16 items-center justify-center rounded-full bg-paper shadow-card">
-            <Tashikame size={46} />
-          </span>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%] rounded-b-card bg-gradient-to-t from-slate/95 via-slate/55 to-transparent"
+          />
+          <p className="absolute inset-x-6 bottom-6 whitespace-nowrap text-[26px] font-black leading-[1.3] text-paper">
+            {HOOK}
+          </p>
         </div>
         <Story />
       </div>
