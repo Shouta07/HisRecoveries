@@ -65,7 +65,7 @@ export default function HowPage() {
             from="how"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            女性{entryAnswers}人に相談する
+            女性{entryAnswers}人に確かめる
           </PlanCta>
         </div>
       </header>
@@ -237,7 +237,7 @@ export default function HowPage() {
             from="how_bottom"
             className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
           >
-            女性{entryAnswers}人に相談する
+            女性{entryAnswers}人に確かめる
           </PlanCta>
         </div>
       </div>

@@ -79,7 +79,7 @@ export default function TashikameGuide() {
       <Link
         href={`/ask?plan=${DEFAULT_PLAN}`}
         onClick={() => track("plan_viewed", { plan: DEFAULT_PLAN, from: "guide" })}
-        aria-label="相談する"
+        aria-label="今の選択を確かめる"
         tabIndex={shown ? undefined : -1}
         className="relative flex h-[60px] w-[60px] items-center justify-center rounded-full bg-paper shadow-card-hover transition-transform hover:scale-105 sm:h-[68px] sm:w-[68px]"
       >
