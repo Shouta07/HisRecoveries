@@ -3,7 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { topPlans, plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
-import { CASES } from "@/lib/ask/cases";
+import { ALTERNATIVES, COMPARE, COMPARE_NOTE } from "@/lib/ask/compare";
 import { STEPS as JOURNEY } from "@/lib/ask/journey";
 import { VERDICTS } from "@/lib/ask/model";
 import { canCharge } from "@/lib/legal";
@@ -15,6 +15,8 @@ import Tashikame from "@/components/brand/Tashikame";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
 import Slot from "@/components/brand/Slot";
+import HeroBoard from "@/components/brand/HeroBoard";
+import CaseRows from "@/components/brand/CaseRows";
 import WhoReads from "@/components/brand/WhoReads";
 
 // ══════════════════════════════════════════════════════════════
@@ -56,7 +58,7 @@ import WhoReads from "@/components/brand/WhoReads";
 
 export const metadata: Metadata = {
   title: `${NAME} — 送る前に、会う前に、話す前に。`,
-  description: `${SUB} 写真・メッセージ・電話を、送る前・会う前・話す前に確認できます。`,
+  description: `${SUB} 送る前・会う前・話す前に、実在の女性の反応を確認できます。`,
   alternates: { canonical: site.url },
 };
 
@@ -69,7 +71,7 @@ const NAV = [
 ] as const;
 
 const STEPS = [
-  { n: "01", t: "送る前のものを出す", d: "写真1枚か、メッセージ1件。そのまま貼るだけです。" },
+  { n: "01", t: "送る前のものを出す", d: "送る前のLINE、または自己紹介文。そのまま貼るだけです。" },
   { n: "02", t: "条件に合う女性に届く", d: "年代や立場を選べます。確認が済んだ女性にだけ届きます。" },
   { n: "03", t: "一人ずつ返ってくる", d: "このままでOK / 少し気になる / 変えた方がいい と、そう思った理由。" },
   { n: "04", t: "直すか、そのまま出すか決める", d: "大丈夫そうならそのまま。気になる点が出たら、直してから。" },
@@ -220,31 +222,11 @@ export default async function HomePage() {
           その人が自分を見つけられる絵を、最初に大きく出す。
           文字は写真に重ねず、左に置く（顔が隠れると何の絵か分からない）。 */}
       <section className="relative overflow-hidden bg-sky">
-        {/* 写真。広い画面でだけ、右半分に敷く。
-            狭い画面で文字の裏に敷くと、写真が霞んで文字も読みにくい。
-            どちらも中途半端になるので、下に独立した帯として置く。 */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block"
-        >
-          <Slot name="hero" rounded="" className="h-full w-full" />
-          {/* 文字側へ向かってだけ、地の色に溶かす */}
-          <span className="absolute inset-y-0 left-0 w-[38%] bg-gradient-to-r from-sky to-transparent" />
-        </div>
+        {/* 相談する男性と、読んで返す女性を1枚に入れる。
+            片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
+        <HeroBoard />
 
-        {/* 狭い画面では、写真を最初に出す。
-            文字の下に置くと、最初の画面に絵が1枚も無い。
-            この製品は「いま手が止まっている人」が開くので、
-            自分を見つけられる絵が最初に要る。
-            顔の位置で切るため、見せる位置をずらしている。 */}
-        <Slot
-          name="hero"
-          rounded=""
-          position="center 22%"
-          className="h-[210px] w-full sm:h-[260px] lg:hidden"
-        />
-
-        <Wrap className="relative pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pt-14">
+        <Wrap className="relative pb-12 pt-5 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
             <p className="inline-flex items-center gap-2 rounded-pill border border-brand/40 bg-paper px-4 py-2 text-[12.5px] font-bold text-brand shadow-card">
               <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -253,13 +235,11 @@ export default async function HomePage() {
               男性の方へ
             </p>
 
-            <h1 className="mt-5 text-mega font-black leading-[1.22] text-slate">
-              大事な相手だから、
-              <br />
-              失敗する前に
+            <h1 className="mt-3.5 text-mega font-black leading-[1.2] text-slate">
+              送る前に、
               <br />
               <span className="relative inline-block">
-                相談する。
+                実在の女性に聞ける。
                 <span
                   aria-hidden
                   className="absolute -bottom-0.5 left-0 -z-10 h-[0.42em] w-full rounded-[2px] bg-brand/25"
@@ -267,19 +247,68 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            <p className="mt-6 max-w-[24em] text-[15px] leading-[1.9] text-steel sm:text-[16.5px]">
-              写真・メッセージ・会話。
-              <br />
-              迷った瞬間に、実在女性の反応をもとに次の一手を考えられます。
+            <p className="mt-3.5 text-[17px] font-black leading-[1.55] text-slate sm:text-[19px]">
+              大事な相手だから、失敗する前に相談する。
             </p>
 
+            <p className="mt-4 max-w-[25em] text-[14.5px] leading-[1.9] text-steel sm:text-[16px]">
+              LINEの文面や、アプリの自己紹介文を送るだけ。
+              <br />
+              AIの予想ではなく、実在の女性{main.answers}人の反応が返ります。
+            </p>
+
+            {/* いくらなのかを、スクロールさせずに出す。
+                値段が下にあると、それだけで帰られる。 */}
+            <ul className="mt-5 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[13.5px] font-bold text-slate">
+              <li className="tabular-nums">¥{entry.yen.toLocaleString()}から</li>
+              <li aria-hidden className="text-line">|</li>
+              <li>1回ごと・月額なし</li>
+              <li aria-hidden className="text-line">|</li>
+              <li>匿名</li>
+            </ul>
+
+            {/* 押す場所も、スクロールさせない */}
+            <div className="mt-6 max-w-[24em]">
+              <PlanCta
+                plan={DEFAULT_PLAN}
+                from="hero"
+                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card"
+              >
+                今すぐ相談する <span aria-hidden className="ml-2">&rarr;</span>
+              </PlanCta>
+            </div>
+
+            {/* 押す前に引っかかるところを、4つだけ先に消す。
+                文字を並べるより、絵があるほうが読まずに入る。 */}
+            <ul className="mt-6 grid grid-cols-4 gap-2 sm:gap-3">
+              {[
+                { t: "実在女性が回答", d: "M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1 M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7 M21 20v-1a4 4 0 0 0-3-3.9" },
+                { t: "匿名OK", d: "M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4" },
+                { t: "都度払い", d: "M3 7h18v12H3z M3 11h18" },
+                sup.canPromiseSpeed
+                  ? { t: "最短数分", d: "M13 2 4 14h7l-1 8 9-12h-7z" }
+                  : { t: "追加料金なし", d: "M12 3v18 M8.5 7.5h5.2a2.6 2.6 0 0 1 0 5.2H9.6a2.6 2.6 0 0 0 0 5.2h5.9" },
+              ].map((x) => (
+                <li key={x.t} className="flex flex-col items-center gap-1.5 text-center">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint">
+                    <svg aria-hidden viewBox="0 0 24 24" className="h-[22px] w-[22px] text-brand" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={x.d} />
+                    </svg>
+                  </span>
+                  <span className="text-[11px] font-bold leading-[1.4] text-slate sm:text-[12.5px]">
+                    {x.t}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
             {/* 何を見てもらえるか。押すとその場面から始まる */}
-            <ul className="mt-6 flex flex-wrap gap-2">
+            <ul className="mt-5 flex flex-wrap gap-2">
               {SUBJECTS.map((sub) => {
                 const usable = sub.id !== "call";
                 const icon =
                   sub.id === "photo"
-                    ? "M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 6"
+                    ? "M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h4"
                     : sub.id === "message"
                       ? "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"
                       : "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6";
@@ -323,46 +352,7 @@ export default async function HomePage() {
               </p>
             )}
 
-            <div className="mt-7 max-w-[24em]">
-              <PlanCta
-                plan={DEFAULT_PLAN}
-                from="hero"
-                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card"
-              >
-                今すぐ相談する <span aria-hidden className="ml-2">→</span>
-              </PlanCta>
-            </div>
 
-            <ul className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] font-bold text-steel">
-              <li>匿名</li>
-              <li>都度払い</li>
-              <li>実在女性が回答</li>
-              {sup.canPromiseSpeed && <li>最短数分</li>}
-            </ul>
-            <p className="mt-2.5 text-[12px] text-steel">
-              {entry.name} ¥{entry.yen.toLocaleString()} から
-            </p>
-
-            {/* 送る前のやりとり。顔は置かず、言葉だけ */}
-            <div className="relative z-10 mt-8 w-full max-w-[22em] rounded-card border border-line bg-paper p-4 shadow-card">
-              <p className="w-fit rounded-card rounded-bl-[4px] bg-mist px-4 py-2.5 text-[13.5px] leading-[1.65] text-slate">
-                来週の土曜、
-                <br />
-                ご飯どうですか？
-              </p>
-              <p className="mt-1 text-right text-[10.5px] text-steel">19:24</p>
-              <p className="ml-auto mt-2 flex w-fit items-center gap-2.5 rounded-card rounded-br-[4px] bg-brand-tint px-4 py-2.5 text-[13.5px] leading-[1.65] text-slate">
-                このまま送っていいかな…？
-                <span
-                  aria-hidden
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-paper"
-                >
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
-                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
-                  </svg>
-                </span>
-              </p>
-            </div>
           </div>
         </Wrap>
 
@@ -451,78 +441,37 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 3. こんな相談が来ています ══ */}
+      {/* ══ 3. こんな時に使う ══ */}
+      {/* 説明を足すより、送る文面と返ってきた言葉を横に並べるほうが早い。
+          受け付けていない場面（服装・会話）は出さない。押しても行き止まりになる。 */}
       <Block tint>
         <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
         <h2 className="mt-2 text-huge font-black text-slate">
-          こんな相談が
+          こんな時、
           <br className="sm:hidden" />
-          来ています。
+          すぐ相談できる。
         </h2>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
-          マッチングアプリ・LINE・デート前後・会話など、いろいろな場面で使われます。
+          LINE、プロフィール、デートの誘い方。
+          手が止まる場面を、実在の女性が読みます。
         </p>
 
-        {/* 何を見てもらえるか */}
-        <ul className="mt-7 grid gap-3 rounded-card border border-line bg-paper p-5 shadow-card sm:grid-cols-3">
-          {SUBJECTS.map((sub) => (
-            <li key={sub.id} className="text-center">
-              <p className="text-[14px] font-black text-slate">{sub.label}</p>
-              <p className="mt-1 text-[12px] leading-[1.7] text-steel">
-                {sub.id === "photo"
-                  ? "マッチの機会を増やす"
-                  : sub.id === "message"
-                    ? "返信をもらいやすくする"
-                    : "本番の前に練習する"}
-              </p>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-7">
+          <CaseRows />
+        </div>
 
-        {/* 相談の種類。特定の誰かの体験談ではない */}
-        {/* スマホで1列にすると、226px の素材を 348px に引き伸ばすことになる。
-            2列にして、実際の大きさに寄せる。 */}
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {CASES.map((c, i) => (
-            <Reveal key={c.id} delay={i * 50}>
-              <div className="flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper shadow-card">
-                <div className="relative">
-                  <Slot name={c.img} rounded="" className="aspect-[226/162] w-full" />
-                  <span className="absolute bottom-2.5 left-2.5 rounded-pill bg-slate/85 px-3 py-1.5 text-[11.5px] font-bold text-paper">
-                    {c.tag}
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col p-4 sm:p-5">
-                  <p className="text-[13.5px] font-black leading-[1.6] text-slate sm:text-[14.5px]">
-                    「{c.worry}」
-                  </p>
-                  <p className="mt-2.5 text-[12px] leading-[1.8] text-steel sm:text-[12.5px]">{c.what}</p>
-                  <div className="mt-4 flex-1" />
-                  {c.open ? (
-                    <PlanCta
-                      plan={DEFAULT_PLAN}
-                      from={`case_${c.id}`}
-                      category={c.category}
-                      className="!justify-start min-h-[40px] p-0 text-[13px] !text-brand"
-                    >
-                      この相談をする <span aria-hidden className="ml-1.5">→</span>
-                    </PlanCta>
-                  ) : (
-                    <Link
-                      href="/talk"
-                      className="inline-flex min-h-[40px] items-center text-[13px] font-bold text-steel"
-                    >
-                      受付前・順番待ちに入る <span aria-hidden className="ml-1.5">→</span>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </Reveal>
-          ))}
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="cases"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            今すぐ相談する <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
         </div>
 
         <p className="mt-5 text-[12px] leading-[1.8] text-steel">
-          ※ 写真はイメージです。特定の利用者の体験談ではありません。
+          ※ 写真はイメージ、文面と回答は画面の見本です。特定の利用者の体験談ではありません。
         </p>
       </Block>
 
@@ -712,6 +661,21 @@ export default async function HomePage() {
             出すのは「5人中3人」だけ。その5人がそう感じた、という話であって、
             女性みんなの答えではありません。
           </p>
+
+          {/* ここから料金の節まで、スマホで5画面ぶん押す場所が無かった。
+              見本を読み終えた直後がいちばん近いので、ここに1つ置く。 */}
+          <div className="mt-9 max-w-[24em]">
+            <PlanCta
+              plan={DEFAULT_PLAN}
+              from="after_demo"
+              className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+            >
+              自分のも見てもらう <span aria-hidden className="ml-2">&rarr;</span>
+            </PlanCta>
+            <p className="mt-3 text-[12.5px] text-steel">
+              ¥{entry.yen.toLocaleString()}から / 1回ごと / 匿名
+            </p>
+          </div>
         </Wrap>
       </section>
 
@@ -807,9 +771,12 @@ export default async function HomePage() {
           月額はありません。入会金もありません。ここぞという場面の前にだけ使うものです。
         </p>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {tops.map((p, i) => (
-            <Reveal key={p.id} delay={i * 60}>
+        {/* スマホで3枚を縦に積むと、それだけで3画面ぶんになる。
+            横に送れるようにして1画面に収める。位置合わせは CSS に任せる
+            （JS を足すと、読み込みが終わるまで動かない帯になる）。 */}
+        <ul className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-4 lg:overflow-visible lg:px-0 lg:pb-0">
+          {tops.map((p) => (
+            <li key={p.id} className="w-[80%] shrink-0 snap-start sm:w-[60%] lg:w-auto">
               <div
                 className={`flex h-full flex-col rounded-card border bg-paper p-6 shadow-card ${
                   p.featured ? "border-rose" : "border-line"
@@ -817,7 +784,7 @@ export default async function HomePage() {
               >
                 {p.featured ? (
                   <span className="mb-3 inline-flex w-fit rounded-pill bg-rose-fill px-3 py-1 text-[11px] font-bold text-paper">
-                    いちばん使われています
+                    迷ったら、これ
                   </span>
                 ) : (
                   <span aria-hidden className="mb-3 block h-[25px]" />
@@ -855,9 +822,10 @@ export default async function HomePage() {
                   これで相談する <span aria-hidden className="ml-1.5">→</span>
                 </PlanCta>
               </div>
-            </Reveal>
+            </li>
           ))}
-        </div>
+        </ul>
+        <p className="mt-1 text-[11.5px] text-steel lg:hidden">横にスワイプすると、ほかのプランが出ます。</p>
 
         <div className="mt-6 flex flex-wrap items-baseline justify-between gap-3 rounded-card border border-line bg-mist px-5 py-4">
           <p className="text-[13.5px] font-bold">
@@ -885,13 +853,80 @@ export default async function HomePage() {
         </p>
       </Block>
 
+      {/* ══ 9.5 ほかの選び方との違い ══ */}
+      {/* 比較広告は景表法の対象。実証・正確な引用・公正な比較の3つが要る。
+          他社の金額は書かない（出典が無い）。事実に反することも書かない
+          （AIは無料で使えるものが多い）。中身と判定は lib/ask/compare.ts。 */}
+      <Block tint>
+        <H>ほかの選び方と、どう違うか。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+          どれかが優れているという話ではありません。
+          送る前のひと手間だけを引き受けるのが、この製品です。
+        </p>
+
+        <div className="mt-7 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
+          <table className="w-full min-w-[640px] border-collapse overflow-hidden rounded-card border border-line bg-paper shadow-card">
+            <thead>
+              <tr>
+                <th scope="col" className="w-[6.5em] bg-paper px-3 py-3" />
+                {ALTERNATIVES.map((a) => (
+                  <th
+                    key={a.id}
+                    scope="col"
+                    className={`px-3 py-3 text-[13px] font-black leading-[1.4] ${
+                      a.us ? "bg-brand text-paper" : "bg-mist text-steel"
+                    }`}
+                  >
+                    {a.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE.map((r) => (
+                <tr key={r.id} className="border-t border-line">
+                  <th
+                    scope="row"
+                    className="px-3 py-3 text-left align-top text-[12px] font-bold leading-[1.6] text-steel"
+                  >
+                    {r.label}
+                  </th>
+                  {ALTERNATIVES.map((a) => (
+                    <td
+                      key={a.id}
+                      className={`px-3 py-3 align-top text-[12px] leading-[1.7] ${
+                        a.us ? "bg-brand-tint font-bold text-brand-deep" : "text-steel"
+                      }`}
+                    >
+                      {r.cells[a.id]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="mt-4 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
+
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="compare"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            今すぐ相談する <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
+        </div>
+      </Block>
+
       {/* ══ 10. 安心・安全 ══ */}
       <Block>
         <H>安心・安全のために。</H>
         <ul className="mt-8 grid gap-2.5 sm:grid-cols-2">
           {[
             "匿名で使えます。名前もメールアドレスも要りません",
-            "相手の名前・写真・連絡先は保存しません",
+            "相手の名前・連絡先は保存しません",
             "送る前に、個人情報は自動で伏せます",
             "答えてくれた女性と直接つながる仕組みはありません",
             "年齢と立場を確認した女性だけが見ます",

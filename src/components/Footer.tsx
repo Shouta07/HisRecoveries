@@ -16,13 +16,10 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
 
   const pathname = usePathname();
 
-  // /app 配下はアプリの外枠を使う。サイトのフッターは出さない。
-  if (pathname?.startsWith("/app")) return null;
   // 「女性に聞く」の面は、それ自体がプロダクト。記事サイトのフッターは出さない。
   if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/") || pathname === "/join" || pathname?.startsWith("/answerers") || pathname === "/safety" || pathname === "/mine" || pathname === "/legal" || pathname === "/how" || pathname === "/talk" || pathname?.startsWith("/me/") || pathname?.startsWith("/s/")) return null;
-  // The home ("/") ships its own footer; /apply and /partner are focused pages
-  // that carry their own footer.
-  if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
+  // トップは自前のフッターを持っている。
+  if (pathname === "/") return null;
 
   return (
     <footer className="border-t border-shironezu bg-hakuji text-sumi">
@@ -60,29 +57,10 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
                   記事をさがす
                 </Link>
               </li>
-              {/* トップのフッターを8本に絞ったとき、/skip と /research への
-                  内部リンクがサイト内から0本になった（トップが唯一の入口だった）。
-                  サイトマップには載っていても、0本はさすがに孤立している。
-                  記事20ルートに出るこちらのフッターへ移す。 */}
               <li>
-                <Link href="/skip" className="transition-colors hover:text-asagi">
-                  やらなくていいこと
+                <Link href="/updates" className="transition-colors hover:text-asagi">
+                  更新記録
                 </Link>
-              </li>
-              <li>
-                <Link href="/order" className="transition-colors hover:text-asagi">
-                  男の改善、全部の順番
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="/letters"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-asagi"
-                >
-                  ニュースレター（Substack）<span aria-hidden className="text-ainezu"> ↗</span>
-                </a>
               </li>
               <li>
                 <a href="/feed.xml" className="transition-colors hover:text-asagi">
@@ -92,10 +70,20 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
             </ul>
           </div>
           <div>
-            <p className="text-[12.5px] text-ainezu">His Recoveries</p>
+            {/* 記事から来た人が、商品にたどり着ける唯一の線。
+                記事を残す以上、ここが切れていると読まれて終わる。 */}
+            <p className="text-[12.5px] text-ainezu">タシカメ</p>
             <ul className="mt-4 space-y-2.5 text-[14px]">
-              {/* 回答する側の入口。記事から来た人にも見えるように、
-                  サイト全体のフッターに置く。 */}
+              <li>
+                <Link href="/ask" className="font-bold transition-colors hover:text-asagi">
+                  女性に相談する
+                </Link>
+              </li>
+              <li>
+                <Link href="/answerers" className="transition-colors hover:text-asagi">
+                  誰が読むのか
+                </Link>
+              </li>
               <li>
                 <Link href="/join" className="transition-colors hover:text-asagi">
                   回答する（女性の方へ）
@@ -104,31 +92,6 @@ export default function Footer({ areas }: { areas: { id: string; ja: string }[] 
               <li>
                 <Link href="/about" className="transition-colors hover:text-asagi">
                   編集方針
-                </Link>
-              </li>
-              <li>
-                <Link href="/updates" className="transition-colors hover:text-asagi">
-                  更新記録
-                </Link>
-              </li>
-              <li>
-                <Link href="/research" className="transition-colors hover:text-asagi">
-                  調査
-                </Link>
-              </li>
-              <li>
-                <Link href="/interview" className="transition-colors hover:text-asagi">
-                  取材にご協力いただけませんか
-                </Link>
-              </li>
-              <li>
-                <Link href="/partner" className="transition-colors hover:text-asagi">
-                  取材・掲載について
-                </Link>
-              </li>
-              <li>
-                <Link href="/plan" className="transition-colors hover:text-asagi">
-                  第一印象改善プラン
                 </Link>
               </li>
               <li>

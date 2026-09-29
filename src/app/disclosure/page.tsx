@@ -231,16 +231,6 @@ export default function DisclosurePage() {
             これは心がけではなく、記事に受託先の名前が出たらサイトを公開できない仕組みにしてあります。
             {!HAS_MEDICAL_CLIENTS && "現時点で、制作を受託している医療機関は0件です。"}
           </p>
-          <p className="mt-4 text-[15.5px] leading-[2.1] text-keshizumi">
-            提携の条件は
-            <Link
-              href="/partner"
-              className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
-            >
-              プロの方へ
-            </Link>
-            に書いています。
-          </p>
         </section>
 
         <section className="mt-16">
@@ -300,14 +290,7 @@ export default function DisclosurePage() {
             <span className="font-bold text-sumi">
               現時点で受け取った手数料は0円です。条件を満たした提携先が0件だからです。
             </span>
-            提携先にお伝えしている条件は
-            <Link
-              href="/partner"
-              className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
-            >
-              取材・掲載について
-            </Link>
-            に、この方針をいつ変えたかは
+            この方針をいつ変えたかは
             <Link
               href="/updates"
               className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] transition-colors hover:decoration-asagi"
@@ -356,12 +339,12 @@ export default function DisclosurePage() {
             そう思われた箇所があれば、お知らせください。確認して、直すか、直せない理由をお返しします。
           </p>
           <p className="mt-5 text-[15px]">
-            <Link
-              href="/apply"
+            <a
+              href={`mailto:${site.email}`}
               className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[5px] transition-colors hover:decoration-asagi"
             >
-              連絡先はこちら
-            </Link>
+              {site.email}
+            </a>
           </p>
         </section>
 

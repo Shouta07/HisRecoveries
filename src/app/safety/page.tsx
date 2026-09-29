@@ -217,7 +217,7 @@ export default function SafetyPage() {
               href="/ask"
               className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-brand px-9 text-[15.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
             >
-              人に聞いてみる
+              人に相談する
             </Link>
             <Link
               href="/join"

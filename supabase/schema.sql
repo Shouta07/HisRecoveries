@@ -462,16 +462,39 @@ create table if not exists rewards (
 -- 特定商取引法に基づく表記（事業者の氏名・所在地・電話番号・価格）が
 -- 揃うまで請求しないので、MVP ではこの表に行が入らない。
 -- 先に作っておくのは、後から列を足す作業を相談の本体に持ち込まないため。
+-- 列名は、コードが実際に使っているものに合わせてある（amount / payment_status）。
+-- 以前ここが amount_yen / status になっていて、
+--   create index ... (payment_status) で schema.sql がその行で止まり、
+--   /api/checkout の insert も列が無くて必ず失敗した。
+-- つまり「決済が1件も通らない」状態だった。
+-- scripts/check-schema.mjs が、同じずれを二度と通さない。
 create table if not exists payments (
   id uuid primary key default gen_random_uuid(),
   consultation_id uuid references consultations(id) on delete set null,
   provider text default 'stripe',
   provider_ref text,
-  amount_yen int not null,
-  status text default 'pending',      -- pending / paid / refunded / failed
+  amount int not null,                       -- 税込の円。プランの値段をサーバが入れる
+  payment_status text default 'pending',     -- pending / paid / refunded / partially_refunded / failed
   paid_at timestamptz,
   created_at timestamptz default now()
 );
+
+-- 旧い名前で作られた DB を直す。新しく作った DB では何も起きない。
+alter table payments add column if not exists amount int;
+alter table payments add column if not exists payment_status text default 'pending';
+do $$
+begin
+  if exists (select 1 from information_schema.columns
+             where table_name = 'payments' and column_name = 'amount_yen') then
+    update payments set amount = coalesce(amount, amount_yen);
+    alter table payments alter column amount_yen drop not null;
+  end if;
+  if exists (select 1 from information_schema.columns
+             where table_name = 'payments' and column_name = 'status') then
+    update payments set payment_status = coalesce(payment_status, status);
+  end if;
+end $$;
+alter table payments alter column amount set not null;
 
 -- 運営が見る一覧。いま何件が、どの段階で止まっているか。
 create or replace view consultation_board as
@@ -596,6 +619,12 @@ alter table consultations alter column status set default 'draft';
 --   review は画像つきの相談が支払い後に入る（人が見てから recruiting へ）
 --   cancelled / refunded
 -- 決済前は recruiting に入らない。
+
+-- 回答者がどこから来たか。供給側の集客を、需要側と同じ物差しで見るのに要る。
+-- これが無いまま /api/join が utm_source を送っていたので、登録が全部失敗していた。
+alter table responders add column if not exists utm_source text;
+alter table responders add column if not exists referrer_host text;
+alter table responders add column if not exists landing_path text;
 
 alter table payments add column if not exists stripe_checkout_session_id text;
 alter table payments add column if not exists stripe_payment_intent_id text;
@@ -818,3 +847,97 @@ where c.is_ab = true;
 -- 同じ相手をまとめるラベルは、利用者の端末の中だけに置く。
 alter table consultations add column if not exists journey_step text;
 create index if not exists consultations_step_idx on consultations (journey_step, created_at desc);
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 販売を回すための集計
+--
+-- 出稿を増やすか止めるかを、毎朝これだけで決められるようにする。
+-- 見るのは4つ。
+--   いくら売れたか / どこで落ちているか / どの流入が売上になったか /
+--   売ったあとに返金になっていないか
+--
+-- 率は画面側で出す。ここでは数だけ持つ（分母の取り違えを1か所に閉じる）。
+-- ═══════════════════════════════════════════════════════════════
+
+-- 日ごとの売上。返金は引かず、別の列で持つ（引くと、返金が見えなくなる）。
+create or replace view sales_daily as
+select
+  date_trunc('day', p.paid_at)::date          as day,
+  count(*) filter (where p.payment_status in ('paid', 'partially_refunded'))      as paid_count,
+  coalesce(sum(p.amount) filter (where p.payment_status in ('paid', 'partially_refunded')), 0) as paid_yen,
+  count(*) filter (where p.payment_status in ('refunded', 'partially_refunded'))  as refunded_count
+from payments p
+where p.paid_at is not null
+group by 1
+order by 1 desc;
+
+
+-- 流入元ごとの売上。
+-- 相談に付いている utm を使う（買った相談がどこから来たか）。
+-- イベント側の utm と混ぜない。混ぜると、同じ人が二重に数えられる。
+create or replace view sales_by_source as
+select
+  coalesce(c.utm_source, c.referrer_host, 'direct') as source,
+  c.landing_path,
+  c.product_type,
+  count(*) filter (where p.payment_status in ('paid', 'partially_refunded'))      as paid_count,
+  coalesce(sum(p.amount) filter (where p.payment_status in ('paid', 'partially_refunded')), 0) as paid_yen,
+  count(*) filter (where p.payment_status in ('refunded', 'partially_refunded'))  as refunded_count,
+  min(p.paid_at) as first_paid_at,
+  max(p.paid_at) as last_paid_at
+from payments p
+join consultations c on c.id = p.consultation_id
+where p.paid_at is not null
+group by 1, 2, 3
+order by 5 desc;
+
+
+-- 購入までの各段を、流入元ごとに数える。
+-- 着地（site_landed）を分母に置く。これが無いと、
+-- 広告の管理画面のクリック数を信じるしかなくなる。
+create or replace view funnel_by_source as
+select
+  coalesce(utm_source, referrer_host, 'direct') as source,
+  utm_campaign,
+  count(*) filter (where event_name = 'site_landed')      as landed,
+  count(*) filter (where event_name = 'plan_viewed')      as plan_viewed,
+  count(*) filter (where event_name = 'ask_submitted')    as submitted,
+  count(*) filter (where event_name = 'checkout_started') as checkout_started,
+  count(*) filter (where event_name = 'purchase_paid')    as paid,
+  count(*) filter (where event_name = 'checkout_blocked') as blocked
+from events
+where created_at > now() - interval '30 days'
+group by 1, 2
+order by 3 desc;
+
+
+-- 日ごとの各段。落ちはじめた日が分かる。
+create or replace view funnel_daily as
+select
+  date_trunc('day', created_at)::date as day,
+  count(*) filter (where event_name = 'site_landed')      as landed,
+  count(*) filter (where event_name = 'plan_viewed')      as plan_viewed,
+  count(*) filter (where event_name = 'ask_submitted')    as submitted,
+  count(*) filter (where event_name = 'checkout_started') as checkout_started,
+  count(*) filter (where event_name = 'purchase_paid')    as paid
+from events
+where created_at > now() - interval '60 days'
+group by 1
+order by 1 desc;
+
+
+-- 決済を始められなかった理由。
+-- 法令の表記や鍵の不足が、ここに数で出る。
+-- 「出稿したのに売れない」の原因がここにあることがある。
+create or replace view checkout_blocks as
+select
+  coalesce(props ->> 'why', 'unknown') as why,
+  coalesce(props ->> 'plan', 'unknown') as plan,
+  count(*) as n,
+  max(created_at) as last_at
+from events
+where event_name = 'checkout_blocked'
+  and created_at > now() - interval '30 days'
+group by 1, 2
+order by 3 desc;

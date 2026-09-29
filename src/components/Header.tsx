@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import SearchButton from "@/components/search/SearchButton";
-import CheckCta from "@/components/check/CheckCta";
 import { site } from "@/lib/site";
 
 // 下層ページのヘッダー。トップの GlassNav と同じ見え方に揃える
@@ -18,14 +17,11 @@ export default function Header() {
 
   // The home ("/") ships its own glass navbar; /apply and /partner are focused
   // pages that carry their own top bar.
-  // /app 配下は Consumer App の外枠（Shell）が出る。
-  // サイトのヘッダーが重なると、アプリではなくWebサイトに見える。
-  if (pathname?.startsWith("/app")) return null;
   // 「女性に聞く」の面（相談・結果・回答）は、それ自体がプロダクト。
   // 記事サイトのヘッダー（男の改善は、順番で決まる／現在地を測る）が重なると、
   // 何のサービスを使っているのか分からなくなる。
   if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/") || pathname === "/join" || pathname?.startsWith("/answerers") || pathname === "/safety" || pathname === "/mine" || pathname === "/legal" || pathname === "/how" || pathname === "/talk" || pathname?.startsWith("/me/") || pathname?.startsWith("/s/")) return null;
-  if (pathname === "/" || pathname === "/apply" || pathname === "/partner") return null;
+  if (pathname === "/") return null;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-shironezu bg-hakuji/85 backdrop-blur-xl">
@@ -53,7 +49,7 @@ export default function Header() {
         <div className="flex min-w-0 items-center gap-3 xs:gap-5 sm:gap-7">
           <ul className="flex items-center gap-3 xs:gap-5 sm:gap-7">
             {LINKS.map((l) => (
-              <li key={l.href} className={l.desktopOnly ? "hidden md:block" : "hidden xs:block"}>
+              <li key={l.href} className={l.desktopOnly ? "hidden md:block" : "hidden sm:block"}>
                 <Link
                   href={l.href}
                   className="whitespace-nowrap text-[14.5px] font-normal text-keshizumi transition-colors hover:text-asagi sm:text-[15px]"
@@ -63,7 +59,15 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <CheckCta from="header" variant="nav" />
+          {/* 記事側のヘッダーから、商品への唯一の常設導線。
+              以前はここが診断（廃止）へ向いていた。 */}
+          <Link
+            href="/ask"
+            className="inline-flex shrink-0 whitespace-nowrap rounded-full bg-[#2563EB] px-3.5 py-2 text-[12.5px] font-bold text-white transition-opacity hover:opacity-90 sm:px-4 sm:text-[13.5px]"
+          >
+            <span className="sm:hidden">相談する</span>
+            <span className="hidden sm:inline">女性に相談する</span>
+          </Link>
           <SearchButton />
         </div>
       </div>

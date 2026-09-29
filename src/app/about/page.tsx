@@ -73,17 +73,6 @@ export default function AboutPage() {
         <li>掲載の順番を、報酬額で決めません。</li>
       </ul>
 
-      <p className="mt-8 max-w-[34em] text-[15px] leading-[1.95] text-keshizumi">
-        順番が変わったときだけ、お知らせを送っています。多くて月2回で、
-        開かれない状態が続いたら、こちらから止めます。
-        <Link
-          href="/letters"
-          className="ml-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
-        >
-          お便りについて
-        </Link>
-      </p>
-
       <p className="mt-6 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
         専門家への取材記事は、まだ0本です。記事の誤りは
         <a
@@ -96,12 +85,12 @@ export default function AboutPage() {
       </p>
 
       <p className="mt-12 border-t border-shironezu pt-7 text-[14px] leading-[1.95] text-keshizumi">
-        出会ったあとの時間を記録するほうは
+        送る前のメッセージや自己紹介文を、実在の女性に読んでもらうほうは
         <Link
-          href="/app"
+          href="/ask"
           className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
         >
-          こちら
+          タシカメ
         </Link>
         です。
       </p>

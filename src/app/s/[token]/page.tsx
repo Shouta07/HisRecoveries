@@ -31,8 +31,12 @@ import PlanCta from "@/components/brand/PlanCta";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `${ONE_LINER} — His Recoveries`,
-  description: "AとB、実際の女性5人はどちらを選んだか。",
+  title: `${ONE_LINER} — ${NAME}`,
+  description: "AとB、実在の女性はどちらを選んだか。",
+  // 人から人へ渡すための画面。検索には載せない。
+  // 中身は誰かの相談なので、リンクを持っている人だけが見るものにする。
+  // リンク自体は動くので、広がり方は変わらない。
+  robots: { index: false, follow: false },
 };
 
 type Row = {
@@ -147,7 +151,7 @@ export default async function SharePage({ params }: { params: { token: string } 
             from="share_cta"
             className="mt-6 min-h-[54px] w-full rounded-pill bg-paper px-6 text-[15.5px] !text-brand-deep"
           >
-            自分も聞いてみる <span aria-hidden className="ml-1.5">→</span>
+            自分も相談する <span aria-hidden className="ml-1.5">→</span>
           </PlanCta>
         </div>
       </div>

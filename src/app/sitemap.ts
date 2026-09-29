@@ -50,34 +50,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  // サイト最上位の一本。全記事を順番の上に並べ直したもの
-  // /skip は、この事業でいちばん入ってきやすい入口として同じ優先度で置く
-  const orderPath: MetadataRoute.Sitemap = [
-    {
-      url: `${site.url}/order`,
-      lastModified: articleDate,
-      changeFrequency: "monthly",
-      priority: 0.95,
-    },
-    {
-      url: `${site.url}/skip`,
-      lastModified: articleDate,
-      changeFrequency: "monthly",
-      priority: 0.95,
-    },
-  ];
-
-  // 選択肢（判断情報）。記事より少ないが、AI検索が抜き出すのはこちら
-  const choicePaths: MetadataRoute.Sitemap = [
-    "/choices",
-    ...["impression", "hair", "skin", "face", "body-hair", "mind"].map((a) => `/choices/${a}`),
-  ].map((p) => ({
-    url: `${site.url}${p}`,
-    lastModified: articleDate,
-    changeFrequency: "monthly" as const,
-    priority: 0.85,
-  }));
-
   // 更新記録。lastModified は最後に判断が変わった日を出す。
   // ここだけは articleDate（記事の更新日）を使わない。
   const updatesPath: MetadataRoute.Sitemap = [
@@ -92,6 +64,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths: MetadataRoute.Sitemap = [
     // 記事の索引と編集方針。もとはトップの中（#index / #about）にあった面で、
     // トップが /app の入口になったときに独立させた。
+    // 商品そのもの。広告からも検索からも、ここに直接来てほしい。
+    "/ask",
     "/articles",
     "/about",
     // 回答する側の入口。検索から直接来てほしい面なので載せる。
@@ -107,29 +81,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/how",
     // 人と話す。受付前だが、順番待ちの入口として検索から来てほしい。
     "/talk",
-    "/check",
-    "/interview",
-    "/research",
-    "/letters",
-    "/plan",
     "/areas/confidence",
-    "/reserve",
-    "/apply",
-    "/partner",
     "/disclosure",
     "/privacy",
   ].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: areaDate,
     changeFrequency: "monthly",
-    priority: p === "/plan" ? 0.7 : 0.4,
+    priority: p === "/ask" ? 0.9 : 0.4,
   }));
 
   return [
     ...home,
-    ...orderPath,
     ...areaPaths,
-    ...choicePaths,
     ...situationPaths,
     ...clusterPaths,
     ...updatesPath,

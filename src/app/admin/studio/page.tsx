@@ -214,11 +214,15 @@ export default function StudioPage() {
           <a href={DRIVE_ROOT} target="_blank" rel="noreferrer" className="hover:text-sage-bright">
             Drive ↗
           </a>
-          <Link href="/admin/insights" className="hover:text-sage-bright">
-            Insights
+          {/* 毎朝ここを見る。出稿を増やすか止めるかが、この画面で決まる */}
+          <Link href="/admin/sales" className="font-bold hover:text-sage-bright">
+            販売
           </Link>
-          <Link href="/admin/data" className="hover:text-sage-bright">
-            Data
+          <Link href="/admin/economics" className="hover:text-sage-bright">
+            採算
+          </Link>
+          <Link href="/admin/setup" className="hover:text-sage-bright">
+            準備
           </Link>
         </div>
 
@@ -226,10 +230,6 @@ export default function StudioPage() {
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-brand-cream/55">
           <span className="text-[10px] tracking-[0.2em] uppercase">その他</span>
           {[
-            { href: "/admin/checks", label: "Checks" },
-            { href: "/admin/asks", label: "Asks" },
-            { href: "/admin/guides", label: "Guides" },
-            { href: "/admin/network", label: "Certified" },
             { href: "/admin/tools/eval-thread", label: "Eval" },
             { href: "/admin/tools/letter", label: "Letter" },
           ].map((it) => (

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbInsertReturning, parseAttribution } from "@/lib/db";
 import {
-  isCategoryId, isAgeBand, isRelationId, isPanelAge,
+  isCategoryId, isOpenCategory, isAgeBand, isRelationId, isPanelAge,
   COMMENT_MAX, screen, initialStatus, needsReview, cleanAttrs,
 } from "@/lib/ask/model";
 import { isSellable, plan, clampTargeting, DEFAULT_PLAN } from "@/lib/ask/plans";
@@ -54,6 +54,15 @@ export async function POST(req: NextRequest) {
 
   if (!isCategoryId(body.category)) {
     return NextResponse.json({ error: "カテゴリを選んでください" }, { status: 400 });
+  }
+  // 受付を止めたカテゴリは、画面に出ていなくてもここで止める。
+  // 止めないと、古いリンクや手で叩いた POST から、
+  // 画像が無いと答えようのない相談が有料で入ってくる。
+  if (!isOpenCategory(body.category)) {
+    return NextResponse.json(
+      { error: "いまこの種類の相談は受け付けていません", blocked: true },
+      { status: 422 },
+    );
   }
 
   const isAb = body.isAb === true;
