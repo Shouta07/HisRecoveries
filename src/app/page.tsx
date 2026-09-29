@@ -7,7 +7,7 @@ import { ALTERNATIVES, COMPARE, COMPARE_NOTE, COMPARE_SCOPE } from "@/lib/ask/co
 import { STEPS as JOURNEY, isOpen as stepOpen } from "@/lib/ask/journey";
 import { VERDICTS } from "@/lib/ask/model";
 import { canCharge } from "@/lib/legal";
-import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B } from "@/lib/voice";
+import { NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION } from "@/lib/voice";
 import { supply, shortMessage } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
@@ -71,7 +71,7 @@ import { LADDER } from "@/lib/responder/policy";
 
 export const metadata: Metadata = {
   title: `${NAME} — ${THESIS_B}`,
-  description: `${THESIS} ${SUB}`,
+  description: `${DEFINITION}${THESIS} ${SUB}`,
   alternates: { canonical: site.url },
 };
 
@@ -267,6 +267,16 @@ export default async function HomePage() {
           その人が自分を見つけられる絵を、最初に大きく出す。
           文字は写真に重ねず、左に置く（顔が隠れると何の絵か分からない）。 */}
       <section className="relative overflow-hidden bg-sky">
+        {/* いちばん最初に、何のサービスかを書く。
+            世界観の文（恋愛は、小さな選択の積み重ね。）を先に出すと、
+            良いことを言っているが何を売っているのか分からない画面になる。
+            順番は 何のサービスか → なぜ意味があるか → 何が返るか。 */}
+        <Wrap className="pb-3 pt-5 sm:pb-4 sm:pt-7">
+          <p className="max-w-[38em] text-[14.5px] font-bold leading-[1.75] text-slate sm:text-[16px]">
+            {DEFINITION}
+          </p>
+        </Wrap>
+
         {/* 相談する男性と、読んで返す女性を1枚に入れる。
             片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
         <HeroBoard />
@@ -274,9 +284,8 @@ export default async function HomePage() {
         <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
 
-            {/* 言いたいことは1つ。
-                写真の上の「このLINE、今送っていい？」は、その人の頭の中。
-                こちらはそれへの答え。大きさで主従をはっきりさせる。 */}
+            {/* 上で「何のサービスか」は言ってある。ここは、その人への一言。
+                大きくするのはこれ1つだけ。 */}
             <h1 className="text-mega font-black leading-[1.15] text-slate">
               迷ったら、
               <br />
@@ -289,11 +298,14 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            {/* 見出しの下は、考え方を置く。
-                「失敗する前に」を立てると、買う理由が不安だけになる。
-                売っているのは、選ぶ前に確かめられること。 */}
-            <p className="mt-3.5 hidden text-[19px] font-black leading-[1.55] text-slate sm:block">
-              {THESIS_A}
+            {/* 見出しの下は、考え方。
+                何のサービスかは上で言ってあるので、ここは「なぜ意味があるか」。
+                狭い画面でも出す。世界観を出すのがこの行の仕事なので、
+                消すとサービスの説明だけが残る。 */}
+            <p className="mt-3.5 text-[17px] font-black leading-[1.6] text-slate sm:text-[19px]">
+              {THESIS_A1}
+              <br className="sm:hidden" />
+              {THESIS_A2}
               <br />
               {THESIS_B}
             </p>
@@ -301,10 +313,10 @@ export default async function HomePage() {
             {/* ここが「LINEの添削屋ではない」を決める行。
                 扱う場面を、恋愛が進む順に並べる。
                 写真と服装は入れない。画像を受け取る口がまだ無い。 */}
-            <p className="mt-3 max-w-[26em] text-[15px] leading-[1.8] text-steel sm:mt-4 sm:text-[16px]">
-              自己紹介文、LINE、誘い方、デートの前後、次の一手。
+            <p className="mt-3 max-w-[26em] text-[14.5px] leading-[1.8] text-steel sm:mt-4 sm:text-[16px]">
+              自己紹介文、LINE、誘い方、デートの前後。
               <wbr />
-              大事な選択の前に、実在の女性{main.answers}人のリアルな反応を。
+              実在の女性{main.answers}人が読んで返します。
             </p>
 
             {/* いくらなのかを、スクロールさせずに出す。
