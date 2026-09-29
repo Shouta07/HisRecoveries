@@ -208,101 +208,151 @@ export default async function HomePage() {
       </header>
 
       {/* ══ 1. ファーストビュー ══ */}
-      <section className="bg-sky">
-        <Wrap className="grid gap-10 pb-12 pt-11 lg:grid-cols-[1fr_0.95fr] lg:items-start lg:gap-12 lg:pb-16 lg:pt-14">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-pill border border-brand/40 bg-paper px-4 py-2 text-[12.5px] font-bold text-brand">
+      {/* 写真を小さく置かない。
+          この製品を買う人は「いま手が止まっている人」なので、
+          その人が自分を見つけられる絵を、最初に大きく出す。
+          文字は写真に重ねず、左に置く（顔が隠れると何の絵か分からない）。 */}
+      <section className="relative overflow-hidden bg-sky">
+        {/* 写真。広い画面でだけ、右半分に敷く。
+            狭い画面で文字の裏に敷くと、写真が霞んで文字も読みにくい。
+            どちらも中途半端になるので、下に独立した帯として置く。 */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block"
+        >
+          <Slot name="hero" rounded="" className="h-full w-full" />
+          {/* 文字側へ向かってだけ、地の色に溶かす */}
+          <span className="absolute inset-y-0 left-0 w-[38%] bg-gradient-to-r from-sky to-transparent" />
+        </div>
+
+        <Wrap className="relative pb-12 pt-11 sm:pb-16 sm:pt-14">
+          <div className="lg:max-w-[34em]">
+            <p className="inline-flex items-center gap-2 rounded-pill border border-brand/40 bg-paper px-4 py-2 text-[12.5px] font-bold text-brand shadow-card">
               <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
               </svg>
               男性の方へ
             </p>
 
-            {/* 2行に収めようとすると「する。」だけが3行目に落ちる。
-                最初から3行で組む。 */}
             <h1 className="mt-5 text-mega font-black leading-[1.22] text-slate">
               大事な相手だから、
               <br />
               失敗する前に
               <br />
-              <span className="text-brand">相談する。</span>
+              <span className="relative inline-block">
+                相談する。
+                <span
+                  aria-hidden
+                  className="absolute -bottom-0.5 left-0 -z-10 h-[0.42em] w-full rounded-[2px] bg-brand/25"
+                />
+              </span>
             </h1>
 
-            <p className="mt-7 max-w-[24em] text-[15.5px] leading-[1.95] text-steel sm:text-[16.5px]">
+            <p className="mt-6 max-w-[24em] text-[15px] leading-[1.9] text-steel sm:text-[16.5px]">
               写真・メッセージ・会話。
-              <br className="hidden sm:block" />
+              <br />
               迷った瞬間に、実在女性の反応をもとに次の一手を考えられます。
             </p>
 
+            {/* 何を見てもらえるか。押すとその場面から始まる */}
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {SUBJECTS.map((sub) => {
+                const usable = sub.id !== "call";
+                const icon =
+                  sub.id === "photo"
+                    ? "M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 6"
+                    : sub.id === "message"
+                      ? "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"
+                      : "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6";
+                const inner = (
+                  <>
+                    <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={icon} />
+                    </svg>
+                    {sub.label}
+                  </>
+                );
+                return (
+                  <li key={sub.id}>
+                    {usable ? (
+                      <PlanCta
+                        plan={DEFAULT_PLAN}
+                        from={`hero_${sub.id}`}
+                        category={sub.id === "photo" ? "photo" : "message"}
+                        className="min-h-[44px] gap-2 rounded-pill border border-line bg-paper px-4 text-[13.5px] !text-slate shadow-card"
+                      >
+                        {inner}
+                      </PlanCta>
+                    ) : (
+                      <Link
+                        href="/talk"
+                        className="inline-flex min-h-[44px] items-center gap-2 rounded-pill border border-line bg-paper px-4 text-[13.5px] font-bold text-steel shadow-card"
+                      >
+                        {inner}
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+
             {!open && (
-              <p className="mt-7 rounded-card border border-line bg-paper px-5 py-4 text-[13.5px] leading-[1.85] text-slate shadow-card">
+              <p className="mt-6 rounded-card border border-line bg-paper px-5 py-4 text-[13px] leading-[1.85] text-slate shadow-card">
                 {!paid
                   ? "いまお支払いを受け付けていません。特定商取引法に基づく表記が整い次第、始めます。"
                   : shortMessage(sup, main.answers)}
               </p>
             )}
 
-            <div className="mt-8">
+            <div className="mt-7 max-w-[24em]">
               <PlanCta
                 plan={DEFAULT_PLAN}
                 from="hero"
-                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card sm:w-auto"
+                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card"
               >
-                今の悩みを相談する <span aria-hidden className="ml-2">→</span>
+                今すぐ相談する <span aria-hidden className="ml-2">→</span>
               </PlanCta>
             </div>
 
-            <ul className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] font-bold text-steel">
+            <ul className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] font-bold text-steel">
               <li>匿名</li>
               <li>都度払い</li>
               <li>実在女性が回答</li>
               {sup.canPromiseSpeed && <li>最短数分</li>}
             </ul>
-            <p className="mt-3 text-[12px] text-steel">
+            <p className="mt-2.5 text-[12px] text-steel">
               {entry.name} ¥{entry.yen.toLocaleString()} から
             </p>
-          </div>
 
-          {/* 右は、使う人の側の絵。
-              文字は写真の上に重ねない。顔が隠れると、何の写真か分からなくなる。
-              手書きの一文も画像に焼き込まず、文字として置く
-              （読み上げにも乗るし、あとで変えられる）。 */}
-          <div>
-            <p className="text-right text-[16px] font-bold leading-[1.7] text-slate sm:text-[18px]">
-              うまくいく恋は、
-              <br />
-              準備できる。
-              <span
-                aria-hidden
-                className="ml-auto mt-1.5 block h-[3px] w-[7.5em] -skew-y-1 rounded-pill bg-brand/50"
-              />
-            </p>
-
-            <div className="mt-5 flex items-end gap-4">
-              {/* 送る前のやりとり。顔は置かず、言葉だけ */}
-              <div className="flex min-w-0 flex-1 flex-col gap-2.5 pb-3">
-                <p className="w-fit rounded-card rounded-bl-[4px] border border-line bg-paper px-4 py-2.5 text-[13px] leading-[1.65] text-slate shadow-card">
-                  このメッセージ、
-                  <br />
-                  どう思いますか？
-                </p>
-                <p className="ml-auto w-fit rounded-card rounded-br-[4px] bg-brand-tint px-4 py-2.5 text-right text-[13px] leading-[1.65] text-slate">
-                  いいと思います！
-                  <br />
-                  もう少しカジュアルにすると
-                  <br />
-                  さらに好印象です
-                </p>
-              </div>
-
-              <Slot
-                name="hero"
-                className="aspect-[266/410] w-[46%] shrink-0 sm:w-[200px] lg:w-[220px]"
-                rounded="rounded-card"
-              />
+            {/* 送る前のやりとり。顔は置かず、言葉だけ */}
+            <div className="relative z-10 mt-8 w-full max-w-[22em] rounded-card border border-line bg-paper p-4 shadow-card">
+              <p className="w-fit rounded-card rounded-bl-[4px] bg-mist px-4 py-2.5 text-[13.5px] leading-[1.65] text-slate">
+                来週の土曜、
+                <br />
+                ご飯どうですか？
+              </p>
+              <p className="mt-1 text-right text-[10.5px] text-steel">19:24</p>
+              <p className="ml-auto mt-2 flex w-fit items-center gap-2.5 rounded-card rounded-br-[4px] bg-brand-tint px-4 py-2.5 text-[13.5px] leading-[1.65] text-slate">
+                このまま送っていいかな…？
+                <span
+                  aria-hidden
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-paper"
+                >
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
+                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
+                  </svg>
+                </span>
+              </p>
             </div>
           </div>
         </Wrap>
+
+        {/* 狭い画面では、文字の裏ではなく、独立した帯として見せる */}
+        <Slot
+          name="hero"
+          rounded=""
+          className="mt-2 h-[340px] w-full sm:h-[420px] lg:hidden"
+        />
       </section>
 
       {/* ══ 2. 今どこで悩んでいますか ══ */}

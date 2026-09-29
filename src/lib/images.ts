@@ -32,7 +32,7 @@ export type ImageSlot = {
   ready?: boolean;
 };
 
-export type ImageKey = "hero" | "caseMessage" | "caseDate" | "casePhoto" | "caseStyle" | "caseProfile" | "caseWords" | "step1" | "step4";
+export type ImageKey = "hero" | "heroTall" | "caseMessage" | "caseDate" | "casePhoto" | "caseStyle" | "caseProfile" | "caseWords" | "step1" | "step4";
 
 export const IMAGES: Record<ImageKey, ImageSlot> = {
   hero: {
@@ -42,6 +42,12 @@ export const IMAGES: Record<ImageKey, ImageSlot> = {
     // 画面の写しなので、これ以上大きくすると粗くなる。
     // 元の写真ファイルをいただければ、もっと大きく使える。
     note: "送る直前に手が止まっている様子。正面ではなく、画面を見ている横顔。",
+    ready: true,
+  },
+  heroTall: {
+    src: "/img/hero-tall.jpg",
+    alt: "スマホを見ている男性",
+    note: "縦に長く使う版。スマホの幅で、右半分に流し込む。",
     ready: true,
   },
   caseMessage: { src: "/img/case-message.jpg", alt: "", note: "LINEの画面" },
