@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import SearchButton from "@/components/search/SearchButton";
 import { site } from "@/lib/site";
+import MenuButton from "@/components/brand/MenuButton";
 
 // 下層ページのヘッダー。トップの GlassNav と同じ見え方に揃える
 // （ロゴ＋肩書き1行、記事が先頭）。メディアが主、サービスが従。
@@ -69,6 +70,9 @@ export default function Header() {
             <span className="hidden sm:inline">女性に相談する</span>
           </Link>
           <SearchButton />
+          {/* フッターを外したので、ほかの面への行き先はここに畳んである。
+              特商法の表記とプライバシーも、ここから辿れる */}
+          <MenuButton />
         </div>
       </div>
     </header>

@@ -248,14 +248,8 @@ export default async function HomePage() {
 
         <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
-            <p className="inline-flex items-center gap-1.5 rounded-pill border border-brand/30 bg-paper px-3 py-1.5 text-[11.5px] font-bold text-brand">
-              <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-              </svg>
-              男性の方へ
-            </p>
 
-            <h1 className="mt-2.5 text-mega font-black leading-[1.15] text-slate">
+            <h1 className="text-mega font-black leading-[1.15] text-slate">
               送る前に、
               <br />
               <span className="relative inline-block">
@@ -282,9 +276,12 @@ export default async function HomePage() {
             {/* いくらなのかを、スクロールさせずに出す。
                 値段が下にあると、それだけで帰られる。 */}
             <ul className="mt-4 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[13.5px] font-bold text-slate">
+              {/* 丸バッジを1行に畳んだ。誰向けかは残したまま、縦を1行ぶん空ける */}
+              <li className="text-brand">男性向け</li>
+              <li aria-hidden className="text-line">|</li>
               <li className="tabular-nums">¥{entry.yen.toLocaleString()}から</li>
               <li aria-hidden className="text-line">|</li>
-              <li>1回ごと・月額なし</li>
+              <li>月額なし</li>
               <li aria-hidden className="text-line">|</li>
               <li>匿名</li>
             </ul>
