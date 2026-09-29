@@ -7,6 +7,7 @@ import { balanceOf, canPayout, PAYOUT_MIN_YEN } from "@/lib/responder/balance";
 import { stateOf, REQUIRED_ANSWERS, INVITER_YEN, INVITEE_YEN } from "@/lib/responder/referral";
 import { TIERS } from "@/lib/economics";
 import { site } from "@/lib/site";
+import { NAME } from "@/lib/voice";
 import AvailableToggle from "@/components/responder/AvailableToggle";
 import CopyText from "@/components/responder/CopyText";
 
@@ -77,7 +78,7 @@ export default async function MePage({ params }: { params: { token: string } }) 
       <header className="border-b border-line bg-paper">
         <div className="mx-auto flex w-full max-w-[640px] items-center justify-between gap-4 px-5 py-3.5">
           <Link href="/" className="text-[15px] font-black">
-            His Recoveries
+            {NAME}
           </Link>
           <p className="text-[12px] text-steel">{r.display_age_band}</p>
         </div>

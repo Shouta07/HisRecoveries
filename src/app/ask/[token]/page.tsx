@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
@@ -100,7 +101,7 @@ function Shell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3.5 sm:px-10">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
             <Tashikame size={26} />
-            <span className="truncate text-[14.5px] font-black">His Recoveries</span>
+            <span className="truncate text-[15.5px] font-black">{NAME}</span>
           </Link>
           <Link
             href="/ask"

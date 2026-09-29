@@ -4,7 +4,9 @@ import AskFlow from "@/components/ask/AskFlow";
 
 
 export const metadata: Metadata = {
-  title: "女性に聞く — His Recoveries",
+  // 記事側のテンプレート（%s — His Recoveries）を使わない。
+  // プロダクトの名乗りはタシカメなので、ここで完結させる。
+  title: { absolute: "女性に聞く — タシカメ" },
   description: "LINE、デート、写真、恋愛。自分では分からないことを、実際の女性に匿名で聞けます。",
   robots: { index: false, follow: true },
 };

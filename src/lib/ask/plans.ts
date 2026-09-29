@@ -24,6 +24,7 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, type AttrId, type PanelAge } from "./model";
+import { assertWeight } from "../voice";
 
 export type PlanId = "final_check" | "talk" | "improve" | "retest" | "date_ready";
 
@@ -65,19 +66,19 @@ export type Plan = {
 export const PLANS: Plan[] = [
   {
     id: "final_check",
-    name: "今すぐ聞く",
-    tagline: "相手に近い5人へ、今聞く。",
+    name: "事前確認",
+    tagline: "送る前に、相手に近い5人の目を通す。",
     yen: 2980,
     depth: 1,
     answers: 5,
     rounds: 1,
     targeting: true,
     includes: [
-      "相手に近い実在の5人",
-      "反応の分かれ方",
-      "一人ひとりのコメント",
-      "良かった点と、気になった点",
-      "みんなが触れていたこと",
+      "審査を通った5人が読む",
+      "通る／通らないの分かれ方",
+      "一人ひとりが書いた理由",
+      "良かった点と、引っかかった点",
+      "複数人が同じことを言った箇所",
     ],
     fits: ["LINE", "写真", "誘い方", "服装", "店選び"],
     available: true,
@@ -89,8 +90,8 @@ export const PLANS: Plan[] = [
     // 実在する人と1対1で話す以上、時間を決めた受け入れ手順と
     // その場を見る体制が要る。用意できるまで available は false。
     id: "talk",
-    name: "話す",
-    tagline: "20〜30分、実在する人と話す。",
+    name: "相談",
+    tagline: "20〜30分、相手側に近い人と話す。",
     yen: 4980,
     from: true,
     depth: 2,
@@ -98,10 +99,10 @@ export const PLANS: Plan[] = [
     rounds: 1,
     targeting: true,
     includes: [
-      "実在する人と20〜30分",
+      "審査を通った人と20〜30分",
       "状況をそのまま話す",
-      "相手側から質問してもらう",
-      "次の一手の整理",
+      "相手側から問い返してもらう",
+      "次の一手の組み立て",
     ],
     fits: ["うまく書けない", "何を聞けばいいか分からない", "考えが回っている"],
     available: false,
@@ -110,8 +111,8 @@ export const PLANS: Plan[] = [
   },
   {
     id: "improve",
-    name: "一緒に直す",
-    tagline: "人の反応を受けて、改善まで。",
+    name: "改善",
+    tagline: "指摘を受けて、直すところまで。",
     yen: 5980,
     from: true,
     depth: 3,
@@ -119,7 +120,7 @@ export const PLANS: Plan[] = [
     rounds: 1,
     targeting: true,
     includes: [
-      "「確かめる」の内容すべて",
+      "事前確認の内容すべて",
       "どこが引っかかったかの整理",
       "直しどころ",
       "直した案",
@@ -131,8 +132,8 @@ export const PLANS: Plan[] = [
   },
   {
     id: "retest",
-    name: "直して、もう一度聞く",
-    tagline: "直したものを、別の人にもう一度見せる。",
+    name: "再確認",
+    tagline: "直したものを、別の5人に通す。",
     yen: 7980,
     from: true,
     depth: 4,
@@ -140,8 +141,8 @@ export const PLANS: Plan[] = [
     rounds: 2,
     targeting: true,
     includes: [
-      "「直して返す」の内容すべて",
-      "直した版を、同じ条件の別の5人へ",
+      "改善の内容すべて",
+      "直した版を、同じ条件の別の5人に通す",
       "前と後の比べ方",
       "最後のまとめ",
     ],
@@ -151,8 +152,8 @@ export const PLANS: Plan[] = [
   },
   {
     id: "date_ready",
-    name: "当日までに、ひと通り",
-    tagline: "大事な日の前に、必要なところをまとめて。",
+    name: "当日前の総点検",
+    tagline: "大事な日の前に、要るところをひと通り。",
     yen: 14800,
     from: true,
     depth: 5,
@@ -160,7 +161,7 @@ export const PLANS: Plan[] = [
     rounds: 2,
     targeting: true,
     includes: [
-      "「直して、もう一度」の内容すべて",
+      "再確認の内容すべて",
       "LINE・服装・店・当日の流れ",
       "第一印象・話し方・距離感",
       "必要に応じて、オンラインでの確認",
@@ -250,11 +251,11 @@ export function clampTargeting(
    これが商品の骨。単価が上がる理由もここにある。 */
 
 export const FLOW = [
-  { tag: "CHECK", label: "人で試す", note: "相手に近い5人に、そのまま見てもらう。" },
-  { tag: "UNDERSTAND", label: "どう見えたか知る", note: "何人がどう感じたか。どこが引っかかったか。" },
-  { tag: "IMPROVE", label: "直す", note: "引っかかったところを直した案を出す。" },
-  { tag: "RE-TEST", label: "もう一度試す", note: "直した版を、同じ条件の別の5人へ。" },
-  { tag: "GO", label: "本番へ", note: "良くなったことを確かめてから出す。" },
+  { tag: "CHECK", label: "通す", note: "審査を通った5人が、相手側の目で読む。" },
+  { tag: "UNDERSTAND", label: "所見を読む", note: "何人が通したか。どこで引っかかったか。" },
+  { tag: "IMPROVE", label: "直す", note: "引っかかった箇所を、直した案にする。" },
+  { tag: "RE-TEST", label: "もう一度通す", note: "直した版を、同じ条件の別の5人に。" },
+  { tag: "GO", label: "出す", note: "通ったことを確かめてから、本番へ。" },
 ] as const;
 
 /* ── 使う瞬間 ──────────────────────────────────
@@ -270,31 +271,31 @@ export const USE_CASES: {
   {
     tag: "送る前",
     q: "このLINE、今送っていい？",
-    body: "AIにも聞いた。でも、送信ボタンを押す直前になると不安になる。",
+    body: "AIには通した。あとは押すだけ。その直前で手が止まる。",
     category: "message",
   },
   {
     tag: "誘う前",
     q: "今日、デートに誘っていい？",
-    body: "誘い方はAIでも考えられる。でも「この距離感で誘われたらどう感じる？」は、実際の人に聞きたい。",
+    body: "文面は作れる。「この距離感で誘われたらどう受け取るか」は、相手側にしか分からない。",
     category: "signal",
   },
   {
     tag: "会う前",
     q: "あと2時間でデート。この服と店、大丈夫？",
-    body: "服も店も決めた。でも最後に「実際どう見える？」を聞いておきたい。",
+    body: "服も店も決めた。最後に、相手側の目でどう映るかを通しておく。",
     category: "style",
   },
   {
     tag: "出す前",
     q: "プロフィール写真、AとBどっち？",
-    body: "AIに写真の特徴は説明できる。でも「どっちなら会いたいと思う？」は、実際の相手側に聞く。",
+    body: "特徴は説明できる。「どちらなら会いたいと思うか」は、相手側にしか分からない。",
     category: "photo",
   },
   {
     tag: "載せる前",
     q: "このプロフィール、会ってみたいと思う？",
-    body: "自分では読み返せない。相手側の目で、一度通して読んでもらう。",
+    body: "自分では読み返せない。相手側の目で、一度通しておく。",
     category: "photo",
   },
 ];
@@ -389,8 +390,10 @@ export const USE_CASES: {
   for (const t of copy) {
     const hit = JARGON.find((j) => t.includes(j));
     if (hit) {
-      throw new Error(`画面の言葉に専門用語「${hit}」が入っています（人に聞く／反応を見る／自分で決める だけで書く）`);
+      throw new Error(`画面の言葉に専門用語「${hit}」が入っています（通す／読まれる／確かめる で書く）`);
     }
+    // 値段を否定する言葉を、買う人の画面に出さない。
+    assertWeight(t, "商品の説明");
   }
 
   // 「5回答でいくら」と書かない。個数を売るとアンケートに見える。

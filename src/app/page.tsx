@@ -3,10 +3,11 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { topPlans, plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
 import { canCharge } from "@/lib/legal";
-import { ONE_LINER, SUB } from "@/lib/voice";
+import { NAME, OPERATOR, ONE_LINER, SUB } from "@/lib/voice";
 import { supply, shortMessage } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
+import Tashikame from "@/components/brand/Tashikame";
 import Slot from "@/components/brand/Slot";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
@@ -37,17 +38,17 @@ import OnlineCount from "@/components/ask/OnlineCount";
 // ══════════════════════════════════════════════════════════════
 
 export const metadata: Metadata = {
-  title: "His Recoveries — これ、今送っていい？",
+  title: `タシカメ — 勘で、出さない。`,
   description:
-    "LINEのメッセージ、写真、デートの誘い、服装…。迷ったら、実際の女性たちに聞いてみよう。匿名・都度払い・実際の女性が回答します。",
+    "送る前に、相手に近い5人の目を通す。LINEの文面、写真、誘い方、服装、プロフィール。答えるのは審査を通った方だけです。",
   alternates: { canonical: site.url },
 };
 
 const NAV = [
-  ["#how", "使い方"],
-  ["#voices", "みんなの声"],
-  ["#price", "料金プラン"],
-  ["/answerers", "回答する女性たち"],
+  ["#how", "通す工程"],
+  ["#voices", "返ってくる所見"],
+  ["#price", "料金"],
+  ["/answerers", "誰が読むのか"],
 ] as const;
 
 /* 画面の見本。実際の回答ではない */
@@ -69,10 +70,10 @@ const CASES = [
 ] as const;
 
 const STEPS = [
-  { n: "01", t: "質問する", d: "LINE・写真・デート・服装など迷っていることを送るだけ。" },
-  { n: "02", t: "女性に届く", d: "あなたの質問が、実際の女性たちに届きます。" },
-  { n: "03", t: "一人ずつ返信がくる", d: "リアルな女性の反応が続々と届きます。" },
-  { n: "04", t: "判断する", d: "複数の意見を見て、自信を持って行動できます。" },
+  { n: "01", t: "出すものを預ける", d: "送る直前のLINE、出す直前の写真。そのまま預けます。" },
+  { n: "02", t: "相手側の目で読まれる", d: "審査を通った5人が、相手に近い立場で読みます。" },
+  { n: "03", t: "所見が一人ずつ届く", d: "通したか、引っかかったか。その理由まで書かれます。" },
+  { n: "04", t: "決める", d: "そのまま出すか、直してから出すか。決めるのはあなたです。" },
 ] as const;
 
 const VOICES = [
@@ -139,9 +140,9 @@ export default async function HomePage() {
   const open = paid && sup.open;
   // 必要になった場面でだけ出すもの。トップでは名前と目安だけ。
   const LATER = [
-    { id: "talk", name: "話す", when: "もう少し話したいとき", yen: getPlan("talk").yen },
-    { id: "improve", name: "一緒に直す", when: "直したいとき", yen: getPlan("improve").yen },
-    { id: "retest", name: "もう一度聞く", when: "直したあと", yen: getPlan("retest").yen },
+    { id: "talk", name: "相談", when: "話しながら整理したいとき", yen: getPlan("talk").yen },
+    { id: "improve", name: "改善", when: "直したいとき", yen: getPlan("improve").yen },
+    { id: "retest", name: "再確認", when: "直したあと", yen: getPlan("retest").yen },
   ];
 
   const ld = {
@@ -163,20 +164,11 @@ export default async function HomePage() {
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <Wrap className="flex items-center justify-between gap-4 py-3">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <span
-              aria-hidden
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-brand"
-            >
-              <span className="flex gap-[3px]">
-                {[0, 1, 2].map((i) => (
-                  <span key={i} className="h-[4px] w-[4px] rounded-full bg-paper" />
-                ))}
-              </span>
-            </span>
+            <Tashikame size={34} />
             {/* 肩書きを置かない。名乗りは h1 の1つだけ。
                 ここにもう1行置くと、名乗りが2つになる。 */}
-            <span className="min-w-0 truncate text-[17px] font-black text-slate">
-              His Recoveries
+            <span className="min-w-0 truncate text-[19px] font-black tracking-[0.02em] text-slate">
+              {NAME}
             </span>
           </Link>
 
@@ -198,7 +190,7 @@ export default async function HomePage() {
               from="header"
               className="min-h-[42px] rounded-pill bg-brand px-6 text-[13.5px] !text-paper shadow-card"
             >
-              今すぐ聞く
+              5人の目を通す
             </PlanCta>
           </nav>
         </Wrap>
@@ -209,11 +201,10 @@ export default async function HomePage() {
         <Wrap className="grid gap-10 pb-12 pt-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-8 lg:pb-14 lg:pt-12">
           <div className="relative z-10">
             <h1 className="text-mega font-black leading-[1.22] text-slate">
-              これ、
+              勘で、
               <br />
               <span className="relative inline-block">
-                今送っていい？
-                {/* 見本の下線。手で引いた線のニュアンス */}
+                出さない。
                 <span
                   aria-hidden
                   className="absolute -bottom-1 left-0 h-[10px] w-full -skew-x-6 rounded-pill bg-brand/25"
@@ -222,21 +213,22 @@ export default async function HomePage() {
             </h1>
 
             <p className="mt-7 max-w-[24em] text-[15.5px] leading-[1.9] text-steel sm:text-[16.5px]">
-              LINEのメッセージ、写真、デートの誘い、服装…
+              {SUB}
               <br className="hidden sm:block" />
-              {SUB}AIじゃなく、本物の人の反応が返ってくる。
+              LINEの文面、写真、誘い方、服装、プロフィール。
+              通ったか、通らなかったか。その理由まで返ってきます。
             </p>
 
             <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               {[
-                ["実際の女性が回答", "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6"],
+                ["審査を通った方だけが回答", "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6"],
                 // 速さは実測できるまで名乗らない。
                 // この製品のいちばんの売りだからこそ、
                 // 担保できないうちに書くと、そこが最初の嘘になる。
                 sup.canPromiseSpeed
-                  ? (["最短数分で返信", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const)
+                  ? (["その日のうちに所見が届く", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const)
                   : (["答えるのは実在の人", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const),
-                ["匿名で気軽に相談", "M5 11V8a7 7 0 0 1 14 0v3 M4 11h16v9H4z"],
+                ["匿名。相手のことは保存しない", "M5 11V8a7 7 0 0 1 14 0v3 M4 11h16v9H4z"],
               ].map(([label, d]) => (
                 <li key={label} className="flex items-center gap-2">
                   <span
@@ -278,10 +270,10 @@ export default async function HomePage() {
                   <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z" />
                   </svg>
-                  今すぐ女性に聞く
+                  5人の目を通す
                 </span>
                 <span className="mt-0.5 pl-[30px] text-[12px] font-bold opacity-90">
-                  5人の意見 ¥{getPlan(ENTRY_PLAN).yen.toLocaleString()}〜
+                  事前確認 ¥{getPlan(ENTRY_PLAN).yen.toLocaleString()}
                 </span>
               </PlanCta>
 
@@ -362,7 +354,7 @@ export default async function HomePage() {
       <section id="cases" className="scroll-mt-20 bg-paper">
         <Wrap className="py-14 sm:py-16">
           <div className="flex flex-wrap items-end justify-between gap-3">
-            <H>こんなときに、女性のリアルな意見を。</H>
+            <H>出す直前に、手が止まるもの。</H>
             <Link
               href="/ask"
               className="text-[12.5px] font-bold text-steel transition-colors hover:text-brand"
@@ -404,7 +396,7 @@ export default async function HomePage() {
       {/* ══ 使い方 ══ */}
       <section id="how" className="scroll-mt-20 bg-sky">
         <Wrap className="py-14 sm:py-16">
-          <H>使い方は、とてもシンプル。</H>
+          <H>通す、という工程です。</H>
 
           <ol className="mt-7 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, i) => (
@@ -518,7 +510,7 @@ export default async function HomePage() {
                 from="price"
                 className="mt-6 min-h-[54px] w-full rounded-pill bg-rose-fill px-5 text-[15px] !text-paper shadow-card"
               >
-                今すぐ女性に聞く <span aria-hidden className="ml-1.5">→</span>
+                5人の目を通す <span aria-hidden className="ml-1.5">→</span>
               </PlanCta>
 
               <p className="mt-4 text-[12px] leading-[1.75] text-steel">
@@ -531,7 +523,7 @@ export default async function HomePage() {
                 足りなければ、そのときに。
               </p>
               <p className="mt-3 text-[13.5px] leading-[1.9] text-steel">
-                回答を見て「もう少し話したい」「直したい」と思ったときだけ、
+                所見を読んで「直したい」「もう一度通したい」と思ったときだけ、
                 次が出てきます。最初から全部は並べません。
               </p>
               <ul className="mt-5 flex flex-col gap-2">
@@ -577,7 +569,7 @@ export default async function HomePage() {
       <section id="voices" className="scroll-mt-20 bg-sky">
         <Wrap className="py-14 sm:py-16">
           <div className="flex flex-wrap items-end justify-between gap-3">
-            <H>実際にこんな反応が届きます。</H>
+            <H>こういう所見が返ってきます。</H>
             <p className="text-[11px] text-steel">※ 画面の見本です</p>
           </div>
 
@@ -629,14 +621,14 @@ export default async function HomePage() {
         <Wrap className="py-14 sm:py-16">
           <div className="grid gap-7 lg:grid-cols-[1fr_1fr_0.62fr] lg:items-center">
             <p className="border-l-[5px] border-brand pl-5 text-[22px] font-black leading-[1.55] text-slate sm:text-[26px]">
-              答えるのは、
+              どうでもいい相手には、
               <br />
-              実際の女性です。
+              使わなくていい。
             </p>
 
             <p className="text-[14px] leading-[1.95] text-steel">
-              20代〜30代の一般の女性たちが、あなたの質問にリアルな意見を届けてくれます。
-              だからこそ、本音のアドバイスがもらえます。
+              毎日使うものではありません。本気の相手がいて、一度しかない一手を
+              出す直前だけ。そのときのために、審査を通った方に読んでもらいます。
             </p>
 
             {/* 数は実データ。固定の数字は書かない */}
@@ -703,9 +695,9 @@ export default async function HomePage() {
       <section className="bg-paper">
         <Wrap className="pb-20 pt-6 sm:pb-24">
           <div className="rounded-card bg-brand p-8 text-paper shadow-card sm:p-14">
-            <p className="text-huge font-black">今決めたいなら、今、聞く。</p>
+            <p className="text-huge font-black">大事な一手を、勘で出さない。</p>
             <p className="mt-5 text-[16px] font-bold leading-[1.85]">
-              送る前。誘う前。会う前。一人で考え続ける前に。
+              送る前。出す前。会う前。押してしまう前に。
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -714,7 +706,7 @@ export default async function HomePage() {
                 from="final"
                 className="min-h-[58px] rounded-pill bg-paper px-9 text-[16px] !text-brand-deep"
               >
-                今すぐ女性に聞く <span aria-hidden className="ml-2">→</span>
+                5人の目を通す <span aria-hidden className="ml-2">→</span>
               </PlanCta>
               <Link
                 href="#talk"
@@ -727,7 +719,7 @@ export default async function HomePage() {
             <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[13px] font-bold text-paper">
               <li>匿名</li>
               <li>都度払い</li>
-              <li>実際の女性が回答</li>
+              <li>審査を通った方だけが回答</li>
             </ul>
           </div>
         </Wrap>
@@ -741,7 +733,7 @@ export default async function HomePage() {
               {
                 h: "使う",
                 items: [
-                  ["/ask", "今すぐ聞く"],
+                  ["/ask", "5人の目を通す"],
                   ["/talk", "人と話す"],
                   ["/mine", "聞いたこと"],
                 ] as const,
@@ -751,7 +743,7 @@ export default async function HomePage() {
                 items: [
                   ["/how", "仕組み"],
                   ["/safety", "安心・安全"],
-                  ["/answerers", "回答する女性たち"],
+                  ["/answerers", "誰が読むのか"],
                   ["/articles", "記事"],
                 ] as const,
               },
@@ -792,20 +784,11 @@ export default async function HomePage() {
 
           <div className="mt-12 flex flex-col gap-3 border-t border-line pt-7 sm:flex-row sm:items-center sm:justify-between">
             <Link href="/" className="flex items-center gap-2.5">
-              <span
-                aria-hidden
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-brand"
-              >
-                <span className="flex gap-[3px]">
-                  {[0, 1, 2].map((i) => (
-                    <span key={i} className="h-[3.5px] w-[3.5px] rounded-full bg-paper" />
-                  ))}
-                </span>
-              </span>
-              <span className="text-[15px] font-black text-slate">His Recoveries</span>
+              <Tashikame size={28} />
+              <span className="text-[15px] font-black text-slate">{NAME}</span>
             </Link>
             <p className="text-[12px] text-steel">
-              © 2026 His Recoveries
+              © 2026 {OPERATOR}
             </p>
           </div>
         </Wrap>

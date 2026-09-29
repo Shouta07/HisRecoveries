@@ -5,7 +5,7 @@ import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { isShareToken } from "@/lib/ask/token";
 import { PICKS } from "@/lib/ask/model";
 import { ENTRY_PLAN } from "@/lib/ask/plans";
-import { ONE_LINER } from "@/lib/voice";
+import { NAME, ONE_LINER } from "@/lib/voice";
 import Donut from "@/components/brand/Donut";
 import PlanCta from "@/components/brand/PlanCta";
 
@@ -77,7 +77,7 @@ export default async function SharePage({ params }: { params: { token: string } 
       <header className="border-b border-line bg-paper">
         <div className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-4 px-5 py-3.5 sm:px-8">
           <Link href="/" className="text-[15px] font-black">
-            His Recoveries
+            {NAME}
           </Link>
           <PlanCta
             plan={ENTRY_PLAN}
