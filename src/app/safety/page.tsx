@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import { PLANS } from "@/lib/ask/plans";
 import { canCharge, whyCannotCharge } from "@/lib/legal";
 import { Eyebrow, Hairline } from "@/components/brand/kit";
+import Yen from "@/components/brand/Yen";
 
 // 安全と、いまの制約。
 //
@@ -158,7 +159,7 @@ export default function SafetyPage() {
                     {!p.available && <span className="ml-2 text-[12px] text-steel">受付前</span>}
                   </dt>
                   <dd className="text-[15px] font-bold tabular-nums text-slate">
-                    ¥{p.yen.toLocaleString()}
+                    <Yen yen={p.yen} />
                     {p.from && "〜"}
                   </dd>
                 </div>

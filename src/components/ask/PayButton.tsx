@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { track } from "@/lib/analytics";
 import { plan as getPlan, isSellable, DEFAULT_PLAN, type PlanId } from "@/lib/ask/plans";
+import Yen from "@/components/brand/Yen";
 
 // 支払いへ進む。
 //
@@ -81,7 +82,7 @@ export default function PayButton({
       <div className="mt-2.5 flex items-baseline justify-between gap-3">
         <p className="min-w-0 text-[15.5px] font-black leading-[1.5]">{p.name}</p>
         <p className="shrink-0 text-[28px] font-black tabular-nums leading-none">
-          ¥{p.yen.toLocaleString()}
+          <Yen yen={p.yen} />
         </p>
       </div>
       <p className="mt-2 text-[12px] text-steel">税込 / 1回のみ。月額はありません。</p>
@@ -98,7 +99,7 @@ export default function PayButton({
         disabled={busy}
         className="mt-5 inline-flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-7 text-[15.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover disabled:bg-mist disabled:text-steel disabled:shadow-none"
       >
-        {busy ? "進んでいます…" : `¥${p.yen.toLocaleString()} を支払って聞く`}
+        {busy ? "進んでいます…" : `¥${p.yen.toLocaleString()} を支払って相談する`}
       </button>
 
       <p className="mt-4 text-[12px] leading-[1.85] text-steel">

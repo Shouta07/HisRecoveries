@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import { plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
 import TalkWaitlist from "@/components/ask/TalkWaitlist";
 import PlanCta from "@/components/brand/PlanCta";
+import Yen from "@/components/brand/Yen";
 
 // 人と話す。まだ受け付けていない。
 //
@@ -83,7 +84,7 @@ export default function TalkPage() {
         <div className="mt-10 rounded-card border border-line bg-paper p-6 shadow-card">
           <p className="text-[12.5px] font-bold text-steel">開いたときの目安</p>
           <p className="mt-2 text-[30px] font-black tabular-nums leading-none">
-            ¥{talk.yen.toLocaleString()}
+            <Yen yen={talk.yen} />
             <span className="ml-1 text-[16px] text-steel">〜 / 20分〜</span>
           </p>
 

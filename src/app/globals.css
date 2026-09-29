@@ -34,6 +34,16 @@
 }
 
 html,
+/* ── 数字 ────────────────────────────────────────
+   本文には letter-spacing: 0.02em を当てている（日本語が詰まりすぎ
+   ないように）。これが数字にも掛かって、値段が間延びして見えていた。
+   数字のところだけ、字送りを戻して桁を揃える。 */
+.num {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.015em;
+}
+
 body {
   background-color: var(--cream);
   color: var(--ink);

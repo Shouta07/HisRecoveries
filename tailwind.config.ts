@@ -108,6 +108,20 @@ const config: Config = {
         mizu: "#A8CACA",        // 水 — ごく稀
       },
       fontFamily: {
+        // 値段と数のための書体。
+        //
+        // 日本語書体のラテンは、本文に混ざる前提で作られているので
+        // 数字が細く、字送りも広い。この製品は値段が主役なので、
+        // そこだけ端末のUI書体（iOS は SF、Windows は Segoe UI）を当てる。
+        // 桁が揃い、太さが出て、値段として読める。
+        num: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif",
+        ],
         // v2 の見出し。明朝から離すのが要点で、
         // 明朝は「読み物」の記号なのでアプリでは重く見える。
         // 追加の読み込みはせず、端末にある角ゴシックを順に当てる。
