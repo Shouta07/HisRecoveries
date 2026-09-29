@@ -806,3 +806,15 @@ select
 from shares s
 join consultations c on c.id = s.consultation_id
 where c.is_ab = true;
+
+
+-- 恋愛のどの段階の相談か。
+-- before / matched / before_meet / date / deeper
+--
+-- 単発の相談の集合ではなく、プロセスとして見るために持つ。
+-- どの段階でいちばん人に聞かれるのかが、ここでしか分からない。
+--
+-- 相手の情報は持たない（名前もアプリ名も保存しない）。
+-- 同じ相手をまとめるラベルは、利用者の端末の中だけに置く。
+alter table consultations add column if not exists journey_step text;
+create index if not exists consultations_step_idx on consultations (journey_step, created_at desc);

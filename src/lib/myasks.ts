@@ -30,6 +30,31 @@ export type MyAsk = {
   size: number;
   /** ISO 日付 */
   at: string;
+  /**
+   * 恋愛のどの段階で相談したか。
+   * 「前回の続き」を出すために要る。
+   */
+  step?: string;
+  /**
+   * 同じ相手についての相談をまとめる鍵。
+   *
+   * ── 相手の情報は持たない ────────────────────────
+   * 名前もアプリ名も保存しない。端末の中でも持たない。
+   * 持つのは、利用者が自分で付けた短いラベルだけ
+   * （「アプリの人」「先週の」など。本人にしか分からない言葉）。
+   *
+   * これが無いと、毎回ゼロから状況を説明することになる。
+   */
+  thread?: string;
+};
+
+/** 同じ相手についての相談のまとまり */
+export type Thread = {
+  id: string;
+  label: string;
+  items: MyAsk[];
+  /** いちばん新しい相談の日付 */
+  at: string;
 };
 
 type Store = { version: number; items: MyAsk[] };
@@ -83,6 +108,42 @@ export function clearAll(): void {
   }
 }
 
+/**
+ * 同じ相手ごとにまとめる。
+ *
+ * 毎回ゼロから説明させないための土台。
+ * 「前回の続きとして相談する」を出すのに使う。
+ */
+export function threads(): Thread[] {
+  const items = list();
+  const by = new Map<string, MyAsk[]>();
+  for (const it of items) {
+    const key = it.thread ?? "";
+    if (!key) continue;
+    const arr = by.get(key) ?? [];
+    arr.push(it);
+    by.set(key, arr);
+  }
+  return [...by.entries()]
+    .map(([id, arr]) => ({
+      id,
+      label: id,
+      items: arr.sort((a, b) => b.at.localeCompare(a.at)),
+      at: arr[0]?.at ?? "",
+    }))
+    .sort((a, b) => b.at.localeCompare(a.at));
+}
+
+/** いちばん新しい、まとまりのある相談 */
+export function latestThread(): Thread | null {
+  return threads()[0] ?? null;
+}
+
+/** まとまりに属していない相談 */
+export function loose(): MyAsk[] {
+  return list().filter((x) => !x.thread);
+}
+
 /** 「9月28日」にする */
 export function shortDate(iso: string): string {
   const d = new Date(iso);
@@ -97,4 +158,15 @@ export function shortDate(iso: string): string {
 type Forbidden = "body" | "text" | "comment" | "note" | "answers" | "email";
 type NoBody<T> = Extract<keyof T, Forbidden> extends never ? T : never;
 const _noBody: NoBody<MyAsk> = { token: "c", category: "message", size: 3, at: "" };
+
+// まとまりのラベルに、相手の情報を入れさせない。
+// 「田中さん」「Pairsの人」と書けてしまうと、端末を共有している人に
+// 誰の話かが分かる。長さで縛る（20文字まで）。
+export const THREAD_LABEL_MAX = 20;
+
+export function cleanThreadLabel(x: unknown): string | undefined {
+  if (typeof x !== "string") return undefined;
+  const t = x.trim().slice(0, THREAD_LABEL_MAX);
+  return t || undefined;
+}
 void _noBody;

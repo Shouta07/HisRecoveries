@@ -140,6 +140,13 @@ export const CONVERSION_EVENTS = [
   "share_opened", // 共有された側が開いた
   "invite_opened", // 紹介リンクから回答者の登録を開いた
   "invite_joined", // 紹介から登録した
+
+  // ── 恋愛プロセスとして続いているか ──
+  // 単発の相談の集合ではなく、同じ相手について続けて使われているか。
+  // ここが伸びないなら、道具箱のままということ。
+  "step_picked", // いまどこで悩んでいるかを選んだ（props: step）
+  "continue_picked", // 前回の続きとして相談した（props: n＝何回目）
+  "thread_started", // 同じ相手としてまとめ始めた
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

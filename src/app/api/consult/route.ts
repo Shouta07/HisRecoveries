@@ -5,6 +5,7 @@ import {
   COMMENT_MAX, screen, initialStatus, needsReview, cleanAttrs,
 } from "@/lib/ask/model";
 import { isSellable, plan, clampTargeting, DEFAULT_PLAN } from "@/lib/ask/plans";
+import { isStepId } from "@/lib/ask/journey";
 import { redact } from "@/lib/ask/redact";
 import { makeConsultToken } from "@/lib/ask/token";
 
@@ -124,6 +125,9 @@ export async function POST(req: NextRequest) {
     // 任意の1問。答えなかったら null のまま。
     // 「ChatGPTが無料で使えるのに、それでも払うか」を見るのに要る。
     asked_ai: typeof body.askedAi === "boolean" ? body.askedAi : null,
+    // 恋愛のどの段階の相談か。
+    // 相手の情報ではないので保存してよい。どの段階で人に聞かれるのかが分かる。
+    journey_step: isStepId(body.step) ? body.step : null,
     redacted_kinds: kinds,
     utm_source: attribution.utm_source ?? null,
     referrer_host: attribution.referrer_host ?? null,
