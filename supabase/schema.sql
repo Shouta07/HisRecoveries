@@ -952,3 +952,112 @@ where event_name = 'checkout_blocked'
   and created_at > now() - interval '30 days'
 group by 1, 2
 order by 3 desc;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 声で話す（15分 / 30分）
+--
+-- ── 時間はここが持つ ────────────────────────────
+-- 画面のカウントダウンは飾り。ブラウザの時計は変えられる。
+-- 実際に切るのは started_at / ends_at だけ。
+--
+-- ── 先に入った人からは数えない ──────────────────
+-- 女性が5分早く入っても、そこからは数えない。
+-- 両方がつながった時刻を started_at にする。
+--
+-- ── 切れても延びない ────────────────────────────
+-- 入り直しても ends_at は動かさない。
+-- 延ばせるのは運営だけ。そのとき extended_minutes と extended_by に残す。
+--
+-- ── 録らない ────────────────────────────────────
+-- 録音・録画・文字起こしの列は作らない。
+-- 列が無ければ、設定を1つ変えるだけでは録れない。
+-- ═══════════════════════════════════════════════════════════════
+
+create table if not exists call_sessions (
+  id uuid primary key default gen_random_uuid(),
+  -- 相談した人がこの通話を開く鍵（c + 32文字。相談と同じ形）
+  token text unique not null,
+  -- もとの相談。文字の相談から通話へ続いたときに紐づく
+  consultation_id uuid references consultations(id),
+  -- 答える人。決まるまで null
+  responder_id uuid references responders(id),
+  -- どの商品か（plans.ts の PlanId）。金額も分数もここから引く
+  plan_id text not null,
+  -- 何分の通話か。plans.ts の callMinutes を写す。
+  -- 写すのは、あとから商品の分数を変えても、
+  -- 売った通話の長さが変わらないようにするため。
+  duration_minutes int not null check (duration_minutes in (15, 30)),
+  -- 請求した金額（円）。サーバーが入れる
+  price int,
+
+  -- 予約した時刻。運営が確定する
+  scheduled_at timestamptz,
+  -- 両方がつながった時刻。ここから数える
+  started_at timestamptz,
+  -- 終わる時刻。started_at + duration_minutes。ここだけが切る根拠
+  ends_at timestamptz,
+  -- 実際に切れた時刻
+  ended_at timestamptz,
+
+  -- どちらが入っているか。両方 true になった瞬間に started_at を決める
+  asker_joined_at timestamptz,
+  responder_joined_at timestamptz,
+
+  status text not null default 'pending_payment',
+
+  -- 通話の部屋（外のサービス側の名前とURL）
+  room_name text,
+  room_url text,
+
+  -- 決済
+  stripe_payment_id text,
+  paid_at timestamptz,
+
+  -- 運営が延ばしたとき。理由と誰がやったかを残す
+  extended_minutes int not null default 0,
+  extended_by text,
+  extended_reason text,
+
+  -- 終わったあと
+  asker_rating int check (asker_rating between 1 and 5),
+  asker_again boolean,
+  asker_note text,
+  responder_note text,
+  -- 答える人へ払う額（円）。economics.ts の上限を超えない
+  reward_yen int,
+
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index if not exists call_sessions_status_idx on call_sessions (status, scheduled_at);
+create index if not exists call_sessions_responder_idx on call_sessions (responder_id, scheduled_at);
+
+-- 運営の画面。今日の通話と、手を入れるところ。
+-- 本文（相談の中身）はここに出さない。相談した人のものなので、
+-- 必要なときに consultations を見る。
+create or replace view call_board as
+select
+  cs.id,
+  cs.token,
+  cs.plan_id,
+  cs.duration_minutes,
+  cs.status,
+  cs.scheduled_at,
+  cs.started_at,
+  cs.ends_at,
+  cs.ended_at,
+  cs.responder_id,
+  r.display_age_band as responder_age_band,
+  r.verified_age,
+  cs.asker_joined_at,
+  cs.responder_joined_at,
+  cs.price,
+  cs.reward_yen,
+  cs.extended_minutes,
+  cs.asker_rating,
+  cs.created_at
+from call_sessions cs
+left join responders r on r.id = cs.responder_id
+order by coalesce(cs.scheduled_at, cs.created_at) desc;

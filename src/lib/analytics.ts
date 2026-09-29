@@ -103,6 +103,10 @@ export const CONVERSION_EVENTS = [
   "assist_opened", // うまく書けない、から整理へ入った（props: from）
   "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
   "talk_waitlist", // 話す商品の順番待ちに登録した
+  // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
+  "call_joined", // 通話に入れた（props: plan）
+  "call_ended", // 通話が終わった（props: plan, reason）
+  "call_rated", // 終わったあとの振り返りを出した（props: rating）
   "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
   // 集まらなかったときに何を選んだか。供給が足りない度合いが出る。
   "shortfall_picked", // 足りないときの選択（props: choice, got, of）

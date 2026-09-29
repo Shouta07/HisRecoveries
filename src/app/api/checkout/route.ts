@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbSelect, dbUpdate, dbInsertReturning, dbAdminEnabled } from "@/lib/db";
-import { isSellable, plan, priceOf } from "@/lib/ask/plans";
+import { plan, priceOf } from "@/lib/ask/plans";
+import { isSellableNow, whyCannotSellCalls } from "@/lib/call/gate";
 import { canCharge, whyCannotCharge } from "@/lib/legal";
 import { supply, shortMessage } from "@/lib/supply";
 import { createCheckout, stripeEnabled } from "@/lib/stripe";
@@ -56,8 +57,16 @@ export async function POST(req: NextRequest) {
   }
   // 受付前のプラン（対面を含むもの）では決済を作らない。
   // 作れてしまうと、届けられない約束に対して課金することになる。
-  if (!isSellable(planId)) {
-    return NextResponse.json({ error: "このプランはいま受け付けていません" }, { status: 400 });
+  if (!isSellableNow(planId)) {
+    // 通話の商品なら、何が足りないのかをそのまま返す。
+    // 「受け付けていません」だけだと、待てばよいのか諦めるのかが分からない。
+    const why = typeof planId === "string" && planId.startsWith("call")
+      ? whyCannotSellCalls()
+      : null;
+    return NextResponse.json(
+      { error: why ?? "このプランはいま受け付けていません" },
+      { status: 400 },
+    );
   }
 
   const cs = await dbSelect<Consult>(

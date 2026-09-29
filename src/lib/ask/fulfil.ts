@@ -1,7 +1,7 @@
 import { dbSelect, dbUpdate, dbInsertReturning } from "@/lib/db";
-import { makeReplyToken } from "@/lib/ask/token";
+import { makeReplyToken, makeConsultToken } from "@/lib/ask/token";
 import { waves } from "@/lib/economics";
-import { isPlanId } from "@/lib/ask/plans";
+import { isPlanId, plan, priceOf } from "@/lib/ask/plans";
 
 // 支払いが済んだあと、回答者に配りはじめる。
 //
@@ -68,7 +68,29 @@ export async function fulfil(pay: Payment, intentId: string | null): Promise<Ful
   if (!c) return { ok: false, why: "相談が見つかりません" };
 
   // 1対1で話す商品は、人数を集めるものではない。依頼は作らない。
-  const isTalk = isPlanId(c.product_type) && c.product_type === "mockchat";
+  const isTalk = isPlanId(c.product_type) && Boolean(plan(c.product_type).talk);
+
+  // 声で話す商品は、ここで通話の1件を作る。
+  // 払う前には作らない（作れてしまうと、ただで部屋が取れる）。
+  // 日時と担当は、このあと運営が決める。
+  if (isPlanId(c.product_type) && plan(c.product_type).callMinutes) {
+    const minutes = plan(c.product_type).callMinutes!;
+    const exists = await dbSelect<{ id: string }>(
+      `call_sessions?consultation_id=eq.${c.id}&select=id&limit=1`,
+    );
+    if (exists.length === 0) {
+      await dbInsertReturning("call_sessions", {
+        token: makeConsultToken(),
+        consultation_id: c.id,
+        plan_id: c.product_type,
+        duration_minutes: minutes,
+        price: priceOf(c.product_type),
+        status: "waiting_assignment",
+        stripe_payment_id: intentId,
+        paid_at: new Date().toISOString(),
+      } as unknown as Record<string, unknown>);
+    }
+  }
 
   if (!isTalk) {
     // 既に作ってあるなら作り直さない。
