@@ -8,7 +8,9 @@ import {
   type CategoryId, type AgeBand, type RelationId, type PanelAge, type AttrId,
 } from "@/lib/ask/model";
 import {
-  sellable, plan as getPlan, isSellable, allowsTargeting, DEFAULT_PLAN, ENTRY_PLAN, type PlanId,
+  sellable, plan as getPlan, isSellable, allowsTargeting, DEFAULT_PLAN, ENTRY_PLAN,
+  OPTIONS, option as getOption, isOptionId, cleanOptions, priceOf, answersFor,
+  type PlanId, type OptionId,
 } from "@/lib/ask/plans";
 import { redact, mayContainName } from "@/lib/ask/redact";
 import {
@@ -58,13 +60,6 @@ import { WAIT_MINUTES } from "@/lib/ask/shortfall";
 
 const STEPS = 3;
 
-/** 買えるプランだけ。受付前のものを選ばせない */
-const BUYABLE = sellable();
-
-/** 条件を指定できるいちばん安いプラン。指定したくなった人の行き先 */
-const TARGET_PLAN: PlanId =
-  ([...BUYABLE].sort((a, b) => a.yen - b.yen).find((p) => p.targeting) ?? BUYABLE[0]).id;
-
 export default function AskFlow() {
   const router = useRouter();
   const params = useSearchParams();
@@ -98,29 +93,30 @@ export default function AskFlow() {
   const [thread, setThread] = useState<string | null>(null);
   const [threadLabel, setThreadLabel] = useState("");
   const [openMore, setOpenMore] = useState(false);
-  const [openPlan, setOpenPlan] = useState(false);
+  // 足すかどうかは、相談を書いたあとに選ぶ。
+  // 最初に選ばせると、何が要るのか決められない。
+  const [opts, setOpts] = useState<OptionId[]>(() =>
+    cleanOptions(params.getAll("opt")),
+  );
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const p = getPlan(planId);
   const canTarget = allowsTargeting(planId);
+  // 金額も人数も、選んだものから毎回引き直す。画面に数字を直書きしない。
+  const total = priceOf(planId, opts);
+  const answers = answersFor(planId, opts);
+
+  function toggleOption(id: OptionId) {
+    setOpts((prev) =>
+      cleanOptions(prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]),
+    );
+    track("plan_selected", { plan: planId, from: "option", option: id });
+  }
 
   const preview = redact(isAb ? `${a}\n${b}` : text);
   const nameWarn = mayContainName(isAb ? `${a}\n${b}` : text);
   const filled = isAb ? Boolean(a.trim() && b.trim()) : text.trim().length >= 10;
-
-  // 指定できないプランに戻したときは、指定も消す。
-  // 残しておくと、画面には出ていない条件が付いたまま送られる。
-  function choosePlan(next: PlanId) {
-    if (next === planId) return;
-    track("plan_selected", { plan: next, from: "flow" });
-    setPlanId(next);
-    if (!allowsTargeting(next)) {
-      setPanelAge("any");
-      setPanelAttrs([]);
-    }
-    setOpenPlan(false);
-  }
 
   function toStep(n: number) {
     setI(n);
@@ -140,8 +136,9 @@ export default function AskFlow() {
           askerAge, otherAge, relation, panelAge, panelAttrs, askedAi,
           // 恋愛のどの段階か。相手の情報ではないので保存してよい。
           step: stepId,
-          // 金額は送らない。プランIDだけ。
+          // 金額は送らない。プランIDと、選んだオプションのIDだけ。
           plan: planId,
+          options: opts,
         }),
       });
       const json = await res.json();
@@ -152,12 +149,12 @@ export default function AskFlow() {
         return;
       }
 
-      track("ask_submitted", { category: cat ?? "none", plan: planId, ab: isAb });
+      track("ask_submitted", { category: cat ?? "none", plan: planId, ab: isAb, options: opts.join("-") });
       if (cat) {
         rememberAsk({
           token: json.token,
           category: cat,
-          size: p.answers,
+          size: answers,
           step: stepId ?? undefined,
           // まとまりのラベルは端末の中だけ。サーバーには送らない。
           thread: cleanThreadLabel(thread ?? undefined),
@@ -166,7 +163,7 @@ export default function AskFlow() {
 
       // 支払いへ。作れなかったときは相談の画面へ送る。
       // そこに「お支払いへ進む」と、進めない理由が出る。
-      track("checkout_started", { plan: planId });
+      track("checkout_started", { plan: planId, options: opts.join("-"), value: total });
       const pay = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -442,24 +439,9 @@ export default function AskFlow() {
                 {/* 条件を変えるたびに、いま答えられる人数が動く。
                     0人のまま買わせない。一人ひとりのカードは出さない
                     （条件を変えて叩くと個人が絞り込めてしまう）。 */}
-                <AvailableNow age={panelAge} attrs={panelAttrs} need={p.answers} />
+                <AvailableNow age={panelAge} attrs={panelAttrs} need={answers} />
               </>
-            ) : (
-              <div className="mt-6 rounded-card border border-line bg-paper p-5 shadow-card">
-                <p className="text-[14.5px] font-bold">女性 {p.answers}人</p>
-                <p className="mt-2.5 text-[13.5px] leading-[1.85] text-steel">
-                  {p.name}では、こちらで相手に近い方を選んでお願いします。
-                  年代や条件をご自身で選びたい場合は、{getPlan(TARGET_PLAN).name}へ。
-                </p>
-                <button
-                  type="button"
-                  onClick={() => choosePlan(TARGET_PLAN)}
-                  className="mt-4 inline-flex min-h-[48px] items-center justify-center rounded-pill border border-brand bg-paper px-5 text-[14px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
-                >
-                  {getPlan(TARGET_PLAN).name}（¥{getPlan(TARGET_PLAN).yen.toLocaleString()}）にする
-                </button>
-              </div>
-            )}
+            ) : null}
 
             {/* 任意の1問。答えなくても進める */}
             <div className="mt-5 rounded-card border border-line bg-mist p-4">
@@ -480,33 +462,102 @@ export default function AskFlow() {
               </div>
             </div>
 
+            {/* ── オプション ── */}
+            {/* 追加で払わせる並べ方にしない。
+                どれも「どの不安を減らすか」で選べるようにする。 */}
+            <div className="mt-8">
+              <Label>足すかどうか（任意）</Label>
+              <ul className="mt-3 flex flex-col gap-2">
+                {OPTIONS.filter((o) => o.available).map((o) => {
+                  const on = opts.includes(o.id);
+                  return (
+                    <li key={o.id}>
+                      <button
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => toggleOption(o.id)}
+                        className={`flex w-full items-start gap-3 rounded-card border p-4 text-left transition-shadow ${
+                          on
+                            ? "border-brand bg-brand-tint shadow-card"
+                            : "border-line bg-paper shadow-card hover:shadow-card-hover"
+                        }`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`mt-[2px] flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-2 ${
+                            on ? "border-brand bg-brand text-paper" : "border-line"
+                          }`}
+                        >
+                          {on && (
+                            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-baseline justify-between gap-3">
+                            <span className="text-[14.5px] font-bold text-slate">{o.name}</span>
+                            <span className="shrink-0 text-[13.5px] font-black tabular-nums text-slate">
+                              +¥{o.yen.toLocaleString()}
+                            </span>
+                          </span>
+                          <span className="mt-1 block text-[12.5px] leading-[1.7] text-steel">
+                            {o.why}／{o.effect}
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
             {/* ── 料金確認 ── */}
             <div className="mt-8 rounded-card border border-brand bg-paper shadow-card">
               <div className="border-b border-line px-5 py-4">
                 <p className="text-[12px] font-bold text-steel">お支払い内容</p>
-                <div className="mt-2.5 flex items-baseline justify-between gap-3">
-                  <p className="min-w-0 text-[15.5px] font-black leading-[1.5]">{p.name}</p>
+
+                {/* 何にいくら払うのか、内訳のまま出す。
+                    合計だけ出すと、押す直前に「何が増えたのか」が分からない。 */}
+                <dl className="mt-3 flex flex-col gap-1.5 text-[13.5px]">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <dt className="min-w-0 text-slate">{p.name}</dt>
+                    <dd className="shrink-0 tabular-nums text-slate">
+                      ¥{p.yen.toLocaleString()}
+                    </dd>
+                  </div>
+                  {opts.map((id) => (
+                    <div key={id} className="flex items-baseline justify-between gap-3">
+                      <dt className="min-w-0 text-steel">{getOption(id).name}</dt>
+                      <dd className="shrink-0 tabular-nums text-steel">
+                        +¥{getOption(id).yen.toLocaleString()}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+
+                <div className="mt-3.5 flex items-baseline justify-between gap-3 border-t border-line pt-3.5">
+                  <p className="text-[13px] font-bold text-steel">合計</p>
                   <p className="shrink-0 text-[28px] font-black tabular-nums leading-none">
-                    ¥{p.yen.toLocaleString()}
+                    ¥{total.toLocaleString()}
                   </p>
                 </div>
                 <p className="mt-2 text-[12px] text-steel">税込 / 1回のみ。月額はありません。</p>
               </div>
 
               {/* 払う直前に、何を買うのかをもう一度出す。
-                  ここを読まずに押した人が、あとで「そんな話は聞いていない」になる。
-                  人数・返るもの・追加料金・集まらなかったとき。この4つだけ。 */}
-              <dl className="divide-y divide-line border-b border-line text-[13px] leading-[1.75]">
+                  ここを読まずに押した人が、あとで「そんな話は聞いていない」になる。 */}
+              <dl className="divide-y divide-line text-[13px] leading-[1.75]">
                 {[
-                  ["読む人", `実在の女性 ${p.answers}人`],
+                  ["読む人", `実在の女性 ${answers}人`],
                   [
                     "返るもの",
-                    "一人ひとりの「このままでOK／少し気になる／変えた方がいい」と、そう思った理由",
+                    "一人ひとりの第一印象と、「このままでOK／少し気になる／変えた方がいい」、そう思った理由",
                   ],
-                  ["追加料金", "なし。これ以上かかりません"],
+                  ["追加料金", "なし。この合計以上はかかりません"],
                   [
                     "集まらないとき",
-                    `${WAIT_MINUTES}分たっても${p.answers}人に届かなければ、集まった分だけ受け取る／条件を広げて待つ／全額返してもらう、から選べます`,
+                    `${WAIT_MINUTES}分たっても${answers}人に届かなければ、集まった分だけ受け取る／条件を広げて待つ／全額返してもらう、から選べます`,
                   ],
                 ].map(([k, v]) => (
                   <div key={k} className="flex gap-3 px-5 py-3">
@@ -515,36 +566,6 @@ export default function AskFlow() {
                   </div>
                 ))}
               </dl>
-
-              <button
-                type="button"
-                onClick={() => setOpenPlan(!openPlan)}
-                aria-expanded={openPlan}
-                className="flex min-h-[48px] w-full items-center justify-between gap-3 px-5 text-left"
-              >
-                <span className="text-[13.5px] text-steel">プランを変える</span>
-                <span className="shrink-0 text-[12px] font-bold text-brand">
-                  {openPlan ? "閉じる" : "見る"}
-                </span>
-              </button>
-
-              {openPlan && (
-                <div className="flex flex-col gap-2 border-t border-line px-5 py-4">
-                  {BUYABLE.map((x) => (
-                    <Choice key={x.id} on={planId === x.id} onClick={() => choosePlan(x.id)}>
-                      <span className="min-w-0">
-                        <span className="block text-[15px] font-bold">
-                          {x.name}
-                          <span className="ml-2 tabular-nums">¥{x.yen.toLocaleString()}</span>
-                        </span>
-                        <span className="mt-1 block text-[12.5px] leading-[1.6] opacity-70">
-                          {x.tagline}
-                        </span>
-                      </span>
-                    </Choice>
-                  ))}
-                </div>
-              )}
             </div>
 
             {error && (
@@ -555,7 +576,9 @@ export default function AskFlow() {
 
             <div className="mt-7">
               <Action onClick={send} disabled={sending}>
-                {sending ? "お支払いへ進みます…" : `¥${p.yen.toLocaleString()} を支払って相談する`}
+                {sending
+                  ? "お支払いへ進みます…"
+                  : `この内容で女性${answers}人に相談する（¥${total.toLocaleString()}）`}
               </Action>
             </div>
             <div className="mt-4">

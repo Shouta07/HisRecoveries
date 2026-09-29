@@ -4,7 +4,9 @@ import {
   isCategoryId, isOpenCategory, isAgeBand, isRelationId, isPanelAge,
   COMMENT_MAX, screen, initialStatus, needsReview, cleanAttrs,
 } from "@/lib/ask/model";
-import { isSellable, plan, clampTargeting, DEFAULT_PLAN } from "@/lib/ask/plans";
+import {
+  isSellable, plan, clampTargeting, cleanOptions, priceOf, answersFor, DEFAULT_PLAN,
+} from "@/lib/ask/plans";
 import { isStepId } from "@/lib/ask/journey";
 import { redact } from "@/lib/ask/redact";
 import { makeConsultToken } from "@/lib/ask/token";
@@ -99,7 +101,10 @@ export async function POST(req: NextRequest) {
   // 人数と金額はプランが決める。画面から金額は受け取らない。
   const planId = isSellable(body.plan) ? body.plan : DEFAULT_PLAN;
   const p = plan(planId);
-  const panelSize = p.answers;
+  // オプションもここで絞る。受け付けていないものは落とす。
+  // 金額と人数は、プランとオプションから server 側で引き直す。
+  const options = cleanOptions(body.options);
+  const panelSize = answersFor(planId, options);
 
   // そのプランで指定してよい範囲に丸める。
   const want = clampTargeting(
@@ -128,7 +133,8 @@ export async function POST(req: NextRequest) {
     panel_attrs: want.attrs,
     panel_size: panelSize,
     product_type: planId,
-    price: p.yen,
+    options,
+    price: priceOf(planId, options),
     status: initialStatus(),
     needs_review: needsReview(hasImage),
     // 任意の1問。答えなかったら null のまま。
@@ -153,7 +159,8 @@ export async function POST(req: NextRequest) {
     ok: true,
     token,
     plan: planId,
-    yen: p.yen,
+    options,
+    yen: priceOf(planId, options),
     redacted: [...new Set([...(rBody?.findings ?? []), ...(rA?.findings ?? []), ...(rB?.findings ?? [])].map((f) => f.label))],
   });
 }

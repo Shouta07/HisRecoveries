@@ -574,6 +574,10 @@ order by c.created_at desc;
 
 alter table consultations add column if not exists product_type text;   -- human_check / target_check / human_test
 alter table consultations add column if not exists price int;           -- 請求した金額（円）。サーバーが入れる
+-- 選んだオプション（plans.ts の OptionId）。
+-- 金額も人数も、プランとこの列から server 側で引き直す。
+-- 画面から来た金額は保存しない。
+alter table consultations add column if not exists options text[] default '{}';
 alter table consultations add column if not exists asker_id uuid;       -- 会員を入れたときのため。いまは null
 alter table consultations add column if not exists paid_at timestamptz; -- 支払いが確認できた時刻
 -- 人が見てから配るか。画像つきの相談は、払われても自動では配らない。

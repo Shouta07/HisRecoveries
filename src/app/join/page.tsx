@@ -10,6 +10,7 @@ import { Eyebrow, ReactionCard, Hairline } from "@/components/brand/kit";
 import Reveal from "@/components/brand/Reveal";
 import { Suspense } from "react";
 import JoinForm from "@/components/ask/JoinForm";
+import { STANDING, NEVER, FORMAT, LADDER, FACE_CHOICES } from "@/lib/responder/policy";
 
 // 回答する側の入口。
 //
@@ -155,6 +156,121 @@ export default function JoinPage() {
               </Reveal>
             ))}
           </dl>
+        </div>
+      </section>
+
+      {/* ── 何をする人なのか ── */}
+      {/* 「恋愛の先生」でも「接客」でもない。位置づけを先に置く。
+          中身と判定は lib/responder/policy.ts が持つ。 */}
+      <section className="border-b border-line">
+        <div className="mx-auto w-full max-w-[900px] px-6 py-16 sm:px-10 sm:py-24">
+          <Reveal>
+            <Eyebrow>どういう人として参加するか</Eyebrow>
+            <h2 className="mt-6 text-big font-black text-slate">
+              正解を教える人では、ありません。
+            </h2>
+            <p className="mt-6 max-w-[30em] text-[16px] leading-[1.95] text-steel">
+              {STANDING.is}です。{STANDING.why}
+            </p>
+          </Reveal>
+
+          <ul className="mt-10 flex flex-col gap-2.5">
+            {NEVER.map((n, i) => (
+              <Reveal key={n.what} delay={i * 50}>
+                <li className="flex items-start gap-3 rounded-card border border-line bg-paper p-4 shadow-card sm:p-5">
+                  <span
+                    aria-hidden
+                    className="mt-[3px] flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ok-tint text-[11px] font-black text-ok-text"
+                  >
+                    ✓
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[15px] font-bold leading-[1.6] text-slate">
+                      {n.what}
+                    </span>
+                    <span className="mt-1 block text-[13px] leading-[1.8] text-steel">
+                      {n.why}
+                    </span>
+                  </span>
+                </li>
+              </Reveal>
+            ))}
+          </ul>
+
+          {/* 顔をどうするか。出さないが既定 */}
+          <div className="mt-8 rounded-card border border-line bg-mist p-5 sm:p-6">
+            <p className="text-[14.5px] font-bold text-slate">顔をどうするかは、選べます</p>
+            <ul className="mt-3.5 grid gap-2.5 sm:grid-cols-3">
+              {FACE_CHOICES.map((f) => (
+                <li key={f.id} className="rounded-card bg-paper px-4 py-3">
+                  <p className="text-[13.5px] font-bold text-slate">{f.label}</p>
+                  <p className="mt-1 text-[12px] leading-[1.7] text-steel">{f.note}</p>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3.5 text-[12.5px] leading-[1.8] text-steel">
+              どれを選んでも、相談する側に見えるのは年代と選んだ立場だけです。
+              本人確認はこちらで行い、その内容は相談する側には出しません。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 何を書くのか ── */}
+      <section className="border-b border-line bg-mist">
+        <div className="mx-auto w-full max-w-[900px] px-6 py-16 sm:px-10 sm:py-24">
+          <Reveal>
+            <Eyebrow>答え方</Eyebrow>
+            <h2 className="mt-6 text-big font-black text-slate">書くのは、この5つ。</h2>
+            <p className="mt-6 max-w-[30em] text-[15px] leading-[1.95] text-steel">
+              何を書くかだけ決まっています。言い方は、あなたのままで構いません。
+              整った文章より、実際に感じたことのほうが役に立ちます。
+            </p>
+          </Reveal>
+          <ol className="mt-10 overflow-hidden rounded-card border border-line bg-paper shadow-card">
+            {FORMAT.map((f, i) => (
+              <li
+                key={f.step}
+                className={`flex items-start gap-4 p-4 sm:p-5 ${i > 0 ? "border-t border-line" : ""}`}
+              >
+                <span
+                  aria-hidden
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-tint text-[11.5px] font-black tabular-nums text-brand-deep"
+                >
+                  {i + 1}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[14.5px] font-black leading-[1.5] text-slate">
+                    {f.step}
+                  </span>
+                  <span className="mt-1 block text-[12.5px] leading-[1.8] text-steel">
+                    {f.ask}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+
+          {/* 段。数ではなく質で上がる */}
+          <p className="mt-10 text-[14.5px] font-black text-slate">
+            役に立ったと言われた回答が増えると、単価が上がります
+          </p>
+          <ol className="mt-3.5 grid gap-2.5 sm:grid-cols-3">
+            {LADDER.map((l) => (
+              <li key={l.id} className="rounded-card border border-line bg-paper p-4 shadow-card">
+                <p className="text-[13.5px] font-black text-slate">{l.label}</p>
+                <p className="mt-1.5 text-[20px] font-black tabular-nums leading-none text-slate">
+                  ¥{l.yen}
+                  <span className="ml-1 text-[12px] font-bold text-steel">/ 件</span>
+                </p>
+                <p className="mt-2 text-[12px] leading-[1.7] text-steel">{l.can}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-3.5 text-[12.5px] leading-[1.8] text-steel">
+            回答の数ではなく、役に立ったと言われた割合で上がります。
+            順位を公開して、競わせることはしません。
+          </p>
         </div>
       </section>
 
