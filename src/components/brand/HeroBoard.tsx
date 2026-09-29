@@ -137,7 +137,7 @@ export default function HeroBoard() {
             name="hero"
             rounded=""
             position="center 22%"
-            className="h-[158px] w-full sm:h-[280px]"
+            className="h-[200px] w-full sm:h-[300px]"
           />
           {/* 手が止まっている瞬間の一言。
               写真だけだと「落ち着いた男性の写真」にしか見えず、
@@ -148,7 +148,7 @@ export default function HeroBoard() {
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-slate/95 via-slate/55 to-transparent"
           />
-          <p className="absolute inset-x-5 bottom-3 text-[22px] font-black leading-[1.3] text-paper sm:inset-x-8 sm:bottom-5 sm:text-[30px]">
+          <p className="absolute inset-x-5 bottom-4 text-[25px] font-black leading-[1.3] text-paper sm:inset-x-8 sm:bottom-5 sm:text-[32px]">
             {HOOK}
           </p>
         </div>
