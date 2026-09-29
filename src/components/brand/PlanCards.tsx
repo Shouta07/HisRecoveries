@@ -1,0 +1,111 @@
+import Link from "next/link";
+import { PLANS } from "@/lib/ask/plans";
+import PlanCta from "@/components/brand/PlanCta";
+import Reveal from "@/components/brand/Reveal";
+import Yen from "@/components/brand/Yen";
+
+// 売るもの5つのカード。
+//
+// ══════════════════════════════════════════════════
+// 1か所から出す
+// ══════════════════════════════════════════════════
+// トップと /plans の両方に出る。
+// それぞれで書くと、片方だけ古い値段や古い文言が残る。
+// ここが唯一の形で、中身は plans.ts の PLANS から引く。
+//
+// ══════════════════════════════════════════════════
+// 値段より先に、何をするものかを出す
+// ══════════════════════════════════════════════════
+// 金額だけ並べると、人数で比べられる。
+// 差は人数ではなく「本番にどれだけ近いか」なので、
+// 段（見てもらう → 反応を見る → 会話を試す → …）を先に出す。
+//
+// ══════════════════════════════════════════════════
+// 買えないものを、買えるように見せない
+// ══════════════════════════════════════════════════
+// available が false のものは、押しても課金画面に行かない。
+// 順番待ちへ渡す。ここを曖昧にすると、届けられない約束を売る。
+
+/** その商品が、恋愛のどの段に当たるか。金額の差の理由になる */
+const LADDER_WHY: Record<string, string> = {
+  review: "見てもらう",
+  reaction: "反応を見る",
+  mockchat: "会話を試す",
+  session: "一人について決める",
+  mockdate: "本番を再現する",
+};
+
+export default function PlanCards({ from }: { from: string }) {
+  return (
+    <ul className="flex flex-col gap-3.5">
+      {PLANS.map((p, i) => (
+        <li key={p.id}>
+          <Reveal delay={i * 60}>
+            <div
+              className={`flex h-full flex-col rounded-card border bg-paper p-5 shadow-card sm:p-6 ${
+                p.featured ? "border-2 border-brand" : "border-line"
+              }`}
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-bold tabular-nums text-steel">
+                  {LADDER_WHY[p.id]}
+                </span>
+                {p.available ? (
+                  <span className="rounded-pill bg-brand-tint px-2.5 py-1 text-[10.5px] font-bold text-brand-deep">
+                    いま受付中
+                  </span>
+                ) : (
+                  <span className="rounded-pill bg-mist px-2.5 py-1 text-[10.5px] font-bold text-steel">
+                    受付前
+                  </span>
+                )}
+              </div>
+
+              {/* 値段より先に、何をするものかを出す */}
+              <p className="mt-2 text-[18px] font-black leading-[1.5] text-slate sm:text-[20px]">
+                {p.tagline}
+              </p>
+              <p className="mt-2.5 text-[13.5px] leading-[1.8] text-steel">{p.value}</p>
+
+              <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">
+                {p.includes.map((x) => (
+                  <li key={x} className="flex items-start gap-2 text-[12.5px] leading-[1.7]">
+                    <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
+                      ✓
+                    </span>
+                    <span className="min-w-0 text-steel">{x}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+                <p className="text-[15px] font-black text-slate">
+                  {p.name}
+                  <span className="ml-2.5 text-[22px]">
+                    <Yen yen={p.yen} from={p.from} />
+                  </span>
+                </p>
+                {p.available ? (
+                  <PlanCta
+                    plan={p.id}
+                    from={from}
+                    className="min-h-[48px] shrink-0 rounded-pill bg-brand px-6 text-[14.5px] !text-paper shadow-card"
+                  >
+                    この内容で確かめる <span aria-hidden className="ml-1.5">&rarr;</span>
+                  </PlanCta>
+                ) : (
+                  <Link
+                    href="/talk"
+                    className="inline-flex min-h-[48px] shrink-0 items-center justify-center rounded-pill border border-line bg-paper px-6 text-[14px] font-bold text-steel"
+                  >
+                    順番待ちに入る <span aria-hidden className="ml-1.5">&rarr;</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </Reveal>
+        </li>
+      ))}
+    </ul>
+  );
+}

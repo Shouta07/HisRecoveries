@@ -16,6 +16,7 @@ import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
+import PlanCards from "@/components/brand/PlanCards";
 import Yen from "@/components/brand/Yen";
 
 // ══════════════════════════════════════════════════════════════
@@ -64,11 +65,13 @@ import Yen from "@/components/brand/Yen";
 //   4 ほかの選び方との違い
 //   5 安心・安全
 //   6 よくある質問（AIとの違い・進め方を畳んである）
-//   7 最後
+//   7 料金
+//   8 最後
 //
-// 料金は /plans へ逃がした。5つ並べるとスマホ4画面ぶんになり、
-// そのうち買えるのは1つ。トップで先に見せると
+// 料金はいちばん最後に置く。先に出すと、買えるのが1つだけなので
 // 「高い／買えない」が最初の印象になる。
+// カードは /plans と同じ PlanCards から出す。
+// キャンセル・返金・特商法の断りは /plans が持つ。
 //
 // ── 節を増やさない ────────────────────────────────
 // 「こんな選択を、選ぶ前に」は2の中へ入れた。同じことを2回言っていた。
@@ -87,7 +90,7 @@ const NAV = [
   ["#moments", "恋愛の道のり"],
   ["#before-after", "実例"],
   ["#faq", "よくある質問"],
-  ["/plans", "料金"],
+  ["#price", "料金"],
 ] as const;
 
 const STEPS = [
@@ -657,11 +660,12 @@ export default async function HomePage() {
         </ul>
 
         <div className="mt-7 max-w-[26em]">
+          {/* 値段は同じページの下にある。読み込み直させない */}
           <Link
-            href="/plans"
+            href="#price"
             className="inline-flex min-h-[54px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-8 text-[15.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
           >
-            プランを詳しく見る <span aria-hidden className="ml-2">&rarr;</span>
+            プランを詳しく見る <span aria-hidden className="ml-2">&darr;</span>
           </Link>
         </div>
       </Block>
@@ -992,7 +996,40 @@ export default async function HomePage() {
         </div>
       </Block>
 
-      {/* ══ 7. 最後 ══ */}
+      {/* ══ 7. 料金 ══ */}
+      {/* 値段の差は、聞く人数ではなく「本番にどれだけ近いか」。
+          見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する。
+
+          いちばん最後に置く。先に出すと、買えるのが1つだけなので
+          「高い／買えない」が最初の印象になる。
+          ここまで読んだ人は、何が返ってくるかを知ったうえで値段を見る。
+
+          カードの形は PlanCards（/plans と同じもの）。
+          キャンセル・返金・特商法の断りは /plans が持つ。 */}
+      <Block id="price">
+        <H>必要なところだけ、1回ごと。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          月額はありません。値段が上がるのは人数が増えるからではなく、
+          本番に近いところまでやるからです。
+        </p>
+
+        <div className="mt-8">
+          <PlanCards from="price" />
+        </div>
+
+        <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
+          税込。いま受け付けているのは「{main.name}」だけです。ほかの4つは、
+          その場で会話する・動画を受け取るための手順が用意できてから開きます。
+          <Link
+            href="/plans"
+            className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
+          >
+            キャンセルと返金について
+          </Link>
+        </p>
+      </Block>
+
+      {/* ══ 8. 最後 ══ */}
       <section className="bg-paper">
         <Wrap className="pb-20 pt-6 sm:pb-24">
           <div className="relative overflow-hidden rounded-card bg-brand p-8 text-paper shadow-card sm:p-14">
