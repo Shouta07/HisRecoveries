@@ -1,4 +1,3 @@
-import type { ImageKey } from "../images";
 import type { Verdict } from "./model";
 
 // こういう相談が来ます。
@@ -16,9 +15,10 @@ import type { Verdict } from "./model";
 // 出すのは「どういう相談が来るか」という種類だけ。
 // 悩みの言葉そのものは、種類の説明として使ってよい。
 //
-// ── 写真について ──────────────────────────────────
-// 添える絵は、特定の誰かではなく、その場面のイメージ。
-// 「◯◯さんの声」の横に置いた瞬間に体験談になるので、置かない。
+// ── 場面の写真は置かない ──────────────────────────
+// 素材は 226×162 の切り抜きで、帯にすると顔が切れて髪だけが写る。
+// 上に文面の箱を重ねるので、写真は箱の裏の模様にしかならなかった。
+// 見せたいのは、送る文面と返ってくる言葉のほう。
 //
 // ── 返ってくる言葉の見本 ──────────────────────────
 // 「何が返るのか」は、書いて説明するより1つ見せたほうが早い。
@@ -51,7 +51,6 @@ export type Case = {
   draft: { label: string; text: string };
   /** 返ってくる言葉の見本 */
   says: CaseSay[];
-  img: ImageKey;
   /** 相談に進むときのカテゴリ */
   category: string;
   /** いま受け付けているか */
@@ -70,7 +69,6 @@ export const CASES: Case[] = [
       { age: 25, verdict: "as_is", say: "自然でいいと思います。楽しみにしてる感じが伝わります。" },
       { age: 27, verdict: "slight", say: "少し柔らかい言い方にすると、もっと好印象です。" },
     ],
-    img: "caseMessage",
     category: "message",
     open: true,
   },
@@ -88,7 +86,6 @@ export const CASES: Case[] = [
       { age: 24, verdict: "as_is", say: "誠実そうで安心感があります。" },
       { age: 29, verdict: "slight", say: "1文目を短くすると、もっと読みやすいです。" },
     ],
-    img: "casePhoto",
     category: "photo",
     open: true,
   },
@@ -103,7 +100,6 @@ export const CASES: Case[] = [
       { age: 26, verdict: "as_is", say: "具体的でいいと思います。予定が立てやすいです。" },
       { age: 28, verdict: "change", say: "お店だけだと少し重いかも。時間も書いてあると気楽です。" },
     ],
-    img: "caseDate",
     category: "date",
     open: true,
   },
@@ -115,7 +111,6 @@ export const CASES: Case[] = [
     what: "実際の会話の流れで練習して、直すところを知りたい。",
     draft: { label: "受付前", text: "順番待ちに入れます。" },
     says: [],
-    img: "caseCall",
     category: "message",
     open: false,
   },
