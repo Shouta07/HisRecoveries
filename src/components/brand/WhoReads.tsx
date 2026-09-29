@@ -18,12 +18,19 @@ import { TIERS } from "@/lib/economics";
 // これは全部こちらが実際に持っているもので、作り話ではない。
 //
 // ══════════════════════════════════════════════════
+// トップでは短く
+// ══════════════════════════════════════════════════
+// 全部出すと、スマホで1.5画面ぶんになる。
+// トップは「選べる」ことが伝わればよいので、
+// 単価の段と得意な相談は /answerers のほうに置く。
+//
+// ══════════════════════════════════════════════════
 // これは見本
 // ══════════════════════════════════════════════════
 // 特定の誰かの紹介ではない。選べる条件の一覧。
 // 実際に登録がある人は /answerers に出る（いまは0人）。
 
-export default function WhoReads() {
+export default function WhoReads({ compact = false }: { compact?: boolean }) {
   return (
     <div className="rounded-card border border-line bg-paper p-6 shadow-card">
       <div className="flex items-center justify-between gap-3">
@@ -62,6 +69,7 @@ export default function WhoReads() {
           </dd>
         </div>
 
+        {!compact && (
         <div>
           <dt className="text-[11.5px] font-bold text-steel">得意な相談</dt>
           <dd className="mt-2 flex flex-wrap gap-1.5">
@@ -75,6 +83,7 @@ export default function WhoReads() {
             ))}
           </dd>
         </div>
+        )}
       </dl>
 
       <div className="mt-6 border-t border-line pt-5">
@@ -91,6 +100,7 @@ export default function WhoReads() {
         </ul>
       </div>
 
+      {!compact && (
       <div className="mt-5 border-t border-line pt-5">
         <p className="text-[11.5px] font-bold text-steel">良い回答を書く人ほど、多く受け取ります</p>
         <ul className="mt-2.5 flex flex-col gap-1.5">
@@ -107,6 +117,7 @@ export default function WhoReads() {
           順位は公開しません。順位を出すと、良い回答より多い回答をする人が増えるからです。
         </p>
       </div>
+      )}
     </div>
   );
 }
