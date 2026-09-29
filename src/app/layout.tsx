@@ -17,7 +17,6 @@ import type { Metadata, Viewport } from "next";
 // 「実際に使う文字だけを含むサブセットを1ファイル作って自前で置く」形にすること。
 // fontsource のサブセット分割は、日本語ではこの症状が必ず出る。
 import Header from "@/components/Header";
-import TabBar from "@/components/brand/TabBar";
 import Landed from "@/components/brand/Landed";
 import Tags from "@/components/brand/Tags";
 import Analytics from "@/components/Analytics";
@@ -185,8 +184,6 @@ export default function RootLayout({
           <main id="main" className="flex-1">
             {children}
           </main>
-          {/* C2C の面にだけ出る下タブ。出す場所の判断は TabBar が持つ */}
-          <TabBar />
           {/* 購入率の分母。1来訪につき1回だけ数える */}
           <Landed />
           {/* 広告と解析のタグ。鍵を入れた分だけ動く */}
