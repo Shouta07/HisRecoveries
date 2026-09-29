@@ -32,7 +32,7 @@ export type ImageSlot = {
   ready?: boolean;
 };
 
-export type ImageKey = "hero" | "heroTall" | "casePhoto" | "caseMessage" | "caseCall" | "caseDate" | "step1" | "step4";
+export type ImageKey = "hero" | "heroTall" | "casePhoto" | "caseMessage" | "caseCall" | "caseDate" | "w1" | "w2" | "w3" | "w4" | "w5" | "step1" | "step4";
 
 export const IMAGES: Record<ImageKey, ImageSlot> = {
   hero: {
@@ -79,6 +79,19 @@ export const IMAGES: Record<ImageKey, ImageSlot> = {
     note: "デートのあと、次をどうするか考えている様子",
     ready: true,
   },
+
+  // ── 回答する側のイメージ ────────────────────────
+  // 特定の誰かではない。名前も職業も居住地も付けない。
+  // 付けた時点で「この人が読みます」という意味になり、
+  // 登録が0人の状態ではそれが事実でなくなる。
+  //
+  // 男性側の絵と同じ扱い。場面のイメージとして添え、
+  // 画面には「※ 写真はイメージです」と書く。
+  w1: { src: "/img/w1.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w2: { src: "/img/w2.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w3: { src: "/img/w3.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w4: { src: "/img/w4.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w5: { src: "/img/w5.jpg", alt: "", note: "回答する側のイメージ", ready: true },
 
   step1: { src: "/img/step-1.jpg", alt: "", note: "スマホに質問を打ち込んでいる手元" },
   step4: { src: "/img/step-4.jpg", alt: "", note: "決めて、送ったあとの表情" },

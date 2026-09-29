@@ -474,7 +474,9 @@ export default async function HomePage() {
         </ul>
 
         {/* 相談の種類。特定の誰かの体験談ではない */}
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* スマホで1列にすると、226px の素材を 348px に引き伸ばすことになる。
+            2列にして、実際の大きさに寄せる。 */}
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {CASES.map((c, i) => (
             <Reveal key={c.id} delay={i * 50}>
               <div className="flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper shadow-card">
@@ -484,11 +486,11 @@ export default async function HomePage() {
                     {c.tag}
                   </span>
                 </div>
-                <div className="flex flex-1 flex-col p-5">
-                  <p className="text-[14.5px] font-black leading-[1.6] text-slate">
+                <div className="flex flex-1 flex-col p-4 sm:p-5">
+                  <p className="text-[13.5px] font-black leading-[1.6] text-slate sm:text-[14.5px]">
                     「{c.worry}」
                   </p>
-                  <p className="mt-2.5 text-[12.5px] leading-[1.8] text-steel">{c.what}</p>
+                  <p className="mt-2.5 text-[12px] leading-[1.8] text-steel sm:text-[12.5px]">{c.what}</p>
                   <div className="mt-4 flex-1" />
                   {c.open ? (
                     <PlanCta
@@ -542,6 +544,47 @@ export default async function HomePage() {
             </li>
           ))}
         </ul>
+
+        {/* 回答する側のイメージ。
+            名前も職業も居住地も付けない。付けた時点で
+            「この人が読みます」になり、登録が0人だと事実でなくなる。
+            付けてあるのは、実際に選べる条件だけ。 */}
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {(
+            [
+              { img: "w1", chips: ["マッチングアプリ経験あり", "カジュアルな恋愛経験"] },
+              { img: "w2", chips: ["マッチングアプリ経験あり", "年上男性との交際経験"] },
+              { img: "w3", chips: ["恋愛経験あり", "真剣な恋愛志向"] },
+              { img: "w4", chips: ["マッチングアプリ経験あり", "年上男性が好き"] },
+              { img: "w5", chips: ["恋愛経験あり", "落ち着いた関係が好き"] },
+            ] as const
+          ).map((w, i) => (
+            <Reveal key={w.img} delay={i * 45}>
+              <li className="flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper shadow-card">
+                <Slot name={w.img} rounded="" className="aspect-square w-full" />
+                <div className="flex flex-1 flex-col gap-1.5 p-3.5">
+                  {w.chips.map((c) => (
+                    <span
+                      key={c}
+                      className="w-fit rounded-pill bg-rose-tint px-2.5 py-1 text-[11px] leading-[1.5] text-rose-text"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </li>
+            </Reveal>
+          ))}
+        </ul>
+
+        <p className="mt-4 text-[12px] leading-[1.8] text-steel">
+          ※ 写真はイメージです。上に出ているのは、あなたが選べる条件です。
+          実際に登録している方は{" "}
+          <Link href="/answerers" className="font-bold text-brand underline decoration-line underline-offset-4">
+            誰が読むのか
+          </Link>{" "}
+          に出ます。
+        </p>
 
         <div className="mt-6">
           <WhoReads />
