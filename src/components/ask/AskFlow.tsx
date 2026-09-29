@@ -24,6 +24,7 @@ import { add as rememberAsk, cleanThreadLabel, type Thread } from "@/lib/myasks"
 import Continue from "@/components/ask/Continue";
 import { isStepId, step as getStep } from "@/lib/ask/journey";
 import { WAIT_MINUTES } from "@/lib/ask/shortfall";
+import Yen from "@/components/brand/Yen";
 
 // 相談を出す。
 //
@@ -209,7 +210,7 @@ export default function AskFlow() {
             <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] font-bold text-steel">
               <li>実在の女性{getPlan(DEFAULT_PLAN).answers}人が読みます</li>
               <li aria-hidden className="text-line">|</li>
-              <li className="tabular-nums">¥{getPlan(ENTRY_PLAN).yen.toLocaleString()}から</li>
+              <li><Yen yen={getPlan(ENTRY_PLAN).yen} />から</li>
               <li aria-hidden className="text-line">|</li>
               <li>匿名</li>
             </ul>
@@ -497,8 +498,8 @@ export default function AskFlow() {
                         <span className="min-w-0 flex-1">
                           <span className="flex items-baseline justify-between gap-3">
                             <span className="text-[14.5px] font-bold text-slate">{o.name}</span>
-                            <span className="shrink-0 text-[13.5px] font-black tabular-nums text-slate">
-                              +¥{o.yen.toLocaleString()}
+                            <span className="shrink-0 text-[13.5px] font-black text-slate">
+                              <Yen yen={o.yen} plus />
                             </span>
                           </span>
                           <span className="mt-1 block text-[12.5px] leading-[1.7] text-steel">
@@ -522,15 +523,15 @@ export default function AskFlow() {
                 <dl className="mt-3 flex flex-col gap-1.5 text-[13.5px]">
                   <div className="flex items-baseline justify-between gap-3">
                     <dt className="min-w-0 text-slate">{p.name}</dt>
-                    <dd className="shrink-0 tabular-nums text-slate">
-                      ¥{p.yen.toLocaleString()}
+                    <dd className="shrink-0 text-slate">
+                      <Yen yen={p.yen} />
                     </dd>
                   </div>
                   {opts.map((id) => (
                     <div key={id} className="flex items-baseline justify-between gap-3">
                       <dt className="min-w-0 text-steel">{getOption(id).name}</dt>
-                      <dd className="shrink-0 tabular-nums text-steel">
-                        +¥{getOption(id).yen.toLocaleString()}
+                      <dd className="shrink-0 text-steel">
+                        <Yen yen={getOption(id).yen} plus />
                       </dd>
                     </div>
                   ))}
@@ -538,8 +539,8 @@ export default function AskFlow() {
 
                 <div className="mt-3.5 flex items-baseline justify-between gap-3 border-t border-line pt-3.5">
                   <p className="text-[13px] font-bold text-steel">合計</p>
-                  <p className="shrink-0 text-[28px] font-black tabular-nums leading-none">
-                    ¥{total.toLocaleString()}
+                  <p className="shrink-0 text-[28px] font-black leading-none">
+                    <Yen yen={total} />
                   </p>
                 </div>
                 <p className="mt-2 text-[12px] text-steel">税込 / 1回のみ。月額はありません。</p>

@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import { PLANS, FLOW, ENTRY_PLAN } from "@/lib/ask/plans";
 import Tashikame from "@/components/brand/Tashikame";
 import PlanCta from "@/components/brand/PlanCta";
+import Yen from "@/components/brand/Yen";
 
 // 仕組み。
 //
@@ -175,7 +176,7 @@ export default function HowPage() {
                     )}
                   </span>
                   <span className="shrink-0 text-[14.5px] font-bold tabular-nums text-slate">
-                    ¥{p.yen.toLocaleString()}
+                    <Yen yen={p.yen} />
                     {p.from && "〜"}
                   </span>
                 </li>

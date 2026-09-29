@@ -22,6 +22,8 @@ import Slot from "@/components/brand/Slot";
 import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
 import CaseRows from "@/components/brand/CaseRows";
 import WhoReads from "@/components/brand/WhoReads";
+import Yen from "@/components/brand/Yen";
+import { LADDER } from "@/lib/responder/policy";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ。
@@ -281,7 +283,7 @@ export default async function HomePage() {
               {/* 丸バッジを1行に畳んだ。誰向けかは残したまま、縦を1行ぶん空ける */}
               <li className="text-brand">男性向け</li>
               <li aria-hidden className="text-line">|</li>
-              <li className="tabular-nums">¥{entry.yen.toLocaleString()}から</li>
+              <li><Yen yen={entry.yen} />から</li>
               <li aria-hidden className="text-line">|</li>
               <li>月額なし</li>
               <li aria-hidden className="text-line">|</li>
@@ -812,8 +814,8 @@ export default async function HomePage() {
         <div className="mt-8 rounded-card border-2 border-brand bg-paper p-6 shadow-card sm:p-8">
           <p className="text-[17px] font-black text-slate">{main.name}</p>
           <p className="mt-2 flex items-baseline gap-2">
-            <span className="text-stat font-black tabular-nums text-slate">
-              ¥{main.yen.toLocaleString()}
+            <span className="text-stat font-black text-slate">
+              <Yen yen={main.yen} />
             </span>
             <span className="text-[13px] font-bold text-steel">税込 / 1回</span>
           </p>
@@ -853,8 +855,8 @@ export default async function HomePage() {
             >
               <p className="flex items-baseline justify-between gap-3">
                 <span className="min-w-0 text-[14px] font-bold text-slate">{o.name}</span>
-                <span className="shrink-0 text-[14px] font-black tabular-nums text-slate">
-                  +¥{o.yen.toLocaleString()}
+                <span className="shrink-0 text-[14px] font-black text-slate">
+                  <Yen yen={o.yen} plus />
                 </span>
               </p>
               <p className="mt-1.5 text-[12.5px] leading-[1.7] text-steel">{o.why}</p>
@@ -880,8 +882,8 @@ export default async function HomePage() {
                 <span aria-hidden className="mb-2.5 block h-[23px]" />
               )}
               <p className="text-[14.5px] font-black text-slate">{x.name}</p>
-              <p className="mt-1.5 text-[22px] font-black tabular-nums leading-none text-slate">
-                ¥{setPrice(x).toLocaleString()}
+              <p className="mt-1.5 text-[22px] font-black leading-none text-slate">
+                <Yen yen={setPrice(x)} />
               </p>
               <p className="mt-2.5 text-[12.5px] leading-[1.7] text-steel">{x.fits}</p>
               <PlanCta
@@ -904,7 +906,7 @@ export default async function HomePage() {
             </span>
           </p>
           <p className="text-[13.5px] text-steel">
-            ¥{getPlan("call").yen.toLocaleString()}〜 ·{" "}
+            <Yen yen={getPlan("call").yen} from /> ·{" "}
             <Link href="/talk" className="font-bold text-brand underline decoration-line underline-offset-4">
               順番待ちに入る
             </Link>
@@ -1072,14 +1074,74 @@ export default async function HomePage() {
               <li>都度払い</li>
               <li>実在女性が回答</li>
               <li>
-                {entry.name} ¥{entry.yen.toLocaleString()} から
+                {entry.name} <Yen yen={entry.yen} /> から
               </li>
             </ul>
           </div>
         </Wrap>
       </section>
 
-      {/* ── フッター ── */}
+      {/* ══ 13. 両面 ══ */}
+      {/* この製品は、買う人だけでは成り立たない。
+          読む人がいてはじめて商品になる。
+          フッターを外したときに、答える側への入口がトップから消えていた。
+          売り買いの両方を、同じ大きさで並べて置き直す。
+
+          件数や人数は書かない。まだ実績が無いので、書けば作り話になる。
+          書けるのは、それぞれが何をして、いくらになるかまで。 */}
+      <Block tint>
+        <H>使う人と、答える人。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          どちらかが多すぎても成り立ちません。読む人がいて、はじめて商品になります。
+        </p>
+
+        <div className="mt-8 grid gap-3.5 sm:grid-cols-2">
+          <div className="flex h-full flex-col rounded-card border border-brand bg-paper p-6 shadow-card">
+            <p className="text-[11.5px] font-bold tracking-[0.1em] text-brand">MEN</p>
+            <p className="mt-2.5 text-[18px] font-black leading-[1.5] text-slate">
+              送る前のものを、読んでもらう
+            </p>
+            <p className="mt-3 text-[13.5px] leading-[1.85] text-steel">
+              LINEの文面、自己紹介文、誘い方。実在の女性{main.answers}人の反応が返ります。
+            </p>
+            <p className="mt-4 text-[20px] font-black text-slate">
+              <Yen yen={main.yen} />
+              <span className="ml-1.5 text-[12.5px] font-bold text-steel">から / 1回ごと</span>
+            </p>
+            <div className="mt-5 flex-1" />
+            <PlanCta
+              plan={DEFAULT_PLAN}
+              from="two_sided"
+              className="min-h-[50px] rounded-pill bg-brand px-5 text-[14.5px] !text-paper shadow-card"
+            >
+              相談する <span aria-hidden className="ml-1.5">&rarr;</span>
+            </PlanCta>
+          </div>
+
+          <div className="flex h-full flex-col rounded-card border border-line bg-paper p-6 shadow-card">
+            <p className="text-[11.5px] font-bold tracking-[0.1em] text-steel">WOMEN</p>
+            <p className="mt-2.5 text-[18px] font-black leading-[1.5] text-slate">
+              自分の感覚が、そのまま価値になる
+            </p>
+            <p className="mt-3 text-[13.5px] leading-[1.85] text-steel">
+              読んで、どう感じたかを書くだけ。資格は要りません。顔を出す必要もありません。
+            </p>
+            <p className="mt-4 text-[20px] font-black text-slate">
+              <Yen yen={LADDER[0].yen} />
+              <span className="mx-1 text-[14px] font-bold text-steel">〜</span>
+              <Yen yen={LADDER[LADDER.length - 1].yen} />
+              <span className="ml-1.5 text-[12.5px] font-bold text-steel">/ 1件</span>
+            </p>
+            <div className="mt-5 flex-1" />
+            <Link
+              href="/join"
+              className="inline-flex min-h-[50px] items-center justify-center rounded-pill border border-brand bg-paper px-5 text-[14.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
+            >
+              答える側になる <span aria-hidden className="ml-1.5">&rarr;</span>
+            </Link>
+          </div>
+        </div>
+      </Block>
     </div>
   );
 }
