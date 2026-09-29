@@ -43,6 +43,14 @@ export type Case = {
   tag: string;
   /** その場面の見出し */
   scene: string;
+  /**
+   * そこで迷っている選択。問いの形のまま置く。
+   *
+   * 「メッセージを見てもらう」ではなく「この文面で送る？」。
+   * 売っているのは添削ではなく、選ぶ前に確かめられることなので、
+   * 場面の頭には必ず選択を置く。
+   */
+  decision: string;
   /** そのとき頭にあること */
   worry: string;
   /** 何を見てもらうのか */
@@ -51,6 +59,13 @@ export type Case = {
   draft: { label: string; text: string };
   /** 返ってくる言葉の見本 */
   says: CaseSay[];
+  /**
+   * 反応を見たあと、この人が決めたこと。
+   *
+   * こちらが「こうしてください」と書く欄ではない。
+   * 材料を見て本人が決める、という形を、見本の中でも崩さない。
+   */
+  decided: string;
   /** 相談に進むときのカテゴリ */
   category: string;
   /** いま受け付けているか */
@@ -62,6 +77,7 @@ export const CASES: Case[] = [
     id: "message",
     tag: "メッセージ",
     scene: "LINEを送る前",
+    decision: "この文面で送る？",
     worry: "このLINE、送っても大丈夫ですか？",
     what: "デート後のLINEで迷ってしまい、送る前に確認したい。",
     draft: { label: "送ろうとしている文面", text: "明日楽しみにしてる！お店は19時でどう？" },
@@ -69,6 +85,7 @@ export const CASES: Case[] = [
       { age: 25, verdict: "as_is", say: "自然でいいと思います。楽しみにしてる感じが伝わります。" },
       { age: 27, verdict: "slight", say: "少し柔らかい言い方にすると、もっと好印象です。" },
     ],
+    decided: "時間の書き方だけ変えて、そのまま送る",
     category: "message",
     open: true,
   },
@@ -76,6 +93,7 @@ export const CASES: Case[] = [
     id: "photo",
     tag: "自己紹介文",
     scene: "プロフィールを見直したい",
+    decision: "この自己紹介文でいい？",
     worry: "自己紹介文に何を書けばいいか分からない",
     what: "マッチしても続かないので、女性の目で自己紹介文を読んでほしい。",
     draft: {
@@ -86,6 +104,7 @@ export const CASES: Case[] = [
       { age: 24, verdict: "as_is", say: "誠実そうで安心感があります。" },
       { age: 29, verdict: "slight", say: "1文目を短くすると、もっと読みやすいです。" },
     ],
+    decided: "1文目を短くして、残りはそのまま残す",
     category: "photo",
     open: true,
   },
@@ -93,6 +112,7 @@ export const CASES: Case[] = [
     id: "date",
     tag: "デート",
     scene: "誘う前に確かめたい",
+    decision: "そろそろ誘う？",
     worry: "この誘い方で、重く思われませんか？",
     what: "次に誘うときの言い方と店選びを、女性の目で見てほしい。",
     draft: { label: "送ろうとしている誘い方", text: "今度の土曜、前に話してたお店に行きませんか？" },
@@ -100,17 +120,58 @@ export const CASES: Case[] = [
       { age: 26, verdict: "as_is", say: "具体的でいいと思います。予定が立てやすいです。" },
       { age: 28, verdict: "change", say: "お店だけだと少し重いかも。時間も書いてあると気楽です。" },
     ],
+    decided: "時間も足して、今週のうちに誘う",
     category: "date",
+    open: true,
+  },
+  {
+    id: "signal",
+    tag: "デートの後",
+    scene: "デートのあと、今日送るか",
+    decision: "今日送る？ 明日にする？",
+    worry: "楽しかったけど、温度感が読めません",
+    what: "デートのあとのLINEを、今日出すか明日にするかで迷っている。",
+    draft: {
+      label: "送ろうとしている文面",
+      text: "今日はありがとう！楽しかったです。また行きましょう。",
+    },
+    says: [
+      { age: 28, verdict: "as_is", say: "これで十分です。すぐ来ると、楽しかったんだなと伝わります。" },
+      { age: 25, verdict: "slight", say: "「また」だけだと社交辞令に見えます。店の名前が入ると本気度が違います。" },
+    ],
+    decided: "店の名前を足して、その日のうちに送る",
+    category: "signal",
+    open: true,
+  },
+  {
+    id: "romance",
+    tag: "関係を進める",
+    scene: "切り出す前",
+    decision: "いま言う？ まだ待つ？",
+    worry: "このタイミングで言っていいのか分かりません",
+    what: "関係を進めたいので、切り出し方とタイミングを見てほしい。",
+    draft: {
+      label: "言おうとしている言葉",
+      text: "ちゃんと付き合う前提で、会いたいと思っています。",
+    },
+    says: [
+      { age: 29, verdict: "slight", say: "言うのはいいと思います。ただ電話より、会ったときのほうが受け取りやすいです。" },
+      { age: 26, verdict: "change", say: "いきなり前提の話だと構えます。まず今どう思っているかを聞かれたいです。" },
+    ],
+    decided: "言葉を短くして、次に会ったときに切り出す",
+    category: "romance",
     open: true,
   },
   {
     id: "call",
     tag: "会話・デート",
     scene: "話す前に練習したい",
+    decision: "電話する？",
     worry: "電話や初デートで何を話せばいいか不安です",
     what: "実際の会話の流れで練習して、直すところを知りたい。",
     draft: { label: "受付前", text: "順番待ちに入れます。" },
     says: [],
+    decided: "受け付けを始めたら知らせてもらう",
     category: "message",
     open: false,
   },
@@ -124,7 +185,7 @@ export const OPEN_CASES = CASES.filter((c) => c.open);
   // 年齢・職業・名前を付けない。付いた時点で体験談になる。
   const PERSON = /\d+歳|エンジニア|営業|コンサル|公務員|経営企画|メーカー|看護師|美容系|事務職|大学生|会社員|さん」|さんの声/;
   for (const c of CASES) {
-    for (const t of [c.tag, c.scene, c.worry, c.what, c.draft.label, c.draft.text]) {
+    for (const t of [c.tag, c.scene, c.decision, c.worry, c.what, c.draft.label, c.draft.text, c.decided]) {
       if (PERSON.test(t)) {
         throw new Error(
           `「${c.id}」に年齢や職業が入っています。利用者はまだ0人なので、体験談は書けません`,
@@ -142,6 +203,32 @@ export const OPEN_CASES = CASES.filter((c) => c.open);
     }
   }
   if (OPEN_CASES.length < 2) throw new Error("受け付けている相談の種類がありません");
+
+  // 場面の頭は、必ず選択にする。
+  // 「メッセージを見てもらう」だと、添削屋の品書きになる。
+  for (const c of CASES) {
+    if (!c.decision.endsWith("？")) {
+      throw new Error(`「${c.id}」の分岐点が問いになっていません（${c.decision}）`);
+    }
+    if (!c.decided) throw new Error(`「${c.id}」に、決めたことが書かれていません`);
+    // 決めるのは本人。こちらが指図する書き方にしない。
+    if (/してください|すべき|必ず|正解は/.test(c.decided)) {
+      throw new Error(`「${c.id}」の決めたことが、こちらの指図になっています（${c.decided}）`);
+    }
+    // 文字で答えられない問いを出さない。画像を受け取る口はまだ無い。
+    if (c.open && /写真|画像|服|髪|スクショ/.test(c.decision)) {
+      throw new Error(`「${c.id}」の分岐点は、文字だけでは答えられません（${c.decision}）`);
+    }
+  }
+
+  // 恋愛の1か所だけを扱うサービスに見えないこと。
+  // 文面だけなら添削屋で、それは「選ぶ前に確かめる」ではない。
+  const scenes = new Set(OPEN_CASES.map((c) => c.category));
+  if (scenes.size < 4) {
+    throw new Error(
+      `扱っている場面が${scenes.size}種類しかありません。恋愛の一部だけを扱うサービスに見えます`,
+    );
+  }
 
   // 1つの場面が「全部このままでOK」になると、聞く必要が無かったことになる。
   for (const c of OPEN_CASES) {

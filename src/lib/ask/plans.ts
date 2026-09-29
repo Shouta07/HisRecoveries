@@ -24,7 +24,7 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, type AttrId, type PanelAge } from "./model";
-import { assertWeight, assertWhoReads, assertPlain, assertNotCheap } from "../voice";
+import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary } from "../voice";
 
 /**
  * 売るもの。
@@ -492,6 +492,8 @@ export const USE_CASES: {
     assertWeight(t, "商品の説明");
     // 安さで売らない。原価は答える女性への支払い。
     assertNotCheap(t, "商品の説明");
+    // 怖がらせて売らない。渡すのは決めるための材料。
+    assertNotScary(t, "商品の説明");
     // 誰が読むのかを濁さない。「人」と書くと、誰でもよくなる。
     assertWhoReads(t, "商品の説明");
     // 硬い言葉を混ぜない。読むのは29歳の会社員。

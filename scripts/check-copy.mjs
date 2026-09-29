@@ -1,4 +1,4 @@
-// 安売りの言葉が、画面に入っていないかを見る。
+// 安さで売っていないか、怖がらせて売っていないかを見る。
 //
 // ══════════════════════════════════════════════════
 // なぜ、方針だけでは足りないか
@@ -27,6 +27,20 @@ import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
 const LOOK = ["src/app", "src/components", "src/lib/ask", "src/lib/responder"];
+
+/**
+ * voice.ts の SCARE と同じもの。ここを直したら両方直す。
+ *
+ * 怖がらせて売らない。不安は買う理由にはなるが、続く理由にはならない。
+ * 「失敗」そのものは禁じていない（買う人の言葉なので使ってよい）。
+ * 止めるのは、こちらが結末を断定する書き方のほう。
+ */
+const SCARE = [
+  "嫌われます", "嫌われる前に", "手遅れ", "取り返しがつか",
+  "詰みます", "致命的", "一発アウト", "もう戻れ",
+  "痛い男", "失敗します", "終わりです", "選び間違えると",
+  "気づいたときには遅", "見限られ", "脈なし確定",
+];
 
 /** voice.ts の CHEAP と同じもの。ここを直したら両方直す */
 const CHEAP = [
@@ -123,7 +137,7 @@ for (const dir of LOOK) {
     const src = stripComments(await readFile(join(ROOT, f), "utf8"));
     const lines = src.split("\n");
     lines.forEach((line, n) => {
-      for (const w of CHEAP) {
+      for (const w of [...CHEAP, ...SCARE]) {
         if (line.includes(w)) hits.push({ f, n: n + 1, w, line: line.trim().slice(0, 90) });
       }
     });
@@ -131,11 +145,12 @@ for (const dir of LOOK) {
 }
 
 if (hits.length > 0) {
-  console.error("安売りの言葉が画面に入っています。");
+  console.error("画面に置けない言葉が入っています。");
   console.error("");
-  console.error("この商品の原価は、答える女性への支払いです。");
-  console.error("値段を下げると、その人たちへの支払いを下げることになり、");
-  console.error("書かれる回答が薄くなります。薄い回答は、次の人が買わない理由になります。");
+  console.error("安さ  — 原価は答える女性への支払いです。値段を下げると");
+  console.error("        その人たちへの支払いを下げることになり、回答が薄くなります。");
+  console.error("怖さ  — 不安は買う理由にはなりますが、続く理由にはなりません。");
+  console.error("        渡すのは決めるための材料で、決めないと大変だという脅しではありません。");
   console.error("");
   for (const h of hits) {
     console.error(`  ${relative(".", h.f)}:${h.n}  「${h.w}」`);
@@ -150,4 +165,4 @@ if (hits.length > 0) {
   process.exit(1);
 }
 
-console.log(`copy チェック: ${looked} ファイル — 安売りの言葉なし`);
+console.log(`copy チェック: ${looked} ファイル — 安さ・怖さの言葉なし`);
