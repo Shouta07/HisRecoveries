@@ -63,9 +63,21 @@ function Story() {
         <p className="text-[10.5px] font-bold leading-none text-steel lg:text-[11.5px]">
           送る前の文面
         </p>
-        <p className="mt-2 text-[14px] font-black leading-[1.6] text-slate lg:text-[16px]">
-          {DEMO.before}
-        </p>
+        {/* 送信ボタンを添える。引用ではなく「いま送ろうとしている文面」に見せる。
+            押せるものではないので、読み上げには出さない。 */}
+        <div className="mt-2 flex items-end gap-2.5">
+          <p className="min-w-0 flex-1 rounded-card rounded-br-[4px] bg-mist px-3.5 py-2.5 text-[14px] font-black leading-[1.6] text-slate lg:text-[16px]">
+            {DEMO.before}
+          </p>
+          <span
+            aria-hidden
+            className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-paper lg:h-9 lg:w-9"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4 lg:h-[18px] lg:w-[18px]" fill="currentColor">
+              <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
+            </svg>
+          </span>
+        </div>
       </div>
 
       {/* ここが製品。上と下を繋ぐ言葉を、線の上に載せる */}
@@ -137,7 +149,7 @@ export default function HeroBoard() {
             name="hero"
             rounded=""
             position="center 22%"
-            className="h-[200px] w-full sm:h-[300px]"
+            className="h-[182px] w-full sm:h-[300px]"
           />
           {/* 手が止まっている瞬間の一言。
               写真だけだと「落ち着いた男性の写真」にしか見えず、

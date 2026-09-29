@@ -385,7 +385,114 @@ export default async function HomePage() {
 
       </section>
 
-      {/* ══ 2. 今どこで悩んでいますか ══ */}
+      {/* ══ 2. 相談前と、相談後 ══ */}
+      {/* 押す場所のすぐ下に置く。買う前に、何が起きるのかを1回で見せる。
+          ここより下に同じものを置かない（2回出ると、どちらも弱くなる） */}
+      <Block id="before-after">
+        <H>相談前と、相談後。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          自分では気づかなかったところが、送る前に出てきます。
+          大丈夫そうなら「このままで大丈夫そう」と返ってきます。無理に探しません。
+        </p>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
+          <div className="rounded-card border border-rose bg-paper p-6 shadow-card">
+            <p className="text-[11px] font-bold tracking-[0.14em] text-rose-text">相談前</p>
+            <p className="mt-3 rounded-card rounded-tl-[4px] bg-mist px-4 py-3.5 text-[16px] leading-[1.7]">
+              {DEMO.before}
+            </p>
+            {/* 一人ひとりの言葉は、いちばん上のカードで出している。
+                ここで同じものをもう一度並べると、どちらも弱くなる。
+                この節は「何が変わったか」だけを見せる。 */}
+            <ul className="mt-4 flex flex-wrap items-center gap-2">
+              {(["change", "slight", "as_is"] as const)
+                .map((v) => ({ v, n: count(DEMO, v) }))
+                .filter((x) => x.n > 0)
+                .map((x) => (
+                  <li
+                    key={x.v}
+                    className={`rounded-pill px-3 py-1.5 text-[12px] font-bold ${TONE[x.v]}`}
+                  >
+                    {label(x.v)} {x.n}人
+                  </li>
+                ))}
+            </ul>
+            <div className="mt-5 rounded-soft bg-rose-tint px-4 py-3">
+              <p className="text-[11px] font-bold text-rose-text">共通して気になったこと</p>
+              <p className="mt-1 text-[13.5px] font-bold leading-[1.7]">{DEMO.common}</p>
+            </div>
+            {DEMO.split && (
+              <p className="mt-3 text-[12px] leading-[1.7] text-steel">{DEMO.split}</p>
+            )}
+          </div>
+
+          <p aria-hidden className="justify-self-center text-[24px] text-steel lg:rotate-0">
+            →
+          </p>
+
+          <div className="rounded-card border border-ok bg-paper p-6 shadow-card">
+            <p className="text-[11px] font-bold tracking-[0.14em] text-ok-text">相談後</p>
+            <p className="mt-3 rounded-card rounded-tl-[4px] bg-ok-tint px-4 py-3.5 text-[16px] leading-[1.7]">
+              {DEMO.after}
+            </p>
+            <div className="mt-6 border-t border-line pt-5">
+              <p className="text-[11.5px] font-bold text-steel">別の女性{DEMO.retest.of}人に、もう一度見てもらった</p>
+              <p className="mt-2.5 text-[34px] font-black tabular-nums leading-none text-ok-text">
+                {DEMO.retest.n}
+                <span className="text-steel"> / {DEMO.retest.of}</span>
+              </p>
+              <p className="mt-2 text-[14px] leading-[1.7]">{DEMO.retest.say}</p>
+            </div>
+            <p className="mt-5 text-[12px] leading-[1.75] text-steel">
+              ※ 画面の見本です。実際の回答ではありません。
+            </p>
+          </div>
+        </div>
+      </Block>
+
+      {/* 返ってくるもの。節を分けず、Before/After の下に短く置く */}
+      <section className="bg-paper">
+        <Wrap className="pb-14 sm:pb-16">
+          <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["何人がどう答えたか", "実際の人数だけ"],
+              ["みんなが気にしたところ", "何人も触れていたら、そこ"],
+              ["意見が分かれたところ", "人によって受け取り方が違う"],
+              ["書かれた言葉そのまま", "まとめだけで終わらせない"],
+            ].map(([t, d]) => (
+              <li
+                key={t}
+                className="rounded-card border border-line bg-paper px-5 py-4 shadow-card"
+              >
+                <p className="text-[13.5px] font-black leading-[1.5]">{t}</p>
+                <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">{d}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 max-w-[34em] text-[13px] leading-[1.9] text-steel">
+            「失敗する確率」みたいな数字は出しません。数えようがないからです。
+            出すのは「3人中2人」のような実数だけ。読んだ人がそう感じた、という話であって、
+            女性みんなの答えではありません。
+          </p>
+
+          {/* ここから料金の節まで、スマホで5画面ぶん押す場所が無かった。
+              見本を読み終えた直後がいちばん近いので、ここに1つ置く。 */}
+          <div className="mt-9 max-w-[24em]">
+            <PlanCta
+              plan={DEFAULT_PLAN}
+              from="after_demo"
+              className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+            >
+              自分のも見てもらう <span aria-hidden className="ml-2">&rarr;</span>
+            </PlanCta>
+            <p className="mt-3 text-[12.5px] text-steel">
+              ¥{entry.yen.toLocaleString()}から / 1回ごと / 匿名
+            </p>
+          </div>
+        </Wrap>
+      </section>
+
+      {/* ══ 3. 今どこで悩んでいますか ══ */}
       <Block id="moments">
         <H>今、どこで悩んでいますか。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
@@ -468,7 +575,7 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 3. こんな時に使う ══ */}
+      {/* ══ 4. こんな時に使う ══ */}
       {/* 説明を足すより、送る文面と返ってきた言葉を横に並べるほうが早い。
           受け付けていない場面（服装・会話）は出さない。押しても行き止まりになる。 */}
       <Block tint>
@@ -598,113 +705,6 @@ export default async function HomePage() {
           </PlanCta>
         </div>
       </Block>
-
-      {/* ══ 4. Before / After ══ */}
-      <Block id="before-after">
-        <H>直す前と、直したあと。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          自分では気づかなかったところが、送る前に出てきます。
-          大丈夫そうなら「このままで大丈夫そう」と返ってきます。無理に探しません。
-        </p>
-
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-          <div className="rounded-card border border-rose bg-paper p-6 shadow-card">
-            <p className="text-[11px] font-bold tracking-[0.14em] text-rose-text">BEFORE</p>
-            <p className="mt-3 rounded-card rounded-tl-[4px] bg-mist px-4 py-3.5 text-[16px] leading-[1.7]">
-              {DEMO.before}
-            </p>
-            <ul className="mt-5 flex flex-col gap-3">
-              {DEMO.says.map((s) => (
-                <li key={s.age} className="flex items-start gap-2.5">
-                  <Who age={s.age} size={30} />
-                  <span className="min-w-0">
-                    <span className="flex flex-wrap items-center gap-1.5">
-                      <span className="text-[11px] font-bold text-slate">{s.age}歳</span>
-                      <span
-                        className={`rounded-pill px-2 py-0.5 text-[10px] font-bold ${TONE[s.verdict]}`}
-                      >
-                        {label(s.verdict)}
-                      </span>
-                    </span>
-                    <span className="mt-1 block text-[13px] leading-[1.7] text-steel">{s.say}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-5 rounded-soft bg-rose-tint px-4 py-3">
-              <p className="text-[11px] font-bold text-rose-text">共通して気になったこと</p>
-              <p className="mt-1 text-[13.5px] font-bold leading-[1.7]">{DEMO.common}</p>
-            </div>
-            {DEMO.split && (
-              <p className="mt-3 text-[12px] leading-[1.7] text-steel">{DEMO.split}</p>
-            )}
-          </div>
-
-          <p aria-hidden className="justify-self-center text-[24px] text-steel lg:rotate-0">
-            →
-          </p>
-
-          <div className="rounded-card border border-ok bg-paper p-6 shadow-card">
-            <p className="text-[11px] font-bold tracking-[0.14em] text-ok-text">AFTER</p>
-            <p className="mt-3 rounded-card rounded-tl-[4px] bg-ok-tint px-4 py-3.5 text-[16px] leading-[1.7]">
-              {DEMO.after}
-            </p>
-            <div className="mt-6 border-t border-line pt-5">
-              <p className="text-[11.5px] font-bold text-steel">別の女性{DEMO.retest.of}人に、もう一度見てもらった</p>
-              <p className="mt-2.5 text-[34px] font-black tabular-nums leading-none text-ok-text">
-                {DEMO.retest.n}
-                <span className="text-steel"> / {DEMO.retest.of}</span>
-              </p>
-              <p className="mt-2 text-[14px] leading-[1.7]">{DEMO.retest.say}</p>
-            </div>
-            <p className="mt-5 text-[12px] leading-[1.75] text-steel">
-              ※ 画面の見本です。実際の回答ではありません。
-            </p>
-          </div>
-        </div>
-      </Block>
-
-      {/* 返ってくるもの。節を分けず、Before/After の下に短く置く */}
-      <section className="bg-paper">
-        <Wrap className="pb-14 sm:pb-16">
-          <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["何人がどう答えたか", "実際の人数だけ"],
-              ["みんなが気にしたところ", "何人も触れていたら、そこ"],
-              ["意見が分かれたところ", "人によって受け取り方が違う"],
-              ["書かれた言葉そのまま", "まとめだけで終わらせない"],
-            ].map(([t, d]) => (
-              <li
-                key={t}
-                className="rounded-card border border-line bg-paper px-5 py-4 shadow-card"
-              >
-                <p className="text-[13.5px] font-black leading-[1.5]">{t}</p>
-                <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">{d}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-5 max-w-[34em] text-[13px] leading-[1.9] text-steel">
-            「失敗する確率」みたいな数字は出しません。数えようがないからです。
-            出すのは「3人中2人」のような実数だけ。読んだ人がそう感じた、という話であって、
-            女性みんなの答えではありません。
-          </p>
-
-          {/* ここから料金の節まで、スマホで5画面ぶん押す場所が無かった。
-              見本を読み終えた直後がいちばん近いので、ここに1つ置く。 */}
-          <div className="mt-9 max-w-[24em]">
-            <PlanCta
-              plan={DEFAULT_PLAN}
-              from="after_demo"
-              className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-            >
-              自分のも見てもらう <span aria-hidden className="ml-2">&rarr;</span>
-            </PlanCta>
-            <p className="mt-3 text-[12.5px] text-steel">
-              ¥{entry.yen.toLocaleString()}から / 1回ごと / 匿名
-            </p>
-          </div>
-        </Wrap>
-      </section>
 
       {/* ══ 6. なぜAIではないか ══ */}
       {/* ここだけ黒い面にしている。淡い色ばかりだと、どの節も
