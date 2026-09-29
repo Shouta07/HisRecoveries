@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/lib/site";
+import StatsToggle from "@/components/brand/StatsToggle";
 
 export const metadata: Metadata = {
   title: "プライバシーポリシー・免責事項",
@@ -217,13 +218,21 @@ export default function PrivacyPage() {
             </p>
           </Section>
 
-          <Section n="10" title="アクセス解析・Cookie">
+          <Section n="10" title="アクセス解析・広告・Cookie">
             <p>
               当社はアクセス解析にプライバシー配慮型のツール
               （Plausible Analytics または Google Analytics 4）を利用する場合があります。
-              これらは Cookie 等を利用することがありますが、収集される情報は個人を
-              特定しない範囲のものです。Cookie はブラウザ設定で無効化できます。
+              また、広告の配信および効果測定のために、Google 広告・Meta（Facebook / Instagram）
+              の計測タグを利用する場合があります。これらは Cookie 等を利用することがありますが、
+              収集される情報は個人を特定しない範囲のものです。Cookie はブラウザ設定で
+              無効化できます。
             </p>
+            <p className="mt-4">
+              これらの計測は、当サイトでいつでも停止できます。停止した場合、計測タグ自体が
+              読み込まれません。ご相談の内容そのもの（お書きいただいた文面）を、広告事業者へ
+              渡すことはありません。渡すのは、購入が行われたという事実と、その金額だけです。
+            </p>
+            <StatsToggle />
           </Section>
 
           <Section n="11" title="改訂">

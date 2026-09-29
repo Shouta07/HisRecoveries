@@ -19,6 +19,8 @@ import type { Metadata, Viewport } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TabBar from "@/components/brand/TabBar";
+import Landed from "@/components/brand/Landed";
+import Tags from "@/components/brand/Tags";
 import Analytics from "@/components/Analytics";
 import SearchProvider from "@/components/search/SearchProvider";
 import { clusters } from "@/lib/clusters";
@@ -187,6 +189,10 @@ export default function RootLayout({
           <Footer areas={complexes.map((c) => ({ id: c.id, ja: c.ja }))} />
           {/* C2C の面にだけ出る下タブ。出す場所の判断は TabBar が持つ */}
           <TabBar />
+          {/* 購入率の分母。1来訪につき1回だけ数える */}
+          <Landed />
+          {/* 広告と解析のタグ。鍵を入れた分だけ動く */}
+          <Tags />
         </SearchProvider>
         <Analytics />
       </body>

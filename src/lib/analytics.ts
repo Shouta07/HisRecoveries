@@ -107,6 +107,10 @@ export const CONVERSION_EVENTS = [
   //   プラン別購入率  purchase_paid の props.plan の分布
   //   再購入率        purchase_paid の props.nth が 2 以上の割合
   //   返金率          purchase_refunded / purchase_paid
+  // 購入までの分母。1回の来訪につき1回だけ送る（props: path）。
+  // これが無いと、率の分母が広告の管理画面のクリック数しか無くなり、
+  // 「出稿を増やすか止めるか」を自分の数字で決められない。
+  "site_landed",
   "plan_viewed", // 料金を見た（props: from＝どこから）
   "plan_selected", // プランを選び直した（props: plan, from）
   "checkout_started", // 決済画面へ送った（props: plan）
@@ -268,11 +272,29 @@ export function track(event: ConversionEvent, props: Props = {}): void {
   const w = window as unknown as {
     gtag?: (...args: unknown[]) => void;
     plausible?: (name: string, opts?: { props?: Props }) => void;
+    fbq?: (...args: unknown[]) => void;
     dataLayer?: unknown[];
   };
 
   if (typeof w.gtag === "function") {
     w.gtag("event", event, payload);
+    // 購入だけは、媒体が成果として読める形でもう一度送る。
+    // 独自名のイベントは媒体の最適化に使われない。
+    if (event === "purchase_paid") {
+      const label = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
+      const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+      if (adsId && label) {
+        w.gtag("event", "conversion", {
+          send_to: `${adsId}/${label}`,
+          value: props.value,
+          currency: "JPY",
+          transaction_id: props.token ?? undefined,
+        });
+      }
+    }
+  }
+  if (event === "purchase_paid" && typeof w.fbq === "function") {
+    w.fbq("track", "Purchase", { value: props.value, currency: "JPY" });
   }
   if (typeof w.plausible === "function") {
     w.plausible(event, { props: payload });

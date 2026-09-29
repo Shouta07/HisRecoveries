@@ -205,6 +205,18 @@ export default function AskFlow() {
           <>
             <Ask>何に迷ってる？</Ask>
 
+            {/* 広告や投稿から、ここへ直接来る人がいる。
+                トップを読んでいないので、誰が読むのかと、いくらかを
+                1行だけ置く。ここが無いと、値段を知らないまま
+                3画面目まで進むことになる。 */}
+            <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] font-bold text-steel">
+              <li>実在の女性{getPlan(DEFAULT_PLAN).answers}人が読みます</li>
+              <li aria-hidden className="text-line">|</li>
+              <li className="tabular-nums">¥{getPlan(ENTRY_PLAN).yen.toLocaleString()}から</li>
+              <li aria-hidden className="text-line">|</li>
+              <li>匿名</li>
+            </ul>
+
             {/* 2回目からは、ゼロから説明させない */}
             <Continue
               onPick={(t: Thread) => {

@@ -30,7 +30,7 @@ const TABS = [
 ];
 
 /** ここでは出さない */
-const HIDE = ["/ask", "/r/", "/app", "/areas", "/articles", "/situations", "/check", "/order"];
+const HIDE = ["/ask", "/r/", "/app", "/admin", "/areas", "/articles", "/situations", "/check", "/order"];
 
 function Glyph({ name, on }: { name: string; on: boolean }) {
   const c = on ? "#0A0A0A" : "#6E6A63";

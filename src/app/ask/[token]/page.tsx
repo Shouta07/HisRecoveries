@@ -18,6 +18,7 @@ import Tashikame from "@/components/brand/Tashikame";
 import CopyLink from "@/components/ask/CopyLink";
 import HelpfulButton from "@/components/ask/HelpfulButton";
 import PayButton from "@/components/ask/PayButton";
+import PaidPing from "@/components/ask/PaidPing";
 import WhyAsked from "@/components/ask/WhyAsked";
 import LiveAnswers from "@/components/ask/LiveAnswers";
 import NextStep from "@/components/ask/NextStep";
@@ -256,6 +257,12 @@ export default async function ResultPage({
 
     return (
       <Shell>
+        {/* 支払い済みの画面に着いた。相談ごとに1回だけ数える（広告の成果にもなる） */}
+        <PaidPing
+          token={params.token}
+          plan={c.product_type ?? "unknown"}
+          yen={isPlanId(c.product_type) ? getPlan(c.product_type).yen : 0}
+        />
         <LiveAnswers token={params.token} panel={c.panel_size} />
 
         {stuck && isPlanId(c.product_type) && (
@@ -302,6 +309,12 @@ export default async function ResultPage({
 
   return (
     <Shell>
+      {/* 支払い済みの画面に着いた。相談ごとに1回だけ数える（広告の成果にもなる） */}
+      <PaidPing
+        token={params.token}
+        plan={c.product_type ?? "unknown"}
+        yen={isPlanId(c.product_type) ? getPlan(c.product_type).yen : 0}
+      />
       {c.status === "refunded" && (
         <p className="mb-7 rounded-card border border-line bg-mist px-5 py-4 text-[13.5px] leading-[1.85] text-steel">
           この相談は返金済みです。

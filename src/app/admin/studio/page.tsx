@@ -214,6 +214,16 @@ export default function StudioPage() {
           <a href={DRIVE_ROOT} target="_blank" rel="noreferrer" className="hover:text-sage-bright">
             Drive ↗
           </a>
+          {/* 毎朝ここを見る。出稿を増やすか止めるかが、この画面で決まる */}
+          <Link href="/admin/sales" className="font-bold hover:text-sage-bright">
+            販売
+          </Link>
+          <Link href="/admin/economics" className="hover:text-sage-bright">
+            採算
+          </Link>
+          <Link href="/admin/setup" className="hover:text-sage-bright">
+            準備
+          </Link>
           <Link href="/admin/insights" className="hover:text-sage-bright">
             Insights
           </Link>

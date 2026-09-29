@@ -8,7 +8,10 @@ export const metadata: Metadata = {
 
 // 上のバーは最小構成（Studio 中心）。Insights/Data/GSC/GA/Drive は Studio の中から、
 // その他ツール（Checks/Asks/Guides/Certified/Eval/Letter）は Studio 下部の「その他」から。
-const tabs = [{ href: "/admin/studio", label: "Studio" }];
+const tabs = [
+  { href: "/admin/sales", label: "販売" },
+  { href: "/admin/studio", label: "Studio" },
+];
 
 export default function AdminLayout({
   children,

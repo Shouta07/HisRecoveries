@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { track } from "@/lib/analytics";
 import { plan as getPlan, isSellable, DEFAULT_PLAN, type PlanId } from "@/lib/ask/plans";
 
@@ -28,6 +28,21 @@ export default function PayButton({
   const p = getPlan(id);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Stripe の画面から戻ってきた（＝払わずに閉じた）。
+  // ここが多いなら、止まっているのは商品ではなく決済画面の手前。
+  // 1回の来訪で1回だけ送る（戻るを何度も押されても増やさない）。
+  useEffect(() => {
+    if (!canceled) return;
+    const key = `hr_canceled_${id}`;
+    try {
+      if (sessionStorage.getItem(key) === "1") return;
+      sessionStorage.setItem(key, "1");
+    } catch {
+      return;
+    }
+    track("checkout_abandoned", { plan: id });
+  }, [canceled, id]);
 
   async function go() {
     if (busy) return;
