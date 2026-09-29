@@ -6,6 +6,7 @@ import { site } from "@/lib/site";
 import { Eyebrow, Hairline } from "@/components/brand/kit";
 import { HumanCard, type Human } from "@/components/brand/market";
 import Says from "@/components/brand/Says";
+import WhoReads from "@/components/brand/WhoReads";
 import { EMPTY } from "@/lib/tashikame";
 
 // 答えてくれる女性の一覧。マーケットプレイスの供給側。
@@ -124,6 +125,12 @@ export default async function AnswerersPage() {
             </dd>
           </div>
         </dl>
+
+        {/* 顔の代わりに、選べる条件と確認していることを出す。
+            年齢の丸バッジだけだと、本当にいるのかが伝わらない。 */}
+        <div className="mt-10 max-w-[520px]">
+          <WhoReads />
+        </div>
 
         {people.length > 0 ? (
           <>

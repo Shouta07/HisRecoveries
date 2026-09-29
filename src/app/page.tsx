@@ -14,6 +14,7 @@ import Tashikame from "@/components/brand/Tashikame";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
 import Slot from "@/components/brand/Slot";
+import WhoReads from "@/components/brand/WhoReads";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ。
@@ -759,7 +760,10 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          <OnlineCount />
+          <div className="flex flex-col gap-4">
+            <WhoReads />
+            <OnlineCount />
+          </div>
         </div>
       </Block>
 
