@@ -395,59 +395,147 @@ export default async function HomePage() {
           大丈夫そうなら「このままで大丈夫そう」と返ってきます。無理に探しません。
         </p>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-          <div className="rounded-card border border-rose bg-paper p-6 shadow-card">
-            <p className="text-[11px] font-bold tracking-[0.14em] text-rose-text">相談前</p>
-            <p className="mt-3 rounded-card rounded-tl-[4px] bg-mist px-4 py-3.5 text-[16px] leading-[1.7]">
-              {DEMO.before}
-            </p>
-            {/* 一人ひとりの言葉は、いちばん上のカードで出している。
-                ここで同じものをもう一度並べると、どちらも弱くなる。
-                この節は「何が変わったか」だけを見せる。 */}
-            <ul className="mt-4 flex flex-wrap items-center gap-2">
-              {(["change", "slight", "as_is"] as const)
-                .map((v) => ({ v, n: count(DEMO, v) }))
-                .filter((x) => x.n > 0)
-                .map((x) => (
-                  <li
-                    key={x.v}
-                    className={`rounded-pill px-3 py-1.5 text-[12px] font-bold ${TONE[x.v]}`}
-                  >
-                    {label(x.v)} {x.n}人
+        {/* 渡された案を、そのままの形で。
+            写真は2枚とも同じ撮影のもの（hero = 考えている、heroTall = 決まった）。
+            人を合成したり、表情を作ったりはしていない。 */}
+        <div className="mt-8 grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1fr] lg:gap-5">
+          {/* ── 相談前 ── */}
+          <div className="overflow-hidden rounded-card border border-line bg-mist shadow-card">
+            <div className="relative">
+              <Slot name="hero" rounded="" position="center 22%" className="h-[190px] w-full" />
+              <span className="absolute left-4 top-4 rounded-soft bg-slate/85 px-3.5 py-1.5 text-[13px] font-black text-paper">
+                相談前
+              </span>
+              {/* 手が止まっているときの、頭の中 */}
+              <span className="absolute bottom-4 right-4 max-w-[62%] rounded-card rounded-br-[4px] bg-paper/95 px-3.5 py-2 text-[12.5px] font-bold leading-[1.6] text-slate shadow-card">
+                これで送っていいのかな…
+              </span>
+            </div>
+
+            <div className="p-4 sm:p-5">
+              <div className="flex items-end gap-2.5">
+                <p className="min-w-0 flex-1 rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[13.5px] leading-[1.7] text-slate">
+                  {DEMO.before}
+                </p>
+                <span
+                  aria-hidden
+                  className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-steel/35 text-paper"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
+                  </svg>
+                </span>
+              </div>
+
+              <ul className="mt-4 flex flex-col gap-2">
+                {["重くないかな…？", "この言い方で大丈夫…？", "変に思われないかな…？"].map((t) => (
+                  <li key={t} className="flex items-center gap-2.5 text-[13px] text-steel">
+                    <span
+                      aria-hidden
+                      className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-steel/25 text-paper"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    {t}
                   </li>
                 ))}
-            </ul>
-            <div className="mt-5 rounded-soft bg-rose-tint px-4 py-3">
-              <p className="text-[11px] font-bold text-rose-text">共通して気になったこと</p>
-              <p className="mt-1 text-[13.5px] font-bold leading-[1.7]">{DEMO.common}</p>
+              </ul>
             </div>
-            {DEMO.split && (
-              <p className="mt-3 text-[12px] leading-[1.7] text-steel">{DEMO.split}</p>
-            )}
           </div>
 
-          <p aria-hidden className="justify-self-center text-[24px] text-steel lg:rotate-0">
-            →
+          <p
+            aria-hidden
+            className="justify-self-center self-center text-[26px] font-black text-brand lg:text-[30px]"
+          >
+            <span className="lg:hidden">&darr;</span>
+            <span className="hidden lg:inline">&rarr;</span>
           </p>
 
-          <div className="rounded-card border border-ok bg-paper p-6 shadow-card">
-            <p className="text-[11px] font-bold tracking-[0.14em] text-ok-text">相談後</p>
-            <p className="mt-3 rounded-card rounded-tl-[4px] bg-ok-tint px-4 py-3.5 text-[16px] leading-[1.7]">
-              {DEMO.after}
-            </p>
-            <div className="mt-6 border-t border-line pt-5">
-              <p className="text-[11.5px] font-bold text-steel">別の女性{DEMO.retest.of}人に、もう一度見てもらった</p>
-              <p className="mt-2.5 text-[34px] font-black tabular-nums leading-none text-ok-text">
-                {DEMO.retest.n}
-                <span className="text-steel"> / {DEMO.retest.of}</span>
-              </p>
-              <p className="mt-2 text-[14px] leading-[1.7]">{DEMO.retest.say}</p>
+          {/* ── 相談後 ── */}
+          <div className="overflow-hidden rounded-card border border-brand bg-brand-tint shadow-card">
+            <div className="relative">
+              <Slot name="heroTall" rounded="" position="center 24%" className="h-[190px] w-full" />
+              <span className="absolute left-4 top-4 rounded-soft bg-brand px-3.5 py-1.5 text-[13px] font-black text-paper">
+                相談後
+              </span>
+              <span className="absolute bottom-4 right-4 max-w-[62%] rounded-card rounded-br-[4px] bg-paper/95 px-3.5 py-2 text-[12.5px] font-bold leading-[1.6] text-brand-deep shadow-card">
+                反応を確かめたうえで、送れる
+              </span>
             </div>
-            <p className="mt-5 text-[12px] leading-[1.75] text-steel">
-              ※ 画面の見本です。実際の回答ではありません。
-            </p>
+
+            <div className="p-4 sm:p-5">
+              <div className="flex items-end gap-2.5">
+                <p className="min-w-0 flex-1 rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[13.5px] font-bold leading-[1.7] text-slate">
+                  {DEMO.after}
+                </p>
+                <span
+                  aria-hidden
+                  className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-paper"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
+                  </svg>
+                </span>
+              </div>
+
+              <ul className="mt-4 flex flex-col gap-2">
+                {[
+                  "自然な言い方が分かった",
+                  "女性の反応を確かめられた",
+                  "迷わずに送れる",
+                ].map((t) => (
+                  <li key={t} className="flex items-center gap-2.5 text-[13px] font-bold text-slate">
+                    <span
+                      aria-hidden
+                      className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand text-paper"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
+
+        {/* 何をもとに直したのか。数は demo.ts の中で数え直している */}
+        <div className="mt-5 rounded-card border border-line bg-paper px-5 py-4 shadow-card">
+          <ul className="flex flex-wrap items-center gap-2">
+            {(["change", "slight", "as_is"] as const)
+              .map((v) => ({ v, n: count(DEMO, v) }))
+              .filter((x) => x.n > 0)
+              .map((x) => (
+                <li
+                  key={x.v}
+                  className={`rounded-pill px-3 py-1.5 text-[12px] font-bold ${TONE[x.v]}`}
+                >
+                  {label(x.v)} {x.n}人
+                </li>
+              ))}
+          </ul>
+          <p className="mt-3 text-[13.5px] font-bold leading-[1.7] text-slate">
+            共通して気になったこと：{DEMO.common}
+          </p>
+          {DEMO.split && (
+            <p className="mt-1.5 text-[12.5px] leading-[1.7] text-steel">{DEMO.split}</p>
+          )}
+          <p className="mt-3 border-t border-line pt-3 text-[13px] leading-[1.7] text-steel">
+            直した案を別の女性{DEMO.retest.of}人に見てもらったところ、
+            <span className="font-black text-ok-text">
+              {DEMO.retest.n} / {DEMO.retest.of}
+            </span>
+            が「{DEMO.retest.say.replace(/^\d+人とも「|」と答えました$/g, "")}」と答えました。
+          </p>
+        </div>
+
+        <p className="mt-4 text-[12px] leading-[1.75] text-steel">
+          ※ 写真はイメージ、文面と回答は画面の見本です。実際の相談ではありません。
+        </p>
       </Block>
 
       {/* 返ってくるもの。節を分けず、Before/After の下に短く置く */}
