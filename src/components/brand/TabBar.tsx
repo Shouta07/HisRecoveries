@@ -24,8 +24,8 @@ import Tashikame from "./Tashikame";
 
 const TABS = [
   { href: "/", label: "ホーム" },
-  { href: "/answerers", label: "さがす" },
-  { href: "/ask", label: "聞く", primary: true },
+  { href: "/answerers", label: "誰が読む" },
+  { href: "/ask", label: "通す", primary: true },
   { href: "/mine", label: "自分" },
 ];
 
@@ -36,7 +36,7 @@ function Glyph({ name, on }: { name: string; on: boolean }) {
   const c = on ? "#0A0A0A" : "#6E6A63";
   const d: Record<string, React.ReactNode> = {
     ホーム: <path d="M4 10.5 12 4l8 6.5V20h-5v-5H9v5H4z" />,
-    さがす: (
+    誰が読む: (
       <>
         <circle cx="11" cy="11" r="6" />
         <path d="M15.5 15.5 20 20" />

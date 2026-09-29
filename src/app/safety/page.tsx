@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NAME, OPERATOR } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { PLANS } from "@/lib/ask/plans";
@@ -20,9 +21,11 @@ import { Eyebrow, Hairline } from "@/components/brand/kit";
 // 読ませるために書く。条文を並べない。
 
 export const metadata: Metadata = {
-  title: "安全と、いまできないこと — His Recoveries",
+  // 記事側のテンプレート（%s — His Recoveries）を使わない。
+  // プロダクトの名乗りはタシカメなので、ここで完結させる。
+  title: { absolute: "安全と、いまできないこと — タシカメ" },
   description:
-    "匿名の扱い、扱わない相談、個人情報の伏せ方、料金、いまの制約。His Recoveries が何をして、何をしないか。",
+    "匿名の扱い、扱わない相談、個人情報の伏せ方、料金、いまの制約。タシカメが何をして、何をしないか。",
   alternates: { canonical: `${site.url}/safety` },
 };
 
@@ -232,7 +235,7 @@ export default function SafetyPage() {
             His Recoveries
           </Link>
           <p className="text-[11.5px] text-steel">
-            © 2026 His Recoveries — Real people. Real reactions.
+            © 2026 {OPERATOR}
           </p>
         </div>
       </footer>

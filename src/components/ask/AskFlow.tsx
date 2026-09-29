@@ -18,7 +18,9 @@ import {
 import AskAssist from "@/components/ask/AskAssist";
 import AvailableNow from "@/components/ask/AvailableNow";
 import { track } from "@/lib/analytics";
-import { add as rememberAsk } from "@/lib/myasks";
+import { add as rememberAsk, cleanThreadLabel, type Thread } from "@/lib/myasks";
+import Continue from "@/components/ask/Continue";
+import { isStepId, step as getStep } from "@/lib/ask/journey";
 
 // 相談を出す。
 //
@@ -84,7 +86,14 @@ export default function AskFlow() {
   const [relation, setRelation] = useState<RelationId | null>(null);
   const [askedAi, setAskedAi] = useState<boolean | null>(null);
 
-  const [assist, setAssist] = useState(false);
+  // ヒーローの「うまく書けない」から来たら、最初から開いておく。
+  const [assist, setAssist] = useState(params.get("assist") === "1");
+  // 恋愛のどこで悩んでいるか。トップから来たときは決まっている。
+  const seededStep = params.get("step");
+  const [stepId] = useState(isStepId(seededStep) ? seededStep : null);
+  // 同じ相手についての相談をまとめる。相手の情報は持たない。
+  const [thread, setThread] = useState<string | null>(null);
+  const [threadLabel, setThreadLabel] = useState("");
   const [openMore, setOpenMore] = useState(false);
   const [openPlan, setOpenPlan] = useState(false);
   const [sending, setSending] = useState(false);
@@ -126,6 +135,8 @@ export default function AskFlow() {
         body: JSON.stringify({
           category: cat, isAb, body: text, optionA: a, optionB: b,
           askerAge, otherAge, relation, panelAge, panelAttrs, askedAi,
+          // 恋愛のどの段階か。相手の情報ではないので保存してよい。
+          step: stepId,
           // 金額は送らない。プランIDだけ。
           plan: planId,
         }),
@@ -139,7 +150,16 @@ export default function AskFlow() {
       }
 
       track("ask_submitted", { category: cat ?? "none", plan: planId, ab: isAb });
-      if (cat) rememberAsk({ token: json.token, category: cat, size: p.answers });
+      if (cat) {
+        rememberAsk({
+          token: json.token,
+          category: cat,
+          size: p.answers,
+          step: stepId ?? undefined,
+          // まとまりのラベルは端末の中だけ。サーバーには送らない。
+          thread: cleanThreadLabel(thread ?? undefined),
+        });
+      }
 
       // 支払いへ。作れなかったときは相談の画面へ送る。
       // そこに「お支払いへ進む」と、進めない理由が出る。
@@ -181,6 +201,28 @@ export default function AskFlow() {
         {i === 0 && (
           <>
             <Ask>何に迷ってる？</Ask>
+
+            {/* 2回目からは、ゼロから説明させない */}
+            <Continue
+              onPick={(t: Thread) => {
+                setThread(t.id);
+                setThreadLabel(t.label);
+              }}
+            />
+
+            {thread && (
+              <p className="mt-3 rounded-soft bg-brand-tint px-3.5 py-2.5 text-[12.5px] leading-[1.75] text-slate">
+                「{threadLabel}」の続きとして相談します。
+                前回までの相談は、回答する方には渡していません。
+              </p>
+            )}
+
+            {stepId && (
+              <p className="mt-3 text-[12.5px] text-steel">
+                {getStep(stepId).label}の段階として受け取ります。
+              </p>
+            )}
+
             <div className="mt-6 grid grid-cols-2 gap-2.5">
               {CATEGORIES.map((c) => (
                 <button

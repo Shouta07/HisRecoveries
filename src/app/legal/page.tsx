@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NAME, OPERATOR } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { LEGAL, missingLegal } from "@/lib/legal";
@@ -11,7 +12,9 @@ import Tashikame from "@/components/brand/Tashikame";
 // 埋めた気になると、決済だけ先に開いてしまう。
 
 export const metadata: Metadata = {
-  title: "特定商取引法に基づく表記 — His Recoveries",
+  // 記事側のテンプレート（%s — His Recoveries）を使わない。
+  // プロダクトの名乗りはタシカメなので、ここで完結させる。
+  title: { absolute: "特定商取引法に基づく表記 — タシカメ" },
   alternates: { canonical: `${site.url}/legal` },
   robots: { index: true, follow: true },
 };
@@ -25,7 +28,7 @@ export default function LegalPage() {
         <div className="mx-auto flex w-full max-w-[760px] items-center justify-between gap-4 px-5 py-3.5 sm:px-8">
           <Link href="/" className="flex items-center gap-2.5">
             <Tashikame size={28} />
-            <span className="whitespace-nowrap text-[15px] font-black">His Recoveries</span>
+            <span className="whitespace-nowrap text-[16px] font-black">{NAME}</span>
           </Link>
           <Link
             href="/safety"
@@ -86,7 +89,7 @@ export default function LegalPage() {
           <Link href="/" className="text-[15px] font-black">
             His Recoveries
           </Link>
-          <p className="text-[12px] text-steel">© 2026 His Recoveries</p>
+          <p className="text-[12px] text-steel">© 2026 {OPERATOR}</p>
         </div>
       </footer>
     </div>

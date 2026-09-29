@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { Eyebrow, ReactionCard, Hairline } from "@/components/brand/kit";
 import Reveal from "@/components/brand/Reveal";
+import { Suspense } from "react";
 import JoinForm from "@/components/ask/JoinForm";
 
 // 回答する側の入口。
@@ -22,7 +24,9 @@ import JoinForm from "@/components/ask/JoinForm";
 // この3つを、フォームより前に書く。
 
 export const metadata: Metadata = {
-  title: "回答する — His Recoveries",
+  // 記事側のテンプレート（%s — His Recoveries）を使わない。
+  // プロダクトの名乗りはタシカメなので、ここで完結させる。
+  title: { absolute: "回答する — タシカメ" },
   description:
     "あなたの感覚が、誰かの判断材料になる。匿名で、1件1〜2分。専門家でなくて構いません。",
   alternates: { canonical: `${site.url}/join` },
@@ -163,7 +167,11 @@ export default function JoinPage() {
           </Reveal>
 
           <div className="mt-12">
-            <JoinForm />
+            {/* JoinForm は ?ref= を読む。
+                読む側を Suspense で包まないと、この面が事前生成できない。 */}
+            <Suspense fallback={<div className="h-[520px]" />}>
+              <JoinForm />
+            </Suspense>
           </div>
 
           <div className="mt-14">
@@ -185,7 +193,7 @@ export default function JoinPage() {
         <div className="mx-auto flex w-full max-w-[900px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
           <div className="flex items-baseline gap-6">
             <Link href="/" className="text-[15px] font-black">
-              His Recoveries
+              {NAME}
             </Link>
             <Link href="/safety" className="text-[12px] text-steel transition-colors hover:text-slate">
               安全とできないこと

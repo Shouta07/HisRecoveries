@@ -738,3 +738,83 @@ group by responder_id;
 -- 条件を広げて続行した時刻。二度広げない／広げた事実を残すため。
 alter table consultations add column if not exists widened_at timestamptz;
 -- 一部だけ返金した状態。payments.payment_status に partially_refunded が入る。
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 回答者が友達を呼ぶ
+--
+-- 相談する側には紹介を置かない。使う瞬間が恥ずかしい瞬間なので、
+-- 人に言わない。回答する側は言える（空いた2分で180円）。
+-- そして供給が増えることが、このサービスが速くなる唯一の道。
+--
+-- 登録しただけでは払わない。実際に5件答えてから、二人に払う。
+-- ═══════════════════════════════════════════════════════════════
+
+-- 回答者ひとりに1つ渡す鍵。自分の画面を開くために使う。
+alter table responders add column if not exists token text unique;
+-- 友達に渡すコード。短い。これ単体では何もできない。
+alter table responders add column if not exists referral_code text unique;
+-- 誰から来たか
+alter table responders add column if not exists referred_by uuid
+  references responders(id) on delete set null;
+-- 紹介が成立したか（5件答えた時点で立てる）
+alter table responders add column if not exists referral_paid_at timestamptz;
+
+create index if not exists responders_referred_by_idx on responders (referred_by);
+
+-- 紹介の実績。呼んだ人の画面に出す。
+create or replace view responder_referrals as
+select
+  r.referred_by as inviter_id,
+  count(*) as invited,
+  count(*) filter (where r.referral_paid_at is not null) as completed
+from responders r
+where r.referred_by is not null
+group by r.referred_by;
+
+-- ═══════════════════════════════════════════════════════════════
+-- A/B の結果だけ、共有できるようにする
+--
+-- 相談の鍵（c...）は、その相談の持ち主の鍵。これを共有させない。
+-- 共有したら、相談の全文も次の操作もすべて渡すことになる。
+--
+-- 共有用に別の鍵を作る。開けるのは A と B の割れ方と、
+-- ひとことのコメントだけ。本文も、誰が聞いたかも出ない。
+-- ═══════════════════════════════════════════════════════════════
+
+create table if not exists shares (
+  id uuid primary key default gen_random_uuid(),
+  consultation_id uuid not null references consultations(id) on delete cascade,
+  token text unique not null,         -- 共有用（s + 32文字）
+  revoked_at timestamptz,             -- 取り消したら開かなくなる
+  views int not null default 0,
+  created_at timestamptz default now()
+);
+
+create index if not exists shares_consultation_idx on shares (consultation_id);
+
+-- 共有面に出してよいものだけを集めたビュー。
+-- 本文・選択肢の中身・相談の鍵は、ここに含めない。
+create or replace view share_public as
+select
+  s.token,
+  s.revoked_at,
+  c.id as consultation_id,
+  c.is_ab,
+  c.panel_size,
+  c.category
+from shares s
+join consultations c on c.id = s.consultation_id
+where c.is_ab = true;
+
+
+-- 恋愛のどの段階の相談か。
+-- before / matched / before_meet / date / deeper
+--
+-- 単発の相談の集合ではなく、プロセスとして見るために持つ。
+-- どの段階でいちばん人に聞かれるのかが、ここでしか分からない。
+--
+-- 相手の情報は持たない（名前もアプリ名も保存しない）。
+-- 同じ相手をまとめるラベルは、利用者の端末の中だけに置く。
+alter table consultations add column if not exists journey_step text;
+create index if not exists consultations_step_idx on consultations (journey_step, created_at desc);

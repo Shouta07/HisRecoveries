@@ -21,6 +21,8 @@ export default function PlanCta({
   from,
   children,
   category,
+  step,
+  assist = false,
   className = "",
 }: {
   plan: PlanId;
@@ -28,16 +30,22 @@ export default function PlanCta({
   from: string;
   children: ReactNode;
   category?: string;
+  /** 恋愛のどの段階から入ったか */
+  step?: string;
+  /** 質問を書く画面で「一緒に整理する」を開いた状態から始める */
+  assist?: boolean;
   className?: string;
 }) {
-  const href = category
-    ? `/ask?c=${encodeURIComponent(category)}&plan=${plan}`
-    : `/ask?plan=${plan}`;
+  const q = new URLSearchParams({ plan });
+  if (category) q.set("c", category);
+  if (step) q.set("step", step);
+  if (assist) q.set("assist", "1");
+  const href = `/ask?${q.toString()}`;
 
   return (
     <Link
       href={href}
-      onClick={() => track("plan_viewed", { plan, from })}
+      onClick={() => track(step ? "step_picked" : "plan_viewed", { plan, from, ...(step ? { step } : {}) })}
       // 文字色は呼ぶ側が決める。面が青のときと白のときで逆になるので、
       // ここで既定を持つと、どちらかが必ず読めなくなる。
       className={`inline-flex min-h-[52px] items-center justify-center font-bold transition-shadow hover:shadow-card-hover ${className}`}

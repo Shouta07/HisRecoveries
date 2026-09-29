@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
@@ -16,28 +17,30 @@ import PlanCta from "@/components/brand/PlanCta";
 // 受付前のものだけ見せて帰す画面にしない。
 
 export const metadata: Metadata = {
-  title: "人と話す — His Recoveries",
+  // 記事側のテンプレート（%s — His Recoveries）を使わない。
+  // プロダクトの名乗りはタシカメなので、ここで完結させる。
+  title: { absolute: "人と話す — タシカメ" },
   description:
-    "まだ、うまく言葉になってなくてもいい。実在する女性と話しながら、何に迷っているのかを見つける。いまは順番待ちのみ受け付けています。",
+    "まだ、うまく言葉になってなくてもいい。審査を通った女性と話しながら、何に迷っているのかを見つける。いまは順番待ちのみ受け付けています。",
   alternates: { canonical: `${site.url}/talk` },
 };
 
 export default function TalkPage() {
-  const talk = getPlan("talk");
+  const talk = getPlan("call");
 
   return (
     <div data-brand className="min-h-screen bg-paper text-slate">
       <header className="border-b border-line bg-paper">
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3.5 sm:px-10">
-          <Link href="/" className="truncate text-[15px] font-black">
-            His Recoveries
+          <Link href="/" className="truncate text-[16px] font-black">
+            {NAME}
           </Link>
           <PlanCta
             plan={ENTRY_PLAN}
             from="talk_page"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            今すぐ聞く
+            女性5人の目を通す
           </PlanCta>
         </div>
       </header>
@@ -54,7 +57,7 @@ export default function TalkPage() {
         </h1>
 
         <p className="mt-6 text-[16px] leading-[1.95] text-steel">
-          実在する女性と話しながら、状況をそのまま話して、相手側から聞かれて、
+          審査を通った女性と話しながら、状況をそのまま話して、相手側から聞かれて、
           自分が何に迷っているのかを見つける。そういう使い方です。
         </p>
 
@@ -85,7 +88,7 @@ export default function TalkPage() {
           </p>
 
           <p className="mt-6 text-[14px] leading-[1.9] text-steel">
-            まだ受け付けていません。相手も実在の人なので、時間の決め方と、
+            まだ受け付けていません。相手も実在の女性なので、時間の決め方と、
             その場を見る体制が用意できてから開きます。
             先に売って、あとから体制を整えることはしません。
           </p>

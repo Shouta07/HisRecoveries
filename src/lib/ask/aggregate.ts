@@ -46,7 +46,12 @@ export type Tally = {
 };
 
 /** 「かなり良い」「良い」を前向き、「微妙」「やめた方がいい」を後ろ向きに寄せる */
-const POSITIVE: Verdict[] = ["good", "ok"];
+// 「このままでOK」だけを、直さなくていい側として数える。
+//
+// 「少し気になる」を良い側に入れてはいけない。
+// 引っかかったところがある、と言われているのに
+// 「4/5が好印象」と出すと、いちばん要る情報が消える。
+const POSITIVE: Verdict[] = ["as_is"];
 
 export function tally(answers: Answer[], isAb: boolean): Tally {
   const total = answers.length;
@@ -123,20 +128,20 @@ function headline(total: number, top: Tally["top"], split: boolean): string {
     attrs: [],
   });
 
-  const all = tally([mk("good"), mk("good"), mk("good")], false);
-  if (all.headline !== "3人全員が「かなり良い」でした。") {
+  const all = tally([mk("as_is"), mk("as_is"), mk("as_is")], false);
+  if (all.headline !== "3人全員が「このままでOK」でした。") {
     throw new Error(`全員一致の文が違います: ${all.headline}`);
   }
   if (all.split) throw new Error("全員一致なのに、割れていることになっています");
 
-  const mixed = tally([mk("good"), mk("good"), mk("stop")], false);
+  const mixed = tally([mk("as_is"), mk("as_is"), mk("change")], false);
   if (!mixed.split) throw new Error("前向きと後ろ向きが混ざっているのに、割れていません");
   if (!mixed.headline.includes("3人中2人")) {
     throw new Error(`多数派の数え方が違います: ${mixed.headline}`);
   }
 
   // 同数のときに、どちらかを多数派にしない
-  const tie = tally([mk("good"), mk("stop")], false);
+  const tie = tally([mk("as_is"), mk("change")], false);
   if (tie.top !== null) throw new Error("同数なのに多数派を作っています");
   if (!tie.headline.includes("分かれました")) {
     throw new Error(`同数のときの文が違います: ${tie.headline}`);
@@ -149,10 +154,10 @@ function headline(total: number, top: Tally["top"], split: boolean): string {
   if (tally([], false).total !== 0) throw new Error("0件の扱いが違います");
 
   // 2つ目の問いは、誰も答えていなければ欄ごと出さない。
-  if (tally([mk("good"), mk("ok")], false).second !== null) {
+  if (tally([mk("as_is"), mk("slight")], false).second !== null) {
     throw new Error("誰も答えていない2つ目の問いを、集計してしまっています");
   }
-  const sec = tally([mk("good", null, "yes"), mk("ok", null, "yes"), mk("meh", null, "no")], false).second;
+  const sec = tally([mk("as_is", null, "yes"), mk("slight", null, "yes"), mk("change", null, "no")], false).second;
   if (!sec || sec.yes !== 2 || sec.no !== 1 || sec.total !== 3) {
     throw new Error("2つ目の問いの数え方が違います");
   }

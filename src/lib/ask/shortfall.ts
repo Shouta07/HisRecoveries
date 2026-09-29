@@ -95,12 +95,12 @@ export function needsChoice(paidAt: string | null, got: number, want: number): b
 
   // 全額返金の選択肢が、必ずあること。
   // ここを外すと、返してもらえない設計になる。
-  const c = choices("final_check", 3, 5);
+  const c = choices("standard", 3, 5);
   if (!c.some((x) => x.id === "full")) {
     throw new Error("全額返金の選択肢がありません");
   }
   // 1件も無いのに「集まった分を受け取る」を出さないこと。
-  if (choices("final_check", 0, 5).some((x) => x.id === "partial")) {
+  if (choices("standard", 0, 5).some((x) => x.id === "partial")) {
     throw new Error("0件なのに「集まった分を受け取る」が出ています");
   }
 }

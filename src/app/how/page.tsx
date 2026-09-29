@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { PLANS, FLOW, ENTRY_PLAN } from "@/lib/ask/plans";
@@ -17,7 +18,9 @@ import PlanCta from "@/components/brand/PlanCta";
 // 「誰が、どうやって答えるのか」は、探せば必ず出てくる場所に要る。
 
 export const metadata: Metadata = {
-  title: "仕組み — His Recoveries",
+  // 記事側のテンプレート（%s — His Recoveries）を使わない。
+  // プロダクトの名乗りはタシカメなので、ここで完結させる。
+  title: { absolute: "仕組み — タシカメ" },
   description:
     "誰が答えるのか。どうやって届くのか。AIは何に使っているのか。His Recoveries の裏側をまとめています。",
   alternates: { canonical: `${site.url}/how` },
@@ -50,14 +53,14 @@ export default function HowPage() {
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3.5 sm:px-10">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
             <Tashikame size={26} />
-            <span className="truncate text-[14.5px] font-black">His Recoveries</span>
+            <span className="truncate text-[16px] font-black">{NAME}</span>
           </Link>
           <PlanCta
             plan={ENTRY_PLAN}
             from="how"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            人に聞いてみる
+            女性5人の目を通す
           </PlanCta>
         </div>
       </header>
@@ -65,17 +68,17 @@ export default function HowPage() {
       <div className="mx-auto w-full max-w-[860px] px-5 pb-24 pt-12 sm:px-10">
         <h1 className="text-huge font-black">仕組み。</h1>
         <p className="mt-6 max-w-[32em] text-[16px] leading-[1.95] text-steel">
-          本番の前に、相手に近い実在の人に見てもらうサービスです。
-          誰が答えるのか、どうやって届くのか、AIを何に使っているのかをまとめています。
+          出す前に、相手に近い女性の目を通すサービスです。
+          誰が読むのか、どうやって届くのか、AIを何に使っているのかをまとめています。
         </p>
 
         <div className="mt-14 flex flex-col gap-12">
           <Sec title="何をしているサービスか">
             <p>
-              聞きたいことを預かって、条件に合う実在の人に見てもらい、
-              その反応をまとめてお返ししています。
+              出す直前のものを預かって、条件に合う女性に読んでもらい、
+              その所見をまとめてお返ししています。
               相談に乗るサービスではありません。答えを出すサービスでもありません。
-              出すのは、実際の人がどう感じたかだけです。
+              出すのは、相手側に近い女性がどう受け取ったかだけです。
             </p>
             <p>
               判断はあなたがします。こちらは「こうすべき」とは書きません。
@@ -107,10 +110,20 @@ export default function HowPage() {
             </p>
           </Sec>
 
-          <Sec title="誰が答えるのか">
+          <Sec title="誰が読むのか">
             <p>
-              専門家ではありません。本人確認と年齢確認を済ませた、ふつうの人です。
-              その人の年齢・経験・いまの立場・感覚そのものが、判断の材料になります。
+              読むのは女性です。研究者でもカウンセラーでもありません。
+              ただし、登録すれば読めるようにはしていません。
+              年齢と立場を確認し、通った方にだけ依頼をお送りしています。
+            </p>
+            <p>
+              なぜ女性でなければならないか。相手本人には聞けないからです。
+              友達の女性は、あなたを知っているぶん気を使います。AIは女性ではありません。
+              相手と同じ側に立っていて、あなたを知らない。その両方が要ります。
+            </p>
+            <p>
+              年齢・経験・いまの立場・感じ方そのものが、判断の材料になります。
+              だからこそ、誰が読むのかを選べることに意味があります。
             </p>
             <p>
               登録しただけでは相談は届きません。確認が済んだ方にだけお送りしています。
@@ -219,7 +232,7 @@ export default function HowPage() {
             from="how_bottom"
             className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
           >
-            人に聞いてみる
+            女性5人の目を通す
           </PlanCta>
         </div>
       </div>

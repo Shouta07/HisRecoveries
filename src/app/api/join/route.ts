@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbInsertReturning, dbAdminEnabled, parseAttribution } from "@/lib/db";
+import { dbInsertReturning, dbSelect, dbAdminEnabled, parseAttribution } from "@/lib/db";
+import { makeResponderToken, makeReferralCode, isReferralCode } from "@/lib/ask/token";
 import {
   RESPONDER_AGES, isResponderAge, cleanResponderAttrs, isArea, isCategoryId,
 } from "@/lib/ask/model";
@@ -75,6 +76,17 @@ export async function POST(req: NextRequest) {
 
   const attribution = parseAttribution(req);
 
+  // 誰から来たか。コードが合わなければ、ただ無視する
+  // （間違ったコードで登録そのものを止めない）。
+  let referredBy: string | null = null;
+  if (isReferralCode(body.ref)) {
+    const inviter = await dbSelect<{ id: string; active: boolean }>(
+      `responders?referral_code=eq.${encodeURIComponent(body.ref)}&select=id,active&limit=1`,
+    );
+    // 呼べるのは、実際に答えている人だけ。
+    if (inviter[0]?.active) referredBy = inviter[0].id;
+  }
+
   const ins = await dbInsertReturning("responders", {
     display_age_band: age,
     attrs: cleanResponderAttrs(body.attrs),
@@ -87,6 +99,11 @@ export async function POST(req: NextRequest) {
     note: str(body.note, NOTE_MAX),
     // 運営が確かめるまで配らない。
     active: false,
+    // 自分の画面を開く鍵と、友達を呼ぶコード。
+    // 登録した時点で作る（あとから配るより、経路が1つで済む）。
+    token: makeResponderToken(),
+    referral_code: makeReferralCode(),
+    referred_by: referredBy,
     utm_source: attribution.utm_source ?? null,
   });
 

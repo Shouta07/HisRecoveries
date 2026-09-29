@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
@@ -21,6 +22,7 @@ import WhyAsked from "@/components/ask/WhyAsked";
 import LiveAnswers from "@/components/ask/LiveAnswers";
 import NextStep from "@/components/ask/NextStep";
 import Shortfall from "@/components/ask/Shortfall";
+import ShareAb from "@/components/ask/ShareAb";
 import { needsChoice } from "@/lib/ask/shortfall";
 
 // 結果 — Human Reaction Report。
@@ -99,7 +101,7 @@ function Shell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3.5 sm:px-10">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
             <Tashikame size={26} />
-            <span className="truncate text-[14.5px] font-black">His Recoveries</span>
+            <span className="truncate text-[15.5px] font-black">{NAME}</span>
           </Link>
           <Link
             href="/ask"
@@ -293,7 +295,7 @@ export default async function ResultPage({
     .map((x) => ({
       label: x.label,
       n: x.n,
-      positive: c.is_ab ? x.id === "a" : x.id === "good" || x.id === "ok",
+      positive: c.is_ab ? x.id === "a" : x.id === "as_is",
     }));
   const good = slices.filter((s) => s.positive);
   const bad = slices.filter((s) => !s.positive);
@@ -402,7 +404,7 @@ export default async function ResultPage({
             {list.map((a) => {
               const positive = c.is_ab
                 ? a.pick === "a"
-                : a.verdict === "good" || a.verdict === "ok";
+                : a.verdict === "as_is";
               const verdictLabel =
                 (c.is_ab ? t.byPick : t.byVerdict).find(
                   (x) => x.id === (c.is_ab ? a.pick : a.verdict),
@@ -441,6 +443,21 @@ export default async function ResultPage({
             押さなくても構いません。未評価は割合の計算に入れていません。
           </p>
         </section>
+      )}
+
+      {/* A/B のときだけ共有を出す。
+          「このLINE、送っていい？」は晒せない（本文が本人のものだから）。
+          「この2枚、5人中4人がB」は晒せる。
+          晒せないものに共有ボタンを出すと、押した人が後悔する。 */}
+      {c.is_ab && t.total > 0 && (
+        <ShareAb
+          token={params.token}
+          a={t.byPick.find((x) => x.id === "a")?.n ?? 0}
+          b={t.byPick.find((x) => x.id === "b")?.n ?? 0}
+          total={t.total}
+          labelA={t.byPick.find((x) => x.id === "a")?.label ?? "A"}
+          labelB={t.byPick.find((x) => x.id === "b")?.label ?? "B"}
+        />
       )}
 
       {/* 次、どうする？ 押し売りにしない。何も買わない選択肢が最初に来る */}
