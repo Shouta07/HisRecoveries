@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   // プロダクトの名乗りはタシカメなので、ここで完結させる。
   title: { absolute: "誰が読むのか — タシカメ" },
   description:
-    "読むのは、審査を通った方だけです。年齢と立場を確認し、通った方にだけ依頼をお送りしています。名前や連絡先は出しません。",
+    "読むのは、審査を通った女性だけです。年齢と立場を確認し、通った方にだけ依頼をお送りしています。名前や連絡先は出しません。",
   alternates: { canonical: `${site.url}/answerers` },
 };
 
@@ -85,7 +85,7 @@ export default async function AnswerersPage() {
             href="/ask"
             className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
           >
-            5人の目を通す
+            女性5人の目を通す
           </Link>
         </div>
       </header>
@@ -93,7 +93,7 @@ export default async function AnswerersPage() {
       <div className="mx-auto w-full max-w-[1180px] px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
         <Eyebrow>誰が読むのか</Eyebrow>
         <h1 className="mt-6 max-w-[14em] text-huge font-black text-slate">
-          誰でも
+          どの女性でも
           <br />
           読めるわけではない。
         </h1>
@@ -101,6 +101,10 @@ export default async function AnswerersPage() {
           登録すれば読めるようにはしていません。
           年齢と立場を確認し、通った方にだけ依頼をお送りしています。
           名前も連絡先も出しません。出す仕組み自体を作っていません。
+        </p>
+        <p className="mt-5 max-w-[31em] text-[15px] leading-[1.95] text-steel">
+          相手本人には聞けません。友達の女性は、あなたを知っているぶん気を使います。
+          相手と同じ側に立っていて、あなたを知らない。その両方が揃う人にだけ、お願いしています。
         </p>
 
         {/* 審査の実績。作らない。0なら0と出す */}

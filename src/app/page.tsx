@@ -40,7 +40,7 @@ import OnlineCount from "@/components/ask/OnlineCount";
 export const metadata: Metadata = {
   title: `タシカメ — 勘で、出さない。`,
   description:
-    "送る前に、相手に近い5人の目を通す。LINEの文面、写真、誘い方、服装、プロフィール。答えるのは審査を通った方だけです。",
+    "送る前に、相手に近い女性5人の目を通す。LINEの文面、写真、誘い方、服装、プロフィール。読むのは審査を通った女性だけです。",
   alternates: { canonical: site.url },
 };
 
@@ -71,7 +71,7 @@ const CASES = [
 
 const STEPS = [
   { n: "01", t: "出すものを預ける", d: "送る直前のLINE、出す直前の写真。そのまま預けます。" },
-  { n: "02", t: "相手側の目で読まれる", d: "審査を通った5人が、相手に近い立場で読みます。" },
+  { n: "02", t: "女性の目で読まれる", d: "審査を通った女性5人が、相手に近い立場で読みます。" },
   { n: "03", t: "所見が一人ずつ届く", d: "通したか、引っかかったか。その理由まで書かれます。" },
   { n: "04", t: "決める", d: "そのまま出すか、直してから出すか。決めるのはあなたです。" },
 ] as const;
@@ -190,7 +190,7 @@ export default async function HomePage() {
               from="header"
               className="min-h-[42px] rounded-pill bg-brand px-6 text-[13.5px] !text-paper shadow-card"
             >
-              5人の目を通す
+              女性5人の目を通す
             </PlanCta>
           </nav>
         </Wrap>
@@ -221,13 +221,13 @@ export default async function HomePage() {
 
             <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               {[
-                ["審査を通った方だけが回答", "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6"],
+                ["審査を通った女性だけが読む", "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6"],
                 // 速さは実測できるまで名乗らない。
                 // この製品のいちばんの売りだからこそ、
                 // 担保できないうちに書くと、そこが最初の嘘になる。
                 sup.canPromiseSpeed
                   ? (["その日のうちに所見が届く", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const)
-                  : (["答えるのは実在の人", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const),
+                  : (["読むのは実在の女性", "M13 3 4 14h7l-1 7 9-11h-7l1-7Z"] as const),
                 ["匿名。相手のことは保存しない", "M5 11V8a7 7 0 0 1 14 0v3 M4 11h16v9H4z"],
               ].map(([label, d]) => (
                 <li key={label} className="flex items-center gap-2">
@@ -270,7 +270,7 @@ export default async function HomePage() {
                   <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z" />
                   </svg>
-                  5人の目を通す
+                  女性5人の目を通す
                 </span>
                 <span className="mt-0.5 pl-[30px] text-[12px] font-bold opacity-90">
                   事前確認 ¥{getPlan(ENTRY_PLAN).yen.toLocaleString()}
@@ -510,7 +510,7 @@ export default async function HomePage() {
                 from="price"
                 className="mt-6 min-h-[54px] w-full rounded-pill bg-rose-fill px-5 text-[15px] !text-paper shadow-card"
               >
-                5人の目を通す <span aria-hidden className="ml-1.5">→</span>
+                女性5人の目を通す <span aria-hidden className="ml-1.5">→</span>
               </PlanCta>
 
               <p className="mt-4 text-[12px] leading-[1.75] text-steel">
@@ -621,14 +621,15 @@ export default async function HomePage() {
         <Wrap className="py-14 sm:py-16">
           <div className="grid gap-7 lg:grid-cols-[1fr_1fr_0.62fr] lg:items-center">
             <p className="border-l-[5px] border-brand pl-5 text-[22px] font-black leading-[1.55] text-slate sm:text-[26px]">
-              どうでもいい相手には、
+              相手本人には、
               <br />
-              使わなくていい。
+              聞けない。
             </p>
 
             <p className="text-[14px] leading-[1.95] text-steel">
-              毎日使うものではありません。本気の相手がいて、一度しかない一手を
-              出す直前だけ。そのときのために、審査を通った方に読んでもらいます。
+              友達の女性は、あなたを知っているぶん気を使います。AIは女性ではありません。
+              だから、相手と同じ側に立つ、あなたを知らない女性に読んでもらう。
+              毎日使うものではありません。一度しかない一手を出す直前だけです。
             </p>
 
             {/* 数は実データ。固定の数字は書かない */}
@@ -676,7 +677,7 @@ export default async function HomePage() {
                 自分が何に迷っているのかを見つける。
               </p>
               <p className="mt-3.5 text-[12.5px] leading-[1.85] text-steel">
-                相手も実在の人なので、時間の決め方と、その場を見る体制が用意できてから開きます。
+                相手も実在の女性なので、時間の決め方と、その場を見る体制が用意できてから開きます。
                 いまは順番待ちだけ受けています。目安 ¥
                 {getPlan("talk").yen.toLocaleString()}〜 / 20分〜
               </p>
@@ -706,7 +707,7 @@ export default async function HomePage() {
                 from="final"
                 className="min-h-[58px] rounded-pill bg-paper px-9 text-[16px] !text-brand-deep"
               >
-                5人の目を通す <span aria-hidden className="ml-2">→</span>
+                女性5人の目を通す <span aria-hidden className="ml-2">→</span>
               </PlanCta>
               <Link
                 href="#talk"
@@ -719,7 +720,7 @@ export default async function HomePage() {
             <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[13px] font-bold text-paper">
               <li>匿名</li>
               <li>都度払い</li>
-              <li>審査を通った方だけが回答</li>
+              <li>審査を通った女性だけが読む</li>
             </ul>
           </div>
         </Wrap>
@@ -733,7 +734,7 @@ export default async function HomePage() {
               {
                 h: "使う",
                 items: [
-                  ["/ask", "5人の目を通す"],
+                  ["/ask", "女性5人の目を通す"],
                   ["/talk", "人と話す"],
                   ["/mine", "聞いたこと"],
                 ] as const,

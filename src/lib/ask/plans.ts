@@ -24,7 +24,7 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, type AttrId, type PanelAge } from "./model";
-import { assertWeight } from "../voice";
+import { assertWeight, assertWhoReads } from "../voice";
 
 export type PlanId = "final_check" | "talk" | "improve" | "retest" | "date_ready";
 
@@ -67,14 +67,14 @@ export const PLANS: Plan[] = [
   {
     id: "final_check",
     name: "事前確認",
-    tagline: "送る前に、相手に近い5人の目を通す。",
+    tagline: "送る前に、相手に近い女性5人の目を通す。",
     yen: 2980,
     depth: 1,
     answers: 5,
     rounds: 1,
     targeting: true,
     includes: [
-      "審査を通った5人が読む",
+      "審査を通った女性5人が読む",
       "通る／通らないの分かれ方",
       "一人ひとりが書いた理由",
       "良かった点と、引っかかった点",
@@ -91,7 +91,7 @@ export const PLANS: Plan[] = [
     // その場を見る体制が要る。用意できるまで available は false。
     id: "talk",
     name: "相談",
-    tagline: "20〜30分、相手側に近い人と話す。",
+    tagline: "20〜30分、相手側に近い女性と話す。",
     yen: 4980,
     from: true,
     depth: 2,
@@ -99,7 +99,7 @@ export const PLANS: Plan[] = [
     rounds: 1,
     targeting: true,
     includes: [
-      "審査を通った人と20〜30分",
+      "審査を通った女性と20〜30分",
       "状況をそのまま話す",
       "相手側から問い返してもらう",
       "次の一手の組み立て",
@@ -133,7 +133,7 @@ export const PLANS: Plan[] = [
   {
     id: "retest",
     name: "再確認",
-    tagline: "直したものを、別の5人に通す。",
+    tagline: "直したものを、別の女性5人に通す。",
     yen: 7980,
     from: true,
     depth: 4,
@@ -142,7 +142,7 @@ export const PLANS: Plan[] = [
     targeting: true,
     includes: [
       "改善の内容すべて",
-      "直した版を、同じ条件の別の5人に通す",
+      "直した版を、同じ条件の別の女性5人に通す",
       "前と後の比べ方",
       "最後のまとめ",
     ],
@@ -251,7 +251,7 @@ export function clampTargeting(
    これが商品の骨。単価が上がる理由もここにある。 */
 
 export const FLOW = [
-  { tag: "CHECK", label: "通す", note: "審査を通った5人が、相手側の目で読む。" },
+  { tag: "CHECK", label: "通す", note: "審査を通った女性5人が、相手側の目で読む。" },
   { tag: "UNDERSTAND", label: "所見を読む", note: "何人が通したか。どこで引っかかったか。" },
   { tag: "IMPROVE", label: "直す", note: "引っかかった箇所を、直した案にする。" },
   { tag: "RE-TEST", label: "もう一度通す", note: "直した版を、同じ条件の別の5人に。" },
@@ -277,25 +277,25 @@ export const USE_CASES: {
   {
     tag: "誘う前",
     q: "今日、デートに誘っていい？",
-    body: "文面は作れる。「この距離感で誘われたらどう受け取るか」は、相手側にしか分からない。",
+    body: "文面は作れる。「この距離感で誘われたらどう受け取るか」は、女性側にしか分からない。",
     category: "signal",
   },
   {
     tag: "会う前",
     q: "あと2時間でデート。この服と店、大丈夫？",
-    body: "服も店も決めた。最後に、相手側の目でどう映るかを通しておく。",
+    body: "服も店も決めた。最後に、女性の目でどう映るかを通しておく。",
     category: "style",
   },
   {
     tag: "出す前",
     q: "プロフィール写真、AとBどっち？",
-    body: "特徴は説明できる。「どちらなら会いたいと思うか」は、相手側にしか分からない。",
+    body: "特徴は説明できる。「どちらなら会いたいと思うか」は、女性側にしか分からない。",
     category: "photo",
   },
   {
     tag: "載せる前",
     q: "このプロフィール、会ってみたいと思う？",
-    body: "自分では読み返せない。相手側の目で、一度通しておく。",
+    body: "自分では読み返せない。女性の目で、一度通しておく。",
     category: "photo",
   },
 ];
@@ -394,6 +394,8 @@ export const USE_CASES: {
     }
     // 値段を否定する言葉を、買う人の画面に出さない。
     assertWeight(t, "商品の説明");
+    // 誰が読むのかを濁さない。「人」と書くと、誰でもよくなる。
+    assertWhoReads(t, "商品の説明");
   }
 
   // 「5回答でいくら」と書かない。個数を売るとアンケートに見える。

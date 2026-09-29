@@ -60,7 +60,7 @@ export default function HowPage() {
             from="how"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            5人の目を通す
+            女性5人の目を通す
           </PlanCta>
         </div>
       </header>
@@ -68,17 +68,17 @@ export default function HowPage() {
       <div className="mx-auto w-full max-w-[860px] px-5 pb-24 pt-12 sm:px-10">
         <h1 className="text-huge font-black">仕組み。</h1>
         <p className="mt-6 max-w-[32em] text-[16px] leading-[1.95] text-steel">
-          出す前に、相手に近い方の目を通すサービスです。
+          出す前に、相手に近い女性の目を通すサービスです。
           誰が読むのか、どうやって届くのか、AIを何に使っているのかをまとめています。
         </p>
 
         <div className="mt-14 flex flex-col gap-12">
           <Sec title="何をしているサービスか">
             <p>
-              出す直前のものを預かって、条件に合う方に読んでもらい、
+              出す直前のものを預かって、条件に合う女性に読んでもらい、
               その所見をまとめてお返ししています。
               相談に乗るサービスではありません。答えを出すサービスでもありません。
-              出すのは、相手側に近い方がどう受け取ったかだけです。
+              出すのは、相手側に近い女性がどう受け取ったかだけです。
             </p>
             <p>
               判断はあなたがします。こちらは「こうすべき」とは書きません。
@@ -112,9 +112,14 @@ export default function HowPage() {
 
           <Sec title="誰が読むのか">
             <p>
-              研究者でもカウンセラーでもありません。読むのは、相手側に近い立場の方です。
+              読むのは女性です。研究者でもカウンセラーでもありません。
               ただし、登録すれば読めるようにはしていません。
               年齢と立場を確認し、通った方にだけ依頼をお送りしています。
+            </p>
+            <p>
+              なぜ女性でなければならないか。相手本人には聞けないからです。
+              友達の女性は、あなたを知っているぶん気を使います。AIは女性ではありません。
+              相手と同じ側に立っていて、あなたを知らない。その両方が要ります。
             </p>
             <p>
               年齢・経験・いまの立場・感じ方そのものが、判断の材料になります。
@@ -227,7 +232,7 @@ export default function HowPage() {
             from="how_bottom"
             className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
           >
-            5人の目を通す
+            女性5人の目を通す
           </PlanCta>
         </div>
       </div>
