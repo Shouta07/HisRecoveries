@@ -1143,3 +1143,164 @@ from ask_passes p
 left join pass_uses u on u.pass_id = p.id
 where p.paid_at is not null
 group by p.id;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- チケットを1回使う（数える側でやる）
+--
+-- ── なぜ関数にするか ────────────────────────────
+-- 「残りを読む → 足りていれば使う」をアプリ側で2回に分けると、
+-- その間にもう1つ来たときに、両方が「足りている」と判断する。
+-- 5回パスで6回使える瞬間ができる。
+--
+-- 行をロックしたまま数えて書く。同時に来たもう一方は待つ。
+--
+-- ── 同じ相談で二度使わない ──────────────────────
+-- 画面の二度押し、Webhookの再送、リロード。どれでも来る。
+-- 同じ相談が既に使っていたら、使わずに「使用済み」として返す。
+-- ═══════════════════════════════════════════════════════════════
+
+create or replace function spend_pass(
+  p_token text,
+  p_consultation uuid,
+  p_cost int
+)
+returns table (ok boolean, remaining int, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_pass   ask_passes%rowtype;
+  v_used   int;
+  v_left   int;
+  v_dup    int;
+  i        int;
+begin
+  if p_cost is null or p_cost < 1 then
+    return query select false, 0, '使う回数が不正です'::text;
+    return;
+  end if;
+
+  -- ここで行を押さえる。同時に来たもう一方は、この先へ進めない。
+  select * into v_pass
+    from ask_passes
+   where token = p_token
+     and paid_at is not null
+   for update;
+
+  if not found then
+    return query select false, 0, 'このパスは見つかりません'::text;
+    return;
+  end if;
+
+  -- 同じ相談が既に使っているなら、二度目は使わない。
+  if p_consultation is not null then
+    select count(*) into v_dup
+      from pass_uses
+     where pass_id = v_pass.id
+       and consultation_id = p_consultation;
+    if v_dup > 0 then
+      select count(*) into v_used from pass_uses where pass_id = v_pass.id;
+      v_left := v_pass.uses_total + coalesce(v_pass.granted_extra, 0) - v_used;
+      return query select true, greatest(v_left, 0), 'すでに使っています'::text;
+      return;
+    end if;
+  end if;
+
+  select count(*) into v_used from pass_uses where pass_id = v_pass.id;
+  v_left := v_pass.uses_total + coalesce(v_pass.granted_extra, 0) - v_used;
+
+  if v_left < p_cost then
+    return query select false, greatest(v_left, 0), '残りが足りません'::text;
+    return;
+  end if;
+
+  -- 2回分なら2行入れる。1行に「2」と書かない。
+  -- 数で持つと、数え方を間違えたときに気づけない。
+  for i in 1..p_cost loop
+    insert into pass_uses (pass_id, consultation_id)
+    values (v_pass.id, p_consultation);
+  end loop;
+
+  return query select true, v_left - p_cost, null::text;
+end;
+$$;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 相手ごとのケース
+--
+-- ── なぜ要るか ──────────────────────────────────
+-- 画面では「前回の続きから相談できます」と言っている。
+-- 言っているのに、相談は1件ずつ独立していて、
+-- 実際には毎回ゼロから書かせていた。
+--
+-- 人は伴走しない。文脈が伴走する。
+-- その文脈を置く場所がここ。
+--
+-- ── 相手の情報は持たない ────────────────────────
+-- 実名・連絡先・SNS・年齢そのものは持たない。
+-- 持つのは「この相談者から見た、その関係の現在地」だけ。
+-- 呼び名（partner_label）も相談者が自分で付けたもので、
+-- 相手の本名を入れないよう画面側で断る。
+--
+-- ── 要約はAIが書いてよい ────────────────────────
+-- current_summary は「これまでの経緯」の圧縮で、事実の整理。
+-- 女性が感じたことをAIが書き換えるのとは別物。
+-- ただし、入力されていない事実を足さないこと。
+-- ═══════════════════════════════════════════════════════════════
+
+create table if not exists relationship_cases (
+  id uuid primary key default gen_random_uuid(),
+  -- 持ち主がこのケースを開く鍵（c + 32文字）。会員登録は無い
+  token text unique not null,
+  -- 5回パスの鍵。同じ持ち主のケースをまとめるのに使う
+  pass_token text,
+  -- 相談者が付けた呼び名。相手の本名は入れない（画面で断る）
+  partner_label text,
+  user_age_band text,
+  partner_age_band text,
+  -- 出会ったところ。Pairs / with / タップル など
+  dating_app text,
+  -- いまどこにいるか。journey.ts の StepId と同じ語彙
+  current_stage text,
+  goal text,
+  -- これまでの経緯の圧縮。新しい相談のときに、ここだけを渡す
+  current_summary text,
+  -- 前回、本人が決めたこと
+  last_decision text,
+  status text not null default 'active',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index if not exists relationship_cases_pass_idx
+  on relationship_cases (pass_token, updated_at desc);
+
+-- 相談を、ケースにぶら下げる。
+-- 既にある相談は case_id が null のまま（過去のものを壊さない）。
+alter table consultations add column if not exists case_id uuid references relationship_cases(id);
+
+create index if not exists consultations_case_idx on consultations (case_id, created_at);
+
+-- ケースの流れ。マイページの「今ここ」に使う。
+-- 本文は出さない（長くなるし、一覧で読むものではない）。
+create or replace view case_timeline as
+select
+  rc.id as case_id,
+  rc.token as case_token,
+  rc.partner_label,
+  rc.dating_app,
+  rc.current_stage,
+  rc.current_summary,
+  rc.last_decision,
+  c.id as consultation_id,
+  c.token as consultation_token,
+  c.category,
+  c.status,
+  c.journey_step,
+  c.created_at,
+  c.paid_at
+from relationship_cases rc
+left join consultations c on c.case_id = rc.id
+order by rc.updated_at desc, c.created_at asc;

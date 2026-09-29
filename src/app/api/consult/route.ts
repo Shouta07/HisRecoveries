@@ -10,6 +10,7 @@ import { redact } from "@/lib/ask/redact";
 import { makeConsultToken, isConsultToken } from "@/lib/ask/token";
 import { spend } from "@/lib/ask/pass";
 import { passCost } from "@/lib/ask/sensitive";
+import { findCase, createCase, advance } from "@/lib/ask/cases-store";
 
 // 相談を受け取る。
 //
@@ -154,9 +155,41 @@ export async function POST(req: NextRequest) {
   // 迷うたびに決済の画面を出さない。迷いは小さいので、そこで止まる。
   // 残りが無ければ使わない（使えたことにしない）。
   // 先に記録してあとで残りを見る、にはしない。0回なのに使える瞬間ができる。
+  let caseTokenOut: string | null = null;
   let spent: { ok: boolean; remaining: number } | null = null;
   const passToken = typeof body.pass === "string" && isConsultToken(body.pass) ? body.pass : null;
   const newId = ins.rows[0]?.id ?? null;
+
+  // ── 相手ごとのケースにぶら下げる ──
+  //
+  // 画面では前から「前回の続きから相談できます」と言っていた。
+  // 言っているのに、相談は1件ずつ独立していた。ここでつなぐ。
+  //
+  // 鍵が来ていればそのケースへ。来ていなければ1つ作る。
+  // 失敗しても相談そのものは止めない（つながらないだけで、相談は成立する）。
+  if (newId) {
+    try {
+      const caseToken =
+        typeof body.case === "string" && isConsultToken(body.case) ? body.case : null;
+      let c = caseToken ? await findCase(caseToken) : null;
+      if (!c) {
+        c = await createCase({
+          passToken,
+          partnerLabel: typeof body.partner === "string" ? body.partner : null,
+          userAgeBand: isAgeBand(body.askerAge) ? body.askerAge : null,
+          partnerAgeBand: isAgeBand(body.otherAge) ? body.otherAge : null,
+          datingApp: typeof body.app === "string" ? body.app.slice(0, 20) : null,
+          stage: isStepId(body.step) ? body.step : null,
+        });
+      } else if (isStepId(body.step)) {
+        await advance(c, { stage: body.step });
+      }
+      if (c) await dbUpdate("consultations", `id=eq.${newId}`, { case_id: c.id });
+      caseTokenOut = c?.token ?? null;
+    } catch {
+      // つながらなかっただけ。相談は成立させる
+    }
+  }
   if (passToken) {
     // 言いにくい相談は2回分。カテゴリから決める（画面から回数を送らせない）。
     const r = await spend(passToken, newId, passCost(typeof body.category === "string" ? body.category : null));
@@ -181,6 +214,8 @@ export async function POST(req: NextRequest) {
     // パスを使えたか。使えていれば、決済の画面は出さない
     used: spent?.ok ?? false,
     remaining: spent?.remaining ?? null,
+    // 相手ごとのケースの鍵。次の相談で渡すと、前回の続きになる
+    case: caseTokenOut,
     redacted: [...new Set([...(rBody?.findings ?? []), ...(rA?.findings ?? []), ...(rB?.findings ?? [])].map((f) => f.label))],
   });
 }
