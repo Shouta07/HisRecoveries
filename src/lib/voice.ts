@@ -88,6 +88,15 @@ export const DEFINITION =
 export const DEFINITION_SHORT = "男性の恋愛の悩みに、女性が答えるサービスです。";
 
 /**
+ * 名前の下に添える標語。
+ *
+ * 名前だけだと、何の亀なのか分からない。
+ * 名乗り（ONE_LINER）は文として長いので、ヘッダーには入らない。
+ * ここは、名前と一緒に一目で読める長さまで削ったもの。
+ */
+export const TAGLINE = "恋に迷ったら、タシカメ";
+
+/**
  * 考え方。ここから全部の画面が出る。
  *
  * ══════════════════════════════════════════════════
@@ -438,6 +447,12 @@ export function assertWeight(text: string, where: string): string {
     assertNotScary(t, where);
     assertNotCheap(t, where);
   }
+  // 標語に名前が入っていること。名前の下に置くので、ここが抜けると
+  // 「恋に迷ったら」で終わる、意味の通らない行になる。
+  if (!TAGLINE.includes(NAME)) throw new Error("標語に名前が入っていません");
+  if (TAGLINE.length > 14) throw new Error(`標語が長すぎます（${TAGLINE.length}文字）`);
+  assertNotScary(TAGLINE, "標語");
+
   // 長いほうは、名乗りから始める。
   // 「マッチングアプリで迷った男性が」だけだと、誰の話か分からない。
   if (!DEFINITION.startsWith(NAME)) {
