@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { NAME, OPERATOR } from "@/lib/voice";
+import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { LEGAL, missingLegal } from "@/lib/legal";
@@ -84,14 +84,6 @@ export default function LegalPage() {
         </p>
       </main>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex w-full max-w-[760px] flex-col gap-3 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <Link href="/" className="text-[15px] font-black">
-            His Recoveries
-          </Link>
-          <p className="text-[12px] text-steel">© 2026 {OPERATOR}</p>
-        </div>
-      </footer>
     </div>
   );
 }
