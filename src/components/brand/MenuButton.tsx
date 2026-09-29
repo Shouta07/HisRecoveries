@@ -28,7 +28,7 @@ const GROUPS: { h: string; items: readonly (readonly [string, string])[] }[] = [
   {
     h: "使う",
     items: [
-      ["/ask", "相談する"],
+      ["/ask", "確かめる"],
       ["/mine", "相談したこと"],
       ["/talk", "電話の練習（受付前）"],
     ] as const,

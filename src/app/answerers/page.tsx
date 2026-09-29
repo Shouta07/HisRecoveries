@@ -95,7 +95,7 @@ export default async function AnswerersPage() {
             href="/ask"
             className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
           >
-            女性{entryAnswers}人に相談する
+            女性{entryAnswers}人に確かめる
           </Link>
         </div>
       </header>
