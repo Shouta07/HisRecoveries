@@ -23,6 +23,8 @@
 // 思いついた面白い機能を足さない。
 // 足すかどうかは lib/decision.ts の順番で決める。
 
+import { assertPlain } from "../voice";
+
 export type StepId = "before" | "matched" | "before_meet" | "date" | "deeper";
 
 export type Step = {
@@ -100,6 +102,14 @@ export function nextStep(id: StepId): Step | null {
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
+  // 硬い言葉を混ぜない。読むのは29歳の会社員で、
+  // いま LINE の下書きを前に止まっている人。
+  for (const st of STEPS) {
+    for (const t of [st.label, st.pain, ...st.items]) {
+      assertPlain(t, `段階「${st.id}」`);
+    }
+  }
+
   if (STEPS.length < 4) throw new Error("恋愛の段階が少なすぎます");
   if (new Set(STEPS.map((s) => s.id)).size !== STEPS.length) {
     throw new Error("段階のIDが重複しています");

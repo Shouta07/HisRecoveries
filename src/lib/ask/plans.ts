@@ -24,7 +24,7 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, type AttrId, type PanelAge } from "./model";
-import { assertWeight, assertWhoReads } from "../voice";
+import { assertWeight, assertWhoReads, assertPlain } from "../voice";
 
 export type PlanId =
   | "quick"
@@ -56,9 +56,9 @@ export const SUBJECTS: { id: Subject; label: string; lead: string; body: string 
   },
   {
     id: "call",
-    label: "電話",
-    lead: "大事な電話、その前に一度試してみる。",
-    body: "声のトーン、話す速度、間の取り方、質問の仕方。文字では出ないところが、電話には全部出ます。",
+    label: "会話",
+    lead: "大事な電話の前に、一度だけ練習する。",
+    body: "声の感じ、話す速さ、間の取り方、質問の仕方。文字では出ないところが、電話には全部出ます。",
   },
 ];
 
@@ -116,7 +116,7 @@ export const PLANS: Plan[] = [
     // ここで利益を取らない（marginFloor を下げてある）。
     id: "quick",
     name: "ちょっと相談",
-    tagline: "写真1枚、またはメッセージ1件を3人に。",
+    tagline: "写真1枚か、メッセージ1件を3人に見てもらう。",
     value: "まず一度、実在の女性がどう受け取るかを見てみる。",
     yen: 980,
     depth: 1,
@@ -125,7 +125,7 @@ export const PLANS: Plan[] = [
     targeting: false,
     subjects: ["photo", "message"],
     includes: [
-      "実在の女性3人が見る",
+      "実在の女性3人が見てくれる",
       "このままでOK / 少し気になる / 変えた方がいい",
       "一人ひとりが書いた理由",
     ],
@@ -138,8 +138,8 @@ export const PLANS: Plan[] = [
   {
     id: "standard",
     name: "しっかり相談",
-    tagline: "相手に近い女性5人に、条件を指定して。",
-    value: "引っかかるところがどこかまで、はっきりさせる。",
+    tagline: "相手に近い女性5人に、年代や条件を選んで見てもらう。",
+    value: "どこが引っかかるのかまで、はっきりさせる。",
     yen: 2980,
     depth: 2,
     answers: 5,
@@ -147,11 +147,11 @@ export const PLANS: Plan[] = [
     targeting: true,
     subjects: ["photo", "message"],
     includes: [
-      "相手に近い女性5人が見る",
+      "相手に近い女性5人が見てくれる",
       "このままでOK / 少し気になる / 変えた方がいい",
       "一人ひとりが書いた理由",
-      "複数人が同じことを言った箇所",
-      "意見が分かれた箇所",
+      "みんなが同じことを言ったところ",
+      "意見が分かれたところ",
     ],
     fits: ["本命への一手", "次の誘い", "プロフィール写真"],
     available: true,
@@ -161,7 +161,7 @@ export const PLANS: Plan[] = [
   {
     id: "improve",
     name: "直して、もう一度",
-    tagline: "直した案を作って、別の女性3人に。",
+    tagline: "直した案を作って、別の女性3人に見てもらう。",
     value: "引っかかりが消えたことまで、確かめてから出す。",
     // 指定は 5,980〜7,980 だった。
     // 5,980 だと、初回5人＋再確認3人＋直しの手間で限界利益率が55%まで落ちる
@@ -175,11 +175,11 @@ export const PLANS: Plan[] = [
     targeting: true,
     subjects: ["photo", "message"],
     includes: [
-      "しっかり相談の内容すべて",
-      "引っかかった箇所の直し方",
+      "「しっかり相談」の内容すべて",
+      "気になったところの直し方",
       "直した案",
       "直した版を、別の女性3人に",
-      "前と後の比べ方",
+      "直す前と、直したあと",
     ],
     fits: ["一度しかない一手", "告白の前", "勝負のプロフィール"],
     available: true,
@@ -190,9 +190,9 @@ export const PLANS: Plan[] = [
     // 時間を決めた受け入れ方と、その場を見る体制が要る。
     // 用意できるまで available は false のまま。
     id: "call",
-    name: "模擬電話",
+    name: "電話の練習",
     tagline: "本番の前に、5〜15分だけ話してみる。",
-    value: "文字では出ないところを、話す前に確かめておく。",
+    value: "文字では分からないところを、話す前に確かめておく。",
     // 指定は 6,980〜9,800。
     // 6,980 にすると「直して、もう一度」と同額になり、
     // どちらが深いのか値段から読めなくなる。上限側に置く。
@@ -205,10 +205,10 @@ export const PLANS: Plan[] = [
     subjects: ["call"],
     includes: [
       "実在の女性と5〜15分",
-      "第一印象と、声のトーン",
-      "話す速度と、間の取り方",
-      "質問の仕方と、圧を感じた箇所",
-      "直すところ",
+      "第一印象と、声の感じ",
+      "話す速さと、間の取り方",
+      "質問の仕方と、圧を感じたところ",
+      "直したほうがいいところ",
     ],
     fits: ["はじめての電話", "告白の前", "関係を確かめる前"],
     available: false,
@@ -217,9 +217,9 @@ export const PLANS: Plan[] = [
   },
   {
     id: "date_ready",
-    name: "当日前の総点検",
-    tagline: "大事な日の前に、要るところをひと通り。",
-    value: "写真・メッセージ・電話を、まとめて通しておく。",
+    name: "会う日の前に、まとめて",
+    tagline: "写真もメッセージも話し方も、ひと通り見てもらう。",
+    value: "会う日の前に、要るところをまとめて見てもらう。",
     yen: 14800,
     from: true,
     depth: 5,
@@ -227,10 +227,10 @@ export const PLANS: Plan[] = [
     rounds: 2,
     targeting: true,
     includes: [
-      "直して、もう一度の内容すべて",
+      "「直して、もう一度」の内容すべて",
       "写真・メッセージ・当日の流れ",
       "第一印象・話し方・距離感",
-      "必要に応じて、模擬電話",
+      "必要なら、電話の練習も",
     ],
     fits: ["初めて会う日の前", "大事な日の前"],
     available: false,
@@ -329,8 +329,8 @@ export function clampTargeting(
 
 export const FLOW = [
   { tag: "CHECK", label: "通す", note: "審査を通った女性5人が、相手側の目で読む。" },
-  { tag: "UNDERSTAND", label: "所見を読む", note: "何人が通したか。どこで引っかかったか。" },
-  { tag: "IMPROVE", label: "直す", note: "引っかかった箇所を、直した案にする。" },
+  { tag: "UNDERSTAND", label: "どう思われたか読む", note: "何人が大丈夫と言ったか。どこで引っかかったか。" },
+  { tag: "IMPROVE", label: "直す", note: "引っかかったところを、直した案にする。" },
   { tag: "RE-TEST", label: "もう一度通す", note: "直した版を、同じ条件の別の5人に。" },
   { tag: "GO", label: "出す", note: "通ったことを確かめてから、本番へ。" },
 ] as const;
@@ -487,6 +487,8 @@ export const USE_CASES: {
     assertWeight(t, "商品の説明");
     // 誰が読むのかを濁さない。「人」と書くと、誰でもよくなる。
     assertWhoReads(t, "商品の説明");
+    // 硬い言葉を混ぜない。読むのは29歳の会社員。
+    assertPlain(t, "商品の説明");
   }
 
   // 「5回答でいくら」と書かない。個数を売るとアンケートに見える。

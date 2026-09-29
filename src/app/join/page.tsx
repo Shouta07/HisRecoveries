@@ -177,7 +177,7 @@ export default function JoinPage() {
           <div className="mt-14">
             <Hairline />
             <p className="mt-7 max-w-[32em] text-[12.5px] leading-[1.9] text-steel">
-              いただいた情報は、相談の依頼をお送りすることと、
+              いただいた情報は、相談をお届けすることと、
               条件に合う方をお探しすることにだけ使います。第三者には提供しません。
               扱いの全般は{" "}
               <Link href="/privacy" className="underline decoration-line underline-offset-4 hover:text-slate">

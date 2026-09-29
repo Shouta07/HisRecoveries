@@ -31,7 +31,7 @@ import OnlineCount from "@/components/ask/OnlineCount";
 // そして直して、もう一度通して、消えたところまで見せる。
 // これが、この製品にお金が発生する唯一の理由。
 //
-// ── ただし粗探しのサービスにしない ────────────────
+// ── ただし悪いところ探しのサービスにしない ────────────────
 // 問題が無ければ「このままで問題なさそう」も、ちゃんと結果。
 //
 // ── 入口の言葉は「相談」 ──────────────────────────
@@ -42,7 +42,7 @@ import OnlineCount from "@/components/ask/OnlineCount";
 // ── 出さない数字 ──────────────────────────────────
 // 「失敗確率72%」は出さない。根拠が無い。
 // 出すのは「5人中3人」だけ。数えられるものしか出さない。
-// 5人の反応を、女性全体の総意として書かない。
+// 5人の反応を、女性全体のみんなの答えとして書かない。
 //
 // ── 構成（12） ────────────────────────────────────
 //   1 ファーストビュー   2 こんな瞬間   3 3つの対象
@@ -62,40 +62,40 @@ const NAV = [
   ["#before-after", "実例"],
   ["#price", "料金"],
   ["#faq", "よくある質問"],
-  ["/join", "回答する女性へ"],
+  ["/join", "答える側になる"],
 ] as const;
 
 const STEPS = [
-  { n: "01", t: "送る前のものを預ける", d: "写真1枚、またはメッセージ1件。そのまま貼るだけです。" },
-  { n: "02", t: "条件に合う女性に届く", d: "年代や立場を指定できます。確認を通った方にだけ届きます。" },
-  { n: "03", t: "一人ずつ返ってくる", d: "このままでOK / 少し気になる / 変えた方がいい と、その理由。" },
-  { n: "04", t: "直すか、出すか決める", d: "問題が無ければそのまま。気になる点が出たら、直してから。" },
+  { n: "01", t: "送る前のものを出す", d: "写真1枚か、メッセージ1件。そのまま貼るだけです。" },
+  { n: "02", t: "条件に合う女性に届く", d: "年代や立場を選べます。確認が済んだ女性にだけ届きます。" },
+  { n: "03", t: "一人ずつ返ってくる", d: "このままでOK / 少し気になる / 変えた方がいい と、そう思った理由。" },
+  { n: "04", t: "直すか、そのまま出すか決める", d: "大丈夫そうならそのまま。気になる点が出たら、直してから。" },
 ];
 
 const FAQ = [
   {
     q: "AIに聞くのと何が違いますか？",
-    a: "AIは一般論と改善案を出せます。ここで返ってくるのは、実在の女性が実際にどう受け取ったかです。予測ではなく、一次反応です。",
+    a: "AIが出すのは「たぶんこう思われます」です。ここで返ってくるのは、実在の女性が実際にどう思ったかです。予想ではなく、本当の反応です。",
   },
   {
-    q: "5人が言えば、それが女性全体の意見ですか？",
-    a: "違います。5人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。総意として扱わないでください。",
+    q: "5人がそう言えば、女性みんながそう思うということですか？",
+    a: "違います。その5人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。女性みんなの答えではありません。",
   },
   {
     q: "悪いところを無理に探されませんか？",
-    a: "探しません。問題が無ければ「このままで問題なさそう」と返ります。それも結果です。粗探しが仕事になると、何を直せばいいか分からなくなります。",
+    a: "探しません。問題が無ければ「このままで大丈夫そう」と返ってきます。それも答えです。悪いところ探しになると、本当に直すべきところが埋もれます。",
   },
   {
     q: "相手に知られませんか？",
-    a: "知られません。匿名で、相手の名前・写真・連絡先は保存していません。回答する方とあなたが直接つながる経路も作っていません。",
+    a: "知られません。匿名で使えて、相手の名前・写真・連絡先は保存していません。答えてくれた女性とあなたが直接つながる仕組みも、作っていません。",
   },
   {
     q: "どのくらいで返ってきますか？",
-    a: "条件に合う方の数によります。実績が貯まるまで、所要時間は約束しません。届くまでの様子は画面で見えるようにしてあります。",
+    a: "条件に合う女性が何人いるかによります。実際のところが分かるまでは、何分とは言いません。いま何人に届いて何人が見ているかは、画面で分かるようにしてあります。",
   },
   {
     q: "集まらなかったら？",
-    a: "集まらなかった分は返金します。条件を広げて待つか、全額返金かを選んでいただけます。こちらで勝手に決めません。",
+    a: "集まらなかった分はお返しします。条件を広げてもう少し待つか、全額返してもらうかを選べます。こちらで勝手に決めません。",
   },
 ];
 
@@ -329,8 +329,7 @@ export default async function HomePage() {
       <Block id="moments">
         <H>今、どこで悩んでいますか。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
-          恋愛は順番に進みます。どの段階にいるかで、聞くべきことが違います。
-          いまのところを選んでください。
+          いまどのあたりですか。どこにいるかで、聞きたいことは変わります。
         </p>
 
         <ol className="mt-8 flex flex-col gap-2.5">
@@ -413,7 +412,7 @@ export default async function HomePage() {
       <Block tint>
         <H>見てもらえるのは、この3つ。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
-          どの段階でも、持っていくものはこの3つのどれかです。
+          どこで迷っていても、出すものはこの3つのどれかです。
         </p>
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           {SUBJECTS.map((s, i) => {
@@ -434,7 +433,7 @@ export default async function HomePage() {
                       category={s.id === "photo" ? "photo" : "message"}
                       className="min-h-[50px] rounded-pill bg-brand px-5 text-[14.5px] !text-paper shadow-card"
                     >
-                      {s.label}を相談する <span aria-hidden className="ml-1.5">→</span>
+                      {s.label}を見てもらう <span aria-hidden className="ml-1.5">→</span>
                     </PlanCta>
                   ) : (
                     <Link
@@ -455,8 +454,8 @@ export default async function HomePage() {
       <Block id="before-after">
         <H>直す前と、直したあと。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
-          自分では気づかなかったところが、本番の前に出てきます。
-          問題が無ければ「このままで問題なさそう」と返ります。無理に探しません。
+          自分では気づかなかったところが、送る前に出てきます。
+          大丈夫そうなら「このままで大丈夫そう」と返ってきます。無理に探しません。
         </p>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
@@ -502,7 +501,7 @@ export default async function HomePage() {
               {DEMO.after}
             </p>
             <div className="mt-6 border-t border-line pt-5">
-              <p className="text-[11.5px] font-bold text-steel">別の女性{DEMO.retest.of}人に、もう一度</p>
+              <p className="text-[11.5px] font-bold text-steel">別の女性{DEMO.retest.of}人に、もう一度見てもらった</p>
               <p className="mt-2.5 text-[34px] font-black tabular-nums leading-none text-ok-text">
                 {DEMO.retest.n}
                 <span className="text-steel"> / {DEMO.retest.of}</span>
@@ -518,13 +517,13 @@ export default async function HomePage() {
 
       {/* ══ 5. 反応のまとめ方 ══ */}
       <Block tint>
-        <H>点数ではなく、反応で返します。</H>
+        <H>点数はつきません。</H>
         <div className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { t: "何人がどう答えたか", d: "このままでOK / 少し気になる / 変えた方がいい。実際の人数だけを出します。" },
-            { t: "共通して気になったこと", d: "複数人が同じ箇所に触れたら、そこが直すところです。" },
-            { t: "意見が分かれたところ", d: "割れたことも結果です。相手によって受け取り方が変わる、ということです。" },
-            { t: "一人ひとりの生の声", d: "まとめだけにしません。書かれた文をそのまま出します。" },
+            { t: "みんなが気にしたところ", d: "何人も同じところに触れていたら、そこが直したほうがいいところです。" },
+            { t: "意見が分かれたところ", d: "割れることもあります。人によって受け取り方が違う、ということです。" },
+            { t: "書かれた言葉そのまま", d: "まとめだけで終わらせません。書いてもらった文を、そのまま出します。" },
           ].map((x) => (
             <div key={x.t} className="rounded-card border border-line bg-paper p-5 shadow-card">
               <p className="text-[14.5px] font-black leading-[1.5]">{x.t}</p>
@@ -533,8 +532,8 @@ export default async function HomePage() {
           ))}
         </div>
         <p className="mt-7 max-w-[34em] text-[14px] leading-[1.9] text-steel">
-          「失敗確率」のような数字は出しません。根拠がないからです。
-          出すのは「5人中3人」だけ。そして5人がそう感じたことを、女性全体の総意としては書きません。
+          「失敗する確率」みたいな数字は出しません。数えようがないからです。
+          出すのは「5人中3人」だけ。その5人がそう感じた、という話であって、女性みんなの答えではありません。
         </p>
       </Block>
 
@@ -591,9 +590,9 @@ export default async function HomePage() {
         </p>
         <span aria-hidden className="mt-2.5 block h-1 w-[150px] rounded-pill bg-brand sm:w-[180px]" />
         <p className="mt-7 max-w-[32em] text-[15px] leading-[1.95] text-steel">
-          まずAIに聞いていい。文面を作るのも、考えを整理するのもAIが得意です。
-          それでも最後に残る「実際どう思われるか」だけ、人に確かめます。
-          AIは裏側で、回答の整理と共通点の抽出に使っています。
+          まずAIに聞いていい。文面を作るのも、考えをまとめるのもAIのほうが得意です。
+          それでも最後に残る「実際どう思われるか」だけ、人に聞きます。
+          AIはこちらの裏側で、返ってきた答えをまとめるのに使っています。
         </p>
       </Block>
 
@@ -620,7 +619,7 @@ export default async function HomePage() {
       <Block id="price">
         <H>必要なときだけ、1回ごと。</H>
         <p className="mt-4 max-w-[32em] text-[15px] leading-[1.95] text-steel">
-          月額はありません。入会金もありません。大事な局面の前にだけ使うものです。
+          月額はありません。入会金もありません。ここぞという場面の前にだけ使うものです。
         </p>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
@@ -707,13 +706,13 @@ export default async function HomePage() {
           <div>
             <H>答えるのは、恋愛の専門家ではありません。</H>
             <p className="mt-5 max-w-[32em] text-[15px] leading-[1.95] text-steel">
-              正解を教える人でもありません。一人の実在の女性として、
-              実際にどう感じたかを書く方です。
+              正解を教えてくれる人でもありません。一人の女性として、
+              実際にどう思ったかを書いてくれる人です。
             </p>
             <p className="mt-4 max-w-[32em] text-[15px] leading-[1.95] text-steel">
-              ただし、登録すれば読めるようにはしていません。
-              年齢と立場を確認し、通った方にだけ依頼をお送りしています。
-              年代・恋愛観・いまの立場を指定して、相手に近い方に読んでもらえます。
+              ただし、登録すれば誰でも読めるわけではありません。
+              年齢と立場を確認して、通った人にだけお願いしています。
+              年代・恋愛観・いまの立場を選んで、気になる相手に近い人に見てもらえます。
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -726,7 +725,7 @@ export default async function HomePage() {
                 href="/join"
                 className="inline-flex min-h-[50px] items-center justify-center rounded-pill bg-slate px-6 text-[14px] font-bold text-paper transition-opacity hover:opacity-90"
               >
-                回答する女性へ
+                答えてくれる女性へ
               </Link>
             </div>
           </div>
@@ -742,8 +741,8 @@ export default async function HomePage() {
             "匿名で使えます。名前もメールアドレスも要りません",
             "相手の名前・写真・連絡先は保存しません",
             "送る前に、個人情報は自動で伏せます",
-            "回答する方とあなたが直接つながる経路はありません",
-            "年齢と立場を確認した方だけが読みます",
+            "答えてくれた女性と直接つながる仕組みはありません",
+            "年齢と立場を確認した女性だけが見ます",
             "18歳未満に関する相談はお受けしていません",
           ].map((t) => (
             <li
@@ -784,7 +783,7 @@ export default async function HomePage() {
           <div className="rounded-card bg-brand p-8 text-paper shadow-card sm:p-14">
             <p className="text-huge font-black">送る前に、会う前に、話す前に。</p>
             <p className="mt-5 max-w-[26em] text-[16px] leading-[1.85]">
-              大事な相手とのチャンスを、自分の判断ミスで失わないために。
+              大事な相手なのに、選び間違いで終わらせないために。
             </p>
             <div className="mt-9">
               <PlanCta
@@ -816,7 +815,7 @@ export default async function HomePage() {
                 h: "使う",
                 items: [
                   ["/ask", "相談する"],
-                  ["/talk", "模擬電話"],
+                  ["/talk", "電話の練習"],
                   ["/mine", "相談したこと"],
                 ] as const,
               },
@@ -832,7 +831,7 @@ export default async function HomePage() {
               {
                 h: "参加する",
                 items: [
-                  ["/join", "回答する女性へ"],
+                  ["/join", "答える側になる"],
                   ["/about", "編集方針"],
                   ["/updates", "更新記録"],
                 ] as const,

@@ -169,6 +169,61 @@ export function assertNever(text: string, where: string): string {
   return text;
 }
 
+/**
+ * 硬い言葉。
+ *
+ * ══════════════════════════════════════════════════
+ * 誰が読むのかを思い出す
+ * ══════════════════════════════════════════════════
+ * 読むのは29歳の会社員で、いまLINEの下書きを前に止まっている人。
+ * 電車の中か、寝る前のベッドの中で開いている。
+ *
+ * その人が友達に話すときに使わない言葉を、画面に置かない。
+ *   一次反応      → 実際にどう思ったか
+ *   所見          → 感想
+ *   模擬電話      → 電話の練習
+ *   回答する女性  → 答えてくれる女性
+ *   依頼を送る    → お願いする
+ *   〜の箇所      → 〜のところ
+ *   局面          → 場面
+ *   経路          → 仕組み
+ *   総意          → みんながそう思う
+ *
+ * 硬い言葉は、書いている側には正確に見える。
+ * 読む側には「自分向けじゃない」に見える。
+ */
+export const STIFF: { bad: string; good: string }[] = [
+  { bad: "一次反応", good: "実際にどう思ったか" },
+  { bad: "所見", good: "感想" },
+  { bad: "模擬電話", good: "電話の練習" },
+  { bad: "模擬チャット", good: "メッセージの練習" },
+  { bad: "回答する女性", good: "答えてくれる女性" },
+  { bad: "回答者", good: "答えてくれる女性" },
+  { bad: "依頼をお送り", good: "お願い" },
+  { bad: "箇所", good: "ところ" },
+  { bad: "局面", good: "場面" },
+  { bad: "経路", good: "仕組み" },
+  { bad: "総意", good: "みんながそう思う" },
+  { bad: "機会損失", good: "損をする" },
+  { bad: "判断ミス", good: "選び間違い" },
+  { bad: "所要時間", good: "どのくらいで返るか" },
+  { bad: "事前確認", good: "送る前に見てもらう" },
+  { bad: "総点検", good: "まとめて見てもらう" },
+  { bad: "預ける", good: "出す" },
+  { bad: "粗探し", good: "悪いところ探し" },
+];
+
+/** 買う人の画面に、硬い言葉が混ざっていないか */
+export function assertPlain(text: string, where: string): string {
+  const hit = STIFF.find((x) => text.includes(x.bad));
+  if (hit) {
+    throw new Error(
+      `${where} に「${hit.bad}」が入っています。読むのは29歳の会社員です（「${hit.good}」と書いてください）`,
+    );
+  }
+  return text;
+}
+
 /** 名乗りの位置に置いてよいかを確かめる */
 export function assertOneLiner(text: string): string {
   const hit = RETIRED.find((r) => text.includes(r));
@@ -207,6 +262,15 @@ export function assertWeight(text: string, where: string): string {
   assertWhoReads(SUB, "名乗りの説明");
   assertNever(ONE_LINER, "名乗り");
   assertNever(SUB, "名乗りの説明");
+  assertPlain(ONE_LINER, "名乗り");
+  assertPlain(SUB, "名乗りの説明");
+
+  // 言い換え先が、言い換え元を含んでいないこと（直したつもりで直っていない）
+  for (const x of STIFF) {
+    if (x.good.includes(x.bad)) {
+      throw new Error(`「${x.bad}」の言い換えが、同じ言葉を含んでいます`);
+    }
+  }
 
   // 説明の中で、誰が読むのかが言えていること。
   if (!SUB.includes("女性")) {
