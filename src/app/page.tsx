@@ -204,7 +204,7 @@ export default async function HomePage() {
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <Wrap className="flex items-center justify-between gap-4 py-3">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={34} />
+            <Tashikame size={38} />
             <span className="min-w-0 truncate text-[19px] font-black tracking-[0.02em] text-slate">
               {NAME}
             </span>
@@ -770,6 +770,13 @@ export default async function HomePage() {
       {/* カードを4枚積むと、スマホで4画面分になる。
           1行ずつの帯にして、1画面に収める。 */}
       <Block tint id="how">
+        {/* 手順を案内する節。マークを出す場所として、いちばん素直 */}
+        <div className="mb-4 flex items-center gap-3">
+          <Tashikame size={52} />
+          <p className="text-[13px] font-bold leading-[1.6] text-steel">
+            送る前に、ひと手間だけ。
+          </p>
+        </div>
         <H>やることは、4つ。</H>
         <ol className="mt-7 overflow-hidden rounded-card border border-line bg-paper shadow-card">
           {STEPS.map((st, i) => (
@@ -1001,9 +1008,16 @@ export default async function HomePage() {
       {/* ══ 12. 最後 ══ */}
       <section className="bg-paper">
         <Wrap className="pb-20 pt-6 sm:pb-24">
-          <div className="rounded-card bg-brand p-8 text-paper shadow-card sm:p-14">
-            <p className="text-huge font-black">送る前に、会う前に、話す前に。</p>
-            <p className="mt-5 max-w-[26em] text-[16px] leading-[1.85]">
+          <div className="relative overflow-hidden rounded-card bg-brand p-8 text-paper shadow-card sm:p-14">
+            {/* いちばん最後に、もう一度出す。背景は抜いてあるので青の上に乗る */}
+            {/* 右下に置く。右上だと見出しに被る（「話す前に。」が読めなくなる）。
+                下は文字が終わっていて、いちばん空いている。 */}
+            <Tashikame
+              size={104}
+              className="pointer-events-none absolute -bottom-3 -right-3 sm:!h-[168px] sm:!w-[168px]"
+            />
+            <p className="relative text-huge font-black">送る前に、会う前に、話す前に。</p>
+            <p className="relative mt-5 max-w-[26em] text-[16px] leading-[1.85]">
               大事な相手なのに、選び間違いで終わらせないために。
             </p>
             <div className="mt-9">

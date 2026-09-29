@@ -1,4 +1,5 @@
 import Slot from "@/components/brand/Slot";
+import Tashikame from "@/components/brand/Tashikame";
 import { DEMO } from "@/lib/ask/demo";
 import { VERDICTS } from "@/lib/ask/model";
 import type { ImageKey } from "@/lib/images";
@@ -120,6 +121,11 @@ export default function HeroBoard() {
             position="center 32%"
             className="h-[190px] w-full sm:h-[300px]"
           />
+          {/* マークを絵の中に置く。写真の左上は背景なので、顔に掛からない。
+              名乗りではなく、押印のつもりで小さく出す。 */}
+          <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-paper shadow-card sm:h-14 sm:w-14">
+            <Tashikame size={34} className="sm:!h-10 sm:!w-10" />
+          </span>
           {/* 下端だけ地の色へ落として、文面の箱が浮いて見えないようにする */}
           <span
             aria-hidden
@@ -136,7 +142,12 @@ export default function HeroBoard() {
       {/* 広い画面。左に自分、右に反応 */}
       <div className="mx-auto hidden max-w-[1120px] grid-cols-[minmax(0,440px)_1fr] items-center gap-10 px-12 pt-6 lg:grid">
         <div>
-          <Slot name="hero" position="center 18%" className="h-[390px] w-full" />
+          <div className="relative">
+            <Slot name="hero" position="center 18%" className="h-[390px] w-full" />
+            <span className="absolute left-5 top-5 flex h-16 w-16 items-center justify-center rounded-full bg-paper shadow-card">
+              <Tashikame size={46} />
+            </span>
+          </div>
           <Draft inset={false} />
         </div>
         <Cards />
