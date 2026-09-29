@@ -124,7 +124,7 @@ export const STEPS: Step[] = [
     icon: "chat",
     cases: ["message", "date"],
     plan: "review",
-    next: "mockchat",
+    next: "call15",
     category: "message",
   },
   {
@@ -136,7 +136,7 @@ export const STEPS: Step[] = [
     summary: "電話や初対面の前の不安を減らす",
     icon: "call",
     cases: ["call"],
-    plan: "mockchat",
+    plan: "call15",
     category: "message",
   },
   {

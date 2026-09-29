@@ -46,7 +46,7 @@ export const MISC_COST_YEN = 10;
 
 /* ── 回答者報酬 ──────────────────────────────── */
 
-export type RewardKind = "quick" | "priority" | "talk" | "improve";
+export type RewardKind = "quick" | "priority" | "talk_short" | "talk" | "improve";
 
 export type RewardBand = {
   kind: RewardKind;
@@ -67,8 +67,12 @@ export const REWARDS: RewardBand[] = [
   // 以前は 200〜300 円だったが、商品が ¥5,980 になったので引き上げる。
   { kind: "quick", label: "反応を返す", min: 400, max: 700, note: "1件ぶんの反応" },
   { kind: "priority", label: "先に回す", min: 500, max: 850, note: "優先して回した依頼" },
-  // 30〜45分、実在の女性と話す・やりとりする
-  { kind: "talk", label: "話す・やりとりする", min: 3000, max: 7000, note: "30〜45分" },
+  // 15分だけ話す。時給に直すと ¥8,000〜¥12,000。
+  // 30分以上と同じ額にしていたせいで、15分の商品が成立しなかった
+  // （¥5,980 に ¥3,000 払うと変動費が50%を超える）。
+  { kind: "talk_short", label: "15分話す", min: 1800, max: 2600, note: "15分" },
+  // 30分以上、実在の女性と話す
+  { kind: "talk", label: "話す・やりとりする", min: 3000, max: 7000, note: "30分以上" },
   // 改善案とそのまま使える修正文を書く
   { kind: "improve", label: "直し方を書く", min: 400, max: 900, note: "改善案と修正文" },
 ];
@@ -110,20 +114,22 @@ export const RARE_BONUS = { min: 50, max: 150 };
  * 顧客の価格から逆算して、供給の原価を管理する。
  */
 export const REWARD_CAP: Record<PlanId, number> = {
-  // ¥5,980 の 40% から手数料を引いた額が、払える上限。
-  // 売っているのはこれだけ。¥5,980 の 40% から手数料を引いた額。
-  review: 1960,
-  // ここから下は受付前。開通するときに、売価と一緒に引き直すこと。
-  // いまは見込みの報酬と同じ額を置いてある。
-  reaction: 3240,
-  mockchat: 4240,
-  // 15分の通話。話す帯の下限（¥3,000）をそのまま上限にしている。
-  // 15分で ¥3,000 は時給に直すと ¥12,000。
-  // 売価 ¥7,980 に対して変動費 37.6%。下げる余地はここには無い。
-  call15: 3000,
-  session: 5000,
-  mockdate: 7000,
+  // 5回パス ¥5,980。1回あたり ¥1,196 なので、1回に払える上限は ¥478。
+  // ここは「1回ぶん」の上限で、パック全体ではない。
+  // 5回パスの「1回ぶん」の上限。売価 ¥1,196 に対して ¥450。
+  // 粗利は53%で、ほかの商品（60%）より低い。
+  // 入口の商品は利益を取る商品ではないので、ここだけ下げている
+  // （plans.ts の marginFloor）。下げたのは利益で、報酬ではない。
+  review: 450,
+  // 15分 ¥5,980 の 40%。¥2,392 は時給に直すと ¥9,568。
+  call15: 2267,
+  // 30分 ¥9,800 の 40%。¥3,920 は時給に直すと ¥7,840。
+  session: 3733,
+  // 45分（25分の会話＋15分の振り返り＋5分のまとめ）。
+  // ¥19,800 の 40% は ¥7,920 だが、帯の上限 ¥7,000 で止める。
+  mockdate: 7573,
 };
+
 
 
 /**
@@ -203,26 +209,20 @@ export type CostModel = {
 };
 
 export const COSTS: Record<PlanId, CostModel> = {
-  // 3人が読んで反応を返し、1人が直し方を書く。
-  // 合計 ¥1,950。指定の「女性目線レビュー 1,500〜2,500円」の中。
-  // 1件ぶんの反応は ¥230 → ¥500 になる。
-  review: {
-    parts: [
-      { kind: "quick", n: 3, atYen: 500 },
-      { kind: "improve", n: 1, atYen: 450 },
-    ],
-  },
-  // 1人が動画で反応を返す
-  reaction: { parts: [{ kind: "talk", n: 1, atYen: 3000 }] },
-  // 1人と、その場でやりとり
-  mockchat: { parts: [{ kind: "talk", n: 1, atYen: 4000 }] },
-  // 1人と15分
-  call15: { parts: [{ kind: "talk", n: 1, atYen: 3000 }] },
-  // 1人と30〜45分
-  session: { parts: [{ kind: "talk", n: 1, atYen: 5000 }] },
-  // 1人と、通しで
-  mockdate: { parts: [{ kind: "talk", n: 1, atYen: 7000 }] },
+  // 1回 = 1人が読んで、直し方と修正文まで書く。
+  // 1件 ¥450。5回ぶんで ¥2,250、売価 ¥5,980 に対して変動費 37.6%。
+  //
+  // 3人にしたいなら、ここだけ直しても通らない。
+  // 5回パスの売価（plans.ts の yen）も一緒に上げること。
+  review: { parts: [{ kind: "quick", n: 1, atYen: 450 }] },
+  // 15分、1人と話す
+  call15: { parts: [{ kind: "talk_short", n: 1, atYen: 1900 }] },
+  // 30分、1人と話す
+  session: { parts: [{ kind: "talk", n: 1, atYen: 3000 }] },
+  // 45分。通しでやって、そのあと振り返る
+  mockdate: { parts: [{ kind: "talk", n: 1, atYen: 6500 }] },
 };
+
 
 
 /* ── 急ぎの上乗せ ────────────────────────────
@@ -305,18 +305,24 @@ export function unit(id: PlanId): Unit {
   const p = plan(id);
   const model = COSTS[id];
 
+  // まとめ売り（5回パス）は、1回あたりで見る。
+  // パックの売価と1回の原価を突き合わせると、5倍ずれる。
+  // ここを p.yen のままにすると、原価を5分の1に見誤って
+  // 「粗利90%の入口商品」という、あり得ない数字が出る。
+  const yen = p.uses ? p.yen / p.uses : p.yen;
+
   // 見込みの単価で積む。幅の上限で積むと、入口商品が成立しない。
   const rewardMax = model.parts.reduce((n, x) => n + x.atYen * x.n, 0);
   const rewardMin = model.parts.reduce((n, x) => n + reward(x.kind).min * x.n, 0);
 
-  const payment = Math.round(p.yen * PAYMENT_RATE);
-  const refund = Math.round(p.yen * REFUND_RATE);
+  const payment = Math.round(yen * PAYMENT_RATE);
+  const refund = Math.round(yen * REFUND_RATE);
   const variable = rewardMax + payment + AI_COST_YEN + refund + MISC_COST_YEN;
-  const margin = p.yen - variable;
+  const margin = yen - variable;
 
   const capYen = REWARD_CAP[id];
   const variableAtCap = capYen + payment + AI_COST_YEN + refund + MISC_COST_YEN;
-  const marginAtCap = p.yen - variableAtCap;
+  const marginAtCap = yen - variableAtCap;
 
   return {
     plan: p,
@@ -328,11 +334,11 @@ export function unit(id: PlanId): Unit {
     misc: MISC_COST_YEN,
     variable,
     margin,
-    marginRate: p.yen > 0 ? margin / p.yen : 0,
+    marginRate: yen > 0 ? margin / yen : 0,
     // 案件を作るときの上限。報酬を動かしてよいのはここまで。
     capYen,
     marginAtCap,
-    marginRateAtCap: p.yen > 0 ? marginAtCap / p.yen : 0,
+    marginRateAtCap: yen > 0 ? marginAtCap / yen : 0,
   };
 }
 

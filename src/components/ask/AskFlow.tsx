@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   OPEN_CATEGORIES, RELATIONS, AGE_BANDS, PANEL_AGES, ATTRS_OPEN,
@@ -89,6 +89,36 @@ export default function AskFlow() {
   // 恋愛のどこで悩んでいるか。トップから来たときは決まっている。
   const seededStep = params.get("step");
   const [stepId] = useState(isStepId(seededStep) ? seededStep : null);
+
+  // 押す直前に「何を相談するのか」を見せる。
+  // 自分が書いたものが、そのまま出てくる形にする（ここで足さない）。
+  const summary = (isAb ? `${a.trim()} と ${b.trim()} のどちらか` : text.trim())
+    .split("\n")[0]
+    .slice(0, 60);
+
+  // 持っている5回パスの残り。無ければ null。
+  // 鍵はこの端末にだけ置く（会員登録が無いので、ここが持ち主の証）。
+  const [pass, setPass] = useState<{ token: string; remaining: number } | null>(null);
+  useEffect(() => {
+    let live = true;
+    try {
+      const t = localStorage.getItem("hr_pass");
+      if (!t) return;
+      void fetch(`/api/pass/${t}`, { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => {
+          if (live && j && typeof j.remaining === "number") {
+            setPass({ token: t, remaining: j.remaining });
+          }
+        })
+        .catch(() => {});
+    } catch {
+      // localStorage が使えない端末。パス無しとして進む
+    }
+    return () => {
+      live = false;
+    };
+  }, []);
   // 同じ相手についての相談をまとめる。相手の情報は持たない。
   const [thread, setThread] = useState<string | null>(null);
   const [threadLabel, setThreadLabel] = useState("");
@@ -124,8 +154,12 @@ export default function AskFlow() {
           askerAge, otherAge, relation, panelAge, panelAttrs, askedAi,
           // 恋愛のどの段階か。相手の情報ではないので保存してよい。
           step: stepId,
-          // 金額は送らない。プランIDと、選んだオプションのIDだけ。
+          // 金額は送らない。プランIDだけ。
           plan: planId,
+          // 5回パスを持っているなら、その鍵。
+          // サーバーが残りを確かめて、あれば1回使う。
+          // 残りが無ければ使わない（この画面の数字は信じない）。
+          pass: pass?.token ?? null,
         }),
       });
       const json = await res.json();
@@ -148,8 +182,19 @@ export default function AskFlow() {
         });
       }
 
-      // 支払いへ。作れなかったときは相談の画面へ送る。
-      // そこに「お支払いへ進む」と、進めない理由が出る。
+      // パスの1回ぶんで済んだなら、決済の画面は出さない。
+      // 迷うたびにカードの画面を出すと、そこで止まる。
+      if (json.used) {
+        if (typeof json.remaining === "number") {
+          setPass((prev) => (prev ? { ...prev, remaining: json.remaining } : prev));
+        }
+        track("pass_used", { remaining: Number(json.remaining ?? 0) });
+        router.replace(`/ask/${json.token}?new=1`);
+        return;
+      }
+
+      // 持っていないなら、ここで初めて決済へ。
+      // 作れなかったときは相談の画面へ送る（進めない理由がそこに出る）。
       track("checkout_started", { plan: planId, value: total });
       const pay = await fetch("/api/checkout", {
         method: "POST",
@@ -449,44 +494,31 @@ export default function AskFlow() {
               </div>
             </div>
 
-            {/* ── 料金確認 ── */}
+            {/* ── ここまで無料。何を相談するのかが決まってから、値段の話をする ── */}
             <div className="mt-8 rounded-card border border-brand bg-paper shadow-card">
               <div className="border-b border-line px-5 py-4">
-                <p className="text-[12px] font-bold text-steel">お支払い内容</p>
-
-                {/* 何にいくら払うのか、内訳のまま出す。
-                    合計だけ出すと、押す直前に「何が増えたのか」が分からない。 */}
-                <dl className="mt-3 flex flex-col gap-1.5 text-[13.5px]">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <dt className="min-w-0 text-slate">{p.name}</dt>
-                    <dd className="shrink-0 text-slate">
-                      <Yen yen={p.yen} />
-                    </dd>
-                  </div>
-                </dl>
-
-                <div className="mt-3.5 flex items-baseline justify-between gap-3 border-t border-line pt-3.5">
-                  <p className="text-[13px] font-bold text-steel">合計</p>
-                  <p className="shrink-0 text-[28px] font-black leading-none">
-                    <Yen yen={total} />
-                  </p>
-                </div>
-                <p className="mt-2 text-[12px] text-steel">税込 / 1回のみ。月額はありません。</p>
+                <p className="text-[12px] font-bold text-steel">相談内容をまとめました</p>
+                <p className="mt-2 text-[15px] font-bold leading-[1.7] text-slate">
+                  {summary || "今回確認したいこと"}
+                </p>
+                <p className="mt-2 text-[12.5px] text-steel">
+                  {getCategory(cat).label}
+                  {canTarget && panelAge !== "any" && ` / ${panelAge}の女性`}
+                </p>
               </div>
 
-              {/* 払う直前に、何を買うのかをもう一度出す。
-                  ここを読まずに押した人が、あとで「そんな話は聞いていない」になる。 */}
+              {/* 何が返るか。押す直前にもう一度出す */}
               <dl className="divide-y divide-line text-[13px] leading-[1.75]">
                 {[
                   ["読む人", `実在の女性 ${answers}人`],
                   [
                     "返るもの",
-                    "一人ひとりの第一印象と、「このままでOK／少し気になる／変えた方がいい」、そう思った理由",
+                    "第一印象、良いところ、気になったところ、そう感じた理由、直し方、そのまま使える修正文、次にやること",
                   ],
-                  ["追加料金", "なし。この合計以上はかかりません"],
+                  ["追加料金", "なし。往復のやりとりは付きません"],
                   [
-                    "集まらないとき",
-                    `${WAIT_MINUTES}分たっても${answers}人に届かなければ、集まった分だけ受け取る／条件を広げて待つ／全額返してもらう、から選べます`,
+                    "届かないとき",
+                    `${WAIT_MINUTES}分たっても届かなければ、条件を広げて待つか、使った1回分を戻すかを選べます`,
                   ],
                 ].map(([k, v]) => (
                   <div key={k} className="flex gap-3 px-5 py-3">
@@ -495,6 +527,37 @@ export default function AskFlow() {
                   </div>
                 ))}
               </dl>
+
+              {/* 持っている人には、決済の画面を出さない */}
+              <div className="border-t border-line bg-mist px-5 py-4">
+                {pass && pass.remaining > 0 ? (
+                  <>
+                    <p className="text-[13.5px] font-bold leading-[1.7] text-slate">
+                      この相談に、確かめる1回分を使います。
+                    </p>
+                    <p className="mt-1.5 text-[12.5px] tabular-nums text-steel">
+                      残り {pass.remaining}回 → {pass.remaining - 1}回
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[13.5px] font-bold leading-[1.7] text-slate">
+                      この相談は「確かめる」1回分で確認できます。
+                    </p>
+                    <p className="mt-2 flex flex-wrap items-baseline gap-x-2 text-[13.5px]">
+                      <span className="font-bold text-slate">{p.name}</span>
+                      <span className="text-[22px] font-black leading-none">
+                        <Yen yen={p.yen} />
+                      </span>
+                    </p>
+                    <p className="mt-1.5 text-[12.5px] leading-[1.75] text-steel">
+                      {p.uses
+                        ? `この相談のあと、あと${p.uses - 1}回ぶんは別の迷いにも使えます。月額はありません。自動更新もしません。`
+                        : "税込 / 1回のみ。月額はありません。"}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
 
             {error && (
@@ -506,8 +569,10 @@ export default function AskFlow() {
             <div className="mt-7">
               <Action onClick={send} disabled={sending}>
                 {sending
-                  ? "お支払いへ進みます…"
-                  : `この内容で女性${answers}人に相談する（¥${total.toLocaleString()}）`}
+                  ? "進んでいます…"
+                  : pass && pass.remaining > 0
+                    ? "1回分を使って確かめる"
+                    : `${p.uses ?? 1}回分を持って、この相談を出す`}
               </Action>
             </div>
             <div className="mt-4">

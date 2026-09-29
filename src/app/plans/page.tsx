@@ -71,8 +71,8 @@ export default function PlansPage() {
           必要なところだけ、1回ごと。
         </h1>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          月額はありません。値段が上がるのは人数が増えるからではなく、
-          本番に近いところまでやるからです。
+          月額はありません。自動更新もしません。
+          値段の差は相談の量ではなく、どこまで一緒にやるかです。
         </p>
 
         <div className="mt-9">
@@ -87,8 +87,9 @@ export default function PlansPage() {
         )}
 
         <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
-          税込。いま受け付けているのは「{main.name}」だけです。ほかの4つは、
-          その場で会話する・動画を受け取るための手順が用意できてから開きます。
+          税込。いま受け付けているのは「{main.name}」だけです。
+          通話とMock Dateは、時間を決めた受け入れ方と、その場を見る体制が
+          用意できてから開きます。
           募集を始める前ならキャンセルできます。人数が集まらなかった場合は、
           集まらなかった分をご返金します。
           <Link
