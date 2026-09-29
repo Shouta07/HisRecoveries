@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { NAME } from "@/lib/voice";
+import { NAME, OPERATOR } from "@/lib/voice";
 import Link from "next/link";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { site } from "@/lib/site";
@@ -153,7 +153,7 @@ export default async function AnswerersPage() {
                 href="/ask"
                 className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-line bg-paper px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
               >
-                先に聞いてみる
+                先に通してみる
               </Link>
             </div>
           </div>
@@ -173,14 +173,14 @@ export default async function AnswerersPage() {
         <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-6 py-10 sm:flex-row sm:items-baseline sm:justify-between sm:px-10">
           <div className="flex items-baseline gap-6">
             <Link href="/" className="text-[15px] font-black">
-              His Recoveries
+              {NAME}
             </Link>
             <Link href="/safety" className="text-[12px] text-steel transition-colors hover:text-slate">
               安全とできないこと
             </Link>
           </div>
           <p className="text-[11.5px] text-steel">
-            © 2026 His Recoveries — Powered by AI. Answered by humans.
+            © 2026 {OPERATOR}
           </p>
         </div>
       </footer>

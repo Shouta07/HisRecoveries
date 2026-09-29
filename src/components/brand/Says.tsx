@@ -1,14 +1,18 @@
 import Tashikame, { type Mood } from "./Tashikame";
 
-// タシカメが喋る吹き出し。
+// 空のときの案内。
 //
-// ── 空の画面の主にする ────────────────────────────
-// 「まだありません」だけの画面は、壊れているのか作っている途中かが
-// 分からない。タシカメが1行言うと、そこが待っている場所だと分かる。
+// ── 吹き出しをやめた ──────────────────────────────
+// 以前はタシカメが喋る吹き出しだった。
+// サービスの名前がタシカメになった時点で、
+// 喋っているのはキャラクターではなくサービスになる。
 //
-// ── 主役にしすぎない ──────────────────────────────
-// 結果の数字の横に置かない。数字より先に目に入ると、
-// 人が答えた結果ではなく、キャラクターが言ったことに見える。
+// 「勘で、出さない。」と言った3段落あとに、
+// マスコットが語尾を跳ねさせていると、重さが消える。
+// しっぽを外して、ただの案内にした。
+//
+// 亀のマークは残す。急がば回れ・慎重・焦らない。
+// この製品が言いたいことと、同じことを言っている。
 
 export default function Says({
   text,
@@ -36,13 +40,7 @@ export default function Says({
             dark ? "border-line-dark bg-slate text-paper" : "border-line bg-paper text-slate shadow-card"
           }`}
         >
-          {/* 吹き出しのしっぽ。左向きの三角を、線で作る */}
-          <span
-            aria-hidden
-            className={`absolute -left-[7px] top-6 block h-3 w-3 rotate-45 border-b border-l ${
-              dark ? "border-line-dark bg-slate" : "border-line bg-paper"
-            }`}
-          />
+          {/* しっぽは外した。喋っていないので、吹き出しにしない。 */}
           <p className="relative text-[15.5px] font-bold leading-[1.7]">{text}</p>
         </div>
         {children && <div className="mt-4">{children}</div>}
