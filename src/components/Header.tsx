@@ -21,7 +21,17 @@ export default function Header() {
   // 「女性に聞く」の面（相談・結果・回答）は、それ自体がプロダクト。
   // 記事サイトのヘッダー（男の改善は、順番で決まる／現在地を測る）が重なると、
   // 何のサービスを使っているのか分からなくなる。
-  if (pathname?.startsWith("/ask") || pathname?.startsWith("/r/") || pathname === "/join" || pathname?.startsWith("/answerers") || pathname === "/safety" || pathname === "/mine" || pathname === "/legal" || pathname === "/how" || pathname === "/talk" || pathname?.startsWith("/me/") || pathname?.startsWith("/s/")) return null;
+  // 1つ増やすたびにこの行が伸びていたので、一覧にした。
+  const BRAND_PAGES = [
+    "/join", "/safety", "/mine", "/legal", "/how", "/talk", "/plans",
+  ];
+  const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/"];
+  if (
+    BRAND_PAGES.includes(pathname ?? "") ||
+    BRAND_PREFIXES.some((x) => pathname?.startsWith(x))
+  ) {
+    return null;
+  }
   if (pathname === "/") return null;
 
   return (

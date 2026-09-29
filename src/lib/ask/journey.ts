@@ -48,6 +48,7 @@
 
 import { assertPlain, assertNotScary } from "../voice";
 import { plan, type PlanId } from "./plans";
+import { CASES, OPEN_CASES } from "./cases";
 
 export type StepId = "before" | "matched" | "before_meet" | "date" | "deeper";
 
@@ -68,6 +69,14 @@ export type Step = {
   summary: string;
   /** 道のりの絵に出す絵柄。lib ではキーだけ持ち、形は画面側 */
   icon: "profile" | "chat" | "call" | "date" | "heart";
+  /**
+   * その段で出す場面（cases.ts の id）。
+   *
+   * 段の一覧と場面の一覧を別々の節に置いていたが、
+   * 同じことを2回言っていた。段を押したらその場で場面が開く形にして、
+   * どの段にどの場面が付くかをここで持つ。
+   */
+  cases: string[];
   /**
    * その段で実際に迷う選択。問いの形のまま置く。
    *
@@ -101,6 +110,7 @@ export const STEPS: Step[] = [
     choices: ["この自己紹介文でいい？", "最初の一行、どっちにする？", "趣味はどこまで書く？"],
     summary: "自己紹介文とプロフィールを整える",
     icon: "profile",
+    cases: ["photo"],
     plan: "review",
     category: "photo",
   },
@@ -112,6 +122,7 @@ export const STEPS: Step[] = [
     choices: ["いま返す？ 少し待つ？", "この文面で送る？", "そろそろ誘う？"],
     summary: "返信・会話・誘い方を確かめる",
     icon: "chat",
+    cases: ["message", "date"],
     plan: "review",
     next: "mockchat",
     category: "message",
@@ -124,6 +135,7 @@ export const STEPS: Step[] = [
     choices: ["電話する？", "この店でいい？", "どこまで先に話しておく？"],
     summary: "電話や初対面の前の不安を減らす",
     icon: "call",
+    cases: ["call"],
     plan: "mockchat",
     category: "message",
   },
@@ -135,6 +147,7 @@ export const STEPS: Step[] = [
     choices: ["今日送る？ 明日にする？", "次に誘う？", "好意を出す？ 一旦引く？"],
     summary: "本番の前後の反応と、次の一手を確かめる",
     icon: "date",
+    cases: ["signal"],
     plan: "review",
     next: "mockdate",
     category: "signal",
@@ -147,6 +160,7 @@ export const STEPS: Step[] = [
     choices: ["告白する？ まだ待つ？", "関係について聞く？", "次の一手は何にする？"],
     summary: "告白・距離感・次の進め方を決める",
     icon: "heart",
+    cases: ["romance"],
     plan: "review",
     next: "session",
     category: "romance",
@@ -202,6 +216,23 @@ export function nextStep(id: StepId): Step | null {
       throw new Error(
         `段階「${st.id}」の行が画像を受け取れる前提になっています（${st.summary}）`,
       );
+    }
+  }
+
+  // 段と場面が、ちゃんとつながっていること。
+  // 押しても何も出ない段があると、その段だけ行き止まりになる。
+  for (const st of STEPS) {
+    if (st.cases.length === 0) throw new Error(`段階「${st.id}」に場面がありません`);
+    for (const id of st.cases) {
+      if (!CASES.some((c) => c.id === id)) {
+        throw new Error(`段階「${st.id}」が、無い場面「${id}」を指しています`);
+      }
+    }
+  }
+  // 受け付けている場面が、どこからも開けないまま残っていないこと。
+  for (const c of OPEN_CASES) {
+    if (!STEPS.some((st) => st.cases.includes(c.id))) {
+      throw new Error(`場面「${c.id}」が、どの段からも開けません`);
     }
   }
 

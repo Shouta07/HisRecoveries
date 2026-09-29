@@ -12,6 +12,12 @@ import { OPERATOR } from "@/lib/voice";
 // 無くなる。この2つは、課金する以上どこかから必ず辿れないといけない。
 // 下に長く並べる代わりに、ここへ畳んだ。
 //
+// ── 入れないもの ──────────────────────────────────
+// 記事・編集方針・更新記録・広告と収益については、記事側のもの。
+// タシカメを買いに来た人には要らない（記事側のヘッダーと
+// 記事内の表示から辿れるので、消えるわけではない）。
+// メニューが長いほど、本当に要る2つが見つけにくくなる。
+//
 // ── 開いている間は、後ろを動かさない ──────────────
 // 背景がスクロールすると、閉じたときに違う場所に戻る。
 //
@@ -29,6 +35,7 @@ const GROUPS: { h: string; items: readonly (readonly [string, string])[] }[] = [
     h: "使う",
     items: [
       ["/ask", "確かめる"],
+      ["/plans", "料金"],
       ["/mine", "相談したこと"],
       ["/talk", "電話の練習（受付前）"],
     ] as const,
@@ -39,26 +46,41 @@ const GROUPS: { h: string; items: readonly (readonly [string, string])[] }[] = [
       ["/answerers", "誰が読むのか"],
       ["/how", "仕組み"],
       ["/safety", "安心・安全"],
-      ["/articles", "記事"],
     ] as const,
   },
   {
-    h: "参加する",
-    items: [
-      ["/join", "答える側になる"],
-      ["/about", "編集方針"],
-      ["/updates", "更新記録"],
-    ] as const,
+    h: "答える側",
+    items: [["/join", "答える側になる"]] as const,
   },
   {
     h: "決まりごと",
     items: [
       ["/legal", "特定商取引法に基づく表記"],
       ["/privacy", "プライバシー・免責事項"],
-      ["/disclosure", "広告と収益について"],
     ] as const,
   },
 ];
+
+/* ── 公開の前に止めること ─────────────────────────
+   フッターを外したので、ここが特商法の表記とプライバシーへの
+   唯一の常設導線になっている。整理のときに消えると、
+   課金する画面から法定の表記へ辿れなくなる。 */
+{
+  const hrefs = GROUPS.flatMap((g) => g.items.map(([h]) => h));
+  for (const must of ["/legal", "/privacy"]) {
+    if (!hrefs.includes(must)) {
+      throw new Error(`メニューから ${must} が消えています（ここが唯一の導線です）`);
+    }
+  }
+  // 値段はトップから外して別のページにした。ここから辿れないと、
+  // 押す前に金額を確かめる方法が無くなる。
+  if (!hrefs.includes("/plans")) {
+    throw new Error("メニューから料金が消えています（トップに値段は出していません）");
+  }
+  if (!hrefs.includes("/join")) {
+    throw new Error("メニューから答える側の入口が消えています（スマホではここだけです）");
+  }
+}
 
 export default function MenuButton() {
   const [open, setOpen] = useState(false);

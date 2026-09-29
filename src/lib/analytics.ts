@@ -97,6 +97,9 @@ export const CONVERSION_EVENTS = [
   "live_opened", // 届くまでの画面を開いた（props: plan）
   "live_completed", // 全員そろうまで見ていた（props: n）
   "next_step_picked", // 結果のあとに次を選んだ（props: step）
+  // 道のりの段を押して、その場で場面を開いた（props: step）。
+  // ここが伸びてCTAが伸びないなら、見せている場面が弱い。
+  "step_opened",
   "assist_opened", // うまく書けない、から整理へ入った（props: from）
   "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
   "talk_waitlist", // 話す商品の順番待ちに登録した
