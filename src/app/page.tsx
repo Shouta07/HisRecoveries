@@ -13,6 +13,7 @@ import PlanCta from "@/components/brand/PlanCta";
 import Tashikame from "@/components/brand/Tashikame";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
+import Slot from "@/components/brand/Slot";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ。
@@ -210,22 +211,27 @@ export default async function HomePage() {
       <section className="bg-sky">
         <Wrap className="grid gap-10 pb-12 pt-11 lg:grid-cols-[1fr_0.95fr] lg:items-start lg:gap-12 lg:pb-16 lg:pt-14">
           <div>
-            <h1 className="text-mega font-black leading-[1.25] text-slate">
-              送る前に、会う前に、
+            <p className="inline-flex items-center gap-2 rounded-pill border border-brand/40 bg-paper px-4 py-2 text-[12.5px] font-bold text-brand">
+              <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+              </svg>
+              男性の方へ
+            </p>
+
+            {/* 2行に収めようとすると「する。」だけが3行目に落ちる。
+                最初から3行で組む。 */}
+            <h1 className="mt-5 text-mega font-black leading-[1.22] text-slate">
+              大事な相手だから、
               <br />
-              <span className="relative inline-block">
-                話す前に。
-                <span
-                  aria-hidden
-                  className="absolute -bottom-1 left-0 h-[10px] w-full -skew-x-6 rounded-pill bg-brand/25"
-                />
-              </span>
+              失敗する前に
+              <br />
+              <span className="text-brand">相談する。</span>
             </h1>
 
             <p className="mt-7 max-w-[24em] text-[15.5px] leading-[1.95] text-steel sm:text-[16.5px]">
-              写真・メッセージ・会話を、実在女性に相談できます。
+              写真・メッセージ・会話。
               <br className="hidden sm:block" />
-              大事な相手だから、失敗する前に確認する。
+              迷った瞬間に、実在女性の反応をもとに次の一手を考えられます。
             </p>
 
             {!open && (
@@ -257,71 +263,45 @@ export default async function HomePage() {
             </p>
           </div>
 
-          {/* 何が返ってくるかを、説明より先に見せる */}
-          <Reveal>
-            <div className="overflow-hidden rounded-card border border-line bg-paper shadow-card">
-              <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-3.5">
-                <p className="text-[12.5px] font-bold text-brand">{DEMO.says.length}人の反応</p>
-                <span className="shrink-0 rounded-pill bg-mist px-2.5 py-1 text-[10.5px] text-steel">
-                  画面の見本
-                </span>
-              </div>
+          {/* 右は、使う人の側の絵。
+              文字は写真の上に重ねない。顔が隠れると、何の写真か分からなくなる。
+              手書きの一文も画像に焼き込まず、文字として置く
+              （読み上げにも乗るし、あとで変えられる）。 */}
+          <div>
+            <p className="text-right text-[16px] font-bold leading-[1.7] text-slate sm:text-[18px]">
+              うまくいく恋は、
+              <br />
+              準備できる。
+              <span
+                aria-hidden
+                className="ml-auto mt-1.5 block h-[3px] w-[7.5em] -skew-y-1 rounded-pill bg-brand/50"
+              />
+            </p>
 
-              <div className="border-b border-line px-5 py-4">
-                <p className="text-[11.5px] font-bold text-steel">送ろうとしていた文面</p>
-                <p className="mt-2 rounded-card rounded-tl-[4px] bg-brand-tint px-4 py-3 text-[15px] leading-[1.7] text-slate">
-                  {DEMO.before}
+            <div className="mt-5 flex items-end gap-4">
+              {/* 送る前のやりとり。顔は置かず、言葉だけ */}
+              <div className="flex min-w-0 flex-1 flex-col gap-2.5 pb-3">
+                <p className="w-fit rounded-card rounded-bl-[4px] border border-line bg-paper px-4 py-2.5 text-[13px] leading-[1.65] text-slate shadow-card">
+                  このメッセージ、
+                  <br />
+                  どう思いますか？
+                </p>
+                <p className="ml-auto w-fit rounded-card rounded-br-[4px] bg-brand-tint px-4 py-2.5 text-right text-[13px] leading-[1.65] text-slate">
+                  いいと思います！
+                  <br />
+                  もう少しカジュアルにすると
+                  <br />
+                  さらに好印象です
                 </p>
               </div>
 
-              <ul className="flex divide-x divide-line border-b border-line text-center">
-                {VERDICTS.map((v) => (
-                  <li key={v.id} className="flex-1 px-2 py-4">
-                    <p
-                      className={`text-[26px] font-black tabular-nums leading-none ${
-                        v.id === "change" ? "text-rose-text" : v.id === "as_is" ? "text-ok-text" : "text-slate"
-                      }`}
-                    >
-                      {count(DEMO, v.id)}
-                      <span className="text-[13px] text-steel">人</span>
-                    </p>
-                    <p className="mt-1.5 text-[10.5px] leading-[1.4] text-steel">{v.label}</p>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="border-b border-line bg-rose-tint px-5 py-4">
-                <p className="text-[11px] font-bold text-rose-text">共通して気になったこと</p>
-                <p className="mt-1.5 text-[14.5px] font-bold leading-[1.7] text-slate">
-                  {DEMO.common}
-                </p>
-              </div>
-
-              <ul className="flex flex-col gap-3.5 px-5 py-5">
-                {DEMO.says.slice(0, 3).map((s) => (
-                  <li key={s.age} className="flex items-start gap-3">
-                    <Who age={s.age} size={32} />
-                    <span className="min-w-0">
-                      <span className="flex flex-wrap items-center gap-2">
-                        <span className="text-[11.5px] font-bold text-slate">{s.age}歳・女性</span>
-                        <span
-                          className={`rounded-pill px-2 py-0.5 text-[10px] font-bold ${TONE[s.verdict]}`}
-                        >
-                          {label(s.verdict)}
-                        </span>
-                      </span>
-                      <span className="mt-1 block text-[13.5px] leading-[1.7] text-steel">
-                        {s.say}
-                      </span>
-                    </span>
-                  </li>
-                ))}
-                <li className="text-[12.5px] font-bold text-brand">
-                  他の反応も見る <span aria-hidden>→</span>
-                </li>
-              </ul>
+              <Slot
+                name="hero"
+                className="aspect-[266/410] w-[46%] shrink-0 sm:w-[200px] lg:w-[220px]"
+                rounded="rounded-card"
+              />
             </div>
-          </Reveal>
+          </div>
         </Wrap>
       </section>
 

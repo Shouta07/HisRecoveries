@@ -20,13 +20,29 @@ export type ImageSlot = {
   alt: string;
   /** 何を写すか。撮影を頼むときの指示になる */
   note: string;
+  /**
+   * ファイルが実際に置いてあるか。
+   *
+   * ここが false のあいだは、枠の中に note を出す（何を写すかの案内）。
+   * true にすると案内は出ない。
+   *
+   * 自動で判定していないのは、画像が読めたかどうかを
+   * サーバー側で知る方法が無いから。置いたら、ここも true にする。
+   */
+  ready?: boolean;
 };
 
-export const IMAGES = {
+export type ImageKey = "hero" | "caseMessage" | "caseDate" | "casePhoto" | "caseStyle" | "caseProfile" | "caseWords" | "step1" | "step4";
+
+export const IMAGES: Record<ImageKey, ImageSlot> = {
   hero: {
     src: "/img/hero.jpg",
     alt: "スマホを見ながら考えている男性",
+    // いま入っているのは、いただいた画面の見本から切り出したもの（266×410）。
+    // 画面の写しなので、これ以上大きくすると粗くなる。
+    // 元の写真ファイルをいただければ、もっと大きく使える。
     note: "送る直前に手が止まっている様子。正面ではなく、画面を見ている横顔。",
+    ready: true,
   },
   caseMessage: { src: "/img/case-message.jpg", alt: "", note: "LINEの画面" },
   caseDate: { src: "/img/case-date.jpg", alt: "", note: "夜の店の席" },
@@ -36,9 +52,8 @@ export const IMAGES = {
   caseWords: { src: "/img/case-words.jpg", alt: "", note: "言葉にできずに考えている様子" },
   step1: { src: "/img/step-1.jpg", alt: "", note: "スマホに質問を打ち込んでいる手元" },
   step4: { src: "/img/step-4.jpg", alt: "", note: "決めて、送ったあとの表情" },
-} satisfies Record<string, ImageSlot>;
+};
 
-export type ImageKey = keyof typeof IMAGES;
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
@@ -47,5 +62,9 @@ export type ImageKey = keyof typeof IMAGES;
       throw new Error(`画像「${k}」は public/img/ の下に置いてください`);
     }
     if (!v.note) throw new Error(`画像「${k}」に、何を写すかが書かれていません`);
+    // 人が写るものには、読み上げ用の文が要る。
+    if (v.ready && k === "hero" && !v.alt) {
+      throw new Error(`画像「${k}」に alt がありません`);
+    }
   }
 }

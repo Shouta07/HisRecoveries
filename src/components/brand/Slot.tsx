@@ -36,10 +36,14 @@ export default function Slot({
       aria-label={img.alt || undefined}
       aria-hidden={img.alt ? undefined : true}
     >
-      {/* 写真が無いときに見える案内。写真が乗れば隠れる */}
-      <span className="pointer-events-none absolute inset-0 -z-0 flex items-center justify-center p-4 text-center text-[11px] leading-[1.6] text-steel">
-        {img.note}
-      </span>
+      {/* 写真がまだ無い枠にだけ、何を写すかの案内を出す。
+          背景画像の上に重ねると、写真が乗ったあとも文字が透けて見える。
+          だから ready のときは、そもそも描かない。 */}
+      {!img.ready && (
+        <span className="pointer-events-none absolute inset-0 flex items-center justify-center p-4 text-center text-[11px] leading-[1.6] text-steel">
+          {img.note}
+        </span>
+      )}
       {children}
     </div>
   );
