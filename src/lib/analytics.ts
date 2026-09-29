@@ -107,6 +107,9 @@ export const CONVERSION_EVENTS = [
   "call_joined", // 通話に入れた（props: plan）
   "call_ended", // 通話が終わった（props: plan, reason）
   "call_rated", // 終わったあとの振り返りを出した（props: rating）
+  // 5回パス。買った回数のうち、何回目で離れるかを見る。
+  "pass_used", // 1回ぶんを使った（props: remaining）
+  "pass_empty", // 使い切った画面を見た
   "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
   // 集まらなかったときに何を選んだか。供給が足りない度合いが出る。
   "shortfall_picked", // 足りないときの選択（props: choice, got, of）

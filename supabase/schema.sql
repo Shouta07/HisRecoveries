@@ -1061,3 +1061,67 @@ select
 from call_sessions cs
 left join responders r on r.id = cs.responder_id
 order by coalesce(cs.scheduled_at, cs.created_at) desc;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 確かめる（5回パス）
+--
+-- ── 1件ずつ売らない ─────────────────────────────
+-- 迷いは小さい。迷うたびに決済の画面が出ると、そこで止まる。
+-- 売るのは「迷った時に5回まで使える状態」。
+--
+-- ── 残りはサーバーが持つ ────────────────────────
+-- 画面の数字は表示。減らすのはここだけ。
+-- 使った記録（pass_uses）を1件ずつ残し、
+-- 残りは「買った回数 − 使った件数」で出す。
+-- 数字を直接書き換える列は作らない（書き換えの事故を残さない）。
+--
+-- ── 自動更新しない ──────────────────────────────
+-- 期限も作らない。買った回数は、使うまで残る。
+-- 期限で消す仕組みを作ると、急がせる商売になる。
+-- ═══════════════════════════════════════════════════════════════
+
+create table if not exists ask_passes (
+  id uuid primary key default gen_random_uuid(),
+  -- 持ち主がこのパスを開く鍵（c + 32文字）
+  token text unique not null,
+  plan_id text not null,
+  -- 買った回数。5回パスなら 5
+  uses_total int not null check (uses_total > 0),
+  price int,
+  stripe_payment_id text,
+  paid_at timestamptz,
+  -- 運営が足したとき（返金の代わりなど）。理由も一緒に残す
+  granted_extra int not null default 0,
+  granted_reason text,
+  created_at timestamptz default now()
+);
+
+create index if not exists ask_passes_paid_idx on ask_passes (paid_at desc);
+
+-- 1回使うごとに1行。残りはここを数えて出す。
+create table if not exists pass_uses (
+  id uuid primary key default gen_random_uuid(),
+  pass_id uuid not null references ask_passes(id),
+  consultation_id uuid references consultations(id),
+  created_at timestamptz default now()
+);
+
+create index if not exists pass_uses_pass_idx on pass_uses (pass_id, created_at desc);
+
+-- 残り回数。画面はここを読む。
+-- 引き算を1か所にしておかないと、数え方が画面ごとにずれる。
+create or replace view pass_balance as
+select
+  p.id,
+  p.token,
+  p.plan_id,
+  p.uses_total,
+  p.granted_extra,
+  p.paid_at,
+  count(u.id) as used,
+  (p.uses_total + p.granted_extra - count(u.id)) as remaining
+from ask_passes p
+left join pass_uses u on u.pass_id = p.id
+where p.paid_at is not null
+group by p.id;

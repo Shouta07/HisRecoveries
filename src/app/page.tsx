@@ -2,7 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
-import { plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN, OPEN_USE_CASES } from "@/lib/ask/plans";
+import {
+  PLANS,
+  TIERS,
+  plan as getPlan,
+  SUBJECTS,
+  ENTRY_PLAN,
+  DEFAULT_PLAN,
+  OPEN_USE_CASES,
+} from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
 import { ALTERNATIVES, COMPARE, COMPARE_NOTE, COMPARE_SCOPE } from "@/lib/ask/compare";
 import { VERDICTS } from "@/lib/ask/model";
@@ -90,6 +98,7 @@ export const metadata: Metadata = {
 const NAV = [
   ["#moments", "恋愛の道のり"],
   ["#before-after", "実例"],
+  ["#which", "どれを使う？"],
   ["#faq", "よくある質問"],
   ["#price", "料金"],
 ] as const;
@@ -324,6 +333,20 @@ function Who({ age, size = 36 }: { age: number; size?: number }) {
 }
 
 /** 値段が上がる理由。段の意味を1行で */
+/**
+ * 3つの役割の説明。
+ *
+ * 値段の差を「相談の量」で説明しない。
+ * どこまで一緒にやるか、で説明する。
+ */
+const WHICH: Record<string, string> = {
+  check:
+    "プロフィール、自己紹介文、LINE、誘い方、デート後の返信。小さな判断を、女性目線で5回まで確かめられます。",
+  decide:
+    "誘うか、今返すか、一度引くか。書いて待つより早いところを、実在の女性と直接話して決めます。",
+  try: "本番の前に、一度だけ実在の女性相手にやってみる。何がよくて何が引っかかったかが、画面に残ります。",
+};
+
 /** 使う瞬間の絵柄。カテゴリごとに1つ */
 const USE_ICON: Record<string, string> = {
   message: "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z",
@@ -794,28 +817,19 @@ export default async function HomePage() {
           </Reveal>
         </div>
 
-        {/* 何をもとに直したのか。数は demo.ts の中で数え直している */}
+        {/* 1回 = 1人。返ってくるものを、そのまま並べる */}
         <div className="mt-5 rounded-card border border-line bg-paper px-5 py-4 shadow-card">
-          <ul className="flex flex-wrap items-center gap-2">
-            {(["change", "slight", "as_is"] as const)
-              .map((v) => ({ v, n: count(DEMO, v) }))
-              .filter((x) => x.n > 0)
-              .map((x) => (
-                <li
-                  key={x.v}
-                  className={`rounded-pill px-3 py-1.5 text-[12px] font-bold ${TONE[x.v]}`}
-                >
-                  {label(x.v)} {x.n}人
-                </li>
-              ))}
-          </ul>
-          <p className="mt-3 text-[13.5px] font-bold leading-[1.7] text-slate">
-            共通して気になったこと：{DEMO.common}
+          <p className="text-[13.5px] font-bold leading-[1.7] text-slate">
+            気になったところ：{DEMO.common}
           </p>
-          {DEMO.split && (
-            <p className="mt-1.5 text-[12.5px] leading-[1.7] text-steel">{DEMO.split}</p>
-          )}
-          {/* 入っているのは、直し方と修正文まで。2巡目は売っていないので見本にも出さない */}
+
+          <div className="mt-3 border-t border-line pt-3">
+            <p className="text-[12px] font-bold text-steel">そのまま使える修正文</p>
+            <p className="mt-1.5 rounded-card rounded-br-[4px] bg-brand-tint px-3.5 py-2.5 text-[13.5px] font-bold leading-[1.7] text-brand-deep">
+              {DEMO.after}
+            </p>
+          </div>
+
           <div className="mt-3 border-t border-line pt-3">
             <p className="text-[12px] font-bold text-steel">なぜ、そう直したか</p>
             <p className="mt-1.5 text-[13px] leading-[1.8] text-slate">{DEMO.why}</p>
@@ -997,6 +1011,77 @@ export default async function HomePage() {
         </div>
       </Block>
 
+      {/* ══ 6.5 どれを使えばいい？ ══ */}
+      {/* 商品を機能で並べると、どれを使えばいいのか決まらない。
+          「どのくらい大事な判断か」で分ける。
+          写真・LINE・電話・デートは商品ではなく、その手段。 */}
+      <Block id="which">
+        <H>どれを使えばいい？</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          迷いの大きさで決まります。値段ではありません。
+        </p>
+
+        <ol className="mt-8 flex flex-col gap-3">
+          {TIERS.map((t, i) => {
+            const ps = PLANS.filter((x) => x.tier === t.id);
+            const cheapest = [...ps].sort((a, b) => a.yen - b.yen)[0];
+            return (
+              <Reveal key={t.id} delay={i * 60}>
+                <li className="rounded-card border border-line bg-paper p-5 shadow-card sm:p-6">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <span
+                      aria-hidden
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-tint text-[12px] font-black tabular-nums text-brand-deep"
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="text-[19px] font-black text-slate">{t.label}</span>
+                    <span className="rounded-pill bg-mist px-2.5 py-1 text-[11px] font-bold text-steel">
+                      {t.when}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-[15.5px] font-bold leading-[1.6] text-brand-deep">
+                    「{t.lead}」
+                  </p>
+                  <p className="mt-2 text-[13.5px] leading-[1.85] text-steel">
+                    {WHICH[t.id]}
+                  </p>
+
+                  <p className="mt-3.5 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-line pt-3 text-[12.5px]">
+                    <span className="font-bold text-slate">{cheapest.name}</span>
+                    <span className="font-black tabular-nums text-slate">
+                      ¥{cheapest.yen.toLocaleString()}
+                      {cheapest.from && <span className="ml-0.5 text-steel">〜</span>}
+                    </span>
+                    {ps.length > 1 && (
+                      <span className="text-steel">ほか{ps.length - 1}つ</span>
+                    )}
+                  </p>
+                </li>
+              </Reveal>
+            );
+          })}
+        </ol>
+
+        {/* 例で分かるほうが早い */}
+        <ul className="mt-6 flex flex-col divide-y divide-line rounded-card border border-line bg-paper">
+          {[
+            // 「この写真どっち？」は置けない。画像を受け取る口がまだ無い
+            ["「この自己紹介文どっち？」", "確かめる"],
+            ["「このLINE送っていい？」", "確かめる"],
+            ["「この子、今誘うべき？」", "決める"],
+            ["「2回目に進めるか迷う」", "決める"],
+            ["「初デート前に会話を練習したい」", "試す"],
+          ].map(([q, a]) => (
+            <li key={q} className="flex items-center justify-between gap-3 px-4 py-3">
+              <span className="min-w-0 text-[13.5px] leading-[1.6] text-slate">{q}</span>
+              <span className="shrink-0 text-[12.5px] font-black text-brand">→ {a}</span>
+            </li>
+          ))}
+        </ul>
+      </Block>
+
       {/* ══ 7. 料金 ══ */}
       {/* 値段の差は、聞く人数ではなく「本番にどれだけ近いか」。
           見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する。
@@ -1010,8 +1095,8 @@ export default async function HomePage() {
       <Block id="price">
         <H>必要なところだけ、1回ごと。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          月額はありません。値段が上がるのは人数が増えるからではなく、
-          本番に近いところまでやるからです。
+          月額はありません。自動更新もしません。
+          値段の差は相談の量ではなく、どこまで一緒にやるかです。
         </p>
 
         <div className="mt-8">
@@ -1019,8 +1104,9 @@ export default async function HomePage() {
         </div>
 
         <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
-          税込。いま受け付けているのは「{main.name}」だけです。ほかの4つは、
-          その場で会話する・動画を受け取るための手順が用意できてから開きます。
+          税込。いま受け付けているのは「{main.name}」だけです。
+          通話とMock Dateは、時間を決めた受け入れ方と、その場を見る体制が
+          用意できてから開きます。
           <Link
             href="/plans"
             className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"

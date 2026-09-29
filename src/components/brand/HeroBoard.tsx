@@ -40,6 +40,11 @@ import type { ImageKey } from "@/lib/images";
 // ══════════════════════════════════════════════════
 // 写真のどこに何を置けるか
 // ══════════════════════════════════════════════════
+// 1回 = 1人になったので、反応は1枚。
+// 空いたぶんに「直した文面」を入れて、
+//   送る前の文面 → 女性が読むと → 反応 → 直した文面
+// が1枚で読めるようにする。感想で終わる絵にしない。
+//
 // 素材は 522×682 の縦。そのまま全幅に敷くと、人が真ん中に来る。
 // 真ん中にいる人の上にカードを置くと、顔が隠れる。
 //
@@ -58,14 +63,13 @@ import type { ImageKey } from "@/lib/images";
 //   文面   左下   手とスマホの上。案と同じ置き方
 // 狭い画面では反応を2枚にして、文面と重ならないようにする。
 
-/** 絵に出す3人。「直したほうがいい／少し気になる／このままでOK」を1人ずつ */
+/** 絵に出す人の顔 */
 const FACES: ImageKey[] = ["w1", "w3", "w5"];
 
-const PICKS = [
-  DEMO.says.find((s) => s.verdict === "change"),
-  DEMO.says.find((s) => s.verdict === "slight"),
-  DEMO.says.find((s) => s.verdict === "as_is"),
-].filter((s): s is (typeof DEMO.says)[number] => Boolean(s));
+// 見本に出す反応。1回 = 1人なので、ふつうは1つ。
+// 人数を増やしたときも、ここは demo.ts の中身をそのまま出す
+// （絵のために足さない）。
+const PICKS = DEMO.says;
 
 const TONE: Record<string, string> = {
   change: "bg-rose-fill text-paper",
@@ -119,7 +123,7 @@ export default function HeroBoard() {
             >
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
-            実在の女性{answers}人が読むと
+            {answers > 1 ? `実在の女性${answers}人が読むと` : "実在の女性が読むと"}
           </span>
 
           <ul className="mt-2 flex flex-col gap-1.5 sm:gap-2.5">
@@ -157,6 +161,16 @@ export default function HeroBoard() {
               );
             })}
           </ul>
+
+          {/* 感想で終わらせない。直した文面まで、同じ絵の中に置く */}
+          <div className="mt-1.5 rounded-card bg-brand px-2.5 py-2 shadow-card sm:mt-2.5 sm:px-3.5 sm:py-2.5">
+            <p className="text-[9.5px] font-bold leading-none text-paper/85 sm:text-[11px]">
+              そのまま使える修正文
+            </p>
+            <p className="mt-1 text-[10.5px] font-bold leading-[1.55] text-paper sm:mt-1.5 sm:text-[13px]">
+              {DEMO.after}
+            </p>
+          </div>
         </div>
 
         {/* 左下：いま送ろうとしている文面。手とスマホの上に置く */}

@@ -43,8 +43,8 @@ const CHOICES: Choice[] = [
   {
     id: "chat",
     label: "会話が続かない",
-    note: "本番の前に、一度だけ女性相手にやりとりしてみる。",
-    plan: "mockchat",
+    note: "どう返すかを、15分だけ声で決める。",
+    plan: "call15",
   },
   {
     id: "decide",

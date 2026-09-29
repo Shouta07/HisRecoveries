@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbInsertReturning, parseAttribution } from "@/lib/db";
+import { dbInsertReturning, dbUpdate, parseAttribution } from "@/lib/db";
 import {
   isCategoryId, isOpenCategory, isAgeBand, isRelationId, isPanelAge,
   COMMENT_MAX, screen, initialStatus, needsReview, cleanAttrs,
@@ -7,7 +7,8 @@ import {
 import { isSellable, plan, clampTargeting, priceOf, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { isStepId } from "@/lib/ask/journey";
 import { redact } from "@/lib/ask/redact";
-import { makeConsultToken } from "@/lib/ask/token";
+import { makeConsultToken, isConsultToken } from "@/lib/ask/token";
+import { spend } from "@/lib/ask/pass";
 
 // 相談を受け取る。
 //
@@ -147,6 +148,26 @@ export async function POST(req: NextRequest) {
   const ins = await dbInsertReturning<Row>("consultations", row);
   if (!ins.ok) return NextResponse.json({ error: ins.error }, { status: 500 });
 
+  // ── 5回パスを持っているなら、その場で1回使う ──
+  //
+  // 迷うたびに決済の画面を出さない。迷いは小さいので、そこで止まる。
+  // 残りが無ければ使わない（使えたことにしない）。
+  // 先に記録してあとで残りを見る、にはしない。0回なのに使える瞬間ができる。
+  let spent: { ok: boolean; remaining: number } | null = null;
+  const passToken = typeof body.pass === "string" && isConsultToken(body.pass) ? body.pass : null;
+  const newId = ins.rows[0]?.id ?? null;
+  if (passToken) {
+    const r = await spend(passToken, newId);
+    if (r.ok) {
+      spent = { ok: true, remaining: r.remaining };
+      // 1回ぶんを使ったので、支払い済みとして配りはじめる。
+      await dbUpdate("consultations", `id=eq.${newId ?? ""}`, {
+        status: needsReview(hasImage) ? "review" : "recruiting",
+        paid_at: new Date().toISOString(),
+      });
+    }
+  }
+
   // 回答依頼はここでは作らない。
   // 作るのは Webhook が支払いを確認したあと（api/stripe/webhook の onPaid）。
 
@@ -155,6 +176,9 @@ export async function POST(req: NextRequest) {
     token,
     plan: planId,
     yen: priceOf(planId),
+    // パスを使えたか。使えていれば、決済の画面は出さない
+    used: spent?.ok ?? false,
+    remaining: spent?.remaining ?? null,
     redacted: [...new Set([...(rBody?.findings ?? []), ...(rA?.findings ?? []), ...(rB?.findings ?? [])].map((f) => f.label))],
   });
 }

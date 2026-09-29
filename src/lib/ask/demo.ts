@@ -58,10 +58,8 @@ export type Demo = {
   /** 条件 */
   who: string[];
   says: DemoSay[];
-  /** 複数人が同じことを言った箇所 */
+  /** いちばん引っかかったところ */
   common: string;
-  /** 意見が分かれた箇所。無いこともある */
-  split?: string;
   /** 直した案 */
   after: string;
   /** なぜそう直したか。修正文だけ渡されても、次に応用できない */
@@ -72,13 +70,16 @@ export const DEMO: Demo = {
   subject: "LINEのメッセージ",
   before: "また暇なときあったら教えて！",
   who: ["25〜29歳", "女性", "アプリ経験あり"],
+  // 1回 = 1人。3人ではない（plans.ts の review を参照）。
+  // そのぶん、1人が返すものを薄くしない。
   says: [
-    { age: 27, verdict: "change", say: "「暇なとき」だと、相手に決めさせている感じがします。誘われた気がしないかも。" },
-    { age: 25, verdict: "slight", say: "悪くはないけど、いつの話なのか分からないので予定が立てられません。" },
-    { age: 28, verdict: "as_is", say: "私は特に気になりません。距離感としてはちょうどいいと思う。" },
+    {
+      age: 27,
+      verdict: "change",
+      say: "「暇なとき」だと、相手に決めさせている感じがします。誘われた気がしないかも。",
+    },
   ],
   common: "「暇なとき」が、相手任せに感じられる",
-  split: "絵文字を付けるかどうかは、意見が分かれました",
   after: "来週、水曜か金曜あたりでご飯どうですか？",
   why: "こちらから日を出すと、相手は「行く／行かない」だけ決めればよくなります。曜日を2つにしておくと、断りにもなりにくい。",
 };
@@ -95,8 +96,11 @@ export function count(d: Demo, v: DemoSay["verdict"]): number {
   if (count(DEMO, "as_is") === DEMO.says.length) {
     throw new Error("見本が全部「このままでOK」です。払う理由が見えません");
   }
-  // 逆に、全部が否定でもいけない。粗探しのサービスに見える。
-  if (count(DEMO, "as_is") === 0) {
+  // 2人以上いるなら、全部が否定でもいけない。粗探しのサービスに見える。
+  // 1人のときは、この判定は置けない（どちらか1つしか選べないため）。
+  // 代わりに「直した文面」と「なぜそう直したか」で、
+  // 粗探しで終わっていないことを担保する（下の判定）。
+  if (DEMO.says.length >= 2 && count(DEMO, "as_is") === 0) {
     throw new Error("見本に「このままでOK」が1つもありません（粗探しに見えます）");
   }
   // 直した案が、元と同じでは意味が無い。
@@ -115,10 +119,10 @@ export function count(d: Demo, v: DemoSay["verdict"]): number {
 
   // 根拠の無い数字を出さない。
   const NUMBERS = /確率|成功率|失敗率|\d+%/;
-  const all = [DEMO.common, DEMO.split ?? "", DEMO.why, ...DEMO.says.map((s) => s.say)];
+  const all = [DEMO.common, DEMO.why, ...DEMO.says.map((s) => s.say)];
   for (const t of all) {
     if (NUMBERS.test(t)) {
-      throw new Error(`見本に根拠の無い数字が入っています（${t}）。出すのは「3人中2人」だけ`);
+      throw new Error(`見本に根拠の無い数字が入っています（${t}）`);
     }
   }
   // 3人の反応を、女性全体の総意にしない。
