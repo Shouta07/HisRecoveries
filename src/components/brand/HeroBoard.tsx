@@ -160,8 +160,8 @@ export default function HeroBoard() {
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-slate/95 via-slate/55 to-transparent"
           />
-          <p className="absolute inset-x-5 bottom-4 text-[25px] font-black leading-[1.3] text-paper sm:inset-x-8 sm:bottom-5 sm:text-[32px]">
-            {HOOK}
+          <p className="absolute inset-x-5 bottom-4 text-[17px] font-bold leading-[1.5] text-paper sm:inset-x-8 sm:bottom-5 sm:text-[20px]">
+            「{HOOK}」
           </p>
         </div>
 
@@ -178,8 +178,8 @@ export default function HeroBoard() {
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%] rounded-b-card bg-gradient-to-t from-slate/95 via-slate/55 to-transparent"
           />
-          <p className="absolute inset-x-6 bottom-6 whitespace-nowrap text-[26px] font-black leading-[1.3] text-paper">
-            {HOOK}
+          <p className="absolute inset-x-6 bottom-6 whitespace-nowrap text-[19px] font-bold leading-[1.5] text-paper">
+            「{HOOK}」
           </p>
         </div>
         <Story />
