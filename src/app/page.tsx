@@ -16,7 +16,7 @@ import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
 import Slot from "@/components/brand/Slot";
-import HeroBoard from "@/components/brand/HeroBoard";
+import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
 import CaseRows from "@/components/brand/CaseRows";
 import WhoReads from "@/components/brand/WhoReads";
 
@@ -112,14 +112,26 @@ function Wrap({ children, className = "" }: { children: React.ReactNode; classNa
 function Block({
   children,
   tint = false,
+  dark = false,
   id,
 }: {
   children: React.ReactNode;
   tint?: boolean;
+  /**
+   * 暗い面。
+   *
+   * 白と淡い青だけで最後まで進むと、どの節も同じ強さに見えて、
+   * ページ全体の印象が薄くなる。1か所だけ黒い面を置いて、
+   * 読んでいる途中に「ここが芯」と分かる場所を作る。
+   */
+  dark?: boolean;
   id?: string;
 }) {
   return (
-    <section id={id} className={`scroll-mt-20 ${tint ? "bg-mist" : "bg-paper"}`}>
+    <section
+      id={id}
+      className={`scroll-mt-20 ${dark ? "bg-slate" : tint ? "bg-mist" : "bg-paper"}`}
+    >
       <Wrap className="py-12 sm:py-16 lg:py-20">{children}</Wrap>
     </section>
   );
@@ -130,11 +142,15 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   return <p className="text-[11.5px] font-bold tracking-[0.14em] text-steel">{children}</p>;
 }
 
-function H({ children }: { children: React.ReactNode }) {
+function H({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <h2 className="flex items-center gap-2 text-[23px] font-black leading-[1.4] text-slate sm:text-[27px]">
+    <h2
+      className={`flex items-center gap-2 text-[24px] font-black leading-[1.35] tracking-[-0.02em] sm:text-[28px] ${
+        dark ? "text-paper" : "text-slate"
+      }`}
+    >
       <span>{children}</span>
-      <Flourish className="text-brand" />
+      <Flourish className={dark ? "text-brand-tint" : "text-brand"} />
     </h2>
   );
 }
@@ -230,16 +246,16 @@ export default async function HomePage() {
             片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
         <HeroBoard />
 
-        <Wrap className="relative pb-12 pt-5 sm:pb-16 sm:pt-8 lg:pt-8">
+        <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
-            <p className="inline-flex items-center gap-2 rounded-pill border border-brand/40 bg-paper px-4 py-2 text-[12.5px] font-bold text-brand shadow-card">
-              <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <p className="inline-flex items-center gap-1.5 rounded-pill border border-brand/30 bg-paper px-3 py-1.5 text-[11.5px] font-bold text-brand">
+              <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
               </svg>
               男性の方へ
             </p>
 
-            <h1 className="mt-3.5 text-mega font-black leading-[1.2] text-slate">
+            <h1 className="mt-2.5 text-mega font-black leading-[1.15] text-slate">
               送る前に、
               <br />
               <span className="relative inline-block">
@@ -251,19 +267,21 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            <p className="mt-3.5 text-[17px] font-black leading-[1.55] text-slate sm:text-[19px]">
+            {/* 見出しと同じことを言う2行目は、狭い画面では出さない。
+                名乗りが2つあると、どちらも弱くなる。 */}
+            <p className="mt-3.5 hidden text-[19px] font-black leading-[1.55] text-slate sm:block">
               大事な相手だから、失敗する前に相談する。
             </p>
 
-            <p className="mt-4 max-w-[25em] text-[14.5px] leading-[1.9] text-steel sm:text-[16px]">
-              LINEの文面や、アプリの自己紹介文を送るだけ。
-              <br />
-              AIの予想ではなく、実在の女性{main.answers}人の反応が返ります。
+            <p className="mt-3 max-w-[25em] text-[15px] leading-[1.8] text-steel sm:mt-4 sm:text-[16px]">
+              LINEの文面や自己紹介文を、AIの予想ではなく
+              <wbr />
+              実在の女性{main.answers}人が読んで返します。
             </p>
 
             {/* いくらなのかを、スクロールさせずに出す。
                 値段が下にあると、それだけで帰られる。 */}
-            <ul className="mt-5 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[13.5px] font-bold text-slate">
+            <ul className="mt-4 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[13.5px] font-bold text-slate">
               <li className="tabular-nums">¥{entry.yen.toLocaleString()}から</li>
               <li aria-hidden className="text-line">|</li>
               <li>1回ごと・月額なし</li>
@@ -272,7 +290,7 @@ export default async function HomePage() {
             </ul>
 
             {/* 押す場所も、スクロールさせない */}
-            <div className="mt-6 max-w-[24em]">
+            <div className="mt-5 max-w-[24em]">
               <PlanCta
                 plan={DEFAULT_PLAN}
                 from="hero"
@@ -348,8 +366,12 @@ export default async function HomePage() {
               })}
             </ul>
 
+            <div className="mt-5">
+              <HeroNote />
+            </div>
+
             {!open && (
-              <p className="mt-6 rounded-card border border-line bg-paper px-5 py-4 text-[13px] leading-[1.85] text-slate shadow-card">
+              <p className="mt-5 rounded-card border border-line bg-paper px-5 py-4 text-[13px] leading-[1.85] text-slate shadow-card">
                 {!paid
                   ? "いまお支払いを受け付けていません。特定商取引法に基づく表記が整い次第、始めます。"
                   : shortMessage(sup, main.answers)}
@@ -365,7 +387,7 @@ export default async function HomePage() {
       {/* ══ 2. 今どこで悩んでいますか ══ */}
       <Block id="moments">
         <H>今、どこで悩んでいますか。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
           いまどのあたりですか。どこにいるかで、聞きたいことは変わります。
         </p>
 
@@ -455,7 +477,7 @@ export default async function HomePage() {
           <br className="sm:hidden" />
           すぐ相談できる。
         </h2>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
           LINE、プロフィール、デートの誘い方。
           手が止まる場面を、実在の女性が読みます。
         </p>
@@ -487,7 +509,7 @@ export default async function HomePage() {
           <br className="sm:hidden" />
           回答してくれます。
         </h2>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
           20代〜30代の、さまざまな恋愛経験を持つ実在の女性が、率直な意見をお伝えします。
         </p>
 
@@ -551,7 +573,7 @@ export default async function HomePage() {
           <WhoReads compact />
         </div>
 
-        <p className="mt-6 max-w-[34em] text-[14.5px] leading-[1.95] text-steel">
+        <p className="mt-6 max-w-[34em] text-[14.5px] leading-[1.85] text-steel">
           恋愛の専門家ではありません。正解を教えてくれる人でもありません。
           一人の女性として、実際にどう思ったかを書いてくれる人です。
         </p>
@@ -579,7 +601,7 @@ export default async function HomePage() {
       {/* ══ 4. Before / After ══ */}
       <Block id="before-after">
         <H>直す前と、直したあと。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
           自分では気づかなかったところが、送る前に出てきます。
           大丈夫そうなら「このままで大丈夫そう」と返ってきます。無理に探しません。
         </p>
@@ -684,8 +706,10 @@ export default async function HomePage() {
       </section>
 
       {/* ══ 6. なぜAIではないか ══ */}
-      <Block>
-        <H>AIではなく、実在の女性である理由。</H>
+      {/* ここだけ黒い面にしている。淡い色ばかりだと、どの節も
+          同じ強さに見えて、ページ全体の印象が薄くなる。 */}
+      <Block dark>
+        <H dark>AIではなく、実在の女性である理由。</H>
         <div className="mt-8 grid items-stretch gap-3.5 lg:grid-cols-[1fr_auto_1.1fr]">
           <div className="rounded-card border border-line bg-paper p-5 shadow-card">
             <div className="flex items-center gap-2.5">
@@ -704,7 +728,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <p aria-hidden className="justify-self-center self-center text-[22px] text-steel">
+          <p aria-hidden className="justify-self-center self-center text-[22px] text-steel-dark">
             →
           </p>
 
@@ -729,13 +753,13 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <p className="mt-9 text-[21px] font-black leading-[1.6] text-slate sm:text-[25px]">
+        <p className="mt-9 text-[21px] font-black leading-[1.6] text-paper sm:text-[25px]">
           AIは予測する。
           <br />
           女性は、実際に受け取る。
         </p>
         <span aria-hidden className="mt-2.5 block h-1 w-[150px] rounded-pill bg-brand sm:w-[180px]" />
-        <p className="mt-7 max-w-[32em] text-[15px] leading-[1.95] text-steel">
+        <p className="mt-7 max-w-[32em] text-[15px] leading-[1.85] text-steel-dark">
           まずAIに聞いていい。文面を作るのも、考えをまとめるのもAIのほうが得意です。
           それでも最後に残る「実際どう思われるか」だけ、人に聞きます。
           AIはこちらの裏側で、返ってきた答えをまとめるのに使っています。
@@ -771,7 +795,7 @@ export default async function HomePage() {
       {/* ══ 8. 料金 ══ */}
       <Block id="price">
         <H>必要なときだけ、1回ごと。</H>
-        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.95] text-steel">
+        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
           月額はありません。入会金もありません。ここぞという場面の前にだけ使うものです。
         </p>
 
@@ -859,7 +883,7 @@ export default async function HomePage() {
           （AIは無料で使えるものが多い）。中身と判定は lib/ask/compare.ts。 */}
       <Block tint>
         <H>ほかの選び方と、どう違うか。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
           どれかが優れているという話ではありません。
           送る前のひと手間だけを引き受けるのが、この製品です。
         </p>
