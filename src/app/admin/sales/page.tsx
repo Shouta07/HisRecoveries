@@ -3,6 +3,7 @@ import Link from "next/link";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { site } from "@/lib/site";
 import { PLANS, plan as getPlan, isSellable } from "@/lib/ask/plans";
+import { category, isCategoryId } from "@/lib/ask/model";
 import { canCharge, whyCannotCharge } from "@/lib/legal";
 import UtmBuilder from "@/components/admin/UtmBuilder";
 
@@ -48,6 +49,24 @@ type FunnelSource = {
   blocked: number;
 };
 type Block = { why: string; plan: string; n: number; last_at: string };
+type Order = {
+  id: string;
+  created_at: string;
+  status: string;
+  category: string;
+  panel_size: number;
+  invited: number;
+  answered: number;
+  remaining: number;
+};
+
+/** 運営が手を出す必要がある状態か */
+const NEEDS_HAND: Record<string, string> = {
+  review: "人が見てから配る",
+  payment_pending: "支払い待ち",
+  refunded: "返金済み",
+  cancelled: "取り消し",
+};
 
 function Card({
   title,
@@ -113,6 +132,9 @@ export default async function SalesPage() {
     dbSelect<FunnelSource>("funnel_by_source?order=landed.desc&limit=25"),
     dbSelect<Block>("checkout_blocks?order=n.desc&limit=12"),
   ]);
+
+  // 注文の状況。止まっているものを、問い合わせが来る前に見つける。
+  const orders = await dbSelect<Order>("consultation_board?order=created_at.desc&limit=20");
 
   const d1 = total(daily, 1);
   const d7 = total(daily, 7);
@@ -326,6 +348,54 @@ export default async function SalesPage() {
           </Card>
         </div>
       )}
+
+      <div className="mt-4">
+        <Card
+          title="注文の状況（新しい順に20件）"
+          note="止まっているものを、問い合わせが来る前に見つける。相談の中身はここには出しません。"
+        >
+          {orders.length === 0 ? (
+            <p className="text-[13px] text-steel">まだ注文がありません。</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] border-collapse">
+                <thead>
+                  <tr className="border-b border-line">
+                    <th className={th}>受けた日時</th>
+                    <th className={th}>種類</th>
+                    <th className={th}>状態</th>
+                    <th className={`${th} text-right`}>回答</th>
+                    <th className={th}>手を出す</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((o) => (
+                    <tr key={o.id} className="border-b border-line last:border-0">
+                      <td className={`${td} tabular-nums text-steel`}>
+                        {o.created_at?.slice(5, 16).replace("T", " ")}
+                      </td>
+                      <td className={td}>
+                        {isCategoryId(o.category) ? category(o.category).label : o.category}
+                      </td>
+                      <td className={td}>{o.status}</td>
+                      <td className={tdNum}>
+                        {o.answered} / {o.panel_size}
+                      </td>
+                      <td className={`${td} font-bold`}>
+                        {NEEDS_HAND[o.status] ? (
+                          <span className="text-rose-text">{NEEDS_HAND[o.status]}</span>
+                        ) : (
+                          <span className="text-steel">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      </div>
 
       <div className="mt-4">
         <Card

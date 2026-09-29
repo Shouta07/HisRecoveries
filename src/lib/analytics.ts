@@ -12,59 +12,33 @@
  * 一覧をここに1本化し、型もサーバの検証もここから導く。
  */
 export const CONVERSION_EVENTS = [
-  "gathering_apply", // クリック: Quiet Gatherings 応募
   "affiliate_click", // クリック: アフィリエイト送客
-  "subscribe_click", // クリック: ニュースレター購読
-  "reflect_complete", // 完了: 整理フロー(Reflect)
   "hero_cta_click", // クリック: ヒーロー CTA
-  "assessment_start", // 開始: Recovery Assessment
-  "assessment_complete", // 完了: Recovery Assessment
   "article_cta_click", // クリック: 記事下 CTA
-  "story_start", // 開始: Story 投稿フォーム
-  "story_submitted", // 完了: Story 投稿
-  "membership_subscribe_click", // クリック: Recovery Letters 購読
 
   // ── 市場検証（6領域のどれが勝てるかを見極めるための3点計測） ──
   // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
-  "market_select", // 需要: 診断で「この悩みがある」と選ばれた
-  "market_view", // 関心: その領域の記事・ピラーを読んだ
-  "market_consult_click", // 意向: その領域の文脈から相談へ進んだ
 
   // ── ゴール起点 ──
-  "goal_select", // 目的の日を選んだ（props: goal, days）
-  "goal_step_done", // ロードマップの1ステップを完了（props: goal, step）
 
   // ── 診断ファネル（/check）──
   // 記事 → 診断 → 結果 → 次、の各段を1つずつ計測する。
   // どこで落ちているか分からないまま投稿を増やしても、率は動かない。
-  "check_open", // 診断ページへの導線をクリック（props: from）
-  "check_start", // 1問目に答えた
-  "check_abandon", // 途中で離脱（props: at＝何問目まで）
-  "check_complete", // 結果に到達（props: first, untouched, detailed）
-  "check_detail_start", // 任意の13問へ進んだ（精度を上げる側を選んだ）
-  "check_article_click", // 結果から記事へ（props: area, slug）
   // 保存・共有されたリンク（?r=）から結果を開いた。答えてはいない。
   // check_complete と混ぜると、1回共有されるたびに完了が増えて率が壊れる。
   // ここが伸びていれば、結果が人に渡っているということ。
-  "check_restored", // 共有リンクから結果を開いた（props: first）
 
   // ── 取材 ──
   // 街頭ではなく、診断を終えた直後に置いている。
   // ここが伸びるかどうかで、取材の入口として成立しているかが分かる。
-  "interview_open", // 取材のページを開いた（props: from）
-  "interview_submit", // 送信した（props: answered＝答えた設問数, from）
 
   // ── 行動（RECOVER）──
   // 追いたいのは「診断した人のうち、何人が実際に動いたか」。
   // 外したときも送る。送らないと、動いた数が実際より多く出る。
-  "action_done", // 今月やることを1つ終えた（props: count, total）
-  "action_undone", // 終えた印を外した（props: count, total）
   // 満足度。1〜4。「やったか」だけでは次に何を勧めるかが決まらない。
-  "action_rated", // 終えた行動に満足度をつけた（props: value）
   // 一度使った人が、トップから続きに戻った。
   // ここが動くかどうかで、再訪が「読み物」ではなく「道具」として
   // 起きているかが分かる。
-  "resume_click", // トップの「続きを見る」を押した（props: left＝残り数）
 
   // ── v2（Relationship Companion / /app）──
   // §22 のKPIに直接対応させる。PVは追わない。
@@ -72,20 +46,9 @@ export const CONVERSION_EVENTS = [
   // ── トップページ → /app の導線 ──
   // 追いたいのは「着地した人のうち、何人が最初の1件を残したか」。
   // 滞在時間もPVも追わない。
-  "hero_option_selected", // ヒーローで選択肢を押した（props: feel）
-  "hero_continue_click", // ヒーローから「続きを記録する」（props: feel）
-  "final_cta_click", // ページ末尾のCTA（props: —）
 
-  "app_onboard_done", // 現在地と年代を設定し終えた（props: stage, age）
   // 記録の入口と出口を別々に取る。
   // 始めた数と終えた数が分かれていないと、どこで止まるかが出ない。
-  "app_record_start", // 記録を始めた（props: from＝どこから入ったか）
-  "app_record_saved", // 記録を保存した（props: n＝何問答えたか, first＝1件目か）
-  "app_record_abandon", // 記録を途中でやめた（props: at＝何問目）
-  "app_reflect_open", // 振り返りの問いを開いた（props: from）
-  "app_journey_open", // 道のりを開いた（props: stage）— どこで迷うかが出る
-  "app_stage_changed", // 現在地を変えた（props: stage）
-  "app_knowledge_open", // Knowledge を開いた（props: stage, type）
 
   // ── 「女性に聞く」──
   // 追うのは「着地した人のうち、何人が相談を出し、何人が回答を受け取ったか」。
@@ -107,6 +70,12 @@ export const CONVERSION_EVENTS = [
   //   プラン別購入率  purchase_paid の props.plan の分布
   //   再購入率        purchase_paid の props.nth が 2 以上の割合
   //   返金率          purchase_refunded / purchase_paid
+  // ── 6分野のどれが勝てるか（記事側の検証）──
+  // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
+  "market_select", // 需要: その悩みがあると選ばれた
+  "market_view", // 関心: その領域の記事を読んだ
+  "market_consult_click", // 意向: その領域の文脈から相談へ進んだ
+
   // 購入までの分母。1回の来訪につき1回だけ送る（props: path）。
   // これが無いと、率の分母が広告の管理画面のクリック数しか無くなり、
   // 「出稿を増やすか止めるか」を自分の数字で決められない。

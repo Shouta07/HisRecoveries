@@ -36,18 +36,42 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // ── 旧 His Recoveries の商品面を畳んだ（タシカメ1本にする）──
+      // 消したページは検索に残っている。404 にすると、そのぶんの
+      // 評価がそのまま消える。行き先のある面へ 301 で渡す。
+      //
+      // 第一印象改善プラン（¥49,800）と、その申し込み導線
+      { source: "/plan", destination: "/", permanent: true },
+      { source: "/reserve", destination: "/", permanent: true },
+      { source: "/apply", destination: "/", permanent: true },
+      // 「男の改善、全部の順番」は記事側のまとめだったので記事一覧へ
+      { source: "/order", destination: "/articles", permanent: true },
+      { source: "/skip", destination: "/articles", permanent: true },
+      // 診断（Recovery Assessment）と、その選択肢の面
+      { source: "/check", destination: "/articles", permanent: true },
+      { source: "/choices", destination: "/articles", permanent: true },
+      { source: "/choices/:slug*", destination: "/articles", permanent: true },
+      // 記録アプリ（Relationship Companion）
+      { source: "/app", destination: "/", permanent: true },
+      { source: "/app/:slug*", destination: "/", permanent: true },
+      // お便り・提携・調査・取材
+      { source: "/letters", destination: "/", permanent: true },
+      { source: "/partner", destination: "/disclosure", permanent: true },
+      { source: "/research", destination: "/about", permanent: true },
+      { source: "/interview", destination: "/about", permanent: true },
       // 商品は「第一印象改善プラン（30日 ¥49,800）」の1本のみ。
       // 旧パッケージ／旧2商品（Recover・Refine）ページは全廃し、ホームの価格へ集約する。
       { source: "/packages", destination: "/#pricing", permanent: true },
       { source: "/packages/:slug*", destination: "/#pricing", permanent: true },
       // 記事一覧はトップに統合した（/areas/:id 以下の記事はそのまま）
       { source: "/areas", destination: "/articles", permanent: true },
+      { source: "/situations", destination: "/articles", permanent: true },
       // 面を減らした（記事に集中する）。削除したページはトップへ。
       { source: "/stages", destination: "/", permanent: true },
       { source: "/stages/:slug*", destination: "/", permanent: true },
       { source: "/business", destination: "/", permanent: true },
       // FAQ は /plan に集約（全件＋FAQPage schema）
-      { source: "/faq", destination: "/plan", permanent: true },
+      { source: "/faq", destination: "/#faq", permanent: true },
       { source: "/producer", destination: "/", permanent: true },
       // 編集方針は独立ページをやめ、トップの #about に統合
       { source: "/why", destination: "/about", permanent: true },
@@ -59,7 +83,7 @@ const nextConfig = {
       { source: "/areas/self", destination: "/articles", permanent: true },
       { source: "/areas/self/:slug*", destination: "/articles", permanent: true },
       // オンライン伴走ページは会員ページ(β)に統合（旧コピーがゼロ入力方針と矛盾のため削除）
-      { source: "/online", destination: "/member", permanent: true },
+      { source: "/online", destination: "/", permanent: true },
       { source: "/mechanism", destination: "/articles", permanent: true },
       { source: "/mechanism/:slug*", destination: "/articles", permanent: true },
       { source: "/interviews", destination: "/articles", permanent: true },
@@ -117,10 +141,10 @@ const nextConfig = {
       { source: "/en", destination: "/", permanent: true },
       { source: "/en/:slug*", destination: "/", permanent: true },
       // /assessment folded into the application form.
-      { source: "/assessment", destination: "/apply", permanent: true },
+      { source: "/assessment", destination: "/articles", permanent: true },
       // /partners は「現場のプロの方へ」ページとして復活（リダイレクト解除）。
       // 旧サブパスのみ集約（:slug+ で1階層以上。:slug* だと /partners 自身にマッチしてループする）。
-      { source: "/partners/:slug+", destination: "/partners", permanent: true },
+      { source: "/partners/:slug*", destination: "/disclosure", permanent: true },
     ];
   },
 };

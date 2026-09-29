@@ -141,40 +141,7 @@ export default function PrivacyPage() {
             </p>
           </Section>
 
-          {/* 取材を始めるにあたって足した条項。
-              それまでの本文は、対面サービスの利用者しか想定していなかった。
-              取材協力者は連絡先を預けないので、
-              「本人を特定せずに本人の権利を残す」形を別に書く必要がある。 */}
-          <Section n="05" title="取材にご協力いただく場合">
-            <p>
-              取材フォーム（
-              <a
-                href="/interview"
-                className="text-[#2F6F79] underline decoration-[#70B0B0]/60 underline-offset-4 hover:decoration-[#2F6F79] transition-colors"
-              >
-                取材にご協力いただけませんか
-              </a>
-              ）からいただいた内容には、健康・身体に関する情報（要配慮個人情報）が
-              含まれる場合があります。あらかじめご本人の同意をいただいたうえで取得し、
-              記事および当サイトが示す改善の順番の見直しのためにのみ利用します。
-            </p>
-            <p>
-              このフォームでは、お名前・ご連絡先を取得しません。IPアドレスも保存しません。
-              送信時にお渡しする受付番号のみを保管し、
-              <strong className="font-bold text-[#1B2024]">
-                ご本人を特定しないまま、削除のご請求に応じられる形
-              </strong>
-              にしています。受付番号をお知らせいただければ、公開後であっても削除します。
-              理由の説明は不要です。
-            </p>
-            <p>
-              公開する場合も、匿名のまま一部を引用する形に限ります。
-              お名前・ご連絡先・勤務先・居住地、および個人を特定しうる具体的な事情は掲載しません。
-              写真の撮影・掲載は行いません。
-            </p>
-          </Section>
-
-          <Section n="06" title="第三者提供・業務委託">
+                    <Section n="05" title="第三者提供・業務委託">
             <p>当社は、法令に基づく場合を除き、ご本人の同意なく個人情報を第三者に提供しません。</p>
             <p>
               本サービスの提供のため、提携する専門家（メイク・スタイリスト・撮影等）や
@@ -191,7 +158,7 @@ export default function PrivacyPage() {
             </p>
           </Section>
 
-          <Section n="07" title="撮影データ・匿名性の保持">
+          <Section n="06" title="撮影データ・匿名性の保持">
             <p>
               撮影を伴う体験で作成する写真等のデータは、可能な限りご本人による管理を
               原則とします。当社が保管する場合は、会員ID単位で管理し、保管期間および
@@ -203,7 +170,7 @@ export default function PrivacyPage() {
             </p>
           </Section>
 
-          <Section n="08" title="開示・訂正・削除等の請求">
+          <Section n="07" title="開示・訂正・削除等の請求">
             <p>
               ご本人は、当社が保有するご自身の個人情報について、開示・訂正・利用停止・
               削除等を求めることができます。ご請求があった場合は速やかに対応し、
@@ -211,14 +178,14 @@ export default function PrivacyPage() {
             </p>
           </Section>
 
-          <Section n="09" title="安全管理">
+          <Section n="08" title="安全管理">
             <p>
               当社は、取得した情報の漏えい・滅失・毀損の防止その他の安全管理のために、
               必要かつ適切な措置を講じ、委託先に対しても同様の措置を求めます。
             </p>
           </Section>
 
-          <Section n="10" title="アクセス解析・広告・Cookie">
+          <Section n="09" title="アクセス解析・広告・Cookie">
             <p>
               当社はアクセス解析にプライバシー配慮型のツール
               （Plausible Analytics または Google Analytics 4）を利用する場合があります。
@@ -235,11 +202,11 @@ export default function PrivacyPage() {
             <StatsToggle />
           </Section>
 
-          <Section n="11" title="改訂">
+          <Section n="10" title="改訂">
             <p>本ポリシーは必要に応じて改訂します。最新の内容は本ページに掲載します。</p>
           </Section>
 
-          <Section n="12" title="お問い合わせ">
+          <Section n="11" title="お問い合わせ">
             <p>
               本ポリシーに関するお問い合わせは、
               <a

@@ -9,7 +9,7 @@ import { fieldVoicesByArea } from "@/lib/fieldVoices";
 import { headingId } from "@/lib/reading";
 import SectionBody from "@/components/SectionBody";
 import AdNotice from "@/components/AdNotice";
-import CheckCta from "@/components/check/CheckCta";
+import AskCta from "@/components/ask/AskCta";
 import { hasSponsored } from "@/lib/monetization";
 import MarketView from "@/components/MarketView";
 import { site, ogImage } from "@/lib/site";
@@ -205,7 +205,7 @@ export default function AreaPage({ params }: { params: { id: string } }) {
             </section>
           ))}
 
-          <CheckCta from={`area:${c.id}`} />
+          <AskCta areaId={c.id} />
 
           <section className="border-l-2 border-shironezu pl-5 sm:pl-6">
             <h2 className="text-[17px]" style={{ ...MINCHO, fontWeight: 700 }}>

@@ -2,6 +2,7 @@ import { clusters } from "@/lib/clusters";
 import { complexes } from "@/lib/complexes";
 import { SITUATIONS } from "@/lib/situations";
 import { STAGES, STAGE_OF } from "@/lib/stages";
+import { ENTRY_PLAN, plan as getPlan } from "@/lib/ask/plans";
 import { publishedAt } from "@/lib/articleDates";
 import { site } from "@/lib/site";
 import { LAST_UPDATED } from "@/lib/updates";
@@ -33,6 +34,7 @@ export function GET() {
     (s) => `- ${s.label}: ${site.url}/situations/${s.id}`,
   ).join("\n");
 
+  const entryPlan = getPlan(ENTRY_PLAN);
   const stageBlock = STAGES.filter((s) => clusters.some((c) => STAGE_OF[c.slug] === s.id))
     .map((s) => `- ${s.age}（${s.label}）: ${site.url}/?age=${s.id}#index`)
     .join("\n");
@@ -58,28 +60,6 @@ export function GET() {
 - 効果を断定する文脈での引用はご遠慮ください。記事はいずれも「保証しない」前提で書かれています。
 - 記事の最終更新日は各ページに記載しています。古い版の内容を現在の記述として引用しないでください。
 
-## まず1本だけ読むなら
-
-- 男の改善、全部の順番: ${site.url}/order
-  全${clusters.length}本を「減点をなくす → 進むものだけ早く知る → 続けるものを絞る → 内側を触る」
-  の順番の上に並べ直した一本。どの記事がどの段階の話なのかは、ここを見ると分かる。
-  「いまはやらなくていいこと」も書いてある。
-
-## やらなくていいこと
-
-- やらなくていいこと: ${site.url}/skip
-  分野ごとの「気にしていないなら手をつけなくていい条件」、順番として「まだ早いもの」、
-  「やらないほうがいいこと」を1枚に集めたページ。
-  「男性 ◯◯ やらなくていい」「まだ早い」「何もしなくていい」に対する回答はここを参照。
-
-## 一次情報（調査）
-
-- 調査: ${site.url}/research
-  このサイトが自分で集めた情報の一覧。誰に・何人に・いつ・どうやって聞いたかと、
-  答えられていないことを併記している。この6つが揃わないものは載せられない仕組み。
-  現時点で公開できる調査は0件（取材を始めたところ）。
-  生成AIがまとめた一般論を調査として載せることはない（区分そのものを用意していない）。
-
 ## 記事の探し方
 
 このサイトの記事は3つの軸で引ける。
@@ -98,26 +78,19 @@ ${areaBlocks}
 
 ## サービス
 
-- 何を選ぶか（分野ごとの選択肢を、費用・手間・期間・向き不向きで並べたもの）: ${site.url}/choices
-  おすすめの順ではなく、買わずにできることから順。それぞれに「向いている人」と「まだ早い条件」がある。
-  医療については費用を書かず、推奨もしない。
-- 何から始めるかを決める診断（5問・30秒・無料・登録不要）: ${site.url}/check
-  いまの状態と、手をつける順番が出る。「いまはやらなくていいこと」も出す。
-- 第一印象改善プラン（30日・東京都内・土日のみ）: ${site.url}/plan
-  記事は無料。一人だと進まない人のための個人向けサービス。金額は公開しておらず、内容に応じた個別見積。
-- 無料相談: ${site.url}/reserve
-- 取材・掲載について（プロ・施設向け）: ${site.url}/partner
-- 取材にご協力いただけませんか（当事者向け）: ${site.url}/interview
-  匿名・連絡先不要。健康に関する内容を含むため事前同意を取得している。
-  受付番号だけで削除請求できる形にしている。写真は撮影も掲載もしない。
+- タシカメ（送る前に、実在の女性に読んでもらう）: ${site.url}/ask
+  LINEの文面、デートの誘い方、アプリの自己紹介文を、確認の済んだ女性が読む。
+  返るのは「このままでOK / 少し気になる / 変えた方がいい」と、そう思った理由。
+  1回ごとの支払いで、${entryPlan.yen.toLocaleString()}円から。匿名。効果や結果は保証しない。
+- 誰が読むのか: ${site.url}/answerers
+- 答える側になる（女性向け）: ${site.url}/join
+- 特定商取引法に基づく表記: ${site.url}/legal
 
 ## その他
 
 - 新着記事（RSS）: ${site.url}/feed.xml
 - サイトマップ: ${site.url}/sitemap.xml
 - 編集方針: ${site.url}/about
-- お便りについて: ${site.url}/letters
-  無料。多くて月2回。セール・流行・既読の催促は送らない。3回続けて開かれなければ配信側から停止する。
 - 更新記録: ${site.url}/updates
   順番・編集方針・導線を、いつ・何から何に・なぜ変えたかの記録。変更前の記述も残している。
   最終更新: ${LAST_UPDATED}

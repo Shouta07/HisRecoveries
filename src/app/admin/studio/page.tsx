@@ -224,22 +224,12 @@ export default function StudioPage() {
           <Link href="/admin/setup" className="hover:text-sage-bright">
             準備
           </Link>
-          <Link href="/admin/insights" className="hover:text-sage-bright">
-            Insights
-          </Link>
-          <Link href="/admin/data" className="hover:text-sage-bright">
-            Data
-          </Link>
         </div>
 
         {/* その他ツール（1行・小） */}
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-brand-cream/55">
           <span className="text-[10px] tracking-[0.2em] uppercase">その他</span>
           {[
-            { href: "/admin/checks", label: "Checks" },
-            { href: "/admin/asks", label: "Asks" },
-            { href: "/admin/guides", label: "Guides" },
-            { href: "/admin/network", label: "Certified" },
             { href: "/admin/tools/eval-thread", label: "Eval" },
             { href: "/admin/tools/letter", label: "Letter" },
           ].map((it) => (
