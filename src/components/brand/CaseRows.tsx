@@ -15,6 +15,11 @@ import type { ImageKey } from "@/lib/images";
 // 「26歳 看護師」のように顔の横へ職業を並べると、
 // 実在の回答者の名簿に見える。年代だけにする。
 //
+// ── 場面の写真は置かない ──────────────────────────
+// 素材は 226×162 の切り抜きで、帯にすると顔が切れて髪だけが写る。
+// しかも上に文面の箱を重ねるので、写真は箱の裏の模様にしかならない。
+// 置く意味が無いので外した。見せたいのは、送る文面と返ってくる言葉。
+//
 // ── 受け付けていない場面は出さない ────────────────
 // 服装や会話は、いま送る手段が無い（画像も通話も受けていない）。
 // 出すと、押した人が行き止まりに当たる。OPEN_CASES だけを描く。
@@ -49,23 +54,16 @@ export default function CaseRows() {
             {c.what}
           </p>
 
-          <div className="mt-3 grid gap-2.5 sm:mt-4 sm:grid-cols-[minmax(0,288px)_1fr] sm:items-center sm:gap-5">
-            {/* 左：その場面と、送ろうとしているもの */}
-            <div className="relative">
-              <Slot
-                  name={c.img}
-                  position="center 38%"
-                  className="h-[140px] w-full sm:aspect-[226/162] sm:h-auto"
-                />
-              <div className="absolute inset-x-2.5 bottom-2.5 rounded-card bg-paper px-3 py-2 shadow-card">
-                <p className="text-[10px] font-bold leading-none text-brand">{c.draft.label}</p>
-                <p className="mt-1.5 text-[11.5px] font-bold leading-[1.55] text-slate sm:text-[12.5px]">
-                  {c.draft.text}
-                </p>
-              </div>
+          <div className="mt-3 grid gap-2.5 sm:mt-4 sm:grid-cols-[1fr_1.15fr] sm:items-start sm:gap-5">
+            {/* 自分が出すもの。白のまま置く */}
+            <div className="rounded-card border border-line px-4 py-3.5">
+              <p className="text-[11px] font-bold leading-none text-brand">{c.draft.label}</p>
+              <p className="mt-2 text-[13.5px] font-bold leading-[1.65] text-slate">
+                {c.draft.text}
+              </p>
             </div>
 
-            {/* 右：返ってくる言葉 */}
+            {/* 返ってくる言葉。地の色を変えて、来たものだと分かるようにする */}
             <ul className="flex flex-col gap-2">
               {c.says.map((s, i) => {
                 const v = VERDICTS.find((x) => x.id === s.verdict);

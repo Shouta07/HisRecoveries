@@ -32,7 +32,7 @@ export type ImageSlot = {
   ready?: boolean;
 };
 
-export type ImageKey = "hero" | "heroTall" | "casePhoto" | "caseMessage" | "caseCall" | "caseDate" | "w1" | "w2" | "w3" | "w4" | "w5" | "step1" | "step4";
+export type ImageKey = "hero" | "heroTall" | "w1" | "w2" | "w3" | "w4" | "w5" | "step1" | "step4";
 
 export const IMAGES: Record<ImageKey, ImageSlot> = {
   hero: {
@@ -55,30 +55,6 @@ export const IMAGES: Record<ImageKey, ImageSlot> = {
   // 「こういう相談が来ます」の見出しに添える絵として使う。
   // 年齢も職業も名前も付けない（付けた時点で、実在しない人の
   // 体験談になる。利用者はまだ0人）。
-  casePhoto: {
-    src: "/img/case-photo.jpg",
-    alt: "",
-    note: "写真やプロフィールについて考えている様子",
-    ready: true,
-  },
-  caseMessage: {
-    src: "/img/case-message.jpg",
-    alt: "",
-    note: "メッセージを打ちながら迷っている様子",
-    ready: true,
-  },
-  caseCall: {
-    src: "/img/case-call.jpg",
-    alt: "",
-    note: "電話やデートの前に考えている様子",
-    ready: true,
-  },
-  caseDate: {
-    src: "/img/case-date.jpg",
-    alt: "",
-    note: "デートのあと、次をどうするか考えている様子",
-    ready: true,
-  },
 
   // ── 回答する側のイメージ ────────────────────────
   // 特定の誰かではない。名前も職業も居住地も付けない。

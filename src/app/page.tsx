@@ -7,11 +7,12 @@ import { ALTERNATIVES, COMPARE, COMPARE_NOTE } from "@/lib/ask/compare";
 import { STEPS as JOURNEY } from "@/lib/ask/journey";
 import { VERDICTS } from "@/lib/ask/model";
 import { canCharge } from "@/lib/legal";
-import { NAME, OPERATOR, ONE_LINER, SUB } from "@/lib/voice";
+import { NAME, ONE_LINER, SUB } from "@/lib/voice";
 import { supply, shortMessage } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
 import Tashikame from "@/components/brand/Tashikame";
+import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
 import Slot from "@/components/brand/Slot";
@@ -212,6 +213,9 @@ export default async function HomePage() {
             >
               相談する
             </PlanCta>
+            {/* フッターを外したので、ほかの面への行き先はここに畳んである。
+                特商法の表記とプライバシーも、ここから辿れる */}
+            <MenuButton />
           </nav>
         </Wrap>
       </header>
@@ -800,18 +804,14 @@ export default async function HomePage() {
                 </p>
                 <p className="mt-3.5 text-[13.5px] leading-[1.8] text-steel">{p.tagline}</p>
 
-                <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-4">
-                  {p.includes.map((x) => (
-                    <li key={x} className="flex items-start gap-2 text-[12.5px] leading-[1.7]">
-                      <span aria-hidden className="mt-[2px] shrink-0 text-[11px] font-black text-brand">
-                        ✓
-                      </span>
-                      <span className="min-w-0 text-steel">{x}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* 中身を全部並べると、カード1枚が1画面ぶんになる。
+                    何が返ってくるかは、払う直前の画面で1枚にまとめて出している。
+                    ここは「何人が読むか」だけにする。 */}
+                <p className="mt-5 border-t border-line pt-4 text-[13px] font-bold text-slate">
+                  実在の女性{p.answers}人が読みます
+                </p>
 
-                <div className="mt-6 flex-1" />
+                <div className="mt-5 flex-1" />
                 <PlanCta
                   plan={p.id}
                   from="price"
@@ -1004,71 +1004,6 @@ export default async function HomePage() {
       </section>
 
       {/* ── フッター ── */}
-      <footer className="border-t border-line bg-mist">
-        <Wrap className="py-12">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4">
-            {[
-              {
-                h: "使う",
-                items: [
-                  ["/ask", "相談する"],
-                  ["/talk", "電話の練習"],
-                  ["/mine", "相談したこと"],
-                ] as const,
-              },
-              {
-                h: "知る",
-                items: [
-                  ["/how", "仕組み"],
-                  ["/safety", "安心・安全"],
-                  ["/answerers", "誰が読むのか"],
-                  ["/articles", "記事"],
-                ] as const,
-              },
-              {
-                h: "参加する",
-                items: [
-                  ["/join", "答える側になる"],
-                  ["/about", "編集方針"],
-                  ["/updates", "更新記録"],
-                ] as const,
-              },
-              {
-                h: "決まりごと",
-                items: [
-                  ["/legal", "特定商取引法に基づく表記"],
-                  ["/privacy", "プライバシー・免責事項"],
-                  ["/disclosure", "広告と収益について"],
-                ] as const,
-              },
-            ].map((col) => (
-              <div key={col.h}>
-                <p className="text-[12.5px] font-bold text-steel">{col.h}</p>
-                <ul className="mt-3.5 flex flex-col gap-2 text-[13.5px]">
-                  {col.items.map(([href, l]) => (
-                    <li key={href}>
-                      <Link
-                        href={href}
-                        className="-my-1 block py-1 text-slate/80 transition-colors hover:text-brand"
-                      >
-                        {l}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 flex flex-col gap-3 border-t border-line pt-7 sm:flex-row sm:items-center sm:justify-between">
-            <Link href="/" className="flex items-center gap-2.5">
-              <Tashikame size={28} />
-              <span className="text-[15px] font-black text-slate">{NAME}</span>
-            </Link>
-            <p className="text-[12px] text-steel">© 2026 {OPERATOR}</p>
-          </div>
-        </Wrap>
-      </footer>
     </div>
   );
 }
