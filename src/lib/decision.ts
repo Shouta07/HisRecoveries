@@ -75,7 +75,7 @@ export const ADOPTED: Evidence[] = [
   },
   {
     feature: "実在の人と会話を練習する（模擬チャット）",
-    abroad: "実在の相手と模擬的なやりとりを行い、所見を返す商品",
+    abroad: "実在の相手とやりとりを練習し、感想を返す商品",
     domestic: "模擬デート・会話練習を有料で提供する形がある",
     step: "会う前",
     adopted: true,

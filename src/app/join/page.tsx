@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { NAME } from "@/lib/voice";
+import { NAME, OPERATOR } from "@/lib/voice";
+import { TIERS } from "@/lib/economics";
+import { DEMO } from "@/lib/ask/demo";
+import { PAYOUT_MIN_YEN } from "@/lib/responder/balance";
+import { REQUIRED_ANSWERS, INVITER_YEN } from "@/lib/responder/referral";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { Eyebrow, ReactionCard, Hairline } from "@/components/brand/kit";
@@ -39,7 +43,7 @@ export default function JoinPage() {
       <header className="border-b border-line">
         <div className="mx-auto flex w-full max-w-[900px] items-center justify-between gap-4 px-6 py-4 sm:px-10">
           <Link href="/" className="text-[14px] font-black">
-            His Recoveries
+            {NAME}
           </Link>
           <Link
             href="/ask"
@@ -83,11 +87,10 @@ export default function JoinPage() {
                 float="slow"
                 r={{
                   age: 26,
-                  attrs: ["Woman", "App User"],
-                  verdict: "Good",
+                  attrs: ["女性", "アプリ経験あり"],
+                  verdict: "このままでOK",
                   positive: true,
-                  comment: "私はこのくらいならむしろ嬉しい。",
-                  helpful: 94,
+                  comment: "私はこのくらいならむしろ嬉しいです。",
                 }}
               />
             </Reveal>
@@ -108,7 +111,7 @@ export default function JoinPage() {
           <ol className="mt-12 grid gap-px border border-line bg-line sm:grid-cols-3">
             {[
               { n: "01", t: "メールが届く", d: "新しい相談があるときだけ届きます。答えられないときは、そのままで構いません。" },
-              { n: "02", t: "読んで、選ぶ", d: "「かなり良い」から「やめた方がいい」まで。他の人の回答は見えません。" },
+              { n: "02", t: "読んで、選ぶ", d: "このままでOK / 少し気になる / 変えた方がいい の3つから。他の人の回答は見えません。" },
               { n: "03", t: "理由を書く", d: "思ったことをそのまま。丁寧に整えなくて大丈夫です。" },
             ].map((s, i) => (
               <li key={s.n} className="bg-paper p-6 sm:p-7">
@@ -141,7 +144,7 @@ export default function JoinPage() {
               ["名前は出ますか", "出ません。相談した人に見えるのは、あなたの年代と、選んだ属性だけです。"],
               ["やめられますか", "いつでも。届いたメールに「やめます」とだけ返してください。理由は聞きません。"],
               ["答えないとどうなりますか", "何も起きません。ノルマも、期限も、評価もありません。"],
-              ["謝礼はありますか", "1件ごとにお渡しします。いまはベータ中のため、金額と方法は登録後に個別にご相談します。"],
+              ["いくらになりますか", `1件 ¥${TIERS[0].quickYen} からです。役に立ったと言われた回答が増えると、1件 ¥${TIERS[TIERS.length - 1].quickYen} まで上がります。答えて確認を通った時点で、その場で残高に入ります。`],
               ["どんな相談が来ますか", "LINEの文面、写真、デートの誘い方など。同意のない行為・晒し・18歳未満に関するものは、届く前にこちらで止めています。"],
             ].map(([q, a], i) => (
               <Reveal key={q} delay={i * 60}>
@@ -166,6 +169,76 @@ export default function JoinPage() {
             </p>
           </Reveal>
 
+          {/* いくらになるのか。
+              ここが曖昧だと、登録する理由が無い。
+              金額は economics.ts から引いてくる（画面に直書きしない）。 */}
+          <section className="mt-14 rounded-card border border-line bg-paper p-6 shadow-card sm:p-8">
+            <p className="text-[12px] font-bold text-steel">いくらになるか</p>
+            <p className="mt-2 text-[34px] font-black tabular-nums leading-none text-slate">
+              1件 ¥{TIERS[0].quickYen.toLocaleString()}
+              <span className="ml-2 text-[16px] font-bold text-steel">から</span>
+            </p>
+            <p className="mt-3.5 text-[14px] leading-[1.9] text-steel">
+              1件あたり1〜2分です。役に立ったと言われた回答が増えると、単価が上がります。
+            </p>
+
+            <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-5">
+              {TIERS.map((t) => (
+                <li key={t.id} className="flex items-baseline justify-between gap-3 text-[14px]">
+                  <span className="min-w-0 text-steel">{t.label}</span>
+                  <span className="shrink-0 font-bold tabular-nums text-slate">
+                    1件 ¥{t.quickYen.toLocaleString()}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-6 rounded-soft bg-mist p-4">
+              <p className="text-[13.5px] font-bold text-slate">答えたら、その場で残高に入ります。</p>
+              <p className="mt-2 text-[12.5px] leading-[1.85] text-steel">
+                「あとで運営から連絡します」にはしていません。確認を通った時点で入ります。
+                銀行へのお振り込みは ¥{PAYOUT_MIN_YEN.toLocaleString()} からまとめて行います
+                （1件ずつ振り込むと、送金の手数料のほうが大きくなるためです）。
+              </p>
+            </div>
+
+            <div className="mt-3 rounded-soft bg-brand-tint p-4">
+              <p className="text-[13.5px] font-bold text-slate">友達を呼ぶと、二人とも ¥{INVITER_YEN.toLocaleString()}。</p>
+              <p className="mt-2 text-[12.5px] leading-[1.85] text-steel">
+                友達が{REQUIRED_ANSWERS}件答えた時点で、あなたにも友達にも入ります。
+                登録しただけでは出ません。
+              </p>
+            </div>
+
+            <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+              順位は公開しません。順位を出すと、良い回答より多い回答をする人が増えるからです。
+              見ているのは、役に立ったと言われた割合と、返すまでの速さです。
+            </p>
+          </section>
+
+          {/* どんな相談が来るのか。抽象的に書かない */}
+          <section className="mt-6 rounded-card border border-line bg-paper p-6 shadow-card sm:p-8">
+            <p className="text-[12px] font-bold text-steel">こういう相談が来ます</p>
+            <div className="mt-4 rounded-card rounded-tl-[4px] bg-mist px-4 py-3.5 text-[15px] leading-[1.7]">
+              {DEMO.before}
+            </div>
+            <p className="mt-4 text-[13.5px] leading-[1.9] text-steel">
+              これに対して「このままでOK / 少し気になる / 変えた方がいい」を選んで、
+              そう思った理由を書きます。たとえば、こう書かれています。
+            </p>
+            <ul className="mt-4 flex flex-col gap-3">
+              {DEMO.says.slice(0, 2).map((x) => (
+                <li key={x.age} className="border-l-2 border-line pl-4 text-[14px] leading-[1.8] text-steel">
+                  {x.say}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 text-[12.5px] leading-[1.85] text-steel">
+              正解を当てるものではありません。丁寧に整えなくて大丈夫です。
+              思ったことを、そのまま書いてください。
+            </p>
+          </section>
+
           <div className="mt-12">
             {/* JoinForm は ?ref= を読む。
                 読む側を Suspense で包まないと、この面が事前生成できない。 */}
@@ -177,7 +250,7 @@ export default function JoinPage() {
           <div className="mt-14">
             <Hairline />
             <p className="mt-7 max-w-[32em] text-[12.5px] leading-[1.9] text-steel">
-              いただいた情報は、相談の依頼をお送りすることと、
+              いただいた情報は、相談をお届けすることと、
               条件に合う方をお探しすることにだけ使います。第三者には提供しません。
               扱いの全般は{" "}
               <Link href="/privacy" className="underline decoration-line underline-offset-4 hover:text-slate">
@@ -200,7 +273,7 @@ export default function JoinPage() {
             </Link>
           </div>
           <p className="text-[11.5px] text-steel">
-            © 2026 His Recoveries — AIは予測する。人間は反応する。
+            © 2026 {OPERATOR}
           </p>
         </div>
       </footer>

@@ -20,25 +20,82 @@ export type ImageSlot = {
   alt: string;
   /** 何を写すか。撮影を頼むときの指示になる */
   note: string;
+  /**
+   * ファイルが実際に置いてあるか。
+   *
+   * ここが false のあいだは、枠の中に note を出す（何を写すかの案内）。
+   * true にすると案内は出ない。
+   *
+   * 自動で判定していないのは、画像が読めたかどうかを
+   * サーバー側で知る方法が無いから。置いたら、ここも true にする。
+   */
+  ready?: boolean;
 };
 
-export const IMAGES = {
+export type ImageKey = "hero" | "heroTall" | "casePhoto" | "caseMessage" | "caseCall" | "caseDate" | "w1" | "w2" | "w3" | "w4" | "w5" | "step1" | "step4";
+
+export const IMAGES: Record<ImageKey, ImageSlot> = {
   hero: {
     src: "/img/hero.jpg",
     alt: "スマホを見ながら考えている男性",
+    // いただいた画面の見本から切り出したもの。
+    // 元の写真ファイルがあれば、もっと大きく使える。
     note: "送る直前に手が止まっている様子。正面ではなく、画面を見ている横顔。",
+    ready: true,
   },
-  caseMessage: { src: "/img/case-message.jpg", alt: "", note: "LINEの画面" },
-  caseDate: { src: "/img/case-date.jpg", alt: "", note: "夜の店の席" },
-  casePhoto: { src: "/img/case-photo.jpg", alt: "", note: "プロフィール写真の候補" },
-  caseStyle: { src: "/img/case-style.jpg", alt: "", note: "上着とパンツを並べたところ" },
-  caseProfile: { src: "/img/case-profile.jpg", alt: "", note: "プロフィール入力画面" },
-  caseWords: { src: "/img/case-words.jpg", alt: "", note: "言葉にできずに考えている様子" },
+  heroTall: {
+    src: "/img/hero-tall.jpg",
+    alt: "スマホを見ている男性",
+    note: "縦に長く使う版。スマホの幅で、右半分に流し込む。",
+    ready: true,
+  },
+
+  // ── 相談の種類を表す絵 ──────────────────────────
+  // 特定の誰かの体験談ではない。
+  // 「こういう相談が来ます」の見出しに添える絵として使う。
+  // 年齢も職業も名前も付けない（付けた時点で、実在しない人の
+  // 体験談になる。利用者はまだ0人）。
+  casePhoto: {
+    src: "/img/case-photo.jpg",
+    alt: "",
+    note: "写真やプロフィールについて考えている様子",
+    ready: true,
+  },
+  caseMessage: {
+    src: "/img/case-message.jpg",
+    alt: "",
+    note: "メッセージを打ちながら迷っている様子",
+    ready: true,
+  },
+  caseCall: {
+    src: "/img/case-call.jpg",
+    alt: "",
+    note: "電話やデートの前に考えている様子",
+    ready: true,
+  },
+  caseDate: {
+    src: "/img/case-date.jpg",
+    alt: "",
+    note: "デートのあと、次をどうするか考えている様子",
+    ready: true,
+  },
+
+  // ── 回答する側のイメージ ────────────────────────
+  // 特定の誰かではない。名前も職業も居住地も付けない。
+  // 付けた時点で「この人が読みます」という意味になり、
+  // 登録が0人の状態ではそれが事実でなくなる。
+  //
+  // 男性側の絵と同じ扱い。場面のイメージとして添え、
+  // 画面には「※ 写真はイメージです」と書く。
+  w1: { src: "/img/w1.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w2: { src: "/img/w2.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w3: { src: "/img/w3.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w4: { src: "/img/w4.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+  w5: { src: "/img/w5.jpg", alt: "", note: "回答する側のイメージ", ready: true },
+
   step1: { src: "/img/step-1.jpg", alt: "", note: "スマホに質問を打ち込んでいる手元" },
   step4: { src: "/img/step-4.jpg", alt: "", note: "決めて、送ったあとの表情" },
-} satisfies Record<string, ImageSlot>;
-
-export type ImageKey = keyof typeof IMAGES;
+};
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
@@ -47,5 +104,9 @@ export type ImageKey = keyof typeof IMAGES;
       throw new Error(`画像「${k}」は public/img/ の下に置いてください`);
     }
     if (!v.note) throw new Error(`画像「${k}」に、何を写すかが書かれていません`);
+    // 人が写るものには、読み上げ用の文が要る。
+    if (v.ready && k === "hero" && !v.alt) {
+      throw new Error(`画像「${k}」に alt がありません`);
+    }
   }
 }

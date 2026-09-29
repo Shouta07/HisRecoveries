@@ -6,9 +6,10 @@ import { site } from "@/lib/site";
 import { Eyebrow, Hairline } from "@/components/brand/kit";
 import { HumanCard, type Human } from "@/components/brand/market";
 import Says from "@/components/brand/Says";
+import WhoReads from "@/components/brand/WhoReads";
 import { EMPTY } from "@/lib/tashikame";
 
-// 回答者の一覧。マーケットプレイスの供給側。
+// 答えてくれる女性の一覧。マーケットプレイスの供給側。
 //
 // ── ここを作り物にしない ──────────────────────────
 // 「128 ANSWERS / HELPFUL 94%」の人を並べたくなる場所だが、
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   // プロダクトの名乗りはタシカメなので、ここで完結させる。
   title: { absolute: "誰が読むのか — タシカメ" },
   description:
-    "読むのは、審査を通った女性だけです。年齢と立場を確認し、通った方にだけ依頼をお送りしています。名前や連絡先は出しません。",
+    "読むのは、審査を通った女性だけです。年齢と立場を確認し、通った方にだけお願いしています。名前や連絡先は出しません。",
   alternates: { canonical: `${site.url}/answerers` },
 };
 
@@ -99,7 +100,7 @@ export default async function AnswerersPage() {
         </h1>
         <p className="mt-8 max-w-[31em] text-[16px] leading-[1.95] text-steel sm:text-[17px]">
           登録すれば読めるようにはしていません。
-          年齢と立場を確認し、通った方にだけ依頼をお送りしています。
+          年齢と立場を確認し、通った方にだけお願いしています。
           名前も連絡先も出しません。出す仕組み自体を作っていません。
         </p>
         <p className="mt-5 max-w-[31em] text-[15px] leading-[1.95] text-steel">
@@ -125,6 +126,12 @@ export default async function AnswerersPage() {
           </div>
         </dl>
 
+        {/* 顔の代わりに、選べる条件と確認していることを出す。
+            年齢の丸バッジだけだと、本当にいるのかが伝わらない。 */}
+        <div className="mt-10 max-w-[520px]">
+          <WhoReads />
+        </div>
+
         {people.length > 0 ? (
           <>
             <p className="mt-10 text-[11px] font-bold text-steel">確認が済んだ方</p>
@@ -147,7 +154,7 @@ export default async function AnswerersPage() {
                 href="/join"
                 className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-brand px-9 text-[15.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
               >
-                回答者として参加する
+                答える側になる
               </Link>
               <Link
                 href="/ask"

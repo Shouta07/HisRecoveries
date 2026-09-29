@@ -177,7 +177,7 @@ export default function JoinForm() {
         <div className="mt-3">
           <Note>
             相談した人には渡りません。渡す仕組み自体を作っていません。
-            こちらから依頼をお送りするためだけに使います。
+            こちらから相談をお届けするためだけに使います。
           </Note>
         </div>
       </div>
