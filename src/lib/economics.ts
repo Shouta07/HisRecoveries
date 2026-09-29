@@ -46,7 +46,7 @@ export const MISC_COST_YEN = 10;
 
 /* ── 回答者報酬 ──────────────────────────────── */
 
-export type RewardKind = "quick" | "priority" | "talk_short" | "talk" | "improve";
+export type RewardKind = "quick" | "sensitive" | "priority" | "talk_short" | "talk" | "improve";
 
 export type RewardBand = {
   kind: RewardKind;
@@ -63,10 +63,22 @@ export type RewardBand = {
  * 幅の外には出さない（下は回答者のため、上は採算のため）。
  */
 export const REWARDS: RewardBand[] = [
-  // 1件ぶんの反応。第一印象・気になったところ・その理由。
-  // 以前は 200〜300 円だったが、商品が ¥5,980 になったので引き上げる。
-  { kind: "quick", label: "反応を返す", min: 400, max: 700, note: "1件ぶんの反応" },
-  { kind: "priority", label: "先に回す", min: 500, max: 850, note: "優先して回した依頼" },
+  // 1件ぶんの反応。第一印象・気になったところ・その理由・直し方・修正文。
+  // 200〜300 → 400〜700 → 500〜850 と上げてきた。
+  // 上げた原資は、5回パスを ¥5,980 から ¥7,980 にしたぶん。
+  { kind: "quick", label: "反応を返す", min: 500, max: 850, note: "1件ぶんの反応" },
+  // 言いにくい相談（距離感・触れ方・付き合う前・性の価値観）。
+  // ふつうの相談の2倍。値段を上げたぶんを、こちらに回している。
+  //
+  // 高いのは「性的な話題だから」ではない。
+  //   受けると決めた人にしか回らない（母数が少ない）
+  //   返す前に、こちらが目を通す
+  //   書くのに時間がかかる（同意・境界・言い方まで書く）
+  // こちらの取り分だけ増やすなら、値段を上げる理由が無い。
+  { kind: "sensitive", label: "言いにくい相談に答える", min: 900, max: 1500, note: "2回分" },
+  // ふつうの帯（500〜850）を上げたので、こちらも上げる。
+  // 同じ額にすると、急ぎでも報酬が変わらず、急ぐ理由が無くなる。
+  { kind: "priority", label: "先に回す", min: 650, max: 1100, note: "優先して回した依頼" },
   // 15分だけ話す。時給に直すと ¥8,000〜¥12,000。
   // 30分以上と同じ額にしていたせいで、15分の商品が成立しなかった
   // （¥5,980 に ¥3,000 払うと変動費が50%を超える）。
@@ -98,10 +110,18 @@ export type Tier = {
  * 順位を公開して競わせることはしない。
  */
 export const TIERS: Tier[] = [
-  { id: "bronze", label: "レギュラー回答者", quickYen: 450, can: "反応を返す" },
-  { id: "trusted", label: "高評価回答者", quickYen: 550, can: "優先して回る依頼も受けられる" },
-  { id: "top", label: "リード回答者", quickYen: 700, can: "直し方を書き、新しい人の回答も確認する" },
+  { id: "bronze", label: "レギュラー回答者", quickYen: 500, can: "反応を返す" },
+  { id: "trusted", label: "高評価回答者", quickYen: 650, can: "優先して回る依頼も受けられる" },
+  { id: "top", label: "リード回答者", quickYen: 850, can: "直し方を書き、新しい人の回答も確認する" },
 ];
+
+/**
+ * 言いにくい相談で、1回に払う額。
+ *
+ * 5回パスの2回分（売価 ¥3,192）に対して ¥1,000。粗利61%。
+ * ふつうの相談の2倍。値段を上げたぶんを、こちらに回している。
+ */
+export const SENSITIVE_YEN = 1000;
 
 /** 条件が珍しいときの上乗せ */
 export const RARE_BONUS = { min: 50, max: 150 };
@@ -120,7 +140,7 @@ export const REWARD_CAP: Record<PlanId, number> = {
   // 粗利は53%で、ほかの商品（60%）より低い。
   // 入口の商品は利益を取る商品ではないので、ここだけ下げている
   // （plans.ts の marginFloor）。下げたのは利益で、報酬ではない。
-  review: 450,
+  review: 550,
   // 15分 ¥5,980 の 40%。¥2,392 は時給に直すと ¥9,568。
   call15: 2267,
   // 30分 ¥9,800 の 40%。¥3,920 は時給に直すと ¥7,840。
@@ -214,7 +234,7 @@ export const COSTS: Record<PlanId, CostModel> = {
   //
   // 3人にしたいなら、ここだけ直しても通らない。
   // 5回パスの売価（plans.ts の yen）も一緒に上げること。
-  review: { parts: [{ kind: "quick", n: 1, atYen: 450 }] },
+  review: { parts: [{ kind: "quick", n: 1, atYen: 500 }] },
   // 15分、1人と話す
   call15: { parts: [{ kind: "talk_short", n: 1, atYen: 1900 }] },
   // 30分、1人と話す
@@ -463,7 +483,12 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
 
   // 高い商品ほど、1件あたりの利益「額」も大きいこと。
   // 率だけ追うと、安い商品ばかり売れて利益が積み上がらない。
-  const byYen = [...PLANS].sort((a, b) => a.yen - b.yen);
+  //
+  // まとめ売りは1回あたりで並べる（unit も1回あたりで見ている）。
+  // パックの売価で並べると、「5回まとめたほうが高い商品だ」という
+  // おかしな順番になる。
+  const perUse = (p: (typeof PLANS)[number]) => (p.uses ? p.yen / p.uses : p.yen);
+  const byYen = [...PLANS].sort((a, b) => perUse(a) - perUse(b));
   for (let i = 1; i < byYen.length; i++) {
     const lo = unit(byYen[i - 1].id);
     const hi = unit(byYen[i].id);
@@ -480,6 +505,21 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
       throw new Error(`報酬「${r.kind}」の下限が ${r.min} 円です（${MIN_REWARD_YEN} 円以上）`);
     }
     if (r.max < r.min) throw new Error(`報酬「${r.kind}」の上下が逆です`);
+  }
+
+  // 言いにくい相談の取り分が、ふつうの相談より多いこと。
+  // 同じ額なら、受けると決める理由が無い。
+  if (SENSITIVE_YEN <= TIERS[0].quickYen) {
+    throw new Error(
+      `言いにくい相談の報酬（${SENSITIVE_YEN}円）が、ふつうの相談（${TIERS[0].quickYen}円）以下です`,
+    );
+  }
+  // その帯の中に収まっていること。
+  {
+    const band = reward("sensitive");
+    if (SENSITIVE_YEN < band.min || SENSITIVE_YEN > band.max) {
+      throw new Error(`言いにくい相談の報酬が帯の外です（${band.min}〜${band.max}）`);
+    }
   }
 
   // 入口商品が、いちばん利益の大きい商品になっていないこと。

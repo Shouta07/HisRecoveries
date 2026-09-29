@@ -3,6 +3,14 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
 import {
+  SCOPE,
+  RETURNS,
+  NEVER_ASK,
+  CONSENT,
+  ASK_SHAPE,
+  PASS_COST,
+} from "@/lib/ask/sensitive";
+import {
   PLANS,
   TIERS,
   plan as getPlan,
@@ -1008,6 +1016,83 @@ export default async function HomePage() {
               {f.extra === "flow" && <Flow />}
             </details>
           ))}
+        </div>
+      </Block>
+
+      {/* ══ 6.4 言いにくいこと ══ */}
+      {/* 別タブにしない。恋愛の道のりの中に置く。
+          大きく独立させると、それを目当てに来る人が増えて、
+          いちばん来てほしい人が引く。
+
+          線は lib/ask/sensitive.ts。
+          扱うのは相談者と相手の関係で、答える女性本人ではない。 */}
+      <Block tint>
+        <H>言いにくいことほど、女性に確かめる。</H>
+        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
+          距離の縮め方。触れ方のタイミング。付き合う前の関係。性の価値観。
+          <br className="hidden sm:block" />
+          友達には聞きづらい。相手本人には、もっと聞きづらい。
+        </p>
+
+        <ul className="mt-8 flex flex-col gap-2.5">
+          {SCOPE.slice(0, 4).map((x, i) => (
+            <Reveal key={x.id} delay={i * 45}>
+              <li className="rounded-card border border-line bg-paper px-5 py-4 shadow-card">
+                <p className="text-[12px] font-bold text-steel">{x.label}</p>
+                <p className="mt-1.5 text-[14.5px] font-bold leading-[1.7] text-slate">
+                  「{x.example}」
+                </p>
+              </li>
+            </Reveal>
+          ))}
+        </ul>
+
+        {/* 何が返るかを、値段より先に出す */}
+        <div className="mt-6 rounded-card border border-line bg-paper px-5 py-5 shadow-card">
+          <p className="text-[12px] font-bold text-steel">返ってくるもの</p>
+          <ul className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
+            {RETURNS.map((t) => (
+              <li key={t} className="flex items-start gap-2 text-[13px] leading-[1.75]">
+                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
+                  ✓
+                </span>
+                <span className="min-w-0 text-steel">{t}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 border-t border-line pt-4 text-[13px] leading-[1.85] text-steel">
+            {ASK_SHAPE.why}。決めるのは、あなたです。
+          </p>
+        </div>
+
+        {/* 線を、買う前に書く。買ったあとに出すものではない */}
+        <div className="mt-4 rounded-card border border-line bg-paper px-5 py-5">
+          <p className="text-[12px] font-bold text-steel">この相談のきまり</p>
+          <p className="mt-2 text-[13.5px] font-bold leading-[1.8] text-slate">{CONSENT}</p>
+          <ul className="mt-3 flex flex-col gap-1.5">
+            {NEVER_ASK.slice(0, 4).map((t) => (
+              <li key={t} className="flex items-start gap-2 text-[12.5px] leading-[1.75]">
+                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-steel">
+                  ×
+                </span>
+                <span className="min-w-0 text-steel">{t}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[12px] leading-[1.75] text-steel">
+            受けると決めた女性にだけ届きます。{PASS_COST}回分を使います。
+          </p>
+        </div>
+
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="sensitive"
+            category="distance"
+            className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
+          >
+            言いにくい悩みを確かめる <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
         </div>
       </Block>
 

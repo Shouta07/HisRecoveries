@@ -83,10 +83,15 @@ export const CATEGORIES: Category[] = [
     available: true,
   },
   {
+    // 言いにくい相談。
+    // 受けると決めた女性にだけ回る（responders.takes_sensitive）。
+    // 扱うのは相談者と相手の関係で、答える女性本人のことではない。
+    // 線は lib/ask/sensitive.ts に置いてある。
     id: "distance",
-    label: "性・距離感",
-    hint: "身体的な距離の取り方について",
-    placeholder: "聞きたいことを書いてください。相手を特定できる内容は書かないでください。",
+    label: "距離感・言いにくいこと",
+    hint: "距離の縮め方／触れ方／付き合う前の関係／性の価値観",
+    placeholder:
+      "相手からどう見えるかを聞く形で書いてください。相手を特定できる内容は書かないでください。",
     available: true,
   },
   {

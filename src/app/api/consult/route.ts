@@ -9,6 +9,7 @@ import { isStepId } from "@/lib/ask/journey";
 import { redact } from "@/lib/ask/redact";
 import { makeConsultToken, isConsultToken } from "@/lib/ask/token";
 import { spend } from "@/lib/ask/pass";
+import { passCost } from "@/lib/ask/sensitive";
 
 // 相談を受け取る。
 //
@@ -157,7 +158,8 @@ export async function POST(req: NextRequest) {
   const passToken = typeof body.pass === "string" && isConsultToken(body.pass) ? body.pass : null;
   const newId = ins.rows[0]?.id ?? null;
   if (passToken) {
-    const r = await spend(passToken, newId);
+    // 言いにくい相談は2回分。カテゴリから決める（画面から回数を送らせない）。
+    const r = await spend(passToken, newId, passCost(typeof body.category === "string" ? body.category : null));
     if (r.ok) {
       spent = { ok: true, remaining: r.remaining };
       // 1回ぶんを使ったので、支払い済みとして配りはじめる。

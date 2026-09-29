@@ -31,6 +31,14 @@ export type Human = {
   job?: string | null;
   /** 回答の書き方の癖 */
   tone?: string | null;
+  /**
+   * 言いにくい相談を受けると決めた人か。
+   *
+   * 出すのは「受けられる」ことだけ。
+   * その人が何を得意にしているか、という書き方にはしない。
+   * 人を品ぞろえとして見せることになる。
+   */
+  takesSensitive?: boolean;
   /** 回答した数。0 のときは「まだ回答なし」と出す */
   answered?: number;
   /** 役に立ったと言われた割合。評価が付くまでは undefined */
@@ -110,6 +118,12 @@ export function HumanCard({
             })
             .slice(0, 3)
             .join(" / ")}
+        </p>
+      )}
+
+      {h.takesSensitive && (
+        <p className={`mt-2 text-[11px] font-bold ${dark ? "text-brand-tint" : "text-brand"}`}>
+          言いにくい相談にも対応
         </p>
       )}
 

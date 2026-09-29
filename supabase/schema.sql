@@ -361,6 +361,16 @@ create table if not exists responders (
 alter table responders add column if not exists job_band text;   -- model.ts の JobBand
 alter table responders add column if not exists tone text;       -- model.ts の Tone（回答の書き方）
 
+-- 言いにくい相談（距離感・触れ方・付き合う前・性の価値観）を受けるか。
+--
+-- 既定は false。自分で入れた人にだけ回る。
+-- 既定を true にして「嫌なら外してください」にはしない。
+-- 外し方を知らないまま届くことになる。
+--
+-- not null default false にしているのは、null を「たぶん受ける」と
+-- 読み違える実装が混ざらないようにするため。
+alter table responders add column if not exists takes_sensitive boolean not null default false;
+
 create index if not exists responders_active_idx on responders (active, display_age_band);
 
 -- 相談1件。
@@ -532,6 +542,7 @@ select
   r.specialties,
   r.job_band,
   r.tone,
+  r.takes_sensitive,
   r.verified_age,
   r.verified_profile,
   r.avg_reply_minutes,
