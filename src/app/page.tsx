@@ -3,7 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { topPlans, plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
-import { CASES } from "@/lib/ask/cases";
+import { ALTERNATIVES, COMPARE, COMPARE_NOTE } from "@/lib/ask/compare";
 import { STEPS as JOURNEY } from "@/lib/ask/journey";
 import { VERDICTS } from "@/lib/ask/model";
 import { canCharge } from "@/lib/legal";
@@ -771,9 +771,12 @@ export default async function HomePage() {
           月額はありません。入会金もありません。ここぞという場面の前にだけ使うものです。
         </p>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {tops.map((p, i) => (
-            <Reveal key={p.id} delay={i * 60}>
+        {/* スマホで3枚を縦に積むと、それだけで3画面ぶんになる。
+            横に送れるようにして1画面に収める。位置合わせは CSS に任せる
+            （JS を足すと、読み込みが終わるまで動かない帯になる）。 */}
+        <ul className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-4 lg:overflow-visible lg:px-0 lg:pb-0">
+          {tops.map((p) => (
+            <li key={p.id} className="w-[80%] shrink-0 snap-start sm:w-[60%] lg:w-auto">
               <div
                 className={`flex h-full flex-col rounded-card border bg-paper p-6 shadow-card ${
                   p.featured ? "border-rose" : "border-line"
@@ -819,9 +822,10 @@ export default async function HomePage() {
                   これで相談する <span aria-hidden className="ml-1.5">→</span>
                 </PlanCta>
               </div>
-            </Reveal>
+            </li>
           ))}
-        </div>
+        </ul>
+        <p className="mt-1 text-[11.5px] text-steel lg:hidden">横にスワイプすると、ほかのプランが出ます。</p>
 
         <div className="mt-6 flex flex-wrap items-baseline justify-between gap-3 rounded-card border border-line bg-mist px-5 py-4">
           <p className="text-[13.5px] font-bold">
@@ -847,6 +851,73 @@ export default async function HomePage() {
             特定商取引法に基づく表記
           </Link>
         </p>
+      </Block>
+
+      {/* ══ 9.5 ほかの選び方との違い ══ */}
+      {/* 比較広告は景表法の対象。実証・正確な引用・公正な比較の3つが要る。
+          他社の金額は書かない（出典が無い）。事実に反することも書かない
+          （AIは無料で使えるものが多い）。中身と判定は lib/ask/compare.ts。 */}
+      <Block tint>
+        <H>ほかの選び方と、どう違うか。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+          どれかが優れているという話ではありません。
+          送る前のひと手間だけを引き受けるのが、この製品です。
+        </p>
+
+        <div className="mt-7 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
+          <table className="w-full min-w-[640px] border-collapse overflow-hidden rounded-card border border-line bg-paper shadow-card">
+            <thead>
+              <tr>
+                <th scope="col" className="w-[6.5em] bg-paper px-3 py-3" />
+                {ALTERNATIVES.map((a) => (
+                  <th
+                    key={a.id}
+                    scope="col"
+                    className={`px-3 py-3 text-[13px] font-black leading-[1.4] ${
+                      a.us ? "bg-brand text-paper" : "bg-mist text-steel"
+                    }`}
+                  >
+                    {a.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE.map((r) => (
+                <tr key={r.id} className="border-t border-line">
+                  <th
+                    scope="row"
+                    className="px-3 py-3 text-left align-top text-[12px] font-bold leading-[1.6] text-steel"
+                  >
+                    {r.label}
+                  </th>
+                  {ALTERNATIVES.map((a) => (
+                    <td
+                      key={a.id}
+                      className={`px-3 py-3 align-top text-[12px] leading-[1.7] ${
+                        a.us ? "bg-brand-tint font-bold text-brand-deep" : "text-steel"
+                      }`}
+                    >
+                      {r.cells[a.id]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="mt-4 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
+
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="compare"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            今すぐ相談する <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
+        </div>
       </Block>
 
       {/* ══ 10. 安心・安全 ══ */}

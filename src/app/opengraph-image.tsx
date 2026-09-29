@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 import { ogFont } from "@/lib/ogFont";
 import { site } from "@/lib/site";
@@ -22,6 +24,12 @@ export const alt = `${NAME} — ${ONE_LINER}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+/** マークを埋め込む。satori は URL を取りに行かないので、中身を渡す */
+function mark(): string {
+  const file = path.join(process.cwd(), "public", "img", "tashikame-mark-128.png");
+  return `data:image/png;base64,${fs.readFileSync(file).toString("base64")}`;
+}
+
 export default async function Image() {
   const entry = getPlan(ENTRY_PLAN);
   const main = getPlan(DEFAULT_PLAN);
@@ -41,23 +49,10 @@ export default async function Image() {
           fontFamily: "Noto",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <div
-            style={{
-              width: 46,
-              height: 46,
-              borderRadius: 23,
-              border: "3px solid #0F172A",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div style={{ display: "flex", gap: 8 }}>
-              <div style={{ width: 6, height: 6, borderRadius: 3, background: "#0F172A", display: "flex" }} />
-              <div style={{ width: 6, height: 6, borderRadius: 3, background: "#0F172A", display: "flex" }} />
-            </div>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          {/* マークは画像。ここで丸と点を描き直すと、サイト側と別のものになる */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={mark()} width={56} height={56} alt="" />
           <div style={{ fontSize: 34, color: "#0F172A", display: "flex", letterSpacing: 2 }}>
             {NAME}
           </div>
