@@ -88,13 +88,17 @@ export const DEFINITION =
 export const DEFINITION_SHORT = "男性の恋愛の悩みに、女性が答えるサービスです。";
 
 /**
- * 名前の下に添える標語。
+ * 名前の上に置く行。
  *
- * 名前だけだと、何の亀なのか分からない。
- * 名乗り（ONE_LINER）は文として長いので、ヘッダーには入らない。
- * ここは、名前と一緒に一目で読める長さまで削ったもの。
+ * ヘッダーは上から
+ *   恋に迷ったら、
+ *   タシカメ
+ * と読ませる。2行で1つの文になるので、ここに名前は入れない
+ * （入れると「恋に迷ったら、タシカメ タシカメ」になる）。
+ *
+ * 名乗り（ONE_LINER）は文として長く、ヘッダーには入らない。
  */
-export const TAGLINE = "恋に迷ったら、タシカメ";
+export const TAGLINE = "恋に迷ったら、";
 
 /**
  * 考え方。ここから全部の画面が出る。
@@ -447,10 +451,12 @@ export function assertWeight(text: string, where: string): string {
     assertNotScary(t, where);
     assertNotCheap(t, where);
   }
-  // 標語に名前が入っていること。名前の下に置くので、ここが抜けると
-  // 「恋に迷ったら」で終わる、意味の通らない行になる。
-  if (!TAGLINE.includes(NAME)) throw new Error("標語に名前が入っていません");
-  if (TAGLINE.length > 14) throw new Error(`標語が長すぎます（${TAGLINE.length}文字）`);
+  // 標語の下に名前が来るので、標語の中に名前を入れない。
+  // 入れると「恋に迷ったら、タシカメ／タシカメ」と2回出る。
+  if (TAGLINE.includes(NAME)) {
+    throw new Error("標語に名前が入っています（名前は標語の下に別で出します）");
+  }
+  if (TAGLINE.length > 10) throw new Error(`標語が長すぎます（${TAGLINE.length}文字）`);
   assertNotScary(TAGLINE, "標語");
 
   // 長いほうは、名乗りから始める。

@@ -23,7 +23,7 @@
 // 対面での確認を含む商品は、手順と担当が用意できるまで開けない。
 // 買えてしまうと、届けられない約束を売ることになる。
 
-import { isPanelSize, type AttrId, type PanelAge } from "./model";
+import { isPanelSize, isOpenCategory, type AttrId, type PanelAge } from "./model";
 import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary } from "../voice";
 
 /**
@@ -343,7 +343,18 @@ export const FLOW = [
 
 /* ── 使う瞬間 ──────────────────────────────────
    「恋愛相談」と書くと、誰も自分のことだと思わない。
-   押す直前に手が止まる、その瞬間だけを書く。 */
+   押す直前に手が止まる、その瞬間だけを書く。
+
+   ── 受け取れない場面を出さない ──────────────
+   服と店（category: "style"）は、見ないと答えようがない。
+   画像を受け取る口が無いので、画面に出すのは OPEN_USE_CASES のほう。
+   カテゴリが開いたら、自動でここに戻ってくる。
+
+   ── 相手を品定めする言い方にしない ────────────
+   「この子、脈あり？」とは書かない。
+   返ってくるのは相手の気持ちの判定ではなく、
+   同じ側に立つ女性が読んで、実際にどう受け取ったか。
+   判定を売ると、当たり外れのある占いになる。 */
 
 export const USE_CASES: {
   tag: string;
@@ -359,7 +370,7 @@ export const USE_CASES: {
   },
   {
     tag: "誘う前",
-    q: "今日、デートに誘っていい？",
+    q: "この反応、どう見える？ いつ誘う？",
     body: "文面は作れる。「この距離感で誘われたらどう受け取るか」は、女性側にしか分からない。",
     category: "signal",
   },
@@ -376,12 +387,20 @@ export const USE_CASES: {
     category: "photo",
   },
   {
-    tag: "載せる前",
-    q: "このプロフィール、会ってみたいと思う？",
-    body: "自分では読み返せない。女性の目で、一度通しておく。",
-    category: "photo",
+    tag: "会ったあと",
+    q: "デートで何を話せば？ 次につなげたい",
+    body: "話題は用意した。「それを聞かれてどう感じるか」は、女性側にしか分からない。",
+    category: "date",
   },
 ];
+
+/**
+ * 画面に出す「使う瞬間」。
+ *
+ * 受け付けていないカテゴリのものは出さない。
+ * 押した人が行き止まりに当たる。
+ */
+export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category));
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
@@ -498,6 +517,18 @@ export const USE_CASES: {
     assertWhoReads(t, "商品の説明");
     // 硬い言葉を混ぜない。読むのは29歳の会社員。
     assertPlain(t, "商品の説明");
+  }
+
+  // 使う瞬間が、受け付けているカテゴリだけで4つ以上あること。
+  // ここが減ると「1つのことしかできないサービス」に見える。
+  if (OPEN_USE_CASES.length < 4) {
+    throw new Error(`画面に出せる場面が${OPEN_USE_CASES.length}個しかありません`);
+  }
+  // 相手の気持ちを当てる商売にしない。
+  for (const u of USE_CASES) {
+    if (/脈あり\?|脈あり？|この子|本命|好きかどうか|気持ちを当て/.test(u.q)) {
+      throw new Error(`使う瞬間「${u.q}」が、相手の気持ちの判定になっています`);
+    }
   }
 
   // 「5回答でいくら」と書かない。個数を売るとアンケートに見える。

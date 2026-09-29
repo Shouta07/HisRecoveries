@@ -40,11 +40,23 @@ import type { ImageKey } from "@/lib/images";
 // ══════════════════════════════════════════════════
 // 写真のどこに何を置けるか
 // ══════════════════════════════════════════════════
-// 素材は 522×682 の縦で、顔が上の真ん中、手とスマホが左下、
-// 右側は背景（ぼけた部屋）。だから
-//   反応   右上   背景の上なので、顔を隠さない
+// 素材は 522×682 の縦。そのまま全幅に敷くと、人が真ん中に来る。
+// 真ん中にいる人の上にカードを置くと、顔が隠れる。
+//
+// object-position では直せない。縦の素材を横長の枠に入れると
+// 横幅でぴったり合ってしまい、左右に動かす余地が無いため。
+// なので枠より広く引き伸ばして、左へずらす。
+//   枠     w-full
+//   写真   w-[122%] -left-[22%]
+// 倍率はこれ以上上げない。上げると顔が枠から溢れる。
+// 顔は素材の横 18〜62% にあるので、k 倍して d ずらすと
+// 右端は 0.62k − d。カードが 46% から始まるので、
+// 0.62k − d ≦ 0.46 かつ 右に隙間を作らない k − 1 ≦ d。
+// この2つを満たす上限が k = 1.22。
+//
+//   反応   右上   背景の上。顔を隠さない
 //   文面   左下   手とスマホの上。案と同じ置き方
-// になる。狭い画面では反応を2枚にして、文面と重ならないようにする。
+// 狭い画面では反応を2枚にして、文面と重ならないようにする。
 
 /** 絵に出す3人。「直したほうがいい／少し気になる／このままでOK」を1人ずつ */
 const FACES: ImageKey[] = ["w1", "w3", "w5"];
@@ -82,18 +94,17 @@ export default function HeroBoard() {
   return (
     <div className="mx-auto w-full max-w-[1120px] px-4 sm:px-8 lg:px-12">
       <div className="relative">
-        {/* 写真。広い画面では左半分に寄せて、右にカードを張り出させる */}
-        <div className="lg:w-[47%]">
-          <Slot
-            name="hero"
-            rounded="rounded-card"
-            position="center 18%"
-            className="h-[326px] w-full sm:h-[430px] lg:h-[440px]"
-          />
+        {/* 写真。人を左へ寄せて、右側を空ける */}
+        <div className="relative h-[360px] overflow-hidden rounded-card sm:h-[440px] lg:h-[460px] lg:w-[62%]">
+          {/* Slot 自身が relative を持っているので、ここで absolute を上書きできない
+              （Tailwind では .relative が後ろに出る）。外側の箱でずらす */}
+          <div className="absolute inset-y-0 -left-[22%] w-[122%] sm:-left-[15%] sm:w-[115%] lg:-left-[8%] lg:w-[108%]">
+            <Slot name="hero" rounded="" position="center 16%" className="h-full w-full" />
+          </div>
         </div>
 
         {/* 右上：読んだ女性の反応。背景の上に来るので、顔は隠れない */}
-        <div className="absolute right-0 top-2.5 w-[57%] max-w-[260px] sm:top-5 sm:w-[52%] sm:max-w-[340px] lg:top-7 lg:w-[57%] lg:max-w-[460px]">
+        <div className="absolute right-3 top-3 w-[54%] max-w-[240px] sm:right-5 sm:top-6 sm:w-[48%] sm:max-w-[330px] lg:right-0 lg:top-9 lg:w-[46%] lg:max-w-[440px]">
           {/* ここが製品そのもの。矢印だけだと「何人が」が消える */}
           <span className="inline-flex items-center gap-1 rounded-pill bg-brand px-2.5 py-1.5 text-[10.5px] font-black leading-none text-paper shadow-card sm:text-[12px]">
             <svg
@@ -149,7 +160,7 @@ export default function HeroBoard() {
         </div>
 
         {/* 左下：いま送ろうとしている文面。手とスマホの上に置く */}
-        <div className="absolute bottom-3 left-2 w-[60%] max-w-[250px] sm:bottom-5 sm:left-5 sm:w-[46%] sm:max-w-[310px] lg:bottom-6 lg:left-6 lg:w-[40%]">
+        <div className="absolute bottom-3.5 left-3 w-[58%] max-w-[240px] sm:bottom-6 sm:left-6 sm:w-[44%] sm:max-w-[300px] lg:bottom-8 lg:left-8 lg:w-[34%]">
           <span className="inline-flex rounded-pill bg-slate px-2.5 py-1 text-[10px] font-bold leading-none text-paper shadow-card sm:text-[11.5px]">
             送る前の文面
           </span>
@@ -174,7 +185,7 @@ export default function HeroBoard() {
         <svg
           aria-hidden
           viewBox="0 0 60 48"
-          className="absolute bottom-[34%] left-[50%] hidden h-[42px] w-[52px] text-brand sm:block lg:bottom-[40%] lg:left-[38%] lg:h-[54px] lg:w-[66px]"
+          className="absolute bottom-[36%] left-[46%] hidden h-[40px] w-[50px] text-brand sm:block lg:bottom-[42%] lg:left-[36%] lg:h-[54px] lg:w-[66px]"
           fill="none"
           stroke="currentColor"
           strokeWidth="4"
