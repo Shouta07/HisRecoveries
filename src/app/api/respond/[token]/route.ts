@@ -103,6 +103,12 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
     pick,
     second: isSecond(body.second) ? body.second : null,
     comment: redact(comment.slice(0, COMMENT_MAX)).text,
+    // どう変われば自然か。任意。
+    // ここも伏せ字を通す（相手の名前が混ざることがある）。
+    fix:
+      typeof body.fix === "string" && body.fix.trim()
+        ? redact(body.fix.trim().slice(0, COMMENT_MAX)).text
+        : null,
   });
   if (!ins.ok) return NextResponse.json({ error: ins.error }, { status: 500 });
 

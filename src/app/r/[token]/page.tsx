@@ -100,12 +100,18 @@ export default async function RespondPage({ params }: { params: { token: string 
         {category(c.category as never).label}
       </p>
 
-      {/* 判断に要る状況。ここに無いものは、相談者も出していない */}
+      <p className="mt-2 text-[13px] leading-[1.75] text-steel">
+        30秒で読めます。答えるのは3〜5分です。
+      </p>
+
+      {/* 判断に要る状況。ここに無いものは、相談者も出していない。
+          長い履歴は渡さない。読むのに時間がかかるほど、答えてもらえなくなる */}
       <dl className="mt-5 divide-y divide-line border-y border-line text-[14px]">
         {[
           ["相談した人", c.asker_age_band ? `${c.asker_age_band}歳の男性` : "年代は未回答"],
           ["相手", c.other_age_band ? `${c.other_age_band}歳` : "年代は未回答"],
           ["関係", rel ?? "未回答"],
+          ["答えること", "見た印象 / 気になったところ / どう変われば自然か"],
         ].map(([k, v]) => (
           <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
             <dt className="text-steel">{k}</dt>

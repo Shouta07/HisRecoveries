@@ -461,6 +461,13 @@ create table if not exists responses (
   created_at timestamptz default now()
 );
 
+-- どう変われば自然か。答える人が短く書く。
+--
+-- ここを AI に書かせない。
+-- 「どう直すか」は、そう感じた本人が書いたものにいちばん価値がある。
+-- AI が書くと、誰でも書ける一般論になる（それなら人に頼む理由が無い）。
+alter table responses add column if not exists fix text;
+
 create index if not exists responses_c_idx on responses (consultation_id, created_at);
 
 -- 回答者への謝礼。MVP では記録だけ持ち、支払いは運営が手で行う。
