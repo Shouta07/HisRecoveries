@@ -282,6 +282,12 @@ export default function CallRoom({
           <p className="mt-3 text-center text-[11.5px] leading-[1.7] text-steel">
             時間になると自動で終わります。録音はしていません。
           </p>
+          {/* 線を、話している最中にも出しておく。
+              買う前に1回出しただけだと、その場では思い出せない */}
+          <p className="mt-1.5 text-center text-[11px] leading-[1.7] text-steel">
+            この通話は、あなたと相手との関係についての相談です。
+            答える女性本人への性的な言動はできません。
+          </p>
         </>
       )}
     </div>

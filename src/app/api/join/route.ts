@@ -95,6 +95,9 @@ export async function POST(req: NextRequest) {
     // 職業カテゴリと回答の書き方。どちらも任意。合わないものは null で落とす。
     job_band: isJobBand(body.job) ? body.job : null,
     tone: isTone(body.tone) ? body.tone : null,
+    // 言いにくい相談を受けるか。
+    // true と書いてあるときだけ true。曖昧な値は受けないほうに倒す。
+    takes_sensitive: body.sensitive === true,
     // 得意な話題。画面に無いカテゴリは通さない。
     specialties: Array.isArray(body.specialties)
       ? [...new Set(body.specialties.filter(isCategoryId))]

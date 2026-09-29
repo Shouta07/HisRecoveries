@@ -186,6 +186,7 @@ export default async function ResponderCallPage({
             "時間になると自動で切れます",
             "連絡先を渡すことはありません",
             "途中でやめても構いません",
+            "あなた自身のことは聞かれません",
           ].map((t) => (
             <li key={t} className="flex items-start gap-2 text-[12.5px] leading-[1.75]">
               <span aria-hidden className="mt-[3px] text-[10px] font-black text-brand">

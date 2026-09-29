@@ -19,6 +19,7 @@ import {
 import AskAssist from "@/components/ask/AskAssist";
 import AvailableNow from "@/components/ask/AvailableNow";
 import { track } from "@/lib/analytics";
+import { isSensitive, passCost, CONSENT, PASS_COST } from "@/lib/ask/sensitive";
 import { add as rememberAsk, cleanThreadLabel, type Thread } from "@/lib/myasks";
 import Continue from "@/components/ask/Continue";
 import { isStepId, step as getStep } from "@/lib/ask/journey";
@@ -89,6 +90,10 @@ export default function AskFlow() {
   // 恋愛のどこで悩んでいるか。トップから来たときは決まっている。
   const seededStep = params.get("step");
   const [stepId] = useState(isStepId(seededStep) ? seededStep : null);
+
+  // 言いにくい相談か。2回分を使い、受けると決めた女性にだけ届く。
+  const sensitive = isSensitive(cat);
+  const cost = passCost(cat);
 
   // 押す直前に「何を相談するのか」を見せる。
   // 自分が書いたものが、そのまま出てくる形にする（ここで足さない）。
@@ -530,19 +535,30 @@ export default function AskFlow() {
 
               {/* 持っている人には、決済の画面を出さない */}
               <div className="border-t border-line bg-mist px-5 py-4">
-                {pass && pass.remaining > 0 ? (
+                {sensitive && (
+                  <div className="mb-4 rounded-soft border border-line bg-paper px-4 py-3.5">
+                    <p className="text-[12.5px] font-bold text-slate">
+                      この相談は、受けると決めた女性にだけ届きます
+                    </p>
+                    <p className="mt-1.5 text-[12px] leading-[1.8] text-steel">{CONSENT}</p>
+                    <p className="mt-2 text-[12px] leading-[1.8] text-steel">
+                      返す前にこちらが目を通すので、{PASS_COST}回分を使います。
+                    </p>
+                  </div>
+                )}
+                {pass && pass.remaining >= cost ? (
                   <>
                     <p className="text-[13.5px] font-bold leading-[1.7] text-slate">
-                      この相談に、確かめる1回分を使います。
+                      この相談に、確かめる{cost}回分を使います。
                     </p>
                     <p className="mt-1.5 text-[12.5px] tabular-nums text-steel">
-                      残り {pass.remaining}回 → {pass.remaining - 1}回
+                      残り {pass.remaining}回 → {pass.remaining - cost}回
                     </p>
                   </>
                 ) : (
                   <>
                     <p className="text-[13.5px] font-bold leading-[1.7] text-slate">
-                      この相談は「確かめる」1回分で確認できます。
+                      この相談は「確かめる」{cost}回分で確認できます。
                     </p>
                     <p className="mt-2 flex flex-wrap items-baseline gap-x-2 text-[13.5px]">
                       <span className="font-bold text-slate">{p.name}</span>
@@ -571,7 +587,7 @@ export default function AskFlow() {
                 {sending
                   ? "進んでいます…"
                   : pass && pass.remaining > 0
-                    ? "1回分を使って確かめる"
+                    ? `${cost}回分を使って確かめる`
                     : `${p.uses ?? 1}回分を持って、この相談を出す`}
               </Action>
             </div>

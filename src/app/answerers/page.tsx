@@ -45,6 +45,7 @@ type Row = {
   specialties: string[] | null;
   job_band: string | null;
   tone: string | null;
+  takes_sensitive: boolean | null;
   verified_age: boolean;
   verified_profile: boolean;
   avg_reply_minutes: number | null;
@@ -73,6 +74,7 @@ export default async function AnswerersPage() {
     specialties: r.specialties ?? [],
     job: r.job_band,
     tone: r.tone,
+    takesSensitive: Boolean(r.takes_sensitive),
     answered: Number(r.answered) || 0,
     // 評価が1件も付いていないうちは、割合を名乗らない。
     helpfulRate:

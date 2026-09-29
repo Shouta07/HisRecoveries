@@ -31,6 +31,10 @@ export default function JoinForm() {
   const [specialties, setSpecialties] = useState<CategoryId[]>([]);
   const [job, setJob] = useState<JobBand | null>(null);
   const [tone, setTone] = useState<Tone | null>(null);
+  // 言いにくい相談を受けるか。既定は受けない。
+  // 既定を true にして「嫌なら外してください」にはしない。
+  // 外し方を知らないまま届くことになる。
+  const [sensitive, setSensitive] = useState(false);
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
   const [consent, setConsent] = useState(false);
@@ -55,7 +59,8 @@ export default function JoinForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ref,
-          age, attrs, area, specialties, job, tone, email: email.trim(), note, consent: true,
+          age, attrs, area, specialties, job, tone, sensitive,
+          email: email.trim(), note, consent: true,
         }),
       });
       const json = await res.json();
@@ -195,6 +200,46 @@ export default function JoinForm() {
           <Note>
             どれが良いというものではありません。3人に届くとき、書き方が偏らないように使います。
           </Note>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <FieldLabel>言いにくい相談を受けますか（任意）</FieldLabel>
+        <div className="mt-3 rounded-card border border-line bg-paper p-5 shadow-card">
+          <p className="text-[13.5px] leading-[1.9] text-steel">
+            距離の縮め方、触れ方、付き合う前の関係、性の価値観。
+            読むのは、その人と相手との関係についての相談です。
+          </p>
+          <ul className="mt-3 flex flex-col gap-1.5">
+            {[
+              "あなた自身のことは聞かれません",
+              "あなたが性的なやりとりの相手になることはありません",
+              "入れなければ届きません。あとからいつでも切り替えられます",
+              "受けないことで、ほかの依頼が減ることはありません",
+            ].map((t) => (
+              <li key={t} className="flex items-start gap-2 text-[12.5px] leading-[1.75]">
+                <span aria-hidden className="mt-[3px] text-[10px] font-black text-brand">
+                  ✓
+                </span>
+                <span className="min-w-0 text-steel">{t}</span>
+              </li>
+            ))}
+          </ul>
+
+          <label className="mt-4 flex cursor-pointer items-start gap-3 border-t border-line pt-4">
+            <input
+              type="checkbox"
+              checked={sensitive}
+              onChange={(e) => setSensitive(e.target.checked)}
+              className="mt-[3px] h-5 w-5 shrink-0 accent-[#2563EB]"
+            />
+            <span className="min-w-0 text-[13.5px] font-bold leading-[1.7] text-slate">
+              この種類の相談も受けます
+            </span>
+          </label>
+          <p className="mt-2.5 text-[12px] leading-[1.75] text-steel">
+            入れなくて構いません。入れない人のほうが多い前提で作っています。
+          </p>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { dbSelect, dbInsert, dbAdminEnabled } from "../db";
 import { plan, type PlanId } from "./plans";
+import { passCost } from "./sensitive";
 
 // 5回パスの残り。
 //
@@ -71,11 +72,23 @@ export async function balanceOf(token: string): Promise<Balance | null> {
 export async function spend(
   token: string,
   consultationId: string | null,
+  /** 何回分使うか。言いにくい相談は2回分（sensitive.ts の passCost） */
+  cost = 1,
 ): Promise<{ ok: boolean; remaining: number; why?: string }> {
   const b = await balanceOf(token);
   if (!b) return { ok: false, remaining: 0, why: "このパスは見つかりません" };
-  if (b.remaining <= 0) {
-    return { ok: false, remaining: 0, why: "残りがありません" };
+  if (cost < 1) return { ok: false, remaining: b.remaining, why: "使う回数が不正です" };
+  // 足りないのに「1回だけ使っておく」をしない。
+  // 半端に使うと、何回分の相談だったのかが分からなくなる。
+  if (b.remaining < cost) {
+    return {
+      ok: false,
+      remaining: b.remaining,
+      why:
+        cost > 1
+          ? `この相談は${cost}回分です。残りが足りません`
+          : "残りがありません",
+    };
   }
 
   const rows = await dbSelect<{ id: string }>(
@@ -84,13 +97,17 @@ export async function spend(
   const passId = rows[0]?.id;
   if (!passId) return { ok: false, remaining: b.remaining, why: "このパスは見つかりません" };
 
-  const res = await dbInsert("pass_uses", {
-    pass_id: passId,
-    consultation_id: consultationId,
-  });
-  if (!res.ok) return { ok: false, remaining: b.remaining, why: res.error };
+  // 2回分なら2行入れる。1行に「2」と書かない。
+  // 数で持つと、数え方を間違えたときに気づけない。
+  for (let i = 0; i < cost; i++) {
+    const res = await dbInsert("pass_uses", {
+      pass_id: passId,
+      consultation_id: consultationId,
+    });
+    if (!res.ok) return { ok: false, remaining: b.remaining, why: res.error };
+  }
 
-  return { ok: true, remaining: b.remaining - 1 };
+  return { ok: true, remaining: b.remaining - cost };
 }
 
 /** 何回ぶんのパスか。パスでない商品なら null */
@@ -120,4 +137,15 @@ export function remainingLabel(n: number): string {
     throw new Error("残り0回のときの言い方が、数字のままです");
   }
   if (remainingLabel(4) !== "あと4回") throw new Error("残りの言い方が変わっています");
+
+  // 言いにくい相談が、ふつうの相談より多く使うこと。
+  // 同じなら、受けられる人を限る理由も、取り分を増やす原資も無い。
+  if (passCost("distance") <= passCost("message")) {
+    throw new Error("言いにくい相談の消費回数が、ふつうの相談と同じです");
+  }
+  // 5回パスで、言いにくい相談が1回は使えること。
+  const pack = usesOf("review") ?? 0;
+  if (pack < passCost("distance")) {
+    throw new Error(`5回パス（${pack}回）では、言いにくい相談が1回も使えません`);
+  }
 }
