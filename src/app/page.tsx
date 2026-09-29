@@ -16,6 +16,7 @@ import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
 import Slot from "@/components/brand/Slot";
 import HeroBoard from "@/components/brand/HeroBoard";
+import CaseRows from "@/components/brand/CaseRows";
 import WhoReads from "@/components/brand/WhoReads";
 
 // ══════════════════════════════════════════════════════════════
@@ -440,78 +441,37 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 3. こんな相談が来ています ══ */}
+      {/* ══ 3. こんな時に使う ══ */}
+      {/* 説明を足すより、送る文面と返ってきた言葉を横に並べるほうが早い。
+          受け付けていない場面（服装・会話）は出さない。押しても行き止まりになる。 */}
       <Block tint>
         <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
         <h2 className="mt-2 text-huge font-black text-slate">
-          こんな相談が
+          こんな時、
           <br className="sm:hidden" />
-          来ています。
+          すぐ相談できる。
         </h2>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
-          マッチングアプリ・LINE・デート前後・会話など、いろいろな場面で使われます。
+          LINE、プロフィール、デートの誘い方。
+          手が止まる場面を、実在の女性が読みます。
         </p>
 
-        {/* 何を見てもらえるか */}
-        <ul className="mt-7 grid gap-3 rounded-card border border-line bg-paper p-5 shadow-card sm:grid-cols-3">
-          {SUBJECTS.map((sub) => (
-            <li key={sub.id} className="text-center">
-              <p className="text-[14px] font-black text-slate">{sub.label}</p>
-              <p className="mt-1 text-[12px] leading-[1.7] text-steel">
-                {sub.id === "photo"
-                  ? "マッチの機会を増やす"
-                  : sub.id === "message"
-                    ? "返信をもらいやすくする"
-                    : "本番の前に練習する"}
-              </p>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-7">
+          <CaseRows />
+        </div>
 
-        {/* 相談の種類。特定の誰かの体験談ではない */}
-        {/* スマホで1列にすると、226px の素材を 348px に引き伸ばすことになる。
-            2列にして、実際の大きさに寄せる。 */}
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {CASES.map((c, i) => (
-            <Reveal key={c.id} delay={i * 50}>
-              <div className="flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper shadow-card">
-                <div className="relative">
-                  <Slot name={c.img} rounded="" className="aspect-[226/162] w-full" />
-                  <span className="absolute bottom-2.5 left-2.5 rounded-pill bg-slate/85 px-3 py-1.5 text-[11.5px] font-bold text-paper">
-                    {c.tag}
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col p-4 sm:p-5">
-                  <p className="text-[13.5px] font-black leading-[1.6] text-slate sm:text-[14.5px]">
-                    「{c.worry}」
-                  </p>
-                  <p className="mt-2.5 text-[12px] leading-[1.8] text-steel sm:text-[12.5px]">{c.what}</p>
-                  <div className="mt-4 flex-1" />
-                  {c.open ? (
-                    <PlanCta
-                      plan={DEFAULT_PLAN}
-                      from={`case_${c.id}`}
-                      category={c.category}
-                      className="!justify-start min-h-[40px] p-0 text-[13px] !text-brand"
-                    >
-                      この相談をする <span aria-hidden className="ml-1.5">→</span>
-                    </PlanCta>
-                  ) : (
-                    <Link
-                      href="/talk"
-                      className="inline-flex min-h-[40px] items-center text-[13px] font-bold text-steel"
-                    >
-                      受付前・順番待ちに入る <span aria-hidden className="ml-1.5">→</span>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </Reveal>
-          ))}
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="cases"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            今すぐ相談する <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
         </div>
 
         <p className="mt-5 text-[12px] leading-[1.8] text-steel">
-          ※ 写真はイメージです。特定の利用者の体験談ではありません。
+          ※ 写真はイメージ、文面と回答は画面の見本です。特定の利用者の体験談ではありません。
         </p>
       </Block>
 
