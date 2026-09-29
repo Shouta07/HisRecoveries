@@ -21,7 +21,7 @@ export const site = {
   tagline: "送る前に、女性の目を通す",
   promise: "勘で、出さない。",
   description:
-    "送る前に、相手に近い女性5人に読んでもらうサービスです。LINEの文面、誘い方、アプリの自己紹介文。読むのは確認の済んだ女性だけで、このままでOKか、変えた方がいいかと、その理由が返ってきます。効果や結果の保証はしません。",
+    "送る前に、相手に近い女性3人に読んでもらうサービスです。LINEの文面、誘い方、アプリの自己紹介文。読むのは確認の済んだ女性だけで、このままでOKか、変えた方がいいかと、その理由が返ってきます。効果や結果の保証はしません。",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
   author: "His Recoveries",

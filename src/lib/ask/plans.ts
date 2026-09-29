@@ -26,12 +26,7 @@
 import { isPanelSize, type AttrId, type PanelAge } from "./model";
 import { assertWeight, assertWhoReads, assertPlain } from "../voice";
 
-export type PlanId =
-  | "quick"
-  | "standard"
-  | "improve"
-  | "call"
-  | "date_ready";
+export type PlanId = "standard" | "call" | "date_ready";
 
 /**
  * 何を見てもらうか。
@@ -112,79 +107,32 @@ export type Plan = {
 
 export const PLANS: Plan[] = [
   {
-    // 入口。人の反応を一度でも受け取ってもらうための商品。
-    // ここで利益を取らない（marginFloor を下げてある）。
-    id: "quick",
-    name: "ちょっと相談",
-    tagline: "送る前のLINE1件を、3人に読んでもらう。",
-    value: "まず一度、実在の女性がどう受け取るかを見てみる。",
-    yen: 980,
-    depth: 1,
-    answers: 3,
-    rounds: 1,
-    targeting: false,
-    subjects: ["photo", "message"],
-    includes: [
-      "実在の女性3人が見てくれる",
-      "このままでOK / 少し気になる / 変えた方がいい",
-      "一人ひとりが書いた理由",
-    ],
-    fits: ["はじめて使う", "軽く確かめたい"],
-    available: true,
-    onTop: true,
-    // 入口商品。利益を取る商品ではない。
-    marginFloor: 0.4,
-  },
-  {
+    // 売るものは、これ1つ。あとはオプションで足す。
+    //
+    // ¥980 の入口は畳んだ。安い入口があると「安い恋愛相談」に見えて、
+    // ¥2,980 のほうが高く感じる。3人ぶんの反応が ¥2,980、の一本にする。
     id: "standard",
-    name: "しっかり相談",
-    tagline: "相手に近い女性5人に、年代や条件を選んで見てもらう。",
-    value: "どこが引っかかるのかまで、はっきりさせる。",
+    name: "基本相談",
+    tagline: "送る前のものを、実在の女性3人に読んでもらう。",
+    value: "送っていいかどうかを、出す前に確かめる。",
     yen: 2980,
     depth: 2,
-    answers: 5,
+    answers: 3,
     rounds: 1,
     targeting: true,
     subjects: ["photo", "message"],
     includes: [
-      "相手に近い女性5人が見てくれる",
+      "実在の女性3人が読む",
+      "一人ひとりの第一印象",
       "このままでOK / 少し気になる / 変えた方がいい",
-      "一人ひとりが書いた理由",
-      "みんなが同じことを言ったところ",
-      "意見が分かれたところ",
+      "なぜそう感じたか",
     ],
     fits: ["本命への一手", "次の誘い", "自己紹介文"],
     available: true,
     onTop: true,
     featured: true,
   },
-  {
-    id: "improve",
-    name: "直して、もう一度",
-    tagline: "直した案を作って、別の女性3人に見てもらう。",
-    value: "引っかかりが消えたことまで、確かめてから出す。",
-    // 指定は 5,980〜7,980 だった。
-    // 5,980 だと、初回5人＋再確認3人＋直しの手間で限界利益率が55%まで落ちる
-    // （10人で組むと45%）。60%を保てる最低ラインが 6,980。
-    // 5,980 で出すなら、55%を許す判断が別に要る。
-    yen: 6980,
-    from: true,
-    depth: 3,
-    answers: 5,
-    rounds: 2,
-    targeting: true,
-    subjects: ["photo", "message"],
-    includes: [
-      "「しっかり相談」の内容すべて",
-      "気になったところの直し方",
-      "直した案",
-      "直した版を、別の女性3人に",
-      "直す前と、直したあと",
-    ],
-    fits: ["一度しかない一手", "告白の前", "勝負のプロフィール"],
-    available: true,
-    onTop: true,
-  },
+
   {
     // 実在の女性と、その場で話す。
     // 時間を決めた受け入れ方と、その場を見る体制が要る。
@@ -298,12 +246,145 @@ export const DEFAULT_PLAN: PlanId = (
 /** いちばん安い、買えるプラン。入口に出す */
 export const ENTRY_PLAN: PlanId = [...sellable()].sort((a, b) => a.yen - b.yen)[0].id;
 
+/* ══════════════════════════════════════════════════
+   オプション
+   ══════════════════════════════════════════════════
+
+   プランを何本も並べない。基本相談 ¥2,980 から始めて、
+   減らしたい不安のぶんだけ足す。
+
+   ── 「追加で払わせる」の形にしない ──────────────
+   どれも「不安をもう一段減らす」ものとして並べる。
+   増やすのは金額ではなく、確かめられる範囲。
+
+   ── 速さは約束しない ────────────────────────────
+   優先対応は「先に回す」であって「何分で返る」ではない。
+   実測で速さを担保できるまで、時間を書かない（supply.ts の判定）。 */
+
+export type OptionId = "more" | "write" | "rush" | "recheck";
+
+export type Option = {
+  id: OptionId;
+  name: string;
+  yen: number;
+  /** どんな不安のときに選ぶか。売り文句ではなく、選ぶ理由 */
+  why: string;
+  /** 何が変わるか */
+  effect: string;
+  /** 読む人数が増えるぶん */
+  addAnswers?: number;
+  /** もう一度確かめる工程が付くか */
+  extraRound?: boolean;
+  available: boolean;
+};
+
+export const OPTIONS: Option[] = [
+  {
+    id: "more",
+    name: "女性5人に増やす",
+    yen: 1000,
+    why: "意見の偏りを減らしたい",
+    effect: "3人ではなく5人の反応を見る",
+    addAnswers: 2,
+    available: true,
+  },
+  {
+    id: "write",
+    name: "文章まで作ってもらう",
+    yen: 1500,
+    why: "自分で直すのが不安",
+    effect: "どう直すかだけでなく、そのまま送れる文章まで",
+    available: true,
+  },
+  {
+    id: "rush",
+    name: "優先して回す",
+    yen: 1000,
+    why: "今日中に送りたい",
+    effect: "ほかの相談より先に、回答をお願いする",
+    available: true,
+  },
+  {
+    id: "recheck",
+    name: "直して、もう一度確かめる",
+    yen: 4000,
+    why: "直したあとも本当に大丈夫か確かめたい",
+    effect: "直した案を、別の女性3人にもう一度読んでもらう",
+    extraRound: true,
+    available: true,
+  },
+];
+
+const BY_OPTION = new Map(OPTIONS.map((o) => [o.id, o]));
+
+export function option(id: OptionId): Option {
+  const o = BY_OPTION.get(id);
+  if (!o) throw new Error(`未定義のオプション: ${id}`);
+  return o;
+}
+
+export function isOptionId(x: unknown): x is OptionId {
+  return typeof x === "string" && BY_OPTION.has(x as OptionId);
+}
+
+/** 画面から来た配列を、受け付けてよいものだけに絞る（重複も落とす） */
+export function cleanOptions(x: unknown): OptionId[] {
+  if (!Array.isArray(x)) return [];
+  const ok = x.filter(isOptionId).filter((id) => option(id).available);
+  return OPTIONS.filter((o) => ok.includes(o.id)).map((o) => o.id);
+}
+
 /**
  * 実際に請求する金額。
- * 画面から来た値は一切見ない。プランIDだけを受け取って、ここで引く。
+ *
+ * 画面から来た金額は一切見ない。プランIDとオプションIDだけを受け取って、
+ * ここで引く。金額を受け取れる形にすると、1円で Checkout を作られる。
  */
-export function priceOf(id: PlanId): number {
-  return plan(id).yen;
+export function priceOf(id: PlanId, options: OptionId[] = []): number {
+  return cleanOptions(options).reduce((n, o) => n + option(o).yen, plan(id).yen);
+}
+
+/** 何人が読むか。オプションで増えるぶんを足す */
+export function answersFor(id: PlanId, options: OptionId[] = []): number {
+  return cleanOptions(options).reduce((n, o) => n + (option(o).addAnswers ?? 0), plan(id).answers);
+}
+
+/* ── 買いやすい組み合わせ ────────────────────────
+   オプションを1つずつ選ばせるだけだと、何を足せばいいか決まらない。
+   よく効く組み合わせを、先に3つだけ見せる。
+
+   「人気No.1」とは書かない。まだ1件も売れていないので、
+   それは実績の捏造になる（monetization.ts の判定が落とす）。 */
+
+export type Set = {
+  id: string;
+  name: string;
+  options: OptionId[];
+  /** どんな人向けか */
+  fits: string;
+  /** いちばん勧めるもの */
+  pick?: boolean;
+};
+
+export const SETS: Set[] = [
+  { id: "base", name: "基本のまま", options: [], fits: "まず一度、反応を見てみる" },
+  {
+    id: "pick",
+    name: "5人に増やして、文章まで",
+    options: ["more", "write"],
+    fits: "本命への一手。偏りも減らしたい",
+    pick: true,
+  },
+  {
+    id: "thorough",
+    name: "直して、もう一度",
+    options: ["recheck"],
+    fits: "一度しかない場面。直したあとも確かめる",
+  },
+];
+
+export function setPrice(s: Set): number {
+  return priceOf(DEFAULT_PLAN, s.options);
 }
 
 /** そのプランで、年代以外の条件を指定してよいか */

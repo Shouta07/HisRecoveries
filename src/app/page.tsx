@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { topPlans, plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
+import {
+  plan as getPlan, SUBJECTS, ENTRY_PLAN, DEFAULT_PLAN,
+  OPTIONS, SETS, setPrice,
+} from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
 import { ALTERNATIVES, COMPARE, COMPARE_NOTE } from "@/lib/ask/compare";
 import { STEPS as JOURNEY } from "@/lib/ask/journey";
@@ -84,8 +87,8 @@ const FAQ = [
     a: "AIが出すのは「たぶんこう思われます」です。ここで返ってくるのは、実在の女性が実際にどう思ったかです。予想ではなく、本当の反応です。",
   },
   {
-    q: "5人がそう言えば、女性みんながそう思うということですか？",
-    a: "違います。その5人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。女性みんなの答えではありません。",
+    q: "3人がそう言えば、女性みんながそう思うということですか？",
+    a: "違います。読んだ人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。女性みんなの答えではありません。",
   },
   {
     q: "悪いところを無理に探されませんか？",
@@ -180,7 +183,6 @@ function label(v: string) {
 
 export default async function HomePage() {
   const paid = canCharge();
-  const tops = topPlans();
   const entry = getPlan(ENTRY_PLAN);
   const main = getPlan(DEFAULT_PLAN);
   const sup = await supply(main.answers);
@@ -681,7 +683,7 @@ export default async function HomePage() {
           </ul>
           <p className="mt-5 max-w-[34em] text-[13px] leading-[1.9] text-steel">
             「失敗する確率」みたいな数字は出しません。数えようがないからです。
-            出すのは「5人中3人」だけ。その5人がそう感じた、という話であって、
+            出すのは「3人中2人」のような実数だけ。読んだ人がそう感じた、という話であって、
             女性みんなの答えではありません。
           </p>
 
@@ -730,7 +732,7 @@ export default async function HomePage() {
           </p>
 
           <div className="rounded-card border border-brand bg-paper p-5 shadow-card">
-            <p className="text-[14.5px] font-black text-brand">実在の女性5人</p>
+            <p className="text-[14.5px] font-black text-brand">実在の女性{main.answers}人</p>
             <ul className="mt-5 flex flex-col gap-3">
               {DEMO.says.slice(0, 3).map((s) => (
                 <li key={s.age} className="flex items-start gap-3">
@@ -797,65 +799,104 @@ export default async function HomePage() {
       </Block>
 
       {/* ══ 8. 料金 ══ */}
+      {/* プランを何本も並べない。基本相談 ¥2,980 から始めて、
+          減らしたい不安のぶんだけ足す。
+          金額はすべて plans.ts から引く（画面に直書きしない）。 */}
       <Block id="price">
         <H>必要なときだけ、1回ごと。</H>
         <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
           月額はありません。入会金もありません。ここぞという場面の前にだけ使うものです。
         </p>
 
-        {/* スマホで3枚を縦に積むと、それだけで3画面ぶんになる。
-            横に送れるようにして1画面に収める。位置合わせは CSS に任せる
-            （JS を足すと、読み込みが終わるまで動かない帯になる）。 */}
-        <ul className="-mx-5 mt-8 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-4 lg:overflow-visible lg:px-0 lg:pb-0">
-          {tops.map((p) => (
-            <li key={p.id} className="w-[80%] shrink-0 snap-start sm:w-[60%] lg:w-auto">
-              <div
-                className={`flex h-full flex-col rounded-card border bg-paper p-6 shadow-card ${
-                  p.featured ? "border-rose" : "border-line"
-                }`}
-              >
-                {p.featured ? (
-                  <span className="mb-3 inline-flex w-fit rounded-pill bg-rose-fill px-3 py-1 text-[11px] font-bold text-paper">
-                    迷ったら、これ
-                  </span>
-                ) : (
-                  <span aria-hidden className="mb-3 block h-[25px]" />
-                )}
-                <p className="text-[17px] font-black text-slate">{p.name}</p>
-                <p
-                  className={`mt-2.5 text-[32px] font-black leading-none tabular-nums ${
-                    p.featured ? "text-rose-text" : "text-slate"
-                  }`}
-                >
-                  ¥{p.yen.toLocaleString()}
-                  {p.from && <span className="ml-1 text-[16px] text-steel">〜</span>}
-                </p>
-                <p className="mt-3.5 text-[13.5px] leading-[1.8] text-steel">{p.tagline}</p>
+        {/* ① 基本。ここが主役 */}
+        <div className="mt-8 rounded-card border-2 border-brand bg-paper p-6 shadow-card sm:p-8">
+          <p className="text-[17px] font-black text-slate">{main.name}</p>
+          <p className="mt-2 flex items-baseline gap-2">
+            <span className="text-stat font-black tabular-nums text-slate">
+              ¥{main.yen.toLocaleString()}
+            </span>
+            <span className="text-[13px] font-bold text-steel">税込 / 1回</span>
+          </p>
+          <p className="mt-3 text-[15px] font-bold leading-[1.7] text-slate">
+            実在の女性{main.answers}人が読んで、反応が返ります。
+          </p>
+          <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-5">
+            {main.includes.map((x) => (
+              <li key={x} className="flex items-start gap-2.5 text-[13.5px] leading-[1.75]">
+                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
+                  ✓
+                </span>
+                <span className="min-w-0 text-steel">{x}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6">
+            <PlanCta
+              plan={DEFAULT_PLAN}
+              from="price"
+              className="min-h-[56px] w-full rounded-pill bg-brand px-6 text-[16px] !text-paper shadow-card"
+            >
+              この内容で相談する <span aria-hidden className="ml-1.5">&rarr;</span>
+            </PlanCta>
+          </div>
+        </div>
 
-                {/* 中身を全部並べると、カード1枚が1画面ぶんになる。
-                    何が返ってくるかは、払う直前の画面で1枚にまとめて出している。
-                    ここは「何人が読むか」だけにする。 */}
-                <p className="mt-5 border-t border-line pt-4 text-[13px] font-bold text-slate">
-                  実在の女性{p.answers}人が読みます
-                </p>
-
-                <div className="mt-5 flex-1" />
-                <PlanCta
-                  plan={p.id}
-                  from="price"
-                  className={`min-h-[52px] rounded-pill px-5 text-[15px] shadow-card ${
-                    p.featured ? "bg-rose-fill !text-paper" : "border border-brand bg-paper !text-brand"
-                  }`}
-                >
-                  これで相談する <span aria-hidden className="ml-1.5">→</span>
-                </PlanCta>
-              </div>
+        {/* ② 足すもの。相談を書いたあとに選べる */}
+        <p className="mt-8 text-[14.5px] font-black text-slate">
+          足すかどうかは、相談を書いたあとに選べます
+        </p>
+        <ul className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
+          {OPTIONS.filter((o) => o.available).map((o) => (
+            <li
+              key={o.id}
+              className="rounded-card border border-line bg-paper px-4 py-3.5 shadow-card"
+            >
+              <p className="flex items-baseline justify-between gap-3">
+                <span className="min-w-0 text-[14px] font-bold text-slate">{o.name}</span>
+                <span className="shrink-0 text-[14px] font-black tabular-nums text-slate">
+                  +¥{o.yen.toLocaleString()}
+                </span>
+              </p>
+              <p className="mt-1.5 text-[12.5px] leading-[1.7] text-steel">{o.why}</p>
             </li>
           ))}
         </ul>
-        <p className="mt-1 text-[11.5px] text-steel lg:hidden">横にスワイプすると、ほかのプランが出ます。</p>
 
-        <div className="mt-6 flex flex-wrap items-baseline justify-between gap-3 rounded-card border border-line bg-mist px-5 py-4">
+        {/* ③ よくある組み合わせ。何を足せばいいか決められない人向け */}
+        <p className="mt-8 text-[14.5px] font-black text-slate">よくある組み合わせ</p>
+        <ul className="mt-3.5 grid gap-2.5 sm:grid-cols-3">
+          {SETS.map((x) => (
+            <li
+              key={x.id}
+              className={`rounded-card border bg-paper p-4 shadow-card ${
+                x.pick ? "border-rose" : "border-line"
+              }`}
+            >
+              {x.pick ? (
+                <span className="mb-2.5 inline-flex rounded-pill bg-rose-fill px-2.5 py-1 text-[10.5px] font-bold text-paper">
+                  迷ったら、これ
+                </span>
+              ) : (
+                <span aria-hidden className="mb-2.5 block h-[23px]" />
+              )}
+              <p className="text-[14.5px] font-black text-slate">{x.name}</p>
+              <p className="mt-1.5 text-[22px] font-black tabular-nums leading-none text-slate">
+                ¥{setPrice(x).toLocaleString()}
+              </p>
+              <p className="mt-2.5 text-[12.5px] leading-[1.7] text-steel">{x.fits}</p>
+              <PlanCta
+                plan={DEFAULT_PLAN}
+                from={`set_${x.id}`}
+                options={x.options}
+                className="!justify-start mt-3 min-h-[40px] p-0 text-[13px] !text-brand"
+              >
+                これで相談する <span aria-hidden className="ml-1.5">&rarr;</span>
+              </PlanCta>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-8 flex flex-wrap items-baseline justify-between gap-3 rounded-card border border-line bg-mist px-5 py-4">
           <p className="text-[13.5px] font-bold">
             {getPlan("call").name}
             <span className="ml-2 rounded-pill bg-paper px-2 py-0.5 text-[10.5px] font-bold text-steel">
@@ -870,7 +911,7 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <p className="mt-5 text-[12.5px] leading-[1.9] text-steel">
+        <p className="mt-5 text-[12.5px] leading-[1.85] text-steel">
           税込。募集を始める前ならキャンセルできます。人数が集まらなかった場合は、集まらなかった分をご返金します。
           <Link
             href="/legal"

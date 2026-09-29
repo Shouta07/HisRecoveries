@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbSelect, dbUpdate, dbInsertReturning, dbAdminEnabled } from "@/lib/db";
-import { isSellable, plan } from "@/lib/ask/plans";
+import {
+  isSellable, plan, priceOf, answersFor, cleanOptions, type OptionId,
+} from "@/lib/ask/plans";
 import { canCharge, whyCannotCharge } from "@/lib/legal";
 import { supply, shortMessage } from "@/lib/supply";
 import { createCheckout, stripeEnabled } from "@/lib/stripe";
@@ -27,7 +29,13 @@ import { site } from "@/lib/site";
 
 export const runtime = "edge";
 
-type Consult = { id: string; token: string; status: string; category: string };
+type Consult = {
+  id: string;
+  token: string;
+  status: string;
+  category: string;
+  options: OptionId[] | null;
+};
 type Payment = { id: string; stripe_checkout_session_id: string | null; payment_status: string };
 
 export async function POST(req: NextRequest) {
@@ -61,7 +69,7 @@ export async function POST(req: NextRequest) {
   }
 
   const cs = await dbSelect<Consult>(
-    `consultations?token=eq.${encodeURIComponent(token as string)}&select=id,token,status,category`,
+    `consultations?token=eq.${encodeURIComponent(token as string)}&select=id,token,status,category,options`,
   );
   const c = cs[0];
   if (!c) return NextResponse.json({ error: "この相談は見つかりません" }, { status: 404 });
@@ -76,13 +84,20 @@ export async function POST(req: NextRequest) {
 
   const p = plan(planId);
 
+  // オプションは、相談を保存したときに決まっている。
+  // 決済のリクエストからは取らない。取ると、相談を作ったあとに
+  // オプションだけ外して安く買える。
+  const options = cleanOptions(c.options);
+  const yen = priceOf(planId, options);
+  const answers = answersFor(planId, options);
+
   // 答えられる人がいないのに売らない。
   // 決済だけ通って誰にも届かないのが、いちばん信用を失う。
   // 返金すれば済む話ではない。
-  const sup = await supply(p.answers);
+  const sup = await supply(answers);
   if (!sup.open) {
     return NextResponse.json(
-      { error: shortMessage(sup, p.answers), waitlist: true },
+      { error: shortMessage(sup, answers), waitlist: true },
       { status: 409 },
     );
   }
@@ -94,14 +109,14 @@ export async function POST(req: NextRequest) {
 
   const base = site.url.replace(/\/$/, "");
   const r = await createCheckout({
-    yen: p.yen,
+    yen,
     name: p.name,
-    description: `${p.answers}人のリアルな反応`,
+    description: `実在の女性${answers}人の反応`,
     consultationToken: c.token,
     successUrl: `${base}/ask/${c.token}?paid=1`,
     cancelUrl: `${base}/ask/${c.token}?canceled=1`,
     // 相談1件につき1つの鍵。押し直しても課金は1回。
-    idempotencyKey: `consult_${c.id}_${planId}`,
+    idempotencyKey: `consult_${c.id}_${planId}_${options.join("-")}`,
   });
 
   if (!r.ok || !r.session) {
@@ -112,13 +127,13 @@ export async function POST(req: NextRequest) {
   if (existing[0]) {
     await dbUpdate("payments", existing[0].id, {
       stripe_checkout_session_id: r.session.id,
-      amount: p.yen,
+      amount: yen,
     });
   } else {
     await dbInsertReturning("payments", {
       consultation_id: c.id,
       stripe_checkout_session_id: r.session.id,
-      amount: p.yen,
+      amount: yen,
       currency: "jpy",
       payment_status: "pending",
       provider: "stripe",
@@ -128,8 +143,8 @@ export async function POST(req: NextRequest) {
   await dbUpdate("consultations", c.id, {
     status: "payment_pending",
     product_type: planId,
-    price: p.yen,
-    panel_size: p.answers,
+    price: yen,
+    panel_size: answers,
   });
 
   return NextResponse.json({ ok: true, url: r.session.url });

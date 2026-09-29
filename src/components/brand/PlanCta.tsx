@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { track } from "@/lib/analytics";
-import type { PlanId } from "@/lib/ask/plans";
+import type { PlanId, OptionId } from "@/lib/ask/plans";
 
 // プランを持って相談へ入る導線。
 //
@@ -22,6 +22,7 @@ export default function PlanCta({
   children,
   category,
   step,
+  options,
   assist = false,
   className = "",
 }: {
@@ -32,6 +33,8 @@ export default function PlanCta({
   category?: string;
   /** 恋愛のどの段階から入ったか */
   step?: string;
+  /** 最初から付けておくオプション。金額は運ばない（IDだけ） */
+  options?: OptionId[];
   /** 質問を書く画面で「一緒に整理する」を開いた状態から始める */
   assist?: boolean;
   className?: string;
@@ -40,6 +43,9 @@ export default function PlanCta({
   if (category) q.set("c", category);
   if (step) q.set("step", step);
   if (assist) q.set("assist", "1");
+  // オプションは複数付くので、同じ名前で並べる。
+  // 金額は載せない。載せると書き換えられる。
+  for (const o of options ?? []) q.append("opt", o);
   const href = `/ask?${q.toString()}`;
 
   return (

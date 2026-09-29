@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { plan as getPlan, type PlanId } from "@/lib/ask/plans";
+import {
+  plan as getPlan, priceOf, option, DEFAULT_PLAN,
+  type PlanId, type OptionId,
+} from "@/lib/ask/plans";
 import { track } from "@/lib/analytics";
 
 // 結果のあとに、次を出す。
@@ -21,6 +24,8 @@ type Choice = {
   label: string;
   note: string;
   plan?: PlanId;
+  /** 基本相談に付けるオプション */
+  options?: OptionId[];
   href?: string;
 };
 
@@ -31,16 +36,20 @@ const CHOICES: Choice[] = [
     note: "反応は見た。あとは自分で決める。",
   },
   {
+    // 「直して、もう一度」はプランではなくオプションになった。
+    // 基本相談に付けて出す（plans.ts の OPTIONS）。
     id: "improve",
     label: "少し直したい",
-    note: "引っかかったところを、一緒に直す。",
-    plan: "improve",
+    note: "引っかかったところを直して、別の女性3人にもう一度。",
+    plan: DEFAULT_PLAN,
+    options: ["recheck"],
   },
   {
     id: "retest",
     label: "もう少し人に聞きたい",
-    note: "直したものを、別の5人に見せる。",
-    plan: "improve",
+    note: "今度は5人に読んでもらう。",
+    plan: DEFAULT_PLAN,
+    options: ["more"],
   },
   {
     id: "talk",
@@ -120,11 +129,19 @@ export default function NextStep({ token }: { token: string }) {
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <p className="text-[15.5px] font-black">{p.name}</p>
                 <p className="text-[24px] font-black tabular-nums leading-none">
-                  ¥{p.yen.toLocaleString()}
+                  ¥{priceOf(p.id, choice.options ?? []).toLocaleString()}
                   {p.from && <span className="ml-1 text-[13px] text-steel">〜</span>}
                 </p>
               </div>
               <ul className="mt-4 flex flex-col gap-1.5">
+                {(choice.options ?? []).map((o) => (
+                  <li key={o} className="flex items-start gap-2 text-[13px] leading-[1.75]">
+                    <span aria-hidden className="mt-[3px] text-[11px] font-black text-ok-text">
+                      ✓
+                    </span>
+                    <span className="min-w-0 font-bold text-slate">{option(o).effect}</span>
+                  </li>
+                ))}
                 {p.includes.map((x) => (
                   <li key={x} className="flex items-start gap-2 text-[13px] leading-[1.75]">
                     <span aria-hidden className="mt-[3px] text-[11px] font-black text-ok-text">
@@ -135,7 +152,9 @@ export default function NextStep({ token }: { token: string }) {
                 ))}
               </ul>
               <Link
-                href={`/ask?plan=${p.id}&from=${encodeURIComponent(token)}`}
+                href={`/ask?plan=${p.id}&from=${encodeURIComponent(token)}${
+                  (choice.options ?? []).map((o) => `&opt=${o}`).join("")
+                }`}
                 onClick={() => track("plan_viewed", { plan: p.id, from: "next_step" })}
                 className="mt-5 inline-flex min-h-[52px] w-full items-center justify-center rounded-pill bg-brand px-6 text-[15px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
               >
