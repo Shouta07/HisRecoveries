@@ -58,7 +58,10 @@ jobs:
         run: |
           npx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
           npx vercel@latest build --prod --token="$VERCEL_TOKEN"
-          npx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+          # --archive=tgz で1つの塊にして送る。
+          # 既定は1ファイルずつ送るので、数が多いと途中で切れる
+          # （Upload aborted / AbortError）。実際に2回続けて落ちた。
+          npx vercel@latest deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN"
 
 # Cloudflare へ移行するときは、上の deploy ジョブを差し替えるだけで済みます。
 # quality ジョブは一切変更不要です。
