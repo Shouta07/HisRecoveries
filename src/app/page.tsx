@@ -15,6 +15,7 @@ import Tashikame from "@/components/brand/Tashikame";
 import Flourish from "@/components/brand/Flourish";
 import OnlineCount from "@/components/ask/OnlineCount";
 import Slot from "@/components/brand/Slot";
+import HeroBoard from "@/components/brand/HeroBoard";
 import WhoReads from "@/components/brand/WhoReads";
 
 // ══════════════════════════════════════════════════════════════
@@ -220,31 +221,11 @@ export default async function HomePage() {
           その人が自分を見つけられる絵を、最初に大きく出す。
           文字は写真に重ねず、左に置く（顔が隠れると何の絵か分からない）。 */}
       <section className="relative overflow-hidden bg-sky">
-        {/* 写真。広い画面でだけ、右半分に敷く。
-            狭い画面で文字の裏に敷くと、写真が霞んで文字も読みにくい。
-            どちらも中途半端になるので、下に独立した帯として置く。 */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block"
-        >
-          <Slot name="hero" rounded="" className="h-full w-full" />
-          {/* 文字側へ向かってだけ、地の色に溶かす */}
-          <span className="absolute inset-y-0 left-0 w-[38%] bg-gradient-to-r from-sky to-transparent" />
-        </div>
+        {/* 相談する男性と、読んで返す女性を1枚に入れる。
+            片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
+        <HeroBoard />
 
-        {/* 狭い画面では、写真を最初に出す。
-            文字の下に置くと、最初の画面に絵が1枚も無い。
-            この製品は「いま手が止まっている人」が開くので、
-            自分を見つけられる絵が最初に要る。
-            顔の位置で切るため、見せる位置をずらしている。 */}
-        <Slot
-          name="hero"
-          rounded=""
-          position="center 22%"
-          className="h-[210px] w-full sm:h-[260px] lg:hidden"
-        />
-
-        <Wrap className="relative pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pt-14">
+        <Wrap className="relative pb-12 pt-5 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
             <p className="inline-flex items-center gap-2 rounded-pill border border-brand/40 bg-paper px-4 py-2 text-[12.5px] font-bold text-brand shadow-card">
               <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -253,13 +234,11 @@ export default async function HomePage() {
               男性の方へ
             </p>
 
-            <h1 className="mt-5 text-mega font-black leading-[1.22] text-slate">
-              大事な相手だから、
-              <br />
-              失敗する前に
+            <h1 className="mt-3.5 text-mega font-black leading-[1.2] text-slate">
+              送る前に、
               <br />
               <span className="relative inline-block">
-                相談する。
+                実在の女性に聞ける。
                 <span
                   aria-hidden
                   className="absolute -bottom-0.5 left-0 -z-10 h-[0.42em] w-full rounded-[2px] bg-brand/25"
@@ -267,10 +246,14 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            <p className="mt-5 max-w-[25em] text-[15px] leading-[1.9] text-steel sm:text-[16.5px]">
-              送る前のLINE、アプリの自己紹介文。
+            <p className="mt-3.5 text-[17px] font-black leading-[1.55] text-slate sm:text-[19px]">
+              大事な相手だから、失敗する前に相談する。
+            </p>
+
+            <p className="mt-4 max-w-[25em] text-[14.5px] leading-[1.9] text-steel sm:text-[16px]">
+              LINEの文面や、アプリの自己紹介文を送るだけ。
               <br />
-              AIの予想ではなく、実在の女性{main.answers}人が読んで、正直に返します。
+              AIの予想ではなく、実在の女性{main.answers}人の反応が返ります。
             </p>
 
             {/* いくらなのかを、スクロールさせずに出す。
@@ -293,6 +276,30 @@ export default async function HomePage() {
                 今すぐ相談する <span aria-hidden className="ml-2">&rarr;</span>
               </PlanCta>
             </div>
+
+            {/* 押す前に引っかかるところを、4つだけ先に消す。
+                文字を並べるより、絵があるほうが読まずに入る。 */}
+            <ul className="mt-6 grid grid-cols-4 gap-2 sm:gap-3">
+              {[
+                { t: "実在女性が回答", d: "M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1 M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7 M21 20v-1a4 4 0 0 0-3-3.9" },
+                { t: "匿名OK", d: "M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4" },
+                { t: "都度払い", d: "M3 7h18v12H3z M3 11h18" },
+                sup.canPromiseSpeed
+                  ? { t: "最短数分", d: "M13 2 4 14h7l-1 8 9-12h-7z" }
+                  : { t: "追加料金なし", d: "M12 3v18 M8.5 7.5h5.2a2.6 2.6 0 0 1 0 5.2H9.6a2.6 2.6 0 0 0 0 5.2h5.9" },
+              ].map((x) => (
+                <li key={x.t} className="flex flex-col items-center gap-1.5 text-center">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint">
+                    <svg aria-hidden viewBox="0 0 24 24" className="h-[22px] w-[22px] text-brand" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={x.d} />
+                    </svg>
+                  </span>
+                  <span className="text-[11px] font-bold leading-[1.4] text-slate sm:text-[12.5px]">
+                    {x.t}
+                  </span>
+                </li>
+              ))}
+            </ul>
 
             {/* 何を見てもらえるか。押すとその場面から始まる */}
             <ul className="mt-5 flex flex-wrap gap-2">
@@ -344,33 +351,7 @@ export default async function HomePage() {
               </p>
             )}
 
-            <ul className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] font-bold text-steel">
-              <li>ぜんぶ匿名</li>
-              <li>回答は{main.answers}人ぶん</li>
-              <li>追加料金なし</li>
-              {sup.canPromiseSpeed && <li>最短数分</li>}
-            </ul>
 
-            {/* 送る前のやりとり。顔は置かず、言葉だけ */}
-            <div className="relative z-10 mt-8 w-full max-w-[22em] rounded-card border border-line bg-paper p-4 shadow-card">
-              <p className="w-fit rounded-card rounded-bl-[4px] bg-mist px-4 py-2.5 text-[13.5px] leading-[1.65] text-slate">
-                来週の土曜、
-                <br />
-                ご飯どうですか？
-              </p>
-              <p className="mt-1 text-right text-[10.5px] text-steel">19:24</p>
-              <p className="ml-auto mt-2 flex w-fit items-center gap-2.5 rounded-card rounded-br-[4px] bg-brand-tint px-4 py-2.5 text-[13.5px] leading-[1.65] text-slate">
-                このまま送っていいかな…？
-                <span
-                  aria-hidden
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-paper"
-                >
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
-                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
-                  </svg>
-                </span>
-              </p>
-            </div>
           </div>
         </Wrap>
 
