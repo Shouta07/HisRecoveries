@@ -39,6 +39,7 @@ import type { ImageKey } from "@/lib/images";
 import HeroBoard from "@/components/brand/HeroBoard";
 import VideoEmbed from "@/components/brand/VideoEmbed";
 import MomentsArt from "@/components/brand/MomentsArt";
+import { hasPublicFile } from "@/lib/publicFile";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -637,9 +638,12 @@ export default async function HomePage() {
       <section className="bg-paper">
         <Wrap>
           <div className="mx-auto max-w-[760px] py-10 sm:py-14">
+            {/* 表紙が置いてあれば、そちらを使う（YouTube の絵を当てにしない）。
+                public/img/video-poster.jpg */}
             <VideoEmbed
               title="タシカメは、どういうサービスか"
               caption="2分ほどです。音が出ます。"
+              poster={hasPublicFile("/img/video-poster.jpg") ? "/img/video-poster.jpg" : null}
             />
           </div>
         </Wrap>

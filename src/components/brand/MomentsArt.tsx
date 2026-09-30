@@ -1,5 +1,4 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { hasPublicFile } from "@/lib/publicFile";
 
 // 「こんな瞬間、ありませんか？」の絵。
 //
@@ -30,7 +29,7 @@ import { join } from "node:path";
 export default function MomentsArt({ alt }: { alt: string }) {
   // public/ の中を見る。ビルドのときに1回だけ動く
   const file = "/img/moments.png";
-  if (!existsSync(join(process.cwd(), "public", file))) return null;
+  if (!hasPublicFile(file)) return null;
 
   return (
     <div className="mt-6 overflow-hidden rounded-card border border-line bg-sky shadow-card">
