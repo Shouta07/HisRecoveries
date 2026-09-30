@@ -8,6 +8,7 @@ import {
 } from "@/lib/media";
 import Mark from "@/components/brand/Mark";
 import PlanCta from "@/components/brand/PlanCta";
+import Slot from "@/components/brand/Slot";
 
 // たしかメディア。
 //
@@ -160,8 +161,56 @@ export default function ArticlesPage() {
         </div>
 
         {/* 読んだあと、そのまま自分の場面へ */}
+        {/* ══════════════════════════════════════════════
+            ここだけ、人の顔を出す
+            ══════════════════════════════════════════════
+            記事の面は文字ばかりで、読み終わったあとに
+            「で、誰に聞けるのか」が絵で入ってこない。
+
+            出すのは、相談する側と答える側の2つだけ。
+            記事のカードに顔を付けると、記事が誰かの体験談に見える。
+            置くのは、ここ（商品へ渡すところ）に限る。
+
+            ── 写真は素材 ──────────────────────────
+            審査を通った回答者はまだ0人なので、
+            年齢も職業も名前も付けない。付けた時点で名簿になる。
+            「写真はイメージ」の断りを、絵のすぐ下に必ず置く。
+
+            素材は 202×198 しかないので、大きくしない。 */}
         <div className="mt-12 rounded-card border border-line bg-mist px-5 py-6 sm:px-6">
-          <p className="text-[17px] font-black leading-[1.6] text-slate">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Slot
+              name="hero"
+              rounded="rounded-card"
+              position="center 16%"
+              className="h-[64px] w-[64px] shrink-0 sm:h-[76px] sm:w-[76px]"
+            />
+            <svg
+              aria-hidden
+              viewBox="0 0 24 24"
+              className="h-5 w-5 shrink-0 text-brand sm:h-6 sm:w-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+            <ul className="flex shrink-0 items-center -space-x-2">
+              {(["w1", "w3", "w5"] as const).map((n) => (
+                <li key={n}>
+                  <Slot
+                    name={n}
+                    rounded="rounded-full"
+                    className="h-[56px] w-[56px] ring-2 ring-mist sm:h-[68px] sm:w-[68px]"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <p className="mt-4 text-[17px] font-black leading-[1.6] text-slate">
             {MEDIA.bridge}
           </p>
           <p className="mt-2 max-w-[30em] text-[13.5px] leading-[1.85] text-steel">
@@ -177,6 +226,10 @@ export default function ArticlesPage() {
               自分の場合を確かめる <span aria-hidden className="ml-2">&rarr;</span>
             </PlanCta>
           </div>
+          {/* 絵のすぐ下に置く。離すと、絵だけ切り取られたときに残らない */}
+          <p className="mt-3 text-[10.5px] leading-[1.7] text-steel">
+            ※ 写真はイメージです。実在の回答者の一覧ではありません。
+          </p>
         </div>
 
         {/* 残り。消していない。畳んでおく */}
