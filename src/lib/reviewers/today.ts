@@ -51,6 +51,17 @@ export type Reviewer = {
   until: string | null;
   /** 次に受け付ける時刻。いま受付中でないときだけ */
   nextAt: string | null;
+  /**
+   * 顔。
+   *
+   * 本物の回答者の写真は持っていない（列も置き場所も無い）。
+   * 見本のときだけ、イメージ写真を当てる。
+   * 本物のときは null。名前の頭文字を丸に入れて出す。
+   *
+   * ここに本物の写真を入れるなら、本人の同意と、
+   * 非公開の置き場所と、消し方を先に決めること。
+   */
+  face?: string | null;
 };
 
 type Row = {
@@ -146,6 +157,8 @@ export async function reviewersToday(limit = 8): Promise<Reviewer[]> {
         answered: Number(r.answered_count ?? 0),
         until: status === "available" ? r.shift_ends_at : null,
         nextAt: status === "available" ? null : r.next_starts_at,
+        // 本物の写真は持っていない
+        face: null,
       };
     })
     .filter((r) => r.name.length > 0)

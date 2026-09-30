@@ -4,6 +4,7 @@ import { dateStrip, ymd } from "@/lib/reviewers/schedule";
 import { canSellCalls } from "@/lib/call/gate";
 import Timetable from "@/components/reviewers/Timetable";
 import PlanCta from "@/components/brand/PlanCta";
+import WhoReads from "@/components/brand/WhoReads";
 
 // 今日、受け付けている人。
 //
@@ -46,6 +47,13 @@ export default async function TodayReviewers() {
         <p className="mt-2.5 max-w-[32em] text-[14.5px] leading-[1.85] text-steel">
           {TODAY.lead}
         </p>
+
+        {/* 表の前に、そもそも誰が読むのかを出す。
+            「今日いる人」を見せても、その人たちが何者か分からなければ
+            ただの名前の並びになる */}
+        <div className="mt-5">
+          <WhoReads />
+        </div>
 
         <div className="mt-5">
           <Timetable

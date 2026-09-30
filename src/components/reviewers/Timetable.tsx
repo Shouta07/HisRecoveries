@@ -41,6 +41,8 @@ const SHORT: Record<Status, string> = {
   offline: "受付終了",
 };
 import { SAMPLE_BADGE, SAMPLE_NOTE } from "@/lib/reviewers/sample";
+import Slot from "@/components/brand/Slot";
+import type { ImageKey } from "@/lib/images";
 import { track } from "@/lib/analytics";
 
 // 受付の時間割。
@@ -272,6 +274,28 @@ export default function Timetable({
                 key={r.id}
                 className="border-r border-line px-2 py-2.5 text-center last:border-r-0"
               >
+                {/* 顔。
+                    名前だけだと、表が予定表にしか見えない。
+                    小さくても顔があると「人に聞く」に変わる。
+
+                    本物の回答者の写真は持っていないので、
+                    そのときは名前の頭文字を丸に入れる。
+                    無い写真を作らない。 */}
+                {r.face ? (
+                  <Slot
+                    name={r.face as ImageKey}
+                    rounded="rounded-full"
+                    className="mx-auto mb-1.5 h-9 w-9 sm:h-11 sm:w-11"
+                  />
+                ) : (
+                  <span
+                    aria-hidden
+                    className="mx-auto mb-1.5 flex h-9 w-9 items-center justify-center rounded-full bg-mist text-[13px] font-black text-steel sm:h-11 sm:w-11"
+                  >
+                    {r.name.slice(0, 1)}
+                  </span>
+                )}
+
                 {/* 名前と年代は分ける。
                     1行にまとめたら、96pxの列で名前のほうが切れた
                     （「みさき（2...」）。切れた名前は、無いのと同じ。
