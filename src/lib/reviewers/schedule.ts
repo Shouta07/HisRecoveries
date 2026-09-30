@@ -52,7 +52,9 @@ export const SLOT_MARK: Record<SlotState, { mark: string; label: string }> = {
   now: { mark: "●", label: "今すぐ話せます" },
   open: { mark: "○", label: "予約できます" },
   busy: { mark: "対応中", label: "いま対応中です" },
-  past: { mark: "", label: "終わった時間です" },
+  // 終わった枠も「－」を出す。空欄にすると、
+  // 読み込み中なのか受付が無いのかが分からない
+  past: { mark: "－", label: "終わった時間です" },
   closed: { mark: "－", label: "受付なし" },
 };
 
