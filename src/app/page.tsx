@@ -110,6 +110,8 @@ export const metadata: Metadata = {
 const NAV = [
   ["#moments", "恋愛の道のり"],
   ["#before-after", "実例"],
+  // 作った受付の表が、どこからも行けない状態だった
+  ["/reviewers", "今日の受付"],
   ["#faq", "よくある質問"],
   // 「どれを使う？」は、別の節として持っていた。
   // 料金と1つにしたので、行き先も1つでいい
