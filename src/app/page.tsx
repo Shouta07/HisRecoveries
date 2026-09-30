@@ -21,7 +21,7 @@ import {
 } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
 import { ALTERNATIVES, COMPARE, COMPARE_NOTE, COMPARE_SCOPE } from "@/lib/ask/compare";
-import { VERDICTS } from "@/lib/ask/model";
+import { VERDICTS, PANEL_AGES, ATTRS_OPEN } from "@/lib/ask/model";
 import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, TAGLINE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
@@ -32,6 +32,7 @@ import TashikameGuide from "@/components/brand/TashikameGuide";
 import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
+import type { ImageKey } from "@/lib/images";
 import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
 import PlanCards from "@/components/brand/PlanCards";
 import Yen from "@/components/brand/Yen";
@@ -354,6 +355,21 @@ const WHICH: Record<string, string> = {
     "誘うか、今返すか、一度引くか。書いて待つより早いところを、実在の女性と直接話して決めます。",
   try: "本番の前に、一度だけ実在の女性相手にやってみる。何がよくて何が引っかかったかが、画面に残ります。",
 };
+
+/**
+ * 「こんな女性が読んでいます」に出す顔。
+ *
+ * 写真はイメージ。年代だけを添える。
+ * 職業も回答件数も付けない（付けた時点で、
+ * 実在しない人の名簿になる。登録者はまだ0人）。
+ */
+const FACES: { key: ImageKey; age: string }[] = [
+  { key: "w1", age: "20代前半" },
+  { key: "w2", age: "20代後半" },
+  { key: "w3", age: "20代後半" },
+  { key: "w4", age: "30代" },
+  { key: "w5", age: "20代前半" },
+];
 
 /** 使う瞬間の絵柄。カテゴリごとに1つ */
 const USE_ICON: Record<string, string> = {
@@ -1017,6 +1033,99 @@ export default async function HomePage() {
             </details>
           ))}
         </div>
+      </Block>
+
+      {/* ══ 6.3 誰が読むのか ══ */}
+      {/* ══════════════════════════════════════════════
+          顔を出す。ただし、名簿にはしない
+          ══════════════════════════════════════════════
+          「実在の女性が読む」と言っておいて、画面に人が1人も
+          いないと、本当にいるのかが伝わらない。
+
+          ただし、審査を通った登録者はまだ0人。
+          顔の横に「26歳 会社員 回答42件」と並べた瞬間、
+          それは実在しない人の名簿になる。
+
+          だから出し方を分ける。
+            顔      イメージ（※と書く）
+            年代    実際に指定できる区分
+            確認    実際にこちらがやっていること
+          数（回答件数・役に立った割合）は、貯まるまで出さない。
+          実際に登録がある人は /answerers に出る（いまは0人）。 */}
+      <Block>
+        <H>裏で、こんな女性が読んでいます。</H>
+        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
+          登録すれば読めるようにはしていません。
+          年齢と立場を確認し、通った方にだけお願いしています。
+          名前も連絡先も出しません。出す仕組み自体を作っていません。
+        </p>
+
+        {/* 顔。年代だけを添える。職業も件数も付けない */}
+        <ul className="mt-8 grid grid-cols-3 gap-3 sm:grid-cols-5">
+          {FACES.map((f) => (
+            <li key={f.key} className="flex flex-col items-center gap-2">
+              <Slot
+                name={f.key}
+                rounded="rounded-full"
+                className="aspect-square w-full max-w-[92px]"
+              />
+              <span className="text-[12px] font-bold text-steel">{f.age}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 text-[11.5px] leading-[1.75] text-steel">
+          ※ 写真はイメージです。実際に登録のある方は
+          <Link
+            href="/answerers"
+            className="mx-1 font-bold text-brand underline decoration-line underline-offset-4"
+          >
+            誰が読むのか
+          </Link>
+          に出ます。
+        </p>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-card border border-line bg-paper px-5 py-5 shadow-card">
+            <p className="text-[12px] font-bold text-steel">こちらで確認していること</p>
+            <ul className="mt-2.5 flex flex-col gap-1.5">
+              {["年齢", "いまの立場", "書いてもらった文が読める内容か"].map((t) => (
+                <li key={t} className="flex items-start gap-2 text-[13.5px] leading-[1.75]">
+                  <span aria-hidden className="mt-[3px] text-[11px] font-black text-ok-text">
+                    ✓
+                  </span>
+                  <span className="min-w-0 text-steel">{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-card border border-line bg-paper px-5 py-5 shadow-card">
+            <p className="text-[12px] font-bold text-steel">読む人は選べます</p>
+            <ul className="mt-2.5 flex flex-wrap gap-1.5">
+              {PANEL_AGES.filter((a) => a.id !== "any").map((a) => (
+                <li
+                  key={a.id}
+                  className="rounded-pill bg-mist px-2.5 py-1 text-[12px] text-steel"
+                >
+                  {a.label}
+                </li>
+              ))}
+              {ATTRS_OPEN.map((a) => (
+                <li
+                  key={a.id}
+                  className="rounded-pill bg-mist px-2.5 py-1 text-[12px] text-steel"
+                >
+                  {a.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <p className="mt-6 max-w-[32em] text-[13.5px] leading-[1.9] text-steel">
+          恋愛の専門家ではありません。正解を教えてくれる人でもありません。
+          一人の女性として、実際にどう思ったかを書いてくれる人です。
+        </p>
       </Block>
 
       {/* ══ 6.4 言いにくいこと ══ */}
