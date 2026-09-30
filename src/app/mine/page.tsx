@@ -5,6 +5,7 @@ import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { list, remove, shortDate, type MyAsk } from "@/lib/myasks";
 import { category, type CategoryId } from "@/lib/ask/model";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import PassBalance from "@/components/ask/PassBalance";
 import CaseTimeline from "@/components/ask/CaseTimeline";
@@ -33,7 +34,7 @@ export default function MinePage() {
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-4 px-5 py-3 sm:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <Tashikame size={28} />
+            <Mark size={28} />
             <span className="whitespace-nowrap text-[16px] font-black">{NAME}</span>
           </Link>
           <Link

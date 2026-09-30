@@ -3,6 +3,7 @@ import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { LEGAL, missingLegal } from "@/lib/legal";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 
 // 特定商取引法に基づく表記。
@@ -27,7 +28,7 @@ export default function LegalPage() {
       <header className="border-b border-line">
         <div className="mx-auto flex w-full max-w-[760px] items-center justify-between gap-4 px-5 py-3.5 sm:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <Tashikame size={28} />
+            <Mark size={28} />
             <span className="whitespace-nowrap text-[16px] font-black">{NAME}</span>
           </Link>
           <Link

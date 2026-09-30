@@ -2086,3 +2086,53 @@ from safety_reports r
 left join consultations c on c.id = r.consultation_id
 where r.status in ('new', 'seen')
 order by r.created_at asc;
+
+-- ═══════════════════════════════════════════════════════════════
+-- 相談に添えた画像
+--
+-- ══════════════════════════════════════════════════
+-- 画像そのものはここに入れない
+-- ══════════════════════════════════════════════════
+-- 中身は Storage の非公開バケットに置く。
+-- ここに持つのは、どこに置いたかと、誰の相談のものか。
+--
+-- ══════════════════════════════════════════════════
+-- 公開URLを持たない
+-- ══════════════════════════════════════════════════
+-- 列に url を作らない。作ると、そこに恒久的なURLが入る。
+-- 見るときは、そのつど短い期限の署名URLを作る。
+--
+-- ══════════════════════════════════════════════════
+-- 消す日を持つ
+-- ══════════════════════════════════════════════════
+-- 第三者の顔と名前が写っている。持ち続ける理由が無い。
+-- 消す日を行に持って、過ぎたものから消す。
+-- 「消す仕組みを作る」ではなく「消す日を最初から書く」。
+-- ═══════════════════════════════════════════════════════════════
+create table if not exists consultation_images (
+  id uuid primary key default gen_random_uuid(),
+  consultation_id uuid not null references consultations(id) on delete cascade,
+  -- バケットの中の道。lib/ask/images.ts の pathFor が作る
+  path text not null,
+  -- 並び順。送った順に読んでもらう（LINEのやりとりは順番が意味を持つ）
+  ord int not null default 0,
+  content_type text,
+  bytes int,
+  created_at timestamptz default now(),
+  -- ここを過ぎたら消す
+  expires_at timestamptz not null default (now() + interval '90 days')
+);
+
+create unique index if not exists consultation_images_path_idx
+  on consultation_images (path);
+create index if not exists consultation_images_of_idx
+  on consultation_images (consultation_id, ord);
+create index if not exists consultation_images_expiry_idx
+  on consultation_images (expires_at);
+
+-- 期限の切れたもの。消す処理はこれを見る
+create or replace view expired_images as
+select id, consultation_id, path, expires_at
+from consultation_images
+where expires_at <= now()
+order by expires_at asc;

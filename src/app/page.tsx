@@ -23,10 +23,11 @@ import {
   INSTEAD,
 } from "@/lib/ask/compare";
 import { VERDICTS, PANEL_AGES, ATTRS_OPEN } from "@/lib/ask/model";
-import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, TAGLINE } from "@/lib/voice";
+import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import Journey from "@/components/brand/Journey";
 import TashikameGuide from "@/components/brand/TashikameGuide";
@@ -100,7 +101,8 @@ import Yen from "@/components/brand/Yen";
 // ══════════════════════════════════════════════════════════════
 
 export const metadata: Metadata = {
-  title: `${NAME} — ${THESIS_B}`,
+  // タブに出るのは店名。住所（hisrecoveries.com）とは別
+  title: { absolute: TAB_TITLE },
   description: `${DEFINITION}${THESIS} ${SUB}`,
   alternates: { canonical: site.url },
 };
@@ -461,7 +463,7 @@ export default async function HomePage() {
               切れた標語を出すくらいなら、名前だけにする。
               すぐ下の1画面目に、同じことが文で書いてある。 */}
           <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5">
-            <Tashikame size={36} className="sm:!h-11 sm:!w-11" />
+            <Mark size={36} className="sm:!h-11 sm:!w-11" />
             <span className="min-w-0">
               <span className="hidden truncate text-[9px] font-bold leading-[1.3] text-steel min-[360px]:block sm:text-[10.5px]">
                 {TAGLINE}

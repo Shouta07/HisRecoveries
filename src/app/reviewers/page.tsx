@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { NAME } from "@/lib/voice";
 import { scheduleFor } from "@/lib/reviewers/today";
-import { OMAKASE } from "@/lib/reviewers/today";
 import { dateStrip, ymd, WEEKS_AHEAD } from "@/lib/reviewers/schedule";
 import { canSellCalls } from "@/lib/call/gate";
 import Timetable from "@/components/reviewers/Timetable";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import PlanCta from "@/components/brand/PlanCta";
 
@@ -56,7 +56,7 @@ export default async function ReviewersPage({
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1120px] items-center justify-between gap-4 px-5 py-3 sm:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-2">
-            <Tashikame size={34} />
+            <Mark size={34} />
             <span className="truncate text-[17px] font-black text-slate">{NAME}</span>
           </Link>
           <Link
@@ -73,13 +73,11 @@ export default async function ReviewersPage({
           今日、タシカメできる人
         </h1>
 
-        {/* 選ぶのが面倒な人の逃げ道を、表より先に出す。
-            全員に人を選ばせない */}
-        <div className="mt-3 rounded-card bg-mist px-4 py-3.5">
-          <p className="text-[13px] leading-[1.8] text-steel">{OMAKASE.body}</p>
-        </div>
+        {/* ここに「相談の内容に合う、受付中の人へ届けます」の箱を置いていた。
+            この画面は案内ではなく道具なので、説明は要らない。
+            選ぶのが面倒な人の行き先は、下に置きっぱなしのボタンが持つ。 */}
 
-        <div className="mt-5">
+        <div className="mt-4">
           <Timetable
             date={date}
             dates={dates}

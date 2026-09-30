@@ -7,6 +7,7 @@ import { PLANS, FLOW, ENTRY_PLAN, plan as getPlan } from "@/lib/ask/plans";
 // 見出しの人数は、実際に売っている人数から引く。
 // 手で「5人」と書くと、商品を組み直した日に古い数字が残る。
 const entryAnswers = getPlan(ENTRY_PLAN).answers;
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import PlanCta from "@/components/brand/PlanCta";
 import Yen from "@/components/brand/Yen";
@@ -57,7 +58,7 @@ export default function HowPage() {
       <header className="border-b border-line bg-paper">
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3.5 sm:px-10">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={26} />
+            <Mark size={26} />
             <span className="truncate text-[16px] font-black">{NAME}</span>
           </Link>
           <PlanCta
