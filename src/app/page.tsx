@@ -6,6 +6,8 @@ import {
   PLANS,
   plan as getPlan,
   tier as getTier,
+  tier as tierOf,
+  topPlans,
   ENTRY_PLAN,
   DEFAULT_PLAN,
 } from "@/lib/ask/plans";
@@ -538,25 +540,14 @@ export default async function HomePage() {
         <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
 
-            {/* いくらなのかを、1画面目で出す。
-                下まで読まないと値段が分からないと、
-                読んでいるあいだずっと「いくらだろう」が残る。
-                まとめ売りなので「1件いくら」に見せない
-                （1つの素材に8,000円を払う話になってしまう）。 */}
-            <ul className="mt-4 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[13.5px] font-bold text-slate">
-              <li>
-                <Yen yen={entry.yen} />
-                <span className="ml-1 text-[12.5px] font-normal text-steel">
-                  / {entry.uses}回分
-                </span>
-              </li>
-              <li aria-hidden className="text-line">|</li>
-              <li>月額なし</li>
-              <li aria-hidden className="text-line">|</li>
-              <li>匿名</li>
-            </ul>
+            {/* ここに「¥7,980 / 5回分 ｜ 月額なし ｜ 匿名」を出していた。
+                何のサービスかを言い終わる前に金額が目に入って、
+                読む前に「高い／安い」の話になっていた。
 
-            {/* 押す場所も、スクロールさせない */}
+                値段は、何が返ってくるかを見たあとで見るもの。
+                料金の節（#price）と /plans にある。隠してはいない。 */}
+
+            {/* 押す場所を、スクロールさせない */}
             <div data-hero-cta className="mt-5 max-w-[24em]">
               <PlanCta
                 plan={DEFAULT_PLAN}
@@ -1332,6 +1323,50 @@ export default async function HomePage() {
         </div>
 
         {/* ══════════════════════════════════════════════
+            残りの2つを、1行ずつ出す
+            ══════════════════════════════════════════════
+            カードを1枚だけにしたら、こんどは
+            「これしかないサービス」に見えるようになった。
+
+            買える商品は1つでいい。押せる場所が増えるほど、
+            どれを押すか決まらなくなる。
+            ただし、この先に何があるかは見えていないといけない。
+            見えないと、5回パスが天井に見える。
+
+            カードでは出さない（1枚で1画面ぶんある）。
+            名前と、いくらで、何をするかだけの細い行にする。
+            詳しくは /plans。 */}
+        {(() => {
+          const open = openPlanIds();
+          const soon = topPlans().filter((p) => !open.includes(p.id));
+          if (soon.length === 0) return null;
+          return (
+            <div className="mt-4 overflow-hidden rounded-card border border-line">
+              <p className="border-b border-line bg-mist px-4 py-2.5 text-[12px] font-bold text-steel">
+                この先に、あと{soon.length}つあります（まだ開いていません）
+              </p>
+              <ul className="flex flex-col divide-y divide-line bg-paper">
+                {soon.map((p) => (
+                  <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                    <span className="min-w-0">
+                      <span className="block text-[13.5px] font-black text-slate">
+                        {p.name}
+                      </span>
+                      <span className="mt-0.5 block text-[12px] leading-[1.6] text-steel">
+                        {tierOf(p.tier).label}・{p.value}
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-[13px] font-black tabular-nums text-steel">
+                      <Yen yen={p.yen} from={p.from} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })()}
+
+        {/* ══════════════════════════════════════════════
             5回が、どういう5回なのか
             ══════════════════════════════════════════════
             「5回分 ¥7,980」だと、回数券にしか見えない。
@@ -1371,8 +1406,9 @@ export default async function HomePage() {
         </div>
 
         <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
-          税込。このほかに、声で話す商品（15分・30分）と、本番をそのまま
-          やってみる Mock Date があります。時間を決めた受け入れ方と、
+          {/* 何がまだ開いていないかは、すぐ上の3行が出している。
+              ここで同じことを書かない */}
+          税込。開いていないものは、時間を決めた受け入れ方と、
           その場を見る体制が用意できてから開きます。
           <Link
             href="/plans"
