@@ -24,6 +24,7 @@ export default function Header() {
   // 1つ増やすたびにこの行が伸びていたので、一覧にした。
   const BRAND_PAGES = [
     "/join", "/safety", "/mine", "/legal", "/how", "/talk", "/plans",
+    "/reviewers",
   ];
   const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/"];
   if (
