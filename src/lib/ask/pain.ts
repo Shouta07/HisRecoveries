@@ -38,6 +38,7 @@ export const MOMENTS: { line: string; cat: string }[] = [
   { line: "「今誘ったら、早すぎる？」", cat: "date" },
   { line: "「昨日のデート、どう思われた？」", cat: "signal" },
   { line: "「この自己紹介文、女性に届いてる？」", cat: "photo" },
+  { line: "「電話、何を話せばいい？」", cat: "date" },
   { line: "「2回目、こっちから誘っていい？」", cat: "date" },
   { line: "「距離を縮めたい。でも踏み込みすぎたくない」", cat: "distance" },
   { line: "「本人には聞けないことを、聞いてみたい」", cat: "distance" },
@@ -100,6 +101,12 @@ export const BRIDGE = {
   // 文字の添削屋にしか見えない（plans.ts と同じ理由）。
   if (!MOMENTS.some((m) => m.cat === "distance")) {
     throw new Error("手が止まる瞬間に、言いにくい場面がありません");
+  }
+  // 声の場面。
+  // ここは「タシカメは、こんなときに使えます」の節を畳んだ受け皿でもある。
+  // あちらが持っていた電話の場面が、ここから消えると行き場が無くなる。
+  if (!MOMENTS.some((m) => /電話|声|沈黙|黙っ/.test(m.line))) {
+    throw new Error("手が止まる瞬間が、文字の相談だけになっています（電話の場面も置いてください）");
   }
 
   // 橋の書き方。検索とAIを否定から入らないこと。

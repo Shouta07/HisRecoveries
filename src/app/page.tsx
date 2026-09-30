@@ -8,7 +8,6 @@ import {
   tier as getTier,
   ENTRY_PLAN,
   DEFAULT_PLAN,
-  TOP_USE_CASES,
 } from "@/lib/ask/plans";
 import { MOMENTS, PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
 import { DEMO, count } from "@/lib/ask/demo";
@@ -402,21 +401,10 @@ const FACES: { key: ImageKey; age: string }[] = [
 ];
 
 /** 使う瞬間の絵柄。カテゴリごとに1つ */
-const USE_ICON: Record<string, string> = {
-  message: "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z",
-  photo: "M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h4",
-  signal: "M4 18v-6M10 18V8M16 18v-9M22 18V5",
-  date: "M5 3h6l-2 7a3 3 0 0 1-2 0zM8 10v9M5.5 21h5M19 3h-6l2 7a3 3 0 0 0 2 0zM16 10v9M13.5 21h5",
-  romance: "M12 20s-7-4.4-7-9.2A4 4 0 0 1 12 8a4 4 0 0 1 7 2.8C19 15.6 12 20 12 20",
-  distance: "M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4",
-  other: "M12 17h.01M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7v.5",
-  // 声の場面は、どれも category: "date" になる。
-  // カテゴリの絵のままだと同じ絵が3つ並んで、場面が違うことが見えない。
-  // 受話器と、途切れた吹き出し。
-  call: "M6.5 3h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5L16 12l4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3Z",
-  silence:
-    "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z M8.5 11.5h.01 M12 11.5h.01 M15.5 11.5h.01",
-};
+// 「タシカメは、こんなときに使えます。」の節で使っていた絵を、
+// ここに持っていた。節ごと畳んだので、絵も要らない。
+// 場面は「こんな瞬間、ありませんか？」に寄せた（lib/ask/pain.ts）。
+
 
 const TONE: Record<string, string> = {
   as_is: "bg-ok-tint text-ok-text",
@@ -801,68 +789,36 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 2.5 初めての方へ ══ */}
-      {/* 道のりは「いまどこにいるか」から入る形なので、
-          自分がどこにいるか決まっていない人が素通りする。
-          その下に、思い当たる一言だけを4つ並べる。
-          言葉は plans.ts の TOP_USE_CASES。受け付けていない場面は
-          そもそもここに来ない（服と店は画像を受け取れないので出ない）。 */}
-      <Block tint>
-        <span className="inline-flex rounded-pill bg-paper px-3.5 py-1.5 text-[12px] font-bold text-brand shadow-card">
-          初めての方へ
-        </span>
-        <h2 className="mt-4 text-huge font-black leading-[1.35] text-slate">
-          タシカメは、
-          <br className="sm:hidden" />
-          こんなときに使えます。
-        </h2>
-        <p className="mt-4 max-w-[30em] text-[15px] leading-[1.85] text-steel">
-          マッチングアプリでの悩みを、実在の女性の目線から具体的に。
-        </p>
+      {/* ══ 2.5 初めての方へ（畳んだ） ══ */}
+      {/* ここに「タシカメは、こんなときに使えます。」の節を置いていた。
+          場面を6枚、押せる形で並べたもの。
 
-        <ul className="mt-8 grid grid-cols-2 gap-2.5 sm:gap-3.5">
-          {TOP_USE_CASES.map((u, i) => (
-            <li key={u.q}>
-              <Reveal delay={i * 50}>
-                <PlanCta
-                  plan={DEFAULT_PLAN}
-                  from={`use_${u.category}`}
-                  category={u.category}
-                  className="!flex h-full w-full !flex-col !items-stretch rounded-card border border-line bg-paper p-4 text-left shadow-card sm:p-5"
-                >
-                  <span className="flex items-center gap-2">
-                    <span
-                      aria-hidden
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d={USE_ICON[u.icon ?? u.category] ?? USE_ICON.message} />
-                      </svg>
-                    </span>
-                    <span className="text-[11px] font-bold text-steel">{u.tag}</span>
-                  </span>
-                  <span className="mt-3 block text-[14.5px] font-black leading-[1.55] text-slate">
-                    {u.q}
-                  </span>
-                  <span className="mt-auto block pt-3 text-[12px] font-bold text-brand">
-                    ここから確かめる →
-                  </span>
-                </PlanCta>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
+          その1つ上の「こんな瞬間、ありませんか？」が、同じ仕事をしていた。
+          どちらも「こういう場面で使えます」を、押せる形で並べたもの。
+          同じことを2回読ませると、どちらも弱くなるし、
+          スマホで2画面ぶん増える。
 
-        <div className="mt-7 max-w-[26em]">
-          {/* 値段は同じページの下にある。読み込み直させない */}
-          <Link
-            href="#price"
-            className="inline-flex min-h-[54px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-8 text-[15.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
-          >
-            プランを詳しく見る <span aria-hidden className="ml-2">&darr;</span>
-          </Link>
-        </div>
-      </Block>
+          瞬間のほう（1.5 節）に寄せた。あちらは
+            手が止まる瞬間 → なぜAIではないのか
+          まで続くので、場面を出す役に加えて、
+          その場で「だからここなのか」まで答えられる。
+
+          あちらが持っていなかった電話の場面は、MOMENTS へ移した
+          （pain.ts の判定が、消えたら落とす）。
+
+          押す場所は残す。ここが唯一の、値段へ降りる導線だった。 */}
+      <section className="bg-mist">
+        <Wrap className="py-10 sm:py-12">
+          <div className="max-w-[26em]">
+            <Link
+              href="#price"
+              className="inline-flex min-h-[54px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-8 text-[15.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
+            >
+              プランを詳しく見る <span aria-hidden className="ml-2">&darr;</span>
+            </Link>
+          </div>
+        </Wrap>
+      </section>
 
       {/* ══ 3. 相談前と、相談後 ══ */}
       {/* 押す場所のすぐ下に置く。買う前に、何が起きるのかを1回で見せる。
@@ -1366,8 +1322,13 @@ export default async function HomePage() {
           映像はありません。
         </p>
 
+        {/* トップは、いま買えるものだけ。
+            4枚出すとそのうち3枚が「受付前」で、
+            買えない商品の説明にスマホ2.5画面ぶん使うことになる。
+            読んでいる人が今できることは1つなので、トップはそれだけ。
+            残りは、この下の1行と /plans が持つ。 */}
         <div className="mt-8">
-          <PlanCards from="price" openIds={openPlanIds()} />
+          <PlanCards from="price" onlyOpen openIds={openPlanIds()} />
         </div>
 
         {/* ══════════════════════════════════════════════
@@ -1410,14 +1371,14 @@ export default async function HomePage() {
         </div>
 
         <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
-          税込。いま受け付けているのは「{main.name}」だけです。
-          通話とMock Dateは、時間を決めた受け入れ方と、その場を見る体制が
-          用意できてから開きます。
+          税込。このほかに、声で話す商品（15分・30分）と、本番をそのまま
+          やってみる Mock Date があります。時間を決めた受け入れ方と、
+          その場を見る体制が用意できてから開きます。
           <Link
             href="/plans"
             className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
           >
-            キャンセルと返金について
+            ぜんぶ見る・キャンセルと返金
           </Link>
         </p>
       </Block>
