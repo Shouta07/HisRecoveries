@@ -39,7 +39,6 @@ import HeroBoard from "@/components/brand/HeroBoard";
 import VideoEmbed from "@/components/brand/VideoEmbed";
 import MomentsArt from "@/components/brand/MomentsArt";
 import { hasPublicFile } from "@/lib/publicFile";
-import { URGENCY } from "@/lib/economics";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -428,24 +427,6 @@ function label(v: string) {
   return VERDICTS.find((x) => x.id === v)?.label ?? v;
 }
 
-/* ── 公開の前に止めること ─────────────────────────
-   1画面目で「追加料金なし」と書いている。
-   上乗せを売りはじめた日に、この印は嘘になる。
-
-   economics.ts 側にも「速さを担保できるまで売らない」判定が
-   あるが、あちらは担保できたら通る。通った瞬間に
-   こちらが嘘になるので、ここからも見ておく。 */
-{
-  const extra = URGENCY.filter((u) => u.addYen > 0 && u.available);
-  if (extra.length > 0) {
-    throw new Error(
-      `1画面目に「追加料金なし」と書いていますが、上乗せ（${extra
-        .map((u) => u.label)
-        .join("・")}）を売っています。印を外すか、上乗せを止めてください`,
-    );
-  }
-}
-
 export default async function HomePage() {
   const entry = getPlan(ENTRY_PLAN);
   const main = getPlan(DEFAULT_PLAN);
@@ -570,60 +551,19 @@ export default async function HomePage() {
                 料金の節（#price）と /plans にある。隠してはいない。 */}
 
             {/* ══════════════════════════════════════════
-                押す場所と4つの印を、戻した
+                押す場所と4つの印は、また外した
                 ══════════════════════════════════════════
-                一度は外していた。ヘッダーにボタンがあり、すぐ下の
-                「こんな瞬間、ありませんか？」が8つとも押せるので、
-                1画面目に3つ目の入口は要らない、という理由だった。
+                一度戻して、また外している。理由は前と同じ。
 
-                絵が Before → 相談 → After の3段になって、話の
-                終わりがここに来た。「送れる」を見た直後に押す場所が
-                無いと、その勢いのまま次の節まで運ぶことになる。
+                ヘッダーの「確かめる」がずっと出ている。
+                絵が Before → 相談 → After で完結しているので、
+                その下にもう一つ押す場所を置くと、
+                1画面目に入口が2つ並ぶことになる。
 
-                4つの印も同じ。何のサービスか分からないうちに
-                条件だけ並べると読まれないが、いまは絵のあとなので
-                「で、いくらで、どう払うのか」の答えになっている。 */}
-            <div className="mt-5 sm:mt-6">
-              <PlanCta
-                plan={DEFAULT_PLAN}
-                from="hero"
-                className="min-h-[60px] w-full rounded-pill bg-brand px-8 text-[16.5px] !text-paper shadow-card sm:text-[18px]"
-              >
-                今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
-              </PlanCta>
-            </div>
-
-            {/* 4つとも、いま本当にそうであること。
-                「実在の女性が回答」  審査を通った女性だけが答える
-                「匿名でOK」          名前も連絡先も要らない（鍵だけ）
-                「都度払い」          必要なときだけ
-                「追加料金なし」      急ぎの上乗せ（economics.ts の URGENCY）は
-                                      どれも available: false。売っていない。
-                                      売りはじめたら、この印を外すこと
-                ここに「返金保証」などを足さないこと。
-                条件が付くものを1語で書くと、書いた時点で嘘になる。 */}
-            <ul className="mt-4 grid grid-cols-4 gap-2 sm:mt-5 sm:gap-3">
-              {[
-                { label: "実在の女性\nが回答", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0Z" },
-                { label: "匿名でOK", d: "M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z" },
-                { label: "都度払い", d: "M3 6h18v12H3V6Zm2 3v2h14V9H5Zm0 4v2h7v-2H5Z" },
-                { label: "追加料金なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
-              ].map((b) => (
-                <li key={b.label} className="flex flex-col items-center text-center">
-                  <span
-                    aria-hidden
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-11 sm:w-11"
-                  >
-                    <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-[22px] sm:w-[22px]" fill="currentColor">
-                      <path d={b.d} />
-                    </svg>
-                  </span>
-                  <span className="mt-1.5 whitespace-pre-line text-[10.5px] font-bold leading-[1.45] text-steel sm:text-[12px]">
-                    {b.label}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                4つの印（実在の女性が回答／匿名でOK／都度払い／
+                追加料金なし）は、よくある質問と料金の節が持っている。
+                1画面目で条件を先に並べても、まだ何のサービスか
+                分かっていないので読まれない。 */}
 
             {/* 受け付けていないことの断りは、値段の節（買う場所）に置いてある。
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
