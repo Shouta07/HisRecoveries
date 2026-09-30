@@ -21,6 +21,7 @@ import {
   COMPARE_NOTE,
   COMPARE_SCOPE,
   INSTEAD,
+  SHOWN_ALTERNATIVES,
 } from "@/lib/ask/compare";
 import { VERDICTS, PANEL_AGES, ATTRS_OPEN } from "@/lib/ask/model";
 import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, TAGLINE, TAB_TITLE } from "@/lib/voice";
@@ -907,20 +908,128 @@ export default async function HomePage() {
           押す場所は減らしていない。ここにあった
           「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
 
-      {/* ══ 4.「ほかの選び方と、どう違うか。」は外した ══ */}
+      {/* ══ 4. ほかの選び方と、どう違うか ══ */}
       {/* ══════════════════════════════════════════════
-          比べる前に、もう決まっている
+          6列をやめて4列にした
           ══════════════════════════════════════════════
-          友達に聞く / AIに聞く との違いと、
-          結婚相談所・マッチングアプリとの比較表を置いていた。
+          マッチングアプリ・結婚相談所・恋愛コンサル・友達・AI の
+          5つと並べた表を出していた。390px では1列 50px ほどになり、
+          横に流すしかなくなる。流した先は読まれない。
 
-          ここまでで、1画面目の3枚と、やりとりの見本が、
-          「実際の女性が読んで、どう受け取ったかが返る」ことを
-          すでに見せている。そのあとで他の手段と並べると、
-          決めかけた人を、もう一度迷わせる場所になる。
+          実際に迷われているのは、この3つとの間。
+            AIに聞けばいい / 友達に聞けばいい / 恋愛コンサルに頼めばいい
+          出会いを作るもの（アプリ・結婚相談所）は、そもそも
+          同じことをしていない。データは compare.ts に残してある。
 
-          比較の中身と判定は lib/ask/compare.ts に残してある
-          （景表法の要件つき）。戻すなら、そこから出すこと。 */}
+          ══════════════════════════════════════════════
+          横に流さない
+          ══════════════════════════════════════════════
+          狭い画面では、行ごとに積む（使うとき／料金のかたち／…）。
+          1つの行の中で、タシカメと他の3つを縦に並べる。
+          広い画面では、そのまま4列の表にする。
+          どちらの幅でも、横スクロールは起きない。
+
+          ══════════════════════════════════════════════
+          比較広告は景表法の対象
+          ══════════════════════════════════════════════
+          他社の金額は書かない（出典が無い）。
+          事実に反することも書かない（AIは無料で使えるものが多い）。
+          勝てない行（知られるか＝AIも同じ）を消さない。
+          中身と判定は lib/ask/compare.ts。 */}
+      <Block tint>
+        <H>ほかの選び方と、どう違うか。</H>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          {COMPARE_SCOPE}
+        </p>
+
+        {/* ── 狭い画面：行ごとに積む ── */}
+        <div className="mt-7 flex flex-col gap-3 sm:hidden">
+          {COMPARE.map((r) => (
+            <div key={r.id} className="rounded-card border border-line bg-paper p-4 shadow-card">
+              <p className="text-[11.5px] font-black text-steel">{r.label}</p>
+              <div className="mt-2 rounded-soft bg-brand-tint px-3 py-2.5">
+                <p className="text-[10.5px] font-black leading-none text-brand-deep">
+                  {SHOWN_ALTERNATIVES[0].label}
+                </p>
+                <p className="mt-1.5 text-[13px] font-bold leading-[1.6] text-slate">
+                  {r.cells[SHOWN_ALTERNATIVES[0].id]}
+                </p>
+              </div>
+              <dl className="mt-2.5 flex flex-col gap-2 border-t border-line pt-2.5">
+                {SHOWN_ALTERNATIVES.slice(1).map((a) => (
+                  <div key={a.id} className="grid grid-cols-[6.4em_1fr] gap-2">
+                    <dt className="text-[11px] font-bold leading-[1.6] text-steel">{a.label}</dt>
+                    <dd className="min-w-0 text-[11.5px] leading-[1.65] text-steel">
+                      {r.cells[a.id]}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))}
+        </div>
+
+        {/* ── 広い画面：そのまま表に ── */}
+        <div className="mt-7 hidden sm:block">
+          <table className="w-full table-fixed border-collapse text-left">
+            <caption className="sr-only">
+              タシカメと、ほかの選び方の違い
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col" className="w-[7.5em] p-0" />
+                {SHOWN_ALTERNATIVES.map((a) => (
+                  <th
+                    key={a.id}
+                    scope="col"
+                    className={`rounded-t-card px-3.5 py-3 align-bottom text-[13.5px] font-black leading-[1.4] ${
+                      a.us ? "bg-brand text-paper" : "text-steel"
+                    }`}
+                  >
+                    {a.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE.map((r, i) => (
+                <tr key={r.id} className="align-top">
+                  <th
+                    scope="row"
+                    className="border-t border-line py-3.5 pr-3 text-[12px] font-black leading-[1.5] text-steel"
+                  >
+                    {r.label}
+                  </th>
+                  {SHOWN_ALTERNATIVES.map((a) => (
+                    <td
+                      key={a.id}
+                      className={`border-t border-line px-3.5 py-3.5 text-[12.5px] leading-[1.7] ${
+                        a.us
+                          ? "bg-brand-tint font-bold text-slate"
+                          : "text-steel"
+                      } ${a.us && i === COMPARE.length - 1 ? "rounded-b-card" : ""}`}
+                    >
+                      {r.cells[a.id]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="mt-5 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
+
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="compare"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
+        </div>
+      </Block>
 
       {/* ══ 6. よくある質問 ══ */}
       {/* 安心・安全は、節として独立させていた。
