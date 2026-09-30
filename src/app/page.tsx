@@ -39,8 +39,8 @@ import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
-import ShortVideo from "@/components/brand/ShortVideo";
-import { SHORT } from "@/lib/video";
+import GuideVideo from "@/components/brand/GuideVideo";
+import { GUIDE_VIDEO } from "@/lib/video";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ。
@@ -684,14 +684,18 @@ export default async function HomePage() {
             友達とAIの話をしている、まさにその場所。 */}
       </Block>
 
-      {/* ══ 1.7 30秒の動画 ══ */}
-      {/* 「それ、自分のことだ」のすぐあとに、全体を30秒で見せる。
-          ID が入るまでは節ごと出さない（lib/video.ts）。 */}
-      {SHORT.id && (
+      {/* ══ 1.7 説明動画 ══ */}
+      {/* 「それ、自分のことだ」のすぐあとに、全体を1本で見せる。
+          恋亀が案内して、女性が答え、料金と、ほかの選び方との違いまで。
+          ファイルが無ければ節ごと出さない（lib/video.ts）。 */}
+      {GUIDE_VIDEO.src && (
         <Block tint>
-          <H>{SHORT.title}。</H>
-          <div className="mt-7">
-            <ShortVideo />
+          <H>{GUIDE_VIDEO.title}。</H>
+          <p className="mt-3 text-[14px] leading-[1.8] text-steel">
+            恋亀が、送る前に確かめるまでを案内します。音が出ます。
+          </p>
+          <div className="mt-6">
+            <GuideVideo />
           </div>
         </Block>
       )}

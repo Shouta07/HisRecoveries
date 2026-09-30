@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/lib/site";
 import StatsToggle from "@/components/brand/StatsToggle";
-import { SHORT } from "@/lib/video";
 
 export const metadata: Metadata = {
   title: "プライバシーポリシー・免責事項",
@@ -195,14 +194,6 @@ export default function PrivacyPage() {
               収集される情報は個人を特定しない範囲のものです。Cookie はブラウザ設定で
               無効化できます。
             </p>
-            {/* 動画を出していないあいだは書かない（lib/video.ts の id が空なら出さない） */}
-            {SHORT.id && (
-              <p className="mt-4">
-                トップページの紹介動画は YouTube（プライバシー強化モード）で配信しています。
-                再生ボタンを押すまでは YouTube を読み込みません。押したあとは、YouTube（Google）の
-                ポリシーに従って情報が扱われます。
-              </p>
-            )}
             <p className="mt-4">
               これらの計測は、当サイトでいつでも停止できます。停止した場合、計測タグ自体が
               読み込まれません。ご相談の内容そのもの（お書きいただいた文面）を、広告事業者へ
