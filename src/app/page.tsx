@@ -40,6 +40,7 @@ import HeroBoard from "@/components/brand/HeroBoard";
 import VideoEmbed from "@/components/brand/VideoEmbed";
 import MomentsArt from "@/components/brand/MomentsArt";
 import { hasPublicFile } from "@/lib/publicFile";
+import { URGENCY } from "@/lib/economics";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -428,6 +429,24 @@ function label(v: string) {
   return VERDICTS.find((x) => x.id === v)?.label ?? v;
 }
 
+/* ── 公開の前に止めること ─────────────────────────
+   1画面目で「追加料金なし」と書いている。
+   上乗せを売りはじめた日に、この印は嘘になる。
+
+   economics.ts 側にも「速さを担保できるまで売らない」判定が
+   あるが、あちらは担保できたら通る。通った瞬間に
+   こちらが嘘になるので、ここからも見ておく。 */
+{
+  const extra = URGENCY.filter((u) => u.addYen > 0 && u.available);
+  if (extra.length > 0) {
+    throw new Error(
+      `1画面目に「追加料金なし」と書いていますが、上乗せ（${extra
+        .map((u) => u.label)
+        .join("・")}）を売っています。印を外すか、上乗せを止めてください`,
+    );
+  }
+}
+
 export default async function HomePage() {
   const entry = getPlan(ENTRY_PLAN);
   const main = getPlan(DEFAULT_PLAN);
@@ -579,7 +598,9 @@ export default async function HomePage() {
                 「実在の女性が回答」  審査を通った女性だけが答える
                 「匿名でOK」          名前も連絡先も要らない（鍵だけ）
                 「都度払い」          必要なときだけ
-                「月額なし」          自動更新もしない
+                「追加料金なし」      急ぎの上乗せ（economics.ts の URGENCY）は
+                                      どれも available: false。売っていない。
+                                      売りはじめたら、この印を外すこと
                 ここに「返金保証」などを足さないこと。
                 条件が付くものを1語で書くと、書いた時点で嘘になる。 */}
             <ul className="mt-6 grid grid-cols-4 gap-2 sm:mt-7 sm:gap-3">
@@ -587,7 +608,7 @@ export default async function HomePage() {
                 { label: "実在の女性\nが回答", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0Z" },
                 { label: "匿名でOK", d: "M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z" },
                 { label: "都度払い", d: "M3 6h18v12H3V6Zm2 3v2h14V9H5Zm0 4v2h7v-2H5Z" },
-                { label: "月額なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
+                { label: "追加料金なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
               ].map((b) => (
                 <li key={b.label} className="flex flex-col items-center text-center">
                   <span

@@ -108,10 +108,19 @@ function Stage({ children }: { children: React.ReactNode }) {
  * 押せる一覧のほうは MOMENTS のまま。役割が違う。
  */
 const BUBBLES: { lines: [string, string]; icon: "msg" | "date" | "photo" }[] = [
-  { lines: ["またご飯行こ〜", "って送っていい…？"], icon: "msg" },
-  { lines: ["今誘ったら", "早すぎるかな…？"], icon: "date" },
+  { lines: ["またご飯行こう〜", "この返事どう送る…？"], icon: "msg" },
   { lines: ["この写真", "どっちがいい…？"], icon: "photo" },
+  { lines: ["次のデート", "どう誘う…？"], icon: "date" },
 ];
+
+/**
+ * 写真の上に、手で書いたように置く一言。
+ *
+ * 吹き出しは「頭の中で鳴っている別々の声」だが、
+ * これはいちばん手前にある迷いそのもの。
+ * 箱に入れず、写真に直接のせる。
+ */
+const OVERLAY = ["これって", "送っていいのかな…？"];
 
 /** 吹き出しの頭に置く小さな印 */
 function BubbleIcon({ kind }: { kind: "msg" | "date" | "photo" }) {
@@ -183,9 +192,34 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
               aria-hidden
               className="absolute inset-0 bg-gradient-to-l from-slate/55 via-slate/20 to-transparent"
             />
+            {/* 左下に白い文字をのせるので、そこだけ足す */}
+            <span
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-slate/60 to-transparent"
+            />
           </div>
 
           <Stage>Before</Stage>
+
+          {/* 頭の中のもつれ。1本の線で描く（素材を足さない） */}
+          <svg
+            aria-hidden
+            viewBox="0 0 60 44"
+            className="absolute left-3 top-[54px] h-8 w-11 text-paper/85 sm:left-5 sm:top-[72px] sm:h-11 sm:w-14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M14 30c-9 2-13-5-7-9s18-2 14 4-14 6-12-2 12-12 20-8 9 12 2 15-14-3-8-8 18-3 21 3" />
+          </svg>
+
+          {/* いちばん手前にある迷い。箱に入れず、写真に直接のせる */}
+          <p className="absolute bottom-3 left-3 max-w-[46%] text-[13px] font-black leading-[1.5] text-paper sm:bottom-5 sm:left-5 sm:text-[17px]">
+            {OVERLAY[0]}
+            <br />
+            {OVERLAY[1]}
+          </p>
 
           {/* 手が止まっている中身。右側に重ねる。
               3つを少しずつ左右にずらす。きれいに揃えると一覧表に見えて、
