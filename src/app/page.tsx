@@ -3,18 +3,9 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
 import {
-  SCOPE,
-  RETURNS,
-  NEVER_ASK,
-  CONSENT,
-  ASK_SHAPE,
-  PASS_COST,
-} from "@/lib/ask/sensitive";
-import {
   PLANS,
   TIERS,
   plan as getPlan,
-  SUBJECTS,
   ENTRY_PLAN,
   DEFAULT_PLAN,
   OPEN_USE_CASES,
@@ -137,7 +128,7 @@ const STEPS = [
 // ── 開かなくても分かる答えを、先に書く ────────────
 // extra が付くものは、開くと絵も出る。
 // ただし a だけ読んでも答えになっていること（検索結果にはこちらが出る）。
-const FAQ: { q: string; a: string; extra?: "ai" | "flow" }[] = [
+const FAQ: { q: string; a: string; extra?: "ai" | "flow" | "safety" }[] = [
   {
     q: "AIに聞くのと何が違いますか？",
     a: "AIが出すのは「たぶんこう思われます」です。ここで返ってくるのは、実在の女性が実際にどう思ったかです。予想ではなく、本当の反応です。まずAIに聞いていい。文面を作るのも、考えをまとめるのもAIのほうが得意です。それでも最後に残る「実際どう思われるか」だけ、人に聞きます。",
@@ -159,6 +150,7 @@ const FAQ: { q: string; a: string; extra?: "ai" | "flow" }[] = [
   {
     q: "相手に知られませんか？",
     a: "知られません。匿名で使えて、相手の名前・写真・連絡先は保存していません。答えてくれた女性とあなたが直接つながる仕組みも、作っていません。",
+    extra: "safety",
   },
   {
     q: "どのくらいで返ってきますか？",
@@ -266,6 +258,45 @@ function AiSplit() {
 }
 
 /** やることは4つ。よくある質問の中で開く */
+/**
+ * 安心・安全。よくある質問の「相手に知られませんか？」の中で開く。
+ *
+ * 節として独立させていたが、並べた6つは全部その質問への答えだった。
+ * 同じ答えを2か所に置くと、どちらも読まれない。
+ */
+function Safety() {
+  return (
+    <div className="px-4 pb-5 sm:px-5">
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {[
+          "匿名で使えます。名前もメールアドレスも要りません",
+          "相手の名前・連絡先は保存しません",
+          "送る前に、個人情報は自動で伏せます",
+          "答えてくれた女性と直接つながる仕組みはありません",
+          "年齢と立場を確認した女性だけが見ます",
+          "18歳未満に関する相談はお受けしていません",
+        ].map((t) => (
+          <li
+            key={t}
+            className="flex items-start gap-2.5 rounded-soft bg-mist px-3.5 py-3 text-[12.5px] leading-[1.75] text-steel"
+          >
+            <span aria-hidden className="mt-[3px] text-[12.5px] font-black text-ok-text">
+              ✓
+            </span>
+            <span className="min-w-0">{t}</span>
+          </li>
+        ))}
+      </ul>
+      <Link
+        href="/safety"
+        className="mt-4 inline-flex min-h-[44px] items-center text-[13px] font-bold text-brand underline decoration-line underline-offset-4"
+      >
+        できないことも含めて、詳しく
+      </Link>
+    </div>
+  );
+}
+
 function Flow() {
   return (
     <ol className="grid gap-2.5 px-4 pb-5 sm:grid-cols-2 sm:px-5">
@@ -557,49 +588,12 @@ export default async function HomePage() {
               ))}
             </ul>
 
-            {/* 何を見てもらえるか。押すとその場面から始まる */}
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {SUBJECTS.map((sub) => {
-                const usable = sub.id !== "call";
-                const icon =
-                  sub.id === "photo"
-                    ? "M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h4"
-                    : sub.id === "message"
-                      ? "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"
-                      : "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6";
-                const inner = (
-                  <>
-                    <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={icon} />
-                    </svg>
-                    {sub.label}
-                  </>
-                );
-                return (
-                  <li key={sub.id}>
-                    {usable ? (
-                      <PlanCta
-                        plan={DEFAULT_PLAN}
-                        from={`hero_${sub.id}`}
-                        category={sub.id === "photo" ? "photo" : "message"}
-                        className="min-h-[44px] gap-2 rounded-pill border border-line bg-paper px-4 text-[13.5px] !text-slate shadow-card"
-                      >
-                        {inner}
-                      </PlanCta>
-                    ) : (
-                      <Link
-                        href="/talk"
-                        className="inline-flex min-h-[44px] items-center gap-2 rounded-pill border border-line bg-paper px-4 text-[13.5px] font-bold text-steel shadow-card"
-                      >
-                        {inner}
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+            {/* 「自己紹介文／メッセージ／会話」の3つを、ここに並べていた。
+                1画面目で商品の種類を選ばせていたことになる。
+                何を見てもらうかは、相談を書き始めてから選べばいい。
+                最初の画面で押す場所は、1つでいい。 */}
 
-            <div className="mt-5">
+            <div className="mt-6">
               <HeroNote />
             </div>
 
@@ -928,34 +922,18 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* 返ってくるもの。節を分けず、Before/After の下に短く置く */}
+      {/* 見本のすぐ下。
+          ここに「何人がどう答えたか／みんなが気にしたところ／意見が分かれたところ／
+          書かれた言葉そのまま」の4枚と、確率を出さない断りを置いていた。
+          すぐ上の見本が、そのまま同じことを見せている。
+          見せたあとに説明を足すと、見本のほうが弱くなる。
+          「女性みんなの答えではない」はよくある質問に残してある。
+
+          ここから料金の節まで、スマホで5画面ぶん押す場所が無い。
+          見本を読み終えた直後がいちばん近いので、押す場所だけ残す。 */}
       <section className="bg-paper">
         <Wrap className="pb-14 sm:pb-16">
-          <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["何人がどう答えたか", "実際の人数だけ"],
-              ["みんなが気にしたところ", "何人も触れていたら、そこ"],
-              ["意見が分かれたところ", "人によって受け取り方が違う"],
-              ["書かれた言葉そのまま", "まとめだけで終わらせない"],
-            ].map(([t, d]) => (
-              <li
-                key={t}
-                className="rounded-card border border-line bg-paper px-5 py-4 shadow-card"
-              >
-                <p className="text-[13.5px] font-black leading-[1.5]">{t}</p>
-                <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">{d}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-5 max-w-[34em] text-[13px] leading-[1.9] text-steel">
-            「失敗する確率」みたいな数字は出しません。数えようがないからです。
-            出すのは「3人中2人」のような実数だけ。読んだ人がそう感じた、という話であって、
-            女性みんなの答えではありません。
-          </p>
-
-          {/* ここから料金の節まで、スマホで5画面ぶん押す場所が無かった。
-              見本を読み終えた直後がいちばん近いので、ここに1つ置く。 */}
-          <div className="mt-9 max-w-[24em]">
+          <div className="max-w-[24em]">
             <PlanCta
               plan={DEFAULT_PLAN}
               from="after_demo"
@@ -1100,38 +1078,11 @@ export default async function HomePage() {
         </div>
       </Block>
 
-      {/* ══ 5. 安心・安全 ══ */}
-      <Block>
-        <H>安心・安全のために。</H>
-        <ul className="mt-8 grid gap-2.5 sm:grid-cols-2">
-          {[
-            "匿名で使えます。名前もメールアドレスも要りません",
-            "相手の名前・連絡先は保存しません",
-            "送る前に、個人情報は自動で伏せます",
-            "答えてくれた女性と直接つながる仕組みはありません",
-            "年齢と立場を確認した女性だけが見ます",
-            "18歳未満に関する相談はお受けしていません",
-          ].map((t) => (
-            <li
-              key={t}
-              className="flex items-start gap-2.5 rounded-soft bg-mist px-3.5 py-3 text-[13px] leading-[1.75] text-steel"
-            >
-              <span aria-hidden className="mt-[3px] text-[13px] font-black text-ok-text">
-                ✓
-              </span>
-              <span className="min-w-0">{t}</span>
-            </li>
-          ))}
-        </ul>
-        <Link
-          href="/safety"
-          className="mt-7 inline-flex min-h-[44px] items-center text-[13.5px] font-bold text-brand underline decoration-line underline-offset-4"
-        >
-          できないことも含めて、詳しく
-        </Link>
-      </Block>
-
       {/* ══ 6. よくある質問 ══ */}
+      {/* 安心・安全は、節として独立させていた。
+          並べた6つは全部「知られませんか？」への答えで、
+          その質問はこの下にある。答えを2か所に置くと、
+          どちらも読まれない。畳んで、聞かれた場所で答える。 */}
       {/* 6つ全部開いていると、それだけで3画面分になる。
           見出しだけ並べて、読みたいものだけ開く。 */}
       <Block tint id="faq">
@@ -1151,6 +1102,7 @@ export default async function HomePage() {
               <p className="px-4 pb-4 text-[13.5px] leading-[1.9] text-steel sm:px-5">{f.a}</p>
               {f.extra === "ai" && <AiSplit />}
               {f.extra === "flow" && <Flow />}
+              {f.extra === "safety" && <Safety />}
             </details>
           ))}
         </div>
@@ -1249,82 +1201,15 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 6.4 言いにくいこと ══ */}
-      {/* 別タブにしない。恋愛の道のりの中に置く。
-          大きく独立させると、それを目当てに来る人が増えて、
+      {/* ここに「言いにくいことほど、女性に確かめる。」の節を置いていた。
+          トップで大きく立てると、それを目当てに来る人が増えて、
           いちばん来てほしい人が引く。
 
-          線は lib/ask/sensitive.ts。
-          扱うのは相談者と相手の関係で、答える女性本人ではない。 */}
-      <Block tint>
-        <H>言いにくいことほど、女性に確かめる。</H>
-        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
-          距離の縮め方。触れ方のタイミング。付き合う前の関係。性の価値観。
-          <br className="hidden sm:block" />
-          友達には聞きづらい。相手本人には、もっと聞きづらい。
-        </p>
-
-        <ul className="mt-8 flex flex-col gap-2.5">
-          {SCOPE.slice(0, 4).map((x, i) => (
-            <Reveal key={x.id} delay={i * 45}>
-              <li className="rounded-card border border-line bg-paper px-5 py-4 shadow-card">
-                <p className="text-[12px] font-bold text-steel">{x.label}</p>
-                <p className="mt-1.5 text-[14.5px] font-bold leading-[1.7] text-slate">
-                  「{x.example}」
-                </p>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
-
-        {/* 何が返るかを、値段より先に出す */}
-        <div className="mt-6 rounded-card border border-line bg-paper px-5 py-5 shadow-card">
-          <p className="text-[12px] font-bold text-steel">返ってくるもの</p>
-          <ul className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
-            {RETURNS.map((t) => (
-              <li key={t} className="flex items-start gap-2 text-[13px] leading-[1.75]">
-                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
-                  ✓
-                </span>
-                <span className="min-w-0 text-steel">{t}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 border-t border-line pt-4 text-[13px] leading-[1.85] text-steel">
-            {ASK_SHAPE.why}。決めるのは、あなたです。
-          </p>
-        </div>
-
-        {/* 線を、買う前に書く。買ったあとに出すものではない */}
-        <div className="mt-4 rounded-card border border-line bg-paper px-5 py-5">
-          <p className="text-[12px] font-bold text-steel">この相談のきまり</p>
-          <p className="mt-2 text-[13.5px] font-bold leading-[1.8] text-slate">{CONSENT}</p>
-          <ul className="mt-3 flex flex-col gap-1.5">
-            {NEVER_ASK.slice(0, 4).map((t) => (
-              <li key={t} className="flex items-start gap-2 text-[12.5px] leading-[1.75]">
-                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-steel">
-                  ×
-                </span>
-                <span className="min-w-0 text-steel">{t}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-[12px] leading-[1.75] text-steel">
-            受けると決めた女性にだけ届きます。{PASS_COST}回分を使います。
-          </p>
-        </div>
-
-        <div className="mt-7 max-w-[26em]">
-          <PlanCta
-            plan={DEFAULT_PLAN}
-            from="sensitive"
-            category="distance"
-            className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
-          >
-            言いにくい悩みを確かめる <span aria-hidden className="ml-2">&rarr;</span>
-          </PlanCta>
-        </div>
-      </Block>
+          機能そのものは残っている。
+          相談のカテゴリ「距離感・言いにくいこと」から入れるし、
+          線と決まりは lib/ask/sensitive.ts が持っていて、
+          選んだ人には相談を書く画面で出る。
+          トップから売り込むのをやめただけ。 */}
 
       {/* ══ 6.5 どれを使えばいい？ ══ */}
       {/* 商品を機能で並べると、どれを使えばいいのか決まらない。
@@ -1408,9 +1293,9 @@ export default async function HomePage() {
           カードの形は PlanCards（/plans と同じもの）。
           キャンセル・返金・特商法の断りは /plans が持つ。 */}
       <Block id="price">
-        <H>必要なところだけ、1回ごと。</H>
+        <H>サービスプラン。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          月額はありません。自動更新もしません。
+          必要なところだけ、1回ごと。月額はありません。自動更新もしません。
           値段の差は相談の量ではなく、どこまで一緒にやるかです。
         </p>
 
