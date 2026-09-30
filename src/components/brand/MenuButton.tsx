@@ -30,43 +30,39 @@ import { OPERATOR } from "@/lib/voice";
 // ヘッダーの中に置くと inset-0 がヘッダーの箱に閉じ込められ、
 // メニューがヘッダーの高さに潰れる。実際そうなっていた。
 
-const GROUPS: { h: string; items: readonly (readonly [string, string])[] }[] = [
-  {
-    h: "使う",
-    items: [
-      ["/ask", "確かめる"],
-      ["/plans", "料金"],
-      ["/mine", "相談したこと"],
-      ["/talk", "電話の練習（受付前）"],
-    ] as const,
-  },
-  {
-    h: "知る",
-    items: [
-      ["/answerers", "誰が読むのか"],
-      ["/how", "仕組み"],
-      ["/safety", "安心・安全"],
-    ] as const,
-  },
-  {
-    h: "答える側",
-    items: [["/join", "答える側になる"]] as const,
-  },
-  {
-    h: "決まりごと",
-    items: [
-      ["/legal", "特定商取引法に基づく表記"],
-      ["/privacy", "プライバシー・免責事項"],
-    ] as const,
-  },
-];
+// ── 何を置くか ────────────────────────────────────
+// 4つの見出しに11項目を並べていた。
+// 見出しが多いほど、目が上下に行ったり来たりして、
+// 結局どこを押せばいいのか決まらない。
+//
+// 置くのは「ここからしか行けないもの」だけにする。
+//   確かめる      ヘッダーのボタンが常に出ている
+//   誰が読むのか  トップに節がある
+//   電話の練習    料金のカードと相談の画面から行ける
+// この3つは外した。
+//
+// 見出しも外して、1本の並びにした。
+// 法定の表記だけ、線で分ける（性質が違うので混ぜない）。
+const LINKS = [
+  ["/reviewers", "今日の受付"],
+  ["/plans", "料金"],
+  ["/mine", "相談したこと"],
+  ["/how", "仕組み"],
+  ["/safety", "安心・安全"],
+  ["/join", "答える側になる"],
+] as const;
+
+const LEGAL = [
+  ["/legal", "特定商取引法に基づく表記"],
+  ["/privacy", "プライバシー・免責事項"],
+] as const;
 
 /* ── 公開の前に止めること ─────────────────────────
    フッターを外したので、ここが特商法の表記とプライバシーへの
    唯一の常設導線になっている。整理のときに消えると、
    課金する画面から法定の表記へ辿れなくなる。 */
 {
-  const hrefs = GROUPS.flatMap((g) => g.items.map(([h]) => h));
+  const hrefs: string[] = [...LINKS, ...LEGAL].map(([h]) => h);
   for (const must of ["/legal", "/privacy"]) {
     if (!hrefs.includes(must)) {
       throw new Error(`メニューから ${must} が消えています（ここが唯一の導線です）`);
@@ -79,6 +75,14 @@ const GROUPS: { h: string; items: readonly (readonly [string, string])[] }[] = [
   }
   if (!hrefs.includes("/join")) {
     throw new Error("メニューから答える側の入口が消えています（スマホではここだけです）");
+  }
+  // 自分が出した相談へ戻る道も、ここしかない。
+  if (!hrefs.includes("/mine")) {
+    throw new Error("メニューから「相談したこと」が消えています（戻る道がここだけです）");
+  }
+  // 短くすること自体が目的なので、増え始めたら止める。
+  if (LINKS.length > 7) {
+    throw new Error(`メニューが長くなっています（${LINKS.length}項目）。増やすなら、どれかを外してください`);
   }
 }
 
@@ -137,28 +141,38 @@ export default function MenuButton() {
               </button>
             </div>
 
-            <nav aria-label="サイト内" className="grid grid-cols-2 gap-x-5 gap-y-6 border-t border-line px-5 pt-5">
-              {GROUPS.map((g) => (
-                <div key={g.h}>
-                  <p className="text-[11.5px] font-bold text-steel">{g.h}</p>
-                  <ul className="mt-2.5 flex flex-col gap-0.5">
-                    {g.items.map(([href, l]) => (
-                      <li key={href}>
-                        <Link
-                          href={href}
-                          onClick={() => setOpen(false)}
-                          className="block py-2 text-[14px] leading-[1.5] text-slate transition-colors hover:text-brand"
-                        >
-                          {l}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+            <nav aria-label="サイト内" className="border-t border-line">
+              <ul className="flex flex-col">
+                {LINKS.map(([href, l]) => (
+                  <li key={href} className="border-b border-line last:border-b-0">
+                    <Link
+                      href={href}
+                      onClick={() => setOpen(false)}
+                      className="flex min-h-[54px] items-center px-5 text-[15.5px] font-bold text-slate transition-colors hover:bg-mist"
+                    >
+                      {l}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              {/* 法定の表記。性質が違うので、上の並びと混ぜない */}
+              <ul className="flex flex-col border-t-4 border-mist">
+                {LEGAL.map(([href, l]) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      onClick={() => setOpen(false)}
+                      className="flex min-h-[44px] items-center px-5 text-[12.5px] text-steel transition-colors hover:text-slate"
+                    >
+                      {l}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </nav>
 
-            <p className="mt-7 border-t border-line px-5 pt-5 text-[11.5px] text-steel">
+            <p className="mt-4 px-5 text-[11.5px] text-steel">
               © 2026 {OPERATOR}
             </p>
           </div>
