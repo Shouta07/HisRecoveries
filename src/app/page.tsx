@@ -1221,56 +1221,40 @@ export default async function HomePage() {
 
       {/* ══ フッター ══ */}
       {/* ══════════════════════════════════════════════
-          誰が売っているのかを、隠さない
+          残すのは、外せないものだけ
           ══════════════════════════════════════════════
-          前はフッターごと外していて、運営会社の名前も、
-          法定の表記への道も、ハンバーガーメニューの中だけにあった。
+          前は、社名・住所・メール・4つのリンクに加えて、
+          「契約と決済の相手方は当社」の3行まで置いていた。
+          最後まで読んだ人に、もう一度全部読ませる形になっていた。
 
-          畳んであるのは「隠していない」とは違う。
-          初めて来た人が、誰から買うのかを確かめようとしたときに、
-          メニューを開かないと分からないのは遠い。
+          住所とメールは /legal にある。
+          商流の説明は利用規約の第1〜3条と、/legal の販売事業者の欄にある。
+          ここで繰り返す必要は無い。
 
-          ここに置くのは4つだけ。
-            誰が売っているか
-            特定商取引法に基づく表記
-            利用規約 / プライバシー
-            連絡先
-          増やさない。増やすと、また読まれないものになる。
+          外せないのは2つだけ。
+            誰が売っているか（社名）
+            特定商取引法に基づく表記への道
 
-          答える側への入口は、ここにも置かない。
-          ここは買う人の画面で、最後に「自分は答える側かもしれない」と
-          思わせると、押す先が2つになって、どちらも押されなくなる。
-          回答者の募集は、個別に案内する。 */}
+          この2つは、決済を扱う以上、トップから辿れる必要がある。
+          畳んで（メニューの中だけに）しまうと、
+          初めて来た人が確かめようとしたときに遠い。
+
+          目立たせない。色は本文より薄く、字も小さく、1行に畳む。 */}
       <footer className="border-t border-line bg-paper">
-        <Wrap className="py-10 sm:py-12">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-[12px] font-bold text-steel">運営</p>
-              <p className="mt-1 text-[14.5px] font-black text-slate">
-                {site.company.name}
-              </p>
-              <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">
-                {site.company.postalCode} {site.company.address}
-              </p>
-              <a
-                href={`mailto:${site.company.email}`}
-                className="mt-2 inline-flex min-h-[36px] items-center text-[12.5px] font-bold text-brand underline decoration-line underline-offset-4"
-              >
-                {site.company.email}
-              </a>
-            </div>
-
-            <ul className="flex flex-col gap-2.5 sm:items-end">
+        <Wrap className="py-7 sm:py-8">
+          <div className="flex flex-col gap-2.5 text-[11.5px] leading-[1.7] text-steel sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <p className="min-w-0">{site.company.name}</p>
+            <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
               {[
                 ["/legal", "特定商取引法に基づく表記"],
                 ["/terms", "利用規約"],
-                ["/privacy", "プライバシー・免責事項"],
+                ["/privacy", "プライバシー"],
                 ["/articles", "たしかメディア"],
               ].map(([href, label]) => (
                 <li key={href}>
                   <Link
                     href={href}
-                    className="inline-flex min-h-[36px] items-center text-[13px] font-bold text-steel transition-colors hover:text-brand"
+                    className="transition-colors hover:text-brand"
                   >
                     {label}
                   </Link>
@@ -1278,12 +1262,6 @@ export default async function HomePage() {
               ))}
             </ul>
           </div>
-
-          <p className="mt-8 border-t border-line pt-6 text-[11.5px] leading-[1.8] text-steel">
-            {NAME}は、{site.company.name}が提供するオンライン恋愛相談サービスです。
-            お客様との契約および決済の相手方は当社です。
-            回答する女性は当社の業務委託先であり、お客様への販売者ではありません。
-          </p>
         </Wrap>
       </footer>
     </div>
