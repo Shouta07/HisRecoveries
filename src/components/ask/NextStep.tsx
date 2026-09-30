@@ -49,8 +49,8 @@ const CHOICES: Choice[] = [
   {
     id: "decide",
     label: "この相手について決めたい",
-    note: "一般論ではなく、目の前の一人をどうするか。",
-    plan: "session",
+    note: "判断が続きそうなら、15分を5回ぶん持っておく。",
+    plan: "call5",
   },
 ];
 

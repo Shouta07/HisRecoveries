@@ -87,18 +87,18 @@ export function needsChoice(paidAt: string | null, got: number, want: number): b
 {
   // 端数がこちらに有利にならないこと。
   // ¥5,980 で3人のうち1人しか届かなければ、返すのは2人分。
-  // 5980 × 2 ÷ 3 = 3986.66… を切り上げて 3,987円。
+  // 1980 × 2 ÷ 3 = 1320円。
   // 切り捨てると1円こちらに残る。そういう丸め方をしない。
-  if (refundFor(5980, 1, 3) !== 3987) {
-    throw new Error(`足りない分の返金額が合いません: ${refundFor(5980, 1, 3)}`);
+  if (refundFor(1980, 1, 3) !== 1320) {
+    throw new Error(`足りない分の返金額が合いません: ${refundFor(1980, 1, 3)}`);
   }
-  if (refundFor(5980, 2, 3) !== 1994) {
+  if (refundFor(1980, 2, 3) !== 660) {
     throw new Error("2/3 のときの返金額が合いません");
   }
   // 1件も届いていないなら全額。
-  if (refundFor(5980, 0, 3) !== 5980) throw new Error("0件のときに全額になっていません");
+  if (refundFor(1980, 0, 3) !== 1980) throw new Error("0件のときに全額になっていません");
   // 揃っていたら返さない。
-  if (refundFor(5980, 3, 3) !== 0) throw new Error("揃っているのに返金額が出ています");
+  if (refundFor(1980, 3, 3) !== 0) throw new Error("揃っているのに返金額が出ています");
 
   // 全額返金の選択肢が、必ずあること。
   // ここを外すと、返してもらえない設計になる。

@@ -1,7 +1,7 @@
 import { dbSelect, dbUpdate, dbInsertReturning } from "@/lib/db";
 import { makeReplyToken, makeConsultToken } from "@/lib/ask/token";
 import { waves } from "@/lib/economics";
-import { isPlanId, plan, priceOf } from "@/lib/ask/plans";
+import { isPlanId, plan, priceOf, passExpiresAt } from "@/lib/ask/plans";
 
 // 支払いが済んだあと、回答者に配りはじめる。
 //
@@ -85,13 +85,19 @@ export async function fulfil(pay: Payment, intentId: string | null): Promise<Ful
     );
     if (already.length === 0) {
       const passToken = makeConsultToken();
+      // 有効期限は、買った日から。
+      // ここで入れないと期限なしのパスになり、
+      // 残高に期限の無い回数券＝資金決済法の前払式支払手段になる
+      // （plans.ts の PASS_VALID_DAYS に、なぜ180日かを書いてある）。
+      const paidAt = new Date();
       const made = await dbInsertReturning<{ id: string }>("ask_passes", {
         token: passToken,
         plan_id: c.product_type,
         uses_total: uses,
         price: priceOf(c.product_type),
         stripe_payment_id: intentId,
-        paid_at: new Date().toISOString(),
+        paid_at: paidAt.toISOString(),
+        expires_at: passExpiresAt(paidAt).toISOString(),
       });
       // 買ったその相談に、1回目を使う。
       // ここを飛ばすと、5回買って5回残ったまま1件目が配られる。

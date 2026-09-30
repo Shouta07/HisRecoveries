@@ -36,6 +36,8 @@ import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
 import HeroBoard from "@/components/brand/HeroBoard";
+import VideoEmbed from "@/components/brand/VideoEmbed";
+import MomentsArt from "@/components/brand/MomentsArt";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -577,6 +579,38 @@ export default async function HomePage() {
 
       </section>
 
+      {/* ══ 1.2 紹介動画 ══ */}
+      {/* ══════════════════════════════════════════════
+          なぜ1画面目のすぐ下なのか
+          ══════════════════════════════════════════════
+          1画面目で「何のサービスか」を読んだ人が、
+          次にやることは1つしかない。もう少し知る、か、離れる。
+
+          文章で説明を足すと、読む量が増えるだけになる。
+          動画は、見るかどうかを見る側が選べる。
+          押さなければ何も起きず、そのまま下へ進める。
+
+          ══════════════════════════════════════════════
+          押されるまで、何も読み込まない
+          ══════════════════════════════════════════════
+          YouTube の埋め込みは、置いただけで1MB近く読む。
+          このサイトは Web フォントすら使っていないので、
+          そのまま置くと、トップでいちばん重いものが紹介動画になる。
+
+          最初は画像とボタンだけ。押されたときに iframe を作る
+          （components/brand/VideoEmbed.tsx）。
+          見ていない人に Cookie も入らない。 */}
+      <section className="bg-paper">
+        <Wrap>
+          <div className="mx-auto max-w-[760px] py-10 sm:py-14">
+            <VideoEmbed
+              title="タシカメは、どういうサービスか"
+              caption="2分ほどです。音が出ます。"
+            />
+          </div>
+        </Wrap>
+      </section>
+
       {/* 「今日、受け付けている人」は、ここに置いていた。
           1画面目の直後だと、まだ何のサービスか分からないうちに
           人と時間の表が出てくる。
@@ -617,9 +651,15 @@ export default async function HomePage() {
           ありませんか？
         </h2>
 
+        {/* 絵。置かれていなければ、何も出ない（MomentsArt）。
+            吹き出しの言葉は画像に焼き込まれているので、
+            これで下の一覧を置き換えない。
+            置き換えると、押せなくなり、読み上げにも検索にも乗らなくなる */}
+        <MomentsArt alt="送る前に手が止まる、いくつもの場面" />
+
         {/* 押せるようにする。読ませて終わりにしない。
             自分のが1つでもあれば、その場面から始められる */}
-        <ul className="mt-7 flex flex-col gap-2">
+        <ul className="mt-6 flex flex-col gap-2">
           {MOMENTS.map((m, i) => (
             <Reveal key={m.line} delay={i * 40}>
               <li>
@@ -817,178 +857,22 @@ export default async function HomePage() {
         </Wrap>
       </section>
 
-      {/* ══ 3. 相談前と、相談後 ══ */}
-      {/* 押す場所のすぐ下に置く。買う前に、何が起きるのかを1回で見せる。
-          ここより下に同じものを置かない（2回出ると、どちらも弱くなる） */}
-      <Block id="before-after">
-        <H>相談前と、相談後。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          自分では気づかなかったところが、送る前に出てきます。
-          大丈夫そうなら「このままで大丈夫そう」と返ってきます。無理に探しません。
-        </p>
+      {/* ══ 3.「相談前と、相談後」は外した ══ */}
+      {/* ══════════════════════════════════════════════
+          同じことを、2回見せていた
+          ══════════════════════════════════════════════
+          写真2枚の「相談前 / 相談後」と、気になったところ、
+          そのまま使える修正文、なぜそう直したか、をここに置いていた。
 
-        {/* 渡された案を、そのままの形で。
-            写真は2枚とも同じ撮影のもの（hero = 考えている、heroTall = 決まった）。
-            人を合成したり、表情を作ったりはしていない。 */}
-        <div className="mt-8 grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1fr] lg:gap-5">
-          {/* ── 相談前 ── */}
-          <Reveal className="h-full">
-          <div className="h-full overflow-hidden rounded-card border border-line bg-mist shadow-card">
-            <div className="relative">
-              <Slot name="hero" rounded="" position="center 22%" className="h-[190px] w-full" />
-              <span className="absolute left-4 top-4 rounded-soft bg-slate/85 px-3.5 py-1.5 text-[13px] font-black text-paper">
-                相談前
-              </span>
-              {/* 手が止まっているときの、頭の中 */}
-              <span className="absolute bottom-4 right-4 max-w-[62%] rounded-card rounded-br-[4px] bg-paper/95 px-3.5 py-2 text-[12.5px] font-bold leading-[1.6] text-slate shadow-card">
-                これで送っていいのかな…
-              </span>
-            </div>
+          すぐ上の「こんな選択を、選ぶ前に。」を
+          やりとりの形に作り直したとき、そこが同じ順番を持った。
+            状況 → 文面 → 反応 → そのまま送れる修正案 → 決めたこと
 
-            <div className="p-4 sm:p-5">
-              <div className="flex items-end gap-2.5">
-                <p className="min-w-0 flex-1 rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[13.5px] leading-[1.7] text-slate">
-                  {DEMO.before}
-                </p>
-                <span
-                  aria-hidden
-                  className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-steel/35 text-paper"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
-                  </svg>
-                </span>
-              </div>
+          同じものが2回出ると、どちらも弱くなる。
+          動いて出てくるほうを残して、こちらを外した。
 
-              <ul className="mt-4 flex flex-col gap-2">
-                {["重くないかな…？", "この言い方で大丈夫…？", "変に思われないかな…？"].map((t) => (
-                  <li key={t} className="flex items-center gap-2.5 text-[13px] text-steel">
-                    <span
-                      aria-hidden
-                      className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-steel/25 text-paper"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          </Reveal>
-
-          <p
-            aria-hidden
-            className="justify-self-center self-center text-[26px] font-black text-brand lg:text-[30px]"
-          >
-            <span className="lg:hidden">&darr;</span>
-            <span className="hidden lg:inline">&rarr;</span>
-          </p>
-
-          {/* ── 相談後 ── */}
-          <Reveal className="h-full" delay={140}>
-          <div className="h-full overflow-hidden rounded-card border border-brand bg-brand-tint shadow-card">
-            <div className="relative">
-              <Slot name="heroTall" rounded="" position="center 24%" className="h-[190px] w-full" />
-              <span className="absolute left-4 top-4 rounded-soft bg-brand px-3.5 py-1.5 text-[13px] font-black text-paper">
-                相談後
-              </span>
-              <span className="absolute bottom-4 right-4 max-w-[62%] rounded-card rounded-br-[4px] bg-paper/95 px-3.5 py-2 text-[12.5px] font-bold leading-[1.6] text-brand-deep shadow-card">
-                反応を確かめたうえで、送れる
-              </span>
-            </div>
-
-            <div className="p-4 sm:p-5">
-              <div className="flex items-end gap-2.5">
-                <p className="min-w-0 flex-1 rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[13.5px] font-bold leading-[1.7] text-slate">
-                  {DEMO.after}
-                </p>
-                <span
-                  aria-hidden
-                  className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-paper"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
-                  </svg>
-                </span>
-              </div>
-
-              <ul className="mt-4 flex flex-col gap-2">
-                {[
-                  "自然な言い方が分かった",
-                  "女性の反応を確かめられた",
-                  "迷わずに送れる",
-                ].map((t) => (
-                  <li key={t} className="flex items-center gap-2.5 text-[13px] font-bold text-slate">
-                    <span
-                      aria-hidden
-                      className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand text-paper"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          </Reveal>
-        </div>
-
-        {/* 1回 = 1人。返ってくるものを、そのまま並べる */}
-        <div className="mt-5 rounded-card border border-line bg-paper px-5 py-4 shadow-card">
-          <p className="text-[13.5px] font-bold leading-[1.7] text-slate">
-            気になったところ：{DEMO.common}
-          </p>
-
-          <div className="mt-3 border-t border-line pt-3">
-            <p className="text-[12px] font-bold text-steel">そのまま使える修正文</p>
-            <p className="mt-1.5 rounded-card rounded-br-[4px] bg-brand-tint px-3.5 py-2.5 text-[13.5px] font-bold leading-[1.7] text-brand-deep">
-              {DEMO.after}
-            </p>
-          </div>
-
-          <div className="mt-3 border-t border-line pt-3">
-            <p className="text-[12px] font-bold text-steel">なぜ、そう直したか</p>
-            <p className="mt-1.5 text-[13px] leading-[1.8] text-slate">{DEMO.why}</p>
-          </div>
-        </div>
-
-        <p className="mt-4 text-[12px] leading-[1.75] text-steel">
-          ※ 写真はイメージ、文面と回答は画面の見本です。実際の相談ではありません。
-        </p>
-      </Block>
-
-      {/* 見本のすぐ下。
-          ここに「何人がどう答えたか／みんなが気にしたところ／意見が分かれたところ／
-          書かれた言葉そのまま」の4枚と、確率を出さない断りを置いていた。
-          すぐ上の見本が、そのまま同じことを見せている。
-          見せたあとに説明を足すと、見本のほうが弱くなる。
-          「女性みんなの答えではない」はよくある質問に残してある。
-
-          ここから料金の節まで、スマホで5画面ぶん押す場所が無い。
-          見本を読み終えた直後がいちばん近いので、押す場所だけ残す。 */}
-      <section className="bg-paper">
-        <Wrap className="pb-14 sm:pb-16">
-          <div className="max-w-[24em]">
-            <PlanCta
-              plan={DEFAULT_PLAN}
-              from="after_demo"
-              className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-            >
-              自分のも見てもらう <span aria-hidden className="ml-2">&rarr;</span>
-            </PlanCta>
-            <p className="mt-3 text-[12.5px] text-steel">
-              ¥{entry.yen.toLocaleString()}から / 1回ごと / 匿名
-            </p>
-          </div>
-        </Wrap>
-      </section>
+          押す場所は減らしていない。ここにあった
+          「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
 
       {/* ══ 4. ほかの選び方との違い ══ */}
       {/* 比較広告は景表法の対象。実証・正確な引用・公正な比較の3つが要る。

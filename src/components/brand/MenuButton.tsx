@@ -55,6 +55,9 @@ const LINKS = [
 ] as const;
 
 const LEGAL = [
+  // 規約が無いと、誰と誰の契約なのかがどこにも書かれていないことになる。
+  // 決済の直前（PurchaseTerms）からも開けるが、常設の導線もここに置く。
+  ["/terms", "利用規約"],
   ["/legal", "特定商取引法に基づく表記"],
   ["/privacy", "プライバシー・免責事項"],
 ] as const;
@@ -65,7 +68,7 @@ const LEGAL = [
    課金する画面から法定の表記へ辿れなくなる。 */
 {
   const hrefs: string[] = [...LINKS, ...LEGAL].map(([h]) => h);
-  for (const must of ["/legal", "/privacy"]) {
+  for (const must of ["/terms", "/legal", "/privacy"]) {
     if (!hrefs.includes(must)) {
       throw new Error(`メニューから ${must} が消えています（ここが唯一の導線です）`);
     }

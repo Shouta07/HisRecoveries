@@ -11,7 +11,8 @@
     "video:studio": "npm -w @hr/video run studio",
     "check:schema": "node scripts/check-schema.mjs",
     "check:copy": "node scripts/check-copy.mjs",
-    "prebuild": "node scripts/check-schema.mjs && node scripts/check-copy.mjs"
+    "prebuild": "node scripts/check-schema.mjs && node scripts/check-copy.mjs && node scripts/check-prices.mjs",
+    "check:prices": "node scripts/check-prices.mjs"
   },
   "dependencies": {
     "@daily-co/daily-js": "^0.92.2",

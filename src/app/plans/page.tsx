@@ -3,7 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
 import { NAME, TAGLINE } from "@/lib/voice";
-import { plan as getPlan, DEFAULT_PLAN } from "@/lib/ask/plans";
+import { plan as getPlan, DEFAULT_PLAN, PASS_VALID_DAYS } from "@/lib/ask/plans";
 import { canCharge } from "@/lib/legal";
 import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
@@ -75,12 +75,13 @@ export default function PlansPage() {
           必要なところだけ、1回ごと。
         </h1>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          月額はありません。自動更新もしません。
-          値段の差は相談の量ではなく、どこまで一緒にやるかです。
+          月額はありません。自動更新もしません。必要なときだけ。
+          5回パスがあるのは安いからではなく、1人の相手と進むあいだに、
+          決めることが何度も起きるからです。
         </p>
 
         <div className="mt-9">
-          <PlanCards from="plans" all openIds={openPlanIds()} />
+          <PlanCards from="plans" openIds={openPlanIds()} />
         </div>
 
         {/* 買えない状態を隠さない。買う場所に置く */}
@@ -91,11 +92,12 @@ export default function PlansPage() {
         )}
 
         <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
-          税込。いま受け付けているのは「{main.name}」だけです。
-          通話とMock Dateは、時間を決めた受け入れ方と、その場を見る体制が
+          いま受け付けているのは「{main.name}」だけです。
+          声で確かめる商品は、時間を決めた受け入れ方と、その場を見る体制が
           用意できてから開きます。
           募集を始める前ならキャンセルできます。人数が集まらなかった場合は、
           集まらなかった分をご返金します。
+          5回パスの有効期限は、お支払いの日から{PASS_VALID_DAYS}日です。
           <Link
             href="/legal"
             className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"

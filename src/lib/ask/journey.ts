@@ -149,7 +149,7 @@ export const STEPS: Step[] = [
     icon: "date",
     cases: ["signal"],
     plan: "review",
-    next: "mockdate",
+    next: "call15",
     category: "signal",
   },
   {
@@ -162,7 +162,7 @@ export const STEPS: Step[] = [
     icon: "heart",
     cases: ["romance"],
     plan: "review",
-    next: "session",
+    next: "call15",
     category: "romance",
   },
 ];
