@@ -103,6 +103,8 @@ export const CONVERSION_EVENTS = [
   "assist_opened", // うまく書けない、から整理へ入った（props: from）
   "starter_used", // 書き出しを押して入力欄を埋めた（props: category）
   "outcome_recorded", // その後どうなったかを教えてもらった（props: outcome）
+  "safety_report_opened", // 通話中に報告の画面を開いた
+  "safety_report_submitted", // 通報を出した（props: reason）
   "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
   "talk_waitlist", // 話す商品の順番待ちに登録した
   // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
