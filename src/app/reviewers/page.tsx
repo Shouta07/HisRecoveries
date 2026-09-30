@@ -5,6 +5,7 @@ import { scheduleFor } from "@/lib/reviewers/today";
 import { dateStrip, ymd, WEEKS_AHEAD } from "@/lib/reviewers/schedule";
 import { canSellCalls } from "@/lib/call/gate";
 import Timetable from "@/components/reviewers/Timetable";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import PlanCta from "@/components/brand/PlanCta";
 
@@ -55,7 +56,7 @@ export default async function ReviewersPage({
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1120px] items-center justify-between gap-4 px-5 py-3 sm:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-2">
-            <Tashikame size={34} />
+            <Mark size={34} />
             <span className="truncate text-[17px] font-black text-slate">{NAME}</span>
           </Link>
           <Link

@@ -5,6 +5,7 @@ import { openPlanIds } from "@/lib/call/gate";
 import { NAME, TAGLINE } from "@/lib/voice";
 import { plan as getPlan, DEFAULT_PLAN } from "@/lib/ask/plans";
 import { canCharge } from "@/lib/legal";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import PlanCta from "@/components/brand/PlanCta";
 import PlanCards from "@/components/brand/PlanCards";
@@ -42,7 +43,7 @@ export default function PlansPage() {
               トップの見出しと同じ考え方で、320px では出さない
               （切れた標語を出すくらいなら、名前だけにする） */}
           <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5">
-            <Tashikame size={36} className="sm:!h-10 sm:!w-10" />
+            <Mark size={36} className="sm:!h-10 sm:!w-10" />
             <span className="min-w-0">
               <span className="hidden truncate text-[9px] font-bold leading-[1.3] text-steel min-[360px]:block sm:text-[10px]">
                 {TAGLINE}

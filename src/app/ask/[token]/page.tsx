@@ -14,6 +14,7 @@ import { fulfil, paymentByConsultation } from "@/lib/ask/fulfil";
 import { tally, type Answer } from "@/lib/ask/aggregate";
 import { AttributeChip } from "@/components/brand/kit";
 import Donut from "@/components/brand/Donut";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import CopyLink from "@/components/ask/CopyLink";
 import HelpfulButton from "@/components/ask/HelpfulButton";
@@ -104,7 +105,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-line bg-paper">
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3.5 sm:px-10">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={26} />
+            <Mark size={26} />
             <span className="truncate text-[15.5px] font-black">{NAME}</span>
           </Link>
           <Link

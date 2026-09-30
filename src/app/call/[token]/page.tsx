@@ -7,6 +7,7 @@ import { isConsultToken } from "@/lib/ask/token";
 import { canEnter, STATUS_LABEL, type CallStatus } from "@/lib/call/session";
 import { callEnabled } from "@/lib/call/room";
 import { dbAdminEnabled } from "@/lib/db";
+import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 import CallFlow from "@/components/call/CallFlow";
 
@@ -32,7 +33,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-line">
         <div className="mx-auto flex w-full max-w-[560px] items-center gap-2.5 px-5 py-3 sm:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={38} />
+            <Mark size={38} />
             <span className="min-w-0">
               <span className="block truncate text-[9.5px] font-bold leading-[1.3] text-steel">
                 {TAGLINE}
