@@ -327,49 +327,70 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
         <Down />
 
         {/* ══ After ══ 送れる */}
+        {/* ══════════════════════════════════════════════
+            絵に焼き込まれているものは、重ねて描かない
+            ══════════════════════════════════════════════
+            いまの写真は、渡された案から切り出したもの。
+            「After」の札・吹き出し・チェックが、絵の中に入っている。
+            こちらでも描くと、2つずつ出る。
+
+            撮影した写真に差し替えたら images.ts の baked を false にする。
+            そのとき札と吹き出しは、こちらが文字として描く
+            （読み上げにも乗るし、あとから直せる）。 */}
         <div className="relative overflow-hidden rounded-card shadow-card">
-          <div className="relative h-[200px] sm:h-[250px]">
-            {/* ══════════════════════════════════════════
-                写真がまだ無い
-                ══════════════════════════════════════════
-                それらしい素材で埋めない。
-                ただし Slot の「何を写すか」の案内は、ここでは出せない。
-                吹き出しと札を上に重ねるので、その裏に文が透けて、
-                ただの不具合に見える（実際そう見えた）。
+          {IMAGES.step4.ready && IMAGES.step4.baked ? (
+            // ══════════════════════════════════════════
+            // 焼き込み済みの絵は、切らない
+            // ══════════════════════════════════════════
+            // 端に意味がある（左に札、右に吹き出し）。
+            // 高さを決めて cover で敷くと、その左右が落ちる。
+            // 実際、札が青い帯になり、吹き出しの文字が切れた。
+            //
+            // 幅いっぱい・高さは絵なり。全部見える。
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={IMAGES.step4.src}
+              alt={IMAGES.step4.alt}
+              loading="eager"
+              decoding="async"
+              className="block h-auto w-full"
+            />
+          ) : (
+            <>
+              <div className="relative h-[200px] sm:h-[250px]">
+                {IMAGES.step4.ready ? (
+                  <>
+                    <Slot name="step4" rounded="" position="center 22%" className="h-full w-full" />
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 bg-gradient-to-l from-slate/45 to-transparent"
+                    />
+                  </>
+                ) : (
+                  // 写真がまだ無いときは、それらしい素材で埋めない。
+                  // Slot の案内も出せない（吹き出しの裏に透けて不具合に見える）
+                  <div aria-hidden className="h-full w-full bg-gradient-to-br from-brand-tint to-sky" />
+                )}
+              </div>
 
-                置くまでは、淡い面だけにしておく。
-                「よし、送ってみよう！」と印だけでも、
-                After が何を言っているかは伝わる。
-                public/img/step-4.jpg を置けば、写真に変わる。 */}
-            {IMAGES.step4.ready ? (
-              <>
-                <Slot name="step4" rounded="" position="center 22%" className="h-full w-full" />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 bg-gradient-to-l from-slate/45 to-transparent"
-                />
-              </>
-            ) : (
-              <div aria-hidden className="h-full w-full bg-gradient-to-br from-brand-tint to-sky" />
-            )}
-          </div>
+              <Stage>After</Stage>
 
-          <Stage>After</Stage>
+              <div className="absolute inset-y-0 right-2.5 flex w-[52%] max-w-[260px] items-center justify-end sm:right-4">
+                <p className="rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[14px] font-black leading-[1.5] text-slate shadow-card sm:px-4 sm:py-3 sm:text-[17px]">
+                  よし、送ってみよう！
+                </p>
+              </div>
 
-          <div className="absolute inset-y-0 right-2.5 flex w-[52%] max-w-[260px] items-center justify-end sm:right-4">
-            <p className="rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[14px] font-black leading-[1.5] text-slate shadow-card sm:px-4 sm:py-3 sm:text-[17px]">
-              よし、送ってみよう！
-            </p>
-          </div>
-
-          <span
-            aria-hidden
-            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-ok text-paper shadow-card sm:right-4 sm:top-4 sm:h-10 sm:w-10"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 13l4.5 4.5L19 7" />
-            </svg>
-          </span>
+              <span
+                aria-hidden
+                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-ok text-paper shadow-card sm:right-4 sm:top-4 sm:h-10 sm:w-10"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 13l4.5 4.5L19 7" />
+                </svg>
+              </span>
+            </>
+          )}
         </div>
 
         <HeroNote />
@@ -391,6 +412,16 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
   if (FAMILIES.length !== 2) {
     throw new Error(`1画面目に出す相談のしかたが ${FAMILIES.length} 通りあります（2通り）`);
   }
+  // 焼き込み済みの絵には、読み上げ用の文が要る。
+  // 文字が絵の中にあるので、alt が無いと、その文は誰にも届かない。
+  if (IMAGES.step4.baked && !IMAGES.step4.alt) {
+    throw new Error("After の絵に文字が焼き込まれているのに、alt がありません");
+  }
+  // 置いていない絵を「焼き込み済み」にしない。
+  if (IMAGES.step4.baked && !IMAGES.step4.ready) {
+    throw new Error("After の絵が置かれていないのに、baked になっています");
+  }
+
   // 声の商品に分数があること。「電話で相談（15分）」の括弧の中はここから引く。
   if (!PLANS.some((p) => p.family === "call" && p.callMinutes)) {
     throw new Error("声の商品に分数がありません（1画面目の「電話で相談（○分）」が作れません）");
