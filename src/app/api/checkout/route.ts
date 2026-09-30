@@ -7,6 +7,7 @@ import { supply, shortMessage } from "@/lib/supply";
 import { createCheckout, stripeEnabled } from "@/lib/stripe";
 import { isConsultToken } from "@/lib/ask/token";
 import { site } from "@/lib/site";
+import { readyToSell, whyNotReady, NOT_READY_USER } from "@/lib/ready";
 
 // 決済を始める。
 //
@@ -39,8 +40,14 @@ export async function POST(req: NextRequest) {
       { status: 503 },
     );
   }
+  // 揃っていないものは、相談の口（/api/consult）と同じ判定で見る。
+  // 別々に書くと、片方だけ通って、もう片方で止まる
+  if (!readyToSell()) {
+    console.error("[checkout] not ready", whyNotReady());
+    return NextResponse.json({ error: NOT_READY_USER, blocked: true }, { status: 503 });
+  }
   if (!dbAdminEnabled || !stripeEnabled) {
-    return NextResponse.json({ error: "決済の設定が入っていません" }, { status: 503 });
+    return NextResponse.json({ error: NOT_READY_USER, blocked: true }, { status: 503 });
   }
 
   let body: Record<string, unknown>;

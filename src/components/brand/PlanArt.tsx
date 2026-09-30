@@ -102,7 +102,8 @@ function Waves({ x, y, n, color }: { x: number; y: number; n: number; color: str
   );
 }
 
-const SCENES: Record<PlanId, React.ReactNode> = {
+// 絵は家族ごと。1回と5回分で絵を変える意味は無い
+const SCENES: Partial<Record<PlanId, React.ReactNode>> = {
   // 確かめる ── 出したものが、読まれて、返ってくる
   review: (
     <>

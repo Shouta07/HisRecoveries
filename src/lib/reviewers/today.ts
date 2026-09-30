@@ -298,3 +298,46 @@ export async function acceptOffer(
     if (!STATUS_LABEL[s]) throw new Error(`状態「${s}」の言い方がありません`);
   }
 }
+
+/**
+ * その日の時間割。
+ *
+ * reviewer_status（いまの状態）と reviewer_shifts（その日の予定）を
+ * 合わせて返す。予定が無い人は出さない。
+ *
+ * 本物が1人でもいれば本物だけ。いなければ見本
+ * （todayView と同じ考え方。混ぜない）。
+ */
+export async function scheduleFor(
+  date: string,
+): Promise<{ list: import("./schedule").DayReviewer[]; sample: boolean }> {
+  const { sampleDay } = await import("./sample");
+  if (!dbAdminEnabled) return { list: sampleDay(date), sample: true };
+
+  const people = await reviewersToday(40);
+  if (people.length === 0) return { list: sampleDay(date), sample: true };
+
+  const from = `${date}T00:00:00Z`;
+  const rows = await dbSelect<{ reviewer_id: string; starts_at: string; ends_at: string }>(
+    `reviewer_shifts?select=reviewer_id,starts_at,ends_at&starts_at=gte.${encodeURIComponent(
+      from,
+    )}&starts_at=lt.${encodeURIComponent(
+      new Date(new Date(from).getTime() + 36 * 60 * 60 * 1000).toISOString(),
+    )}&limit=200`,
+  );
+
+  const byId = new Map<string, { start: string; end: string }[]>();
+  for (const r of rows) {
+    const cur = byId.get(r.reviewer_id) ?? [];
+    cur.push({ start: r.starts_at, end: r.ends_at });
+    byId.set(r.reviewer_id, cur);
+  }
+
+  const list = people
+    .map((p) => ({ ...p, windows: byId.get(p.id) ?? [] }))
+    // その日の予定が無い人は、その日の表に出さない
+    .filter((p) => p.windows.length > 0);
+
+  if (list.length === 0) return { list: sampleDay(date), sample: true };
+  return { list, sample: false };
+}

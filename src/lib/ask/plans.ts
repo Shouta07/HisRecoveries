@@ -32,7 +32,44 @@ import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotSca
  * 値段の差は、聞く人数ではなく「本番にどれだけ近いか」。
  *   見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する
  */
-export type PlanId = "review" | "call15" | "session" | "mockdate";
+export type PlanId =
+  | "review1"
+  | "review"
+  | "call15"
+  | "session"
+  | "call5"
+  | "mockdate";
+
+/**
+ * 商品の家族。
+ *
+ * 画面に出す選択肢は、この2つ（＋将来の対面）だけ。
+ *   text  文字と画像で確かめる
+ *   call  声で確かめる
+ *
+ * 1回と5回分は、別の商品ではなく同じ商品の買い方。
+ * 別の商品として並べると、選択肢が6つになって、
+ * 何を選べばいいのか決まらなくなる。
+ */
+export type Family = "text" | "call" | "mock";
+
+export const FAMILIES: { id: Family; label: string; lead: string }[] = [
+  {
+    id: "text",
+    label: "テキスト・画像で確かめる",
+    lead: "出すものが決まっているとき。送る前に、女性の目で見てもらう。",
+  },
+  {
+    id: "call",
+    label: "電話で確かめる",
+    lead: "そもそもどうするかを決めるとき。書いて待つより、話すほうが早い。",
+  },
+  {
+    id: "mock",
+    label: "本番をそのままやってみる",
+    lead: "会う前に、一度通しでやっておく。",
+  },
+];
 
 /**
  * 3つの役割。
@@ -114,6 +151,13 @@ export type Depth = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type Plan = {
   id: PlanId;
+  /**
+   * どの家族の商品か。
+   *
+   * 1回と5回分は、同じ家族の別の買い方。
+   * 深さ（depth）は家族ごとに1つで、買い方では変わらない。
+   */
+  family: Family;
   /** 3つの役割のどれか */
   tier: Tier;
   /**
@@ -209,6 +253,7 @@ export const PLANS: Plan[] = [
     // 感想だけ返したら、次に何をすればいいのか分からないまま終わる。
     // 直し方と、そのまま使える修正文と、次にやることまで返す。
     id: "review",
+    family: "text",
     tier: "check",
     name: "5回パス",
     tagline: "小さな迷いを、5回まで女性に確かめる。",
@@ -238,11 +283,50 @@ export const PLANS: Plan[] = [
   },
   {
     // ══════════════════════════════════════════════
+    // まず1回だけ
+    // ══════════════════════════════════════════════
+    // 5回パスは「これから5回、迷うことになる」と分かっている人の買い方。
+    // 初めての人は、その5回がまだ想像できない。
+    //
+    // 1回だけ買える口を開ける。おすすめは5回パスのまま（featured）。
+    // 実際に使い始めると、判断は1回では終わらない。
+    //
+    // 1回 ¥1,980 × 5 = ¥9,900。5回パスは ¥7,980。
+    // まとめたほうが安いことが、並べただけで分かる。
+    id: "review1",
+    family: "text",
+    tier: "check",
+    name: "1回",
+    tagline: "まず1回だけ、女性に確かめる。",
+    value: "送る前の「これでいい？」を、1つだけ。",
+    yen: 1980,
+    depth: 1,
+    answers: 1,
+    rounds: 1,
+    targeting: true,
+    subjects: ["photo", "message"],
+    includes: [
+      "女性から見た第一印象",
+      "良いところ",
+      "気になったところ",
+      "女性側がそう感じる理由",
+      "具体的な改善案",
+      "そのまま使える修正文",
+      "次にやること",
+    ],
+    fits: ["はじめて使うとき", "1つだけ見てほしいとき"],
+    available: true,
+    // 家族のカードの中に出す。カードとしては並べない
+    onTop: false,
+  },
+  {
+    // ══════════════════════════════════════════════
     // 必要な時だけ。文字で足りないところ
     // ══════════════════════════════════════════════
     // 文字で確かめるのは、出すものが決まっているとき。
     // 「そもそもどうするか」は、書いて待つより話すほうが早い。
     id: "call15",
+    family: "call",
     tier: "decide",
     name: "15分の通話",
     tagline: "次の一手を1つだけ、声で決める。",
@@ -269,12 +353,13 @@ export const PLANS: Plan[] = [
     // 「30〜45分」の幅をやめて30分にした。
     // 幅があると、何分で切ってよいのかが決まらない。
     id: "session",
+    family: "call",
     tier: "decide",
     name: "30分の通話",
     tagline: "この相手とどうするかを、30分で決める。",
     value: "一般論ではなく、目の前の一人について決める。",
     yen: 9800,
-    depth: 3,
+    depth: 2,
     answers: 1,
     rounds: 1,
     targeting: true,
@@ -293,18 +378,50 @@ export const PLANS: Plan[] = [
   },
   {
     // ══════════════════════════════════════════════
+    // 声も、まとめて持っておける
+    // ══════════════════════════════════════════════
+    // 1回 ¥5,980 × 5 = ¥29,900。まとめて ¥27,800。
+    // 値引きは大きくしない。原価が人の時間なので、
+    // 深く引くと、答える人の取り分を削ることになる。
+    id: "call5",
+    family: "call",
+    tier: "decide",
+    name: "15分 × 5回分",
+    tagline: "声で決める場面を、5回ぶん持っておく。",
+    value: "迷うたびに、その場で聞いて決める。",
+    yen: 27800,
+    uses: 5,
+    depth: 2,
+    answers: 1,
+    rounds: 1,
+    targeting: true,
+    talk: true,
+    callMinutes: 15,
+    includes: [
+      "実在の女性と15分",
+      "いま迷っていることへの反応",
+      "そう感じた理由",
+      "終わったあとに残る作戦カード",
+    ],
+    fits: ["何度も判断が続くとき"],
+    available: false,
+    onTop: false,
+  },
+  {
+    // ══════════════════════════════════════════════
     // 勝負どころ。本番の前に一度
     // ══════════════════════════════════════════════
     // 話せた、で終わらせない。
     // 何がよくて何が引っかかったかを、画面に残す。
     id: "mockdate",
+    family: "mock",
     tier: "try",
     name: "Mock Date",
     tagline: "初デートをそのまま一度、通しでやってみる。",
     value: "本番で初めて気づくのを、先に済ませておく。",
     yen: 19800,
     from: true,
-    depth: 4,
+    depth: 3,
     answers: 1,
     rounds: 1,
     targeting: true,
@@ -567,27 +684,65 @@ export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category)
     }
   }
 
-  // 深さが重複していないこと。同じ深さが2つあると、選ぶ理由が消える。
-  if (new Set(PLANS.map((p) => p.depth)).size !== PLANS.length) {
-    throw new Error("同じ深さのプランが複数あります");
-  }
-  // 高いほど深いこと。
+  // 深さは、家族ごとに1つ。
   //
-  // まとめ売りは1回あたりで比べる。
-  // パックの売価と1件の売価を並べると、
-  // 「5回まとめたほうが高いから、より深い商品だ」という
-  // おかしな並びになる。
+  // 1回と5回分は、別の商品ではなく同じ商品の買い方。
+  // 買い方の違いで「深さ」が変わることはない。
+  // 前はSKUごとに深さを付けていて、
+  // 1回売りを足した瞬間に「パックより1回売りのほうが深い」という
+  // おかしな並びを強いられた。家族で見るように直した。
+  {
+    const byFamily = new Map<Family, Depth>();
+    for (const p of PLANS) {
+      const had = byFamily.get(p.family);
+      if (had !== undefined && had !== p.depth) {
+        throw new Error(
+          `家族「${p.family}」の中で深さが食い違っています（${had} と ${p.depth}）`,
+        );
+      }
+      byFamily.set(p.family, p.depth);
+    }
+    if (new Set(byFamily.values()).size !== byFamily.size) {
+      throw new Error("別の家族が同じ深さになっています（選ぶ理由が消えます）");
+    }
+  }
+
+  // 高いほど深いこと。家族どうしで、いちばん安い1回あたりで比べる。
   const perUse = (p: Plan) => (p.uses ? p.yen / p.uses : p.yen);
-  const byYen = [...PLANS].sort((a, b) => perUse(a) - perUse(b));
-  for (let i = 1; i < byYen.length; i++) {
-    if (byYen[i].depth <= byYen[i - 1].depth) {
+  {
+    const cheapest = new Map<Family, { yen: number; depth: Depth }>();
+    for (const p of PLANS) {
+      const cur = cheapest.get(p.family);
+      if (!cur || perUse(p) < cur.yen) cheapest.set(p.family, { yen: perUse(p), depth: p.depth });
+    }
+    const rows = [...cheapest.entries()].sort((a, b) => a[1].yen - b[1].yen);
+    for (let i = 1; i < rows.length; i++) {
+      if (rows[i][1].depth <= rows[i - 1][1].depth) {
+        throw new Error(
+          `家族「${rows[i][0]}」（1回 ¥${Math.round(rows[i][1].yen)}）は` +
+            `「${rows[i - 1][0]}」（1回 ¥${Math.round(rows[i - 1][1].yen)}）より高いのに、` +
+            `仕上げが浅くなっています`,
+        );
+      }
+    }
+  }
+
+  // まとめ買いが、1回ずつ買うより高くならないこと。
+  //
+  // 「5回分のほうがお得」と書いて、実際は割高だった、をコードで止める。
+  // 同じ家族の中で、いちばん安い1回売りと比べる。
+  for (const pack of PLANS.filter((p) => p.uses)) {
+    const singles = PLANS.filter((p) => p.family === pack.family && !p.uses);
+    if (singles.length === 0) continue;
+    const cheapestSingle = Math.min(...singles.map((p) => p.yen));
+    if (perUse(pack) >= cheapestSingle) {
       throw new Error(
-        `「${byYen[i].id}」（1回 ¥${Math.round(perUse(byYen[i]))}）は` +
-          `「${byYen[i - 1].id}」（1回 ¥${Math.round(perUse(byYen[i - 1]))}）より高いのに、` +
-          `仕上げが浅くなっています`,
+        `「${pack.name}」は1回あたり ¥${Math.round(perUse(pack))} で、` +
+          `1回ずつ買う（¥${cheapestSingle}）より安くなっていません`,
       );
     }
   }
+
   // トップに出すのは5つまで。
   //
   // 段そのものが商品になった。

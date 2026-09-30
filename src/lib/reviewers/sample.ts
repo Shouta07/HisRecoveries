@@ -1,4 +1,6 @@
 import type { Reviewer } from "./today";
+import type { DayReviewer, Window } from "./schedule";
+import { atJst } from "./schedule";
 
 // 受付の見本。
 //
@@ -185,4 +187,24 @@ export const SAMPLE_NOTE =
       }
     }
   }
+}
+
+
+/**
+ * 見本の時間割。
+ *
+ * 日付を渡すと、その日の受付予定を返す。
+ * 今日以外でも同じ形で受け付けている見本にする
+ * （日を送ったら全部空になると、送る意味が無くなる）。
+ */
+export function sampleDay(date: string): DayReviewer[] {
+  const base = sampleReviewers();
+  return WINDOWS.map((w) => {
+    const r = base.find((x) => x.id === w.id)!;
+    const win: Window = {
+      start: atJst(date, w.from[0], w.from[1]),
+      end: atJst(date, w.to[0], w.to[1]),
+    };
+    return { ...r, windows: [win] };
+  });
 }

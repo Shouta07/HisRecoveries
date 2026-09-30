@@ -11,6 +11,7 @@ import { makeConsultToken, isConsultToken } from "@/lib/ask/token";
 import { spend } from "@/lib/ask/pass";
 import { passCost } from "@/lib/ask/sensitive";
 import { findCase, createCase, advance } from "@/lib/ask/cases-store";
+import { readyToSell, whyNotReady, NOT_READY_USER } from "@/lib/ready";
 
 // 相談を受け取る。
 //
@@ -48,6 +49,26 @@ function str(v: unknown, max: number): string | null {
 type Row = { id: string; token: string };
 
 export async function POST(req: NextRequest) {
+  // ══════════════════════════════════════════════
+  // 保存できない状態で、受け取らない
+  // ══════════════════════════════════════════════
+  // ここにデータベースの確認が無かった。
+  // 設定が無いと dbInsertReturning は「成功した」と返すので、
+  // 行が返ってこないまま先へ進み、どこかで落ちていた。
+  // 画面には upstream の文字がそのまま出る（「internal error」）。
+  //
+  // 書いた人から見ると、300字書いたあとに意味の分からない
+  // 1行が出て終わる。書いた時間が丸ごと無駄になる。
+  //
+  // 受け取れないなら、受け取る前に言う。
+  if (!readyToSell()) {
+    console.error("[consult] not ready", whyNotReady());
+    return NextResponse.json(
+      { error: NOT_READY_USER, blocked: true },
+      { status: 503 },
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -148,7 +169,26 @@ export async function POST(req: NextRequest) {
   };
 
   const ins = await dbInsertReturning<Row>("consultations", row);
-  if (!ins.ok) return NextResponse.json({ error: ins.error }, { status: 500 });
+  // 保存の失敗を、そのまま画面に出さない。
+  // upstream の文字（「internal error」など）は、読む人に何も伝えない。
+  // 中身はログへ、画面には何が起きたかを書く。
+  if (!ins.ok) {
+    console.error("[consult] insert failed", ins.error);
+    return NextResponse.json(
+      { error: "相談を保存できませんでした。もう一度お試しください。" },
+      { status: 500 },
+    );
+  }
+  // 設定が揃っていても、行が返ってこないことはある。
+  // その場合も、保存できたことにしない
+  const saved = ins.rows[0];
+  if (!saved?.id) {
+    console.error("[consult] insert returned no row");
+    return NextResponse.json(
+      { error: "相談を保存できませんでした。もう一度お試しください。" },
+      { status: 500 },
+    );
+  }
 
   // ── 5回パスを持っているなら、その場で1回使う ──
   //
