@@ -32,10 +32,10 @@ export default function LegalPage() {
             <span className="whitespace-nowrap text-[16px] font-black">{NAME}</span>
           </Link>
           <Link
-            href="/safety"
+            href="/terms"
             className="text-[13px] text-steel transition-colors hover:text-slate"
           >
-            安全について
+            利用規約
           </Link>
         </div>
       </header>
@@ -77,9 +77,9 @@ export default function LegalPage() {
           <Link href="/privacy" className="underline decoration-line underline-offset-4 hover:text-slate">
             プライバシー・免責事項
           </Link>
-          、扱わない相談などは{" "}
-          <Link href="/safety" className="underline decoration-line underline-offset-4 hover:text-slate">
-            安全とできないこと
+          、お受けできない相談は{" "}
+          <Link href="/terms" className="underline decoration-line underline-offset-4 hover:text-slate">
+            利用規約（第9条）
           </Link>{" "}
           に書いています。
         </p>

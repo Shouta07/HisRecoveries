@@ -156,43 +156,9 @@ const SCENES: Partial<Record<PlanId, React.ReactNode>> = {
     </>
   ),
 
-  // 決める（30分）── 一通り決めきる。
-  // 15分との違いは、数字と声の量だけで出す。
-  // ここに「残るもの」の絵も足していたが、時計と重なって、
-  // 何を見ればいいのか分からない絵になった。
-  session: (
-    <>
-      <Bust x={52} y={58} r={16} fill={INK.him} />
-      <Bust x={268} y={58} r={16} fill={INK.her} hair={INK.herDeep} />
-      <Waves x={88} y={58} n={3} color={INK.himDeep} />
-      <g transform="translate(320 0) scale(-1 1)">
-        <Waves x={88} y={58} n={3} color={INK.herDeep} />
-      </g>
-      <Clock x={160} y={58} r={30} label="30" />
-      <text x="160" y="112" textAnchor="middle" fontSize="13" fontWeight="700" fill={INK.brand}>
-        分
-      </text>
-    </>
-  ),
-
-  // 試す ── 向かい合って、本番と同じことをやる
-  mockdate: (
-    <>
-      <Bust x={104} y={42} r={17} fill={INK.him} />
-      <Bust x={216} y={42} r={17} fill={INK.her} hair={INK.herDeep} />
-      {/* 机。ここが「本番と同じ」であることの印。
-          肩より広くしておく。狭いと、肩が机の外へはみ出して、
-          向かい合って座っているように見えない */}
-      <rect x="56" y="92" width="208" height="10" rx="5" fill={INK.brand} />
-      <rect x="84" y="102" width="7" height="20" rx="3.5" fill={INK.brandSoft} />
-      <rect x="229" y="102" width="7" height="20" rx="3.5" fill={INK.brandSoft} />
-      {/* 飲みもの */}
-      <g fill={INK.paper} stroke={INK.brand} strokeWidth="2.2">
-        <path d="M137 76h16l-2 15h-12z" />
-        <path d="M167 76h16l-2 15h-12z" />
-      </g>
-    </>
-  ),
+  // 30分の通話とMock Dateの絵は、商品ごと外した。
+  // 売っていないものの絵を残しておくと、次に誰かが
+  // 「絵があるなら戻せる」と考えて、原価の作り直しを飛ばす。
 };
 
 /**
@@ -238,7 +204,7 @@ export default function PlanArt({ id }: { id: PlanId }) {
 {
   // 商品が増えたのに絵が無い、を防ぐ。
   // 1枚だけ絵の無いカードが混ざると、そこだけ手抜きに見える。
-  for (const id of ["review", "call15", "session", "mockdate"] as PlanId[]) {
+  for (const id of ["review", "call15"] as PlanId[]) {
     if (!SCENES[id]) throw new Error(`商品「${id}」のアイキャッチがありません`);
   }
 }

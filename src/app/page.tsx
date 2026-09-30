@@ -35,7 +35,9 @@ import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
-import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
+import HeroBoard from "@/components/brand/HeroBoard";
+import VideoEmbed from "@/components/brand/VideoEmbed";
+import MomentsArt from "@/components/brand/MomentsArt";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -297,10 +299,10 @@ function Safety() {
         ))}
       </ul>
       <Link
-        href="/safety"
+        href="/terms"
         className="mt-4 inline-flex min-h-[44px] items-center text-[13px] font-bold text-brand underline decoration-line underline-offset-4"
       >
-        できないことも含めて、詳しく
+        禁止していることも含めて、詳しく
       </Link>
     </div>
   );
@@ -491,14 +493,8 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-            {/* 答える側の入口。トップの最後から外したので、ここが唯一の常設導線。
-                買う人の押す場所と同じ大きさにしない（押す先が2つになる） */}
-            <Link
-              href="/join"
-              className="hidden whitespace-nowrap text-[13px] font-bold text-steel transition-colors hover:text-brand sm:inline"
-            >
-              答える側になる
-            </Link>
+            {/* 答える側の入口（/join）は、ページごと畳んだ。
+                募集は個別に案内する。公開の入口は置かない。 */}
             <PlanCta
               plan={DEFAULT_PLAN}
               from="header"
@@ -541,7 +537,7 @@ export default async function HomePage() {
 
         {/* 相談する男性と、読んで返す女性を1枚に入れる。
             片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
-        <HeroBoard />
+        <HeroBoard openIds={openPlanIds()} />
 
         <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
@@ -553,49 +549,59 @@ export default async function HomePage() {
                 値段は、何が返ってくるかを見たあとで見るもの。
                 料金の節（#price）と /plans にある。隠してはいない。 */}
 
-            {/* 押す場所を、スクロールさせない */}
-            <div data-hero-cta className="mt-5 max-w-[24em]">
+            {/* ══════════════════════════════════════════
+                押す場所と4つの印を、戻した
+                ══════════════════════════════════════════
+                一度は外していた。ヘッダーにボタンがあり、すぐ下の
+                「こんな瞬間、ありませんか？」が8つとも押せるので、
+                1画面目に3つ目の入口は要らない、という理由だった。
+
+                絵が Before → 相談 → After の3段になって、話の
+                終わりがここに来た。「送れる」を見た直後に押す場所が
+                無いと、その勢いのまま次の節まで運ぶことになる。
+
+                4つの印も同じ。何のサービスか分からないうちに
+                条件だけ並べると読まれないが、いまは絵のあとなので
+                「で、いくらで、どう払うのか」の答えになっている。 */}
+            <div className="mt-7 sm:mt-9">
               <PlanCta
                 plan={DEFAULT_PLAN}
                 from="hero"
-                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card"
+                className="min-h-[60px] w-full rounded-pill bg-brand px-8 text-[16.5px] !text-paper shadow-card sm:text-[18px]"
               >
                 今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
               </PlanCta>
             </div>
 
-            {/* 押す前に引っかかるところを、4つだけ先に消す。
-                文字を並べるより、絵があるほうが読まずに入る。 */}
-            <ul className="mt-6 grid grid-cols-4 gap-2 sm:gap-3">
+            {/* 4つとも、いま本当にそうであること。
+                「実在の女性が回答」  審査を通った女性だけが答える
+                「匿名でOK」          名前も連絡先も要らない（鍵だけ）
+                「都度払い」          必要なときだけ
+                「月額なし」          自動更新もしない
+                ここに「返金保証」などを足さないこと。
+                条件が付くものを1語で書くと、書いた時点で嘘になる。 */}
+            <ul className="mt-6 grid grid-cols-4 gap-2 sm:mt-7 sm:gap-3">
               {[
-                { t: "実在女性が回答", d: "M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1 M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7 M21 20v-1a4 4 0 0 0-3-3.9" },
-                { t: "匿名OK", d: "M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4" },
-                { t: "都度払い", d: "M3 7h18v12H3z M3 11h18" },
-                sup.canPromiseSpeed
-                  ? { t: "最短数分", d: "M13 2 4 14h7l-1 8 9-12h-7z" }
-                  : { t: "追加料金なし", d: "M12 3v18 M8.5 7.5h5.2a2.6 2.6 0 0 1 0 5.2H9.6a2.6 2.6 0 0 0 0 5.2h5.9" },
-              ].map((x) => (
-                <li key={x.t} className="flex flex-col items-center gap-1.5 text-center">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint">
-                    <svg aria-hidden viewBox="0 0 24 24" className="h-[22px] w-[22px] text-brand" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={x.d} />
+                { label: "実在の女性\nが回答", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0Z" },
+                { label: "匿名でOK", d: "M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z" },
+                { label: "都度払い", d: "M3 6h18v12H3V6Zm2 3v2h14V9H5Zm0 4v2h7v-2H5Z" },
+                { label: "月額なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
+              ].map((b) => (
+                <li key={b.label} className="flex flex-col items-center text-center">
+                  <span
+                    aria-hidden
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-12 sm:w-12"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-[22px] sm:w-[22px]" fill="currentColor">
+                      <path d={b.d} />
                     </svg>
                   </span>
-                  <span className="text-[11px] font-bold leading-[1.4] text-slate sm:text-[12.5px]">
-                    {x.t}
+                  <span className="mt-1.5 whitespace-pre-line text-[10.5px] font-bold leading-[1.45] text-steel sm:text-[12px]">
+                    {b.label}
                   </span>
                 </li>
               ))}
             </ul>
-
-            {/* 「自己紹介文／メッセージ／会話」の3つを、ここに並べていた。
-                1画面目で商品の種類を選ばせていたことになる。
-                何を見てもらうかは、相談を書き始めてから選べばいい。
-                最初の画面で押す場所は、1つでいい。 */}
-
-            <div className="mt-6">
-              <HeroNote />
-            </div>
 
             {/* 受け付けていないことの断りは、値段の節（買う場所）に置いてある。
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
@@ -604,6 +610,38 @@ export default async function HomePage() {
           </div>
         </Wrap>
 
+      </section>
+
+      {/* ══ 1.2 紹介動画 ══ */}
+      {/* ══════════════════════════════════════════════
+          なぜ1画面目のすぐ下なのか
+          ══════════════════════════════════════════════
+          1画面目で「何のサービスか」を読んだ人が、
+          次にやることは1つしかない。もう少し知る、か、離れる。
+
+          文章で説明を足すと、読む量が増えるだけになる。
+          動画は、見るかどうかを見る側が選べる。
+          押さなければ何も起きず、そのまま下へ進める。
+
+          ══════════════════════════════════════════════
+          押されるまで、何も読み込まない
+          ══════════════════════════════════════════════
+          YouTube の埋め込みは、置いただけで1MB近く読む。
+          このサイトは Web フォントすら使っていないので、
+          そのまま置くと、トップでいちばん重いものが紹介動画になる。
+
+          最初は画像とボタンだけ。押されたときに iframe を作る
+          （components/brand/VideoEmbed.tsx）。
+          見ていない人に Cookie も入らない。 */}
+      <section className="bg-paper">
+        <Wrap>
+          <div className="mx-auto max-w-[760px] py-10 sm:py-14">
+            <VideoEmbed
+              title="タシカメは、どういうサービスか"
+              caption="2分ほどです。音が出ます。"
+            />
+          </div>
+        </Wrap>
       </section>
 
       {/* 「今日、受け付けている人」は、ここに置いていた。
@@ -646,9 +684,15 @@ export default async function HomePage() {
           ありませんか？
         </h2>
 
+        {/* 絵。置かれていなければ、何も出ない（MomentsArt）。
+            吹き出しの言葉は画像に焼き込まれているので、
+            これで下の一覧を置き換えない。
+            置き換えると、押せなくなり、読み上げにも検索にも乗らなくなる */}
+        <MomentsArt alt="送る前に手が止まる、いくつもの場面" />
+
         {/* 押せるようにする。読ませて終わりにしない。
             自分のが1つでもあれば、その場面から始められる */}
-        <ul className="mt-7 flex flex-col gap-2">
+        <ul className="mt-6 flex flex-col gap-2">
           {MOMENTS.map((m, i) => (
             <Reveal key={m.line} delay={i * 40}>
               <li>
@@ -846,178 +890,22 @@ export default async function HomePage() {
         </Wrap>
       </section>
 
-      {/* ══ 3. 相談前と、相談後 ══ */}
-      {/* 押す場所のすぐ下に置く。買う前に、何が起きるのかを1回で見せる。
-          ここより下に同じものを置かない（2回出ると、どちらも弱くなる） */}
-      <Block id="before-after">
-        <H>相談前と、相談後。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          自分では気づかなかったところが、送る前に出てきます。
-          大丈夫そうなら「このままで大丈夫そう」と返ってきます。無理に探しません。
-        </p>
+      {/* ══ 3.「相談前と、相談後」は外した ══ */}
+      {/* ══════════════════════════════════════════════
+          同じことを、2回見せていた
+          ══════════════════════════════════════════════
+          写真2枚の「相談前 / 相談後」と、気になったところ、
+          そのまま使える修正文、なぜそう直したか、をここに置いていた。
 
-        {/* 渡された案を、そのままの形で。
-            写真は2枚とも同じ撮影のもの（hero = 考えている、heroTall = 決まった）。
-            人を合成したり、表情を作ったりはしていない。 */}
-        <div className="mt-8 grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1fr] lg:gap-5">
-          {/* ── 相談前 ── */}
-          <Reveal className="h-full">
-          <div className="h-full overflow-hidden rounded-card border border-line bg-mist shadow-card">
-            <div className="relative">
-              <Slot name="hero" rounded="" position="center 22%" className="h-[190px] w-full" />
-              <span className="absolute left-4 top-4 rounded-soft bg-slate/85 px-3.5 py-1.5 text-[13px] font-black text-paper">
-                相談前
-              </span>
-              {/* 手が止まっているときの、頭の中 */}
-              <span className="absolute bottom-4 right-4 max-w-[62%] rounded-card rounded-br-[4px] bg-paper/95 px-3.5 py-2 text-[12.5px] font-bold leading-[1.6] text-slate shadow-card">
-                これで送っていいのかな…
-              </span>
-            </div>
+          すぐ上の「こんな選択を、選ぶ前に。」を
+          やりとりの形に作り直したとき、そこが同じ順番を持った。
+            状況 → 文面 → 反応 → そのまま送れる修正案 → 決めたこと
 
-            <div className="p-4 sm:p-5">
-              <div className="flex items-end gap-2.5">
-                <p className="min-w-0 flex-1 rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[13.5px] leading-[1.7] text-slate">
-                  {DEMO.before}
-                </p>
-                <span
-                  aria-hidden
-                  className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-steel/35 text-paper"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
-                  </svg>
-                </span>
-              </div>
+          同じものが2回出ると、どちらも弱くなる。
+          動いて出てくるほうを残して、こちらを外した。
 
-              <ul className="mt-4 flex flex-col gap-2">
-                {["重くないかな…？", "この言い方で大丈夫…？", "変に思われないかな…？"].map((t) => (
-                  <li key={t} className="flex items-center gap-2.5 text-[13px] text-steel">
-                    <span
-                      aria-hidden
-                      className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-steel/25 text-paper"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          </Reveal>
-
-          <p
-            aria-hidden
-            className="justify-self-center self-center text-[26px] font-black text-brand lg:text-[30px]"
-          >
-            <span className="lg:hidden">&darr;</span>
-            <span className="hidden lg:inline">&rarr;</span>
-          </p>
-
-          {/* ── 相談後 ── */}
-          <Reveal className="h-full" delay={140}>
-          <div className="h-full overflow-hidden rounded-card border border-brand bg-brand-tint shadow-card">
-            <div className="relative">
-              <Slot name="heroTall" rounded="" position="center 24%" className="h-[190px] w-full" />
-              <span className="absolute left-4 top-4 rounded-soft bg-brand px-3.5 py-1.5 text-[13px] font-black text-paper">
-                相談後
-              </span>
-              <span className="absolute bottom-4 right-4 max-w-[62%] rounded-card rounded-br-[4px] bg-paper/95 px-3.5 py-2 text-[12.5px] font-bold leading-[1.6] text-brand-deep shadow-card">
-                反応を確かめたうえで、送れる
-              </span>
-            </div>
-
-            <div className="p-4 sm:p-5">
-              <div className="flex items-end gap-2.5">
-                <p className="min-w-0 flex-1 rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[13.5px] font-bold leading-[1.7] text-slate">
-                  {DEMO.after}
-                </p>
-                <span
-                  aria-hidden
-                  className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-paper"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                    <path d="M2 21 23 12 2 3l4 7 9 2-9 2Z" />
-                  </svg>
-                </span>
-              </div>
-
-              <ul className="mt-4 flex flex-col gap-2">
-                {[
-                  "自然な言い方が分かった",
-                  "女性の反応を確かめられた",
-                  "迷わずに送れる",
-                ].map((t) => (
-                  <li key={t} className="flex items-center gap-2.5 text-[13px] font-bold text-slate">
-                    <span
-                      aria-hidden
-                      className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand text-paper"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          </Reveal>
-        </div>
-
-        {/* 1回 = 1人。返ってくるものを、そのまま並べる */}
-        <div className="mt-5 rounded-card border border-line bg-paper px-5 py-4 shadow-card">
-          <p className="text-[13.5px] font-bold leading-[1.7] text-slate">
-            気になったところ：{DEMO.common}
-          </p>
-
-          <div className="mt-3 border-t border-line pt-3">
-            <p className="text-[12px] font-bold text-steel">そのまま使える修正文</p>
-            <p className="mt-1.5 rounded-card rounded-br-[4px] bg-brand-tint px-3.5 py-2.5 text-[13.5px] font-bold leading-[1.7] text-brand-deep">
-              {DEMO.after}
-            </p>
-          </div>
-
-          <div className="mt-3 border-t border-line pt-3">
-            <p className="text-[12px] font-bold text-steel">なぜ、そう直したか</p>
-            <p className="mt-1.5 text-[13px] leading-[1.8] text-slate">{DEMO.why}</p>
-          </div>
-        </div>
-
-        <p className="mt-4 text-[12px] leading-[1.75] text-steel">
-          ※ 写真はイメージ、文面と回答は画面の見本です。実際の相談ではありません。
-        </p>
-      </Block>
-
-      {/* 見本のすぐ下。
-          ここに「何人がどう答えたか／みんなが気にしたところ／意見が分かれたところ／
-          書かれた言葉そのまま」の4枚と、確率を出さない断りを置いていた。
-          すぐ上の見本が、そのまま同じことを見せている。
-          見せたあとに説明を足すと、見本のほうが弱くなる。
-          「女性みんなの答えではない」はよくある質問に残してある。
-
-          ここから料金の節まで、スマホで5画面ぶん押す場所が無い。
-          見本を読み終えた直後がいちばん近いので、押す場所だけ残す。 */}
-      <section className="bg-paper">
-        <Wrap className="pb-14 sm:pb-16">
-          <div className="max-w-[24em]">
-            <PlanCta
-              plan={DEFAULT_PLAN}
-              from="after_demo"
-              className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-            >
-              自分のも見てもらう <span aria-hidden className="ml-2">&rarr;</span>
-            </PlanCta>
-            <p className="mt-3 text-[12.5px] text-steel">
-              ¥{entry.yen.toLocaleString()}から / 1回ごと / 匿名
-            </p>
-          </div>
-        </Wrap>
-      </section>
+          押す場所は減らしていない。ここにあった
+          「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
 
       {/* ══ 4. ほかの選び方との違い ══ */}
       {/* 比較広告は景表法の対象。実証・正確な引用・公正な比較の3つが要る。
@@ -1327,10 +1215,73 @@ export default async function HomePage() {
       {/* スクロールを先導するタシカメ。進み具合と、押す場所を兼ねる */}
       <TashikameGuide />
 
-      {/* 答える側への入口は、ここに置かない。
+      {/* ══ フッター ══ */}
+      {/* ══════════════════════════════════════════════
+          誰が売っているのかを、隠さない
+          ══════════════════════════════════════════════
+          前はフッターごと外していて、運営会社の名前も、
+          法定の表記への道も、ハンバーガーメニューの中だけにあった。
+
+          畳んであるのは「隠していない」とは違う。
+          初めて来た人が、誰から買うのかを確かめようとしたときに、
+          メニューを開かないと分からないのは遠い。
+
+          ここに置くのは4つだけ。
+            誰が売っているか
+            特定商取引法に基づく表記
+            利用規約 / プライバシー
+            連絡先
+          増やさない。増やすと、また読まれないものになる。
+
+          答える側への入口は、ここにも置かない。
           ここは買う人の画面で、最後に「自分は答える側かもしれない」と
           思わせると、押す先が2つになって、どちらも押されなくなる。
-          答える側の話は、ヘッダーから /join へ渡す。 */}
+          回答者の募集は、個別に案内する。 */}
+      <footer className="border-t border-line bg-paper">
+        <Wrap className="py-10 sm:py-12">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <p className="text-[12px] font-bold text-steel">運営</p>
+              <p className="mt-1 text-[14.5px] font-black text-slate">
+                {site.company.name}
+              </p>
+              <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">
+                {site.company.postalCode} {site.company.address}
+              </p>
+              <a
+                href={`mailto:${site.company.email}`}
+                className="mt-2 inline-flex min-h-[36px] items-center text-[12.5px] font-bold text-brand underline decoration-line underline-offset-4"
+              >
+                {site.company.email}
+              </a>
+            </div>
+
+            <ul className="flex flex-col gap-2.5 sm:items-end">
+              {[
+                ["/legal", "特定商取引法に基づく表記"],
+                ["/terms", "利用規約"],
+                ["/privacy", "プライバシー・免責事項"],
+                ["/articles", "たしかメディア"],
+              ].map(([href, label]) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="inline-flex min-h-[36px] items-center text-[13px] font-bold text-steel transition-colors hover:text-brand"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <p className="mt-8 border-t border-line pt-6 text-[11.5px] leading-[1.8] text-steel">
+            {NAME}は、{site.company.name}が提供するオンライン恋愛相談サービスです。
+            お客様との契約および決済の相手方は当社です。
+            回答する女性は当社の業務委託先であり、お客様への販売者ではありません。
+          </p>
+        </Wrap>
+      </footer>
     </div>
   );
 }

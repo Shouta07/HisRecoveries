@@ -4,12 +4,15 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import SearchButton from "@/components/search/SearchButton";
 import { site } from "@/lib/site";
+import { NAME } from "@/lib/voice";
+import { MEDIA } from "@/lib/media";
+import Mark from "@/components/brand/Mark";
 import MenuButton from "@/components/brand/MenuButton";
 
 // 下層ページのヘッダー。トップの GlassNav と同じ見え方に揃える
 // （ロゴ＋肩書き1行、記事が先頭）。メディアが主、サービスが従。
+// 記事一覧へは、ロゴが行く。ここには置かない
 const LINKS: { href: string; label: string; desktopOnly?: boolean }[] = [
-  { href: "/articles", label: "記事" },
   { href: "/about", label: "編集方針", desktopOnly: true },
 ];
 
@@ -23,8 +26,8 @@ export default function Header() {
   // 何のサービスを使っているのか分からなくなる。
   // 1つ増やすたびにこの行が伸びていたので、一覧にした。
   const BRAND_PAGES = [
-    "/join", "/safety", "/mine", "/legal", "/how", "/talk", "/plans",
-    "/reviewers", "/articles",
+    "/mine", "/legal", "/talk", "/plans",
+    "/reviewers", "/articles", "/terms",
   ];
   const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/"];
   if (
@@ -43,14 +46,26 @@ export default function Header() {
       <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-4 py-3.5 xs:px-5 sm:px-8 sm:py-4 lg:px-12">
         {/* 縮まないようにしていたので、狭い画面では右側が押し出されていた。
             縮めるようにして、肩書きのほうを切る。ロゴの文字は切らない。 */}
-        <Link href="/" aria-label={`${site.name} ホーム`} className="min-w-0 leading-none">
-          <span className="logo-type block whitespace-nowrap text-base font-bold tracking-tight text-sumi transition-colors hover:text-asagi sm:text-xl">
-            {site.name}
-          </span>
-          {/* 肩書きを「メディア」から変えた。読んで終わる場所だと
-              こちらから宣言していたので、期待値がそこで止まっていた。 */}
-          <span className="mt-1.5 block truncate text-[10px] tracking-[0.12em] text-ainezu sm:text-[11px]">
-            男の改善は、順番で決まる
+        {/* ══════════════════════════════════════════════
+            記事側も「たしかメディア by タシカメ」にする
+            ══════════════════════════════════════════════
+            「His Recoveries / 男の改善は、順番で決まる」だった。
+
+            検索から来た人は、記事を読んだあとタシカメへ入る。
+            そのとき名前が変わっていると、別のサイトに飛ばされたように
+            見える。住所（hisrecoveries.com）は同じでも、
+            店名が2つあると、どちらの店にいるのか分からない。
+
+            記号（甲羅＋確かめた印）も、タブと同じものにする。 */}
+        <Link href="/articles" aria-label={`${MEDIA.name} 記事一覧`} className="flex min-w-0 items-center gap-2">
+          <Mark size={28} />
+          <span className="min-w-0 leading-none">
+            <span className="block truncate whitespace-nowrap text-[15px] font-black text-sumi sm:text-[17px]">
+              {MEDIA.name}
+            </span>
+            <span className="mt-1 block truncate text-[10px] font-bold text-ainezu sm:text-[10.5px]">
+              by {NAME}
+            </span>
           </span>
         </Link>
 

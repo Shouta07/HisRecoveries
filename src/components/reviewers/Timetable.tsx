@@ -44,6 +44,7 @@ import { SAMPLE_BADGE, SAMPLE_NOTE } from "@/lib/reviewers/sample";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
 import { track } from "@/lib/analytics";
+import { PLANS } from "@/lib/ask/plans";
 
 // 受付の時間割。
 //
@@ -409,20 +410,22 @@ export default function Timetable({
 
             {callsOpen ? (
               <div className="mt-4 flex flex-col gap-2">
-                <Link
-                  href={`/ask?plan=call15&at=${encodeURIComponent(pick.at)}`}
-                  className="flex min-h-[56px] items-center justify-between rounded-card border border-line px-4 font-bold text-slate"
-                >
-                  <span className="text-[14.5px]">15分</span>
-                  <span className="text-[16px] font-black tabular-nums">¥5,980</span>
-                </Link>
-                <Link
-                  href={`/ask?plan=session&at=${encodeURIComponent(pick.at)}`}
-                  className="flex min-h-[56px] items-center justify-between rounded-card border border-line px-4 font-bold text-slate"
-                >
-                  <span className="text-[14.5px]">30分</span>
-                  <span className="text-[16px] font-black tabular-nums">¥9,800</span>
-                </Link>
+                {/* 金額をここに書き写さない。
+                    前は ¥5,980 / ¥9,800 と直に書いてあって、
+                    plans.ts で値段を変えても、この表だけ古いままだった。
+                    しかも消した商品（30分）へのリンクが残っていた。 */}
+                {PLANS.filter((x) => x.callMinutes).map((x) => (
+                  <Link
+                    key={x.id}
+                    href={`/ask?plan=${x.id}&at=${encodeURIComponent(pick.at)}`}
+                    className="flex min-h-[56px] items-center justify-between rounded-card border border-line px-4 font-bold text-slate"
+                  >
+                    <span className="text-[14.5px]">{x.name}</span>
+                    <span className="text-[16px] font-black tabular-nums">
+                      ¥{x.yen.toLocaleString()}
+                    </span>
+                  </Link>
+                ))}
               </div>
             ) : (
               <>

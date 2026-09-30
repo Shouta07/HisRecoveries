@@ -78,7 +78,10 @@ export default async function MePage({ params }: { params: { token: string } }) 
     : null;
 
   const tier = TIERS.find((t) => t.id === (r.tier ?? "bronze")) ?? TIERS[0];
-  const inviteUrl = ref ? `${site.url.replace(/\/$/, "")}/join?ref=${ref.code}` : null;
+  // 紹介リンクの着地先（/join）を畳んだので、いまは出さない。
+  // 出すと、配ったリンクが全部 404 になる。
+  // 回答者の募集を公開で再開するときに、ここを戻すこと。
+  const inviteUrl: string | null = null;
 
   return (
     <div data-brand className="min-h-screen bg-mist text-slate">
@@ -207,7 +210,7 @@ export default async function MePage({ params }: { params: { token: string } }) 
         <p className="mt-8 text-[12px] leading-[1.85] text-steel">
           このページのリンクは、あなた専用です。人に渡さないでください。
           わからないことは{" "}
-          <Link href="/safety" className="font-bold text-brand underline decoration-line underline-offset-4">
+          <Link href="/terms" className="font-bold text-brand underline decoration-line underline-offset-4">
             安心・安全
           </Link>{" "}
           に書いています。

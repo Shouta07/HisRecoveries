@@ -51,7 +51,7 @@ export default async function Image() {
           }}
         >
           <div style={{ display: "flex" }}>男性の美容・健康・恋愛を、編集部が調べて書いています</div>
-          <div style={{ display: "flex" }}>hisrecoveries.com</div>
+          <div style={{ display: "flex" }}>{site.url.replace(/^https?:\/\//, "")}</div>
         </div>
       </div>
     ),

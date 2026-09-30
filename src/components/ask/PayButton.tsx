@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { track } from "@/lib/analytics";
 import { plan as getPlan, isSellable, DEFAULT_PLAN, type PlanId } from "@/lib/ask/plans";
 import Yen from "@/components/brand/Yen";
+import PurchaseTerms from "@/components/ask/PurchaseTerms";
 
 // 支払いへ進む。
 //
@@ -91,7 +92,6 @@ export default function PayButton({
           <Yen yen={p.yen} />
         </p>
       </div>
-      <p className="mt-2 text-[12px] text-steel">税込 / 1回のみ。月額はありません。</p>
 
       {/* 押す直前に、返ってくるものを出す。別のページに戻らせない */}
       <div className="mt-5 rounded-soft bg-mist px-4 py-4">
@@ -117,6 +117,10 @@ export default function PayButton({
           </p>
         )}
       </div>
+
+      {/* 何を買うのか（回数・期限・キャンセル・相手）は、ここで出しきる。
+          Stripe の画面には商品名と金額しか出ない */}
+      <PurchaseTerms plan={p} />
 
       {error && (
         <p className="mt-4 rounded-soft border border-slate px-4 py-3 text-[13.5px] leading-[1.85]">

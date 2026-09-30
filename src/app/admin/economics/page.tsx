@@ -155,7 +155,7 @@ export default async function EconomicsPage() {
         </div>
 
         <div className="mt-7 grid gap-4 lg:grid-cols-2">
-          <Card title="MARKETPLACE">
+          <Card title="供給">
             {!dbAdminEnabled ? (
               <p className="text-[13px] text-steel">接続されていません。</p>
             ) : (

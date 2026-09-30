@@ -973,7 +973,7 @@ order by 3 desc;
 
 
 -- ═══════════════════════════════════════════════════════════════
--- 声で話す（15分 / 30分）
+-- 声で話す（15分。1回分 = 15分1本。時間の残高としては持たせない）
 --
 -- ── 時間はここが持つ ────────────────────────────
 -- 画面のカウントダウンは飾り。ブラウザの時計は変えられる。
@@ -2136,3 +2136,137 @@ select id, consultation_id, path, expires_at
 from consultation_images
 where expires_at <= now()
 order by expires_at asc;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 回数（パス）に、有効期限をつける
+--
+-- ── なぜ、いま作るか ────────────────────────────
+-- ここは元々「期限を作らない」だった。急がせる商売にしないため。
+-- その理由は、いまも正しい。
+--
+-- 変えたのは、残高に期限の無い回数券が
+-- 資金決済法の「前払式支払手段（自家型）」そのものだから。
+-- 未使用残高が基準日（3/31・9/30）に1,000万円を超えると、
+-- 財務局への届出と、残高の半額の供託が要る。
+--
+-- 発行日から6か月以内しか使えないものは、そもそも適用の外
+-- （資金決済法4条2号／施行令4条2項）。
+-- 180日にしておけば、この話が丸ごと発生しない。
+--
+-- ── 180日は、急かす長さではない ─────────────────
+-- 5回を180日なら、36日に1回のペース。
+-- 「今週中に使わないと消えます」にはならない。
+--
+-- ── 黙って消さない ──────────────────────────────
+-- 期限は、買うとき（決済の直前）と、残りを見るときの
+-- 両方に必ず出す。画面に出ていない期限で消すのがいちばん悪い。
+--
+-- ── 既に売ったぶんを、あとから短くしない ────────
+-- default は付けない。expires_at が null のパスは、
+-- 期限なしとして今までどおり使える（この行を入れる前に
+-- 買った人の回数を、あとから消さない）。
+-- 期限を入れるのは、これから買われるぶんだけ（fulfil が入れる）。
+-- ═══════════════════════════════════════════════════════════════
+
+alter table ask_passes add column if not exists expires_at timestamptz;
+
+create index if not exists ask_passes_expires_idx on ask_passes (expires_at);
+
+-- 残りの出し方に、期限を足す。
+-- 切れているかは、画面ではなくここで判定する。
+-- 画面ごとに日付を比べると、時計のずれで答えが割れる。
+create or replace view pass_balance as
+select
+  p.id,
+  p.token,
+  p.plan_id,
+  p.uses_total,
+  p.granted_extra,
+  p.paid_at,
+  p.expires_at,
+  (p.expires_at is not null and p.expires_at <= now()) as expired,
+  coalesce(sum(case when u.amount < 0 then -u.amount else 0 end), 0)::int as used,
+  (p.uses_total + p.granted_extra + coalesce(sum(u.amount), 0))::int as remaining
+from ask_passes p
+left join pass_uses u on u.pass_id = p.id
+where p.paid_at is not null
+group by p.id;
+
+-- 切れたパスでは使えない。
+--
+-- 残りの数え方（remaining）は変えない。
+-- 0にしてしまうと、何回ぶんが未使用のまま切れたのかが
+-- 追えなくなる。使えるかどうかだけを、ここで止める。
+create or replace function spend_pass(
+  p_token text,
+  p_consultation uuid,
+  p_cost int
+)
+returns table (ok boolean, remaining int, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_pass   ask_passes%rowtype;
+  v_used   int;
+  v_left   int;
+  v_dup    int;
+  i        int;
+begin
+  if p_cost is null or p_cost < 1 then
+    return query select false, 0, '使う回数が不正です'::text;
+    return;
+  end if;
+
+  select * into v_pass
+    from ask_passes
+   where token = p_token
+     and paid_at is not null
+   for update;
+
+  if not found then
+    return query select false, 0, 'このパスは見つかりません'::text;
+    return;
+  end if;
+
+  -- 同じ相談が既に使っているなら、二度目は使わない。
+  -- 期限より先に見る。切れたあとに来た再送で、
+  -- 「使えません」に化けさせない（もう使い終わっている）。
+  if p_consultation is not null then
+    select count(*) into v_dup
+      from pass_uses
+     where pass_id = v_pass.id
+       and consultation_id = p_consultation;
+    if v_dup > 0 then
+      select coalesce(sum(amount), 0)::int into v_used
+        from pass_uses where pass_id = v_pass.id;
+      v_left := v_pass.uses_total + coalesce(v_pass.granted_extra, 0) + v_used;
+      return query select true, greatest(v_left, 0), 'すでに使っています'::text;
+      return;
+    end if;
+  end if;
+
+  select coalesce(sum(amount), 0)::int into v_used
+    from pass_uses where pass_id = v_pass.id;
+  v_left := v_pass.uses_total + coalesce(v_pass.granted_extra, 0) + v_used;
+
+  -- 期限切れ。残りは残したまま、使うのだけ止める。
+  if v_pass.expires_at is not null and v_pass.expires_at <= now() then
+    return query select false, greatest(v_left, 0), '有効期限が切れています'::text;
+    return;
+  end if;
+
+  if v_left < p_cost then
+    return query select false, greatest(v_left, 0), '残りが足りません'::text;
+    return;
+  end if;
+
+  for i in 1..p_cost loop
+    insert into pass_uses (pass_id, consultation_id, kind, amount)
+    values (v_pass.id, p_consultation, 'consume', -1);
+  end loop;
+
+  return query select true, v_left - p_cost, null::text;
+end;
+$$;

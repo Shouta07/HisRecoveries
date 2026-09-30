@@ -205,7 +205,7 @@ export function publicView(row: CallRow, now: Date = new Date()) {
     responder_id: null,
     plan_id: "call15",
     duration_minutes: 15,
-    price: 7980,
+    price: 2980,
     scheduled_at: t0.toISOString(),
     started_at: null,
     ends_at: null,
@@ -244,7 +244,7 @@ export function publicView(row: CallRow, now: Date = new Date()) {
   });
 
   // 分数が商品と食い違っていないこと。
-  for (const id of ["call15", "session"] as PlanId[]) {
+  for (const id of ["call15", "call5"] as PlanId[]) {
     if (minutesOf(id) === null) throw new Error(`プラン「${id}」に分数がありません`);
   }
 }

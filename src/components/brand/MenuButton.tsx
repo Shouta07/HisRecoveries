@@ -47,14 +47,14 @@ const LINKS = [
   ["/reviewers", "今日の受付"],
   ["/plans", "料金"],
   ["/mine", "相談したこと"],
-  ["/how", "仕組み"],
-  ["/safety", "安心・安全"],
-  ["/join", "答える側になる"],
   // 記事。ここから読んで、そのまま自分の場面を確かめてもらう
   ["/articles", "たしかメディア"],
 ] as const;
 
 const LEGAL = [
+  // 規約が無いと、誰と誰の契約なのかがどこにも書かれていないことになる。
+  // 決済の直前（PurchaseTerms）からも開けるが、常設の導線もここに置く。
+  ["/terms", "利用規約"],
   ["/legal", "特定商取引法に基づく表記"],
   ["/privacy", "プライバシー・免責事項"],
 ] as const;
@@ -65,7 +65,7 @@ const LEGAL = [
    課金する画面から法定の表記へ辿れなくなる。 */
 {
   const hrefs: string[] = [...LINKS, ...LEGAL].map(([h]) => h);
-  for (const must of ["/legal", "/privacy"]) {
+  for (const must of ["/terms", "/legal", "/privacy"]) {
     if (!hrefs.includes(must)) {
       throw new Error(`メニューから ${must} が消えています（ここが唯一の導線です）`);
     }
@@ -75,9 +75,9 @@ const LEGAL = [
   if (!hrefs.includes("/plans")) {
     throw new Error("メニューから料金が消えています（トップに値段は出していません）");
   }
-  if (!hrefs.includes("/join")) {
-    throw new Error("メニューから答える側の入口が消えています（スマホではここだけです）");
-  }
+  // 「答える側になる」（/join）の判定は外した。
+  // 回答者の募集ページごと畳んだので、公開の入口はもう無い
+  // （募集は個別に案内する）。
   // 自分が出した相談へ戻る道も、ここしかない。
   if (!hrefs.includes("/mine")) {
     throw new Error("メニューから「相談したこと」が消えています（戻る道がここだけです）");

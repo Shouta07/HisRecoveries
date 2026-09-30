@@ -27,6 +27,7 @@ import Continue from "@/components/ask/Continue";
 import { isStepId, step as getStep } from "@/lib/ask/journey";
 import { WAIT_MINUTES } from "@/lib/ask/shortfall";
 import Yen from "@/components/brand/Yen";
+import PurchaseTerms from "@/components/ask/PurchaseTerms";
 
 // 相談を出す。
 //
@@ -704,9 +705,13 @@ export default function AskFlow({
                     </p>
                     <p className="mt-1.5 text-[12.5px] leading-[1.75] text-steel">
                       {p.uses
-                        ? `この相談のあと、あと${p.uses - 1}回ぶんは別の迷いにも使えます。月額はありません。自動更新もしません。`
-                        : "税込 / 1回のみ。月額はありません。"}
+                        ? `この相談のあと、あと${p.uses - 1}回ぶんは別の迷いにも使えます。`
+                        : "この相談の1回ぶんです。"}
                     </p>
+                    {/* 回数・期限・キャンセル・お相手。
+                        Stripe の画面には商品名と金額しか出ないので、
+                        押す直前のここで出しきる */}
+                    <PurchaseTerms plan={p} />
                   </>
                 )}
               </div>

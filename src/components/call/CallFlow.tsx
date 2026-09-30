@@ -41,10 +41,10 @@ export default function CallFlow({
           <p className="mt-5 text-[12px] leading-[1.8] text-steel">
             相手の名前も連絡先も出ません。こちらの連絡先も相手には渡りません。
             <Link
-              href="/safety"
+              href="/terms"
               className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
             >
-              安心・安全
+              禁止していること
             </Link>
           </p>
         </>

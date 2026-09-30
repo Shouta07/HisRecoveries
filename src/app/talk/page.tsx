@@ -133,10 +133,10 @@ export default function TalkPage() {
         <p className="mt-10 text-[13px] leading-[1.9] text-steel">
           どういう仕組みで動いているかは{" "}
           <Link
-            href="/how"
+            href="/"
             className="font-bold text-brand underline decoration-line underline-offset-4"
           >
-            仕組み
+            トップ
           </Link>{" "}
           に書いています。
         </p>

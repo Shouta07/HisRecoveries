@@ -62,7 +62,6 @@ export default function UtmBuilder({ base }: { base: string }) {
             <option value="/">/ （トップ）</option>
             <option value="/ask">/ask （相談を書く画面から）</option>
             <option value="/answerers">/answerers （誰が読むのか）</option>
-            <option value="/join">/join （答える側を集める）</option>
           </select>
         </label>
 

@@ -69,16 +69,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/articles",
     "/about",
     // 回答する側の入口。検索から直接来てほしい面なので載せる。
-    "/join",
     // 回答者の一覧。マーケットプレイスの供給側。
     "/answerers",
     "/mine",
     // 特定商取引法に基づく表記。課金する以上、検索から辿れる必要がある。
     "/legal",
     // 安全と、いまできないこと。トップから降ろしたものの行き先。
-    "/safety",
     // 仕組み。誰が答えるか・AIを何に使うか。トップから降ろした説明の行き先。
-    "/how",
     // 人と話す。受付前だが、順番待ちの入口として検索から来てほしい。
     "/talk",
     "/areas/confidence",

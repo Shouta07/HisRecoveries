@@ -75,7 +75,7 @@ export default async function Image({ params }: { params: { id: string; slug: st
             <div style={{ fontSize: 32, color: "#1B2024", display: "flex" }}>His Recoveries</div>
             <div style={{ fontSize: 20, color: "#5E6E76", display: "flex" }}>{site.tagline}</div>
           </div>
-          <div style={{ fontSize: 20, color: "#5E6E76", display: "flex" }}>hisrecoveries.com</div>
+          <div style={{ fontSize: 20, color: "#5E6E76", display: "flex" }}>{site.url.replace(/^https?:\/\//, "")}</div>
         </div>
       </div>
     ),

@@ -15,11 +15,20 @@ import { passCost } from "./sensitive";
 // で出す。過去に何に使ったかが、必ず残る。
 //
 // ══════════════════════════════════════════════════
-// 期限を作らない
+// 期限は作る。ただし黙って消さない
 // ══════════════════════════════════════════════════
-// 買った回数は、使うまで残る。
-// 期限で消す仕組みを入れると、急がせる商売になる。
-// 「残りわずか」を作らないのと同じ理由（voice.ts の CHEAP）。
+// ここは元々「期限を作らない」だった。
+// 急がせる商売にしないため、という理由は、いまも正しい。
+//
+// 変えたのは、残高に期限の無い回数券が
+// 資金決済法の「前払式支払手段（自家型）」そのものだから
+// （なぜ180日かは plans.ts の PASS_VALID_DAYS）。
+//
+// 急かす道具にしないために、決めてあること。
+//   ・期限は買うときに出す（決済の直前と、特商法の表記）
+//   ・残りを出すところには、必ず期限も一緒に出す
+//   ・「あと○日！」とは書かない。日付を書く
+//   ・切れても残りの数は残す（何回ぶん切れたかが分かる）
 //
 // ══════════════════════════════════════════════════
 // 減らすのは、数える側でやる
@@ -43,6 +52,9 @@ export type Balance = {
   total: number;
   used: number;
   remaining: number;
+  /** 有効期限。この日を過ぎると使えない。古いパスは null（期限なし） */
+  expiresAt: string | null;
+  expired: boolean;
 };
 
 type BalanceRow = {
@@ -52,13 +64,15 @@ type BalanceRow = {
   granted_extra: number;
   used: number;
   remaining: number;
+  expires_at: string | null;
+  expired: boolean;
 };
 
 /** 鍵から残りを引く。無ければ null */
 export async function balanceOf(token: string): Promise<Balance | null> {
   if (!dbAdminEnabled) return null;
   const rows = await dbSelect<BalanceRow>(
-    `pass_balance?token=eq.${encodeURIComponent(token)}&select=token,plan_id,uses_total,granted_extra,used,remaining&limit=1`,
+    `pass_balance?token=eq.${encodeURIComponent(token)}&select=token,plan_id,uses_total,granted_extra,used,remaining,expires_at,expired&limit=1`,
   );
   const r = rows[0];
   if (!r) return null;
@@ -69,6 +83,8 @@ export async function balanceOf(token: string): Promise<Balance | null> {
     used: Number(r.used),
     // 念のため負にしない。減らし方を間違えても、画面に負の数を出さない
     remaining: Math.max(0, Number(r.remaining)),
+    expiresAt: r.expires_at ?? null,
+    expired: Boolean(r.expired),
   };
 }
 
@@ -159,6 +175,21 @@ export function remainingLabel(n: number): string {
   return n > 0 ? `あと${n}回` : "使い切りました";
 }
 
+/**
+ * 期限の見せ方。
+ *
+ * 「あと12日」とは書かない。日付で書く。
+ * 残り日数で書くと、数が小さくなるほど急かす表示になる。
+ * 期限は急かすために置いたものではない。
+ */
+export function expiryLabel(b: Balance): string | null {
+  if (!b.expiresAt) return null;
+  const d = new Date(b.expiresAt);
+  if (Number.isNaN(d.getTime())) return null;
+  const ymd = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+  return b.expired ? `${ymd}に期限が切れました` : `${ymd}まで`;
+}
+
 /* ── 公開の前に止めること ───────────────────────── */
 {
   // パスの商品が、1つはあること。無いと入口が1件売りに戻る。
@@ -176,6 +207,35 @@ export function remainingLabel(n: number): string {
     throw new Error("残り0回のときの言い方が、数字のままです");
   }
   if (remainingLabel(4) !== "あと4回") throw new Error("残りの言い方が変わっています");
+
+  // 期限の書き方。残り日数で急かさない。
+  {
+    const b: Balance = {
+      token: "c" + "a".repeat(32),
+      plan: "review",
+      total: 5,
+      used: 1,
+      remaining: 4,
+      expiresAt: "2026-12-31T00:00:00.000Z",
+      expired: false,
+    };
+    const label = expiryLabel(b);
+    if (!label) throw new Error("期限があるのに、期限の表示が出ていません");
+    if (/あと\s*\d+\s*日|残り\s*\d+\s*日|まもなく|お早め/.test(label)) {
+      throw new Error(`期限の表示が急かす書き方になっています（${label}）`);
+    }
+    if (!/\d+年\d+月\d+日/.test(label)) {
+      throw new Error(`期限が日付で書かれていません（${label}）`);
+    }
+    // 期限の無い古いパスを、期限切れに見せない。
+    if (expiryLabel({ ...b, expiresAt: null }) !== null) {
+      throw new Error("期限の無いパスに、期限の表示が出ています");
+    }
+    // 切れたことが分かること。
+    if (!expiryLabel({ ...b, expired: true })?.includes("切れました")) {
+      throw new Error("期限が切れたことが、表示から分かりません");
+    }
+  }
 
   // 言いにくい相談が、ふつうの相談より多く使うこと。
   // 同じなら、受けられる人を限る理由も、取り分を増やす原資も無い。

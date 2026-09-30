@@ -264,4 +264,25 @@ export async function verifyWebhook(
   if (sample.mode !== "payment") {
     throw new Error("都度払いです。subscription にしないでください");
   }
+
+  // ══════════════════════════════════════════════
+  // 場貸しの決済を作らない
+  // ══════════════════════════════════════════════
+  // 代金を受け取るのは当社で、答える女性ではない。
+  // Connect（application_fee / transfer_data / on_behalf_of /
+  // stripe_account）を使い始めた時点で、決済の形が
+  // 「当社が売る」から「当社が場を貸して分配する」に変わる。
+  //
+  // そうなると、規約・特商法・Stripe への説明の全部を
+  // 書き直さなければならない。黙って入らないようにする。
+  //
+  // 本当に必要になったら、この判定を外すのと一緒に、
+  // 規約・特商法・事業説明も直すこと。
+  for (const k of Object.keys(sample)) {
+    if (/application_fee|transfer_data|on_behalf_of|stripe_account|destination/.test(k)) {
+      throw new Error(
+        `Checkout に「${k}」が入っています。当社が売主です（Connect を使うなら、規約・特商法・Stripeへの説明も一緒に直してください）`,
+      );
+    }
+  }
 }

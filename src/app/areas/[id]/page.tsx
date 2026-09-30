@@ -22,7 +22,15 @@ import { site, ogImage } from "@/lib/site";
 // 「AGA 費用」のような具体語で下位記事に当たる。だから②の全件リストが要る。
 
 const MINCHO: React.CSSProperties = {
-  fontFamily: "var(--font-shippori), 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+  // 明朝をやめた。
+  //
+  // 記事の見出しだけ明朝で、タシカメの画面はゴシック。
+  // 同じサイトの中で書体が変わると、別のサイトに見える。
+  // 検索から来た人は、記事を読んだあとタシカメへ入る。
+  //
+  // 名前（MINCHO）は50か所で使われている。
+  // 名前を変えると50か所を触ることになるので、中身だけ差し替えた。
+  fontFamily: "inherit",
   fontFeatureSettings: '"palt" 1',
 };
 

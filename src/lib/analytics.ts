@@ -70,6 +70,14 @@ export const CONVERSION_EVENTS = [
   //   プラン別購入率  purchase_paid の props.plan の分布
   //   再購入率        purchase_paid の props.nth が 2 以上の割合
   //   返金率          purchase_refunded / purchase_paid
+  //
+  // 商品が4つになったので、purchase_paid には
+  //   family         text / call（文章か、声か）
+  //   purchase_type  single / pass（単発か、まとめ買いか）
+  //   credits        何回ぶん付いたか
+  // も入れてある。plan だけだと、
+  // 「単発とパスのどちらが選ばれるか」を、文章と声で比べられない。
+  // 消化率は、これと pass_used の件数を突き合わせて出す。
   // ── 6分野のどれが勝てるか（記事側の検証）──
   // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
   "market_select", // 需要: その悩みがあると選ばれた
@@ -142,6 +150,14 @@ export const CONVERSION_EVENTS = [
   "step_picked", // いまどこで悩んでいるかを選んだ（props: step）
   "continue_picked", // 前回の続きとして相談した（props: n＝何回目）
   "thread_started", // 同じ相手としてまとめ始めた
+
+  // ── 紹介動画 ──
+  // トップに置いた動画が、実際に押されているか（props: id）。
+  // 押されないなら、置いている意味が無い（1画面ぶん場所を取っている）。
+  // 押されているのに相談まで進まないなら、直すのは動画の中身。
+  // 再生しただけでは何も読み込まれないので、この数は
+  // 「見た人」ではなく「見ようとした人」の数。
+  "video_played",
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];

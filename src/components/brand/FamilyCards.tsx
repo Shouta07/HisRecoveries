@@ -32,7 +32,6 @@ import Yen from "@/components/brand/Yen";
 const ART: Record<Family, Plan["id"]> = {
   text: "review",
   call: "call15",
-  mock: "mockdate",
 };
 
 function unitYen(p: Plan): number {
