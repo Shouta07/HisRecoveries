@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
@@ -9,7 +10,7 @@ import {
   ENTRY_PLAN,
   DEFAULT_PLAN,
 } from "@/lib/ask/plans";
-import { MOMENTS, PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
+import { PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
 import TodayReviewers from "@/components/brand/TodayReviewers";
 import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO, count } from "@/lib/ask/demo";
@@ -714,32 +715,26 @@ export default async function HomePage() {
             置き換えると、押せなくなり、読み上げにも検索にも乗らなくなる */}
         <MomentsArt alt="送る前に手が止まる、いくつもの場面" />
 
-        {/* 押せるようにする。読ませて終わりにしない。
-            自分のが1つでもあれば、その場面から始められる */}
-        <ul className="mt-6 flex flex-col gap-2">
-          {MOMENTS.map((m, i) => (
-            <Reveal key={m.line} delay={i * 40}>
-              <li>
-                <PlanCta
-                  plan={DEFAULT_PLAN}
-                  from={`pain_${m.cat}`}
-                  category={m.cat}
-                  className="!flex w-full !items-start !justify-start gap-3 rounded-card border border-line bg-paper px-4 py-3.5 text-left !text-slate shadow-card transition-shadow hover:shadow-card-hover"
-                >
-                  {/* 2行になる行があるので、点は1行目の高さに合わせる。
-                      中央に合わせると、長い行だけ点が下がって見える */}
-                  <span
-                    aria-hidden
-                    className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
-                  />
-                  <span className="min-w-0 text-[14.5px] font-bold leading-[1.6]">
-                    {m.line}
-                  </span>
-                </PlanCta>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
+        {/* ══════════════════════════════════════════
+            8つの一覧は外した
+            ══════════════════════════════════════════
+            場面を1つずつ押せるようにしていた（押すとその
+            カテゴリを選んだ状態で相談が始まる）。
+
+            絵の中に同じ場面が全部描かれているので、
+            下に文字で並べると二度読ませることになっていた。
+
+            押す先は1つだけ残す。カテゴリの選択は、
+            相談を書く画面の最初で選べる。 */}
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="pain"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            自分の場面を確かめる <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
+        </div>
 
         {/* 「検索すれば／AIに聞けば」の3行は、ここに置いていた。
             置き場所としては早すぎた。
@@ -965,47 +960,31 @@ export default async function HomePage() {
           {COMPARE_SCOPE}
         </p>
 
-        {/* ── 狭い画面：行ごとに積む ── */}
-        <div className="mt-7 flex flex-col gap-3 sm:hidden">
-          {COMPARE.map((r) => (
-            <div key={r.id} className="rounded-card border border-line bg-paper p-4 shadow-card">
-              <p className="text-[11.5px] font-black text-steel">{r.label}</p>
-              <div className="mt-2 rounded-soft bg-brand-tint px-3 py-2.5">
-                <p className="text-[10.5px] font-black leading-none text-brand-deep">
-                  {SHOWN_ALTERNATIVES[0].label}
-                </p>
-                <p className="mt-1.5 text-[13px] font-bold leading-[1.6] text-slate">
-                  {r.cells[SHOWN_ALTERNATIVES[0].id]}
-                </p>
-              </div>
-              <dl className="mt-2.5 flex flex-col gap-2 border-t border-line pt-2.5">
-                {SHOWN_ALTERNATIVES.slice(1).map((a) => (
-                  <div key={a.id} className="grid grid-cols-[6.4em_1fr] gap-2">
-                    <dt className="text-[11px] font-bold leading-[1.6] text-steel">{a.label}</dt>
-                    <dd className="min-w-0 text-[11.5px] leading-[1.65] text-steel">
-                      {r.cells[a.id]}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          ))}
-        </div>
+        {/* ══════════════════════════════════════════════
+            どの幅でも、表のまま
+            ══════════════════════════════════════════════
+            狭い画面では行ごとに積んでいた。読めるが、
+            4つを見比べる形にはならない（縦に流れるだけ）。
 
-        {/* ── 広い画面：そのまま表に ── */}
-        <div className="mt-7 hidden sm:block">
-          <table className="w-full table-fixed border-collapse text-left">
-            <caption className="sr-only">
-              タシカメと、ほかの選び方の違い
-            </caption>
+            列の見出し（タシカメ / AI / 友達 / 恋愛コンサル）を
+            いちばん上に1回だけ置き、以下は
+              見出し行（使うとき）＝4列ぶち抜き
+              中身の行＝4列
+            の繰り返しにする。
+
+            こうすると 390px でも1列 80px ほど取れて、
+            横に流さずに4つを並べられる。
+            項目名を左の列にすると、そのぶん狭くなって成立しない。 */}
+        <div className="mt-7">
+          <table className="w-full table-fixed border-collapse">
+            <caption className="sr-only">タシカメと、ほかの選び方の違い</caption>
             <thead>
               <tr>
-                <th scope="col" className="w-[7.5em] p-0" />
                 {SHOWN_ALTERNATIVES.map((a) => (
                   <th
                     key={a.id}
                     scope="col"
-                    className={`rounded-t-card px-3.5 py-3 align-bottom text-[13.5px] font-black leading-[1.4] ${
+                    className={`w-1/4 rounded-t-soft px-1.5 py-2 text-center align-bottom text-[10.5px] font-black leading-[1.35] sm:px-3 sm:py-3 sm:text-[13.5px] ${
                       a.us ? "bg-brand text-paper" : "text-steel"
                     }`}
                   >
@@ -1015,27 +994,30 @@ export default async function HomePage() {
               </tr>
             </thead>
             <tbody>
-              {COMPARE.map((r, i) => (
-                <tr key={r.id} className="align-top">
-                  <th
-                    scope="row"
-                    className="border-t border-line py-3.5 pr-3 text-[12px] font-black leading-[1.5] text-steel"
-                  >
-                    {r.label}
-                  </th>
-                  {SHOWN_ALTERNATIVES.map((a) => (
-                    <td
-                      key={a.id}
-                      className={`border-t border-line px-3.5 py-3.5 text-[12.5px] leading-[1.7] ${
-                        a.us
-                          ? "bg-brand-tint font-bold text-slate"
-                          : "text-steel"
-                      } ${a.us && i === COMPARE.length - 1 ? "rounded-b-card" : ""}`}
+              {COMPARE.map((r) => (
+                <Fragment key={r.id}>
+                  <tr>
+                    <th
+                      scope="colgroup"
+                      colSpan={SHOWN_ALTERNATIVES.length}
+                      className="border-t border-line pb-1 pt-3.5 text-left text-[11.5px] font-black text-steel sm:pt-4 sm:text-[12.5px]"
                     >
-                      {r.cells[a.id]}
-                    </td>
-                  ))}
-                </tr>
+                      {r.label}
+                    </th>
+                  </tr>
+                  <tr className="align-top">
+                    {SHOWN_ALTERNATIVES.map((a) => (
+                      <td
+                        key={a.id}
+                        className={`px-1.5 py-2 text-[10.5px] leading-[1.6] sm:px-3 sm:py-2.5 sm:text-[12.5px] ${
+                          a.us ? "bg-brand-tint font-bold text-slate" : "text-steel"
+                        }`}
+                      >
+                        {r.cells[a.id]}
+                      </td>
+                    ))}
+                  </tr>
+                </Fragment>
               ))}
             </tbody>
           </table>

@@ -1,5 +1,4 @@
 import Slot from "@/components/brand/Slot";
-import { MOMENTS } from "@/lib/ask/pain";
 import { PLANS, FAMILIES } from "@/lib/ask/plans";
 import { IMAGES } from "@/lib/images";
 
@@ -401,11 +400,26 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
-  // 吹き出しに使えるだけの場面があること。
-  // pain.ts が5つ以上を保証しているが、
-  // ここが3つ未満になると絵として成立しない。
-  if (MOMENTS.length < 3) {
-    throw new Error(`1画面目の吹き出しに使える場面が ${MOMENTS.length} 個しかありません`);
+  // ══════════════════════════════════════════════
+  // 実際に出ている言葉を、ここで見る
+  // ══════════════════════════════════════════════
+  // 前は pain.ts の MOMENTS を見ていた。
+  // あちらは「こんな瞬間」の押せる一覧で、いまは画面に出していない。
+  // 出ていないものを見張っても、何も守らない。
+  //
+  // 見るのは、この絵に実際に出る BUBBLES のほう。
+  if (BUBBLES.length < 3) {
+    throw new Error(`1画面目の吹き出しが ${BUBBLES.length} 個しかありません`);
+  }
+  // 相手の気持ちを当てる商売にしない。
+  // 「脈あり」は、言葉のほうでは3か所で止めている。
+  // 1画面目に出る言葉も、同じ線を引く
+  // （絵に焼き込まれているぶんは、判断済みの例外。MomentsArt に書いてある）。
+  for (const b of BUBBLES) {
+    const line = b.lines.join("");
+    if (/脈あり|脈なし|本命|好きかどうか|気持ちを当て/.test(line)) {
+      throw new Error(`1画面目の吹き出し「${line}」が、相手の気持ちの判定になっています`);
+    }
   }
   // 相談のしかたが2つあること。
   // 1つになったら、この並べ方（2列）をやめること。
