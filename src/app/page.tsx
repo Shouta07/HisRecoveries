@@ -21,6 +21,7 @@ import {
   COMPARE_NOTE,
   COMPARE_SCOPE,
   INSTEAD,
+  SHOWN_ALTERNATIVES,
 } from "@/lib/ask/compare";
 import { VERDICTS, PANEL_AGES, ATTRS_OPEN } from "@/lib/ask/model";
 import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, TAGLINE, TAB_TITLE } from "@/lib/voice";
@@ -38,6 +39,8 @@ import type { ImageKey } from "@/lib/images";
 import HeroBoard from "@/components/brand/HeroBoard";
 import VideoEmbed from "@/components/brand/VideoEmbed";
 import MomentsArt from "@/components/brand/MomentsArt";
+import { hasPublicFile } from "@/lib/publicFile";
+import { URGENCY } from "@/lib/economics";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -426,6 +429,24 @@ function label(v: string) {
   return VERDICTS.find((x) => x.id === v)?.label ?? v;
 }
 
+/* ── 公開の前に止めること ─────────────────────────
+   1画面目で「追加料金なし」と書いている。
+   上乗せを売りはじめた日に、この印は嘘になる。
+
+   economics.ts 側にも「速さを担保できるまで売らない」判定が
+   あるが、あちらは担保できたら通る。通った瞬間に
+   こちらが嘘になるので、ここからも見ておく。 */
+{
+  const extra = URGENCY.filter((u) => u.addYen > 0 && u.available);
+  if (extra.length > 0) {
+    throw new Error(
+      `1画面目に「追加料金なし」と書いていますが、上乗せ（${extra
+        .map((u) => u.label)
+        .join("・")}）を売っています。印を外すか、上乗せを止めてください`,
+    );
+  }
+}
+
 export default async function HomePage() {
   const entry = getPlan(ENTRY_PLAN);
   const main = getPlan(DEFAULT_PLAN);
@@ -577,7 +598,9 @@ export default async function HomePage() {
                 「実在の女性が回答」  審査を通った女性だけが答える
                 「匿名でOK」          名前も連絡先も要らない（鍵だけ）
                 「都度払い」          必要なときだけ
-                「月額なし」          自動更新もしない
+                「追加料金なし」      急ぎの上乗せ（economics.ts の URGENCY）は
+                                      どれも available: false。売っていない。
+                                      売りはじめたら、この印を外すこと
                 ここに「返金保証」などを足さないこと。
                 条件が付くものを1語で書くと、書いた時点で嘘になる。 */}
             <ul className="mt-6 grid grid-cols-4 gap-2 sm:mt-7 sm:gap-3">
@@ -585,7 +608,7 @@ export default async function HomePage() {
                 { label: "実在の女性\nが回答", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0Z" },
                 { label: "匿名でOK", d: "M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z" },
                 { label: "都度払い", d: "M3 6h18v12H3V6Zm2 3v2h14V9H5Zm0 4v2h7v-2H5Z" },
-                { label: "月額なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
+                { label: "追加料金なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
               ].map((b) => (
                 <li key={b.label} className="flex flex-col items-center text-center">
                   <span
@@ -636,9 +659,12 @@ export default async function HomePage() {
       <section className="bg-paper">
         <Wrap>
           <div className="mx-auto max-w-[760px] py-10 sm:py-14">
+            {/* 表紙が置いてあれば、そちらを使う（YouTube の絵を当てにしない）。
+                public/img/video-poster.jpg */}
             <VideoEmbed
               title="タシカメは、どういうサービスか"
               caption="2分ほどです。音が出ます。"
+              poster={hasPublicFile("/img/video-poster.jpg") ? "/img/video-poster.jpg" : null}
             />
           </div>
         </Wrap>
@@ -907,105 +933,82 @@ export default async function HomePage() {
           押す場所は減らしていない。ここにあった
           「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
 
-      {/* ══ 4. ほかの選び方との違い ══ */}
-      {/* 比較広告は景表法の対象。実証・正確な引用・公正な比較の3つが要る。
-          他社の金額は書かない（出典が無い）。事実に反することも書かない
-          （AIは無料で使えるものが多い）。中身と判定は lib/ask/compare.ts。 */}
+      {/* ══ 4. ほかの選び方と、どう違うか ══ */}
+      {/* ══════════════════════════════════════════════
+          6列をやめて4列にした
+          ══════════════════════════════════════════════
+          マッチングアプリ・結婚相談所・恋愛コンサル・友達・AI の
+          5つと並べた表を出していた。390px では1列 50px ほどになり、
+          横に流すしかなくなる。流した先は読まれない。
+
+          実際に迷われているのは、この3つとの間。
+            AIに聞けばいい / 友達に聞けばいい / 恋愛コンサルに頼めばいい
+          出会いを作るもの（アプリ・結婚相談所）は、そもそも
+          同じことをしていない。データは compare.ts に残してある。
+
+          ══════════════════════════════════════════════
+          横に流さない
+          ══════════════════════════════════════════════
+          狭い画面では、行ごとに積む（使うとき／料金のかたち／…）。
+          1つの行の中で、タシカメと他の3つを縦に並べる。
+          広い画面では、そのまま4列の表にする。
+          どちらの幅でも、横スクロールは起きない。
+
+          ══════════════════════════════════════════════
+          比較広告は景表法の対象
+          ══════════════════════════════════════════════
+          他社の金額は書かない（出典が無い）。
+          事実に反することも書かない（AIは無料で使えるものが多い）。
+          勝てない行（知られるか＝AIも同じ）を消さない。
+          中身と判定は lib/ask/compare.ts。 */}
       <Block tint>
         <H>ほかの選び方と、どう違うか。</H>
-        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
-          いちばん多いのは「友達に聞けばいい」「AIに聞けばいい」です。
-          どちらもふつうに役に立ちます。足りないのは1点だけです。
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          {COMPARE_SCOPE}
         </p>
 
-        {/* ── 先に、いちばん多い2つに答える ──
-            6列の表はスマホで横に切れて読まれない。
-            読まれないまま「友達でいいや」「AIでいいや」で閉じられる。
-            表の前に、その2つだけ縦で答える。 */}
-        <ul className="mt-8 flex flex-col gap-3">
-          {INSTEAD.map((x, i) => (
-            <Reveal key={x.id} delay={i * 60}>
-              <li className="rounded-card border border-line bg-paper p-5 shadow-card">
-                <p className="text-[16px] font-black text-slate">{x.label}</p>
-
-                <div className="mt-3 flex items-start gap-2.5">
-                  <span
-                    aria-hidden
-                    className="mt-[3px] shrink-0 text-[11px] font-black text-ok-text"
-                  >
-                    ✓
-                  </span>
-                  <p className="min-w-0 text-[13.5px] leading-[1.8] text-steel">
-                    <span className="font-bold text-slate">足りるとき：</span>
-                    {x.enough}
-                  </p>
-                </div>
-
-                <div className="mt-2.5 flex items-start gap-2.5 border-t border-line pt-3">
-                  <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
-                    →
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-[14px] font-black leading-[1.6] text-brand-deep">
-                      {x.short}
-                    </p>
-                    <p className="mt-1.5 text-[13px] leading-[1.8] text-steel">{x.why}</p>
+        {/* ── 狭い画面：行ごとに積む ── */}
+        <div className="mt-7 flex flex-col gap-3 sm:hidden">
+          {COMPARE.map((r) => (
+            <div key={r.id} className="rounded-card border border-line bg-paper p-4 shadow-card">
+              <p className="text-[11.5px] font-black text-steel">{r.label}</p>
+              <div className="mt-2 rounded-soft bg-brand-tint px-3 py-2.5">
+                <p className="text-[10.5px] font-black leading-none text-brand-deep">
+                  {SHOWN_ALTERNATIVES[0].label}
+                </p>
+                <p className="mt-1.5 text-[13px] font-bold leading-[1.6] text-slate">
+                  {r.cells[SHOWN_ALTERNATIVES[0].id]}
+                </p>
+              </div>
+              <dl className="mt-2.5 flex flex-col gap-2 border-t border-line pt-2.5">
+                {SHOWN_ALTERNATIVES.slice(1).map((a) => (
+                  <div key={a.id} className="grid grid-cols-[6.4em_1fr] gap-2">
+                    <dt className="text-[11px] font-bold leading-[1.6] text-steel">{a.label}</dt>
+                    <dd className="min-w-0 text-[11.5px] leading-[1.65] text-steel">
+                      {r.cells[a.id]}
+                    </dd>
                   </div>
-                </div>
-              </li>
-            </Reveal>
+                ))}
+              </dl>
+            </div>
           ))}
-        </ul>
-
-        <p className="mt-5 text-[14.5px] font-black leading-[1.7] text-slate">
-          タシカメが返すのは、相手と同じ側に立つ、あなたを知らない女性が
-          実際にどう受け取ったかです。
-        </p>
-
-        {/* ほかの手段を否定しない。足りない1点だけを書く。
-            「役に立たない」と言った時点で、読んでいる人の実感と食い違う。
-
-            前は1画面目の下に置いていたが、そこでは早すぎた。
-            友達とAIの話をしている、この場所に移した */}
-        <div className="mt-6 rounded-card bg-mist px-5 py-5 sm:px-6">
-          <p className="text-[13.5px] leading-[1.9] text-steel">{BRIDGE.known}</p>
-          <p className="mt-3 text-[16px] font-black leading-[1.7] text-slate sm:text-[17px]">
-            {BRIDGE.gap}
-          </p>
-          <p className="mt-3 border-t border-line pt-3 text-[13.5px] font-bold leading-[1.8] text-brand-deep">
-            {BRIDGE.close}
-          </p>
         </div>
 
-        {/* 表は、もっと詳しく知りたい人のため。
-            スマホでは畳んでおく（開かなくても上の2つで足りる） */}
-        <details className="group mt-7">
-          <summary className="flex min-h-[48px] cursor-pointer list-none items-center gap-2 text-[13.5px] font-bold text-brand">
-            結婚相談所・マッチングアプリとの違いも見る
-            <span
-              aria-hidden
-              className="text-[16px] leading-none transition-transform group-open:rotate-45"
-            >
-              +
-            </span>
-          </summary>
-
-          <p className="mt-3 text-[13px] leading-[1.85] text-steel">{COMPARE_SCOPE}</p>
-          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-steel lg:hidden">
-            <span aria-hidden>↔</span> 表は横にスクロールできます
-          </p>
-
-        <div className="mt-3 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0 lg:mt-5">
-          <table className="w-full min-w-[880px] border-collapse overflow-hidden rounded-card border border-line bg-paper shadow-card">
+        {/* ── 広い画面：そのまま表に ── */}
+        <div className="mt-7 hidden sm:block">
+          <table className="w-full table-fixed border-collapse text-left">
+            <caption className="sr-only">
+              タシカメと、ほかの選び方の違い
+            </caption>
             <thead>
               <tr>
-                <th scope="col" className="w-[6.5em] bg-paper px-3 py-3" />
-                {ALTERNATIVES.map((a) => (
+                <th scope="col" className="w-[7.5em] p-0" />
+                {SHOWN_ALTERNATIVES.map((a) => (
                   <th
                     key={a.id}
                     scope="col"
-                    className={`px-3 py-3 text-[13px] font-black leading-[1.4] ${
-                      a.us ? "bg-brand text-paper" : "bg-mist text-steel"
+                    className={`rounded-t-card px-3.5 py-3 align-bottom text-[13.5px] font-black leading-[1.4] ${
+                      a.us ? "bg-brand text-paper" : "text-steel"
                     }`}
                   >
                     {a.label}
@@ -1014,20 +1017,22 @@ export default async function HomePage() {
               </tr>
             </thead>
             <tbody>
-              {COMPARE.map((r) => (
-                <tr key={r.id} className="border-t border-line">
+              {COMPARE.map((r, i) => (
+                <tr key={r.id} className="align-top">
                   <th
                     scope="row"
-                    className="px-3 py-3 text-left align-top text-[12px] font-bold leading-[1.6] text-steel"
+                    className="border-t border-line py-3.5 pr-3 text-[12px] font-black leading-[1.5] text-steel"
                   >
                     {r.label}
                   </th>
-                  {ALTERNATIVES.map((a) => (
+                  {SHOWN_ALTERNATIVES.map((a) => (
                     <td
                       key={a.id}
-                      className={`px-3 py-3 align-top text-[12px] leading-[1.7] ${
-                        a.us ? "bg-brand-tint font-bold text-brand-deep" : "text-steel"
-                      }`}
+                      className={`border-t border-line px-3.5 py-3.5 text-[12.5px] leading-[1.7] ${
+                        a.us
+                          ? "bg-brand-tint font-bold text-slate"
+                          : "text-steel"
+                      } ${a.us && i === COMPARE.length - 1 ? "rounded-b-card" : ""}`}
                     >
                       {r.cells[a.id]}
                     </td>
@@ -1038,8 +1043,7 @@ export default async function HomePage() {
           </table>
         </div>
 
-          <p className="mt-4 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
-        </details>
+        <p className="mt-5 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
 
         <div className="mt-7 max-w-[26em]">
           <PlanCta
@@ -1217,56 +1221,40 @@ export default async function HomePage() {
 
       {/* ══ フッター ══ */}
       {/* ══════════════════════════════════════════════
-          誰が売っているのかを、隠さない
+          残すのは、外せないものだけ
           ══════════════════════════════════════════════
-          前はフッターごと外していて、運営会社の名前も、
-          法定の表記への道も、ハンバーガーメニューの中だけにあった。
+          前は、社名・住所・メール・4つのリンクに加えて、
+          「契約と決済の相手方は当社」の3行まで置いていた。
+          最後まで読んだ人に、もう一度全部読ませる形になっていた。
 
-          畳んであるのは「隠していない」とは違う。
-          初めて来た人が、誰から買うのかを確かめようとしたときに、
-          メニューを開かないと分からないのは遠い。
+          住所とメールは /legal にある。
+          商流の説明は利用規約の第1〜3条と、/legal の販売事業者の欄にある。
+          ここで繰り返す必要は無い。
 
-          ここに置くのは4つだけ。
-            誰が売っているか
-            特定商取引法に基づく表記
-            利用規約 / プライバシー
-            連絡先
-          増やさない。増やすと、また読まれないものになる。
+          外せないのは2つだけ。
+            誰が売っているか（社名）
+            特定商取引法に基づく表記への道
 
-          答える側への入口は、ここにも置かない。
-          ここは買う人の画面で、最後に「自分は答える側かもしれない」と
-          思わせると、押す先が2つになって、どちらも押されなくなる。
-          回答者の募集は、個別に案内する。 */}
+          この2つは、決済を扱う以上、トップから辿れる必要がある。
+          畳んで（メニューの中だけに）しまうと、
+          初めて来た人が確かめようとしたときに遠い。
+
+          目立たせない。色は本文より薄く、字も小さく、1行に畳む。 */}
       <footer className="border-t border-line bg-paper">
-        <Wrap className="py-10 sm:py-12">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-[12px] font-bold text-steel">運営</p>
-              <p className="mt-1 text-[14.5px] font-black text-slate">
-                {site.company.name}
-              </p>
-              <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">
-                {site.company.postalCode} {site.company.address}
-              </p>
-              <a
-                href={`mailto:${site.company.email}`}
-                className="mt-2 inline-flex min-h-[36px] items-center text-[12.5px] font-bold text-brand underline decoration-line underline-offset-4"
-              >
-                {site.company.email}
-              </a>
-            </div>
-
-            <ul className="flex flex-col gap-2.5 sm:items-end">
+        <Wrap className="py-7 sm:py-8">
+          <div className="flex flex-col gap-2.5 text-[11.5px] leading-[1.7] text-steel sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <p className="min-w-0">{site.company.name}</p>
+            <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
               {[
                 ["/legal", "特定商取引法に基づく表記"],
                 ["/terms", "利用規約"],
-                ["/privacy", "プライバシー・免責事項"],
+                ["/privacy", "プライバシー"],
                 ["/articles", "たしかメディア"],
               ].map(([href, label]) => (
                 <li key={href}>
                   <Link
                     href={href}
-                    className="inline-flex min-h-[36px] items-center text-[13px] font-bold text-steel transition-colors hover:text-brand"
+                    className="transition-colors hover:text-brand"
                   >
                     {label}
                   </Link>
@@ -1274,12 +1262,6 @@ export default async function HomePage() {
               ))}
             </ul>
           </div>
-
-          <p className="mt-8 border-t border-line pt-6 text-[11.5px] leading-[1.8] text-steel">
-            {NAME}は、{site.company.name}が提供するオンライン恋愛相談サービスです。
-            お客様との契約および決済の相手方は当社です。
-            回答する女性は当社の業務委託先であり、お客様への販売者ではありません。
-          </p>
         </Wrap>
       </footer>
     </div>

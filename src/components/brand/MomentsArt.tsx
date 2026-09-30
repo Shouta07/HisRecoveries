@@ -1,5 +1,4 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { hasPublicFile } from "@/lib/publicFile";
 
 // 「こんな瞬間、ありませんか？」の絵。
 //
@@ -27,13 +26,49 @@ import { join } from "node:path";
 // 一覧は、思ったその場から始めるためのもの。役割が違う。
 // 絵を上に置いて、一覧はそのまま残す。
 
+// ══════════════════════════════════════════════════
+// 絵の中の「脈あり」について（決めたこと）
+// ══════════════════════════════════════════════════
+// この絵の吹き出しに「脈あり」が2か所ある。
+//   今のメッセージ 脈あり…？ それとも社交辞令…？
+//   これって脈ありサイン…？
+//
+// 言葉のほうは、3か所の判定で「脈あり」を止めている。
+//   lib/ask/pain.ts    MIND_READING
+//   lib/ask/plans.ts   使う瞬間の判定
+//   lib/ask/cases.ts   回答の見本の判定
+// 理由は「相手の気持ちを当てる商売にしない」。
+// 判定を売ると、当たり外れのある占いになる。
+//
+// 絵は判定を通らないので、ここだけ例外になっている。
+// これは見落としではなく、そのまま出すと決めたもの。
+//
+// ── なので、直さないこと ──────────────────────
+// 不整合に見えるが、判断済み。
+// 戻したくなったときは、絵を作り直す側で直す
+// （吹き出しの文言を「どう受け取られた…？」などに替える）。
+// 判定のほうを緩めない。緩めると、言葉の側まで崩れる。
+//
+// 売っているものは「読んだ女性が実際にどう受け取ったか」であって、
+// 「相手があなたを好きかどうか」の判定ではない。
+// そこは利用規約 第12条（回答は相手の気持ちを判定するものではない）が持つ。
+
 export default function MomentsArt({ alt }: { alt: string }) {
   // public/ の中を見る。ビルドのときに1回だけ動く
-  const file = "/img/moments.png";
-  if (!existsSync(join(process.cwd(), "public", file))) return null;
+  const file = "/img/moments.jpg";
+  if (!hasPublicFile(file)) return null;
 
   return (
-    <div className="mt-6 overflow-hidden rounded-card border border-line bg-sky shadow-card">
+    // ══════════════════════════════════════════════
+    // 幅を止める
+    // ══════════════════════════════════════════════
+    // 941×1672 の縦長。幅いっぱいに置くと、
+    // 広い画面では高さが1300pxを超えて、
+    // 下の一覧が画面の外へ押し出される。
+    //
+    // 420px で止めて、真ん中に置く。
+    // スマホではそのまま幅いっぱいになる。
+    <div className="mx-auto mt-6 max-w-[420px] overflow-hidden rounded-card border border-line bg-sky shadow-card">
       {/* 幅いっぱい。縦横比は画像そのものに任せる
           （決め打ちすると、差し替えたときに切れる） */}
       {/* eslint-disable-next-line @next/next/no-img-element */}

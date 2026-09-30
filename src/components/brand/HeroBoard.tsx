@@ -87,9 +87,81 @@ function Stage({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * 1画面目の吹き出し。
+ *
+ * ══════════════════════════════════════════════════
+ * ここだけ、MOMENTS を使わない
+ * ══════════════════════════════════════════════════
+ * すぐ下の「こんな瞬間、ありませんか？」（MOMENTS）は、
+ * 1つずつが押せて、その場面の相談へ入る口になっている。
+ * だから pain.ts には「押した先が受付中か」「画像を前提に
+ * していないか」という判定が付いている。
+ *
+ * ここは押せない。頭の中の声を、絵として出しているだけ。
+ * 行き先が無いので、行き止まりにもならない。
+ *
+ * そのぶん、実際に頭に浮かぶ言葉そのままにできる。
+ * 「この写真どっちがいい…？」は、文章・画像で確カメる
+ * （FAMILIES の text）が受けている相談そのもの。
+ *
+ * 押せる一覧のほうは MOMENTS のまま。役割が違う。
+ */
+const BUBBLES: { lines: [string, string]; icon: "msg" | "date" | "photo" }[] = [
+  { lines: ["またご飯行こう〜", "この返事どう送る…？"], icon: "msg" },
+  { lines: ["この写真", "どっちがいい…？"], icon: "photo" },
+  { lines: ["次のデート", "どう誘う…？"], icon: "date" },
+];
+
+/**
+ * 写真の上に、手で書いたように置く一言。
+ *
+ * 吹き出しは「頭の中で鳴っている別々の声」だが、
+ * これはいちばん手前にある迷いそのもの。
+ * 箱に入れず、写真に直接のせる。
+ */
+const OVERLAY = ["これって", "送っていいのかな…？"];
+
+/** 吹き出しの頭に置く小さな印 */
+function BubbleIcon({ kind }: { kind: "msg" | "date" | "photo" }) {
+  const tone =
+    kind === "msg" ? "bg-ok-tint text-ok-text"
+    : kind === "date" ? "bg-rose-tint text-rose-text"
+    : "bg-brand-tint text-brand";
+  const d =
+    kind === "msg" ? "M4 5h16v11H7.5L4 19.5V5Z"
+    : kind === "date" ? "M5 4h14v16H5V4Zm2 5v9h10V9H7Zm1-7h2v3H8V2Zm6 0h2v3h-2V2Z"
+    : "M4 5h16v14H4V5Zm2 2v8l4-4 3 3 3-3 2 2V7H6Zm3 2a1.4 1.4 0 1 1 0 2.8A1.4 1.4 0 0 1 9 9Z";
+  return (
+    <span
+      aria-hidden
+      className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[7px] sm:h-[26px] sm:w-[26px] ${tone}`}
+    >
+      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="currentColor">
+        <path d={d} />
+      </svg>
+    </span>
+  );
+}
+
+/** 「！」の代わりの、短い線3本。よかったことの印 */
+function Sparks({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      className={`text-brand ${className}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+    >
+      <path d="M4 10 1.5 8M6 6 4.5 3M10 4.5 10 1.5" />
+    </svg>
+  );
+}
+
 export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
-  // 吹き出しは3つまで。増やすと顔が隠れる
-  const bubbles = MOMENTS.slice(0, 3);
 
   // 家族ごとに1つ、代表の商品を出す。
   // 値段はここに書かない（1画面目に金額を出すと、
@@ -120,18 +192,52 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
               aria-hidden
               className="absolute inset-0 bg-gradient-to-l from-slate/55 via-slate/20 to-transparent"
             />
+            {/* 左下に白い文字をのせるので、そこだけ足す */}
+            <span
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-slate/60 to-transparent"
+            />
           </div>
 
           <Stage>Before</Stage>
 
-          {/* 手が止まっている中身。右側に重ねる */}
-          <ul className="absolute inset-y-0 right-2.5 flex w-[64%] max-w-[330px] flex-col justify-center gap-2 sm:right-4 sm:w-[58%] sm:gap-2.5">
-            {bubbles.map((m) => (
+          {/* 頭の中のもつれ。1本の線で描く（素材を足さない） */}
+          <svg
+            aria-hidden
+            viewBox="0 0 60 44"
+            className="absolute left-3 top-[54px] h-8 w-11 text-paper/85 sm:left-5 sm:top-[72px] sm:h-11 sm:w-14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M14 30c-9 2-13-5-7-9s18-2 14 4-14 6-12-2 12-12 20-8 9 12 2 15-14-3-8-8 18-3 21 3" />
+          </svg>
+
+          {/* いちばん手前にある迷い。箱に入れず、写真に直接のせる */}
+          <p className="absolute bottom-3 left-3 max-w-[46%] text-[13px] font-black leading-[1.5] text-paper sm:bottom-5 sm:left-5 sm:text-[17px]">
+            {OVERLAY[0]}
+            <br />
+            {OVERLAY[1]}
+          </p>
+
+          {/* 手が止まっている中身。右側に重ねる。
+              3つを少しずつ左右にずらす。きれいに揃えると一覧表に見えて、
+              「頭の中で同時に鳴っている」感じが出ない */}
+          <ul className="absolute inset-y-0 right-2.5 flex w-[66%] max-w-[330px] flex-col justify-center gap-2 sm:right-4 sm:w-[60%] sm:gap-2.5">
+            {BUBBLES.map((b, i) => (
               <li
-                key={m.line}
-                className="rounded-card rounded-br-[4px] bg-paper px-3 py-2 text-[11.5px] font-bold leading-[1.55] text-slate shadow-card sm:px-3.5 sm:py-2.5 sm:text-[13.5px]"
+                key={b.lines[0]}
+                className={`flex items-start gap-2 rounded-[16px] bg-paper px-2.5 py-2 shadow-card sm:gap-2.5 sm:px-3 sm:py-2.5 ${
+                  i === 1 ? "ml-3 sm:ml-5" : i === 2 ? "ml-1.5 sm:ml-2.5" : ""
+                }`}
               >
-                {m.line}
+                <BubbleIcon kind={b.icon} />
+                <span className="min-w-0 text-[11.5px] font-bold leading-[1.5] text-slate sm:text-[13.5px]">
+                  {b.lines[0]}
+                  <br />
+                  {b.lines[1]}
+                </span>
               </li>
             ))}
           </ul>
@@ -143,16 +249,20 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
         <div className="rounded-card bg-mist p-3.5 shadow-card sm:p-5">
           <div className="flex items-center gap-3.5 sm:gap-5">
             {/* 素材が 202×198 しかないので、大きくしない（伸ばすと粗が出る） */}
-            <Slot
-              name="w1"
-              rounded="rounded-card"
-              className="h-[88px] w-[88px] shrink-0 sm:h-[116px] sm:w-[116px]"
-            />
+            <div className="relative shrink-0">
+              <Slot
+                name="w1"
+                rounded="rounded-card"
+                className="h-[92px] w-[92px] sm:h-[120px] sm:w-[120px]"
+              />
+              <Sparks className="absolute -left-1 -top-1 h-4 w-4 sm:h-5 sm:w-5" />
+            </div>
             <p className="min-w-0 text-[15px] font-black leading-[1.55] text-slate sm:text-[19px]">
-              実在する女性に相談して、
-              <br className="hidden sm:block" />
-              本音の反応を
-              <span className="text-brand">確カメる</span>。
+              実在する女性に
+              <br />
+              相談して、
+              <br />
+              本音の反応を<span className="text-brand">確カメる</span>。
             </p>
           </div>
 
@@ -164,30 +274,48 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
             {ways.map((w) => (
               <li
                 key={w.id}
-                className="flex min-w-0 flex-col items-center gap-1.5 rounded-card bg-paper px-2.5 py-3 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 sm:text-left"
+                className={`flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-[999px] px-2.5 py-3 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 ${
+                  w.id === "call" ? "bg-ok-tint" : "bg-paper"
+                }`}
               >
-                <span
-                  aria-hidden
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-9 sm:w-9 ${
-                    w.id === "call" ? "bg-ok-tint text-ok-text" : "bg-brand-tint text-brand"
-                  }`}
-                >
-                  {w.id === "call" ? (
+                {w.id === "call" ? (
+                  <span
+                    aria-hidden
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper text-ok-text sm:h-9 sm:w-9"
+                  >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                       <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.2 2.2Z" />
                     </svg>
+                  </span>
+                ) : (
+                  // 文字と画像。2つ並べて「どちらも出せる」ことを出す
+                  <span aria-hidden className="flex shrink-0 items-center gap-1">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-paper sm:h-9 sm:w-9">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                        <path d="M4 5h16v11H7.5L4 19.5V5Zm3 3v1.6h10V8H7Zm0 3.7v1.6h7v-1.6H7Z" />
+                      </svg>
+                    </span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-9 sm:w-9">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                        <path d="M4 5h16v14H4V5Zm2 2v8l4-4 3 3 3-3 2 2V7H6Zm3 2a1.4 1.4 0 1 1 0 2.8A1.4 1.4 0 0 1 9 9Z" />
+                      </svg>
+                    </span>
+                  </span>
+                )}
+                <span className="min-w-0 text-[11.5px] font-black leading-[1.4] text-slate sm:text-[13px]">
+                  {w.id === "call" ? (
+                    <>
+                      電話で相談
+                      <br />
+                      （{PLANS.find((x) => x.callMinutes)?.callMinutes}分）
+                    </>
                   ) : (
-                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                      <path d="M4 5h16v11H7.5L4 19.5V5Zm3 3v1.6h10V8H7Zm0 3.7v1.6h7v-1.6H7Z" />
-                    </svg>
+                    "テキスト・画像で相談"
                   )}
-                </span>
-                <span className="min-w-0 text-[12px] font-bold leading-[1.45] text-slate sm:text-[13.5px]">
-                  {w.label}
                 </span>
                 {/* 開いていないものは、開いていないと書く */}
                 {!w.open && (
-                  <span className="shrink-0 rounded-pill bg-mist px-2 py-1 text-[9.5px] font-bold leading-none text-steel sm:ml-auto">
+                  <span className="shrink-0 rounded-pill bg-paper/80 px-2 py-1 text-[9.5px] font-bold leading-none text-steel">
                     受付前
                   </span>
                 )}
@@ -199,49 +327,70 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
         <Down />
 
         {/* ══ After ══ 送れる */}
+        {/* ══════════════════════════════════════════════
+            絵に焼き込まれているものは、重ねて描かない
+            ══════════════════════════════════════════════
+            いまの写真は、渡された案から切り出したもの。
+            「After」の札・吹き出し・チェックが、絵の中に入っている。
+            こちらでも描くと、2つずつ出る。
+
+            撮影した写真に差し替えたら images.ts の baked を false にする。
+            そのとき札と吹き出しは、こちらが文字として描く
+            （読み上げにも乗るし、あとから直せる）。 */}
         <div className="relative overflow-hidden rounded-card shadow-card">
-          <div className="relative h-[200px] sm:h-[250px]">
-            {/* ══════════════════════════════════════════
-                写真がまだ無い
-                ══════════════════════════════════════════
-                それらしい素材で埋めない。
-                ただし Slot の「何を写すか」の案内は、ここでは出せない。
-                吹き出しと札を上に重ねるので、その裏に文が透けて、
-                ただの不具合に見える（実際そう見えた）。
+          {IMAGES.step4.ready && IMAGES.step4.baked ? (
+            // ══════════════════════════════════════════
+            // 焼き込み済みの絵は、切らない
+            // ══════════════════════════════════════════
+            // 端に意味がある（左に札、右に吹き出し）。
+            // 高さを決めて cover で敷くと、その左右が落ちる。
+            // 実際、札が青い帯になり、吹き出しの文字が切れた。
+            //
+            // 幅いっぱい・高さは絵なり。全部見える。
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={IMAGES.step4.src}
+              alt={IMAGES.step4.alt}
+              loading="eager"
+              decoding="async"
+              className="block h-auto w-full"
+            />
+          ) : (
+            <>
+              <div className="relative h-[200px] sm:h-[250px]">
+                {IMAGES.step4.ready ? (
+                  <>
+                    <Slot name="step4" rounded="" position="center 22%" className="h-full w-full" />
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 bg-gradient-to-l from-slate/45 to-transparent"
+                    />
+                  </>
+                ) : (
+                  // 写真がまだ無いときは、それらしい素材で埋めない。
+                  // Slot の案内も出せない（吹き出しの裏に透けて不具合に見える）
+                  <div aria-hidden className="h-full w-full bg-gradient-to-br from-brand-tint to-sky" />
+                )}
+              </div>
 
-                置くまでは、淡い面だけにしておく。
-                「よし、送ってみよう！」と印だけでも、
-                After が何を言っているかは伝わる。
-                public/img/step-4.jpg を置けば、写真に変わる。 */}
-            {IMAGES.step4.ready ? (
-              <>
-                <Slot name="step4" rounded="" position="center 22%" className="h-full w-full" />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 bg-gradient-to-l from-slate/45 to-transparent"
-                />
-              </>
-            ) : (
-              <div aria-hidden className="h-full w-full bg-gradient-to-br from-brand-tint to-sky" />
-            )}
-          </div>
+              <Stage>After</Stage>
 
-          <Stage>After</Stage>
+              <div className="absolute inset-y-0 right-2.5 flex w-[52%] max-w-[260px] items-center justify-end sm:right-4">
+                <p className="rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[14px] font-black leading-[1.5] text-slate shadow-card sm:px-4 sm:py-3 sm:text-[17px]">
+                  よし、送ってみよう！
+                </p>
+              </div>
 
-          <div className="absolute inset-y-0 right-2.5 flex w-[52%] max-w-[260px] items-center justify-end sm:right-4">
-            <p className="rounded-card rounded-br-[4px] bg-paper px-3.5 py-2.5 text-[14px] font-black leading-[1.5] text-slate shadow-card sm:px-4 sm:py-3 sm:text-[17px]">
-              よし、送ってみよう！
-            </p>
-          </div>
-
-          <span
-            aria-hidden
-            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-ok text-paper shadow-card sm:right-4 sm:top-4 sm:h-10 sm:w-10"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 13l4.5 4.5L19 7" />
-            </svg>
-          </span>
+              <span
+                aria-hidden
+                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-ok text-paper shadow-card sm:right-4 sm:top-4 sm:h-10 sm:w-10"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 13l4.5 4.5L19 7" />
+                </svg>
+              </span>
+            </>
+          )}
         </div>
 
         <HeroNote />
@@ -263,6 +412,16 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
   if (FAMILIES.length !== 2) {
     throw new Error(`1画面目に出す相談のしかたが ${FAMILIES.length} 通りあります（2通り）`);
   }
+  // 焼き込み済みの絵には、読み上げ用の文が要る。
+  // 文字が絵の中にあるので、alt が無いと、その文は誰にも届かない。
+  if (IMAGES.step4.baked && !IMAGES.step4.alt) {
+    throw new Error("After の絵に文字が焼き込まれているのに、alt がありません");
+  }
+  // 置いていない絵を「焼き込み済み」にしない。
+  if (IMAGES.step4.baked && !IMAGES.step4.ready) {
+    throw new Error("After の絵が置かれていないのに、baked になっています");
+  }
+
   // 声の商品に分数があること。「電話で相談（15分）」の括弧の中はここから引く。
   if (!PLANS.some((p) => p.family === "call" && p.callMinutes)) {
     throw new Error("声の商品に分数がありません（1画面目の「電話で相談（○分）」が作れません）");

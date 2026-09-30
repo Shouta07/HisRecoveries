@@ -35,16 +35,41 @@ export type Alternative = {
   label: string;
   /** これは自分たちか */
   us?: boolean;
+  /**
+   * 画面に出すか。
+   *
+   * ══════════════════════════════════════════════════
+   * 6列は、スマホでは読めない
+   * ══════════════════════════════════════════════════
+   * 6つ並べると、390px では1列あたり50pxほどになる。
+   * 横に流すしかなくなり、流した先は読まれない。
+   *
+   * 実際に迷われているのは、ほかの3つとの間ではない。
+   *   AIに聞けばいい
+   *   友達に聞けばいい
+   *   恋愛コンサルに頼めばいい
+   * この3つ。だからこの3つだけを出す。
+   *
+   * マッチングアプリと結婚相談所は、出会いを作るもので、
+   * そもそも同じことをしていない。データは残してあるが、
+   * 並べると「どれが良いか」の表になる。
+   */
+  shown?: boolean;
 };
 
 export const ALTERNATIVES: Alternative[] = [
-  { id: "us", label: "タシカメ", us: true },
+  { id: "us", label: "タシカメ", us: true, shown: true },
+  // 出す順。左から、実際に迷われている順に置く
+  { id: "ai", label: "AIに聞く", shown: true },
+  { id: "friend", label: "友達に聞く", shown: true },
+  { id: "coach", label: "恋愛コンサル", shown: true },
+  // 出さない（出会いを作るもので、同じことをしていない）
   { id: "app", label: "マッチングアプリ" },
-  { id: "coach", label: "恋愛コンサル" },
   { id: "agency", label: "結婚相談所" },
-  { id: "friend", label: "友達に聞く" },
-  { id: "ai", label: "AIに聞く" },
 ];
+
+/** 画面に出す並び。左端が自分たち */
+export const SHOWN_ALTERNATIVES = ALTERNATIVES.filter((a) => a.shown);
 
 export type CompareRow = {
   id: string;
@@ -213,6 +238,33 @@ export const COMPARE_NOTE =
     throw new Error("比較の断り書きが弱くなっています");
   }
   if (COMPARE.length < 4) throw new Error("比較の行が少なすぎます");
+
+  // 出す列。増やすとスマホで読めなくなる。
+  if (SHOWN_ALTERNATIVES.length !== 4) {
+    throw new Error(
+      `比較に出す列が ${SHOWN_ALTERNATIVES.length} 個あります（4つまで。増やすと横に流すことになります）`,
+    );
+  }
+  if (!SHOWN_ALTERNATIVES[0]?.us) {
+    throw new Error("比較の左端が自分たちになっていません");
+  }
+  // 出す列の中身が、全部そろっていること。
+  for (const r of COMPARE) {
+    for (const a of SHOWN_ALTERNATIVES) {
+      if (!r.cells[a.id]) {
+        throw new Error(`比較の「${r.label}」に「${a.label}」の中身がありません`);
+      }
+    }
+  }
+  // 勝てない行が、出す列の中に残っていること。
+  // 出さない列に逃がして「全部勝っている表」にしない。
+  {
+    const tieRow = COMPARE.find((r) => r.id === "who_knows");
+    const aiShown = SHOWN_ALTERNATIVES.some((a) => a.id === "ai");
+    if (!aiShown || !/知られない/.test(tieRow?.cells.ai ?? "")) {
+      throw new Error("勝てない行が、出す列から消えています");
+    }
+  }
 
   // 値段の差を「安い・高い」で読ませないための一文が、消えていないこと。
   if (!/範囲が違う/.test(COMPARE_SCOPE)) {

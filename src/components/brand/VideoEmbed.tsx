@@ -45,11 +45,27 @@ const ID = "01RlW6YOeC4";
 export default function VideoEmbed({
   title,
   caption,
+  poster,
 }: {
   /** 読み上げと、再生前に出す見出し */
   title: string;
   /** 動画の下に出す1行。何の動画かを、見る前に分かるように */
   caption?: string;
+  /**
+   * 表紙の画像。
+   *
+   * ══════════════════════════════════════════════════
+   * YouTube の絵を当てにしない
+   * ══════════════════════════════════════════════════
+   * 既定では YouTube が持っている絵を読む。
+   * ただし、動画が限定公開・非公開・処理中のあいだ、
+   * YouTube は「グレーに再生ボタンの影」だけの絵を返す。
+   * 出ているのに中身が無いので、ただの不具合に見える。
+   *
+   * public/img/video-poster.jpg を置けば、そちらを使う。
+   * 外への通信も起きないので、確実に出て、速い。
+   */
+  poster?: string | null;
 }) {
   const [playing, setPlaying] = useState(false);
 
@@ -86,13 +102,20 @@ export default function VideoEmbed({
                 配信を1つ増やさない。 */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`https://i.ytimg.com/vi/${ID}/maxresdefault.jpg`}
+              // maxresdefault は無い動画が多く、その場合 404 になる。
+              // hqdefault は、公開されている動画なら必ずある。
+              src={poster ?? `https://i.ytimg.com/vi/${ID}/hqdefault.jpg`}
               alt=""
-              loading="lazy"
+              // 1画面目のすぐ下にあるので、後回しにしない。
+              // lazy だと、スクロールが速いときに枠が空のまま通り過ぎる。
+              //
+              // fetchPriority="high" も付けていたが、React 18 は
+              // この属性を落とすので HTML に出ない。効かない指定は置かない。
+              loading="eager"
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover"
               onError={(e) => {
-                // maxres が無い動画がある。標準のほうへ落とす。
+                // 読めなかったら、もう一段小さいほうへ落とす。
                 // それも無ければ、下地だけ残す（壊れた画像を出さない）
                 const img = e.currentTarget;
                 if (img.dataset.fallback === "1") {
@@ -100,7 +123,7 @@ export default function VideoEmbed({
                   return;
                 }
                 img.dataset.fallback = "1";
-                img.src = `https://i.ytimg.com/vi/${ID}/hqdefault.jpg`;
+                img.src = `https://i.ytimg.com/vi/${ID}/mqdefault.jpg`;
               }}
             />
 

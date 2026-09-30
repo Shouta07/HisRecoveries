@@ -82,7 +82,7 @@ export const OPERATOR = "His Recoveries";
  * ここを濁した時点で、値段の付かない画面になる。
  */
 export const DEFINITION =
-  "タシカメは、マッチングアプリで迷った男性が、女性に相談できるサービスです。";
+  "タシカメは、マッチングアプリで迷った男性が、実在する女性に相談できるサービスです。";
 
 /** 場所が狭いとき用。説明文やOGに使う */
 export const DEFINITION_SHORT = "男性の恋愛の悩みに、女性が答えるサービスです。";
