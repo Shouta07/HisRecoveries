@@ -39,50 +39,52 @@ function unitYen(p: Plan): number {
   return p.uses ? Math.round(p.yen / p.uses) : p.yen;
 }
 
+/**
+ * 買い方の1行。
+ *
+ * 2列に並べると1列が160pxしかない。
+ * 名前・1回あたり・金額・ボタンを横一列に置くと、全部潰れる。
+ * 上に名前と金額、下にボタン、の2段にする。
+ */
 function Row({ p, open }: { p: Plan; open: boolean }) {
-  const pack = Boolean(p.uses);
-  // 「おすすめ」は、いま実際に勧めているもの1つだけ。
-  // 受付前の商品に付けると、押せないものを勧めることになる
   const push = Boolean(p.featured) && open;
   return (
     <li
-      className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-card border px-4 py-3.5 ${
+      className={`rounded-card border px-3 py-2.5 ${
         push ? "border-brand bg-brand-tint" : "border-line bg-paper"
       }`}
     >
-      <span className="min-w-0">
-        <span className="block text-[14.5px] font-black text-slate">
-          {p.name}
-          {push && (
-            <span className="ml-2 rounded-pill bg-brand px-2 py-0.5 text-[10.5px] font-bold text-paper">
-              おすすめ
-            </span>
-          )}
-        </span>
-        {/* 1回あたり。パックが安いことを、割引率ではなく金額で見せる */}
-        <span className="mt-0.5 block text-[11.5px] text-steel">
-          1回あたり ¥{unitYen(p).toLocaleString()}
-        </span>
-      </span>
-
-      <span className="flex shrink-0 items-center gap-3">
-        <span className="text-[17px] font-black tabular-nums text-slate">
-          <Yen yen={p.yen} from={p.from} />
-        </span>
-        {open ? (
-          <PlanCta
-            plan={p.id}
-            from="family"
-            className="min-h-[44px] shrink-0 rounded-pill bg-brand px-4 text-[13px] !text-paper"
-          >
-            選ぶ
-          </PlanCta>
-        ) : (
-          <span className="rounded-pill bg-mist px-3 py-2 text-[11.5px] font-bold text-steel">
-            受付前
+      <p className="flex flex-wrap items-baseline gap-x-1.5">
+        <span className="text-[12.5px] font-black text-slate">{p.name}</span>
+        {push && (
+          <span className="rounded-pill bg-brand px-1.5 py-0.5 text-[9.5px] font-bold text-paper">
+            おすすめ
           </span>
         )}
-      </span>
+      </p>
+      <p className="mt-0.5 flex flex-wrap items-baseline gap-x-2">
+        <span className="text-[16px] font-black tabular-nums text-slate">
+          <Yen yen={p.yen} from={p.from} />
+        </span>
+        {/* 1回あたり。パックが安いことを、割引率ではなく金額で見せる */}
+        {p.uses && (
+          <span className="text-[10.5px] text-steel">1回 ¥{unitYen(p).toLocaleString()}</span>
+        )}
+      </p>
+
+      {open ? (
+        <PlanCta
+          plan={p.id}
+          from="family"
+          className="mt-2 min-h-[40px] w-full rounded-pill bg-brand px-3 text-[12.5px] !text-paper"
+        >
+          選ぶ
+        </PlanCta>
+      ) : (
+        <span className="mt-2 flex min-h-[40px] items-center justify-center rounded-pill bg-mist text-[11px] font-bold text-steel">
+          受付前
+        </span>
+      )}
     </li>
   );
 }
@@ -96,7 +98,16 @@ export default function FamilyCards({
   families?: Family[];
 }) {
   return (
-    <ul className="flex flex-col gap-4">
+    // ══════════════════════════════════════════════
+    // 2つを横に並べる
+    // ══════════════════════════════════════════════
+    // 縦に積むと、2つ目を見るのにスクロールが要る。
+    // 「文字か、声か」は見比べて決めるものなので、
+    // 片方ずつ見せたら比べられない。
+    //
+    // 狭い画面では1列が160pxしかないので、
+    // カードの中身を減らす（返ってくるものは、開いているほうだけ）。
+    <ul className="grid grid-cols-2 items-start gap-2.5 sm:gap-4">
       {families.map((fid) => {
         const f = FAMILIES.find((x) => x.id === fid)!;
         // 安い買い方から並べる。1回 → 5回分
@@ -110,27 +121,28 @@ export default function FamilyCards({
         return (
           <li
             key={fid}
-            className="overflow-hidden rounded-card border border-line bg-paper p-5 shadow-card sm:p-6"
+            className="overflow-hidden rounded-card border border-line bg-paper p-3 shadow-card sm:p-5"
           >
             <PlanArt id={art} />
 
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-[19px] font-black leading-[1.4] text-slate">
-                {f.label}
-              </h3>
-              {!open && (
-                <span className="rounded-pill bg-mist px-2.5 py-1 text-[10.5px] font-bold text-steel">
-                  まだ開いていません
-                </span>
-              )}
-            </div>
-            <p className="mt-2 text-[13.5px] leading-[1.85] text-steel">{f.lead}</p>
+            <h3 className="text-[14.5px] font-black leading-[1.45] text-slate sm:text-[17px]">
+              {f.label}
+            </h3>
+            {!open && (
+              <span className="mt-1 inline-flex rounded-pill bg-mist px-2 py-0.5 text-[10px] font-bold text-steel">
+                まだ開いていません
+              </span>
+            )}
+            <p className="mt-1.5 text-[11.5px] leading-[1.75] text-steel sm:text-[13px]">
+              {f.lead}
+            </p>
 
-            {/* 何が返ってくるか。値段より先に出す */}
-            <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">
-              {list[0].includes.slice(0, 5).map((x) => (
-                <li key={x} className="flex items-start gap-2 text-[12.5px] leading-[1.7]">
-                  <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
+            {/* 何が返ってくるか。
+                狭い列では3つまで。全部並べると、片方の列だけ倍の高さになる */}
+            <ul className="mt-3 flex flex-col gap-1 border-t border-line pt-3">
+              {list[0].includes.slice(0, 3).map((x) => (
+                <li key={x} className="flex items-start gap-1.5 text-[11px] leading-[1.6] sm:text-[12.5px]">
+                  <span aria-hidden className="mt-[3px] shrink-0 text-[9px] font-black text-brand">
                     ✓
                   </span>
                   <span className="min-w-0 text-steel">{x}</span>
@@ -138,7 +150,7 @@ export default function FamilyCards({
               ))}
             </ul>
 
-            <ul className="mt-4 flex flex-col gap-2 border-t border-line pt-4">
+            <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
               {list.map((p) => (
                 <Row key={p.id} p={p} open={openIds.includes(p.id)} />
               ))}
@@ -147,8 +159,9 @@ export default function FamilyCards({
         );
       })}
 
-      {/* 対面は、まだ形も決まっていない。1行だけ */}
-      <li className="rounded-card border border-line bg-mist px-5 py-4">
+      {/* 対面は、まだ形も決まっていない。1行だけ。
+          2列の片側に入れると、1行が3行に折り返す。横いっぱいに置く */}
+      <li className="col-span-2 rounded-card border border-line bg-mist px-4 py-3.5">
         <p className="text-[13px] leading-[1.85] text-steel">
           このほかに、本番をそのまま一度やってみる Mock Date があります。
           <Link

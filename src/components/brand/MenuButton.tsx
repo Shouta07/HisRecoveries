@@ -50,6 +50,8 @@ const LINKS = [
   ["/how", "仕組み"],
   ["/safety", "安心・安全"],
   ["/join", "答える側になる"],
+  // 記事。ここから読んで、そのまま自分の場面を確かめてもらう
+  ["/articles", "たしかメディア"],
 ] as const;
 
 const LEGAL = [
@@ -81,6 +83,10 @@ const LEGAL = [
     throw new Error("メニューから「相談したこと」が消えています（戻る道がここだけです）");
   }
   // 短くすること自体が目的なので、増え始めたら止める。
+  // 記事への入口。ここが消えると、書いた記事が誰にも届かない
+  if (!hrefs.includes("/articles")) {
+    throw new Error("メニューから記事の入口が消えています");
+  }
   if (LINKS.length > 7) {
     throw new Error(`メニューが長くなっています（${LINKS.length}項目）。増やすなら、どれかを外してください`);
   }

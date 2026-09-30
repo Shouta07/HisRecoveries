@@ -605,21 +605,11 @@ export default async function HomePage() {
 
       </section>
 
-      {/* ══ 1.2 今日、受け付けている人 ══ */}
-      {/* ══════════════════════════════════════════════
-          1画面目のすぐ下に置く理由
-          ══════════════════════════════════════════════
-          「実在の女性が読みます」と書いても、それは説明でしかない。
-          いま何人が受け付けているかが見えると、説明ではなくなる。
-
-          ただし、受付中も、これから受付の人も0人なら、
-          この節はひとりでに消える（TodayReviewers の shouldShow）。
-          「現在0人です」という枠を常設すると、
-          来た全員に、空っぽであることを知らせることになる。
-
-          いま審査を通った人は0人なので、この節はまだ出ない。
-          1人入れば出る。 */}
-      <TodayReviewers />
+      {/* 「今日、受け付けている人」は、ここに置いていた。
+          1画面目の直後だと、まだ何のサービスか分からないうちに
+          人と時間の表が出てくる。
+          「こんな選択を、選ぶ前に」で何が返ってくるかを見せたあと、
+          その下へ移した。 */}
 
       {/* ══ 1.5 手が止まる瞬間 ══ */}
       {/* ══════════════════════════════════════════════
@@ -807,6 +797,22 @@ export default async function HomePage() {
           ※ 写真はイメージ、文面と回答は画面の見本です。特定の利用者の体験談ではありません。
         </p>
       </Block>
+
+      {/* ══ 2.45 今日、受け付けている人 ══ */}
+      {/* ══════════════════════════════════════════════
+          1画面目のすぐ下に置く理由
+          ══════════════════════════════════════════════
+          「実在の女性が読みます」と書いても、それは説明でしかない。
+          いま何人が受け付けているかが見えると、説明ではなくなる。
+
+          ただし、受付中も、これから受付の人も0人なら、
+          この節はひとりでに消える（TodayReviewers の shouldShow）。
+          「現在0人です」という枠を常設すると、
+          来た全員に、空っぽであることを知らせることになる。
+
+          いま審査を通った人は0人なので、この節はまだ出ない。
+          1人入れば出る。 */}
+      <TodayReviewers />
 
       {/* ══ 2.5 初めての方へ（畳んだ） ══ */}
       {/* ここに「タシカメは、こんなときに使えます。」の節を置いていた。
@@ -1172,98 +1178,15 @@ export default async function HomePage() {
         </div>
       </Block>
 
-      {/* ══ 6.3 誰が読むのか ══ */}
-      {/* ══════════════════════════════════════════════
-          顔を出す。ただし、名簿にはしない
-          ══════════════════════════════════════════════
-          「実在の女性が読む」と言っておいて、画面に人が1人も
-          いないと、本当にいるのかが伝わらない。
+      {/* 「裏で、こんな女性が読んでいます。」の節は、ここに置いていた。
+          顔・年代・確認していること・選べる条件まで、1節ぶん。
 
-          ただし、審査を通った登録者はまだ0人。
-          顔の横に「26歳 会社員 回答42件」と並べた瞬間、
-          それは実在しない人の名簿になる。
+          受付の表の上へ、短くして移した。
+          「今日いる人」を見せる前に、そもそも誰が読むのかを言う。
+          離して置くと、表を見ている人には届かない。
 
-          だから出し方を分ける。
-            顔      イメージ（※と書く）
-            年代    実際に指定できる区分
-            確認    実際にこちらがやっていること
-          数（回答件数・役に立った割合）は、貯まるまで出さない。
-          実際に登録がある人は /answerers に出る（いまは0人）。 */}
-      <Block>
-        <H>裏で、こんな女性が読んでいます。</H>
-        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
-          登録すれば読めるようにはしていません。
-          年齢と立場を確認し、通った方にだけお願いしています。
-          名前も連絡先も出しません。出す仕組み自体を作っていません。
-        </p>
-
-        {/* 顔。年代だけを添える。職業も件数も付けない */}
-        <ul className="mt-8 grid grid-cols-3 gap-3 sm:grid-cols-5">
-          {FACES.map((f) => (
-            <li key={f.key} className="flex flex-col items-center gap-2">
-              <Slot
-                name={f.key}
-                rounded="rounded-full"
-                className="aspect-square w-full max-w-[92px]"
-              />
-              <span className="text-[12px] font-bold text-steel">{f.age}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-[11.5px] leading-[1.75] text-steel">
-          ※ 写真はイメージです。実際に登録のある方は
-          <Link
-            href="/answerers"
-            className="mx-1 font-bold text-brand underline decoration-line underline-offset-4"
-          >
-            誰が読むのか
-          </Link>
-          に出ます。
-        </p>
-
-        <div className="mt-8 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-card border border-line bg-paper px-5 py-5 shadow-card">
-            <p className="text-[12px] font-bold text-steel">こちらで確認していること</p>
-            <ul className="mt-2.5 flex flex-col gap-1.5">
-              {["年齢", "いまの立場", "書いてもらった文が読める内容か"].map((t) => (
-                <li key={t} className="flex items-start gap-2 text-[13.5px] leading-[1.75]">
-                  <span aria-hidden className="mt-[3px] text-[11px] font-black text-ok-text">
-                    ✓
-                  </span>
-                  <span className="min-w-0 text-steel">{t}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="rounded-card border border-line bg-paper px-5 py-5 shadow-card">
-            <p className="text-[12px] font-bold text-steel">読む人は選べます</p>
-            <ul className="mt-2.5 flex flex-wrap gap-1.5">
-              {PANEL_AGES.filter((a) => a.id !== "any").map((a) => (
-                <li
-                  key={a.id}
-                  className="rounded-pill bg-mist px-2.5 py-1 text-[12px] text-steel"
-                >
-                  {a.label}
-                </li>
-              ))}
-              {ATTRS_OPEN.map((a) => (
-                <li
-                  key={a.id}
-                  className="rounded-pill bg-mist px-2.5 py-1 text-[12px] text-steel"
-                >
-                  {a.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <p className="mt-6 max-w-[32em] text-[13.5px] leading-[1.9] text-steel">
-          恋愛の専門家ではありません。正解を教えてくれる人でもありません。
-          一人の女性として、実際にどう思ったかを書いてくれる人です。
-        </p>
-      </Block>
+          確認していることと選べる条件は、よくある質問と
+          /answerers が持っている。 */}
 
       {/* ここに「言いにくいことほど、女性に確かめる。」の節を置いていた。
           トップで大きく立てると、それを目当てに来る人が増えて、
@@ -1293,7 +1216,8 @@ export default async function HomePage() {
           カードの形は PlanCards（/plans と同じもの）。
           キャンセル・返金・特商法の断りは /plans が持つ。 */}
       <Block id="price">
-        <H>サービスプラン。</H>
+        {/* 句点は付けない。ここは見出しではなく、ものの名前 */}
+        <H>サービスプラン</H>
         {/* ここに「どれを使うかは、迷いの大きさで決まります」の一文と、
             場面→役割の対応表7行と、「確かめる／決める／試す」が
             文字か声かの注記を置いていた。

@@ -74,13 +74,15 @@ const WINDOWS: {
   from: [number, number];
   to: [number, number];
   specialties: Reviewer["specialties"];
+  /** イメージ写真。見本なので、既にある5枚から当てる */
+  face: string;
   /** 受付の時間内でも、手が一杯の状態を見せる人 */
   alwaysBusy?: boolean;
 }[] = [
-  { id: "sample-1", name: "みさき", ageBand: "25-29", from: [10, 0], to: [15, 0], specialties: ["message", "date"] },
-  { id: "sample-2", name: "あや", ageBand: "20-24", from: [13, 0], to: [19, 0], specialties: ["signal"] },
-  { id: "sample-3", name: "りこ", ageBand: "25-29", from: [17, 0], to: [22, 0], specialties: ["photo", "message"], alwaysBusy: true },
-  { id: "sample-4", name: "まい", ageBand: "30s", from: [20, 0], to: [24, 0], specialties: ["distance"] },
+  { id: "sample-1", name: "みさき", ageBand: "25-29", from: [10, 0], to: [15, 0], specialties: ["message", "date"], face: "w2" },
+  { id: "sample-2", name: "あや", ageBand: "20-24", from: [13, 0], to: [19, 0], specialties: ["signal"], face: "w1" },
+  { id: "sample-3", name: "りこ", ageBand: "25-29", from: [17, 0], to: [22, 0], specialties: ["photo", "message"], alwaysBusy: true, face: "w3" },
+  { id: "sample-4", name: "まい", ageBand: "30s", from: [20, 0], to: [24, 0], specialties: ["distance"], face: "w4" },
 ];
 
 export function sampleReviewers(): Reviewer[] {
@@ -103,6 +105,7 @@ export function sampleReviewers(): Reviewer[] {
       ageBand: w.ageBand,
       status,
       specialties: w.specialties,
+      face: w.face,
       verified: true,
       answered: 0,
       until: status === "available" ? to : null,
