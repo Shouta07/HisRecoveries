@@ -18,7 +18,7 @@
     "b2b-neutral-referral": 5,
     "gift-birthday": 4,
     "mother-confidence": 4,
-    "fan-question": 4,
+    "fan-question": 5,
     "areas-hair": 4,
     "gift-anniversary": 5,
     "areas-sweat": 4,
@@ -29,10 +29,10 @@
     "urgent-tonight": 4
   },
   "cta_post_counts": {
-    "none": 117
+    "none": 118
   },
-  "total_posts": 117,
+  "total_posts": 118,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-29T17:04:03.503473"
+  "last_updated": "2026-09-30T04:37:15.744276"
 }
