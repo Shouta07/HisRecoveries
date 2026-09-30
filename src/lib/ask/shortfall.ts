@@ -29,6 +29,10 @@ export type Choice = {
 export function choices(planId: PlanId, got: number, want: number): Choice[] {
   const p = plan(planId);
   const back = refundFor(p.yen, got, want);
+  // まとめ売りで買った相談は、お金ではなく回数で返る。
+  // 「¥7,980 のうち ¥1,596 を返します」と言われても、
+  // 何回分が戻るのかが分からない。
+  const byTicket = Boolean(p.uses);
 
   const list: Choice[] = [];
 
@@ -37,7 +41,9 @@ export function choices(planId: PlanId, got: number, want: number): Choice[] {
     list.push({
       id: "partial",
       label: `${got}人分を受け取る`,
-      note: `足りなかった${want - got}人分 ¥${back.toLocaleString()} をお返しします。`,
+      note: byTicket
+        ? "使った1回分を戻します。"
+        : `足りなかった${want - got}人分 ¥${back.toLocaleString()} をお返しします。`,
     });
   }
 

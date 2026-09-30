@@ -7,6 +7,7 @@ import { list, remove, shortDate, type MyAsk } from "@/lib/myasks";
 import { category, type CategoryId } from "@/lib/ask/model";
 import Tashikame from "@/components/brand/Tashikame";
 import PassBalance from "@/components/ask/PassBalance";
+import CaseTimeline from "@/components/ask/CaseTimeline";
 import Says from "@/components/brand/Says";
 import { EMPTY } from "@/lib/tashikame";
 
@@ -48,7 +49,10 @@ export default function MinePage() {
         {/* いちばん上に残り回数。隠さない。ただし煽らない */}
         <PassBalance />
 
-        <h1 className="mt-8 text-big font-black text-slate">聞いたこと</h1>
+        {/* 相手ごとの現在地。人は伴走しない。文脈が伴走する */}
+        <CaseTimeline />
+
+        <h1 className="mt-10 text-big font-black text-slate">聞いたこと</h1>
 
         {items === null ? (
           <div className="mt-8 flex flex-col gap-3">

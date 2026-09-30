@@ -113,6 +113,42 @@ export async function spend(
   };
 }
 
+/**
+ * 使った回数を返す。
+ *
+ * 人数が集まらなかったとき、こちらの都合で配れなかったとき。
+ *
+ * ── 消さずに、打ち消す ────────────────────────
+ * pass_uses の行を消すと、「使った → 返した」という
+ * 出来事そのものが消えて、あとから何が起きたか追えなくなる。
+ * 打ち消す行（+1）を足す。
+ *
+ * ── 二度返さない ──────────────────────────────
+ * 返金の処理は、通信が切れて押し直されることがある。
+ * 既に返してあれば、何もせずに現在の残りを返す。
+ */
+export async function refundTicket(
+  consultationId: string,
+  reason: string,
+): Promise<{ ok: boolean; refunded: number; remaining: number; why?: string }> {
+  if (!dbAdminEnabled) return { ok: false, refunded: 0, remaining: 0, why: "no db" };
+
+  const res = await dbRpc<
+    { ok: boolean; refunded: number; remaining: number; why: string | null }[]
+  >("refund_pass", { p_consultation: consultationId, p_reason: reason });
+  if (!res.ok) return { ok: false, refunded: 0, remaining: 0, why: res.error };
+
+  const row = Array.isArray(res.data) ? res.data[0] : undefined;
+  if (!row) return { ok: false, refunded: 0, remaining: 0, why: "返せませんでした" };
+
+  return {
+    ok: Boolean(row.ok),
+    refunded: Math.max(0, Number(row.refunded) || 0),
+    remaining: Math.max(0, Number(row.remaining) || 0),
+    why: row.why ?? undefined,
+  };
+}
+
 /** 何回ぶんのパスか。パスでない商品なら null */
 export function usesOf(id: PlanId): number | null {
   return plan(id).uses ?? null;

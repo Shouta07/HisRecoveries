@@ -1207,8 +1207,10 @@ begin
     end if;
   end if;
 
-  select count(*) into v_used from pass_uses where pass_id = v_pass.id;
-  v_left := v_pass.uses_total + coalesce(v_pass.granted_extra, 0) - v_used;
+  -- 出入りの合計。使った分は負、返した分は正で入っている。
+  select coalesce(sum(amount), 0)::int into v_used
+    from pass_uses where pass_id = v_pass.id;
+  v_left := v_pass.uses_total + coalesce(v_pass.granted_extra, 0) + v_used;
 
   if v_left < p_cost then
     return query select false, greatest(v_left, 0), '残りが足りません'::text;
@@ -1218,8 +1220,8 @@ begin
   -- 2回分なら2行入れる。1行に「2」と書かない。
   -- 数で持つと、数え方を間違えたときに気づけない。
   for i in 1..p_cost loop
-    insert into pass_uses (pass_id, consultation_id)
-    values (v_pass.id, p_consultation);
+    insert into pass_uses (pass_id, consultation_id, kind, amount)
+    values (v_pass.id, p_consultation, 'consume', -1);
   end loop;
 
   return query select true, v_left - p_cost, null::text;
@@ -1304,3 +1306,274 @@ select
 from relationship_cases rc
 left join consultations c on c.case_id = rc.id
 order by rc.updated_at desc, c.created_at asc;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- チケットの出入りを、種別つきで持つ
+--
+-- ── なぜ「使った記録」だけでは足りないか ────────
+-- 画面では「集まらなかった分はお返しします」と言っている。
+-- 返すときに pass_uses の行を消すと、
+-- 「使った→返した」という出来事そのものが消える。
+-- あとから何が起きたのか追えなくなる。
+--
+-- 消さずに、打ち消す行を足す。
+--   consume  -1
+--   refund   +1
+--   bonus    +1（運営が足す）
+--   admin    ±（手で直す。理由を必ず書く）
+--
+-- 残り = 買った回数 + 足した回数 + 出入りの合計
+--
+-- ── 既にある行を壊さない ────────────────────────
+-- 既存の行は kind も amount も入っていない。
+-- default を consume / -1 にしてあるので、
+-- 流し直しても、これまでの「使った」がそのまま -1 として数えられる。
+-- ═══════════════════════════════════════════════════════════════
+
+alter table pass_uses add column if not exists kind text not null default 'consume';
+alter table pass_uses add column if not exists amount int not null default -1;
+alter table pass_uses add column if not exists reason text;
+
+-- 残りの出し方を、種別つきに直す。
+create or replace view pass_balance as
+select
+  p.id,
+  p.token,
+  p.plan_id,
+  p.uses_total,
+  p.granted_extra,
+  p.paid_at,
+  -- 「使った回数」は、減らした行だけを数える（返した分は含めない）
+  coalesce(sum(case when u.amount < 0 then -u.amount else 0 end), 0)::int as used,
+  (p.uses_total + p.granted_extra + coalesce(sum(u.amount), 0))::int as remaining
+from ask_passes p
+left join pass_uses u on u.pass_id = p.id
+where p.paid_at is not null
+group by p.id;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 使った1回分を返す
+--
+-- 人数が集まらなかったとき、こちらの都合で配れなかったとき。
+-- 消すのではなく、打ち消す行を足す。
+--
+-- 二度返さない。同じ相談に既に返した行があれば、何もしない。
+-- （返金の処理は、通信が切れて押し直されることがある）
+-- ═══════════════════════════════════════════════════════════════
+
+create or replace function refund_pass(
+  p_consultation uuid,
+  p_reason text
+)
+returns table (ok boolean, refunded int, remaining int, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_pass_id uuid;
+  v_spent   int;
+  v_back    int;
+  v_left    int;
+  i         int;
+begin
+  if p_consultation is null then
+    return query select false, 0, 0, '相談が指定されていません'::text;
+    return;
+  end if;
+
+  -- どのパスから、何回分使ったか。
+  select pass_id,
+         coalesce(sum(case when amount < 0 then -amount else 0 end), 0)::int,
+         coalesce(sum(case when amount > 0 then amount else 0 end), 0)::int
+    into v_pass_id, v_spent, v_back
+    from pass_uses
+   where consultation_id = p_consultation
+   group by pass_id
+   limit 1;
+
+  if v_pass_id is null then
+    return query select false, 0, 0, 'この相談はチケットを使っていません'::text;
+    return;
+  end if;
+
+  -- 行を押さえる。同時に来たもう一方は、ここで待つ。
+  perform 1 from ask_passes where id = v_pass_id for update;
+
+  -- 既に返してあるなら、二度返さない。
+  if v_back >= v_spent then
+    select remaining into v_left from pass_balance where id = v_pass_id;
+    return query select true, 0, coalesce(v_left, 0), 'すでに返しています'::text;
+    return;
+  end if;
+
+  for i in 1..(v_spent - v_back) loop
+    insert into pass_uses (pass_id, consultation_id, kind, amount, reason)
+    values (v_pass_id, p_consultation, 'refund', 1, p_reason);
+  end loop;
+
+  select remaining into v_left from pass_balance where id = v_pass_id;
+  return query select true, (v_spent - v_back), coalesce(v_left, 0), null::text;
+end;
+$$;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 答える人が、自分で案件を取る
+--
+-- ── なぜ要るか ──────────────────────────────────
+-- 依頼（response_invites）は作られるのに、
+-- 誰に届けるかが決まっていなかった。
+-- 運営が1件ずつURLを送るしかなく、そこで詰まる。
+--
+-- 答える人が自分の画面で見て、答えたいものを取る形にする。
+-- ノルマも指名もない、という約束（policy.ts）とも合う。
+--
+-- ── 同じ案件を2人が取らないこと ────────────────
+-- 行を押さえてから確かめる。同時に来たもう一方は待たされ、
+-- 起きたときには「もう取られている」と返る。
+--
+-- ── 言いにくい相談は、受けると決めた人だけ ──────
+-- takes_sensitive が false の人には、そもそも一覧に出さず、
+-- 取ろうとしても関数の側で止める（画面だけで隠さない）。
+-- ═══════════════════════════════════════════════════════════════
+
+-- まだ誰も取っていない依頼。本文は出さない。
+-- 一覧で読むものではないし、取る前に全部読ませる必要も無い。
+create or replace view open_invites as
+select
+  i.id,
+  i.consultation_id,
+  i.created_at,
+  c.category,
+  c.journey_step,
+  c.panel_age,
+  c.asker_age_band,
+  c.other_age_band,
+  c.is_ab,
+  c.product_type
+from response_invites i
+join consultations c on c.id = i.consultation_id
+where i.responder_id is null
+  and i.answered_at is null
+  and c.status in ('recruiting', 'collecting')
+order by i.created_at asc;
+
+create or replace function claim_invite(
+  p_responder_token text,
+  p_invite uuid
+)
+returns table (ok boolean, reply_token text, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_r        responders%rowtype;
+  v_invite   response_invites%rowtype;
+  v_category text;
+  v_status   text;
+begin
+  select * into v_r from responders where token = p_responder_token;
+  if not found then
+    return query select false, null::text, 'この鍵では取れません'::text;
+    return;
+  end if;
+  -- 確認が済んでいない人には配らない。
+  if coalesce(v_r.active, false) = false then
+    return query select false, null::text, 'まだ確認が済んでいません'::text;
+    return;
+  end if;
+
+  -- 行を押さえる。同時に来たもう一方は、ここで待つ。
+  select * into v_invite from response_invites where id = p_invite for update;
+  if not found then
+    return query select false, null::text, 'この依頼は見つかりません'::text;
+    return;
+  end if;
+  if v_invite.responder_id is not null then
+    return query select false, null::text, 'この依頼は、もう取られています'::text;
+    return;
+  end if;
+  if v_invite.answered_at is not null then
+    return query select false, null::text, 'この依頼は、もう終わっています'::text;
+    return;
+  end if;
+
+  select category, status into v_category, v_status
+    from consultations where id = v_invite.consultation_id;
+  if v_status not in ('recruiting', 'collecting') then
+    return query select false, null::text, 'この相談は、いま募集していません'::text;
+    return;
+  end if;
+
+  -- 言いにくい相談は、受けると決めた人だけ。
+  -- 画面で隠すだけにしない（URLを直に叩かれる）。
+  if v_category = 'distance' and coalesce(v_r.takes_sensitive, false) = false then
+    return query select false, null::text, 'この種類の相談は受け取らない設定です'::text;
+    return;
+  end if;
+
+  update response_invites
+     set responder_id = v_r.id,
+         opened_at = coalesce(opened_at, now())
+   where id = p_invite;
+
+  return query select true, v_invite.token, null::text;
+end;
+$$;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 案件1件ごとの採算
+--
+-- ── なぜ要るか ──────────────────────────────────
+-- いままでは商品ごとの「見込み」しか無かった。
+-- 実際に1件でいくら残ったかが分からないと、直せない。
+--
+-- ── まとめ売りの売価の割り当て ──────────────────
+-- 5回パスは1回いくらで売ったのかが決まっていない。
+-- 買った金額 ÷ 買った回数 を、その1回の売価とする。
+--
+-- 使われなかった回数を利益にしない。
+-- 「5枚のうち3枚しか使われないから、実質は1枚2,660円」
+-- という数え方をすると、全部使われた月に赤字になる。
+-- ═══════════════════════════════════════════════════════════════
+
+-- 1件ごとの採算。数えるのはここだけにして、画面では計算しない。
+create or replace view consultation_economics as
+select
+  c.id,
+  c.token,
+  c.product_type,
+  c.status,
+  c.created_at,
+  c.paid_at,
+  c.completed_at,
+  -- 売価の割り当て。まとめ売りは「買った金額 ÷ 買った回数 × 使った回数」
+  case
+    when p.id is not null and p.uses_total > 0
+      then round(p.price::numeric / p.uses_total
+                 * coalesce((select sum(-u2.amount) from pass_uses u2
+                              where u2.consultation_id = c.id and u2.amount < 0), 1))
+    else coalesce(c.price, 0)
+  end as allocated_revenue,
+  -- 答える人へ払った額
+  coalesce((select sum(rw.amount_yen) from rewards rw
+             join responses rs on rs.id = rw.response_id
+            where rs.consultation_id = c.id), 0) as reviewer_cost,
+  -- 決済の手数料（3.6%の見込み。まとめ売りは割り当てた売価に対して）
+  round(
+    case
+      when p.id is not null and p.uses_total > 0
+        then p.price::numeric / p.uses_total
+      else coalesce(c.price, 0)
+    end * 0.036
+  ) as payment_fee_estimate,
+  -- 返した回数（チケット）
+  coalesce((select sum(u3.amount) from pass_uses u3
+             where u3.consultation_id = c.id and u3.amount > 0), 0) as refunded_tickets
+from consultations c
+left join pass_uses u on u.consultation_id = c.id and u.amount < 0
+left join ask_passes p on p.id = u.pass_id
+group by c.id, p.id, p.price, p.uses_total;

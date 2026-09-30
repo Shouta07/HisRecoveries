@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
+import { openInvites } from "@/lib/responder/queue";
+import InviteQueue from "@/components/ask/InviteQueue";
 import { isResponderToken } from "@/lib/ask/token";
 import { balanceOf, canPayout, PAYOUT_MIN_YEN } from "@/lib/responder/balance";
 import { stateOf, REQUIRED_ANSWERS, INVITER_YEN, INVITEE_YEN } from "@/lib/responder/referral";
@@ -41,6 +43,7 @@ type Row = {
   verified_age: boolean;
   active: boolean;
   referral_code: string | null;
+  takes_sensitive: boolean | null;
 };
 
 const yen = (n: number) => `¥${n.toLocaleString()}`;
@@ -55,11 +58,15 @@ export default async function MePage({ params }: { params: { token: string } }) 
   const r = rows[0];
   if (!r) notFound();
 
-  const [bal, refs] = await Promise.all([
+  const [bal, refs, invites] = await Promise.all([
     balanceOf(r.id),
     dbSelect<{ invited: number; completed: number }>(
       `responder_referrals?inviter_id=eq.${r.id}&select=invited,completed`,
     ),
+    // 言いにくい相談は、受けると決めた人にだけ出す。
+    // 出さないだけでは足りない（URLは直に叩ける）ので、
+    // 取るときにも Postgres 側で止めている。
+    openInvites({ takesSensitive: Boolean(r.takes_sensitive) }),
   ]);
 
   const ref = r.referral_code
@@ -93,7 +100,18 @@ export default async function MePage({ params }: { params: { token: string } }) 
           verified={r.verified_age}
         />
 
-        {/* 2. いくら稼いだか */}
+        {/* 2. いま取れる相談。
+            ここが無いと、依頼は作られるのに誰にも届かない
+            （運営が1件ずつURLを送るしかなく、そこで詰まる）。
+            割り当てではなく「取る」形にしている（ノルマも指名もない約束） */}
+        <section className="mt-4">
+          <p className="text-[12px] font-bold text-steel">いま答えられる相談</p>
+          <div className="mt-2.5">
+            <InviteQueue token={params.token} items={invites} />
+          </div>
+        </section>
+
+        {/* 3. いくら稼いだか */}
         <section className="mt-4 rounded-card border border-line bg-paper p-6 shadow-card">
           <p className="text-[12px] font-bold text-steel">受け取れる残高</p>
           <p className="mt-1.5 text-[40px] font-black tabular-nums leading-none">

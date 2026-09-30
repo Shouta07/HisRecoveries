@@ -89,6 +89,8 @@ export default function AskFlow() {
   const [assist, setAssist] = useState(params.get("assist") === "1");
   // 恋愛のどこで悩んでいるか。トップから来たときは決まっている。
   const seededStep = params.get("step");
+  // 前回の続きから。ケースの鍵が来ていれば、そのケースにぶら下げる
+  const seededCase = params.get("case");
   const [stepId] = useState(isStepId(seededStep) ? seededStep : null);
 
   // 言いにくい相談か。2回分を使い、受けると決めた女性にだけ届く。
@@ -165,6 +167,9 @@ export default function AskFlow() {
           // サーバーが残りを確かめて、あれば1回使う。
           // 残りが無ければ使わない（この画面の数字は信じない）。
           pass: pass?.token ?? null,
+          // 前回の続きなら、そのケースの鍵。
+          // 無ければサーバー側で1つ作る（相手ごとに1つ）。
+          case: seededCase,
         }),
       });
       const json = await res.json();

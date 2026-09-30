@@ -111,6 +111,8 @@ export const CONVERSION_EVENTS = [
   "pass_used", // 1回ぶんを使った（props: remaining）
   "pass_empty", // 使い切った画面を見た
   "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
+  // 案件を自分で取った。ここが伸びないなら、配る仕組みが要る。
+  "invite_claimed",
   // 集まらなかったときに何を選んだか。供給が足りない度合いが出る。
   "shortfall_picked", // 足りないときの選択（props: choice, got, of）
 
