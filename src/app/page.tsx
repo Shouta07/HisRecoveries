@@ -8,7 +8,7 @@ import {
   tier as getTier,
   ENTRY_PLAN,
   DEFAULT_PLAN,
-  OPEN_USE_CASES,
+  TOP_USE_CASES,
 } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
 import {
@@ -409,6 +409,12 @@ const USE_ICON: Record<string, string> = {
   romance: "M12 20s-7-4.4-7-9.2A4 4 0 0 1 12 8a4 4 0 0 1 7 2.8C19 15.6 12 20 12 20",
   distance: "M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4",
   other: "M12 17h.01M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7v.5",
+  // 声の場面は、どれも category: "date" になる。
+  // カテゴリの絵のままだと同じ絵が3つ並んで、場面が違うことが見えない。
+  // 受話器と、途切れた吹き出し。
+  call: "M6.5 3h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5L16 12l4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3Z",
+  silence:
+    "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z M8.5 11.5h.01 M12 11.5h.01 M15.5 11.5h.01",
 };
 
 const TONE: Record<string, string> = {
@@ -445,20 +451,37 @@ export default async function HomePage() {
       {/* ── ヘッダー ── */}
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <Wrap className="flex items-center justify-between gap-4 py-3">
-          {/* 上から「恋に迷ったら、／タシカメ」と読ませる。
-              2行で1つの文になるので、標語の側に名前は入れない */}
-          <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={44} />
+          {/* 上から「マチアプ恋愛に迷ったら、／タシカメ」と読ませる。
+              2行で1つの文になるので、標語の側に名前は入れない。
+
+              ── 標語が伸びたぶん、まわりを詰める ────────────
+              390px では、絵・標語・名前・ボタン・メニューで
+              横幅がちょうど埋まっていた。標語が4文字伸びて
+              「マチアプ恋愛に迷っ…」と切れていた。
+              truncate は黙って切るので、落ちずにそのまま出る。
+
+              狭い画面だけ、絵と標語を小さくし、ボタンの余白と
+              右側の間隔を詰めた。640px から先は元のまま。
+
+              ── 320px では出さない ────────────────────
+              いちばん狭い端末では、ボタンとメニューを置いた残りが
+              64px しかない。12文字はどう縮めても入らない。
+              切れた標語を出すくらいなら、名前だけにする。
+              すぐ下の1画面目に、同じことが文で書いてある。 */}
+          <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5">
+            <Tashikame size={36} className="sm:!h-11 sm:!w-11" />
             <span className="min-w-0">
-              <span className="block truncate text-[10.5px] font-bold leading-[1.3] text-steel">
+              <span className="hidden truncate text-[9px] font-bold leading-[1.3] text-steel min-[360px]:block sm:text-[10.5px]">
                 {TAGLINE}
               </span>
-              <span className="block truncate text-[21px] font-black leading-[1.15] tracking-[0.02em] text-slate">
+              {/* 名前は切らない。標語は消せても、名前は消せない。
+                  320px では字を詰めて入れる（文字間も 360px から） */}
+              <span className="block truncate text-[17.5px] font-black leading-[1.15] text-slate min-[360px]:text-[21px] min-[360px]:tracking-[0.02em]">
                 {NAME}
               </span>
             </span>
           </Link>
-          <nav aria-label="サイト" className="flex shrink-0 items-center gap-5">
+          <nav aria-label="サイト" className="flex shrink-0 items-center gap-3 sm:gap-5">
             <ul className="hidden items-center gap-6 lg:flex">
               {NAV.map(([href, l]) => (
                 <li key={href}>
@@ -482,7 +505,7 @@ export default async function HomePage() {
             <PlanCta
               plan={DEFAULT_PLAN}
               from="header"
-              className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
+              className="min-h-[42px] rounded-pill bg-brand px-4 text-[13.5px] !text-paper shadow-card sm:px-5"
             >
               確かめる
             </PlanCta>
@@ -707,7 +730,7 @@ export default async function HomePage() {
       {/* 道のりは「いまどこにいるか」から入る形なので、
           自分がどこにいるか決まっていない人が素通りする。
           その下に、思い当たる一言だけを4つ並べる。
-          言葉は plans.ts の OPEN_USE_CASES。受け付けていない場面は
+          言葉は plans.ts の TOP_USE_CASES。受け付けていない場面は
           そもそもここに来ない（服と店は画像を受け取れないので出ない）。 */}
       <Block tint>
         <span className="inline-flex rounded-pill bg-paper px-3.5 py-1.5 text-[12px] font-bold text-brand shadow-card">
@@ -723,7 +746,7 @@ export default async function HomePage() {
         </p>
 
         <ul className="mt-8 grid grid-cols-2 gap-2.5 sm:gap-3.5">
-          {OPEN_USE_CASES.slice(0, 4).map((u, i) => (
+          {TOP_USE_CASES.map((u, i) => (
             <li key={u.q}>
               <Reveal delay={i * 50}>
                 <PlanCta
@@ -738,7 +761,7 @@ export default async function HomePage() {
                       className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand"
                     >
                       <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d={USE_ICON[u.category] ?? USE_ICON.message} />
+                        <path d={USE_ICON[u.icon ?? u.category] ?? USE_ICON.message} />
                       </svg>
                     </span>
                     <span className="text-[11px] font-bold text-steel">{u.tag}</span>
@@ -1228,16 +1251,25 @@ export default async function HomePage() {
 
         {/* 場面 → どれ。
             役割の名前だけ並べても、自分がどれなのかは決まらない。
-            ラベルは TIERS から引く。書き写すと、片方だけ古くなる */}
+            ラベルは TIERS から引く。書き写すと、片方だけ古くなる。
+
+            ── 例が文字のことばかりにならないようにする ──────
+            前は5つのうち4つが「この文面でいい？」だった。
+            そうすると、声で話す商品（決める・試す）が
+            何のためにあるのか、最後まで分からない。
+            書いて送るのと、その場で声で返すのとでは、
+            困っている場面がそもそも違う。 */}
         <ul className="mt-7 flex flex-col divide-y divide-line overflow-hidden rounded-card border border-line bg-paper">
           {(
             [
               // 「この写真どっち？」は置けない。画像を受け取る口がまだ無い
-              ["「この自己紹介文どっち？」", "check"],
               ["「このLINE送っていい？」", "check"],
-              ["「この子、今誘うべき？」", "decide"],
-              ["「2回目に進めるか迷う」", "decide"],
-              ["「初デート前に会話を練習したい」", "try"],
+              ["「自己紹介文、AとBどっち？」", "check"],
+              ["「明日の電話で何を話せばいい？」", "check"],
+              ["「返事が来ない。追う？ 引く？」", "decide"],
+              ["「誘うかどうか、話して決めたい」", "decide"],
+              ["「電話の前に、一度声に出しておきたい」", "try"],
+              ["「初デートで黙るのが怖い」", "try"],
             ] as const
           ).map(([q, t]) => (
             <li key={q} className="flex items-center justify-between gap-3 px-4 py-3">
@@ -1248,6 +1280,16 @@ export default async function HomePage() {
             </li>
           ))}
         </ul>
+
+        {/* 何でやりとりするのか。
+            ここを書かないと、全部が文字の添削だと思われる。
+            映像が無いことも、ここで先に言う。
+            買ったあとに知らせることではない */}
+        <p className="mt-3 text-[12.5px] leading-[1.85] text-steel">
+          「{getTier("check").label}」は文字でやりとりします。
+          「{getTier("decide").label}」と「{getTier("try").label}」は、声で話します。
+          映像はありません。
+        </p>
 
         <div className="mt-8">
           <PlanCards from="price" openIds={openPlanIds()} />

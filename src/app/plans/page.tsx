@@ -38,10 +38,13 @@ export default function PlansPage() {
     <div data-brand className="min-h-screen bg-paper text-slate">
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-4 px-5 py-3 sm:px-8">
-          <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={40} />
+          {/* 標語は12文字ある。狭い端末では、絵とボタンを置いた残りに入らない。
+              トップの見出しと同じ考え方で、320px では出さない
+              （切れた標語を出すくらいなら、名前だけにする） */}
+          <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5">
+            <Tashikame size={36} className="sm:!h-10 sm:!w-10" />
             <span className="min-w-0">
-              <span className="block truncate text-[10px] font-bold leading-[1.3] text-steel">
+              <span className="hidden truncate text-[9px] font-bold leading-[1.3] text-steel min-[360px]:block sm:text-[10px]">
                 {TAGLINE}
               </span>
               <span className="block truncate text-[18px] font-black leading-[1.15] text-slate">
@@ -52,7 +55,7 @@ export default function PlansPage() {
           <PlanCta
             plan={DEFAULT_PLAN}
             from="plans_header"
-            className="min-h-[42px] shrink-0 rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
+            className="min-h-[42px] shrink-0 rounded-pill bg-brand px-4 text-[13.5px] !text-paper shadow-card sm:px-5"
           >
             確かめる
           </PlanCta>
