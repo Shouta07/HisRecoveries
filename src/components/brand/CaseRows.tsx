@@ -48,10 +48,23 @@ const TONE: Record<string, string> = {
   as_is: "bg-mist text-steel",
 };
 
+/**
+ * 何件まで出すか。
+ *
+ * 3件出していた。1件が1画面ぶんあるので、この節だけで
+ * スマホ3.6画面。同じ形の見本を3回読む人はいない。
+ *
+ * 見本が見せたいのは「何が返ってくるか」で、それは1件で伝わる。
+ * 場面の幅は、この上の「こんな瞬間、ありませんか？」が出している。
+ *
+ * 残りは消していない。押せば同じものが自分の場面で起きる。
+ */
+const SHOW = 1;
+
 export default function CaseRows() {
   return (
     <div className="flex flex-col gap-3">
-      {OPEN_CASES.map((c, row) => (
+      {OPEN_CASES.slice(0, SHOW).map((c, row) => (
         <article
           key={c.id}
           className="rounded-card border border-line bg-paper p-3.5 shadow-card sm:p-5"

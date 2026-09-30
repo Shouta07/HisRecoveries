@@ -79,20 +79,16 @@ export default function Journey() {
                     </p>
                   </div>
 
-                  {/* この段で、実際に迷うこと。ここがこの節の中身 */}
-                  <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
-                    {j.choices.map((t) => (
-                      <li
-                        key={t}
-                        className="flex items-start gap-2 text-[13px] leading-[1.7]"
-                      >
-                        <span aria-hidden className="mt-[5px] text-[9px] text-brand">
-                          ●
-                        </span>
-                        <span className="min-w-0 text-slate">{t}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {/* ここに、各段で迷うことを3つずつ並べていた（15行）。
+                      すぐ上の「こんな瞬間、ありませんか？」が同じ仕事をしていて、
+                      この節だけでスマホ2.2画面を使っていた。
+
+                      この節の仕事は「恋愛は、小さな選択の積み重ね」という
+                      考え方を見せることで、場面の一覧を出すことではない。
+                      段の名前と、そこで何をするかだけにする。
+
+                      choices は journey.ts に残してある。消すと
+                      /situations と相談の入口が持っている語彙も消える。 */}
                 </div>
               </div>
             </li>

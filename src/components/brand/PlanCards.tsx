@@ -43,10 +43,20 @@ const HOW_FAR: Record<string, string> = {
 export default function PlanCards({
   from,
   all = false,
+  onlyOpen = false,
   openIds,
 }: {
   from: string;
   all?: boolean;
+  /**
+   * いま買えるものだけ出すか。
+   *
+   * トップで4枚出すと、そのうち3枚が「受付前」で、
+   * 買えない商品の説明にスマホ2.5画面ぶん使うことになる。
+   * 読んでいる人が今できることは1つなので、トップはそれだけ。
+   * 残りは「まだ開いていません」の1行と /plans に置く。
+   */
+  onlyOpen?: boolean;
   /**
    * いま実際に買えるIDの一覧（サーバーが call/gate.ts から作る）。
    *
@@ -58,8 +68,9 @@ export default function PlanCards({
 }) {
   // トップは5つまで（topPlans）。/plans は全部。
   // ここを PLANS 固定にすると、onTop の上限判定が何も守らなくなる。
-  const list = all ? PLANS : topPlans();
   const isOpen = (id: string) => (openIds ? openIds.includes(id) : false);
+  const base = all ? PLANS : topPlans();
+  const list = onlyOpen ? base.filter((p) => isOpen(p.id)) : base;
 
   return (
     <ul className="flex flex-col gap-3.5">
