@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import AskFlow from "@/components/ask/AskFlow";
 import { readyToSell } from "@/lib/ready";
+import { imagesEnabled } from "@/lib/ask/images";
 
 
 // 設定は実行時に読む。
@@ -64,7 +65,7 @@ export default function AskPage() {
       <Suspense
         fallback={<div className="h-[60vh]" />}
       >
-        <AskFlow />
+        <AskFlow images={imagesEnabled} />
       </Suspense>
     </div>
   );

@@ -103,6 +103,8 @@ export const CONVERSION_EVENTS = [
   "assist_opened", // うまく書けない、から整理へ入った（props: from）
   "starter_used", // 書き出しを押して入力欄を埋めた（props: category）
   "outcome_recorded", // その後どうなったかを教えてもらった（props: outcome）
+  "image_added", // 判断材料に画像を足した（props: n）
+  "images_uploaded", // 画像を置き終えた（props: n）
   "schedule_view", // 受付の時間割を開いた（props: date）
   "schedule_date_change", // 時間割の日付を変えた（props: date）
   "schedule_scrolled", // 時間割を動かした（props: date）

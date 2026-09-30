@@ -17,6 +17,8 @@ import {
   Progress, inputClass,
 } from "@/components/brand/kit";
 import AskAssist from "@/components/ask/AskAssist";
+import ImagePicker, { type Picked } from "@/components/ask/ImagePicker";
+import { IMAGE_COPY } from "@/lib/ask/images";
 import AvailableNow from "@/components/ask/AvailableNow";
 import { track } from "@/lib/analytics";
 import { isSensitive, passCost, CONSENT, PASS_COST } from "@/lib/ask/sensitive";
@@ -61,7 +63,18 @@ import Yen from "@/components/brand/Yen";
 
 const STEPS = 3;
 
-export default function AskFlow() {
+export default function AskFlow({
+  /**
+   * 画像を受け取れるか。
+   *
+   * 置き場所（非公開バケット）が用意できているかどうかは
+   * サーバーでしか分からないので、上から渡す。
+   * 用意できていないのに選ばせると、選んだあとで捨てることになる。
+   */
+  images = false,
+}: {
+  images?: boolean;
+} = {}) {
   const router = useRouter();
   const params = useSearchParams();
   const seeded = params.get("c");
@@ -79,6 +92,8 @@ export default function AskFlow() {
   const [b, setB] = useState("");
   // 書き出しを押したあと、続きを書ける場所へカーソルを置くため
   const boxRef = useRef<HTMLTextAreaElement | null>(null);
+  // 判断材料の画像。1回の相談に、文字と一緒に入れる
+  const [pics, setPics] = useState<Picked[]>([]);
 
   const [panelAge, setPanelAge] = useState<PanelAge>("any");
   const [panelAttrs, setPanelAttrs] = useState<AttrId[]>([]);
@@ -191,6 +206,49 @@ export default function AskFlow() {
         setError(json.error ?? "送れませんでした");
         setSending(false);
         return;
+      }
+
+      // ══════════════════════════════════════════════
+      // 画像は、相談ができてから置く
+      // ══════════════════════════════════════════════
+      // 先に置くと、相談を作れなかったときに、
+      // 誰のものでもない画像が置き場所に残る。
+      //
+      // 置けなかったぶんがあっても、相談そのものは止めない。
+      // 文字だけでも読んでもらえるほうが、全部やり直すよりいい。
+      // 置けたぶんだけ結びつける。
+      if (images && pics.length > 0) {
+        const done: { type: string; bytes: number }[] = [];
+        for (let i = 0; i < pics.length; i++) {
+          const f = pics[i].file;
+          try {
+            const sign = await fetch("/api/upload", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                token: json.token, type: f.type, bytes: f.size, n: i + 1,
+              }),
+            });
+            if (!sign.ok) continue;
+            const { url } = (await sign.json()) as { url: string };
+            const put = await fetch(url, {
+              method: "PUT",
+              headers: { "Content-Type": f.type },
+              body: f,
+            });
+            if (put.ok) done.push({ type: f.type, bytes: f.size });
+          } catch {
+            // 1枚落ちても、残りは続ける
+          }
+        }
+        if (done.length > 0) {
+          await fetch("/api/consult/images", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: json.token, files: done }),
+          }).catch(() => {});
+          track("images_uploaded", { n: done.length });
+        }
       }
 
       track("ask_submitted", { category: cat ?? "none", plan: planId, ab: isAb });
@@ -404,6 +462,22 @@ export default function AskFlow() {
               <p className="mt-2.5 rounded-soft bg-mist px-3.5 py-2.5 text-[13px] leading-[1.8] text-steel">
                 名前らしいものがあります。消すかどうかはご自身で決めてください。
               </p>
+            )}
+
+            {/* ══════════════════════════════════════════════
+                判断材料を足す
+                ══════════════════════════════════════════════
+                「画像を送る相談」を別の商品にしない。
+                1回 = 1つの意思決定なので、
+                同じ迷いについてなら文字も画像もまとめて入る。
+
+                置き場所が用意できていないときは、出さない。
+                選ばせてから捨てるのがいちばん悪い。 */}
+            {images && !isAb && (
+              <div className="mt-5">
+                <p className="mb-2 text-[13px] font-bold text-slate">{IMAGE_COPY.one}</p>
+                <ImagePicker items={pics} onChange={setPics} />
+              </div>
             )}
 
             {/* うまく書けない人の逃げ道。
