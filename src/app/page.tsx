@@ -110,6 +110,8 @@ export const metadata: Metadata = {
 const NAV = [
   ["#moments", "恋愛の道のり"],
   ["#before-after", "実例"],
+  // 作った受付の表が、どこからも行けない状態だった
+  ["/reviewers", "今日の受付"],
   ["#faq", "よくある質問"],
   // 「どれを使う？」は、別の節として持っていた。
   // 料金と1つにしたので、行き先も1つでいい
@@ -721,11 +723,18 @@ export default async function HomePage() {
             今どこまで進んでいますか？ 段ごとに、こんなことで手が止まります。
           </p>
 
-          {/* 案内役。見出しの下、説明の右。見出しに被らせない */}
-          <Tashikame
-            size={92}
-            className="pointer-events-none absolute right-0 top-[96px] opacity-95 sm:!h-[150px] sm:!w-[150px] sm:top-[70px] lg:!h-[180px] lg:!w-[180px] lg:top-[56px]"
-          />
+          {/* 案内役。見出しの下、説明の右。見出しに被らせない。
+              名前を下に置く。名前があると、絵が飾りではなく
+              「この子が案内してくれる」に変わる */}
+          <div className="pointer-events-none absolute right-0 top-[96px] flex flex-col items-center sm:top-[70px] lg:top-[56px]">
+            <Tashikame
+              size={92}
+              className="opacity-95 sm:!h-[150px] sm:!w-[150px] lg:!h-[180px] lg:!w-[180px]"
+            />
+            <span className="mt-0.5 text-[12px] font-black tracking-[0.08em] text-steel sm:text-[13px]">
+              恋亀
+            </span>
+          </div>
         </div>
 
         {/* ここでは売らない。どの段で何に迷うかを書くだけ。

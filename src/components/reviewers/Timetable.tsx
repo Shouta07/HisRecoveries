@@ -106,6 +106,7 @@ export default function Timetable({
   list,
   sample,
   callsOpen,
+  compact = false,
 }: {
   date: string;
   dates: string[];
@@ -114,6 +115,14 @@ export default function Timetable({
   list: DayReviewer[];
   sample: boolean;
   callsOpen: boolean;
+  /**
+   * トップに埋めるときは低くする。
+   *
+   * 専用の面（/reviewers）では画面の6割まで使ってよいが、
+   * トップだと、その下に読むものが続くので、
+   * 表だけで1画面を占めると読み進めるのが止まる。
+   */
+  compact?: boolean;
 }) {
   const router = useRouter();
   const [now, setNow] = useState(() => Date.now());
@@ -248,7 +257,9 @@ export default function Timetable({
       )}
 
       {/* ── 表。横に動くのはこの箱の中だけ ── */}
-      <div className="relative mt-4 max-h-[64vh] overflow-auto rounded-card border border-line bg-paper">
+      <div className={`relative mt-4 overflow-auto rounded-card border border-line bg-paper ${
+          compact ? "max-h-[42vh]" : "max-h-[64vh]"
+        }`}>
         <div className="min-w-full">
           {/* 人の見出し */}
           <div

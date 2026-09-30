@@ -1,161 +1,70 @@
-import {
-  todayView,
-  openNow,
-  whenLabel,
-  specialtyLabels,
-  STATUS_LABEL,
-  TODAY,
-  OMAKASE,
-  type Reviewer,
-} from "@/lib/reviewers/today";
-import { SAMPLE_BADGE, SAMPLE_NOTE } from "@/lib/reviewers/sample";
+import Link from "next/link";
+import { scheduleFor, TODAY, OMAKASE } from "@/lib/reviewers/today";
+import { dateStrip, ymd } from "@/lib/reviewers/schedule";
+import { canSellCalls } from "@/lib/call/gate";
+import Timetable from "@/components/reviewers/Timetable";
 import PlanCta from "@/components/brand/PlanCta";
 
 // 今日、受け付けている人。
 //
 // ══════════════════════════════════════════════════
-// 0人なら、節ごと出さない
+// 同じものを2つ持たない
 // ══════════════════════════════════════════════════
-// いま審査を通った人は0人。
-// 「現在、受付中の女性はいません」とだけ書いた枠を常設すると、
-// 来た全員に、空っぽであることを知らせることになる。
+// ここは横に流れるカードの一覧だった。
+// 別の面（/reviewers）に、日付×人×時刻の表を作った。
 //
-// 嘘はつかないが、空の棚をわざわざ見せもしない。
-// 1人でも入れば、この節はひとりでに出る。
+// 同じことを2つの見せ方で持つと、片方だけ古くなる。
+// しかも /reviewers へ行く導線がどこにも無かったので、
+// 作った表を誰も見られない状態だった。
 //
-// ══════════════════════════════════════════════════
-// 顔を出さない
-// ══════════════════════════════════════════════════
-// ここで選ぶのは、話す相手ではなく、読んでくれる人。
-// 顔写真を並べた時点で、見た目で選ぶ画面になる。
-// 出すのは、年代・確認済み・得意な相談・いつ受け付けているか。
+// ここを表そのものにする。カードは畳む。
+// 「今日誰がいて、何時なら空いているか」は
+// 表のほうが1画面で分かる。
 //
 // ══════════════════════════════════════════════════
-// 色だけに頼らない
+// 高さは増やさない
 // ══════════════════════════════════════════════════
-// 受付中を緑の点だけで示さない。文字でも書く。
-
-/** トップと同じ幅。page.tsx の Wrap と同じもの（共有部品にはしていない） */
-function Wrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`mx-auto w-full max-w-[1120px] px-5 sm:px-8 ${className}`}>{children}</div>
-  );
-}
-
-function Dot({ status }: { status: Reviewer["status"] }) {
-  const tone =
-    status === "available"
-      ? "bg-ok-text"
-      : status === "busy"
-        ? "bg-brand"
-        : "bg-steel/40";
-  return <span aria-hidden className={`h-2 w-2 shrink-0 rounded-full ${tone}`} />;
-}
+// カード一覧で 1.3画面ぶん使っていた。
+// 表も同じくらいに収める（箱の中だけが縦に動く）。
+//
+// ══════════════════════════════════════════════════
+// 0人でも、表は出す
+// ══════════════════════════════════════════════════
+// 登録が済んだ人がいないあいだは、見せ方の見本を出す。
+// 札と断りは表の側が持っている。
 
 export default async function TodayReviewers() {
-  const { list, sample } = await todayView();
-  // 本物がいるときだけ、人数を出す。
-  // 見本の人数を「いま2人 受付中」と書いたら、見本の札の意味が無くなる
-  const now = sample ? 0 : openNow(list);
+  const today = ymd(new Date());
+  const dates = dateStrip(7);
+  const { list, sample } = await scheduleFor(today);
+  const callsOpen = canSellCalls();
 
   return (
     <section className="bg-paper">
-      <Wrap className="py-12 sm:py-14">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h2 className="text-huge font-black leading-[1.35] text-slate">{TODAY.head}</h2>
-          {/* 人数は、本当にいるときだけ。盛らない */}
-          {now > 0 && (
-            <span className="rounded-pill bg-ok-tint px-3 py-1 text-[12.5px] font-black text-ok-text">
-              いま{now}人 受付中
-            </span>
-          )}
-          {/* 見本なら、見出しの横に札を出す。
-              小さな※にしない。読み飛ばされたら、嘘をついたのと同じ */}
-          {sample && (
-            <span className="rounded-pill border border-line bg-mist px-3 py-1 text-[12.5px] font-black text-steel">
-              {SAMPLE_BADGE}
-            </span>
-          )}
-        </div>
-        <p className="mt-3 max-w-[32em] text-[14.5px] leading-[1.85] text-steel">
+      <div className="mx-auto w-full max-w-[1120px] px-5 py-12 sm:px-8 sm:py-14">
+        <h2 className="text-huge font-black leading-[1.35] text-slate">{TODAY.head}</h2>
+        <p className="mt-2.5 max-w-[32em] text-[14.5px] leading-[1.85] text-steel">
           {TODAY.lead}
         </p>
 
-        {sample && (
-          <p className="mt-3 max-w-[32em] rounded-card bg-mist px-4 py-3 text-[12.5px] leading-[1.85] text-steel">
-            {SAMPLE_NOTE}
-          </p>
-        )}
+        <div className="mt-5">
+          <Timetable
+            date={today}
+            dates={dates}
+            from={today}
+            list={list}
+            sample={sample}
+            callsOpen={callsOpen}
+            compact
+          />
+        </div>
 
-        {/* 横に流す。縦に積むと、それだけで1画面を使う */}
-        <ul className="-mx-5 mt-7 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0">
-          {list.map((r) => (
-            <li
-              key={r.id}
-              className="w-[236px] shrink-0 snap-start rounded-card border border-line bg-paper p-4 shadow-card"
-            >
-              <div className="flex items-center gap-2">
-                <Dot status={r.status} />
-                <span className="text-[12px] font-bold text-steel">
-                  {STATUS_LABEL[r.status]}
-                </span>
-              </div>
-
-              <p className="mt-2.5 text-[16px] font-black leading-[1.4] text-slate">
-                {r.name}
-                <span className="ml-1.5 text-[12.5px] font-bold text-steel">
-                  {r.ageBand}
-                </span>
-              </p>
-
-              {r.verified && (
-                <p className="mt-1 text-[11.5px] font-bold text-ok-text">✓ 本人確認済み</p>
-              )}
-
-              {/* 得意な相談。無ければ出さない（埋めるために書かない） */}
-              {r.specialties.length > 0 && (
-                <ul className="mt-2.5 flex flex-wrap gap-1.5">
-                  {specialtyLabels(r).map((t) => (
-                    <li
-                      key={t}
-                      className="rounded-pill bg-mist px-2.5 py-1 text-[11px] font-bold text-steel"
-                    >
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {/* 答えた件数は、実際にあるときだけ */}
-              {r.answered > 0 && (
-                <p className="mt-2 text-[11.5px] text-steel">これまで{r.answered}件</p>
-              )}
-
-              <p className="mt-3 border-t border-line pt-2.5 text-[12px] font-bold text-slate">
-                {whenLabel(r)}
-              </p>
-            </li>
-          ))}
-        </ul>
-
-        {/* おまかせ。ここが押す場所。
-            人を選ばせない。選ばせると、見た目と肩書きで選ぶ画面になる */}
-        <div className="mt-7 rounded-card border border-line bg-mist px-5 py-5 sm:px-6">
-          <p className="text-[15.5px] font-black leading-[1.6] text-slate">
-            {OMAKASE.head}
-          </p>
+        {/* 押す場所。人を選ぶのが面倒な人は、ここから */}
+        <div className="mt-6 rounded-card border border-line bg-mist px-5 py-5 sm:px-6">
+          <p className="text-[15px] font-black leading-[1.6] text-slate">{OMAKASE.head}</p>
           <p className="mt-2 text-[13.5px] leading-[1.85] text-steel">{OMAKASE.body}</p>
-          <p className="mt-2 text-[13px] leading-[1.85] text-steel">{OMAKASE.why}</p>
 
-          {/* 誰もいないのに「受付中の人へ届けます」で終わらせない。
-              いま押した人がどうなるかを、押す前に書く */}
-          {sample && (
-            <p className="mt-3 border-t border-line pt-3 text-[13px] font-bold leading-[1.85] text-slate">
-              {TODAY.none}
-            </p>
-          )}
-
-          <div className="mt-5 max-w-[24em]">
+          <div className="mt-4 max-w-[24em]">
             <PlanCta
               plan="review"
               from="today_reviewers"
@@ -164,8 +73,17 @@ export default async function TodayReviewers() {
               今の迷いを確かめる <span aria-hidden className="ml-2">&rarr;</span>
             </PlanCta>
           </div>
+
+          {/* 別の日を見たい人の行き先。
+              ここが無いと、作った表の7日ぶんが誰にも届かない */}
+          <Link
+            href="/reviewers"
+            className="mt-3 inline-flex min-h-[44px] items-center text-[13px] font-bold text-brand underline decoration-line underline-offset-4"
+          >
+            別の日の受付も見る
+          </Link>
         </div>
-      </Wrap>
+      </div>
     </section>
   );
 }
