@@ -42,9 +42,20 @@ function unitYen(p: Plan): number {
 /**
  * 買い方の1行。
  *
- * 2列に並べると1列が160pxしかない。
- * 名前・1回あたり・金額・ボタンを横一列に置くと、全部潰れる。
- * 上に名前と金額、下にボタン、の2段にする。
+ * ══════════════════════════════════════════════════
+ * どの行も同じ高さにする
+ * ══════════════════════════════════════════════════
+ * 2列に並べたとき、左は2つ・右は3つある。
+ * 行ごとの高さが揃っていないと、隣と金額の位置がずれて、
+ * 「¥1,980 と ¥5,980」を並べて見ることができない。
+ *
+ * 中身を3段に固定する。
+ *   1段目  名前（＋おすすめ）
+ *   2段目  金額（パックは1回あたりを小さく横に）
+ *   3段目  ボタン
+ *
+ * 「1回あたり」を下の行に落とすと、パックだけ1段高くなる。
+ * 金額と同じ行に、小さく置く。
  */
 function Row({ p, open }: { p: Plan; open: boolean }) {
   const push = Boolean(p.featured) && open;
@@ -54,34 +65,41 @@ function Row({ p, open }: { p: Plan; open: boolean }) {
         push ? "border-brand bg-brand-tint" : "border-line bg-paper"
       }`}
     >
-      <p className="flex flex-wrap items-baseline gap-x-1.5">
-        <span className="text-[12.5px] font-black text-slate">{p.name}</span>
+      <p className="flex h-[18px] items-center gap-1.5">
+        <span className="truncate text-[12.5px] font-black text-slate">{p.name}</span>
         {push && (
-          <span className="rounded-pill bg-brand px-1.5 py-0.5 text-[9.5px] font-bold text-paper">
+          <span className="shrink-0 rounded-pill bg-brand px-1.5 py-0.5 text-[9.5px] font-bold text-paper">
             おすすめ
           </span>
         )}
       </p>
-      <p className="mt-0.5 flex flex-wrap items-baseline gap-x-2">
-        <span className="text-[16px] font-black tabular-nums text-slate">
+
+      <p className="mt-1 flex h-[22px] items-baseline gap-x-1.5">
+        <span className="text-[17px] font-black tabular-nums leading-none text-slate">
           <Yen yen={p.yen} from={p.from} />
         </span>
-        {/* 1回あたり。パックが安いことを、割引率ではなく金額で見せる */}
+        {/* 1回あたり。割引率ではなく金額で見せる。
+            下の行に落とすと、パックだけ1段高くなる */}
         {p.uses && (
-          <span className="text-[10.5px] text-steel">1回 ¥{unitYen(p).toLocaleString()}</span>
+          <span className="whitespace-nowrap text-[10px] leading-none text-steel">
+            1回 ¥{unitYen(p).toLocaleString()}
+          </span>
         )}
       </p>
 
+      {/* 押す場所と「受付前」は、同じ高さにする。
+          PlanCta は既定で 52px なので、! で上書きする。
+          ここが 52 と 38 で違っていて、2行目から金額が段違いになっていた */}
       {open ? (
         <PlanCta
           plan={p.id}
           from="family"
-          className="mt-2 min-h-[40px] w-full rounded-pill bg-brand px-3 text-[12.5px] !text-paper"
+          className="mt-2 !min-h-[40px] w-full rounded-pill bg-brand px-3 text-[12.5px] !text-paper"
         >
           選ぶ
         </PlanCta>
       ) : (
-        <span className="mt-2 flex min-h-[40px] items-center justify-center rounded-pill bg-mist text-[11px] font-bold text-steel">
+        <span className="mt-2 flex h-[40px] items-center justify-center rounded-pill bg-mist text-[11px] font-bold text-steel">
           受付前
         </span>
       )}
@@ -123,34 +141,37 @@ export default function FamilyCards({
             key={fid}
             className="overflow-hidden rounded-card border border-line bg-paper p-3 shadow-card sm:p-5"
           >
-            <PlanArt id={art} />
+            {/* ══════════════════════════════════════════
+                上半分の高さを揃える
+                ══════════════════════════════════════════
+                片方だけ見出しが2行だったり、「まだ開いていません」の
+                札が1行ぶん足されたりすると、その下の金額がずれる。
 
-            <h3 className="text-[14.5px] font-black leading-[1.45] text-slate sm:text-[17px]">
+                札は絵の上に重ねる（行を1つ使わせない）。
+                見出しと説明は、高さを決めておく。 */}
+            <div className="relative">
+              <PlanArt id={art} />
+              {!open && (
+                <span className="absolute right-1 top-1 rounded-pill bg-paper/95 px-2 py-0.5 text-[9.5px] font-bold text-steel shadow-card">
+                  受付前
+                </span>
+              )}
+            </div>
+
+            <h3 className="flex h-[3.1em] items-start text-[14.5px] font-black leading-[1.45] text-slate sm:h-[2.9em] sm:text-[17px]">
               {f.label}
             </h3>
-            {!open && (
-              <span className="mt-1 inline-flex rounded-pill bg-mist px-2 py-0.5 text-[10px] font-bold text-steel">
-                まだ開いていません
-              </span>
-            )}
-            <p className="mt-1.5 text-[11.5px] leading-[1.75] text-steel sm:text-[13px]">
+            <p className="h-[5.3em] text-[11.5px] leading-[1.75] text-steel sm:h-[3.6em] sm:text-[13px]">
               {f.lead}
             </p>
 
-            {/* 何が返ってくるか。
-                狭い列では3つまで。全部並べると、片方の列だけ倍の高さになる */}
-            <ul className="mt-3 flex flex-col gap-1 border-t border-line pt-3">
-              {list[0].includes.slice(0, 3).map((x) => (
-                <li key={x} className="flex items-start gap-1.5 text-[11px] leading-[1.6] sm:text-[12.5px]">
-                  <span aria-hidden className="mt-[3px] shrink-0 text-[9px] font-black text-brand">
-                    ✓
-                  </span>
-                  <span className="min-w-0 text-steel">{x}</span>
-                </li>
-              ))}
-            </ul>
+            {/* 「返ってくるもの」の一覧は、ここに出していた。
+                左は3行・右は4行になって、その下の金額が段違いになった。
+                見比べる画面で要るのは、何が返るかではなく、
+                どちらを選ぶかと、いくらか。
+                中身は /plans が持つ。 */}
 
-            <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
+            <ul className="mt-2 flex flex-col gap-1.5 border-t border-line pt-3">
               {list.map((p) => (
                 <Row key={p.id} p={p} open={openIds.includes(p.id)} />
               ))}
