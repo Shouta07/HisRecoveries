@@ -161,12 +161,7 @@ export default async function AnswerersPage() {
               確認が済んだ方から、この場所に出ます。
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/join"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-pill bg-brand px-9 text-[15.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
-              >
-                答える側になる
-              </Link>
+              {/* 「答える側になる」（/join）は畳んだ。募集は個別に案内する */}
               <Link
                 href="/ask"
                 className="inline-flex min-h-[56px] items-center justify-center rounded-pill border border-line bg-paper px-9 text-[15.5px] font-bold shadow-card transition-shadow hover:shadow-card-hover"
@@ -193,8 +188,8 @@ export default async function AnswerersPage() {
             <Link href="/" className="text-[15px] font-black">
               {NAME}
             </Link>
-            <Link href="/safety" className="text-[12px] text-steel transition-colors hover:text-slate">
-              安全とできないこと
+            <Link href="/terms" className="text-[12px] text-steel transition-colors hover:text-slate">
+              利用規約
             </Link>
           </div>
           <p className="text-[11.5px] text-steel">

@@ -196,12 +196,8 @@ export default async function ResponderCallPage({
             </li>
           ))}
         </ul>
-        <Link
-          href="/join"
-          className="mt-4 inline-flex min-h-[40px] items-center text-[12.5px] font-bold text-brand underline decoration-line underline-offset-4"
-        >
-          答える側のきまりを見る
-        </Link>
+        {/* 「答える側のきまり」は /join が持っていた。ページごと畳んだので、
+            きまりは登録のときに個別に渡す（lib/responder/policy.ts）。 */}
       </div>
     </Shell>
   );

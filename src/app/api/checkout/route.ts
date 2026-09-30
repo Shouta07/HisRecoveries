@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbSelect, dbUpdate, dbInsertReturning, dbAdminEnabled } from "@/lib/db";
-import { plan, priceOf } from "@/lib/ask/plans";
+import { plan, priceOf, formalName } from "@/lib/ask/plans";
 import { isSellableNow, whyCannotSellCalls } from "@/lib/call/gate";
 import { canCharge, whyCannotCharge } from "@/lib/legal";
 import { supply, shortMessage } from "@/lib/supply";
@@ -123,10 +123,11 @@ export async function POST(req: NextRequest) {
   // 実態（B2C）と、決済に出る文言を、同じにしておく。
   const r = await createCheckout({
     yen,
-    name: `タシカメ ${p.name}`,
-    description: p.callMinutes
-      ? `オンライン恋愛相談（音声通話 ${p.callMinutes}分）${p.uses ? ` ${p.uses}回分` : ""}`
-      : `オンライン恋愛相談（文章・画像）${p.uses ? ` ${p.uses}回分` : ""}`,
+    // 明細・領収書・審査で読める形（plans.ts の formalName）
+    name: formalName(planId),
+    description: `販売者: ${site.company.name} / 提供: オンライン。${
+      p.uses ? `${p.uses}回分。` : ""
+    }月額・自動更新はありません。`,
     consultationToken: c.token,
     successUrl: `${base}/ask/${c.token}?paid=1`,
     cancelUrl: `${base}/ask/${c.token}?canceled=1`,

@@ -112,12 +112,9 @@ export default function NextStep({ token }: { token: string }) {
                 相手も実在の人なので、時間を決めた受け入れ方と、
                 その場を見る体制が用意できてから開きます。
               </p>
-              <Link
-                href="/how"
-                className="mt-3 inline-flex min-h-[44px] items-center text-[13.5px] font-bold text-brand underline decoration-line underline-offset-4"
-              >
-                仕組みを見る
-              </Link>
+              {/* 「仕組みを見る」（/how）は、ページごと畳んだ。
+                  同じことはトップの1画面目が
+                  Before → 相談 → After の3枚で見せている。 */}
             </>
           ) : (
             <>

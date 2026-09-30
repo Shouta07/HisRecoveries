@@ -24,7 +24,7 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, isOpenCategory, type AttrId, type PanelAge } from "./model";
-import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary } from "../voice";
+import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary, NAME } from "../voice";
 
 /**
  * 売るもの。
@@ -465,6 +465,36 @@ export const PLANS: Plan[] = [
  * 買うときにも出す（特商法の表記と、決済の直前）。
  * 黙って消すのがいちばん悪い。
  */
+/**
+ * 決済とレシートに出す、正式な商品名。
+ *
+ * ══════════════════════════════════════════════════
+ * 画面の名前と、請求書の名前を分ける
+ * ══════════════════════════════════════════════════
+ * 画面では「文章・画像で確カメる」でいい。
+ * 買う人はその言葉で選んでいる。
+ *
+ * しかし、カードの明細と領収書に「確カメる」とだけ出ると、
+ * 1か月後に明細を見た本人が、何の請求か分からない。
+ * 決済代行の審査担当者も、何を売っているのか読み取れない。
+ *
+ * どちらにも同じ意味が通る形にする。
+ *   タシカメ｜文章・画像によるオンライン恋愛相談｜1回
+ *   タシカメ｜オンライン恋愛相談（通話15分）｜5回パス
+ *
+ * ブランドの言い回し（確カメる）は、ここには入れない。
+ */
+const FORMAL_FAMILY: Record<Family, string> = {
+  text: "文章・画像によるオンライン恋愛相談",
+  call: "オンライン恋愛相談（通話15分）",
+};
+
+export function formalName(id: PlanId): string {
+  const p = plan(id);
+  const how = p.uses ? `${p.uses}回パス` : "1回";
+  return `${NAME}｜${FORMAL_FAMILY[p.family]}｜${how}`;
+}
+
 export const PASS_VALID_DAYS = 180;
 
 /** 期限の日付。買った日から PASS_VALID_DAYS 日後 */
@@ -984,6 +1014,28 @@ export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category)
             `1回 ${p.callMinutes}分 × ${p.uses}回です（時間の残高ではありません）`,
         );
       }
+    }
+  }
+
+  // 正式な商品名。明細と審査で読めること。
+  for (const p of PLANS) {
+    const f = formalName(p.id);
+    if (!f.startsWith(NAME)) throw new Error(`「${p.id}」の正式名が店名で始まっていません（${f}）`);
+    // 何を売っているのかが、その1行で分かること。
+    if (!f.includes("恋愛相談")) {
+      throw new Error(`「${p.id}」の正式名に、何のサービスかが書かれていません（${f}）`);
+    }
+    // ブランドの言い回しは明細に出さない。
+    if (/確カメ|確かめ/.test(f)) {
+      throw new Error(`「${p.id}」の正式名にブランドの言い回しが入っています（${f}）`);
+    }
+    // 回数が分かること。
+    if (p.uses && !f.includes(`${p.uses}回パス`)) {
+      throw new Error(`「${p.id}」の正式名に回数が書かれていません（${f}）`);
+    }
+    // 通話は分数が分かること。
+    if (p.callMinutes && !f.includes(`${p.callMinutes}分`)) {
+      throw new Error(`「${p.id}」の正式名に分数が書かれていません（${f}）`);
     }
   }
 

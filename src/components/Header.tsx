@@ -26,7 +26,7 @@ export default function Header() {
   // 何のサービスを使っているのか分からなくなる。
   // 1つ増やすたびにこの行が伸びていたので、一覧にした。
   const BRAND_PAGES = [
-    "/join", "/safety", "/mine", "/legal", "/how", "/talk", "/plans",
+    "/mine", "/legal", "/talk", "/plans",
     "/reviewers", "/articles", "/terms",
   ];
   const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/"];

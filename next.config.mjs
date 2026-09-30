@@ -40,6 +40,19 @@ const nextConfig = {
       // 消したページは検索に残っている。404 にすると、そのぶんの
       // 評価がそのまま消える。行き先のある面へ 301 で渡す。
       //
+      // ── タシカメの面を畳んだぶん（2026-09）──
+      // /how     「仕組み」。トップの1画面目が
+      //          Before → 相談 → After の3枚で同じことを見せるようになった
+      // /safety  「安心・安全」。禁止していることは利用規約 第9条が持つ
+      // /join    「答える側になる」。回答者の募集は個別に案内する
+      //
+      // /join?ref=CODE は、配った紹介リンクの着地先だった。
+      // クエリごと拾えるように source は /join のままにしてある
+      // （Next.js は既定でクエリを引き継ぐ）。
+      { source: "/how", destination: "/", permanent: true },
+      { source: "/safety", destination: "/terms", permanent: true },
+      { source: "/join", destination: "/", permanent: true },
+
       // 第一印象改善プラン（¥49,800）と、その申し込み導線
       { source: "/plan", destination: "/", permanent: true },
       { source: "/reserve", destination: "/", permanent: true },

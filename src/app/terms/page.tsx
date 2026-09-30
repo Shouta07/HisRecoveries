@@ -101,11 +101,7 @@ export default function TermsPage() {
           <Link href="/privacy" className="underline decoration-line underline-offset-4 hover:text-slate">
             プライバシー・免責事項
           </Link>
-          、お受けできない相談は{" "}
-          <Link href="/safety" className="underline decoration-line underline-offset-4 hover:text-slate">
-            安全とできないこと
-          </Link>{" "}
-          をご覧ください。
+          {" "}をご覧ください。
         </p>
       </main>
     </div>

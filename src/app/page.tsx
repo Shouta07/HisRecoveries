@@ -299,10 +299,10 @@ function Safety() {
         ))}
       </ul>
       <Link
-        href="/safety"
+        href="/terms"
         className="mt-4 inline-flex min-h-[44px] items-center text-[13px] font-bold text-brand underline decoration-line underline-offset-4"
       >
-        できないことも含めて、詳しく
+        禁止していることも含めて、詳しく
       </Link>
     </div>
   );
@@ -493,14 +493,8 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-            {/* 答える側の入口。トップの最後から外したので、ここが唯一の常設導線。
-                買う人の押す場所と同じ大きさにしない（押す先が2つになる） */}
-            <Link
-              href="/join"
-              className="hidden whitespace-nowrap text-[13px] font-bold text-steel transition-colors hover:text-brand sm:inline"
-            >
-              答える側になる
-            </Link>
+            {/* 答える側の入口（/join）は、ページごと畳んだ。
+                募集は個別に案内する。公開の入口は置かない。 */}
             <PlanCta
               plan={DEFAULT_PLAN}
               from="header"
@@ -543,7 +537,7 @@ export default async function HomePage() {
 
         {/* 相談する男性と、読んで返す女性を1枚に入れる。
             片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
-        <HeroBoard />
+        <HeroBoard openIds={openPlanIds()} />
 
         <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
@@ -555,20 +549,59 @@ export default async function HomePage() {
                 値段は、何が返ってくるかを見たあとで見るもの。
                 料金の節（#price）と /plans にある。隠してはいない。 */}
 
-            {/* ここに1画面目の押す場所と、4つの印（実在女性が回答／匿名OK／
-                都度払い／追加料金なし）と、絵の注記を置いていた。
+            {/* ══════════════════════════════════════════
+                押す場所と4つの印を、戻した
+                ══════════════════════════════════════════
+                一度は外していた。ヘッダーにボタンがあり、すぐ下の
+                「こんな瞬間、ありませんか？」が8つとも押せるので、
+                1画面目に3つ目の入口は要らない、という理由だった。
 
-                押す場所は、ヘッダーのボタンがずっと出ている。
-                そのすぐ下が「こんな瞬間、ありませんか？」で、
-                8つとも押せる。1画面目に3つ目の押す場所は要らない。
+                絵が Before → 相談 → After の3段になって、話の
+                終わりがここに来た。「送れる」を見た直後に押す場所が
+                無いと、その勢いのまま次の節まで運ぶことになる。
 
-                4つの印は、まだ何のサービスか分からないうちに
-                条件だけ先に並べていた。
-                中身は、よくある質問と料金の節が持っている。
+                4つの印も同じ。何のサービスか分からないうちに
+                条件だけ並べると読まれないが、いまは絵のあとなので
+                「で、いくらで、どう払うのか」の答えになっている。 */}
+            <div className="mt-7 sm:mt-9">
+              <PlanCta
+                plan={DEFAULT_PLAN}
+                from="hero"
+                className="min-h-[60px] w-full rounded-pill bg-brand px-8 text-[16.5px] !text-paper shadow-card sm:text-[18px]"
+              >
+                今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
+              </PlanCta>
+            </div>
 
-                絵の注記だけは消せない。
-                写真と回答が見本であることを言わずに出すと、
-                実際の相談に見える。絵の側（HeroBoard）へ移した。 */}
+            {/* 4つとも、いま本当にそうであること。
+                「実在の女性が回答」  審査を通った女性だけが答える
+                「匿名でOK」          名前も連絡先も要らない（鍵だけ）
+                「都度払い」          必要なときだけ
+                「月額なし」          自動更新もしない
+                ここに「返金保証」などを足さないこと。
+                条件が付くものを1語で書くと、書いた時点で嘘になる。 */}
+            <ul className="mt-6 grid grid-cols-4 gap-2 sm:mt-7 sm:gap-3">
+              {[
+                { label: "実在の女性\nが回答", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0Z" },
+                { label: "匿名でOK", d: "M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z" },
+                { label: "都度払い", d: "M3 6h18v12H3V6Zm2 3v2h14V9H5Zm0 4v2h7v-2H5Z" },
+                { label: "月額なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
+              ].map((b) => (
+                <li key={b.label} className="flex flex-col items-center text-center">
+                  <span
+                    aria-hidden
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-12 sm:w-12"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-[22px] sm:w-[22px]" fill="currentColor">
+                      <path d={b.d} />
+                    </svg>
+                  </span>
+                  <span className="mt-1.5 whitespace-pre-line text-[10.5px] font-bold leading-[1.45] text-steel sm:text-[12px]">
+                    {b.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
 
             {/* 受け付けていないことの断りは、値段の節（買う場所）に置いてある。
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
@@ -1182,10 +1215,73 @@ export default async function HomePage() {
       {/* スクロールを先導するタシカメ。進み具合と、押す場所を兼ねる */}
       <TashikameGuide />
 
-      {/* 答える側への入口は、ここに置かない。
+      {/* ══ フッター ══ */}
+      {/* ══════════════════════════════════════════════
+          誰が売っているのかを、隠さない
+          ══════════════════════════════════════════════
+          前はフッターごと外していて、運営会社の名前も、
+          法定の表記への道も、ハンバーガーメニューの中だけにあった。
+
+          畳んであるのは「隠していない」とは違う。
+          初めて来た人が、誰から買うのかを確かめようとしたときに、
+          メニューを開かないと分からないのは遠い。
+
+          ここに置くのは4つだけ。
+            誰が売っているか
+            特定商取引法に基づく表記
+            利用規約 / プライバシー
+            連絡先
+          増やさない。増やすと、また読まれないものになる。
+
+          答える側への入口は、ここにも置かない。
           ここは買う人の画面で、最後に「自分は答える側かもしれない」と
           思わせると、押す先が2つになって、どちらも押されなくなる。
-          答える側の話は、ヘッダーから /join へ渡す。 */}
+          回答者の募集は、個別に案内する。 */}
+      <footer className="border-t border-line bg-paper">
+        <Wrap className="py-10 sm:py-12">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <p className="text-[12px] font-bold text-steel">運営</p>
+              <p className="mt-1 text-[14.5px] font-black text-slate">
+                {site.company.name}
+              </p>
+              <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">
+                {site.company.postalCode} {site.company.address}
+              </p>
+              <a
+                href={`mailto:${site.company.email}`}
+                className="mt-2 inline-flex min-h-[36px] items-center text-[12.5px] font-bold text-brand underline decoration-line underline-offset-4"
+              >
+                {site.company.email}
+              </a>
+            </div>
+
+            <ul className="flex flex-col gap-2.5 sm:items-end">
+              {[
+                ["/legal", "特定商取引法に基づく表記"],
+                ["/terms", "利用規約"],
+                ["/privacy", "プライバシー・免責事項"],
+                ["/articles", "たしかメディア"],
+              ].map(([href, label]) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="inline-flex min-h-[36px] items-center text-[13px] font-bold text-steel transition-colors hover:text-brand"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <p className="mt-8 border-t border-line pt-6 text-[11.5px] leading-[1.8] text-steel">
+            {NAME}は、{site.company.name}が提供するオンライン恋愛相談サービスです。
+            お客様との契約および決済の相手方は当社です。
+            回答する女性は当社の業務委託先であり、お客様への販売者ではありません。
+          </p>
+        </Wrap>
+      </footer>
     </div>
   );
 }
