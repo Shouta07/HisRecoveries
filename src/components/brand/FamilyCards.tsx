@@ -180,19 +180,9 @@ export default function FamilyCards({
         );
       })}
 
-      {/* 対面は、まだ形も決まっていない。1行だけ。
-          2列の片側に入れると、1行が3行に折り返す。横いっぱいに置く */}
-      <li className="col-span-2 rounded-card border border-line bg-mist px-4 py-3.5">
-        <p className="text-[13px] leading-[1.85] text-steel">
-          このほかに、本番をそのまま一度やってみる Mock Date があります。
-          <Link
-            href="/plans"
-            className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
-          >
-            見る
-          </Link>
-        </p>
-      </li>
+      {/* 「このほかに Mock Date があります」の1行は、ここに置いていた。
+          いま買えない3つ目を並べても、選ぶ材料にならない。
+          /plans には出ている。 */}
     </ul>
   );
 }
