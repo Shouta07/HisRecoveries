@@ -36,7 +36,8 @@ import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
 import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
-import CaseRows from "@/components/brand/CaseRows";
+import ChatCase from "@/components/brand/ChatCase";
+import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
 
 // ══════════════════════════════════════════════════════════════
@@ -672,17 +673,13 @@ export default async function HomePage() {
           ))}
         </ul>
 
-        {/* ほかの手段を否定しない。足りない1点だけを書く。
-            「役に立たない」と言った時点で、読んでいる人の実感と食い違う */}
-        <div className="mt-8 rounded-card bg-mist px-5 py-5 sm:px-6">
-          <p className="text-[13.5px] leading-[1.9] text-steel">{BRIDGE.known}</p>
-          <p className="mt-3 text-[16px] font-black leading-[1.7] text-slate sm:text-[17px]">
-            {BRIDGE.gap}
-          </p>
-          <p className="mt-3 border-t border-line pt-3 text-[13.5px] font-bold leading-[1.8] text-brand-deep">
-            {BRIDGE.close}
-          </p>
-        </div>
+        {/* 「検索すれば／AIに聞けば」の3行は、ここに置いていた。
+            置き場所としては早すぎた。
+            まだ何のサービスか分からない段階で、ほかの手段と比べても、
+            比べる先が頭の中に無い。
+
+            「ほかの選び方と、どう違うか」の節へ移した。
+            友達とAIの話をしている、まさにその場所。 */}
       </Block>
 
       {/* ══ 2. 恋愛の道のりと、その場面 ══ */}
@@ -780,7 +777,11 @@ export default async function HomePage() {
         </p>
 
         <div className="mt-7">
-          <CaseRows />
+          {/* 表で並べると「機能の説明」になる。
+              実際に起きるのは、送る前に止まって、読んでもらって、
+              返ってきて、決める、という順番のある出来事。
+              その順番のまま、やりとりの形で出す */}
+          <ChatCase c={OPEN_CASES[0]} />
         </div>
 
         <div className="mt-7 max-w-[26em]">
@@ -1073,6 +1074,21 @@ export default async function HomePage() {
           実際にどう受け取ったかです。
         </p>
 
+        {/* ほかの手段を否定しない。足りない1点だけを書く。
+            「役に立たない」と言った時点で、読んでいる人の実感と食い違う。
+
+            前は1画面目の下に置いていたが、そこでは早すぎた。
+            友達とAIの話をしている、この場所に移した */}
+        <div className="mt-6 rounded-card bg-mist px-5 py-5 sm:px-6">
+          <p className="text-[13.5px] leading-[1.9] text-steel">{BRIDGE.known}</p>
+          <p className="mt-3 text-[16px] font-black leading-[1.7] text-slate sm:text-[17px]">
+            {BRIDGE.gap}
+          </p>
+          <p className="mt-3 border-t border-line pt-3 text-[13.5px] font-bold leading-[1.8] text-brand-deep">
+            {BRIDGE.close}
+          </p>
+        </div>
+
         {/* 表は、もっと詳しく知りたい人のため。
             スマホでは畳んでおく（開かなくても上の2つで足りる） */}
         <details className="group mt-7">
@@ -1238,55 +1254,24 @@ export default async function HomePage() {
           <FamilyCards openIds={openPlanIds()} />
         </div>
 
-        {/* ══════════════════════════════════════════════
-            5回が、どういう5回なのか
-            ══════════════════════════════════════════════
-            「5回分 ¥7,980」だと、回数券にしか見えない。
-            回数券は、使う予定が立たないと買えない。
+        {/* ここに「たとえば、こんな5回」の一覧（5項目）と、
+            「1回だけの相談ではありません…」の説明、
+            そして税込と受付前の断りを置いていた。
 
-            実際には、関係が進むたびに「これでいい？」が来る。
-            その順番をそのまま出す。
-            自分にもこの5回が起きると分かれば、回数の話ではなくなる。
+            カードを2列にして、値段が一目で比べられるようになった時点で、
+            その下の説明は読まれない。上で言い切っていることを、
+            下でもう一度言っているだけになっていた。
 
-            具体的な場面にする。「プロフィール」ではなく
-            「出す前の自己紹介文」。受け取れないもの（写真）は書かない。 */}
-        <div className="mt-8 rounded-card bg-mist px-5 py-5 sm:px-6">
-          <p className="text-[13.5px] font-black text-slate">たとえば、こんな5回</p>
-          <ol className="mt-3.5 flex flex-col gap-2">
-            {[
-              "出す前の自己紹介文",
-              "最初のメッセージ",
-              "初デートへの誘い方",
-              "デートのあと、なんと送るか",
-              "2回目を、いつ切り出すか",
-            ].map((t, i) => (
-              <li key={t} className="flex items-center gap-3">
-                <span
-                  aria-hidden
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper text-[11px] font-black tabular-nums text-brand-deep"
-                >
-                  {i + 1}
-                </span>
-                <span className="min-w-0 text-[13.5px] leading-[1.7] text-slate">{t}</span>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-4 border-t border-line pt-3.5 text-[13px] leading-[1.85] text-steel">
-            1回だけの相談ではありません。関係が進むたびに起きる「これでいい？」を、
-            5回まで確かめられます。期限はありません。
-          </p>
-        </div>
-
-        <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">
-          {/* 何がまだ開いていないかは、すぐ上の3行が出している。
-              ここで同じことを書かない */}
-          税込。開いていないものは、時間を決めた受け入れ方と、
-          その場を見る体制が用意できてから開きます。
+            ただし、キャンセルと返金への行き先だけは残す。
+            買う画面から返金の条件へ辿れないのは、特商法の表示として
+            まずい（/plans と /legal が中身を持っている）。 */}
+        <p className="mt-5 text-[12px] leading-[1.85] text-steel">
+          税込。
           <Link
             href="/plans"
             className="ml-1 font-bold text-brand underline decoration-line underline-offset-4"
           >
-            ぜんぶ見る・キャンセルと返金
+            キャンセルと返金について
           </Link>
         </p>
       </Block>
