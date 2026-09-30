@@ -907,150 +907,20 @@ export default async function HomePage() {
           押す場所は減らしていない。ここにあった
           「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
 
-      {/* ══ 4. ほかの選び方との違い ══ */}
-      {/* 比較広告は景表法の対象。実証・正確な引用・公正な比較の3つが要る。
-          他社の金額は書かない（出典が無い）。事実に反することも書かない
-          （AIは無料で使えるものが多い）。中身と判定は lib/ask/compare.ts。 */}
-      <Block tint>
-        <H>ほかの選び方と、どう違うか。</H>
-        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
-          いちばん多いのは「友達に聞けばいい」「AIに聞けばいい」です。
-          どちらもふつうに役に立ちます。足りないのは1点だけです。
-        </p>
+      {/* ══ 4.「ほかの選び方と、どう違うか。」は外した ══ */}
+      {/* ══════════════════════════════════════════════
+          比べる前に、もう決まっている
+          ══════════════════════════════════════════════
+          友達に聞く / AIに聞く との違いと、
+          結婚相談所・マッチングアプリとの比較表を置いていた。
 
-        {/* ── 先に、いちばん多い2つに答える ──
-            6列の表はスマホで横に切れて読まれない。
-            読まれないまま「友達でいいや」「AIでいいや」で閉じられる。
-            表の前に、その2つだけ縦で答える。 */}
-        <ul className="mt-8 flex flex-col gap-3">
-          {INSTEAD.map((x, i) => (
-            <Reveal key={x.id} delay={i * 60}>
-              <li className="rounded-card border border-line bg-paper p-5 shadow-card">
-                <p className="text-[16px] font-black text-slate">{x.label}</p>
+          ここまでで、1画面目の3枚と、やりとりの見本が、
+          「実際の女性が読んで、どう受け取ったかが返る」ことを
+          すでに見せている。そのあとで他の手段と並べると、
+          決めかけた人を、もう一度迷わせる場所になる。
 
-                <div className="mt-3 flex items-start gap-2.5">
-                  <span
-                    aria-hidden
-                    className="mt-[3px] shrink-0 text-[11px] font-black text-ok-text"
-                  >
-                    ✓
-                  </span>
-                  <p className="min-w-0 text-[13.5px] leading-[1.8] text-steel">
-                    <span className="font-bold text-slate">足りるとき：</span>
-                    {x.enough}
-                  </p>
-                </div>
-
-                <div className="mt-2.5 flex items-start gap-2.5 border-t border-line pt-3">
-                  <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
-                    →
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-[14px] font-black leading-[1.6] text-brand-deep">
-                      {x.short}
-                    </p>
-                    <p className="mt-1.5 text-[13px] leading-[1.8] text-steel">{x.why}</p>
-                  </div>
-                </div>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
-
-        <p className="mt-5 text-[14.5px] font-black leading-[1.7] text-slate">
-          タシカメが返すのは、相手と同じ側に立つ、あなたを知らない女性が
-          実際にどう受け取ったかです。
-        </p>
-
-        {/* ほかの手段を否定しない。足りない1点だけを書く。
-            「役に立たない」と言った時点で、読んでいる人の実感と食い違う。
-
-            前は1画面目の下に置いていたが、そこでは早すぎた。
-            友達とAIの話をしている、この場所に移した */}
-        <div className="mt-6 rounded-card bg-mist px-5 py-5 sm:px-6">
-          <p className="text-[13.5px] leading-[1.9] text-steel">{BRIDGE.known}</p>
-          <p className="mt-3 text-[16px] font-black leading-[1.7] text-slate sm:text-[17px]">
-            {BRIDGE.gap}
-          </p>
-          <p className="mt-3 border-t border-line pt-3 text-[13.5px] font-bold leading-[1.8] text-brand-deep">
-            {BRIDGE.close}
-          </p>
-        </div>
-
-        {/* 表は、もっと詳しく知りたい人のため。
-            スマホでは畳んでおく（開かなくても上の2つで足りる） */}
-        <details className="group mt-7">
-          <summary className="flex min-h-[48px] cursor-pointer list-none items-center gap-2 text-[13.5px] font-bold text-brand">
-            結婚相談所・マッチングアプリとの違いも見る
-            <span
-              aria-hidden
-              className="text-[16px] leading-none transition-transform group-open:rotate-45"
-            >
-              +
-            </span>
-          </summary>
-
-          <p className="mt-3 text-[13px] leading-[1.85] text-steel">{COMPARE_SCOPE}</p>
-          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-steel lg:hidden">
-            <span aria-hidden>↔</span> 表は横にスクロールできます
-          </p>
-
-        <div className="mt-3 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0 lg:mt-5">
-          <table className="w-full min-w-[880px] border-collapse overflow-hidden rounded-card border border-line bg-paper shadow-card">
-            <thead>
-              <tr>
-                <th scope="col" className="w-[6.5em] bg-paper px-3 py-3" />
-                {ALTERNATIVES.map((a) => (
-                  <th
-                    key={a.id}
-                    scope="col"
-                    className={`px-3 py-3 text-[13px] font-black leading-[1.4] ${
-                      a.us ? "bg-brand text-paper" : "bg-mist text-steel"
-                    }`}
-                  >
-                    {a.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {COMPARE.map((r) => (
-                <tr key={r.id} className="border-t border-line">
-                  <th
-                    scope="row"
-                    className="px-3 py-3 text-left align-top text-[12px] font-bold leading-[1.6] text-steel"
-                  >
-                    {r.label}
-                  </th>
-                  {ALTERNATIVES.map((a) => (
-                    <td
-                      key={a.id}
-                      className={`px-3 py-3 align-top text-[12px] leading-[1.7] ${
-                        a.us ? "bg-brand-tint font-bold text-brand-deep" : "text-steel"
-                      }`}
-                    >
-                      {r.cells[a.id]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-          <p className="mt-4 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
-        </details>
-
-        <div className="mt-7 max-w-[26em]">
-          <PlanCta
-            plan={DEFAULT_PLAN}
-            from="compare"
-            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-          >
-            今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
-          </PlanCta>
-        </div>
-      </Block>
+          比較の中身と判定は lib/ask/compare.ts に残してある
+          （景表法の要件つき）。戻すなら、そこから出すこと。 */}
 
       {/* ══ 6. よくある質問 ══ */}
       {/* 安心・安全は、節として独立させていた。

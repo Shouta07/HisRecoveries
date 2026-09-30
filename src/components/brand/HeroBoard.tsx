@@ -87,9 +87,72 @@ function Stage({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * 1画面目の吹き出し。
+ *
+ * ══════════════════════════════════════════════════
+ * ここだけ、MOMENTS を使わない
+ * ══════════════════════════════════════════════════
+ * すぐ下の「こんな瞬間、ありませんか？」（MOMENTS）は、
+ * 1つずつが押せて、その場面の相談へ入る口になっている。
+ * だから pain.ts には「押した先が受付中か」「画像を前提に
+ * していないか」という判定が付いている。
+ *
+ * ここは押せない。頭の中の声を、絵として出しているだけ。
+ * 行き先が無いので、行き止まりにもならない。
+ *
+ * そのぶん、実際に頭に浮かぶ言葉そのままにできる。
+ * 「この写真どっちがいい…？」は、文章・画像で確カメる
+ * （FAMILIES の text）が受けている相談そのもの。
+ *
+ * 押せる一覧のほうは MOMENTS のまま。役割が違う。
+ */
+const BUBBLES: { lines: [string, string]; icon: "msg" | "date" | "photo" }[] = [
+  { lines: ["またご飯行こ〜", "って送っていい…？"], icon: "msg" },
+  { lines: ["今誘ったら", "早すぎるかな…？"], icon: "date" },
+  { lines: ["この写真", "どっちがいい…？"], icon: "photo" },
+];
+
+/** 吹き出しの頭に置く小さな印 */
+function BubbleIcon({ kind }: { kind: "msg" | "date" | "photo" }) {
+  const tone =
+    kind === "msg" ? "bg-ok-tint text-ok-text"
+    : kind === "date" ? "bg-rose-tint text-rose-text"
+    : "bg-brand-tint text-brand";
+  const d =
+    kind === "msg" ? "M4 5h16v11H7.5L4 19.5V5Z"
+    : kind === "date" ? "M5 4h14v16H5V4Zm2 5v9h10V9H7Zm1-7h2v3H8V2Zm6 0h2v3h-2V2Z"
+    : "M4 5h16v14H4V5Zm2 2v8l4-4 3 3 3-3 2 2V7H6Zm3 2a1.4 1.4 0 1 1 0 2.8A1.4 1.4 0 0 1 9 9Z";
+  return (
+    <span
+      aria-hidden
+      className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[7px] sm:h-[26px] sm:w-[26px] ${tone}`}
+    >
+      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="currentColor">
+        <path d={d} />
+      </svg>
+    </span>
+  );
+}
+
+/** 「！」の代わりの、短い線3本。よかったことの印 */
+function Sparks({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      className={`text-brand ${className}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+    >
+      <path d="M4 10 1.5 8M6 6 4.5 3M10 4.5 10 1.5" />
+    </svg>
+  );
+}
+
 export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
-  // 吹き出しは3つまで。増やすと顔が隠れる
-  const bubbles = MOMENTS.slice(0, 3);
 
   // 家族ごとに1つ、代表の商品を出す。
   // 値段はここに書かない（1画面目に金額を出すと、
@@ -124,14 +187,23 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
 
           <Stage>Before</Stage>
 
-          {/* 手が止まっている中身。右側に重ねる */}
-          <ul className="absolute inset-y-0 right-2.5 flex w-[64%] max-w-[330px] flex-col justify-center gap-2 sm:right-4 sm:w-[58%] sm:gap-2.5">
-            {bubbles.map((m) => (
+          {/* 手が止まっている中身。右側に重ねる。
+              3つを少しずつ左右にずらす。きれいに揃えると一覧表に見えて、
+              「頭の中で同時に鳴っている」感じが出ない */}
+          <ul className="absolute inset-y-0 right-2.5 flex w-[66%] max-w-[330px] flex-col justify-center gap-2 sm:right-4 sm:w-[60%] sm:gap-2.5">
+            {BUBBLES.map((b, i) => (
               <li
-                key={m.line}
-                className="rounded-card rounded-br-[4px] bg-paper px-3 py-2 text-[11.5px] font-bold leading-[1.55] text-slate shadow-card sm:px-3.5 sm:py-2.5 sm:text-[13.5px]"
+                key={b.lines[0]}
+                className={`flex items-start gap-2 rounded-[16px] bg-paper px-2.5 py-2 shadow-card sm:gap-2.5 sm:px-3 sm:py-2.5 ${
+                  i === 1 ? "ml-3 sm:ml-5" : i === 2 ? "ml-1.5 sm:ml-2.5" : ""
+                }`}
               >
-                {m.line}
+                <BubbleIcon kind={b.icon} />
+                <span className="min-w-0 text-[11.5px] font-bold leading-[1.5] text-slate sm:text-[13.5px]">
+                  {b.lines[0]}
+                  <br />
+                  {b.lines[1]}
+                </span>
               </li>
             ))}
           </ul>
@@ -143,16 +215,20 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
         <div className="rounded-card bg-mist p-3.5 shadow-card sm:p-5">
           <div className="flex items-center gap-3.5 sm:gap-5">
             {/* 素材が 202×198 しかないので、大きくしない（伸ばすと粗が出る） */}
-            <Slot
-              name="w1"
-              rounded="rounded-card"
-              className="h-[88px] w-[88px] shrink-0 sm:h-[116px] sm:w-[116px]"
-            />
+            <div className="relative shrink-0">
+              <Slot
+                name="w1"
+                rounded="rounded-card"
+                className="h-[92px] w-[92px] sm:h-[120px] sm:w-[120px]"
+              />
+              <Sparks className="absolute -left-1 -top-1 h-4 w-4 sm:h-5 sm:w-5" />
+            </div>
             <p className="min-w-0 text-[15px] font-black leading-[1.55] text-slate sm:text-[19px]">
-              実在する女性に相談して、
-              <br className="hidden sm:block" />
-              本音の反応を
-              <span className="text-brand">確カメる</span>。
+              実在する女性に
+              <br />
+              相談して、
+              <br />
+              本音の反応を<span className="text-brand">確カメる</span>。
             </p>
           </div>
 
@@ -164,30 +240,48 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
             {ways.map((w) => (
               <li
                 key={w.id}
-                className="flex min-w-0 flex-col items-center gap-1.5 rounded-card bg-paper px-2.5 py-3 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 sm:text-left"
+                className={`flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-[999px] px-2.5 py-3 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 ${
+                  w.id === "call" ? "bg-ok-tint" : "bg-paper"
+                }`}
               >
-                <span
-                  aria-hidden
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-9 sm:w-9 ${
-                    w.id === "call" ? "bg-ok-tint text-ok-text" : "bg-brand-tint text-brand"
-                  }`}
-                >
-                  {w.id === "call" ? (
+                {w.id === "call" ? (
+                  <span
+                    aria-hidden
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper text-ok-text sm:h-9 sm:w-9"
+                  >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                       <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.2 2.2Z" />
                     </svg>
+                  </span>
+                ) : (
+                  // 文字と画像。2つ並べて「どちらも出せる」ことを出す
+                  <span aria-hidden className="flex shrink-0 items-center gap-1">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-paper sm:h-9 sm:w-9">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                        <path d="M4 5h16v11H7.5L4 19.5V5Zm3 3v1.6h10V8H7Zm0 3.7v1.6h7v-1.6H7Z" />
+                      </svg>
+                    </span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-9 sm:w-9">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                        <path d="M4 5h16v14H4V5Zm2 2v8l4-4 3 3 3-3 2 2V7H6Zm3 2a1.4 1.4 0 1 1 0 2.8A1.4 1.4 0 0 1 9 9Z" />
+                      </svg>
+                    </span>
+                  </span>
+                )}
+                <span className="min-w-0 text-[11.5px] font-black leading-[1.4] text-slate sm:text-[13px]">
+                  {w.id === "call" ? (
+                    <>
+                      電話で相談
+                      <br />
+                      （{PLANS.find((x) => x.callMinutes)?.callMinutes}分）
+                    </>
                   ) : (
-                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                      <path d="M4 5h16v11H7.5L4 19.5V5Zm3 3v1.6h10V8H7Zm0 3.7v1.6h7v-1.6H7Z" />
-                    </svg>
+                    "テキスト・画像で相談"
                   )}
-                </span>
-                <span className="min-w-0 text-[12px] font-bold leading-[1.45] text-slate sm:text-[13.5px]">
-                  {w.label}
                 </span>
                 {/* 開いていないものは、開いていないと書く */}
                 {!w.open && (
-                  <span className="shrink-0 rounded-pill bg-mist px-2 py-1 text-[9.5px] font-bold leading-none text-steel sm:ml-auto">
+                  <span className="shrink-0 rounded-pill bg-paper/80 px-2 py-1 text-[9.5px] font-bold leading-none text-steel">
                     受付前
                   </span>
                 )}
