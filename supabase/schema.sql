@@ -1968,3 +1968,121 @@ begin
   return query select true, v_inv.token, null::text;
 end;
 $$;
+
+-- ═══════════════════════════════════════════════════════════════
+-- 通報と、利用を止めること
+--
+-- ══════════════════════════════════════════════════
+-- 規約に書いて、黙認しない
+-- ══════════════════════════════════════════════════
+-- 「禁止しています」と書いてあるのに、通報の口が無いサービスは、
+-- 実際には黙認している。書いたことと、できることを合わせる。
+--
+-- ══════════════════════════════════════════════════
+-- 録音しないぶん、ここで受ける
+-- ══════════════════════════════════════════════════
+-- 通話は録音していない（room.ts で設定ごと止めてある）。
+-- 録音は、規約違反を把握しないための逃げ道にしない。
+-- 代わりに、答えた人がその場で出せる口を作る。
+--
+-- ══════════════════════════════════════════════════
+-- 押した人が損をしない
+-- ══════════════════════════════════════════════════
+-- 通報しても、その回の報酬は引かない。
+-- 引くと、我慢したほうが得になる。
+-- ═══════════════════════════════════════════════════════════════
+
+create table if not exists safety_reports (
+  id uuid primary key default gen_random_uuid(),
+  -- 出した人（答える側）
+  reviewer_id uuid references responders(id) on delete set null,
+  -- どの相談・どの通話で起きたか。どちらか片方でよい
+  consultation_id uuid references consultations(id) on delete set null,
+  call_session_id uuid references call_sessions(id) on delete set null,
+  -- lib/safety/report.ts の ReasonId と同じ語彙
+  reason text not null,
+  note text,
+  -- new / seen / acted / closed
+  status text not null default 'new',
+  -- 運営が見た時刻と、何をしたか
+  seen_at timestamptz,
+  acted_at timestamptz,
+  action_note text,
+  created_at timestamptz default now()
+);
+
+create index if not exists safety_reports_new_idx
+  on safety_reports (status, created_at desc);
+
+-- 相談した人の状態。
+--
+-- 会員登録が無いので、人を1つの行で持てない。
+-- 持てるのは「その鍵を使った人」まで。
+-- 5回パスの鍵を止めると、その鍵で買ったぶんが使えなくなる。
+--
+-- active     ふつう
+-- warned     一度注意した
+-- restricted 言いにくい相談だけ止める
+-- suspended  新しい相談を受け付けない
+create table if not exists asker_standing (
+  pass_token text primary key,
+  status text not null default 'active',
+  reason text,
+  -- 何件の通報が、この鍵に紐づいているか
+  report_count int not null default 0,
+  updated_at timestamptz default now()
+);
+
+-- 通報を受ける。
+--
+-- ── 二度出しても増やさない ────────────────────
+-- 同じ人が同じ通話について二度押しても、1件にする。
+-- 手が震えているときに二度押すのは、ふつうのこと。
+create or replace function file_safety_report(
+  p_responder_token text,
+  p_consultation uuid,
+  p_call uuid,
+  p_reason text,
+  p_note text
+)
+returns table (ok boolean, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_r    responders%rowtype;
+  v_have uuid;
+begin
+  select * into v_r from responders where token = p_responder_token;
+  if not found then
+    return query select false, 'この鍵では出せません'::text;
+    return;
+  end if;
+
+  select id into v_have from safety_reports
+   where reviewer_id = v_r.id
+     and ((p_call is not null and call_session_id = p_call)
+       or (p_call is null and p_consultation is not null and consultation_id = p_consultation))
+   limit 1;
+  if v_have is not null then
+    return query select true, 'すでに受け取っています'::text;
+    return;
+  end if;
+
+  insert into safety_reports (reviewer_id, consultation_id, call_session_id, reason, note)
+  values (v_r.id, p_consultation, p_call, p_reason,
+          nullif(btrim(coalesce(p_note, '')), ''));
+
+  return query select true, null::text;
+end;
+$$;
+
+-- まだ見ていない通報。運営の画面はこれを見る
+create or replace view open_safety_reports as
+select r.id, r.reason, r.note, r.status, r.created_at,
+       r.consultation_id, r.call_session_id,
+       c.category
+from safety_reports r
+left join consultations c on c.id = r.consultation_id
+where r.status in ('new', 'seen')
+order by r.created_at asc;

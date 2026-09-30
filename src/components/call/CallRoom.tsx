@@ -5,6 +5,7 @@ import type DailyIframe from "@daily-co/daily-js";
 import type { DailyCall } from "@daily-co/daily-js";
 import { clock, WARN_AT_MINUTES } from "@/lib/call/session";
 import { track } from "@/lib/analytics";
+import ReportButton from "@/components/call/ReportButton";
 
 // 通話の画面。
 //
@@ -278,6 +279,12 @@ export default function CallRoom({
             >
               通話を終える
             </button>
+            {/* 答える側にだけ出す。メニューの奥に入れない。
+                何かあった瞬間に探させたら、出す口が無いのと同じ。
+                録音していないぶん、ここで受ける */}
+            {responder && (
+              <ReportButton responder={responder} onDone={hangUp} />
+            )}
           </div>
           <p className="mt-3 text-center text-[11.5px] leading-[1.7] text-steel">
             時間になると自動で終わります。録音はしていません。
