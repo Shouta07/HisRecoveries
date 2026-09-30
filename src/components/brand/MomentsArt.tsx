@@ -28,11 +28,20 @@ import { hasPublicFile } from "@/lib/publicFile";
 
 export default function MomentsArt({ alt }: { alt: string }) {
   // public/ の中を見る。ビルドのときに1回だけ動く
-  const file = "/img/moments.png";
+  const file = "/img/moments.jpg";
   if (!hasPublicFile(file)) return null;
 
   return (
-    <div className="mt-6 overflow-hidden rounded-card border border-line bg-sky shadow-card">
+    // ══════════════════════════════════════════════
+    // 幅を止める
+    // ══════════════════════════════════════════════
+    // 941×1672 の縦長。幅いっぱいに置くと、
+    // 広い画面では高さが1300pxを超えて、
+    // 下の一覧が画面の外へ押し出される。
+    //
+    // 420px で止めて、真ん中に置く。
+    // スマホではそのまま幅いっぱいになる。
+    <div className="mx-auto mt-6 max-w-[420px] overflow-hidden rounded-card border border-line bg-sky shadow-card">
       {/* 幅いっぱい。縦横比は画像そのものに任せる
           （決め打ちすると、差し替えたときに切れる） */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
