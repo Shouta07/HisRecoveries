@@ -10,7 +10,7 @@ import {
   ENTRY_PLAN,
   DEFAULT_PLAN,
 } from "@/lib/ask/plans";
-import { PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
+import { BRIDGE } from "@/lib/ask/pain";
 import TodayReviewers from "@/components/brand/TodayReviewers";
 import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO, count } from "@/lib/ask/demo";
@@ -662,7 +662,6 @@ export default async function HomePage() {
                 public/img/video-poster.jpg */}
             <VideoEmbed
               title="タシカメは、どういうサービスか"
-              caption="2分ほどです。音が出ます。"
               poster={hasPublicFile("/img/video-poster.jpg") ? "/img/video-poster.jpg" : null}
             />
           </div>
@@ -702,8 +701,7 @@ export default async function HomePage() {
           言葉は lib/ask/pain.ts。
           答えられないこと（写真・脈あり）は、向こうの判定が弾く。 */}
       <Block>
-        <p className="text-[15px] font-bold leading-[1.75] text-steel">{PAIN_LEAD}</p>
-        <h2 className="mt-2 text-huge font-black leading-[1.35] text-slate">
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
           こんな瞬間、
           <br className="sm:hidden" />
           ありませんか？
