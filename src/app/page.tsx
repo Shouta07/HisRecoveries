@@ -35,7 +35,7 @@ import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
-import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
+import HeroBoard from "@/components/brand/HeroBoard";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -553,49 +553,20 @@ export default async function HomePage() {
                 値段は、何が返ってくるかを見たあとで見るもの。
                 料金の節（#price）と /plans にある。隠してはいない。 */}
 
-            {/* 押す場所を、スクロールさせない */}
-            <div data-hero-cta className="mt-5 max-w-[24em]">
-              <PlanCta
-                plan={DEFAULT_PLAN}
-                from="hero"
-                className="min-h-[60px] w-full rounded-pill bg-brand px-9 text-[17px] !text-paper shadow-card"
-              >
-                今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
-              </PlanCta>
-            </div>
+            {/* ここに1画面目の押す場所と、4つの印（実在女性が回答／匿名OK／
+                都度払い／追加料金なし）と、絵の注記を置いていた。
 
-            {/* 押す前に引っかかるところを、4つだけ先に消す。
-                文字を並べるより、絵があるほうが読まずに入る。 */}
-            <ul className="mt-6 grid grid-cols-4 gap-2 sm:gap-3">
-              {[
-                { t: "実在女性が回答", d: "M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1 M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7 M21 20v-1a4 4 0 0 0-3-3.9" },
-                { t: "匿名OK", d: "M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4" },
-                { t: "都度払い", d: "M3 7h18v12H3z M3 11h18" },
-                sup.canPromiseSpeed
-                  ? { t: "最短数分", d: "M13 2 4 14h7l-1 8 9-12h-7z" }
-                  : { t: "追加料金なし", d: "M12 3v18 M8.5 7.5h5.2a2.6 2.6 0 0 1 0 5.2H9.6a2.6 2.6 0 0 0 0 5.2h5.9" },
-              ].map((x) => (
-                <li key={x.t} className="flex flex-col items-center gap-1.5 text-center">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint">
-                    <svg aria-hidden viewBox="0 0 24 24" className="h-[22px] w-[22px] text-brand" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={x.d} />
-                    </svg>
-                  </span>
-                  <span className="text-[11px] font-bold leading-[1.4] text-slate sm:text-[12.5px]">
-                    {x.t}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                押す場所は、ヘッダーのボタンがずっと出ている。
+                そのすぐ下が「こんな瞬間、ありませんか？」で、
+                8つとも押せる。1画面目に3つ目の押す場所は要らない。
 
-            {/* 「自己紹介文／メッセージ／会話」の3つを、ここに並べていた。
-                1画面目で商品の種類を選ばせていたことになる。
-                何を見てもらうかは、相談を書き始めてから選べばいい。
-                最初の画面で押す場所は、1つでいい。 */}
+                4つの印は、まだ何のサービスか分からないうちに
+                条件だけ先に並べていた。
+                中身は、よくある質問と料金の節が持っている。
 
-            <div className="mt-6">
-              <HeroNote />
-            </div>
+                絵の注記だけは消せない。
+                写真と回答が見本であることを言わずに出すと、
+                実際の相談に見える。絵の側（HeroBoard）へ移した。 */}
 
             {/* 受け付けていないことの断りは、値段の節（買う場所）に置いてある。
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
