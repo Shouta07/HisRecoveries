@@ -84,9 +84,6 @@ export const OPERATOR = "His Recoveries";
 export const DEFINITION =
   "タシカメは、マッチングアプリで迷った男性が、実在する女性に相談できるサービスです。";
 
-/** 場所が狭いとき用。説明文やOGに使う */
-export const DEFINITION_SHORT = "男性の恋愛の悩みに、女性が答えるサービスです。";
-
 /**
  * 名前の上に置く行。
  *
@@ -471,7 +468,6 @@ export function assertWeight(text: string, where: string): string {
   // 男性が相談する側、女性が答える側。どちらが欠けても通さない。
   for (const [t, where] of [
     [DEFINITION, "サービスの説明"],
-    [DEFINITION_SHORT, "短いほうのサービスの説明"],
   ] as const) {
     if (!t.includes("男性")) throw new Error(`${where} に、誰が使うのかが書かれていません`);
     if (!t.includes("女性")) throw new Error(`${where} に、誰が答えるのかが書かれていません`);

@@ -5,8 +5,6 @@ import { openPlanIds } from "@/lib/call/gate";
 import {
   PLANS,
   plan as getPlan,
-  tier as getTier,
-  tier as tierOf,
   topPlans,
   ENTRY_PLAN,
   DEFAULT_PLAN,
