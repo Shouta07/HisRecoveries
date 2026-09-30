@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   OPEN_CATEGORIES, RELATIONS, AGE_BANDS, PANEL_AGES, ATTRS_OPEN,
-  category as getCategory, isCategoryId, attrLabel,
+  category as getCategory, isCategoryId, attrLabel, startersFor,
   type CategoryId, type AgeBand, type RelationId, type PanelAge, type AttrId,
 } from "@/lib/ask/model";
 import {
@@ -77,6 +77,8 @@ export default function AskFlow() {
   const [text, setText] = useState("");
   const [a, setA] = useState("");
   const [b, setB] = useState("");
+  // 書き出しを押したあと、続きを書ける場所へカーソルを置くため
+  const boxRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [panelAge, setPanelAge] = useState<PanelAge>("any");
   const [panelAttrs, setPanelAttrs] = useState<AttrId[]>([]);
@@ -96,6 +98,9 @@ export default function AskFlow() {
   // 言いにくい相談か。2回分を使い、受けると決めた女性にだけ届く。
   const sensitive = isSensitive(cat);
   const cost = passCost(cat);
+
+  // このカテゴリの、よくある書き出し。
+  const starters = cat ? startersFor(cat) : [];
 
   // 押す直前に「何を相談するのか」を見せる。
   // 自分が書いたものが、そのまま出てくる形にする（ここで足さない）。
@@ -141,7 +146,15 @@ export default function AskFlow() {
 
   const preview = redact(isAb ? `${a}\n${b}` : text);
   const nameWarn = mayContainName(isAb ? `${a}\n${b}` : text);
-  const filled = isAb ? Boolean(a.trim() && b.trim()) : text.trim().length >= 10;
+  // 書き出しをそのまま出させない。
+  //
+  // 「この文面で送っていいか、見てほしいです。」だけ届いても、
+  // その文面が無いので誰も答えられない。
+  // 押したところから1文字も動いていないときは、まだ先へ行かせない。
+  const asIs = !isAb && starters.includes(text.trim());
+  const filled = isAb
+    ? Boolean(a.trim() && b.trim())
+    : text.trim().length >= 10 && !asIs;
 
   function toStep(n: number) {
     setI(n);
@@ -311,14 +324,48 @@ export default function AskFlow() {
             </div>
 
             {!isAb ? (
-              <textarea
-                rows={6}
-                autoFocus
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder={getCategory(cat).placeholder}
-                className={`mt-4 ${inputClass}`}
-              />
+              <>
+                {/* 書き出しを置く。
+                    いちばん手が止まるのは、空の欄を前にした瞬間。
+                    押すと入るので、ゼロから書くのではなく直すことになる。
+                    何か書いたら消える（書けている人には邪魔なだけ）。 */}
+                {text.trim().length === 0 && starters.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-[13px] text-steel">近いものを押してから、直してください。</p>
+                    <div className="mt-2.5 flex flex-col gap-2">
+                      {starters.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => {
+                            setText(s);
+                            track("starter_used", { category: cat });
+                            // 押した直後に、続きを書ける場所へ置く
+                            requestAnimationFrame(() => {
+                              const el = boxRef.current;
+                              if (!el) return;
+                              el.focus();
+                              el.setSelectionRange(s.length, s.length);
+                            });
+                          }}
+                          className="min-h-[48px] rounded-card border border-line bg-paper px-4 py-2.5 text-left text-[14px] leading-[1.75] text-slate shadow-card transition-shadow hover:shadow-card-hover"
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <textarea
+                  ref={boxRef}
+                  rows={6}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={getCategory(cat).placeholder}
+                  className={`mt-4 ${inputClass}`}
+                />
+              </>
             ) : (
               <div className="mt-4 flex flex-col gap-3">
                 {([["A", a, setA], ["B", b, setB]] as const).map(([l, v, set]) => (
@@ -334,6 +381,16 @@ export default function AskFlow() {
                   </label>
                 ))}
               </div>
+            )}
+
+            {/* 押しただけだと、まだ答えられない。何を足せばいいかを言う */}
+            {asIs && (
+              <p className="mt-3 rounded-soft bg-mist px-3.5 py-2.5 text-[13px] leading-[1.8] text-steel">
+                この続きを書いてください。
+                {cat === "message" || cat === "photo"
+                  ? "実際の文面を貼るだけでも構いません。"
+                  : "相手の反応や、いまの状況を1行足すだけでも構いません。"}
+              </p>
             )}
 
             {/* 伏せ字は、書いている横で見せる */}
