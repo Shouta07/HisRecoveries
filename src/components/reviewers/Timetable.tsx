@@ -6,17 +6,40 @@ import Link from "next/link";
 import {
   SLOT_MARK,
   SLOT_MINUTES,
+  WEEKS_AHEAD,
   bookable,
+  currentSlot,
+  dayTone,
   hhmm,
   hourRange,
   md,
+  openAt,
   slotAria,
   slotState,
   slotTimes,
   weekday,
+  windowLabel,
+  ymd,
   type DayReviewer,
   type SlotState,
 } from "@/lib/reviewers/schedule";
+import type { Status } from "@/lib/reviewers/today";
+
+/**
+ * 列の見出しに出す、短い言い方。
+ *
+ * 列は狭いところで96px しかない。
+ * 「本日の受付は終了」はどう置いても切れる。
+ * 切れた言葉は、書いていないのと同じ。
+ *
+ * 長いほうは今日の受付の節（TodayReviewers）が持つ。
+ */
+const SHORT: Record<Status, string> = {
+  available: "受付中",
+  busy: "対応中",
+  paused: "停止中",
+  offline: "受付終了",
+};
 import { SAMPLE_BADGE, SAMPLE_NOTE } from "@/lib/reviewers/sample";
 import { track } from "@/lib/analytics";
 
@@ -25,120 +48,160 @@ import { track } from "@/lib/analytics";
 // ══════════════════════════════════════════════════
 // スクロールの箱は1つだけ
 // ══════════════════════════════════════════════════
-// 人の見出しと、枠の表を別々の箱にすると、
-// 横に振ったときにずれる。ずれた瞬間、
-// 「これは誰の20:30か」が分からなくなる。
+// 人の見出しと枠の表を別々の箱にすると、横に振ったときにずれる。
+// ずれた瞬間、「これは誰の20:30か」が分からなくなる。
 //
 // 箱を1つにして、
-//   人の見出し  position: sticky; top: 0
-//   時刻の列    position: sticky; left: 0
+//   人の見出し  sticky top-0
+//   時刻の列    sticky left-0
 // で止める。同期の処理は書かない。書けばいつか壊れる。
 //
 // ══════════════════════════════════════════════════
-// 体を横にスクロールさせない
+// 幅は、画面で変える
 // ══════════════════════════════════════════════════
-// 横に動くのは、この表の中だけ。
-// ページごと横に動くと、縦に読めなくなる。
+// 列を1本の grid で組んで、幅を minmax(var(--col), 1fr) にする。
+//   狭い画面  最小幅で並び、足りなければ表の中だけ横に動く
+//   広い画面  余った幅を列が分け合って、端まで埋まる
+//
+// 固定幅にすると、パソコンで右半分が真っ白になる。
+// パーセントにすると、スマホで1列が潰れて○が読めなくなる。
 //
 // ══════════════════════════════════════════════════
-// 空いていない時間を、空いているように見せない
+// 色だけに頼らない
 // ══════════════════════════════════════════════════
-// 過ぎた枠は押せない。受付の無い枠は「－」を出す。
-// 空欄にすると、読み込み中なのか受付が無いのかが分からない。
-
-const COL = 104; // 人の列の幅。2.5〜3.5人が見える幅
-const AXIS = 56; // 時刻の列の幅
-const ROW = 44; // 1枠の高さ
+// 土日の色は付けるが、曜日の文字も必ず出す。
+// 枠の状態も、記号に加えて読み上げ用の言葉を持たせる。
 
 function tone(s: SlotState): string {
   if (s === "now") return "bg-ok-tint text-ok-text font-black";
   if (s === "open") return "bg-paper text-brand font-black";
   if (s === "busy") return "bg-mist text-steel !text-[10px] font-bold";
-  return "bg-paper text-line";
+  if (s === "past") return "bg-mist/60 text-line";
+  return "bg-mist/60 text-line";
+}
+
+function dateClass(d: string, on: boolean): string {
+  if (on) return "border-brand bg-brand text-paper";
+  const t = dayTone(d);
+  if (t === "sat") return "border-line bg-paper text-brand-deep";
+  if (t === "sun") return "border-line bg-paper text-rose-text";
+  return "border-line bg-paper text-slate";
 }
 
 export default function Timetable({
   date,
   dates,
+  from,
   list,
   sample,
   callsOpen,
 }: {
   date: string;
   dates: string[];
+  /** いま見せている7日の先頭 */
+  from: string;
   list: DayReviewer[];
   sample: boolean;
-  /** 通話をいま売れるか。売れないなら、押しても決済へ行かせない */
   callsOpen: boolean;
 }) {
   const router = useRouter();
   const [now, setNow] = useState(() => Date.now());
   const [pick, setPick] = useState<{ r: DayReviewer; at: string } | null>(null);
 
-  // 現在時刻の線と、枠の状態を動かす。
-  // 1分ごとでよい（秒で動かすと、見ているあいだ落ち着かない）
+  // 1分ごと。秒で動かすと、見ているあいだ落ち着かない
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 60_000);
     return () => window.clearInterval(id);
   }, []);
 
-  const range = useMemo(() => hourRange(list, date), [list, date]);
+  const range = useMemo(() => hourRange(list, date, now), [list, date, now]);
   const times = useMemo(() => slotTimes(date, range), [date, range]);
-  const openNow = list.filter((r) => r.status === "available").length;
 
-  // 今日なら、現在時刻の線を出す
-  const todayStr = dates[0];
-  const isToday = date === todayStr;
-  const linePos = useMemo(() => {
-    if (!isToday || times.length === 0) return null;
-    const first = new Date(times[0]).getTime();
-    const mins = (now - first) / 60000;
-    if (mins < 0 || mins > times.length * SLOT_MINUTES) return null;
-    return (mins / SLOT_MINUTES) * ROW;
-  }, [isToday, times, now]);
+  const today = ymd(new Date(now));
+  const isToday = date === today;
+  const slot = isToday ? currentSlot(now) : null;
+  const openHere = slot ? openAt(list, slot.from, now) : 0;
+
+  // 週送り。今日より前へは戻さない
+  const step = (n: number) => {
+    const next = ymd(new Date(Date.parse(`${from}T00:00:00Z`) + n * 7 * 86400000));
+    const limit = ymd(new Date(Date.parse(`${today}T00:00:00Z`) + WEEKS_AHEAD * 7 * 86400000));
+    if (next < today || next > limit) return;
+    router.push(`/reviewers?from=${next}&date=${next}`, { scroll: false });
+  };
+  const canBack = from > today;
+  const canFwd =
+    from < ymd(new Date(Date.parse(`${today}T00:00:00Z`) + (WEEKS_AHEAD - 1) * 7 * 86400000));
+
+  // 列の幅。狭い画面は最小幅、広い画面は余りを分け合う
+  const grid = {
+    gridTemplateColumns: `var(--axis) repeat(${Math.max(1, list.length)}, minmax(var(--col), 1fr))`,
+  };
 
   return (
-    <div>
+    <div className="[--axis:52px] [--col:96px] sm:[--axis:60px] sm:[--col:124px] lg:[--col:150px]">
       {/* ── 日付。横に並べる ── */}
-      <ul className="-mx-5 flex snap-x gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:px-0">
-        {dates.map((d, i) => {
-          const on = d === date;
-          return (
-            <li key={d}>
-              <button
-                type="button"
-                onClick={() => {
-                  track("schedule_date_change", { date: d });
-                  router.push(`/reviewers?date=${d}`, { scroll: false });
-                }}
-                aria-current={on ? "date" : undefined}
-                className={`flex min-h-[64px] w-[62px] shrink-0 snap-start flex-col items-center justify-center rounded-card border text-center ${
-                  on
-                    ? "border-brand bg-brand text-paper"
-                    : "border-line bg-paper text-slate"
-                }`}
-              >
-                <span className="text-[10.5px] font-bold opacity-80">
-                  {i === 0 ? "今日" : weekday(d)}
-                </span>
-                <span className="mt-0.5 text-[15px] font-black tabular-nums">
-                  {md(d)}
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => step(-1)}
+          disabled={!canBack}
+          aria-label="前の週"
+          className="hidden h-[64px] w-9 shrink-0 items-center justify-center rounded-card border border-line bg-paper text-[15px] text-steel disabled:opacity-30 sm:flex"
+        >
+          ‹
+        </button>
+
+        <ul className="-mx-5 flex flex-1 snap-x gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:px-0">
+          {dates.map((d) => {
+            const on = d === date;
+            return (
+              <li key={d}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    track("schedule_date_change", { date: d });
+                    router.push(`/reviewers?from=${from}&date=${d}`, { scroll: false });
+                  }}
+                  aria-current={on ? "date" : undefined}
+                  className={`flex min-h-[64px] w-[58px] shrink-0 snap-start flex-col items-center justify-center rounded-card border text-center sm:w-[66px] ${dateClass(
+                    d,
+                    on,
+                  )}`}
+                >
+                  <span className="text-[15px] font-black tabular-nums leading-none">
+                    {md(d)}
+                  </span>
+                  {/* 曜日は必ず文字で出す。色だけだと、色が見えない人に伝わらない */}
+                  <span className="mt-1 text-[10.5px] font-bold leading-none opacity-90">
+                    {d === today ? "今日" : `（${weekday(d)}）`}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        <button
+          type="button"
+          onClick={() => step(1)}
+          disabled={!canFwd}
+          aria-label="次の週"
+          className="hidden h-[64px] w-9 shrink-0 items-center justify-center rounded-card border border-line bg-paper text-[15px] text-steel disabled:opacity-30 sm:flex"
+        >
+          ›
+        </button>
+      </div>
 
       {/* ── その日の要約 ── */}
-      <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <p className="text-[16px] font-black text-slate">
           {md(date)}（{weekday(date)}） {list.length}人
         </p>
-        {/* 人数は、本物のときだけ。見本で人数を出したら札の意味が無くなる */}
-        {!sample && openNow > 0 && (
+        {/* 人数は本物のときだけ。いつの時点の人数かも書く */}
+        {!sample && slot && openHere > 0 && (
           <span className="rounded-pill bg-ok-tint px-2.5 py-1 text-[12px] font-black text-ok-text">
-            いま{openNow}人 受付中
+            {hhmm(slot.from)}〜{hhmm(slot.to)} は {openHere}人
           </span>
         )}
         {sample && (
@@ -155,50 +218,67 @@ export default function Timetable({
       )}
 
       {/* ── 表。横に動くのはこの箱の中だけ ── */}
-      <div
-        className="relative mt-4 max-h-[62vh] overflow-auto rounded-card border border-line bg-paper"
-        onScroll={() => track("schedule_scrolled", { date })}
-      >
-        <div className="min-w-max">
-          {/* 人の見出し。縦に送っても残る */}
-          <div className="sticky top-0 z-20 flex border-b border-line bg-paper">
-            <div
-              className="sticky left-0 z-30 shrink-0 border-r border-line bg-paper"
-              style={{ width: AXIS }}
-            />
+      <div className="relative mt-4 max-h-[64vh] overflow-auto rounded-card border border-line bg-paper">
+        <div className="min-w-full">
+          {/* 人の見出し */}
+          <div
+            className="sticky top-0 z-20 grid border-b border-line bg-paper"
+            style={grid}
+          >
+            <div className="sticky left-0 z-30 border-r border-line bg-paper" />
             {list.map((r) => (
               <div
                 key={r.id}
-                className="shrink-0 border-r border-line px-2 py-2.5 text-center last:border-r-0"
-                style={{ width: COL }}
+                className="border-r border-line px-2 py-2.5 text-center last:border-r-0"
               >
+                {/* 名前だけで1行。年代を横に足すと、
+                    狭い列で名前のほうが切れる */}
                 <p className="truncate text-[13px] font-black leading-[1.3] text-slate">
                   {r.name}
                 </p>
-                <p className="mt-0.5 text-[10.5px] font-bold text-steel">{r.ageBand}</p>
-                {r.verified && (
-                  <p className="mt-0.5 text-[10px] font-bold text-ok-text">✓ 確認済</p>
+                <p className="text-[10px] font-bold leading-[1.4] text-steel">
+                  {r.ageBand}
+                </p>
+                {/* その日の受付時間。これが無いと、○がいつまで続くか読めない */}
+                {windowLabel(r) && (
+                  <p className="mt-1 text-[10.5px] font-bold tabular-nums text-steel">
+                    {windowLabel(r)}
+                  </p>
                 )}
+                {/* 状態は短く。列が狭いので、
+                    「本日の受付は終了」は必ず切れる */}
+                <p
+                  className={`mt-1 truncate text-[10px] font-bold ${
+                    r.status === "available" ? "text-ok-text" : "text-steel"
+                  }`}
+                >
+                  {SHORT[r.status]}
+                </p>
               </div>
             ))}
           </div>
 
           {/* 枠 */}
-          <div className="relative">
-            {/* 今の時刻。今日だけ */}
-            {linePos !== null && (
+          {times.map((t) => {
+            const isNowRow = Boolean(slot && t === slot.from);
+            // :00 を太く、:30 を細く。目で追うときの手がかりになる
+            const onHour = hhmm(t).endsWith(":00");
+            return (
               <div
-                aria-hidden
-                className="pointer-events-none absolute left-0 right-0 z-10 border-t-2 border-rose"
-                style={{ top: linePos }}
-              />
-            )}
-
-            {times.map((t) => (
-              <div key={t} className="flex border-b border-line last:border-b-0">
+                key={t}
+                className={`grid border-b border-line last:border-b-0 ${
+                  isNowRow ? "bg-brand-tint/40" : ""
+                }`}
+                style={grid}
+              >
                 <div
-                  className="sticky left-0 z-10 flex shrink-0 items-center justify-center border-r border-line bg-paper text-[11.5px] font-bold tabular-nums text-steel"
-                  style={{ width: AXIS, height: ROW }}
+                  className={`sticky left-0 z-10 flex h-11 items-center justify-center border-r border-line tabular-nums ${
+                    isNowRow ? "bg-brand-tint" : "bg-paper"
+                  } ${
+                    onHour
+                      ? "text-[12px] font-black text-slate"
+                      : "text-[11px] font-bold text-steel"
+                  }`}
                 >
                   {hhmm(t)}
                 </div>
@@ -206,11 +286,7 @@ export default function Timetable({
                   const s = slotState(r, t, now);
                   const can = bookable(s);
                   return (
-                    <div
-                      key={r.id}
-                      className="shrink-0 border-r border-line last:border-r-0"
-                      style={{ width: COL, height: ROW }}
-                    >
+                    <div key={r.id} className="border-r border-line last:border-r-0">
                       <button
                         type="button"
                         disabled={!can}
@@ -219,7 +295,7 @@ export default function Timetable({
                           setPick({ r, at: t });
                           track("available_slot_click", { at: hhmm(t) });
                         }}
-                        className={`flex h-full w-full items-center justify-center overflow-hidden px-1 text-[15px] leading-none ${tone(
+                        className={`flex h-11 w-full items-center justify-center overflow-hidden px-1 text-[15px] leading-none ${tone(
                           s,
                         )} ${can ? "cursor-pointer hover:bg-brand-tint" : "cursor-default"}`}
                       >
@@ -229,12 +305,12 @@ export default function Timetable({
                   );
                 })}
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* 記号の読み方。色と形だけに頼らない */}
+      {/* 記号の読み方 */}
       <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11.5px] text-steel">
         <li>● 今すぐ話せます</li>
         <li>○ 予約できます</li>
@@ -259,15 +335,11 @@ export default function Timetable({
             <p className="mt-1.5 text-[13.5px] font-bold text-steel">
               {md(date)}（{weekday(date)}） {hhmm(pick.at)} から
             </p>
-            {pick.r.specialties.length > 0 && (
-              <p className="mt-2 text-[12.5px] text-steel">
-                {pick.r.ageBand}
-                {pick.r.verified && " ・ 本人確認済み"}
-              </p>
-            )}
+            <p className="mt-2 text-[12.5px] text-steel">
+              {pick.r.ageBand}
+              {pick.r.verified && " ・ 本人確認済み"}
+            </p>
 
-            {/* いま売れるかどうかで、出すものを変える。
-                売れないのに決済へ進ませない */}
             {callsOpen ? (
               <div className="mt-4 flex flex-col gap-2">
                 <Link

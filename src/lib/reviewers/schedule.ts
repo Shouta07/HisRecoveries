@@ -250,3 +250,93 @@ export function slotAria(r: DayReviewer, at: string, s: SlotState): string {
     }
   }
 }
+
+/** 土日は色を変える。色だけに頼らないので、曜日の文字も必ず出す */
+export function dayTone(date: string): "sat" | "sun" | "weekday" {
+  const w = weekday(date);
+  return w === "土" ? "sat" : w === "日" ? "sun" : "weekday";
+}
+
+/**
+ * いまの枠（18:00〜18:30 のような）。
+ *
+ * 「只今受付中」を、どの30分のことなのかまで書くため。
+ * 書かないと、いつの時点の人数なのかが分からない。
+ */
+export function currentSlot(now = Date.now()): { from: string; to: string } | null {
+  const d = new Date(now);
+  const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+  const m = jst.getUTCHours() * 60 + jst.getUTCMinutes();
+  const start = Math.floor(m / SLOT_MINUTES) * SLOT_MINUTES;
+  const day = ymd(d);
+  return { from: atJst(day, Math.floor(start / 60), start % 60),
+           to: atJst(day, Math.floor((start + SLOT_MINUTES) / 60), (start + SLOT_MINUTES) % 60) };
+}
+
+/** その枠に、いま受け付けている人が何人いるか。数えるだけ。盛らない */
+export function openAt(list: DayReviewer[], at: string, now = Date.now()): number {
+  return list.filter((r) => bookable(slotState(r, at, now))).length;
+}
+
+/**
+ * 日を跨いだ時刻を、24時以降として書く。
+ *
+ * 「20:00〜00:00」だと、長さが0なのか丸1日なのかが読めない。
+ * 「20:00〜24:00」「22:00〜26:00」と書けば、そのまま長さが分かる。
+ * 予約の表では、これがふつうの書き方。
+ */
+export function hhmmFrom(base: string, iso: string): string {
+  const day0 = new Date(Date.parse(atJst(ymd(new Date(base)), 0))).getTime();
+  const mins = Math.round((new Date(iso).getTime() - day0) / 60000);
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+/** その人の、その日の受付時間（22:00〜26:00）。日を跨いでも続けて書く */
+export function windowLabel(r: DayReviewer): string | null {
+  if (r.windows.length === 0) return null;
+  const start = r.windows.reduce((a, b) =>
+    new Date(a.start) < new Date(b.start) ? a : b,
+  ).start;
+  const end = r.windows.reduce((a, b) => (new Date(a.end) > new Date(b.end) ? a : b)).end;
+  return `${hhmm(start)}〜${hhmmFrom(start, end)}`;
+}
+
+/** 何週先まで見せるか。予定が入らない先まで送れても意味が無い */
+export const WEEKS_AHEAD = 3;
+
+/* ── 公開の前に止めること ───────────────────────── */
+{
+  // 曜日は、色だけでなく文字でも分かること。
+  if (!["土", "日"].includes(weekday("2026-10-03")) && weekday("2026-10-03") !== "土") {
+    throw new Error("曜日の計算がずれています");
+  }
+  // いまの枠が、必ず30分に収まること。
+  {
+    const s = currentSlot(Date.parse("2026-09-30T09:17:00Z"));
+    if (!s) throw new Error("いまの枠が出ません");
+    const mins = (new Date(s.to).getTime() - new Date(s.from).getTime()) / 60000;
+    if (mins !== SLOT_MINUTES) throw new Error(`いまの枠が${mins}分になっています`);
+  }
+  // 先へ送れる範囲。無限に送れると、空の表を延々と見せることになる。
+  if (WEEKS_AHEAD < 1 || WEEKS_AHEAD > 8) throw new Error("先へ送れる週の数が不自然です");
+
+  // 日を跨ぐ受付が、0時に巻き戻らないこと。
+  // 「20:00〜00:00」は、長さが0なのか丸1日なのか読めない。
+  {
+    const day = "2026-09-30";
+    const label = windowLabel({
+      windows: [{ start: atJst(day, 20), end: atJst(day, 24) }],
+    } as unknown as DayReviewer);
+    if (label !== "20:00〜24:00") {
+      throw new Error(`日を跨ぐ受付が、0時に巻き戻っています（${label}）`);
+    }
+    const late = windowLabel({
+      windows: [{ start: atJst(day, 22), end: atJst(day, 26) }],
+    } as unknown as DayReviewer);
+    if (late !== "22:00〜26:00") {
+      throw new Error(`深夜までの受付が正しく書けていません（${late}）`);
+    }
+  }
+}

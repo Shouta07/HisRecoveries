@@ -3,7 +3,7 @@ import Link from "next/link";
 import { NAME } from "@/lib/voice";
 import { scheduleFor } from "@/lib/reviewers/today";
 import { OMAKASE } from "@/lib/reviewers/today";
-import { dateStrip, ymd } from "@/lib/reviewers/schedule";
+import { dateStrip, ymd, WEEKS_AHEAD } from "@/lib/reviewers/schedule";
 import { canSellCalls } from "@/lib/call/gate";
 import Timetable from "@/components/reviewers/Timetable";
 import Tashikame from "@/components/brand/Tashikame";
@@ -33,12 +33,20 @@ export const metadata: Metadata = {
 export default async function ReviewersPage({
   searchParams,
 }: {
-  searchParams: { date?: string };
+  searchParams: { date?: string; from?: string };
 }) {
-  const dates = dateStrip(7);
+  const today = ymd(new Date());
+  const limit = ymd(new Date(Date.parse(`${today}T00:00:00Z`) + WEEKS_AHEAD * 7 * 86400000));
+
+  // 週の先頭。今日より前へは戻さない。先も WEEKS_AHEAD まで
+  const askedFrom = searchParams.from;
+  const from =
+    askedFrom && askedFrom >= today && askedFrom <= limit ? askedFrom : today;
+
+  const dates = dateStrip(7, new Date(Date.parse(`${from}T00:00:00Z`)));
   const asked = searchParams.date;
-  // 知らない日付・過去の日付は、今日に寄せる
-  const date = asked && dates.includes(asked) ? asked : ymd(new Date());
+  // 知らない日付・見せていない週の日付は、その週の先頭に寄せる
+  const date = asked && dates.includes(asked) ? asked : from;
 
   const { list, sample } = await scheduleFor(date);
   const callsOpen = canSellCalls();
@@ -75,6 +83,7 @@ export default async function ReviewersPage({
           <Timetable
             date={date}
             dates={dates}
+            from={from}
             list={list}
             sample={sample}
             callsOpen={callsOpen}
