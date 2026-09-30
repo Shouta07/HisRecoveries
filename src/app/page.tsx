@@ -20,8 +20,14 @@ import {
   OPEN_USE_CASES,
 } from "@/lib/ask/plans";
 import { DEMO, count } from "@/lib/ask/demo";
-import { ALTERNATIVES, COMPARE, COMPARE_NOTE, COMPARE_SCOPE } from "@/lib/ask/compare";
-import { VERDICTS } from "@/lib/ask/model";
+import {
+  ALTERNATIVES,
+  COMPARE,
+  COMPARE_NOTE,
+  COMPARE_SCOPE,
+  INSTEAD,
+} from "@/lib/ask/compare";
+import { VERDICTS, PANEL_AGES, ATTRS_OPEN } from "@/lib/ask/model";
 import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, TAGLINE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
@@ -32,7 +38,9 @@ import TashikameGuide from "@/components/brand/TashikameGuide";
 import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
+import type { ImageKey } from "@/lib/images";
 import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
+import CaseRows from "@/components/brand/CaseRows";
 import PlanCards from "@/components/brand/PlanCards";
 import Yen from "@/components/brand/Yen";
 
@@ -355,6 +363,21 @@ const WHICH: Record<string, string> = {
   try: "本番の前に、一度だけ実在の女性相手にやってみる。何がよくて何が引っかかったかが、画面に残ります。",
 };
 
+/**
+ * 「こんな女性が読んでいます」に出す顔。
+ *
+ * 写真はイメージ。年代だけを添える。
+ * 職業も回答件数も付けない（付けた時点で、
+ * 実在しない人の名簿になる。登録者はまだ0人）。
+ */
+const FACES: { key: ImageKey; age: string }[] = [
+  { key: "w1", age: "20代前半" },
+  { key: "w2", age: "20代後半" },
+  { key: "w3", age: "20代後半" },
+  { key: "w4", age: "30代" },
+  { key: "w5", age: "20代前半" },
+];
+
 /** 使う瞬間の絵柄。カテゴリごとに1つ */
 const USE_ICON: Record<string, string> = {
   message: "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z",
@@ -481,6 +504,24 @@ export default async function HomePage() {
         <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
           <div className="lg:max-w-[34em]">
 
+            {/* いくらなのかを、1画面目で出す。
+                下まで読まないと値段が分からないと、
+                読んでいるあいだずっと「いくらだろう」が残る。
+                まとめ売りなので「1件いくら」に見せない
+                （1つの素材に8,000円を払う話になってしまう）。 */}
+            <ul className="mt-4 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[13.5px] font-bold text-slate">
+              <li>
+                <Yen yen={entry.yen} />
+                <span className="ml-1 text-[12.5px] font-normal text-steel">
+                  / {entry.uses}回分
+                </span>
+              </li>
+              <li aria-hidden className="text-line">|</li>
+              <li>月額なし</li>
+              <li aria-hidden className="text-line">|</li>
+              <li>匿名</li>
+            </ul>
+
             {/* 押す場所も、スクロールさせない */}
             <div data-hero-cta className="mt-5 max-w-[24em]">
               <PlanCta
@@ -596,7 +637,7 @@ export default async function HomePage() {
           </p>
           {/* 案内役の下に潜り込まないよう、狭い画面では幅を詰める */}
           <p className="mt-4 max-w-[15em] text-[14.5px] leading-[1.85] text-steel sm:max-w-[24em] sm:text-[15px]">
-            今どこまで進んでいますか？ 段を押すと、その場面で実際に返ってくるものが出ます。
+            今どこまで進んでいますか？ 段ごとに、こんなことで手が止まります。
           </p>
 
           {/* 案内役。見出しの下、説明の右。見出しに被らせない */}
@@ -606,9 +647,10 @@ export default async function HomePage() {
           />
         </div>
 
-        {/* 段を押すと、その場で場面が開く。ページを移らせない。
-            中身（文面・反応・決めたこと）は cases.ts。
-            どの段にどの場面が付くかは journey.ts の cases。 */}
+        {/* ここでは売らない。どの段で何に迷うかを書くだけ。
+            押せる場所を作らない（作ると、この節が考え方と商品の入口を
+            両方背負って、どちらも中途半端になる）。
+            売るのは、次の「こんな選択を、選ぶ前に」と料金の節。 */}
         <Journey />
 
         {/* 一度で終わらせない。次の分岐点が来たときに、また開くもの。
@@ -638,6 +680,43 @@ export default async function HomePage() {
         </div>
       </Block>
 
+
+      {/* ══ 2.4 こんな選択を、選ぶ前に ══ */}
+      {/* 売るのはここ。
+          道のりの節は考え方だけにしたので、
+          「実際に何が返ってくるか」はこちらで見せる。
+          頭に置くのは場面名ではなく、そこで迷っている選択。 */}
+      <Block tint>
+        <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
+        <h2 className="mt-2 text-huge font-black text-slate">
+          こんな選択を、
+          <br className="sm:hidden" />
+          選ぶ前に。
+        </h2>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          自己紹介文、LINE、誘い方、デートのあと、切り出すとき。
+          どれも実在の女性が読んで、実際にどう受け取ったかを返します。
+          そのうえで決めるのは、あなたです。
+        </p>
+
+        <div className="mt-7">
+          <CaseRows />
+        </div>
+
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="cases"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            自分の場面で確かめる <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
+        </div>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 写真はイメージ、文面と回答は画面の見本です。特定の利用者の体験談ではありません。
+        </p>
+      </Block>
 
       {/* ══ 2.5 初めての方へ ══ */}
       {/* 道のりは「いまどこにいるか」から入る形なので、
@@ -897,17 +976,74 @@ export default async function HomePage() {
           （AIは無料で使えるものが多い）。中身と判定は lib/ask/compare.ts。 */}
       <Block tint>
         <H>ほかの選び方と、どう違うか。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          {COMPARE_SCOPE}
-          送る前・会う前のひと手間だけを引き受けるのが、この製品です。
+        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
+          いちばん多いのは「友達に聞けばいい」「AIに聞けばいい」です。
+          どちらもふつうに役に立ちます。足りないのは1点だけです。
         </p>
 
-        {/* 列が6つあるので、スマホでは必ず切れる。切れていることを書く */}
-        <p className="mt-6 flex items-center gap-1.5 text-[11.5px] text-steel lg:hidden">
-          <span aria-hidden>↔</span> 表は横にスクロールできます
+        {/* ── 先に、いちばん多い2つに答える ──
+            6列の表はスマホで横に切れて読まれない。
+            読まれないまま「友達でいいや」「AIでいいや」で閉じられる。
+            表の前に、その2つだけ縦で答える。 */}
+        <ul className="mt-8 flex flex-col gap-3">
+          {INSTEAD.map((x, i) => (
+            <Reveal key={x.id} delay={i * 60}>
+              <li className="rounded-card border border-line bg-paper p-5 shadow-card">
+                <p className="text-[16px] font-black text-slate">{x.label}</p>
+
+                <div className="mt-3 flex items-start gap-2.5">
+                  <span
+                    aria-hidden
+                    className="mt-[3px] shrink-0 text-[11px] font-black text-ok-text"
+                  >
+                    ✓
+                  </span>
+                  <p className="min-w-0 text-[13.5px] leading-[1.8] text-steel">
+                    <span className="font-bold text-slate">足りるとき：</span>
+                    {x.enough}
+                  </p>
+                </div>
+
+                <div className="mt-2.5 flex items-start gap-2.5 border-t border-line pt-3">
+                  <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
+                    →
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-black leading-[1.6] text-brand-deep">
+                      {x.short}
+                    </p>
+                    <p className="mt-1.5 text-[13px] leading-[1.8] text-steel">{x.why}</p>
+                  </div>
+                </div>
+              </li>
+            </Reveal>
+          ))}
+        </ul>
+
+        <p className="mt-5 text-[14.5px] font-black leading-[1.7] text-slate">
+          タシカメが返すのは、相手と同じ側に立つ、あなたを知らない女性が
+          実際にどう受け取ったかです。
         </p>
 
-        <div className="mt-3 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0 lg:mt-7">
+        {/* 表は、もっと詳しく知りたい人のため。
+            スマホでは畳んでおく（開かなくても上の2つで足りる） */}
+        <details className="group mt-7">
+          <summary className="flex min-h-[48px] cursor-pointer list-none items-center gap-2 text-[13.5px] font-bold text-brand">
+            結婚相談所・マッチングアプリとの違いも見る
+            <span
+              aria-hidden
+              className="text-[16px] leading-none transition-transform group-open:rotate-45"
+            >
+              +
+            </span>
+          </summary>
+
+          <p className="mt-3 text-[13px] leading-[1.85] text-steel">{COMPARE_SCOPE}</p>
+          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-steel lg:hidden">
+            <span aria-hidden>↔</span> 表は横にスクロールできます
+          </p>
+
+        <div className="mt-3 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0 lg:mt-5">
           <table className="w-full min-w-[880px] border-collapse overflow-hidden rounded-card border border-line bg-paper shadow-card">
             <thead>
               <tr>
@@ -950,7 +1086,8 @@ export default async function HomePage() {
           </table>
         </div>
 
-        <p className="mt-4 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
+          <p className="mt-4 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
+        </details>
 
         <div className="mt-7 max-w-[26em]">
           <PlanCta
@@ -1017,6 +1154,99 @@ export default async function HomePage() {
             </details>
           ))}
         </div>
+      </Block>
+
+      {/* ══ 6.3 誰が読むのか ══ */}
+      {/* ══════════════════════════════════════════════
+          顔を出す。ただし、名簿にはしない
+          ══════════════════════════════════════════════
+          「実在の女性が読む」と言っておいて、画面に人が1人も
+          いないと、本当にいるのかが伝わらない。
+
+          ただし、審査を通った登録者はまだ0人。
+          顔の横に「26歳 会社員 回答42件」と並べた瞬間、
+          それは実在しない人の名簿になる。
+
+          だから出し方を分ける。
+            顔      イメージ（※と書く）
+            年代    実際に指定できる区分
+            確認    実際にこちらがやっていること
+          数（回答件数・役に立った割合）は、貯まるまで出さない。
+          実際に登録がある人は /answerers に出る（いまは0人）。 */}
+      <Block>
+        <H>裏で、こんな女性が読んでいます。</H>
+        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
+          登録すれば読めるようにはしていません。
+          年齢と立場を確認し、通った方にだけお願いしています。
+          名前も連絡先も出しません。出す仕組み自体を作っていません。
+        </p>
+
+        {/* 顔。年代だけを添える。職業も件数も付けない */}
+        <ul className="mt-8 grid grid-cols-3 gap-3 sm:grid-cols-5">
+          {FACES.map((f) => (
+            <li key={f.key} className="flex flex-col items-center gap-2">
+              <Slot
+                name={f.key}
+                rounded="rounded-full"
+                className="aspect-square w-full max-w-[92px]"
+              />
+              <span className="text-[12px] font-bold text-steel">{f.age}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 text-[11.5px] leading-[1.75] text-steel">
+          ※ 写真はイメージです。実際に登録のある方は
+          <Link
+            href="/answerers"
+            className="mx-1 font-bold text-brand underline decoration-line underline-offset-4"
+          >
+            誰が読むのか
+          </Link>
+          に出ます。
+        </p>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-card border border-line bg-paper px-5 py-5 shadow-card">
+            <p className="text-[12px] font-bold text-steel">こちらで確認していること</p>
+            <ul className="mt-2.5 flex flex-col gap-1.5">
+              {["年齢", "いまの立場", "書いてもらった文が読める内容か"].map((t) => (
+                <li key={t} className="flex items-start gap-2 text-[13.5px] leading-[1.75]">
+                  <span aria-hidden className="mt-[3px] text-[11px] font-black text-ok-text">
+                    ✓
+                  </span>
+                  <span className="min-w-0 text-steel">{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-card border border-line bg-paper px-5 py-5 shadow-card">
+            <p className="text-[12px] font-bold text-steel">読む人は選べます</p>
+            <ul className="mt-2.5 flex flex-wrap gap-1.5">
+              {PANEL_AGES.filter((a) => a.id !== "any").map((a) => (
+                <li
+                  key={a.id}
+                  className="rounded-pill bg-mist px-2.5 py-1 text-[12px] text-steel"
+                >
+                  {a.label}
+                </li>
+              ))}
+              {ATTRS_OPEN.map((a) => (
+                <li
+                  key={a.id}
+                  className="rounded-pill bg-mist px-2.5 py-1 text-[12px] text-steel"
+                >
+                  {a.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <p className="mt-6 max-w-[32em] text-[13.5px] leading-[1.9] text-steel">
+          恋愛の専門家ではありません。正解を教えてくれる人でもありません。
+          一人の女性として、実際にどう思ったかを書いてくれる人です。
+        </p>
       </Block>
 
       {/* ══ 6.4 言いにくいこと ══ */}

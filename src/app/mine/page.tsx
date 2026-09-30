@@ -6,6 +6,8 @@ import Link from "next/link";
 import { list, remove, shortDate, type MyAsk } from "@/lib/myasks";
 import { category, type CategoryId } from "@/lib/ask/model";
 import Tashikame from "@/components/brand/Tashikame";
+import PassBalance from "@/components/ask/PassBalance";
+import CaseTimeline from "@/components/ask/CaseTimeline";
 import Says from "@/components/brand/Says";
 import { EMPTY } from "@/lib/tashikame";
 
@@ -38,13 +40,19 @@ export default function MinePage() {
             href="/ask"
             className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card"
           >
-            相談する
+            確かめる
           </Link>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-[720px] px-5 pb-16 pt-8 sm:px-8 sm:pt-12">
-        <h1 className="text-big font-black text-slate">聞いたこと</h1>
+        {/* いちばん上に残り回数。隠さない。ただし煽らない */}
+        <PassBalance />
+
+        {/* 相手ごとの現在地。人は伴走しない。文脈が伴走する */}
+        <CaseTimeline />
+
+        <h1 className="mt-10 text-big font-black text-slate">聞いたこと</h1>
 
         {items === null ? (
           <div className="mt-8 flex flex-col gap-3">

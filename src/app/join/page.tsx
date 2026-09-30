@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { NAME, OPERATOR } from "@/lib/voice";
-import { TIERS } from "@/lib/economics";
 import { DEMO } from "@/lib/ask/demo";
-import { PAYOUT_MIN_YEN } from "@/lib/responder/balance";
-import { REQUIRED_ANSWERS, INVITER_YEN } from "@/lib/responder/referral";
+import { REQUIRED_ANSWERS } from "@/lib/responder/referral";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { Eyebrow, ReactionCard, Hairline } from "@/components/brand/kit";
@@ -73,13 +71,17 @@ export default function JoinPage() {
 
             {/* 3つとも、下まで読まないと分からない場所に置いてあった。
                 いちばん最初に気になるのはここなので、上に出す。
-                金額は economics.ts の段（TIERS）から引く。手で書かない */}
+
+                金額は画面に出さない（登録後に個別にお伝えする）。
+                出すのは「1件ごとに払う」「質で上がる」という形まで。
+                economics.ts の TIERS は、いまも運営と支払いの根拠として使う。
+                画面から消しただけで、払う額が変わったわけではない。 */}
             <ul className="mt-7 flex flex-col gap-2.5 sm:max-w-[26em]">
               {[
                 [
-                  "1件の金額",
-                  `¥${TIERS[0].quickYen.toLocaleString()} 〜 ¥${TIERS[TIERS.length - 1].quickYen.toLocaleString()}`,
-                  "役に立ったと言われた回答が増えると上がります",
+                  "報酬",
+                  "1件ごとにお支払いします",
+                  "金額は、登録いただいた方に個別にお伝えします",
                 ],
                 ["資格", "要りません", "普通に生活している人の感覚に価値があります"],
                 ["顔", "出さなくて構いません", "名前も連絡先も、相談した人には渡りません"],
@@ -170,7 +172,10 @@ export default function JoinPage() {
               ["名前は出ますか", "出ません。相談した人に見えるのは、あなたの年代と、選んだ属性だけです。"],
               ["やめられますか", "いつでも。届いたメールに「やめます」とだけ返してください。理由は聞きません。"],
               ["答えないとどうなりますか", "何も起きません。ノルマも、期限も、評価もありません。"],
-              ["いくらになりますか", `1件 ¥${TIERS[0].quickYen} からです。役に立ったと言われた回答が増えると、1件 ¥${TIERS[TIERS.length - 1].quickYen} まで上がります。答えて確認を通った時点で、その場で残高に入ります。`],
+              [
+                "いくらになりますか",
+                "1件ごとにお支払いします。金額は、登録いただいた方に個別にお伝えしています。役に立ったと言われた回答が増えると、単価が上がります。答えて確認を通った時点で、その場で残高に入ります。",
+              ],
               ["どんな相談が来ますか", "LINEの文面、写真、デートの誘い方など。同意のない行為・晒し・18歳未満に関するものは、届く前にこちらで止めています。"],
             ].map(([q, a], i) => (
               <Reveal key={q} delay={i * 60}>
@@ -280,13 +285,19 @@ export default function JoinPage() {
           <p className="mt-10 text-[14.5px] font-black text-slate">
             役に立ったと言われた回答が増えると、単価が上がります
           </p>
+          {/* 段はそのまま出す。金額だけ出さない。
+              「上がる」と言いながら段が見えないと、何が上がるのか分からない */}
           <ol className="mt-3.5 grid gap-2.5 sm:grid-cols-3">
-            {LADDER.map((l) => (
+            {LADDER.map((l, i) => (
               <li key={l.id} className="rounded-card border border-line bg-paper p-4 shadow-card">
-                <p className="text-[13.5px] font-black text-slate">{l.label}</p>
-                <p className="mt-1.5 text-[20px] font-black tabular-nums leading-none text-slate">
-                  ¥{l.yen}
-                  <span className="ml-1 text-[12px] font-bold text-steel">/ 件</span>
+                <p className="flex items-baseline gap-2 text-[13.5px] font-black text-slate">
+                  <span
+                    aria-hidden
+                    className="text-[11px] font-black tabular-nums text-brand"
+                  >
+                    {i + 1}
+                  </span>
+                  {l.label}
                 </p>
                 <p className="mt-2 text-[12px] leading-[1.7] text-steel">{l.can}</p>
               </li>
@@ -311,43 +322,34 @@ export default function JoinPage() {
           </Reveal>
 
           {/* いくらになるのか。
-              ここが曖昧だと、登録する理由が無い。
-              金額は economics.ts から引いてくる（画面に直書きしない）。 */}
+              金額は画面に出さない（登録後に個別にお伝えする）。
+              ただし「払われるのか」「いつ入るのか」は、ここで必ず答える。
+              そこまで曖昧にすると、登録する理由が無くなる。 */}
           <section className="mt-14 rounded-card border border-line bg-paper p-6 shadow-card sm:p-8">
             <p className="text-[12px] font-bold text-steel">いくらになるか</p>
-            <p className="mt-2 text-[34px] font-black tabular-nums leading-none text-slate">
-              1件 ¥{TIERS[0].quickYen.toLocaleString()}
-              <span className="ml-2 text-[16px] font-bold text-steel">から</span>
+            <p className="mt-2 text-[20px] font-black leading-[1.5] text-slate">
+              1件ごとに、お支払いします。
             </p>
             <p className="mt-3.5 text-[14px] leading-[1.9] text-steel">
               1件あたり1〜2分です。役に立ったと言われた回答が増えると、単価が上がります。
+              金額は、登録いただいた方に個別にお伝えします。
             </p>
-
-            <ul className="mt-5 flex flex-col gap-2 border-t border-line pt-5">
-              {TIERS.map((t) => (
-                <li key={t.id} className="flex items-baseline justify-between gap-3 text-[14px]">
-                  <span className="min-w-0 text-steel">{t.label}</span>
-                  <span className="shrink-0 font-bold tabular-nums text-slate">
-                    1件 ¥{t.quickYen.toLocaleString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
 
             <div className="mt-6 rounded-soft bg-mist p-4">
               <p className="text-[13.5px] font-bold text-slate">答えたら、その場で残高に入ります。</p>
               <p className="mt-2 text-[12.5px] leading-[1.85] text-steel">
                 「あとで運営から連絡します」にはしていません。確認を通った時点で入ります。
-                銀行へのお振り込みは ¥{PAYOUT_MIN_YEN.toLocaleString()} からまとめて行います
+                残高と、これまでの合計は、自分の画面でいつでも見られます。
+                銀行へのお振り込みは、まとめて行います
                 （1件ずつ振り込むと、送金の手数料のほうが大きくなるためです）。
               </p>
             </div>
 
             <div className="mt-3 rounded-soft bg-brand-tint p-4">
-              <p className="text-[13.5px] font-bold text-slate">友達を呼ぶと、二人とも ¥{INVITER_YEN.toLocaleString()}。</p>
+              <p className="text-[13.5px] font-bold text-slate">友達を呼ぶと、二人ともお礼が入ります。</p>
               <p className="mt-2 text-[12.5px] leading-[1.85] text-steel">
                 友達が{REQUIRED_ANSWERS}件答えた時点で、あなたにも友達にも入ります。
-                登録しただけでは出ません。
+                登録しただけでは出ません。金額は登録後にお伝えします。
               </p>
             </div>
 

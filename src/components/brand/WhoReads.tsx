@@ -155,22 +155,26 @@ export default function WhoReads({ compact = false }: { compact?: boolean }) {
         </ul>
       </div>
 
+      {/* 報酬の額は、買う人の画面にも出さない。
+          答える側にも、登録いただいた方に個別にお伝えしている。
+          ここで金額を出すと、そちらと食い違う。 */}
       {!compact && (
       <div className="mt-5 border-t border-line pt-5">
-        <p className="text-[11.5px] font-bold text-steel">良い回答を書く人ほど、多く受け取ります</p>
+        <p className="text-[11.5px] font-bold text-steel">答える人について</p>
         <ul className="mt-2.5 flex flex-col gap-1.5">
-          {TIERS.map((t) => (
-            <li key={t.id} className="flex items-baseline justify-between gap-3 text-[13px]">
-              <span className="min-w-0 text-steel">{t.label}</span>
-              <span className="shrink-0 font-bold tabular-nums text-slate">
-                1件 ¥{t.quickYen.toLocaleString()}
+          {[
+            "1件ごとにお支払いしています",
+            "役に立ったと言われた回答が増えると、単価が上がります",
+            "順位は公開しません。良い回答より多い回答をする人が増えるからです",
+          ].map((t) => (
+            <li key={t} className="flex items-start gap-2 text-[13px] leading-[1.7]">
+              <span aria-hidden className="mt-[3px] text-[11px] font-black text-brand">
+                ・
               </span>
+              <span className="min-w-0 text-steel">{t}</span>
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-[11.5px] leading-[1.75] text-steel">
-          順位は公開しません。順位を出すと、良い回答より多い回答をする人が増えるからです。
-        </p>
       </div>
       )}
     </div>

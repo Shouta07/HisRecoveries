@@ -118,6 +118,48 @@ export async function dbSelect<T = unknown>(
 }
 
 /**
+ * Postgres の関数を呼ぶ（PostgREST の rpc）。
+ *
+ * ── なぜ要るか ────────────────────────────────────
+ * 「残りを読む → 足りていれば使う」を2回のHTTPに分けると、
+ * その間にもう1つ来たときに、両方が「足りている」と判断する。
+ * チケットのような数え物では、それが二重消費になる。
+ *
+ * 数える側（Postgres）に、行をロックしたまま数えて書いてもらう。
+ * ここはそのための口。
+ */
+export async function dbRpc<T = unknown>(
+  fn: string,
+  args: Record<string, unknown>,
+): Promise<{ ok: boolean; data?: T; error?: string }> {
+  if (!dbAdminEnabled) {
+    console.log(`[db:noop] rpc ${fn}`, args);
+    return { ok: false, error: "no db" };
+  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_SERVICE_KEY!,
+        Authorization: `Bearer ${SUPABASE_SERVICE_KEY!}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(args),
+      cache: "no-store",
+    });
+    const text = await res.text();
+    if (!res.ok) {
+      console.error(`[db] rpc ${fn} failed (${res.status})`, text);
+      return { ok: false, error: text };
+    }
+    return { ok: true, data: (text ? JSON.parse(text) : null) as T };
+  } catch (e) {
+    console.error(`[db] rpc ${fn} exception`, e);
+    return { ok: false, error: String(e) };
+  }
+}
+
+/**
  * PATCH a row by id using the service key. Used by /api/admin/* to flip
  * status and write editor notes. Returns ok / error.
  */

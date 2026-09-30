@@ -3,6 +3,7 @@ import { dbSelect, dbUpdate, dbAdminEnabled } from "@/lib/db";
 import { isConsultToken } from "@/lib/ask/token";
 import { isPlanId, plan } from "@/lib/ask/plans";
 import { refundFor } from "@/lib/ask/shortfall";
+import { refundTicket } from "@/lib/ask/pass";
 import { refund as stripeRefund, stripeEnabled } from "@/lib/stripe";
 
 // 人数が集まらなかったときの、相談者の選択を受け取る。
@@ -71,6 +72,38 @@ export async function POST(req: NextRequest) {
       widened_at: new Date().toISOString(),
     });
     return NextResponse.json({ ok: true, widened: true });
+  }
+
+  // ── チケットで払った相談は、チケットで返す ──
+  //
+  // 5回パスの1回分に対して、お金を按分して返そうとすると
+  // 「¥7,980 のうち ¥1,596 を返す」という話になり、
+  // 何回分を使ったのかが残高と合わなくなる。
+  //
+  // 使った1回分を、そのまま戻す。
+  // 消さずに、打ち消す行を足す（refund_pass）。
+  const usedTicket = await dbSelect<{ id: string }>(
+    `pass_uses?consultation_id=eq.${c.id}&select=id&limit=1`,
+  );
+  if (usedTicket.length > 0) {
+    const r = await refundTicket(
+      c.id,
+      choice === "full" ? "集まらなかったので全部返した" : "足りなかった分を返した",
+    );
+    if (!r.ok) {
+      return NextResponse.json({ error: r.why ?? "戻せませんでした" }, { status: 502 });
+    }
+    await dbUpdate("consultations", c.id, {
+      // 全部返したら、届いた回答も見せない。部分なら、届いた分で締める。
+      status: choice === "full" ? "refunded" : "completed",
+      completed_at: new Date().toISOString(),
+    });
+    return NextResponse.json({
+      ok: true,
+      // お金ではなく回数で返したことを、そのまま伝える
+      tickets: r.refunded,
+      remaining: r.remaining,
+    });
   }
 
   const back = choice === "full" ? yen : refundFor(yen, got, want);

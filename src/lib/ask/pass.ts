@@ -1,4 +1,4 @@
-import { dbSelect, dbInsert, dbAdminEnabled } from "../db";
+import { dbSelect, dbRpc, dbAdminEnabled } from "../db";
 import { plan, type PlanId } from "./plans";
 import { passCost } from "./sensitive";
 
@@ -20,6 +20,16 @@ import { passCost } from "./sensitive";
 // 買った回数は、使うまで残る。
 // 期限で消す仕組みを入れると、急がせる商売になる。
 // 「残りわずか」を作らないのと同じ理由（voice.ts の CHEAP）。
+//
+// ══════════════════════════════════════════════════
+// 減らすのは、数える側でやる
+// ══════════════════════════════════════════════════
+// 「残りを読む → 足りていれば使う」をアプリ側で2回に分けると、
+// その間にもう1つ来たときに、両方が「足りている」と判断する。
+// 5回パスで6回使える瞬間ができる。
+//
+// 減らすのは schema.sql の spend_pass（行を押さえたまま数えて書く）。
+// このファイルは、読むのと見せ方だけを持つ。
 //
 // ══════════════════════════════════════════════════
 // 自動更新しない
@@ -75,39 +85,68 @@ export async function spend(
   /** 何回分使うか。言いにくい相談は2回分（sensitive.ts の passCost） */
   cost = 1,
 ): Promise<{ ok: boolean; remaining: number; why?: string }> {
-  const b = await balanceOf(token);
-  if (!b) return { ok: false, remaining: 0, why: "このパスは見つかりません" };
-  if (cost < 1) return { ok: false, remaining: b.remaining, why: "使う回数が不正です" };
-  // 足りないのに「1回だけ使っておく」をしない。
-  // 半端に使うと、何回分の相談だったのかが分からなくなる。
-  if (b.remaining < cost) {
-    return {
-      ok: false,
-      remaining: b.remaining,
-      why:
-        cost > 1
-          ? `この相談は${cost}回分です。残りが足りません`
-          : "残りがありません",
-    };
-  }
+  if (!dbAdminEnabled) return { ok: false, remaining: 0, why: "no db" };
+  if (cost < 1) return { ok: false, remaining: 0, why: "使う回数が不正です" };
 
-  const rows = await dbSelect<{ id: string }>(
-    `ask_passes?token=eq.${encodeURIComponent(token)}&select=id&limit=1`,
+  // 数える側でやる。
+  //
+  // 「残りを読む → 足りていれば使う」をここで2回に分けると、
+  // その間にもう1つ来たときに、両方が「足りている」と判断する。
+  // 5回パスで6回使える瞬間ができる。
+  //
+  // schema.sql の spend_pass が、行を押さえたまま数えて書く。
+  // 同じ相談が既に使っていたら、使わずに「使用済み」として返す
+  // （画面の二度押し・Webhookの再送・リロードは、どれでも来る）。
+  const res = await dbRpc<{ ok: boolean; remaining: number; why: string | null }[]>(
+    "spend_pass",
+    { p_token: token, p_consultation: consultationId, p_cost: cost },
   );
-  const passId = rows[0]?.id;
-  if (!passId) return { ok: false, remaining: b.remaining, why: "このパスは見つかりません" };
+  if (!res.ok) return { ok: false, remaining: 0, why: res.error };
 
-  // 2回分なら2行入れる。1行に「2」と書かない。
-  // 数で持つと、数え方を間違えたときに気づけない。
-  for (let i = 0; i < cost; i++) {
-    const res = await dbInsert("pass_uses", {
-      pass_id: passId,
-      consultation_id: consultationId,
-    });
-    if (!res.ok) return { ok: false, remaining: b.remaining, why: res.error };
-  }
+  const row = Array.isArray(res.data) ? res.data[0] : undefined;
+  if (!row) return { ok: false, remaining: 0, why: "このパスは見つかりません" };
 
-  return { ok: true, remaining: b.remaining - cost };
+  return {
+    ok: Boolean(row.ok),
+    remaining: Math.max(0, Number(row.remaining) || 0),
+    why: row.why ?? undefined,
+  };
+}
+
+/**
+ * 使った回数を返す。
+ *
+ * 人数が集まらなかったとき、こちらの都合で配れなかったとき。
+ *
+ * ── 消さずに、打ち消す ────────────────────────
+ * pass_uses の行を消すと、「使った → 返した」という
+ * 出来事そのものが消えて、あとから何が起きたか追えなくなる。
+ * 打ち消す行（+1）を足す。
+ *
+ * ── 二度返さない ──────────────────────────────
+ * 返金の処理は、通信が切れて押し直されることがある。
+ * 既に返してあれば、何もせずに現在の残りを返す。
+ */
+export async function refundTicket(
+  consultationId: string,
+  reason: string,
+): Promise<{ ok: boolean; refunded: number; remaining: number; why?: string }> {
+  if (!dbAdminEnabled) return { ok: false, refunded: 0, remaining: 0, why: "no db" };
+
+  const res = await dbRpc<
+    { ok: boolean; refunded: number; remaining: number; why: string | null }[]
+  >("refund_pass", { p_consultation: consultationId, p_reason: reason });
+  if (!res.ok) return { ok: false, refunded: 0, remaining: 0, why: res.error };
+
+  const row = Array.isArray(res.data) ? res.data[0] : undefined;
+  if (!row) return { ok: false, refunded: 0, remaining: 0, why: "返せませんでした" };
+
+  return {
+    ok: Boolean(row.ok),
+    refunded: Math.max(0, Number(row.refunded) || 0),
+    remaining: Math.max(0, Number(row.remaining) || 0),
+    why: row.why ?? undefined,
+  };
 }
 
 /** 何回ぶんのパスか。パスでない商品なら null */

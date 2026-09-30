@@ -48,10 +48,14 @@ export default function Shortfall({
         return;
       }
       track("shortfall_picked", { choice: c.id, got, of: want });
+      // チケットで払った相談は、チケットで返る。
+      // カード会社の話をしても、その人には関係がない。
       setDone(
         c.id === "widen"
           ? "条件を広げて、もう一度お声がけします。"
-          : `¥${Number(j.refunded ?? 0).toLocaleString()} をお返しします。カード会社の処理に数日かかります。`,
+          : typeof j.tickets === "number"
+            ? `${j.tickets}回分を戻しました。残り${j.remaining}回です。`
+            : `¥${Number(j.refunded ?? 0).toLocaleString()} をお返しします。カード会社の処理に数日かかります。`,
       );
     } catch {
       setError("通信できませんでした。もう一度お試しください。");

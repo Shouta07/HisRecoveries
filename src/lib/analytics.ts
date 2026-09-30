@@ -101,6 +101,7 @@ export const CONVERSION_EVENTS = [
   // ここが伸びてCTAが伸びないなら、見せている場面が弱い。
   "step_opened",
   "assist_opened", // うまく書けない、から整理へ入った（props: from）
+  "starter_used", // 書き出しを押して入力欄を埋めた（props: category）
   "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
   "talk_waitlist", // 話す商品の順番待ちに登録した
   // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
@@ -111,6 +112,8 @@ export const CONVERSION_EVENTS = [
   "pass_used", // 1回ぶんを使った（props: remaining）
   "pass_empty", // 使い切った画面を見た
   "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
+  // 案件を自分で取った。ここが伸びないなら、配る仕組みが要る。
+  "invite_claimed",
   // 集まらなかったときに何を選んだか。供給が足りない度合いが出る。
   "shortfall_picked", // 足りないときの選択（props: choice, got, of）
 
