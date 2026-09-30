@@ -686,7 +686,7 @@ export default async function HomePage() {
 
       {/* ══ 1.7 説明動画 ══ */}
       {/* 「それ、自分のことだ」のすぐあとに、全体を1本で見せる。
-          恋亀が案内して、女性が答え、料金と、ほかの選び方との違いまで。
+          恋亀が案内して、女性が答え、ほかの選び方との違いまで（料金は入れない。lib/video.ts）。
           ファイルが無ければ節ごと出さない（lib/video.ts）。 */}
       {GUIDE_VIDEO.src && (
         <Block tint>
