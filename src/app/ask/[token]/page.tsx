@@ -21,11 +21,13 @@ import PayButton from "@/components/ask/PayButton";
 import PaidPing from "@/components/ask/PaidPing";
 import RememberPass from "@/components/ask/RememberPass";
 import WhyAsked from "@/components/ask/WhyAsked";
+import Outcome from "@/components/ask/Outcome";
 import LiveAnswers from "@/components/ask/LiveAnswers";
 import NextStep from "@/components/ask/NextStep";
 import Shortfall from "@/components/ask/Shortfall";
 import ShareAb from "@/components/ask/ShareAb";
 import { needsChoice } from "@/lib/ask/shortfall";
+import { outcomeOf } from "@/lib/ask/outcome";
 
 // 結果 — Human Reaction Report。
 //
@@ -186,6 +188,15 @@ export default async function ResultPage({
       passLeft = bal[0] ? Math.max(0, Number(bal[0].remaining)) : null;
     }
   }
+
+  /* ── その後どうなったか ───────────────────────── */
+  // 回答が揃ってから半日。それより早く聞いても、まだ何も起きていない。
+  // 適当に押されると、記録として意味が無くなる。
+  const OUTCOME_AFTER_MS = 12 * 60 * 60 * 1000;
+  const already = c.status === "completed" ? await outcomeOf(c.id) : null;
+  const showOutcome =
+    c.status === "completed" &&
+    (already !== null || Date.now() - new Date(c.created_at).getTime() > OUTCOME_AFTER_MS);
 
   const planName = isPlanId(c.product_type) ? getPlan(c.product_type).name : null;
   const whoChips = [
@@ -526,6 +537,25 @@ export default async function ResultPage({
 
       {/* 結果を見たあとに1問だけ。任意 */}
       {t.total > 0 && <WhyAsked token={params.token} />}
+
+      {/* ══════════════════════════════════════════════
+          その後どうなったか
+          ══════════════════════════════════════════════
+          回答が揃った直後には出さない。
+          まだ送ってもいないのに「どうなりましたか？」と聞かれても、
+          答えようがない。適当に押されたら、記録として意味が無くなる。
+
+          半日たってから出す。そのころには、送ったか送らなかったかが
+          決まっている。この画面は鍵で何度でも開けるので、
+          あとで開いたときに出ていればいい。
+
+          催促はしない。メールも通知も送らない（送る口が無いし、
+          結果を教えるために開いてもらうほどのことでもない）。 */}
+      {showOutcome && (
+        <section className="mt-9">
+          <Outcome token={params.token} already={already} />
+        </section>
+      )}
 
       {/* 聞いた内容 */}
       <section className="mt-14 border-t border-line pt-9">

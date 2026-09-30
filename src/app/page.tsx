@@ -10,6 +10,7 @@ import {
   DEFAULT_PLAN,
   TOP_USE_CASES,
 } from "@/lib/ask/plans";
+import { MOMENTS, PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
 import { DEMO, count } from "@/lib/ask/demo";
 import {
   ALTERNATIVES,
@@ -619,6 +620,80 @@ export default async function HomePage() {
         </Wrap>
 
       </section>
+
+      {/* ══ 1.5 手が止まる瞬間 ══ */}
+      {/* ══════════════════════════════════════════════
+          なぜ1画面目の直後なのか
+          ══════════════════════════════════════════════
+          1画面目は「何のサービスか」を言う場所で、
+          「それ、自分のことだ」と思ってもらう場所ではない。
+
+          ここを1画面目の中に入れると、押す場所が下へ押し出される。
+          いまスマホで、押す場所は 844px のうち 687px のところにある。
+          7行足すと画面の外へ出る。それは割に合わない。
+
+          1回スワイプした先に置く。順番はこう。
+            何のサービスか（1画面目）
+            それ、自分のことだ（ここ）
+            ほかの手段では足りない理由（ここの下半分）
+            どんな場面で使えるか（この下）
+
+          ══════════════════════════════════════════════
+          状態ではなく、瞬間を書く
+          ══════════════════════════════════════════════
+          「恋愛で悩んでいませんか？」とは書かない。
+          悩んでいる人は、自分を悩んでいる人だと思っていない。
+          思っているのは「このLINE、重くないかな」だけ。
+
+          言葉は lib/ask/pain.ts。
+          答えられないこと（写真・脈あり）は、向こうの判定が弾く。 */}
+      <Block>
+        <p className="text-[15px] font-bold leading-[1.75] text-steel">{PAIN_LEAD}</p>
+        <h2 className="mt-2 text-huge font-black leading-[1.35] text-slate">
+          こんな瞬間、
+          <br className="sm:hidden" />
+          ありませんか？
+        </h2>
+
+        {/* 押せるようにする。読ませて終わりにしない。
+            自分のが1つでもあれば、その場面から始められる */}
+        <ul className="mt-7 flex flex-col gap-2">
+          {MOMENTS.map((m, i) => (
+            <Reveal key={m.line} delay={i * 40}>
+              <li>
+                <PlanCta
+                  plan={DEFAULT_PLAN}
+                  from={`pain_${m.cat}`}
+                  category={m.cat}
+                  className="!flex w-full !items-start !justify-start gap-3 rounded-card border border-line bg-paper px-4 py-3.5 text-left !text-slate shadow-card transition-shadow hover:shadow-card-hover"
+                >
+                  {/* 2行になる行があるので、点は1行目の高さに合わせる。
+                      中央に合わせると、長い行だけ点が下がって見える */}
+                  <span
+                    aria-hidden
+                    className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
+                  />
+                  <span className="min-w-0 text-[14.5px] font-bold leading-[1.6]">
+                    {m.line}
+                  </span>
+                </PlanCta>
+              </li>
+            </Reveal>
+          ))}
+        </ul>
+
+        {/* ほかの手段を否定しない。足りない1点だけを書く。
+            「役に立たない」と言った時点で、読んでいる人の実感と食い違う */}
+        <div className="mt-8 rounded-card bg-mist px-5 py-5 sm:px-6">
+          <p className="text-[13.5px] leading-[1.9] text-steel">{BRIDGE.known}</p>
+          <p className="mt-3 text-[16px] font-black leading-[1.7] text-slate sm:text-[17px]">
+            {BRIDGE.gap}
+          </p>
+          <p className="mt-3 border-t border-line pt-3 text-[13.5px] font-bold leading-[1.8] text-brand-deep">
+            {BRIDGE.close}
+          </p>
+        </div>
+      </Block>
 
       {/* ══ 2. 恋愛の道のりと、その場面 ══ */}
       {/* ここがこの製品の中身。
@@ -1293,6 +1368,45 @@ export default async function HomePage() {
 
         <div className="mt-8">
           <PlanCards from="price" openIds={openPlanIds()} />
+        </div>
+
+        {/* ══════════════════════════════════════════════
+            5回が、どういう5回なのか
+            ══════════════════════════════════════════════
+            「5回分 ¥7,980」だと、回数券にしか見えない。
+            回数券は、使う予定が立たないと買えない。
+
+            実際には、関係が進むたびに「これでいい？」が来る。
+            その順番をそのまま出す。
+            自分にもこの5回が起きると分かれば、回数の話ではなくなる。
+
+            具体的な場面にする。「プロフィール」ではなく
+            「出す前の自己紹介文」。受け取れないもの（写真）は書かない。 */}
+        <div className="mt-8 rounded-card bg-mist px-5 py-5 sm:px-6">
+          <p className="text-[13.5px] font-black text-slate">たとえば、こんな5回</p>
+          <ol className="mt-3.5 flex flex-col gap-2">
+            {[
+              "出す前の自己紹介文",
+              "最初のメッセージ",
+              "初デートへの誘い方",
+              "デートのあと、なんと送るか",
+              "2回目を、いつ切り出すか",
+            ].map((t, i) => (
+              <li key={t} className="flex items-center gap-3">
+                <span
+                  aria-hidden
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper text-[11px] font-black tabular-nums text-brand-deep"
+                >
+                  {i + 1}
+                </span>
+                <span className="min-w-0 text-[13.5px] leading-[1.7] text-slate">{t}</span>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-4 border-t border-line pt-3.5 text-[13px] leading-[1.85] text-steel">
+            1回だけの相談ではありません。関係が進むたびに起きる「これでいい？」を、
+            5回まで確かめられます。期限はありません。
+          </p>
         </div>
 
         <p className="mt-6 text-[12.5px] leading-[1.85] text-steel">

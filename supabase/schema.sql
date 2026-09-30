@@ -1577,3 +1577,117 @@ from consultations c
 left join pass_uses u on u.consultation_id = c.id and u.amount < 0
 left join ask_passes p on p.id = u.pass_id
 group by c.id, p.id, p.price, p.uses_total;
+
+-- ══════════════════════════════════════════════════
+-- 実行した結果
+-- ══════════════════════════════════════════════════
+-- 相談して、女性の反応を読んで、送るか送らないかを決めた。
+-- そのあと、実際に何が起きたか。
+--
+-- ここが、このサービスと恋愛相談の違いになる。
+-- 相談は「どう思いますか」で終わる。
+-- ここは「で、どうなったか」まで持つ。
+--
+-- ── なぜ持つのか ──────────────────────────────
+--   1 本人にとって  次に相談するとき、前回どうなったかから始められる
+--   2 答えた人にとって 自分の反応が当たっていたかが分かる
+--   3 運営にとって   どの場面で役に立っているかが、推測でなく分かる
+--
+-- ── 持たないもの ──────────────────────────────
+-- 相手が誰か。相手の連絡先。相手が実際に送ってきた文面。
+-- 相手はこのサービスに同意していない第三者なので、持たない。
+-- 持つのは「返信が来た」「デートが決まった」という、
+-- 相談した本人から見た出来事だけ。
+--
+-- ── 任意である ────────────────────────────────
+-- 答えないまま放っておける。催促もしない。
+-- 必須にすると、次に相談するときに邪魔になる。
+create table if not exists case_events (
+  id uuid primary key default gen_random_uuid(),
+  -- どの相談の結果か
+  consultation_id uuid not null references consultations(id) on delete cascade,
+  -- 相手ごとのケース。ケースを作っていない相談もあるので null を許す
+  case_id uuid references relationship_cases(id) on delete set null,
+  -- 何が起きたか。lib/ask/outcome.ts の OutcomeId と同じ語彙
+  outcome text not null,
+  -- ひとこと。任意。相手を特定できることは書かないよう画面で断る
+  note text,
+  created_at timestamptz default now()
+);
+
+-- 1つの相談につき1件。二度押し・リロードで増やさない
+create unique index if not exists case_events_one_per_consultation
+  on case_events (consultation_id);
+
+create index if not exists case_events_case_idx
+  on case_events (case_id, created_at desc);
+
+-- 結果を書く。
+--
+-- ── 二度書かない ──────────────────────────────
+-- 画面の二度押し、通信が切れての押し直し、リロード。どれでも来る。
+-- 既にあるなら、書かずにそれを返す。
+--
+-- ── 鍵で引く ──────────────────────────────────
+-- 会員登録が無いので、相談の鍵を知っていること自体が持ち主の証。
+-- 相談IDを画面から送らせない（他人の相談に書けてしまう）。
+create or replace function record_outcome(
+  p_token text,
+  p_outcome text,
+  p_note text
+)
+returns table (ok boolean, outcome text, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_id      uuid;
+  v_case    uuid;
+  v_status  text;
+  v_have    text;
+begin
+  select c.id, c.case_id, c.status
+    into v_id, v_case, v_status
+    from consultations c
+   where c.token = p_token
+   limit 1;
+
+  if v_id is null then
+    return query select false, null::text, 'この相談は見つかりません'::text;
+    return;
+  end if;
+
+  -- 行を押さえる。同時に来たもう一方は、ここで待つ。
+  perform 1 from consultations where id = v_id for update;
+
+  -- 既に書いてあるなら、上書きしない。
+  -- 「返信が来た」を「来なかった」に書き換えられると、
+  -- 何が起きたかの記録ではなく、あとからの感想になる。
+  select ce.outcome into v_have from case_events ce where ce.consultation_id = v_id limit 1;
+  if v_have is not null then
+    return query select true, v_have, 'すでに教えてもらっています'::text;
+    return;
+  end if;
+
+  -- 回答が揃う前に結果は起きない。
+  if v_status is distinct from 'completed' then
+    return query select false, null::text, 'まだ回答が揃っていません'::text;
+    return;
+  end if;
+
+  insert into case_events (consultation_id, case_id, outcome, note)
+  values (v_id, v_case, p_outcome, nullif(btrim(coalesce(p_note, '')), ''));
+
+  return query select true, p_outcome, null::text;
+end;
+$$;
+
+-- どの場面で、どうなったか。
+-- 推測ではなく、実際に教えてもらったぶんだけを数える。
+create or replace view outcome_stats as
+select c.category,
+       e.outcome,
+       count(*)::int as n
+from case_events e
+join consultations c on c.id = e.consultation_id
+group by c.category, e.outcome;
