@@ -13,6 +13,7 @@ import {
 } from "@/lib/ask/plans";
 import { MOMENTS, PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
 import TodayReviewers from "@/components/brand/TodayReviewers";
+import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO, count } from "@/lib/ask/demo";
 import {
   ALTERNATIVES,
@@ -35,7 +36,6 @@ import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
 import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
 import CaseRows from "@/components/brand/CaseRows";
-import PlanCards from "@/components/brand/PlanCards";
 import Yen from "@/components/brand/Yen";
 
 // ══════════════════════════════════════════════════════════════
@@ -1283,105 +1283,25 @@ export default async function HomePage() {
           キャンセル・返金・特商法の断りは /plans が持つ。 */}
       <Block id="price">
         <H>サービスプラン。</H>
+        {/* ここに「どれを使うかは、迷いの大きさで決まります」の一文と、
+            場面→役割の対応表7行と、「確かめる／決める／試す」が
+            文字か声かの注記を置いていた。
+
+            商品を2つにしたので、全部要らなくなった。
+            3つの役割を覚えてもらう必要も、
+            どの役割に当たるかを引く表も、要らない。
+            選ぶのは「文字か、声か」だけ。 */}
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          どれを使うかは、迷いの大きさで決まります。値段ではありません。
-          月額はありません。自動更新もしません。
+          選ぶのは、文字で見てもらうか、声で話すかだけです。
+          どちらも1回から試せます。ただ、判断は1回では終わりません。
         </p>
 
-        {/* 場面 → どれ。
-            役割の名前だけ並べても、自分がどれなのかは決まらない。
-            ラベルは TIERS から引く。書き写すと、片方だけ古くなる。
-
-            ── 例が文字のことばかりにならないようにする ──────
-            前は5つのうち4つが「この文面でいい？」だった。
-            そうすると、声で話す商品（決める・試す）が
-            何のためにあるのか、最後まで分からない。
-            書いて送るのと、その場で声で返すのとでは、
-            困っている場面がそもそも違う。 */}
-        <ul className="mt-7 flex flex-col divide-y divide-line overflow-hidden rounded-card border border-line bg-paper">
-          {(
-            [
-              // 「この写真どっち？」は置けない。画像を受け取る口がまだ無い
-              ["「このLINE送っていい？」", "check"],
-              ["「自己紹介文、AとBどっち？」", "check"],
-              ["「明日の電話で何を話せばいい？」", "check"],
-              ["「返事が来ない。追う？ 引く？」", "decide"],
-              ["「誘うかどうか、話して決めたい」", "decide"],
-              ["「電話の前に、一度声に出しておきたい」", "try"],
-              ["「初デートで黙るのが怖い」", "try"],
-            ] as const
-          ).map(([q, t]) => (
-            <li key={q} className="flex items-center justify-between gap-3 px-4 py-3">
-              <span className="min-w-0 text-[13.5px] leading-[1.6] text-slate">{q}</span>
-              <span className="shrink-0 text-[12.5px] font-black text-brand">
-                → {getTier(t).label}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        {/* 何でやりとりするのか。
-            ここを書かないと、全部が文字の添削だと思われる。
-            映像が無いことも、ここで先に言う。
-            買ったあとに知らせることではない */}
-        <p className="mt-3 text-[12.5px] leading-[1.85] text-steel">
-          「{getTier("check").label}」は文字でやりとりします。
-          「{getTier("decide").label}」と「{getTier("try").label}」は、声で話します。
-          映像はありません。
-        </p>
-
-        {/* トップは、いま買えるものだけ。
-            4枚出すとそのうち3枚が「受付前」で、
-            買えない商品の説明にスマホ2.5画面ぶん使うことになる。
-            読んでいる人が今できることは1つなので、トップはそれだけ。
-            残りは、この下の1行と /plans が持つ。 */}
-        <div className="mt-8">
-          <PlanCards from="price" onlyOpen openIds={openPlanIds()} />
+        {/* 選ぶのは「文字か、声か」だけ。
+            商品を4枚並べるのをやめて、家族2つにした。
+            1回と5回分は、同じ商品の買い方なのでカードの中に入れる */}
+        <div className="mt-6">
+          <FamilyCards openIds={openPlanIds()} />
         </div>
-
-        {/* ══════════════════════════════════════════════
-            残りの2つを、1行ずつ出す
-            ══════════════════════════════════════════════
-            カードを1枚だけにしたら、こんどは
-            「これしかないサービス」に見えるようになった。
-
-            買える商品は1つでいい。押せる場所が増えるほど、
-            どれを押すか決まらなくなる。
-            ただし、この先に何があるかは見えていないといけない。
-            見えないと、5回パスが天井に見える。
-
-            カードでは出さない（1枚で1画面ぶんある）。
-            名前と、いくらで、何をするかだけの細い行にする。
-            詳しくは /plans。 */}
-        {(() => {
-          const open = openPlanIds();
-          const soon = topPlans().filter((p) => !open.includes(p.id));
-          if (soon.length === 0) return null;
-          return (
-            <div className="mt-4 overflow-hidden rounded-card border border-line">
-              <p className="border-b border-line bg-mist px-4 py-2.5 text-[12px] font-bold text-steel">
-                この先に、あと{soon.length}つあります（まだ開いていません）
-              </p>
-              <ul className="flex flex-col divide-y divide-line bg-paper">
-                {soon.map((p) => (
-                  <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-3">
-                    <span className="min-w-0">
-                      <span className="block text-[13.5px] font-black text-slate">
-                        {p.name}
-                      </span>
-                      <span className="mt-0.5 block text-[12px] leading-[1.6] text-steel">
-                        {tierOf(p.tier).label}・{p.value}
-                      </span>
-                    </span>
-                    <span className="shrink-0 text-[13px] font-black tabular-nums text-steel">
-                      <Yen yen={p.yen} from={p.from} />
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })()}
 
         {/* ══════════════════════════════════════════════
             5回が、どういう5回なのか

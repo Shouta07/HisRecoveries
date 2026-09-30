@@ -141,8 +141,19 @@ export const REWARD_CAP: Record<PlanId, number> = {
   // 入口の商品は利益を取る商品ではないので、ここだけ下げている
   // （plans.ts の marginFloor）。下げたのは利益で、報酬ではない。
   review: 550,
+  // 1回売りでも、やることはパックと同じ。だから上限も同じ ¥550。
+  //
+  // 最初は売価の40%（¥792）にしていたが、判定に止められた。
+  // 1回売りは売価が高いぶん上限も上がる、という置き方をすると、
+  // 同じ仕事なのに買い方で取り分が変わることになる。
+  // それは答える側から見ると、理由の無い差になる。
+  review1: 550,
   // 15分 ¥5,980 の 40%。¥2,392 は時給に直すと ¥9,568。
   call15: 2267,
+  // 15分×5回分 ¥27,800。1回あたり ¥5,560。
+  // まとめ買いでも、答える人の取り分は1回ぶんで見る。
+  // パックで安くしたぶんを、報酬から引かない。
+  call5: 2100,
   // 30分 ¥9,800 の 40%。¥3,920 は時給に直すと ¥7,840。
   session: 3733,
   // 45分（25分の会話＋15分の振り返り＋5分のまとめ）。
@@ -235,8 +246,12 @@ export const COSTS: Record<PlanId, CostModel> = {
   // 3人にしたいなら、ここだけ直しても通らない。
   // 5回パスの売価（plans.ts の yen）も一緒に上げること。
   review: { parts: [{ kind: "quick", n: 1, atYen: 500 }] },
+  // 1回売りでも、やることは同じ。だから原価も同じ。
+  review1: { parts: [{ kind: "quick", n: 1, atYen: 500 }] },
   // 15分、1人と話す
   call15: { parts: [{ kind: "talk_short", n: 1, atYen: 1900 }] },
+  // まとめ買いでも、1回あたりの中身は15分の通話1本。原価も同じ
+  call5: { parts: [{ kind: "talk_short", n: 1, atYen: 1900 }] },
   // 30分、1人と話す
   session: { parts: [{ kind: "talk", n: 1, atYen: 3000 }] },
   // 45分。通しでやって、そのあと振り返る
@@ -524,7 +539,19 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
 
   // 入口商品が、いちばん利益の大きい商品になっていないこと。
   // 入口で最大の利益を取る設計にすると、そこから先へ人を送る理由が消える。
-  const entry = [...PLANS].filter((p) => p.available).sort((a, b) => a.yen - b.yen)[0];
+  //
+  // ── 入口は「いちばん安いもの」ではない ──────────
+  // 前はいちばん安い商品を入口として見ていた。
+  // 1回売り（¥1,980）を足した途端、そちらが入口と見なされて、
+  // この判定に止められた。
+  //
+  // 実際に人を入れているのは、おすすめにしている5回パスのほう。
+  // 1回あたりで見ると、パックのほうが安く売っているので利益は小さい。
+  // それで正しい。勧めているほうが儲からない形になっている。
+  // 見るのは featured にする。
+  const entry =
+    PLANS.find((p) => p.featured && p.available) ??
+    [...PLANS].filter((p) => p.available).sort((a, b) => a.yen - b.yen)[0];
   const best = allUnits()
     .filter((u) => u.plan.available)
     .sort((a, b) => b.margin - a.margin)[0];
