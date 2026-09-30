@@ -12,6 +12,7 @@ import {
   DEFAULT_PLAN,
 } from "@/lib/ask/plans";
 import { MOMENTS, PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
+import TodayReviewers from "@/components/brand/TodayReviewers";
 import { DEMO, count } from "@/lib/ask/demo";
 import {
   ALTERNATIVES,
@@ -599,6 +600,22 @@ export default async function HomePage() {
         </Wrap>
 
       </section>
+
+      {/* ══ 1.2 今日、受け付けている人 ══ */}
+      {/* ══════════════════════════════════════════════
+          1画面目のすぐ下に置く理由
+          ══════════════════════════════════════════════
+          「実在の女性が読みます」と書いても、それは説明でしかない。
+          いま何人が受け付けているかが見えると、説明ではなくなる。
+
+          ただし、受付中も、これから受付の人も0人なら、
+          この節はひとりでに消える（TodayReviewers の shouldShow）。
+          「現在0人です」という枠を常設すると、
+          来た全員に、空っぽであることを知らせることになる。
+
+          いま審査を通った人は0人なので、この節はまだ出ない。
+          1人入れば出る。 */}
+      <TodayReviewers />
 
       {/* ══ 1.5 手が止まる瞬間 ══ */}
       {/* ══════════════════════════════════════════════

@@ -1691,3 +1691,280 @@ select c.category,
 from case_events e
 join consultations c on c.id = e.consultation_id
 group by c.category, e.outcome;
+
+-- ═══════════════════════════════════════════════════════════════
+-- 今日、受け付けている人
+--
+-- ══════════════════════════════════════════════════
+-- 「出勤」と呼ばない
+-- ══════════════════════════════════════════════════
+-- 画面に出す言葉は「受付」。内部の列名もそれに合わせる。
+-- 「出勤」「在籍」「指名」は、この製品が売っているものと違う。
+-- 売っているのは人ではなく、その人の反応。
+--
+-- ══════════════════════════════════════════════════
+-- 無い数字は作らない
+-- ══════════════════════════════════════════════════
+-- 「受付中3人」は、本当に3人いるときだけ出す。
+-- 「あと2枠」「平均18分」も、実績があるときだけ。
+-- 賑わって見せるために数を盛ると、来た人が最初に気づく。
+-- ═══════════════════════════════════════════════════════════════
+
+-- いま受けるかどうか。本人が押して切り替える
+alter table responders add column if not exists accepting boolean default false;
+-- 同時に持てる件数。超えたら、新しい依頼を回さない
+alter table responders add column if not exists max_concurrent int default 2;
+-- 画面に出す呼び名。本名は入れない（登録の画面で断る）
+alter table responders add column if not exists display_name text;
+
+-- 受付の予定。
+--
+-- 日付と時刻で持つ。「毎週火曜18時」のような繰り返しは持たない。
+-- 繰り返しを持つと、休んだ日を打ち消す仕組みが要る。
+-- 予定は1日ずつ入れてもらう。
+create table if not exists reviewer_shifts (
+  id uuid primary key default gen_random_uuid(),
+  reviewer_id uuid not null references responders(id) on delete cascade,
+  -- 受付の開始と終了。保存は UTC、画面は JST（lib/reviewers/today.ts）
+  starts_at timestamptz not null,
+  ends_at timestamptz not null,
+  created_at timestamptz default now(),
+  check (ends_at > starts_at)
+);
+
+create index if not exists reviewer_shifts_window_idx
+  on reviewer_shifts (starts_at, ends_at);
+
+-- いまの状態。
+--
+-- available 受付中で、まだ余裕がある
+-- busy      受付中だが、手一杯
+-- paused    予定の時間内だが、本人が止めている
+-- offline   予定の時間外
+--
+-- 状態は列で持たない。予定と件数から、そのつど数えて出す。
+-- 列で持つと、切り替え忘れがそのまま「受付中」として残る。
+create or replace view reviewer_status as
+select
+  r.id,
+  r.display_name,
+  r.display_age_band,
+  r.specialties,
+  r.verified_age,
+  r.verified_profile,
+  r.takes_sensitive,
+  r.answered_count,
+  r.avg_reply_minutes,
+  r.max_concurrent,
+  -- いま抱えている件数
+  coalesce(w.open_count, 0)::int as open_count,
+  -- いま予定の中にいるか
+  (s.id is not null) as in_shift,
+  s.starts_at as shift_starts_at,
+  s.ends_at   as shift_ends_at,
+  -- 次に受け付ける予定
+  (select min(n.starts_at) from reviewer_shifts n
+    where n.reviewer_id = r.id and n.starts_at > now()) as next_starts_at,
+  case
+    when s.id is null then 'offline'
+    when coalesce(r.accepting, false) = false then 'paused'
+    when coalesce(w.open_count, 0) >= coalesce(r.max_concurrent, 2) then 'busy'
+    else 'available'
+  end as status
+from responders r
+left join lateral (
+  select sh.id, sh.starts_at, sh.ends_at
+    from reviewer_shifts sh
+   where sh.reviewer_id = r.id
+     and sh.starts_at <= now() and sh.ends_at > now()
+   order by sh.ends_at desc
+   limit 1
+) s on true
+left join lateral (
+  select count(*) as open_count
+    from response_invites i
+   where i.responder_id = r.id and i.answered_at is null
+) w on true
+where coalesce(r.active, false) = true;
+
+-- 依頼を1人に出す。
+--
+-- ══════════════════════════════════════════════════
+-- くじ引きにしない
+-- ══════════════════════════════════════════════════
+-- 「おまかせ」は、相談する人から見ると誰が来るか分からない。
+-- 裏では選んでいる。random() で選ぶと、
+-- 手が空いている人と埋まっている人が同じ確率になる。
+--
+-- 並べ方は
+--   1 いま抱えている件数が少ない人から（仕事を散らす）
+--   2 その相談の種類を得意だと言っている人を先に
+--   3 同じなら、待っている時間が長い人から
+--
+-- ══════════════════════════════════════════════════
+-- 二重に渡さない
+-- ══════════════════════════════════════════════════
+-- 同じ相談を2人が受けると、2人ぶん払って1件しか返らない。
+-- 行を押さえてから確かめる。
+create table if not exists assignment_offers (
+  id uuid primary key default gen_random_uuid(),
+  consultation_id uuid not null references consultations(id) on delete cascade,
+  reviewer_id uuid not null references responders(id) on delete cascade,
+  offered_at timestamptz default now(),
+  -- ここまでに受けなければ、次の人へ回す
+  expires_at timestamptz not null,
+  accepted_at timestamptz,
+  -- offered / accepted / expired / passed
+  status text not null default 'offered'
+);
+
+create index if not exists assignment_offers_live_idx
+  on assignment_offers (status, expires_at);
+create index if not exists assignment_offers_reviewer_idx
+  on assignment_offers (reviewer_id, status);
+
+-- 受けるまでの持ち時間。短いと取りこぼし、長いと相談者が待つ
+create or replace function offer_window_minutes() returns int
+language sql immutable as $$ select 20 $$;
+
+-- 次の人に出す。
+--
+-- 相談1件につき、生きている offer は1つだけ。
+-- 既に生きているものがあれば、何もせずにそれを返す
+-- （Webhookの再送・二度押し・リロードは、どれでも来る）。
+create or replace function offer_next(p_consultation uuid)
+returns table (ok boolean, reviewer uuid, expires_at timestamptz, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_cat   text;
+  v_state text;
+  v_live  assignment_offers%rowtype;
+  v_pick  uuid;
+  v_exp   timestamptz;
+begin
+  select c.category, c.status into v_cat, v_state
+    from consultations c where c.id = p_consultation;
+  if v_cat is null then
+    return query select false, null::uuid, null::timestamptz, 'この相談は見つかりません'::text;
+    return;
+  end if;
+  if v_state not in ('recruiting', 'collecting') then
+    return query select false, null::uuid, null::timestamptz, 'この相談は、いま募集していません'::text;
+    return;
+  end if;
+
+  -- 行を押さえる。同時に来たもう一方は、ここで待つ。
+  perform 1 from consultations where id = p_consultation for update;
+
+  -- 既に生きている offer があれば、増やさない。
+  update assignment_offers
+     set status = 'expired'
+   where consultation_id = p_consultation
+     and status = 'offered'
+     and expires_at <= now();
+
+  select * into v_live from assignment_offers
+   where consultation_id = p_consultation and status = 'offered'
+   limit 1;
+  if found then
+    return query select true, v_live.reviewer_id, v_live.expires_at, 'すでに出しています'::text;
+    return;
+  end if;
+
+  -- 候補。
+  --   受付中で、手が空いている
+  --   言いにくい相談なら、受けると決めた人だけ
+  --   この相談を、まだ断っていない／期限切れにしていない
+  select s.id into v_pick
+    from reviewer_status s
+   where s.status = 'available'
+     and (v_cat <> 'distance' or coalesce(s.takes_sensitive, false) = true)
+     and not exists (
+       select 1 from assignment_offers o
+        where o.consultation_id = p_consultation and o.reviewer_id = s.id
+     )
+   order by s.open_count asc,
+            -- その種類を得意だと言っている人を先に
+            (case when s.specialties ? v_cat then 0 else 1 end) asc,
+            s.answered_count asc
+   limit 1;
+
+  if v_pick is null then
+    return query select false, null::uuid, null::timestamptz,
+      'いま受け付けている人がいません'::text;
+    return;
+  end if;
+
+  v_exp := now() + (offer_window_minutes() || ' minutes')::interval;
+  insert into assignment_offers (consultation_id, reviewer_id, expires_at)
+  values (p_consultation, v_pick, v_exp);
+
+  return query select true, v_pick, v_exp, null::text;
+end;
+$$;
+
+-- 受ける。
+--
+-- 2人が同時に押しても、1人しか通らない。
+-- 通った人にだけ response_invites の行を渡す。
+create or replace function accept_offer(p_responder_token text, p_offer uuid)
+returns table (ok boolean, reply_token text, why text)
+language plpgsql
+security definer
+as $$
+declare
+  v_r     responders%rowtype;
+  v_o     assignment_offers%rowtype;
+  v_inv   response_invites%rowtype;
+begin
+  select * into v_r from responders where token = p_responder_token;
+  if not found or coalesce(v_r.active, false) = false then
+    return query select false, null::text, 'この鍵では受けられません'::text;
+    return;
+  end if;
+
+  -- 行を押さえる。もう一方はここで待つ。
+  select * into v_o from assignment_offers where id = p_offer for update;
+  if not found then
+    return query select false, null::text, 'この依頼は見つかりません'::text;
+    return;
+  end if;
+  if v_o.reviewer_id <> v_r.id then
+    return query select false, null::text, 'この依頼は、あなた宛てではありません'::text;
+    return;
+  end if;
+  if v_o.status <> 'offered' then
+    return query select false, null::text, 'この依頼は、もう終わっています'::text;
+    return;
+  end if;
+  if v_o.expires_at <= now() then
+    update assignment_offers set status = 'expired' where id = p_offer;
+    return query select false, null::text, '受付の時間が過ぎました'::text;
+    return;
+  end if;
+
+  -- まだ誰も取っていない invite を、この人のものにする。
+  select * into v_inv from response_invites
+   where consultation_id = v_o.consultation_id
+     and responder_id is null and answered_at is null
+   limit 1
+   for update;
+  if not found then
+    update assignment_offers set status = 'expired' where id = p_offer;
+    return query select false, null::text, 'この相談は、もう埋まっています'::text;
+    return;
+  end if;
+
+  update response_invites
+     set responder_id = v_r.id, opened_at = coalesce(opened_at, now())
+   where id = v_inv.id;
+
+  update assignment_offers
+     set status = 'accepted', accepted_at = now()
+   where id = p_offer;
+
+  return query select true, v_inv.token, null::text;
+end;
+$$;
