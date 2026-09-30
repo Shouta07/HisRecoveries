@@ -3,18 +3,9 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
 import {
-  SCOPE,
-  RETURNS,
-  NEVER_ASK,
-  CONSENT,
-  ASK_SHAPE,
-  PASS_COST,
-} from "@/lib/ask/sensitive";
-import {
   PLANS,
-  TIERS,
   plan as getPlan,
-  SUBJECTS,
+  tier as getTier,
   ENTRY_PLAN,
   DEFAULT_PLAN,
   OPEN_USE_CASES,
@@ -114,9 +105,10 @@ export const metadata: Metadata = {
 const NAV = [
   ["#moments", "恋愛の道のり"],
   ["#before-after", "実例"],
-  ["#which", "どれを使う？"],
   ["#faq", "よくある質問"],
-  ["#price", "料金"],
+  // 「どれを使う？」は、別の節として持っていた。
+  // 料金と1つにしたので、行き先も1つでいい
+  ["#price", "料金とプラン"],
 ] as const;
 
 const STEPS = [
@@ -137,7 +129,7 @@ const STEPS = [
 // ── 開かなくても分かる答えを、先に書く ────────────
 // extra が付くものは、開くと絵も出る。
 // ただし a だけ読んでも答えになっていること（検索結果にはこちらが出る）。
-const FAQ: { q: string; a: string; extra?: "ai" | "flow" }[] = [
+const FAQ: { q: string; a: string; extra?: "ai" | "flow" | "safety" }[] = [
   {
     q: "AIに聞くのと何が違いますか？",
     a: "AIが出すのは「たぶんこう思われます」です。ここで返ってくるのは、実在の女性が実際にどう思ったかです。予想ではなく、本当の反応です。まずAIに聞いていい。文面を作るのも、考えをまとめるのもAIのほうが得意です。それでも最後に残る「実際どう思われるか」だけ、人に聞きます。",
@@ -159,6 +151,7 @@ const FAQ: { q: string; a: string; extra?: "ai" | "flow" }[] = [
   {
     q: "相手に知られませんか？",
     a: "知られません。匿名で使えて、相手の名前・写真・連絡先は保存していません。答えてくれた女性とあなたが直接つながる仕組みも、作っていません。",
+    extra: "safety",
   },
   {
     q: "どのくらいで返ってきますか？",
@@ -266,6 +259,45 @@ function AiSplit() {
 }
 
 /** やることは4つ。よくある質問の中で開く */
+/**
+ * 安心・安全。よくある質問の「相手に知られませんか？」の中で開く。
+ *
+ * 節として独立させていたが、並べた6つは全部その質問への答えだった。
+ * 同じ答えを2か所に置くと、どちらも読まれない。
+ */
+function Safety() {
+  return (
+    <div className="px-4 pb-5 sm:px-5">
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {[
+          "匿名で使えます。名前もメールアドレスも要りません",
+          "相手の名前・連絡先は保存しません",
+          "送る前に、個人情報は自動で伏せます",
+          "答えてくれた女性と直接つながる仕組みはありません",
+          "年齢と立場を確認した女性だけが見ます",
+          "18歳未満に関する相談はお受けしていません",
+        ].map((t) => (
+          <li
+            key={t}
+            className="flex items-start gap-2.5 rounded-soft bg-mist px-3.5 py-3 text-[12.5px] leading-[1.75] text-steel"
+          >
+            <span aria-hidden className="mt-[3px] text-[12.5px] font-black text-ok-text">
+              ✓
+            </span>
+            <span className="min-w-0">{t}</span>
+          </li>
+        ))}
+      </ul>
+      <Link
+        href="/safety"
+        className="mt-4 inline-flex min-h-[44px] items-center text-[13px] font-bold text-brand underline decoration-line underline-offset-4"
+      >
+        できないことも含めて、詳しく
+      </Link>
+    </div>
+  );
+}
+
 function Flow() {
   return (
     <ol className="grid gap-2.5 px-4 pb-5 sm:grid-cols-2 sm:px-5">
@@ -348,20 +380,10 @@ function Who({ age, size = 36 }: { age: number; size?: number }) {
   );
 }
 
-/** 値段が上がる理由。段の意味を1行で */
-/**
- * 3つの役割の説明。
- *
- * 値段の差を「相談の量」で説明しない。
- * どこまで一緒にやるか、で説明する。
- */
-const WHICH: Record<string, string> = {
-  check:
-    "プロフィール、自己紹介文、LINE、誘い方、デート後の返信。小さな判断を、女性目線で5回まで確かめられます。",
-  decide:
-    "誘うか、今返すか、一度引くか。書いて待つより早いところを、実在の女性と直接話して決めます。",
-  try: "本番の前に、一度だけ実在の女性相手にやってみる。何がよくて何が引っかかったかが、画面に残ります。",
-};
+// 3つの役割の説明（WHICH）を、ここに持っていた。
+// 「どれを使えばいい？」の節で1枚ずつ出していたもの。
+// その節を料金と1つにまとめたので、役割の説明はカードだけが持つ。
+// 同じことを2か所に書くと、片方だけ古くなる。
 
 /**
  * 「こんな女性が読んでいます」に出す顔。
@@ -557,49 +579,12 @@ export default async function HomePage() {
               ))}
             </ul>
 
-            {/* 何を見てもらえるか。押すとその場面から始まる */}
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {SUBJECTS.map((sub) => {
-                const usable = sub.id !== "call";
-                const icon =
-                  sub.id === "photo"
-                    ? "M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h4"
-                    : sub.id === "message"
-                      ? "M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.5-4.6A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"
-                      : "M16 19a4 4 0 0 0-8 0 M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6";
-                const inner = (
-                  <>
-                    <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={icon} />
-                    </svg>
-                    {sub.label}
-                  </>
-                );
-                return (
-                  <li key={sub.id}>
-                    {usable ? (
-                      <PlanCta
-                        plan={DEFAULT_PLAN}
-                        from={`hero_${sub.id}`}
-                        category={sub.id === "photo" ? "photo" : "message"}
-                        className="min-h-[44px] gap-2 rounded-pill border border-line bg-paper px-4 text-[13.5px] !text-slate shadow-card"
-                      >
-                        {inner}
-                      </PlanCta>
-                    ) : (
-                      <Link
-                        href="/talk"
-                        className="inline-flex min-h-[44px] items-center gap-2 rounded-pill border border-line bg-paper px-4 text-[13.5px] font-bold text-steel shadow-card"
-                      >
-                        {inner}
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+            {/* 「自己紹介文／メッセージ／会話」の3つを、ここに並べていた。
+                1画面目で商品の種類を選ばせていたことになる。
+                何を見てもらうかは、相談を書き始めてから選べばいい。
+                最初の画面で押す場所は、1つでいい。 */}
 
-            <div className="mt-5">
+            <div className="mt-6">
               <HeroNote />
             </div>
 
@@ -928,34 +913,18 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* 返ってくるもの。節を分けず、Before/After の下に短く置く */}
+      {/* 見本のすぐ下。
+          ここに「何人がどう答えたか／みんなが気にしたところ／意見が分かれたところ／
+          書かれた言葉そのまま」の4枚と、確率を出さない断りを置いていた。
+          すぐ上の見本が、そのまま同じことを見せている。
+          見せたあとに説明を足すと、見本のほうが弱くなる。
+          「女性みんなの答えではない」はよくある質問に残してある。
+
+          ここから料金の節まで、スマホで5画面ぶん押す場所が無い。
+          見本を読み終えた直後がいちばん近いので、押す場所だけ残す。 */}
       <section className="bg-paper">
         <Wrap className="pb-14 sm:pb-16">
-          <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["何人がどう答えたか", "実際の人数だけ"],
-              ["みんなが気にしたところ", "何人も触れていたら、そこ"],
-              ["意見が分かれたところ", "人によって受け取り方が違う"],
-              ["書かれた言葉そのまま", "まとめだけで終わらせない"],
-            ].map(([t, d]) => (
-              <li
-                key={t}
-                className="rounded-card border border-line bg-paper px-5 py-4 shadow-card"
-              >
-                <p className="text-[13.5px] font-black leading-[1.5]">{t}</p>
-                <p className="mt-1.5 text-[12px] leading-[1.7] text-steel">{d}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-5 max-w-[34em] text-[13px] leading-[1.9] text-steel">
-            「失敗する確率」みたいな数字は出しません。数えようがないからです。
-            出すのは「3人中2人」のような実数だけ。読んだ人がそう感じた、という話であって、
-            女性みんなの答えではありません。
-          </p>
-
-          {/* ここから料金の節まで、スマホで5画面ぶん押す場所が無かった。
-              見本を読み終えた直後がいちばん近いので、ここに1つ置く。 */}
-          <div className="mt-9 max-w-[24em]">
+          <div className="max-w-[24em]">
             <PlanCta
               plan={DEFAULT_PLAN}
               from="after_demo"
@@ -1100,38 +1069,11 @@ export default async function HomePage() {
         </div>
       </Block>
 
-      {/* ══ 5. 安心・安全 ══ */}
-      <Block>
-        <H>安心・安全のために。</H>
-        <ul className="mt-8 grid gap-2.5 sm:grid-cols-2">
-          {[
-            "匿名で使えます。名前もメールアドレスも要りません",
-            "相手の名前・連絡先は保存しません",
-            "送る前に、個人情報は自動で伏せます",
-            "答えてくれた女性と直接つながる仕組みはありません",
-            "年齢と立場を確認した女性だけが見ます",
-            "18歳未満に関する相談はお受けしていません",
-          ].map((t) => (
-            <li
-              key={t}
-              className="flex items-start gap-2.5 rounded-soft bg-mist px-3.5 py-3 text-[13px] leading-[1.75] text-steel"
-            >
-              <span aria-hidden className="mt-[3px] text-[13px] font-black text-ok-text">
-                ✓
-              </span>
-              <span className="min-w-0">{t}</span>
-            </li>
-          ))}
-        </ul>
-        <Link
-          href="/safety"
-          className="mt-7 inline-flex min-h-[44px] items-center text-[13.5px] font-bold text-brand underline decoration-line underline-offset-4"
-        >
-          できないことも含めて、詳しく
-        </Link>
-      </Block>
-
       {/* ══ 6. よくある質問 ══ */}
+      {/* 安心・安全は、節として独立させていた。
+          並べた6つは全部「知られませんか？」への答えで、
+          その質問はこの下にある。答えを2か所に置くと、
+          どちらも読まれない。畳んで、聞かれた場所で答える。 */}
       {/* 6つ全部開いていると、それだけで3画面分になる。
           見出しだけ並べて、読みたいものだけ開く。 */}
       <Block tint id="faq">
@@ -1151,6 +1093,7 @@ export default async function HomePage() {
               <p className="px-4 pb-4 text-[13.5px] leading-[1.9] text-steel sm:px-5">{f.a}</p>
               {f.extra === "ai" && <AiSplit />}
               {f.extra === "flow" && <Flow />}
+              {f.extra === "safety" && <Safety />}
             </details>
           ))}
         </div>
@@ -1249,157 +1192,26 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 6.4 言いにくいこと ══ */}
-      {/* 別タブにしない。恋愛の道のりの中に置く。
-          大きく独立させると、それを目当てに来る人が増えて、
+      {/* ここに「言いにくいことほど、女性に確かめる。」の節を置いていた。
+          トップで大きく立てると、それを目当てに来る人が増えて、
           いちばん来てほしい人が引く。
 
-          線は lib/ask/sensitive.ts。
-          扱うのは相談者と相手の関係で、答える女性本人ではない。 */}
-      <Block tint>
-        <H>言いにくいことほど、女性に確かめる。</H>
-        <p className="mt-4 max-w-[32em] text-[15px] leading-[1.85] text-steel">
-          距離の縮め方。触れ方のタイミング。付き合う前の関係。性の価値観。
-          <br className="hidden sm:block" />
-          友達には聞きづらい。相手本人には、もっと聞きづらい。
-        </p>
+          機能そのものは残っている。
+          相談のカテゴリ「距離感・言いにくいこと」から入れるし、
+          線と決まりは lib/ask/sensitive.ts が持っていて、
+          選んだ人には相談を書く画面で出る。
+          トップから売り込むのをやめただけ。 */}
 
-        <ul className="mt-8 flex flex-col gap-2.5">
-          {SCOPE.slice(0, 4).map((x, i) => (
-            <Reveal key={x.id} delay={i * 45}>
-              <li className="rounded-card border border-line bg-paper px-5 py-4 shadow-card">
-                <p className="text-[12px] font-bold text-steel">{x.label}</p>
-                <p className="mt-1.5 text-[14.5px] font-bold leading-[1.7] text-slate">
-                  「{x.example}」
-                </p>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
+      {/* ══ 7. サービスプラン ══ */}
+      {/* ここは「どれを使えばいい？」と「料金」の2節だった。
+          前の節は、3つの役割を1枚ずつ並べて、それぞれに
+          いちばん安い商品の名前と値段を書いていた。
+          そのすぐ下で、同じ役割・同じ値段をカードでもう一度出していた。
+          二度同じものを読まされると、どちらも信用されない。
 
-        {/* 何が返るかを、値段より先に出す */}
-        <div className="mt-6 rounded-card border border-line bg-paper px-5 py-5 shadow-card">
-          <p className="text-[12px] font-bold text-steel">返ってくるもの</p>
-          <ul className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
-            {RETURNS.map((t) => (
-              <li key={t} className="flex items-start gap-2 text-[13px] leading-[1.75]">
-                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
-                  ✓
-                </span>
-                <span className="min-w-0 text-steel">{t}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 border-t border-line pt-4 text-[13px] leading-[1.85] text-steel">
-            {ASK_SHAPE.why}。決めるのは、あなたです。
-          </p>
-        </div>
-
-        {/* 線を、買う前に書く。買ったあとに出すものではない */}
-        <div className="mt-4 rounded-card border border-line bg-paper px-5 py-5">
-          <p className="text-[12px] font-bold text-steel">この相談のきまり</p>
-          <p className="mt-2 text-[13.5px] font-bold leading-[1.8] text-slate">{CONSENT}</p>
-          <ul className="mt-3 flex flex-col gap-1.5">
-            {NEVER_ASK.slice(0, 4).map((t) => (
-              <li key={t} className="flex items-start gap-2 text-[12.5px] leading-[1.75]">
-                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-steel">
-                  ×
-                </span>
-                <span className="min-w-0 text-steel">{t}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-[12px] leading-[1.75] text-steel">
-            受けると決めた女性にだけ届きます。{PASS_COST}回分を使います。
-          </p>
-        </div>
-
-        <div className="mt-7 max-w-[26em]">
-          <PlanCta
-            plan={DEFAULT_PLAN}
-            from="sensitive"
-            category="distance"
-            className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[15.5px] !text-paper shadow-card"
-          >
-            言いにくい悩みを確かめる <span aria-hidden className="ml-2">&rarr;</span>
-          </PlanCta>
-        </div>
-      </Block>
-
-      {/* ══ 6.5 どれを使えばいい？ ══ */}
-      {/* 商品を機能で並べると、どれを使えばいいのか決まらない。
-          「どのくらい大事な判断か」で分ける。
-          写真・LINE・電話・デートは商品ではなく、その手段。 */}
-      <Block id="which">
-        <H>どれを使えばいい？</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          迷いの大きさで決まります。値段ではありません。
-        </p>
-
-        <ol className="mt-8 flex flex-col gap-3">
-          {TIERS.map((t, i) => {
-            const ps = PLANS.filter((x) => x.tier === t.id);
-            const cheapest = [...ps].sort((a, b) => a.yen - b.yen)[0];
-            return (
-              <Reveal key={t.id} delay={i * 60}>
-                <li className="rounded-card border border-line bg-paper p-5 shadow-card sm:p-6">
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                    <span
-                      aria-hidden
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-tint text-[12px] font-black tabular-nums text-brand-deep"
-                    >
-                      {i + 1}
-                    </span>
-                    <span className="text-[19px] font-black text-slate">{t.label}</span>
-                    <span className="rounded-pill bg-mist px-2.5 py-1 text-[11px] font-bold text-steel">
-                      {t.when}
-                    </span>
-                  </div>
-
-                  <p className="mt-3 text-[15.5px] font-bold leading-[1.6] text-brand-deep">
-                    「{t.lead}」
-                  </p>
-                  <p className="mt-2 text-[13.5px] leading-[1.85] text-steel">
-                    {WHICH[t.id]}
-                  </p>
-
-                  <p className="mt-3.5 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-line pt-3 text-[12.5px]">
-                    <span className="font-bold text-slate">{cheapest.name}</span>
-                    <span className="font-black tabular-nums text-slate">
-                      ¥{cheapest.yen.toLocaleString()}
-                      {cheapest.from && <span className="ml-0.5 text-steel">〜</span>}
-                    </span>
-                    {ps.length > 1 && (
-                      <span className="text-steel">ほか{ps.length - 1}つ</span>
-                    )}
-                  </p>
-                </li>
-              </Reveal>
-            );
-          })}
-        </ol>
-
-        {/* 例で分かるほうが早い */}
-        <ul className="mt-6 flex flex-col divide-y divide-line rounded-card border border-line bg-paper">
-          {[
-            // 「この写真どっち？」は置けない。画像を受け取る口がまだ無い
-            ["「この自己紹介文どっち？」", "確かめる"],
-            ["「このLINE送っていい？」", "確かめる"],
-            ["「この子、今誘うべき？」", "決める"],
-            ["「2回目に進めるか迷う」", "決める"],
-            ["「初デート前に会話を練習したい」", "試す"],
-          ].map(([q, a]) => (
-            <li key={q} className="flex items-center justify-between gap-3 px-4 py-3">
-              <span className="min-w-0 text-[13.5px] leading-[1.6] text-slate">{q}</span>
-              <span className="shrink-0 text-[12.5px] font-black text-brand">→ {a}</span>
-            </li>
-          ))}
-        </ul>
-      </Block>
-
-      {/* ══ 7. 料金 ══ */}
-      {/* 値段の差は、聞く人数ではなく「本番にどれだけ近いか」。
-          見てもらう → 反応を見る → 会話を試す → 一人について決める → 本番を再現する。
+          1つにまとめる。
+          残すのは、カードに書けないもの＝「この場面ならどれか」の対応表。
+          役割の説明と値段は、カード（PlanCards）だけが持つ。
 
           いちばん最後に置く。先に出すと、買えるのが1つだけなので
           「高い／買えない」が最初の印象になる。
@@ -1408,11 +1220,34 @@ export default async function HomePage() {
           カードの形は PlanCards（/plans と同じもの）。
           キャンセル・返金・特商法の断りは /plans が持つ。 */}
       <Block id="price">
-        <H>必要なところだけ、1回ごと。</H>
+        <H>サービスプラン。</H>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          どれを使うかは、迷いの大きさで決まります。値段ではありません。
           月額はありません。自動更新もしません。
-          値段の差は相談の量ではなく、どこまで一緒にやるかです。
         </p>
+
+        {/* 場面 → どれ。
+            役割の名前だけ並べても、自分がどれなのかは決まらない。
+            ラベルは TIERS から引く。書き写すと、片方だけ古くなる */}
+        <ul className="mt-7 flex flex-col divide-y divide-line overflow-hidden rounded-card border border-line bg-paper">
+          {(
+            [
+              // 「この写真どっち？」は置けない。画像を受け取る口がまだ無い
+              ["「この自己紹介文どっち？」", "check"],
+              ["「このLINE送っていい？」", "check"],
+              ["「この子、今誘うべき？」", "decide"],
+              ["「2回目に進めるか迷う」", "decide"],
+              ["「初デート前に会話を練習したい」", "try"],
+            ] as const
+          ).map(([q, t]) => (
+            <li key={q} className="flex items-center justify-between gap-3 px-4 py-3">
+              <span className="min-w-0 text-[13.5px] leading-[1.6] text-slate">{q}</span>
+              <span className="shrink-0 text-[12.5px] font-black text-brand">
+                → {getTier(t).label}
+              </span>
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-8">
           <PlanCards from="price" openIds={openPlanIds()} />

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PLANS, topPlans, tier } from "@/lib/ask/plans";
 import PlanCta from "@/components/brand/PlanCta";
+import PlanArt from "@/components/brand/PlanArt";
 import Reveal from "@/components/brand/Reveal";
 import Yen from "@/components/brand/Yen";
 
@@ -70,6 +71,11 @@ export default function PlanCards({
                 p.featured ? "border-2 border-brand" : "border-line"
               }`}
             >
+              {/* アイキャッチ。文字だけのカードが4枚続くと、どれも読まれない。
+                  相談する側（青）と答える側（赤）の間に何が流れるかを、
+                  商品ごとに変えてある */}
+              <PlanArt id={p.id} />
+
               <div className="flex flex-wrap items-center gap-2">
                 {/* 役割を先に出す。商品名だけだと、どれを使うのか決まらない */}
                 <span className="rounded-pill bg-brand-tint px-2.5 py-1 text-[11px] font-black text-brand-deep">
