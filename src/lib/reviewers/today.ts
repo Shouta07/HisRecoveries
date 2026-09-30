@@ -168,6 +168,25 @@ export function shouldShow(list: Reviewer[]): boolean {
   return list.some((r) => r.status !== "offline");
 }
 
+/**
+ * 画面に出すぶん。
+ *
+ * ══════════════════════════════════════════════════
+ * 本物が1人でもいれば、本物だけ
+ * ══════════════════════════════════════════════════
+ * 混ぜない。混ぜた瞬間、どれが本物か誰にも分からなくなる。
+ *
+ * 誰もいないときだけ、見せ方の見本を出す。
+ * そのときは sample: true を返す。
+ * 受け取った側は、見本の札を必ず出すこと（下の判定が見ている）。
+ */
+export async function todayView(): Promise<{ list: Reviewer[]; sample: boolean }> {
+  const real = await reviewersToday();
+  if (shouldShow(real)) return { list: real, sample: false };
+  const { sampleReviewers } = await import("./sample");
+  return { list: sampleReviewers(), sample: true };
+}
+
 /** いま受け付けている人数。盛らない */
 export function openNow(list: Reviewer[]): number {
   return list.filter((r) => r.status === "available").length;

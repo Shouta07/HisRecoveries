@@ -1,6 +1,5 @@
 import {
-  reviewersToday,
-  shouldShow,
+  todayView,
   openNow,
   whenLabel,
   specialtyLabels,
@@ -9,6 +8,7 @@ import {
   OMAKASE,
   type Reviewer,
 } from "@/lib/reviewers/today";
+import { SAMPLE_BADGE, SAMPLE_NOTE } from "@/lib/reviewers/sample";
 import PlanCta from "@/components/brand/PlanCta";
 
 // 今日、受け付けている人。
@@ -53,10 +53,10 @@ function Dot({ status }: { status: Reviewer["status"] }) {
 }
 
 export default async function TodayReviewers() {
-  const list = await reviewersToday();
-  if (!shouldShow(list)) return null;
-
-  const now = openNow(list);
+  const { list, sample } = await todayView();
+  // 本物がいるときだけ、人数を出す。
+  // 見本の人数を「いま2人 受付中」と書いたら、見本の札の意味が無くなる
+  const now = sample ? 0 : openNow(list);
 
   return (
     <section className="bg-paper">
@@ -69,10 +69,23 @@ export default async function TodayReviewers() {
               いま{now}人 受付中
             </span>
           )}
+          {/* 見本なら、見出しの横に札を出す。
+              小さな※にしない。読み飛ばされたら、嘘をついたのと同じ */}
+          {sample && (
+            <span className="rounded-pill border border-line bg-mist px-3 py-1 text-[12.5px] font-black text-steel">
+              {SAMPLE_BADGE}
+            </span>
+          )}
         </div>
         <p className="mt-3 max-w-[32em] text-[14.5px] leading-[1.85] text-steel">
           {TODAY.lead}
         </p>
+
+        {sample && (
+          <p className="mt-3 max-w-[32em] rounded-card bg-mist px-4 py-3 text-[12.5px] leading-[1.85] text-steel">
+            {SAMPLE_NOTE}
+          </p>
+        )}
 
         {/* 横に流す。縦に積むと、それだけで1画面を使う */}
         <ul className="-mx-5 mt-7 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0">
@@ -133,6 +146,14 @@ export default async function TodayReviewers() {
           </p>
           <p className="mt-2 text-[13.5px] leading-[1.85] text-steel">{OMAKASE.body}</p>
           <p className="mt-2 text-[13px] leading-[1.85] text-steel">{OMAKASE.why}</p>
+
+          {/* 誰もいないのに「受付中の人へ届けます」で終わらせない。
+              いま押した人がどうなるかを、押す前に書く */}
+          {sample && (
+            <p className="mt-3 border-t border-line pt-3 text-[13px] font-bold leading-[1.85] text-slate">
+              {TODAY.none}
+            </p>
+          )}
 
           <div className="mt-5 max-w-[24em]">
             <PlanCta
