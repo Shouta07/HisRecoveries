@@ -451,20 +451,37 @@ export default async function HomePage() {
       {/* ── ヘッダー ── */}
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
         <Wrap className="flex items-center justify-between gap-4 py-3">
-          {/* 上から「恋に迷ったら、／タシカメ」と読ませる。
-              2行で1つの文になるので、標語の側に名前は入れない */}
-          <Link href="/" className="flex min-w-0 items-center gap-2.5">
-            <Tashikame size={44} />
+          {/* 上から「マチアプ恋愛に迷ったら、／タシカメ」と読ませる。
+              2行で1つの文になるので、標語の側に名前は入れない。
+
+              ── 標語が伸びたぶん、まわりを詰める ────────────
+              390px では、絵・標語・名前・ボタン・メニューで
+              横幅がちょうど埋まっていた。標語が4文字伸びて
+              「マチアプ恋愛に迷っ…」と切れていた。
+              truncate は黙って切るので、落ちずにそのまま出る。
+
+              狭い画面だけ、絵と標語を小さくし、ボタンの余白と
+              右側の間隔を詰めた。640px から先は元のまま。
+
+              ── 320px では出さない ────────────────────
+              いちばん狭い端末では、ボタンとメニューを置いた残りが
+              64px しかない。12文字はどう縮めても入らない。
+              切れた標語を出すくらいなら、名前だけにする。
+              すぐ下の1画面目に、同じことが文で書いてある。 */}
+          <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5">
+            <Tashikame size={36} className="sm:!h-11 sm:!w-11" />
             <span className="min-w-0">
-              <span className="block truncate text-[10.5px] font-bold leading-[1.3] text-steel">
+              <span className="hidden truncate text-[9px] font-bold leading-[1.3] text-steel min-[360px]:block sm:text-[10.5px]">
                 {TAGLINE}
               </span>
-              <span className="block truncate text-[21px] font-black leading-[1.15] tracking-[0.02em] text-slate">
+              {/* 名前は切らない。標語は消せても、名前は消せない。
+                  320px では字を詰めて入れる（文字間も 360px から） */}
+              <span className="block truncate text-[17.5px] font-black leading-[1.15] text-slate min-[360px]:text-[21px] min-[360px]:tracking-[0.02em]">
                 {NAME}
               </span>
             </span>
           </Link>
-          <nav aria-label="サイト" className="flex shrink-0 items-center gap-5">
+          <nav aria-label="サイト" className="flex shrink-0 items-center gap-3 sm:gap-5">
             <ul className="hidden items-center gap-6 lg:flex">
               {NAV.map(([href, l]) => (
                 <li key={href}>
@@ -488,7 +505,7 @@ export default async function HomePage() {
             <PlanCta
               plan={DEFAULT_PLAN}
               from="header"
-              className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
+              className="min-h-[42px] rounded-pill bg-brand px-4 text-[13.5px] !text-paper shadow-card sm:px-5"
             >
               確かめる
             </PlanCta>
