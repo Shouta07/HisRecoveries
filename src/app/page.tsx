@@ -38,6 +38,8 @@ import type { ImageKey } from "@/lib/images";
 import HeroBoard, { HeroNote } from "@/components/brand/HeroBoard";
 import CaseRows from "@/components/brand/CaseRows";
 import Yen from "@/components/brand/Yen";
+import ShortVideo from "@/components/brand/ShortVideo";
+import { SHORT } from "@/lib/video";
 
 // ══════════════════════════════════════════════════════════════
 // トップページ。
@@ -684,6 +686,18 @@ export default async function HomePage() {
           </p>
         </div>
       </Block>
+
+      {/* ══ 1.7 30秒の動画 ══ */}
+      {/* 「それ、自分のことだ」のすぐあとに、全体を30秒で見せる。
+          ID が入るまでは節ごと出さない（lib/video.ts）。 */}
+      {SHORT.id && (
+        <Block tint>
+          <H>{SHORT.title}。</H>
+          <div className="mt-7">
+            <ShortVideo />
+          </div>
+        </Block>
+      )}
 
       {/* ══ 2. 恋愛の道のりと、その場面 ══ */}
       {/* ここがこの製品の中身。
