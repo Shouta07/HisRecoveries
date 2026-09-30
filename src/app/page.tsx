@@ -538,7 +538,7 @@ export default async function HomePage() {
         {/* いちばん上に、言いたいこと1つ。その下に、何のサービスかを1文。
             考え方（恋愛は、小さな選択の積み重ね。）は次の節の見出しが持つ。
             同じ文を2回出すと、どちらも弱くなる。 */}
-        <Wrap className="pb-4 pt-6 sm:pb-5 sm:pt-8">
+        <Wrap className="pb-3 pt-4 sm:pb-4 sm:pt-6">
           <h1 className="text-mega font-black leading-[1.15] text-slate">
             迷ったら、
             <br />
@@ -550,7 +550,7 @@ export default async function HomePage() {
               />
             </span>
           </h1>
-          <p className="mt-4 max-w-[38em] text-[14.5px] font-bold leading-[1.75] text-steel sm:text-[16px]">
+          <p className="mt-3 max-w-[38em] text-[14px] font-bold leading-[1.65] text-steel sm:text-[15.5px]">
             {DEFINITION}
           </p>
         </Wrap>
@@ -583,7 +583,7 @@ export default async function HomePage() {
                 4つの印も同じ。何のサービスか分からないうちに
                 条件だけ並べると読まれないが、いまは絵のあとなので
                 「で、いくらで、どう払うのか」の答えになっている。 */}
-            <div className="mt-7 sm:mt-9">
+            <div className="mt-5 sm:mt-6">
               <PlanCta
                 plan={DEFAULT_PLAN}
                 from="hero"
@@ -602,7 +602,7 @@ export default async function HomePage() {
                                       売りはじめたら、この印を外すこと
                 ここに「返金保証」などを足さないこと。
                 条件が付くものを1語で書くと、書いた時点で嘘になる。 */}
-            <ul className="mt-6 grid grid-cols-4 gap-2 sm:mt-7 sm:gap-3">
+            <ul className="mt-4 grid grid-cols-4 gap-2 sm:mt-5 sm:gap-3">
               {[
                 { label: "実在の女性\nが回答", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0Z" },
                 { label: "匿名でOK", d: "M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z" },
@@ -612,7 +612,7 @@ export default async function HomePage() {
                 <li key={b.label} className="flex flex-col items-center text-center">
                   <span
                     aria-hidden
-                    className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-12 sm:w-12"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-11 sm:w-11"
                   >
                     <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-[22px] sm:w-[22px]" fill="currentColor">
                       <path d={b.d} />
