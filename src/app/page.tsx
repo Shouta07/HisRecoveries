@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
 import {
   PLANS,
   plan as getPlan,
-  tier as getTier,
-  tier as tierOf,
   topPlans,
   ENTRY_PLAN,
   DEFAULT_PLAN,
 } from "@/lib/ask/plans";
-import { MOMENTS, PAIN_LEAD, BRIDGE } from "@/lib/ask/pain";
+import { BRIDGE } from "@/lib/ask/pain";
 import TodayReviewers from "@/components/brand/TodayReviewers";
 import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO, count } from "@/lib/ask/demo";
@@ -40,7 +39,6 @@ import HeroBoard from "@/components/brand/HeroBoard";
 import VideoEmbed from "@/components/brand/VideoEmbed";
 import MomentsArt from "@/components/brand/MomentsArt";
 import { hasPublicFile } from "@/lib/publicFile";
-import { URGENCY } from "@/lib/economics";
 import ChatCase from "@/components/brand/ChatCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -429,24 +427,6 @@ function label(v: string) {
   return VERDICTS.find((x) => x.id === v)?.label ?? v;
 }
 
-/* ── 公開の前に止めること ─────────────────────────
-   1画面目で「追加料金なし」と書いている。
-   上乗せを売りはじめた日に、この印は嘘になる。
-
-   economics.ts 側にも「速さを担保できるまで売らない」判定が
-   あるが、あちらは担保できたら通る。通った瞬間に
-   こちらが嘘になるので、ここからも見ておく。 */
-{
-  const extra = URGENCY.filter((u) => u.addYen > 0 && u.available);
-  if (extra.length > 0) {
-    throw new Error(
-      `1画面目に「追加料金なし」と書いていますが、上乗せ（${extra
-        .map((u) => u.label)
-        .join("・")}）を売っています。印を外すか、上乗せを止めてください`,
-    );
-  }
-}
-
 export default async function HomePage() {
   const entry = getPlan(ENTRY_PLAN);
   const main = getPlan(DEFAULT_PLAN);
@@ -539,7 +519,7 @@ export default async function HomePage() {
         {/* いちばん上に、言いたいこと1つ。その下に、何のサービスかを1文。
             考え方（恋愛は、小さな選択の積み重ね。）は次の節の見出しが持つ。
             同じ文を2回出すと、どちらも弱くなる。 */}
-        <Wrap className="pb-4 pt-6 sm:pb-5 sm:pt-8">
+        <Wrap className="pb-3 pt-4 sm:pb-4 sm:pt-6">
           <h1 className="text-mega font-black leading-[1.15] text-slate">
             迷ったら、
             <br />
@@ -551,7 +531,7 @@ export default async function HomePage() {
               />
             </span>
           </h1>
-          <p className="mt-4 max-w-[38em] text-[14.5px] font-bold leading-[1.75] text-steel sm:text-[16px]">
+          <p className="mt-3 max-w-[38em] text-[14px] font-bold leading-[1.65] text-steel sm:text-[15.5px]">
             {DEFINITION}
           </p>
         </Wrap>
@@ -571,60 +551,19 @@ export default async function HomePage() {
                 料金の節（#price）と /plans にある。隠してはいない。 */}
 
             {/* ══════════════════════════════════════════
-                押す場所と4つの印を、戻した
+                押す場所と4つの印は、また外した
                 ══════════════════════════════════════════
-                一度は外していた。ヘッダーにボタンがあり、すぐ下の
-                「こんな瞬間、ありませんか？」が8つとも押せるので、
-                1画面目に3つ目の入口は要らない、という理由だった。
+                一度戻して、また外している。理由は前と同じ。
 
-                絵が Before → 相談 → After の3段になって、話の
-                終わりがここに来た。「送れる」を見た直後に押す場所が
-                無いと、その勢いのまま次の節まで運ぶことになる。
+                ヘッダーの「確かめる」がずっと出ている。
+                絵が Before → 相談 → After で完結しているので、
+                その下にもう一つ押す場所を置くと、
+                1画面目に入口が2つ並ぶことになる。
 
-                4つの印も同じ。何のサービスか分からないうちに
-                条件だけ並べると読まれないが、いまは絵のあとなので
-                「で、いくらで、どう払うのか」の答えになっている。 */}
-            <div className="mt-7 sm:mt-9">
-              <PlanCta
-                plan={DEFAULT_PLAN}
-                from="hero"
-                className="min-h-[60px] w-full rounded-pill bg-brand px-8 text-[16.5px] !text-paper shadow-card sm:text-[18px]"
-              >
-                今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
-              </PlanCta>
-            </div>
-
-            {/* 4つとも、いま本当にそうであること。
-                「実在の女性が回答」  審査を通った女性だけが答える
-                「匿名でOK」          名前も連絡先も要らない（鍵だけ）
-                「都度払い」          必要なときだけ
-                「追加料金なし」      急ぎの上乗せ（economics.ts の URGENCY）は
-                                      どれも available: false。売っていない。
-                                      売りはじめたら、この印を外すこと
-                ここに「返金保証」などを足さないこと。
-                条件が付くものを1語で書くと、書いた時点で嘘になる。 */}
-            <ul className="mt-6 grid grid-cols-4 gap-2 sm:mt-7 sm:gap-3">
-              {[
-                { label: "実在の女性\nが回答", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0Z" },
-                { label: "匿名でOK", d: "M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10h1Zm2 0h6V8a3 3 0 0 0-6 0v2Z" },
-                { label: "都度払い", d: "M3 6h18v12H3V6Zm2 3v2h14V9H5Zm0 4v2h7v-2H5Z" },
-                { label: "追加料金なし", d: "M12 3v18M7 7h7a3 3 0 0 1 0 6H7m0 4h10" },
-              ].map((b) => (
-                <li key={b.label} className="flex flex-col items-center text-center">
-                  <span
-                    aria-hidden
-                    className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-12 sm:w-12"
-                  >
-                    <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-[22px] sm:w-[22px]" fill="currentColor">
-                      <path d={b.d} />
-                    </svg>
-                  </span>
-                  <span className="mt-1.5 whitespace-pre-line text-[10.5px] font-bold leading-[1.45] text-steel sm:text-[12px]">
-                    {b.label}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                4つの印（実在の女性が回答／匿名でOK／都度払い／
+                追加料金なし）は、よくある質問と料金の節が持っている。
+                1画面目で条件を先に並べても、まだ何のサービスか
+                分かっていないので読まれない。 */}
 
             {/* 受け付けていないことの断りは、値段の節（買う場所）に置いてある。
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
@@ -663,7 +602,6 @@ export default async function HomePage() {
                 public/img/video-poster.jpg */}
             <VideoEmbed
               title="タシカメは、どういうサービスか"
-              caption="2分ほどです。音が出ます。"
               poster={hasPublicFile("/img/video-poster.jpg") ? "/img/video-poster.jpg" : null}
             />
           </div>
@@ -703,8 +641,7 @@ export default async function HomePage() {
           言葉は lib/ask/pain.ts。
           答えられないこと（写真・脈あり）は、向こうの判定が弾く。 */}
       <Block>
-        <p className="text-[15px] font-bold leading-[1.75] text-steel">{PAIN_LEAD}</p>
-        <h2 className="mt-2 text-huge font-black leading-[1.35] text-slate">
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
           こんな瞬間、
           <br className="sm:hidden" />
           ありませんか？
@@ -716,32 +653,26 @@ export default async function HomePage() {
             置き換えると、押せなくなり、読み上げにも検索にも乗らなくなる */}
         <MomentsArt alt="送る前に手が止まる、いくつもの場面" />
 
-        {/* 押せるようにする。読ませて終わりにしない。
-            自分のが1つでもあれば、その場面から始められる */}
-        <ul className="mt-6 flex flex-col gap-2">
-          {MOMENTS.map((m, i) => (
-            <Reveal key={m.line} delay={i * 40}>
-              <li>
-                <PlanCta
-                  plan={DEFAULT_PLAN}
-                  from={`pain_${m.cat}`}
-                  category={m.cat}
-                  className="!flex w-full !items-start !justify-start gap-3 rounded-card border border-line bg-paper px-4 py-3.5 text-left !text-slate shadow-card transition-shadow hover:shadow-card-hover"
-                >
-                  {/* 2行になる行があるので、点は1行目の高さに合わせる。
-                      中央に合わせると、長い行だけ点が下がって見える */}
-                  <span
-                    aria-hidden
-                    className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
-                  />
-                  <span className="min-w-0 text-[14.5px] font-bold leading-[1.6]">
-                    {m.line}
-                  </span>
-                </PlanCta>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
+        {/* ══════════════════════════════════════════
+            8つの一覧は外した
+            ══════════════════════════════════════════
+            場面を1つずつ押せるようにしていた（押すとその
+            カテゴリを選んだ状態で相談が始まる）。
+
+            絵の中に同じ場面が全部描かれているので、
+            下に文字で並べると二度読ませることになっていた。
+
+            押す先は1つだけ残す。カテゴリの選択は、
+            相談を書く画面の最初で選べる。 */}
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="pain"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            自分の場面を確かめる <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
+        </div>
 
         {/* 「検索すれば／AIに聞けば」の3行は、ここに置いていた。
             置き場所としては早すぎた。
@@ -967,47 +898,31 @@ export default async function HomePage() {
           {COMPARE_SCOPE}
         </p>
 
-        {/* ── 狭い画面：行ごとに積む ── */}
-        <div className="mt-7 flex flex-col gap-3 sm:hidden">
-          {COMPARE.map((r) => (
-            <div key={r.id} className="rounded-card border border-line bg-paper p-4 shadow-card">
-              <p className="text-[11.5px] font-black text-steel">{r.label}</p>
-              <div className="mt-2 rounded-soft bg-brand-tint px-3 py-2.5">
-                <p className="text-[10.5px] font-black leading-none text-brand-deep">
-                  {SHOWN_ALTERNATIVES[0].label}
-                </p>
-                <p className="mt-1.5 text-[13px] font-bold leading-[1.6] text-slate">
-                  {r.cells[SHOWN_ALTERNATIVES[0].id]}
-                </p>
-              </div>
-              <dl className="mt-2.5 flex flex-col gap-2 border-t border-line pt-2.5">
-                {SHOWN_ALTERNATIVES.slice(1).map((a) => (
-                  <div key={a.id} className="grid grid-cols-[6.4em_1fr] gap-2">
-                    <dt className="text-[11px] font-bold leading-[1.6] text-steel">{a.label}</dt>
-                    <dd className="min-w-0 text-[11.5px] leading-[1.65] text-steel">
-                      {r.cells[a.id]}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          ))}
-        </div>
+        {/* ══════════════════════════════════════════════
+            どの幅でも、表のまま
+            ══════════════════════════════════════════════
+            狭い画面では行ごとに積んでいた。読めるが、
+            4つを見比べる形にはならない（縦に流れるだけ）。
 
-        {/* ── 広い画面：そのまま表に ── */}
-        <div className="mt-7 hidden sm:block">
-          <table className="w-full table-fixed border-collapse text-left">
-            <caption className="sr-only">
-              タシカメと、ほかの選び方の違い
-            </caption>
+            列の見出し（タシカメ / AI / 友達 / 恋愛コンサル）を
+            いちばん上に1回だけ置き、以下は
+              見出し行（使うとき）＝4列ぶち抜き
+              中身の行＝4列
+            の繰り返しにする。
+
+            こうすると 390px でも1列 80px ほど取れて、
+            横に流さずに4つを並べられる。
+            項目名を左の列にすると、そのぶん狭くなって成立しない。 */}
+        <div className="mt-7">
+          <table className="w-full table-fixed border-collapse">
+            <caption className="sr-only">タシカメと、ほかの選び方の違い</caption>
             <thead>
               <tr>
-                <th scope="col" className="w-[7.5em] p-0" />
                 {SHOWN_ALTERNATIVES.map((a) => (
                   <th
                     key={a.id}
                     scope="col"
-                    className={`rounded-t-card px-3.5 py-3 align-bottom text-[13.5px] font-black leading-[1.4] ${
+                    className={`w-1/4 rounded-t-soft px-1.5 py-2 text-center align-bottom text-[10.5px] font-black leading-[1.35] sm:px-3 sm:py-3 sm:text-[13.5px] ${
                       a.us ? "bg-brand text-paper" : "text-steel"
                     }`}
                   >
@@ -1017,27 +932,30 @@ export default async function HomePage() {
               </tr>
             </thead>
             <tbody>
-              {COMPARE.map((r, i) => (
-                <tr key={r.id} className="align-top">
-                  <th
-                    scope="row"
-                    className="border-t border-line py-3.5 pr-3 text-[12px] font-black leading-[1.5] text-steel"
-                  >
-                    {r.label}
-                  </th>
-                  {SHOWN_ALTERNATIVES.map((a) => (
-                    <td
-                      key={a.id}
-                      className={`border-t border-line px-3.5 py-3.5 text-[12.5px] leading-[1.7] ${
-                        a.us
-                          ? "bg-brand-tint font-bold text-slate"
-                          : "text-steel"
-                      } ${a.us && i === COMPARE.length - 1 ? "rounded-b-card" : ""}`}
+              {COMPARE.map((r) => (
+                <Fragment key={r.id}>
+                  <tr>
+                    <th
+                      scope="colgroup"
+                      colSpan={SHOWN_ALTERNATIVES.length}
+                      className="border-t border-line pb-1 pt-3.5 text-left text-[11.5px] font-black text-steel sm:pt-4 sm:text-[12.5px]"
                     >
-                      {r.cells[a.id]}
-                    </td>
-                  ))}
-                </tr>
+                      {r.label}
+                    </th>
+                  </tr>
+                  <tr className="align-top">
+                    {SHOWN_ALTERNATIVES.map((a) => (
+                      <td
+                        key={a.id}
+                        className={`px-1.5 py-2 text-[10.5px] leading-[1.6] sm:px-3 sm:py-2.5 sm:text-[12.5px] ${
+                          a.us ? "bg-brand-tint font-bold text-slate" : "text-steel"
+                        }`}
+                      >
+                        {r.cells[a.id]}
+                      </td>
+                    ))}
+                  </tr>
+                </Fragment>
               ))}
             </tbody>
           </table>

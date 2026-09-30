@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { site } from "@/lib/site";
+import { site, ogImage } from "@/lib/site";
 import { NAME } from "@/lib/voice";
 import { clusters } from "@/lib/clusters";
+import { publishedAt } from "@/lib/articleDates";
 import {
   MEDIA, PHASES, articlesIn, others, assignedCount,
 } from "@/lib/media";
@@ -38,10 +39,43 @@ import Slot from "@/components/brand/Slot";
 // 一般論を読んで終わりにしない。
 // 「で、俺の場合は？」に進める場所を、必ず置く。
 
+// ══════════════════════════════════════════════════
+// OG を、この面が自分で持つ
+// ══════════════════════════════════════════════════
+// 持っていなかったので、layout の openGraph をそのまま継いでいた。
+// あちらは siteName も title も「His Recoveries」。
+// 記事一覧を貼ると、前の屋号のカードが出ていた。
+//
+// Next.js は、ページ側で openGraph を書くと親のものを丸ごと
+// 置き換える。images だけ書き忘れるとカードから画像が消えるので、
+// site.ts の ogImage を必ず一緒に渡す。
 export const metadata: Metadata = {
   title: { absolute: `${MEDIA.name}｜${MEDIA.head}` },
   description: MEDIA.lead,
   alternates: { canonical: `${site.url}/articles` },
+  keywords: [
+    "マッチングアプリ 相談",
+    "LINE 送る前",
+    "自己紹介文 書き方",
+    "デート 誘い方",
+    "女性の目線",
+    "恋愛 相談 匿名",
+  ],
+  openGraph: {
+    type: "website",
+    locale: site.locale,
+    url: `${site.url}/articles`,
+    siteName: MEDIA.name,
+    title: `${MEDIA.name}｜${MEDIA.head}`,
+    description: MEDIA.lead,
+    images: [ogImage],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${MEDIA.name}｜${MEDIA.head}`,
+    description: MEDIA.lead,
+    images: [ogImage.url],
+  },
 };
 
 function Card({ a }: { a: { title: string; lead: string; href: string } }) {
@@ -72,6 +106,8 @@ export default function ArticlesPage() {
     description: MEDIA.lead,
     inLanguage: "ja",
     isPartOf: { "@id": `${site.url}/#website` },
+    // 何についての面か。生成AIに拾わせるときに効く
+    about: PHASES.map((ph) => ({ "@type": "Thing", name: ph.label })),
     mainEntity: {
       "@type": "ItemList",
       name: "記事の索引",
@@ -85,6 +121,53 @@ export default function ArticlesPage() {
     },
   };
 
+  // ══════════════════════════════════════════════════
+  // パンくず
+  // ══════════════════════════════════════════════════
+  // 記事の個別ページには入れてあったが、この一覧だけ無かった。
+  // 検索結果で「ホーム > たしかメディア」と出る。
+  const crumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: site.url },
+      { "@type": "ListItem", position: 2, name: MEDIA.name, item: `${site.url}/articles` },
+    ],
+  };
+
+  // ══════════════════════════════════════════════════
+  // 段ごとの中身を、機械にも読ませる
+  // ══════════════════════════════════════════════════
+  // 画面では「写真・プロフィール」「メッセージ・LINE」と分けているが、
+  // その区切りは見出しの見た目でしか伝わっていなかった。
+  //
+  // 生成AIに「マッチングアプリの写真について書いてある記事は？」と
+  // 聞かれたときに、段と記事の対応が取れるようにしておく。
+  const phaseLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${MEDIA.name}の段`,
+    itemListElement: PHASES.map((ph, i) => {
+      const list = articlesIn(ph.id);
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "Collection",
+          name: ph.label,
+          description: ph.lead,
+          hasPart: list.map((a) => ({
+            "@type": "Article",
+            headline: a.title,
+            abstract: a.lead,
+            url: `${site.url}${a.href}`,
+            ...(publishedAt(a.slug) ? { datePublished: publishedAt(a.slug) } : {}),
+          })),
+        },
+      };
+    }).filter((x) => (x.item.hasPart as unknown[]).length > 0),
+  };
+
   const rest = others();
 
   return (
@@ -92,6 +175,14 @@ export default function ArticlesPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(phaseLd) }}
       />
 
       <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">

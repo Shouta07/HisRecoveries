@@ -78,76 +78,6 @@ export const FAMILIES: { id: Family; label: string; lead: string }[] = [
 ];
 
 /**
- * 3つの役割。
- *
- * 商品を機能で並べると、どれを使えばいいのか決まらない。
- * 「どのくらい大事な判断か」で分ける。
- *
- *   check   小さな迷い   日常使い      何度でも
- *   decide  大事な判断   必要な時だけ  直接聞く
- *   try     勝負どころ   本番の前に    一度やってみる
- *
- * 写真・LINE・電話・デートは商品ではなく、この3つを果たすための手段。
- */
-export type Tier = "check" | "decide" | "try";
-
-export const TIERS: { id: Tier; label: string; when: string; lead: string }[] = [
-  {
-    id: "check",
-    label: "確かめる",
-    when: "日常使い",
-    lead: "これ、どう見える？",
-  },
-  {
-    id: "decide",
-    label: "決める",
-    when: "必要な時だけ",
-    lead: "この人と次、どうする？",
-  },
-  {
-    id: "try",
-    label: "試す",
-    when: "勝負どころ",
-    lead: "本番前に、一度やってみたい。",
-  },
-];
-
-export function tier(id: Tier) {
-  const t = TIERS.find((x) => x.id === id);
-  if (!t) throw new Error(`未定義の役割: ${id}`);
-  return t;
-}
-
-/**
- * 何を見てもらうか。
- *
- * 商品は「深さ」で分けるが、使う人が持ってくるものはこの3つ。
- * 自己紹介文 → メッセージ → 電話 の順に、本番へ近づいていく。
- */
-export type Subject = "photo" | "message" | "call";
-
-export const SUBJECTS: { id: Subject; label: string; lead: string; body: string }[] = [
-  {
-    id: "photo",
-    label: "自己紹介文",
-    lead: "その自己紹介文で、最初から損してない？",
-    body: "アプリで写真の次に読まれるのが、自己紹介の文章です。会う前どころか、返信が来る前に決まっています。",
-  },
-  {
-    id: "message",
-    label: "メッセージ",
-    lead: "そのLINE、送ってから後悔しない？",
-    body: "初デートのあと。次の誘い。返信が遅いとき。追いLINE。告白の前。送信ボタンの前で手が止まる瞬間。",
-  },
-  {
-    id: "call",
-    label: "会話",
-    lead: "大事な電話の前に、一度だけ練習する。",
-    body: "声の感じ、話す速さ、間の取り方、質問の仕方。文字では出ないところが、電話には全部出ます。",
-  },
-];
-
-/**
  * どこまで仕上げるか。深いほど後ろの工程まで含む。
  *
  * 値段の順と同じにすること（下の判定が見ている）。
@@ -164,8 +94,6 @@ export type Plan = {
    * 深さ（depth）は家族ごとに1つで、買い方では変わらない。
    */
   family: Family;
-  /** 3つの役割のどれか */
-  tier: Tier;
   /**
    * 何回ぶんか。
    *
@@ -199,8 +127,6 @@ export type Plan = {
   fits: string[];
   /** いま買えるか。手順が用意できていないものは false */
   available: boolean;
-  /** 何を見てもらうものか。無ければ全部に使える */
-  subjects?: Subject[];
   /**
    * 限界利益率の下限。
    *
@@ -260,7 +186,6 @@ export const PLANS: Plan[] = [
     // 直し方と、そのまま使える修正文と、次にやることまで返す。
     id: "review",
     family: "text",
-    tier: "check",
     name: "5回パス",
     tagline: "この恋、5回確カメる。",
     value: "気になる相手とのLINE、デートの前後、次の一手まで。",
@@ -288,7 +213,6 @@ export const PLANS: Plan[] = [
     answers: 1,
     rounds: 1,
     targeting: true,
-    subjects: ["photo", "message"],
     includes: [
       "女性から見た第一印象",
       "良いところ",
@@ -334,7 +258,6 @@ export const PLANS: Plan[] = [
     // まとめたほうが安いことが、並べただけで分かる。
     id: "review1",
     family: "text",
-    tier: "check",
     name: "1回",
     tagline: "まず1回だけ、女性に確かめる。",
     value: "送る前の「これでいい？」を、1つだけ。",
@@ -343,7 +266,6 @@ export const PLANS: Plan[] = [
     answers: 1,
     rounds: 1,
     targeting: true,
-    subjects: ["photo", "message"],
     includes: [
       "女性から見た第一印象",
       "良いところ",
@@ -366,7 +288,6 @@ export const PLANS: Plan[] = [
     // 「そもそもどうするか」は、書いて待つより話すほうが早い。
     id: "call15",
     family: "call",
-    tier: "decide",
     name: "15分",
     tagline: "15分で、次の一手を決める。",
     value: "話すための15分ではありません。決めるための15分です。",
@@ -413,7 +334,6 @@ export const PLANS: Plan[] = [
     // 受ける側の予定が組めなくなる。
     id: "call5",
     family: "call",
-    tier: "decide",
     name: "15分 × 5回パス",
     tagline: "声で5回確カメる。",
     value: "迷いが大きいときは、女性と話して次の一手を決める。",
@@ -601,114 +521,6 @@ export function clampTargeting(
   return { panelAge: "any", attrs: [] };
 }
 
-/* ── 試す → 知る → 直す → もう一度試す → 本番 ────
-   これが商品の骨。単価が上がる理由もここにある。 */
-
-export const FLOW = [
-  { tag: "CHECK", label: "通す", note: "審査を通った女性5人が、相手側の目で読む。" },
-  { tag: "UNDERSTAND", label: "どう思われたか読む", note: "何人が大丈夫と言ったか。どこで引っかかったか。" },
-  { tag: "IMPROVE", label: "直す", note: "引っかかったところを、直した案にする。" },
-  { tag: "RE-TEST", label: "もう一度通す", note: "直した版を、同じ条件の別の5人に。" },
-  { tag: "GO", label: "出す", note: "通ったことを確かめてから、本番へ。" },
-] as const;
-
-/* ── 使う瞬間 ──────────────────────────────────
-   「恋愛相談」と書くと、誰も自分のことだと思わない。
-   押す直前に手が止まる、その瞬間だけを書く。
-
-   ── 受け取れない場面を出さない ──────────────
-   服と店（category: "style"）は、見ないと答えようがない。
-   画像を受け取る口が無いので、画面に出すのは OPEN_USE_CASES のほう。
-   カテゴリが開いたら、自動でここに戻ってくる。
-
-   ── 相手を品定めする言い方にしない ────────────
-   「この子、脈あり？」とは書かない。
-   返ってくるのは相手の気持ちの判定ではなく、
-   同じ側に立つ女性が読んで、実際にどう受け取ったか。
-   判定を売ると、当たり外れのある占いになる。 */
-
-export const USE_CASES: {
-  tag: string;
-  q: string;
-  body: string;
-  category: string;
-  /**
-   * 絵の名前。
-   *
-   * 既定はカテゴリの絵。声の場面はどれも category: "date" になるので、
-   * そのままだと同じ絵が3つ並ぶ。場面が違うことが見た目で分からない。
-   */
-  icon?: "call" | "silence";
-}[] = [
-  {
-    tag: "送る前",
-    q: "このLINE、今送っていい？",
-    body: "AIには通した。あとは押すだけ。その直前で手が止まる。",
-    category: "message",
-  },
-  {
-    tag: "誘う前",
-    q: "この反応、どう見える？ いつ誘う？",
-    body: "文面は作れる。「この距離感で誘われたらどう受け取るか」は、女性側にしか分からない。",
-    category: "signal",
-  },
-  {
-    tag: "会う前",
-    q: "あと2時間でデート。この服と店、大丈夫？",
-    body: "服も店も決めた。最後に、女性の目でどう映るかを通しておく。",
-    category: "style",
-  },
-  {
-    tag: "出す前",
-    q: "自己紹介文、AとBどっち？",
-    body: "特徴は説明できる。「どちらなら会いたいと思うか」は、女性側にしか分からない。",
-    category: "photo",
-  },
-  {
-    tag: "会ったあと",
-    q: "デートで何を話せば？ 次につなげたい",
-    body: "話題は用意した。「それを聞かれてどう感じるか」は、女性側にしか分からない。",
-    category: "date",
-  },
-  // ── 声のほうの場面も出す ────────────────────
-  // ここが「この文面でいい？」ばかりだと、
-  // 文字の添削だけをやっている場所に見える。
-  // 電話の前と、会って話す前は、困り方がまるで違う。
-  // 文字なら何度でも書き直せるが、声はその場で返すしかない。
-  {
-    tag: "話す前",
-    q: "電話することになった。何を話せばいい？",
-    body: "文面なら書き直せる。声はその場で返すしかない。聞かれて困る質問と、切り出し方を先に通しておく。",
-    category: "date",
-    icon: "call",
-  },
-  {
-    tag: "会う前",
-    q: "沈黙になったとき、どうすれば？",
-    body: "話題は用意できる。黙ったときにどう見えているかは、その場にいた女性側にしか分からない。",
-    category: "date",
-    icon: "silence",
-  },
-];
-
-/**
- * 「こんなときに使えます」に並べるぶん。
- *
- * 画面側で slice すると、判定はその外側の配列を見ることになる。
- * 「声の場面もあること」を確かめたつもりで、実際には
- * 表示されない後ろのほうを数えていた、ということが起きる。
- * 出すぶんをここで決めて、判定も画面もこれを見る。
- */
-export const TOP_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category)).slice(0, 6);
-
-/**
- * 画面に出す「使う瞬間」。
- *
- * 受け付けていないカテゴリのものは出さない。
- * 押した人が行き止まりに当たる。
- */
-export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category));
-
 /* ── 公開の前に止めること ───────────────────────── */
 {
   if (PLANS.length === 0) throw new Error("プランが1つもありません");
@@ -852,11 +664,7 @@ export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category)
     "C2C", "Human Validation", "マーケットプレイス", "プラットフォーム",
     "パネル", "アンケート", "リサーチ", "バリデーション", "モニター",
   ];
-  const copy = [
-    ...PLANS.flatMap((p) => [p.name, p.tagline, ...p.includes, ...p.fits]),
-    ...USE_CASES.flatMap((u) => [u.tag, u.q, u.body]),
-    ...FLOW.flatMap((f) => [f.label, f.note]),
-  ];
+  const copy = PLANS.flatMap((p) => [p.name, p.tagline, ...p.includes, ...p.fits]);
   for (const t of copy) {
     const hit = JARGON.find((j) => t.includes(j));
     if (hit) {
@@ -872,40 +680,6 @@ export const OPEN_USE_CASES = USE_CASES.filter((u) => isOpenCategory(u.category)
     assertWhoReads(t, "商品の説明");
     // 硬い言葉を混ぜない。読むのは29歳の会社員。
     assertPlain(t, "商品の説明");
-  }
-
-  // 使う瞬間が、受け付けているカテゴリだけで4つ以上あること。
-  // ここが減ると「1つのことしかできないサービス」に見える。
-  if (OPEN_USE_CASES.length < 4) {
-    throw new Error(`画面に出せる場面が${OPEN_USE_CASES.length}個しかありません`);
-  }
-  // 例が、文字のことばかりにならないこと。
-  //
-  // 声で話す商品を2つ持っているのに、出す場面が全部
-  // 「この文面でいい？」だと、文字の添削屋にしか見えない。
-  // 書いて送るのと、その場で声で返すのとでは、困り方が違う。
-  // 片方しか見せないと、もう片方の商品を買う理由が伝わらない。
-  //
-  // 「話す」「話せ」はここに入れない。
-  // 「デートで何を話せば？」は文字の相談なので、
-  // それで通ってしまうと、この判定は何も守らなくなる。
-  // 見るのは、声そのものを指す言葉だけ。
-  //
-  // 見るのは、実際に画面へ出るぶん（TOP_USE_CASES）。
-  // 全体を見ると、後ろに1つあるだけで通ってしまう。
-  {
-    const VOICE = /電話|声|沈黙|黙っ/;
-    if (!TOP_USE_CASES.some((u) => VOICE.test(`${u.tag}${u.q}${u.body}`))) {
-      throw new Error(
-        "画面に出る使う瞬間が、文字の相談だけになっています（電話や会話の場面も出してください）",
-      );
-    }
-  }
-  // 相手の気持ちを当てる商売にしない。
-  for (const u of USE_CASES) {
-    if (/脈あり\?|脈あり？|この子|本命|好きかどうか|気持ちを当て/.test(u.q)) {
-      throw new Error(`使う瞬間「${u.q}」が、相手の気持ちの判定になっています`);
-    }
   }
 
   // 声で話す商品の決まりごと。

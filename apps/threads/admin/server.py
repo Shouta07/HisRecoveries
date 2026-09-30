@@ -31,15 +31,11 @@ EDITABLE_FILES = [
     ("persona.json", "ペルソナ", "json"),
     ("hypotheses.json", "仮説・リンク設定", "json"),
     ("patterns.md", "パターン", "md"),
-    ("GIFT_PROMPT.md", "ギフトプロンプト", "md"),
-    ("GIFT_STRATEGY.md", "ギフト戦略メモ", "md"),
     ("thread_templates.json", "連投テンプレ(raw)", "json"),
     ("seo_clusters.json", "SEO/GEOクラスタ", "json"),
     ("content_sources.json", "引用リソース(投稿の素)", "json"),
     ("CONTENT_SOURCES.md", "引用リソースの型(仕様)", "md"),
     ("READ_DESIGN.md", "読まれる投稿設計(型×ドメイン)", "md"),
-    ("BIZ_HYPOTHESES.md", "事業仮説の検証設計", "md"),
-    ("BIZ_B2B_VALIDATION.md", "B2B仮説の検証設計(C/D1)", "md"),
 ]
 EDITABLE_NAMES = {f[0] for f in EDITABLE_FILES}
 

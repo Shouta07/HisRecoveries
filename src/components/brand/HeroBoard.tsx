@@ -1,5 +1,4 @@
 import Slot from "@/components/brand/Slot";
-import { MOMENTS } from "@/lib/ask/pain";
 import { PLANS, FAMILIES } from "@/lib/ask/plans";
 import { IMAGES } from "@/lib/images";
 
@@ -53,7 +52,7 @@ import { IMAGES } from "@/lib/images";
 /** 絵につける注記。絵を残すかぎり、一緒に残る */
 export function HeroNote() {
   return (
-    <p className="mt-2.5 text-[10.5px] leading-[1.7] text-steel">
+    <p className="mt-2 text-[10px] leading-[1.6] text-steel">
       ※ 写真はイメージです。実際の相談内容ではありません。
     </p>
   );
@@ -62,11 +61,11 @@ export function HeroNote() {
 /** 段と段をつなぐ矢印 */
 function Down() {
   return (
-    <div className="flex justify-center py-2 sm:py-2.5">
+    <div className="flex justify-center py-1 sm:py-1.5">
       <svg
         aria-hidden
         viewBox="0 0 24 24"
-        className="h-6 w-6 text-brand sm:h-7 sm:w-7"
+        className="h-5 w-5 text-brand sm:h-6 sm:w-6"
         fill="none"
         stroke="currentColor"
         strokeWidth="3"
@@ -181,7 +180,7 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
       <div className="mx-auto max-w-[760px]">
         {/* ══ Before ══ 手が止まっている */}
         <div className="relative overflow-hidden rounded-card shadow-card">
-          <div className="relative h-[260px] sm:h-[320px]">
+          <div className="relative h-[200px] sm:h-[264px]">
             {/* 素材は 522×682 の縦。横長の枠に入れると人が真ん中に来るので、
                 枠より広く引き伸ばして左へ寄せ、右側を吹き出しに空ける */}
             <div className="absolute inset-y-0 -left-[18%] w-[118%] sm:-left-[10%] sm:w-[110%]">
@@ -215,7 +214,7 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
           </svg>
 
           {/* いちばん手前にある迷い。箱に入れず、写真に直接のせる */}
-          <p className="absolute bottom-3 left-3 max-w-[46%] text-[13px] font-black leading-[1.5] text-paper sm:bottom-5 sm:left-5 sm:text-[17px]">
+          <p className="absolute bottom-2.5 left-3 max-w-[37%] text-[12px] font-black leading-[1.45] text-paper sm:bottom-4 sm:left-5 sm:text-[15px]">
             {OVERLAY[0]}
             <br />
             {OVERLAY[1]}
@@ -224,7 +223,7 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
           {/* 手が止まっている中身。右側に重ねる。
               3つを少しずつ左右にずらす。きれいに揃えると一覧表に見えて、
               「頭の中で同時に鳴っている」感じが出ない */}
-          <ul className="absolute inset-y-0 right-2.5 flex w-[66%] max-w-[330px] flex-col justify-center gap-2 sm:right-4 sm:w-[60%] sm:gap-2.5">
+          <ul className="absolute inset-y-0 right-2.5 flex w-[60%] max-w-[320px] flex-col justify-center gap-1.5 sm:right-4 sm:w-[58%] sm:gap-2.5">
             {BUBBLES.map((b, i) => (
               <li
                 key={b.lines[0]}
@@ -246,18 +245,18 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
         <Down />
 
         {/* ══ 相談 ══ 実在の女性に聞く */}
-        <div className="rounded-card bg-mist p-3.5 shadow-card sm:p-5">
-          <div className="flex items-center gap-3.5 sm:gap-5">
+        <div className="rounded-card bg-mist p-3 shadow-card sm:p-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* 素材が 202×198 しかないので、大きくしない（伸ばすと粗が出る） */}
             <div className="relative shrink-0">
               <Slot
                 name="w1"
                 rounded="rounded-card"
-                className="h-[92px] w-[92px] sm:h-[120px] sm:w-[120px]"
+                className="h-[76px] w-[76px] sm:h-[104px] sm:w-[104px]"
               />
               <Sparks className="absolute -left-1 -top-1 h-4 w-4 sm:h-5 sm:w-5" />
             </div>
-            <p className="min-w-0 text-[15px] font-black leading-[1.55] text-slate sm:text-[19px]">
+            <p className="min-w-0 text-[14.5px] font-black leading-[1.45] text-slate sm:text-[18px]">
               実在する女性に
               <br />
               相談して、
@@ -270,11 +269,11 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
           {/* モックと同じく、狭い画面でも横に2つ。
               「文字か、声か」は見比べて決めるものなので、
               縦に積むと片方ずつしか目に入らない */}
-          <ul className="mt-3.5 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
+          <ul className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
             {ways.map((w) => (
               <li
                 key={w.id}
-                className={`flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-[999px] px-2.5 py-3 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 ${
+                className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-[999px] px-2.5 py-2.5 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 ${
                   w.id === "call" ? "bg-ok-tint" : "bg-paper"
                 }`}
               >
@@ -401,11 +400,26 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
-  // 吹き出しに使えるだけの場面があること。
-  // pain.ts が5つ以上を保証しているが、
-  // ここが3つ未満になると絵として成立しない。
-  if (MOMENTS.length < 3) {
-    throw new Error(`1画面目の吹き出しに使える場面が ${MOMENTS.length} 個しかありません`);
+  // ══════════════════════════════════════════════
+  // 実際に出ている言葉を、ここで見る
+  // ══════════════════════════════════════════════
+  // 前は pain.ts の MOMENTS を見ていた。
+  // あちらは「こんな瞬間」の押せる一覧で、いまは画面に出していない。
+  // 出ていないものを見張っても、何も守らない。
+  //
+  // 見るのは、この絵に実際に出る BUBBLES のほう。
+  if (BUBBLES.length < 3) {
+    throw new Error(`1画面目の吹き出しが ${BUBBLES.length} 個しかありません`);
+  }
+  // 相手の気持ちを当てる商売にしない。
+  // 「脈あり」は、言葉のほうでは3か所で止めている。
+  // 1画面目に出る言葉も、同じ線を引く
+  // （絵に焼き込まれているぶんは、判断済みの例外。MomentsArt に書いてある）。
+  for (const b of BUBBLES) {
+    const line = b.lines.join("");
+    if (/脈あり|脈なし|本命|好きかどうか|気持ちを当て/.test(line)) {
+      throw new Error(`1画面目の吹き出し「${line}」が、相手の気持ちの判定になっています`);
+    }
   }
   // 相談のしかたが2つあること。
   // 1つになったら、この並べ方（2列）をやめること。
