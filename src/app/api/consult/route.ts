@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAskId } from "@/lib/ask/asks";
 import { dbInsertReturning, dbUpdate, parseAttribution } from "@/lib/db";
 import {
   isCategoryId, isOpenCategory, isAgeBand, isRelationId, isPanelAge,
@@ -147,6 +148,9 @@ export async function POST(req: NextRequest) {
     asker_age_band: isAgeBand(body.askerAge) ? body.askerAge : null,
     other_age_band: isAgeBand(body.otherAge) ? body.otherAge : null,
     relation: isRelationId(body.relation) ? body.relation : null,
+    // 女性に何を聞きたいか。押さなければ null。
+    // 回答する人には askLine() の1行で渡す（id のままでは読めない）。
+    ask: isAskId(body.ask) ? body.ask : null,
     panel_age: want.panelAge,
     // 画面に出していない属性が送られてきても通さない。
     // 選べないものが保存されると、条件に合う回答者がいないまま止まる。

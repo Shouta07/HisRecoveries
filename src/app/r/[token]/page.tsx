@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { dbSelect, dbAdminEnabled } from "@/lib/db";
 import { isReplyToken } from "@/lib/ask/token";
+import { askLine } from "@/lib/ask/asks";
 import { category, RELATIONS, SECOND_ASK, type CategoryId } from "@/lib/ask/model";
 import RespondForm from "@/components/ask/RespondForm";
 
@@ -38,6 +39,7 @@ type Invite = {
     asker_age_band: string | null;
     other_age_band: string | null;
     relation: string | null;
+    ask: string | null;
     status: string;
   } | null;
 };
@@ -60,7 +62,7 @@ export default async function RespondPage({ params }: { params: { token: string 
   }
 
   const rows = await dbSelect<Invite>(
-    `response_invites?token=eq.${encodeURIComponent(params.token)}&select=id,answered_at,consultations(id,category,body,option_a,option_b,is_ab,asker_age_band,other_age_band,relation,status)`,
+    `response_invites?token=eq.${encodeURIComponent(params.token)}&select=id,answered_at,consultations(id,category,body,option_a,option_b,is_ab,asker_age_band,other_age_band,relation,ask,status)`,
   );
   const invite = rows[0];
   const c = invite?.consultations;
@@ -93,6 +95,10 @@ export default async function RespondPage({ params }: { params: { token: string 
   }
 
   const rel = RELATIONS.find((r) => r.id === c.relation)?.label;
+  // 相談した人が、何を聞きたいと押したか。
+  // ここが無いと、文面を見ても何に答えればいいか決められない。
+  // 聞かれていないことに答えると、長いだけで当たらない。
+  const wants = askLine(c.ask);
 
   return (
     <Shell>
@@ -111,6 +117,9 @@ export default async function RespondPage({ params }: { params: { token: string 
           ["相談した人", c.asker_age_band ? `${c.asker_age_band}歳の男性` : "年代は未回答"],
           ["相手", c.other_age_band ? `${c.other_age_band}歳` : "年代は未回答"],
           ["関係", rel ?? "未回答"],
+          // 押されていたら、そちらを先に出す。
+          // 「答えること」の既定より、本人が押したもののほうが強い。
+          ["聞かれていること", wants ?? "とくに指定なし"],
           ["答えること", "見た印象 / 気になったところ / どう変われば自然か"],
         ].map(([k, v]) => (
           <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
