@@ -27,13 +27,14 @@
     "urgent-interview": 4,
     "areas-face": 5,
     "urgent-tonight": 4,
-    "distance": 1
+    "distance": 1,
+    "message": 1
   },
   "cta_post_counts": {
-    "none": 119
+    "none": 120
   },
-  "total_posts": 119,
+  "total_posts": 120,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-09-30T17:02:07.224843"
+  "last_updated": "2026-10-01T04:48:37.164343"
 }
