@@ -2270,3 +2270,59 @@ begin
   return query select true, v_left - p_cost, null::text;
 end;
 $$;
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- 女性の反応を、言葉だけで終わらせない
+--
+-- ── なぜ足すか ──────────────────────────────────
+-- いままで返ってくるのは、判定（このままでOK / 少し気になる /
+-- 変えた方がいい）と、自由に書いた文だけだった。
+--
+-- 文は読む人には効くが、溜めても比べられない。
+-- 10件たまっても「だいたい好評」以上のことが言えない。
+--
+-- 同じ尺度で答えてもらえば、溜めたものが効いてくる。
+--   誘うのが早いと言われるのは、どの段階か
+--   返信したくなると言われる文は、何が違うか
+--
+-- ── 第一印象は足さない ──────────────────────────
+-- 既にある verdict が、ほぼ同じことを聞いている。
+-- 両方置くと、同じ人に同じことを2回聞くことになる。
+-- 尺度は lib/ask/reaction.ts。理由もそちらに書いてある。
+--
+-- ── どちらも任意 ────────────────────────────────
+-- 自己紹介文の相談に「距離感」を必須で聞くと、関係ない設問に
+-- 何かを選ばせることになる。埋まっているだけで中身の無い行が増える。
+-- 答えが無いことは、無いまま持つ（null を許す）。
+-- ═══════════════════════════════════════════════════════════════
+
+alter table responses add column if not exists distance text;    -- ok / early / too_early
+alter table responses add column if not exists reply_urge int;   -- 1〜5
+
+alter table responses drop constraint if exists responses_distance_check;
+alter table responses add constraint responses_distance_check
+  check (distance is null or distance in ('ok', 'early', 'too_early'));
+
+alter table responses drop constraint if exists responses_reply_urge_check;
+alter table responses add constraint responses_reply_urge_check
+  check (reply_urge is null or (reply_urge between 1 and 5));
+
+-- 溜まったものを見るところ。
+-- 相談の種類ごとに、距離感と返信したくなる度がどう出ているか。
+--
+-- 件数が少ないうちは、平均を見ても意味が無い。
+-- 何件から見るかは、見る側が判断する（ここでは絞らない）。
+create or replace view reaction_stats as
+select
+  c.category,
+  count(r.id)                                              as answers,
+  count(r.distance)                                        as with_distance,
+  count(*) filter (where r.distance = 'ok')                as distance_ok,
+  count(*) filter (where r.distance = 'early')             as distance_early,
+  count(*) filter (where r.distance = 'too_early')         as distance_too_early,
+  count(r.reply_urge)                                      as with_reply_urge,
+  round(avg(r.reply_urge)::numeric, 2)                     as reply_urge_avg
+from responses r
+join consultations c on c.id = r.consultation_id
+group by c.category;
