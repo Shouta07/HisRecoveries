@@ -1126,7 +1126,7 @@ export default async function HomePage() {
         <p className="mt-4 max-w-[30em] text-[17px] font-black leading-[1.7] text-slate sm:text-[19px]">
           はじめの1件は <Yen yen={getPlan(ENTRY_PLAN).yen} />。
           <br className="sm:hidden" />
-          女性ひとりが読んで、どう受け取ったかが返ってきます。
+          まず1人に読んでもらって、何が返ってくるかを見られます。
         </p>
         <p className="mt-2.5 max-w-[34em] text-[14px] leading-[1.85] text-steel">
           選ぶのは、文字で見てもらうか、声で話すかだけです。
