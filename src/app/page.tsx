@@ -6,6 +6,7 @@ import { plan as getPlan, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
 import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO } from "@/lib/ask/demo";
 import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
+import { AB_DEMO } from "@/lib/ask/ab";
 import { VERDICTS } from "@/lib/ask/model";
 import { NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
@@ -166,6 +167,19 @@ const FAQ: { q: string; a: string; extra?: "ai" | "flow" | "safety" }[] = [
     q: "どうやって進みますか？",
     a: "4つです。送る前のものを出す、条件に合う女性に届く、一人ずつ返ってくる、直すかそのまま出すかを決める。出すのは送る前のLINEか自己紹介文で、そのまま貼るだけです。",
     extra: "flow",
+  },
+  {
+    // ── いちばん言いたいこと ────────────────────────
+    // 3人に見せると、答えが割れることがある。
+    // そのとき「どっちが正しいの？」が最初に来る。
+    //
+    // ここで「多いほうが正解です」と答えると、
+    // 多数決を売っていることになる。売っているのは反応のほう。
+    //
+    // 割れたことを、失敗や中途半端として見せない。
+    // 人によって違うと分かること自体が、聞いた結果。
+    q: "3人の意見が全部違ったら、どうすればいいですか？",
+    a: "それで大丈夫です。ここは正解を決める場所ではありません。感じ方が人によって違うこと自体が、知りたかったことです。3人とも気になると言えば、一度立ち止まれます。分かれたなら「人による」と分かります。どちらに寄せるかは、あなたが決めてください。",
   },
   {
     q: "3人がそう言えば、女性みんながそう思うということですか？",
@@ -941,6 +955,84 @@ export default async function HomePage() {
 
         <p className="mt-4 text-[12.5px] leading-[1.8] text-steel">
           ほかの場面も相談できます。書くときに選べます。
+        </p>
+      </Block>
+
+      {/* ══ 3.7 AとBを並べる ══ */}
+      {/* ══════════════════════════════════════════════
+          できるのに、言っていなかった
+          ══════════════════════════════════════════════
+          相談を書く画面には「AとBを比べる」があり、
+          回答画面はどちらを選んだかを数えて、
+          割れたかどうかまで出す（aggregate.ts）。
+
+          作りは入っているのに、トップで一度も言っていなかった。
+
+          ここが効くのは、答える側が楽だから。
+          「この文面どう？」は、良い悪いの線が人によって違うので、
+          答えるほうも難しい。「どっち？」なら即答できる。
+          答えやすい設問は、返ってくるのも速い。
+
+          買う側にとっても、いちばん結果が読みやすい。
+          2対1でも、割れたことがそのまま分かる。
+
+          票数はおすすめの商品の人数と突き合わせている（ab.ts）。 */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          どっちがいい？は、
+          <br className="sm:hidden" />
+          人に聞く。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          写真、文面、プロフィール、誘い方。AとBで迷ったら、並べて出すだけです。
+        </p>
+
+        <div className="mt-6 rounded-card border border-line bg-paper p-5 shadow-card">
+          <p className="text-[11.5px] font-bold text-steel">{AB_DEMO.subject}</p>
+          <p className="mt-1 text-[16px] font-black leading-[1.5] text-slate">
+            {AB_DEMO.question}
+          </p>
+
+          {/* 票。棒の長さで、数をそのまま見せる */}
+          <ul className="mt-4 flex flex-col gap-2.5">
+            {([AB_DEMO.a, AB_DEMO.b] as const).map((x, i) => {
+              const total = AB_DEMO.a.votes + AB_DEMO.b.votes;
+              return (
+                <li key={x.label} className="flex items-center gap-3">
+                  <span className="w-5 shrink-0 text-[14px] font-black text-slate">
+                    {x.label}
+                  </span>
+                  <span className="h-7 min-w-0 flex-1 overflow-hidden rounded-pill bg-mist">
+                    <span
+                      className={`block h-full rounded-pill ${i === 0 ? "bg-brand" : "bg-steel/40"}`}
+                      style={{ width: `${(x.votes / total) * 100}%` }}
+                    />
+                  </span>
+                  <span className="w-12 shrink-0 text-right text-[13px] font-bold tabular-nums text-steel">
+                    {x.votes}票
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* 数だけだと、なぜそう選んだかが残らない。
+              理由まで返るのが、投票アプリとの違い */}
+          <ul className="mt-4 flex flex-col gap-2 border-t border-line pt-4">
+            {AB_DEMO.says.map((s) => (
+              <li key={s.say} className="text-[12.5px] leading-[1.8] text-steel">
+                <span className="font-bold text-slate">
+                  {s.age}歳・{s.pick.toUpperCase()}
+                </span>
+                {"　"}
+                {s.say}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="mt-4 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者の結果ではありません。
         </p>
       </Block>
 
