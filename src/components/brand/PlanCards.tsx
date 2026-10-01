@@ -143,7 +143,19 @@ export default function PlanCards({
         const open = list.some((p) => isOpen(p.id));
         // 中身は買い方で変わらないので、家族に1つだけ出す。
         // 前は商品ごとに出していて、同じ7行が2回並んでいた。
-        const includes = list[0].includes;
+        //
+        // ただし、お試し（はじめの1件）だけは中身が軽い。
+        // list[0] は値段順なのでお試しが来る。そこから取ると、
+        // ¥1,980 や ¥7,700 で返ってくるものを、少なく見せることになる。
+        // 通常の買い方のほうから取り、お試しの差は行の側に書く。
+        const normals = list.filter((p) => !p.trial);
+        const includes = (normals[0] ?? list[0]).includes;
+        const trial = list.find((p) => p.trial);
+        // お試しで返らないもの。書いてあるものを引くだけなので、
+        // 中身を変えたら、ここも自動で追いつく。
+        const notInTrial = trial
+          ? includes.filter((x) => !trial.includes.includes(x))
+          : [];
 
         return (
           <Reveal key={fid} delay={i * 60}>
@@ -165,7 +177,17 @@ export default function PlanCards({
               {/* 買い方。ここが比べるところなので、間に説明を挟まない */}
               <ul className="mt-5 flex flex-col border-t border-line pt-4">
                 {list.map((p) => (
-                  <Row key={p.id} p={p} open={isOpen(p.id)} from={from} />
+                  <li key={p.id} className="contents">
+                    <Row p={p} open={isOpen(p.id)} from={from} />
+                    {p.trial && notInTrial.length > 0 && (
+                      /* 安い理由を、買う場所に置く。
+                         下の「返ってくるもの」だけ見て買うと、
+                         お試しには入っていないものを期待することになる。 */
+                      <li className="-mt-1 pb-4 text-[11.5px] leading-[1.7] text-steel">
+                        この回だけ、{notInTrial.join("・")}は返りません。
+                      </li>
+                    )}
+                  </li>
                 ))}
               </ul>
 
@@ -215,8 +237,13 @@ export default function PlanCards({
     }
     // 同じ家族なら、返ってくるものは同じであること。
     // ここが食い違うと、家族に1つだけ出している説明が嘘になる。
-    const first = JSON.stringify(list[0].includes);
-    for (const p of list) {
+    //
+    // お試しだけは外す。中身が軽いのは承知のうえで、
+    // 差は行の側に「この回だけ、◯◯は返りません」と出している。
+    // 外すかわりに、その差が本当に「引き算」であることを下で確かめる。
+    const normalsOf = list.filter((p) => !p.trial);
+    const first = JSON.stringify(normalsOf[0].includes);
+    for (const p of normalsOf) {
       if (JSON.stringify(p.includes) !== first) {
         throw new Error(
           `「${f.label}」の中で、返ってくるものが商品ごとに違います（${p.id}）。` +

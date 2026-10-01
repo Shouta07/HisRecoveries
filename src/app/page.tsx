@@ -1,29 +1,13 @@
 import type { Metadata } from "next";
-import { Fragment } from "react";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { openPlanIds } from "@/lib/call/gate";
-import {
-  PLANS,
-  plan as getPlan,
-  topPlans,
-  ENTRY_PLAN,
-  DEFAULT_PLAN,
-} from "@/lib/ask/plans";
-import { BRIDGE } from "@/lib/ask/pain";
-import TodayReviewers from "@/components/brand/TodayReviewers";
+import { plan as getPlan, ENTRY_PLAN, DEFAULT_PLAN } from "@/lib/ask/plans";
 import FamilyCards from "@/components/brand/FamilyCards";
-import { DEMO, count } from "@/lib/ask/demo";
-import {
-  ALTERNATIVES,
-  COMPARE,
-  COMPARE_NOTE,
-  COMPARE_SCOPE,
-  INSTEAD,
-  SHOWN_ALTERNATIVES,
-} from "@/lib/ask/compare";
-import { VERDICTS, PANEL_AGES, ATTRS_OPEN } from "@/lib/ask/model";
-import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
+import { DEMO } from "@/lib/ask/demo";
+import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
+import { VERDICTS } from "@/lib/ask/model";
+import { NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
@@ -549,6 +533,32 @@ export default async function HomePage() {
           <p className="mt-1.5 max-w-[26em] text-[13px] leading-[1.7] text-steel sm:max-w-[38em] sm:text-[14px]">
             {HERO_HOW}
           </p>
+
+          {/* ── 押す場所を1画面目に戻した ──────────────────
+              一度外して、また戻している。前と事情が変わった。
+
+              外したときの理由は「ヘッダーに常設のボタンがあるので、
+              1画面目に入口が2つ並ぶ」だった。
+
+              ただヘッダーのボタンは「確かめる」としか書いておらず、
+              何を確かめるのかが入っていない。
+              1画面目を読み終えた直後に、何をする場所なのかを
+              書いた状態で押せるようにする。
+
+              文言はページ全部でこれに統一した。
+              押すたびに言い方が変わると、同じ場所に行くことが分からない。 */}
+          <div className="mt-5 max-w-[22em]">
+            <PlanCta
+              plan={ENTRY_PLAN}
+              from="hero"
+              className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[16px] !text-paper shadow-card"
+            >
+              女性に確カメる <span aria-hidden className="ml-2">&rarr;</span>
+            </PlanCta>
+            <p className="mt-2 text-[12px] leading-[1.7] text-steel">
+              LINE・写真・プロフィール・誘い方に対応。
+            </p>
+          </div>
         </Wrap>
 
         {/* 相談する男性と、読んで返す女性を1枚に入れる。
@@ -681,13 +691,37 @@ export default async function HomePage() {
 
             押す先は1つだけ残す。カテゴリの選択は、
             相談を書く画面の最初で選べる。 */}
-        <div className="mt-7 max-w-[26em]">
+        {/* ── 実際に相談されている形を、そのまま並べる ──────
+            絵は場面を見せるが、言葉になっていない。
+            「自分のも聞いていいのか」が分かるのは、
+            他人が何を聞いているかを見たとき。
+
+            押すとそのカテゴリを選んだ状態で相談が始まる。
+            横に流すのは、縦に12枚積むとこの節だけで2画面になるから。
+            端を少し見せて、続きがあることを分かるようにしてある。 */}
+        <ul
+          className="-mx-5 mt-6 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {EXAMPLES.map((e) => (
+            <li key={e.q} className="shrink-0 snap-start">
+              <Link
+                href={`/ask?c=${e.cat}`}
+                className="flex min-h-[52px] items-center rounded-pill border border-line bg-paper px-4 text-[14px] font-bold leading-[1.5] text-slate shadow-card transition-shadow hover:shadow-card-hover"
+              >
+                {e.q}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6 max-w-[26em]">
           <PlanCta
             plan={DEFAULT_PLAN}
             from="pain"
             className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
           >
-            自分の場面を確かめる <span aria-hidden className="ml-2">&rarr;</span>
+            女性に確カメる <span aria-hidden className="ml-2">&rarr;</span>
           </PlanCta>
         </div>
 
@@ -700,7 +734,244 @@ export default async function HomePage() {
             友達とAIの話をしている、まさにその場所。 */}
       </Block>
 
-      {/* ══ 2. 恋愛の道のりと、その場面 ══ */}
+      {/* ══ 2.4 返ってくるもの ══ */}
+      {/* 売るのはここ。
+          道のりの節は考え方だけにしたので、
+          「実際に何が返ってくるか」はこちらで見せる。
+
+          見出しは「こんな選択を、選ぶ前に。」だった。やめた。
+          すぐ上に「こんな瞬間、ありませんか？」と
+          「段ごとに、こんなことで手が止まります」がある。
+          3つ続けて同じことを言っていて、読む人は同じ節を3回読む。
+          場面を並べるのは上の2つに任せ、ここは下にあるものの名前にする。 */}
+      <Block tint>
+        <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
+        <h2 className="mt-2 text-huge font-black text-slate">
+          返ってくるのは、
+          <br className="sm:hidden" />
+          こういうものです。
+        </h2>
+        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+          実在の女性が読んで、実際にどう受け取ったかを返します。
+          そのうえで決めるのは、あなたです。
+        </p>
+
+        <div className="mt-7">
+          {/* 表で並べると「機能の説明」になる。
+              実際に起きるのは、送る前に止まって、読んでもらって、
+              返ってきて、決める、という順番のある出来事。
+              その順番のまま、やりとりの形で出す */}
+          <ChatCase c={OPEN_CASES[0]} />
+        </div>
+
+        <div className="mt-7 max-w-[26em]">
+          <PlanCta
+            plan={DEFAULT_PLAN}
+            from="cases"
+            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
+          >
+            女性に確カメる <span aria-hidden className="ml-2">&rarr;</span>
+          </PlanCta>
+        </div>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 写真はイメージ、文面と回答は画面の見本です。特定の利用者の体験談ではありません。
+        </p>
+      </Block>
+
+      {/* ══ 2.45 「今日、受け付けている人」を外した ══ */}
+      {/* ══════════════════════════════════════════════
+          架空の女性を出していた
+          ══════════════════════════════════════════════
+          審査を通った人が0人のあいだ、この節は
+          「見せ方の見本」として、実在しない4人を出していた。
+
+            みさき 25-29 / あや 20-24 / りこ 25-29 / まい 30s
+
+          札（画面の見本）と断り（いま登録が済んだ人はいません）は
+          付いていた。ただ、断りが付いていても出していることに変わりはない。
+
+          しかも、断りのほうがもっと悪い。
+          買おうか考えている人に、いちばん良い場所で
+          「いま誰もいません」と伝えることになる。
+
+          実在の女性が読むことが商品なので、
+          その一覧が架空だと、商品そのものが疑われる。
+          人が入るまでは、名前のある誰かを出さない。
+
+          代わりに、何が起きるかだけを書く（下の節）。
+          実在の人が入ったら、ここに戻す。
+          部品（TodayReviewers）と /reviewers は消していない。 */}
+
+      {/* ══ 2.5 初めての方へ（畳んだ） ══ */}
+      {/* ここに「タシカメは、こんなときに使えます。」の節を置いていた。
+          場面を6枚、押せる形で並べたもの。
+
+          その1つ上の「こんな瞬間、ありませんか？」が、同じ仕事をしていた。
+          どちらも「こういう場面で使えます」を、押せる形で並べたもの。
+          同じことを2回読ませると、どちらも弱くなるし、
+          スマホで2画面ぶん増える。
+
+          瞬間のほう（1.5 節）に寄せた。あちらは
+            手が止まる瞬間 → なぜAIではないのか
+          まで続くので、場面を出す役に加えて、
+          その場で「だからここなのか」まで答えられる。
+
+          あちらが持っていなかった電話の場面は、MOMENTS へ移した
+          （pain.ts の判定が、消えたら落とす）。
+
+          押す場所は残す。ここが唯一の、値段へ降りる導線だった。 */}
+      <section className="bg-mist">
+        <Wrap className="py-10 sm:py-12">
+          <div className="max-w-[26em]">
+            <Link
+              href="#price"
+              className="inline-flex min-h-[54px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-8 text-[15.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
+            >
+              プランを詳しく見る <span aria-hidden className="ml-2">&darr;</span>
+            </Link>
+          </div>
+        </Wrap>
+      </section>
+
+      {/* ══ 3.「相談前と、相談後」は外した ══ */}
+      {/* ══════════════════════════════════════════════
+          同じことを、2回見せていた
+          ══════════════════════════════════════════════
+          写真2枚の「相談前 / 相談後」と、気になったところ、
+          そのまま使える修正文、なぜそう直したか、をここに置いていた。
+
+          すぐ上の「こんな選択を、選ぶ前に。」を
+          やりとりの形に作り直したとき、そこが同じ順番を持った。
+            状況 → 文面 → 反応 → そのまま送れる修正案 → 決めたこと
+
+          同じものが2回出ると、どちらも弱くなる。
+          動いて出てくるほうを残して、こちらを外した。
+
+          押す場所は減らしていない。ここにあった
+          「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
+
+      {/* ══ 3.5 何を確カメられるか ══ */}
+      {/* ══════════════════════════════════════════════
+          4つに絞る
+          ══════════════════════════════════════════════
+          受け付けているカテゴリは8つあるが、ここでは4つだけ出す。
+          増やすと「どれを押すか」を決める作業になり、
+          決められない人はそのまま帰る。
+
+          残りは相談を書く画面の最初で選べるので、
+          ここに全部並べる必要は無い。
+
+          並びは恋愛の進み方そのもの。
+            写真で会う前 → LINE → 誘う → 会ったあと
+
+          ── 「脈を確カメる」にはしない ──────────────
+          4つ目は「デートのあと」。
+          相手がどう思ったかは当てられないので、聞くのは
+          「昨日の自分が、どう映ったか」。答えるのは読んだ本人。
+          言葉の判定は lib/ask/examples.ts が持つ。 */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          何を確カメられる？
+        </h2>
+
+        <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+          {TOPICS.map((t) => (
+            <li key={t.id}>
+              <Link
+                href={`/ask?c=${t.id}`}
+                className="flex min-h-[92px] flex-col justify-center rounded-card border border-line bg-paper p-5 shadow-card transition-shadow hover:shadow-card-hover"
+              >
+                <span className="text-[15.5px] font-black leading-[1.45] text-slate">
+                  {t.head}
+                </span>
+                <span className="mt-1.5 text-[13px] leading-[1.6] text-steel">
+                  「{t.voice}」
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-4 text-[12.5px] leading-[1.8] text-steel">
+          ほかの場面も相談できます。書くときに選べます。
+        </p>
+      </Block>
+
+      {/* ══ 4. AIとの役割の違い ══ */}
+      {/* ══════════════════════════════════════════════
+          比較表（110行）を、短い1節にした
+          ══════════════════════════════════════════════
+          タシカメ / AI / 友達 / 恋愛コンサル の4列を
+          どの幅でも表で出していた。作りとしては正しく動いていたが、
+          買うかどうかを決める場面で、4つを見比べる表は重い。
+
+          ここで言いたいことは1つだけ。
+            AIは予測する。タシカメは、実際の反応を聞く。
+
+          AIを下に置かない。
+          実際、文面を作るところまではAIのほうが速い。
+          競っていないので、競っているように書かない。
+
+          表の中身と、景表法まわりの判定は lib/ask/compare.ts に残してある。
+          （shown を true に戻せば、また出せる） */}
+      <Block tint>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          AIで考える。
+          <br className="sm:hidden" />
+          女性に確カメる。
+        </h2>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          {[
+            {
+              who: "AI",
+              can: "文章や選択肢を考える",
+              lead: "何パターンでも、すぐ出てくる。たたき台を作るのは速い。",
+            },
+            {
+              who: "タシカメ",
+              can: "実際にどう受け取られるかを聞く",
+              lead: "送る相手に近い女性が、ひとり読む。感じたことがそのまま返る。",
+              ours: true,
+            },
+          ].map((x) => (
+            <div
+              key={x.who}
+              className={`rounded-card border p-5 shadow-card ${
+                x.ours ? "border-brand bg-paper" : "border-line bg-paper"
+              }`}
+            >
+              <p
+                className={`text-[12px] font-black ${x.ours ? "text-brand" : "text-steel"}`}
+              >
+                {x.who}
+              </p>
+              <p className="mt-1.5 text-[16px] font-black leading-[1.5] text-slate">
+                {x.can}
+              </p>
+              <p className="mt-2 text-[13px] leading-[1.8] text-steel">{x.lead}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-5 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          AIは、女性が実際にどう感じるかまでは分かりません。
+          そこだけ、女性本人に聞いたほうが早い。
+        </p>
+      </Block>
+
+      {/* ══ 5. 恋愛のどこで迷うか ══ */}
+      {/* ここは「2. 恋愛の道のりと、その場面」として、
+          1画面目のすぐ下にあった。料金より前、デモより前。
+
+          1305px あって、買うかどうかを決める前にいちばん長い節だった。
+          しかもここは「どの場面で使うか」の話で、
+          何が返ってくるかを見る前に読んでも、読む土台が無い。
+
+          何が返ってくるか（デモ）→ 何を確カメられるか → AIとの違い
+          を読んだあとに置く。そこまで読んだ人には、
+          「自分はこの段にいる」が意味を持つ。 */}
       {/* ここがこの製品の中身。
           「悩みの一覧」ではなく「そこで実際に迷う選択」を出す。
           状態を並べると相談窓口の一覧になり、困ったときにだけ開くものになる。
@@ -776,224 +1047,6 @@ export default async function HomePage() {
       </Block>
 
 
-      {/* ══ 2.4 返ってくるもの ══ */}
-      {/* 売るのはここ。
-          道のりの節は考え方だけにしたので、
-          「実際に何が返ってくるか」はこちらで見せる。
-
-          見出しは「こんな選択を、選ぶ前に。」だった。やめた。
-          すぐ上に「こんな瞬間、ありませんか？」と
-          「段ごとに、こんなことで手が止まります」がある。
-          3つ続けて同じことを言っていて、読む人は同じ節を3回読む。
-          場面を並べるのは上の2つに任せ、ここは下にあるものの名前にする。 */}
-      <Block tint>
-        <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
-        <h2 className="mt-2 text-huge font-black text-slate">
-          返ってくるのは、
-          <br className="sm:hidden" />
-          こういうものです。
-        </h2>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          実在の女性が読んで、実際にどう受け取ったかを返します。
-          そのうえで決めるのは、あなたです。
-        </p>
-
-        <div className="mt-7">
-          {/* 表で並べると「機能の説明」になる。
-              実際に起きるのは、送る前に止まって、読んでもらって、
-              返ってきて、決める、という順番のある出来事。
-              その順番のまま、やりとりの形で出す */}
-          <ChatCase c={OPEN_CASES[0]} />
-        </div>
-
-        <div className="mt-7 max-w-[26em]">
-          <PlanCta
-            plan={DEFAULT_PLAN}
-            from="cases"
-            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-          >
-            自分の場面で確かめる <span aria-hidden className="ml-2">&rarr;</span>
-          </PlanCta>
-        </div>
-
-        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
-          ※ 写真はイメージ、文面と回答は画面の見本です。特定の利用者の体験談ではありません。
-        </p>
-      </Block>
-
-      {/* ══ 2.45 今日、受け付けている人 ══ */}
-      {/* ══════════════════════════════════════════════
-          1画面目のすぐ下に置く理由
-          ══════════════════════════════════════════════
-          「実在の女性が読みます」と書いても、それは説明でしかない。
-          いま何人が受け付けているかが見えると、説明ではなくなる。
-
-          ただし、受付中も、これから受付の人も0人なら、
-          この節はひとりでに消える（TodayReviewers の shouldShow）。
-          「現在0人です」という枠を常設すると、
-          来た全員に、空っぽであることを知らせることになる。
-
-          いま審査を通った人は0人なので、この節はまだ出ない。
-          1人入れば出る。 */}
-      <TodayReviewers />
-
-      {/* ══ 2.5 初めての方へ（畳んだ） ══ */}
-      {/* ここに「タシカメは、こんなときに使えます。」の節を置いていた。
-          場面を6枚、押せる形で並べたもの。
-
-          その1つ上の「こんな瞬間、ありませんか？」が、同じ仕事をしていた。
-          どちらも「こういう場面で使えます」を、押せる形で並べたもの。
-          同じことを2回読ませると、どちらも弱くなるし、
-          スマホで2画面ぶん増える。
-
-          瞬間のほう（1.5 節）に寄せた。あちらは
-            手が止まる瞬間 → なぜAIではないのか
-          まで続くので、場面を出す役に加えて、
-          その場で「だからここなのか」まで答えられる。
-
-          あちらが持っていなかった電話の場面は、MOMENTS へ移した
-          （pain.ts の判定が、消えたら落とす）。
-
-          押す場所は残す。ここが唯一の、値段へ降りる導線だった。 */}
-      <section className="bg-mist">
-        <Wrap className="py-10 sm:py-12">
-          <div className="max-w-[26em]">
-            <Link
-              href="#price"
-              className="inline-flex min-h-[54px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-8 text-[15.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
-            >
-              プランを詳しく見る <span aria-hidden className="ml-2">&darr;</span>
-            </Link>
-          </div>
-        </Wrap>
-      </section>
-
-      {/* ══ 3.「相談前と、相談後」は外した ══ */}
-      {/* ══════════════════════════════════════════════
-          同じことを、2回見せていた
-          ══════════════════════════════════════════════
-          写真2枚の「相談前 / 相談後」と、気になったところ、
-          そのまま使える修正文、なぜそう直したか、をここに置いていた。
-
-          すぐ上の「こんな選択を、選ぶ前に。」を
-          やりとりの形に作り直したとき、そこが同じ順番を持った。
-            状況 → 文面 → 反応 → そのまま送れる修正案 → 決めたこと
-
-          同じものが2回出ると、どちらも弱くなる。
-          動いて出てくるほうを残して、こちらを外した。
-
-          押す場所は減らしていない。ここにあった
-          「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
-
-      {/* ══ 4. ほかの選び方と、どう違うか ══ */}
-      {/* ══════════════════════════════════════════════
-          6列をやめて4列にした
-          ══════════════════════════════════════════════
-          マッチングアプリ・結婚相談所・恋愛コンサル・友達・AI の
-          5つと並べた表を出していた。390px では1列 50px ほどになり、
-          横に流すしかなくなる。流した先は読まれない。
-
-          実際に迷われているのは、この3つとの間。
-            AIに聞けばいい / 友達に聞けばいい / 恋愛コンサルに頼めばいい
-          出会いを作るもの（アプリ・結婚相談所）は、そもそも
-          同じことをしていない。データは compare.ts に残してある。
-
-          ══════════════════════════════════════════════
-          横に流さない
-          ══════════════════════════════════════════════
-          狭い画面では、行ごとに積む（使うとき／料金のかたち／…）。
-          1つの行の中で、タシカメと他の3つを縦に並べる。
-          広い画面では、そのまま4列の表にする。
-          どちらの幅でも、横スクロールは起きない。
-
-          ══════════════════════════════════════════════
-          比較広告は景表法の対象
-          ══════════════════════════════════════════════
-          他社の金額は書かない（出典が無い）。
-          事実に反することも書かない（AIは無料で使えるものが多い）。
-          勝てない行（知られるか＝AIも同じ）を消さない。
-          中身と判定は lib/ask/compare.ts。 */}
-      <Block tint>
-        <H>ほかの選び方と、どう違うか。</H>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          {COMPARE_SCOPE}
-        </p>
-
-        {/* ══════════════════════════════════════════════
-            どの幅でも、表のまま
-            ══════════════════════════════════════════════
-            狭い画面では行ごとに積んでいた。読めるが、
-            4つを見比べる形にはならない（縦に流れるだけ）。
-
-            列の見出し（タシカメ / AI / 友達 / 恋愛コンサル）を
-            いちばん上に1回だけ置き、以下は
-              見出し行（使うとき）＝4列ぶち抜き
-              中身の行＝4列
-            の繰り返しにする。
-
-            こうすると 390px でも1列 80px ほど取れて、
-            横に流さずに4つを並べられる。
-            項目名を左の列にすると、そのぶん狭くなって成立しない。 */}
-        <div className="mt-7">
-          <table className="w-full table-fixed border-collapse">
-            <caption className="sr-only">タシカメと、ほかの選び方の違い</caption>
-            <thead>
-              <tr>
-                {SHOWN_ALTERNATIVES.map((a) => (
-                  <th
-                    key={a.id}
-                    scope="col"
-                    className={`w-1/4 rounded-t-soft px-1.5 py-2 text-center align-bottom text-[10.5px] font-black leading-[1.35] sm:px-3 sm:py-3 sm:text-[13.5px] ${
-                      a.us ? "bg-brand text-paper" : "text-steel"
-                    }`}
-                  >
-                    {a.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {COMPARE.map((r) => (
-                <Fragment key={r.id}>
-                  <tr>
-                    <th
-                      scope="colgroup"
-                      colSpan={SHOWN_ALTERNATIVES.length}
-                      className="border-t border-line pb-1 pt-3.5 text-left text-[11.5px] font-black text-steel sm:pt-4 sm:text-[12.5px]"
-                    >
-                      {r.label}
-                    </th>
-                  </tr>
-                  <tr className="align-top">
-                    {SHOWN_ALTERNATIVES.map((a) => (
-                      <td
-                        key={a.id}
-                        className={`px-1.5 py-2 text-[10.5px] leading-[1.6] sm:px-3 sm:py-2.5 sm:text-[12.5px] ${
-                          a.us ? "bg-brand-tint font-bold text-slate" : "text-steel"
-                        }`}
-                      >
-                        {r.cells[a.id]}
-                      </td>
-                    ))}
-                  </tr>
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <p className="mt-5 text-[12px] leading-[1.85] text-steel">{COMPARE_NOTE}</p>
-
-        <div className="mt-7 max-w-[26em]">
-          <PlanCta
-            plan={DEFAULT_PLAN}
-            from="compare"
-            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-          >
-            今の選択を確かめる <span aria-hidden className="ml-2">&rarr;</span>
-          </PlanCta>
-        </div>
-      </Block>
 
       {/* ══ 6. サービスプラン ══ */}
       {/* ここは「どれを使えばいい？」と「料金」の2節だった。
@@ -1140,7 +1193,7 @@ export default async function HomePage() {
                 from="final"
                 className="min-h-[60px] w-full rounded-pill bg-paper px-9 text-[16.5px] !text-brand-deep sm:w-auto"
               >
-                今の選択を確かめる <span aria-hidden className="ml-2">→</span>
+                女性に確カメる <span aria-hidden className="ml-2">→</span>
               </PlanCta>
             </div>
             <ul className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] font-bold text-paper">
