@@ -519,7 +519,7 @@ export default async function HomePage() {
         {/* いちばん上に、言いたいこと1つ。その下に、何のサービスかを1文。
             考え方（恋愛は、小さな選択の積み重ね。）は次の節の見出しが持つ。
             同じ文を2回出すと、どちらも弱くなる。 */}
-        <Wrap className="pb-3 pt-4 sm:pb-4 sm:pt-6">
+        <Wrap className="pb-2 pt-3 sm:pb-4 sm:pt-6">
           <h1 className="text-mega font-black leading-[1.15] text-slate">
             迷ったら、
             <br />
@@ -531,7 +531,7 @@ export default async function HomePage() {
               />
             </span>
           </h1>
-          <p className="mt-3 max-w-[38em] text-[14px] font-bold leading-[1.65] text-steel sm:text-[15.5px]">
+          <p className="mt-2.5 max-w-[38em] text-[13.5px] font-bold leading-[1.6] text-steel sm:text-[15.5px]">
             {DEFINITION}
           </p>
         </Wrap>

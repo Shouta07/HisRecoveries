@@ -180,7 +180,7 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
       <div className="mx-auto max-w-[760px]">
         {/* ══ Before ══ 手が止まっている */}
         <div className="relative overflow-hidden rounded-card shadow-card">
-          <div className="relative h-[200px] sm:h-[264px]">
+          <div className="relative h-[182px] sm:h-[248px]">
             {/* 素材は 522×682 の縦。横長の枠に入れると人が真ん中に来るので、
                 枠より広く引き伸ばして左へ寄せ、右側を吹き出しに空ける */}
             <div className="absolute inset-y-0 -left-[18%] w-[118%] sm:-left-[10%] sm:w-[110%]">
@@ -245,21 +245,19 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
         <Down />
 
         {/* ══ 相談 ══ 実在の女性に聞く */}
-        <div className="rounded-card bg-mist p-3 shadow-card sm:p-4">
+        <div className="rounded-card bg-mist p-2.5 shadow-card sm:p-4">
           <div className="flex items-center gap-3 sm:gap-4">
             {/* 素材が 202×198 しかないので、大きくしない（伸ばすと粗が出る） */}
             <div className="relative shrink-0">
               <Slot
                 name="w1"
                 rounded="rounded-card"
-                className="h-[76px] w-[76px] sm:h-[104px] sm:w-[104px]"
+                className="h-[68px] w-[68px] sm:h-[96px] sm:w-[96px]"
               />
               <Sparks className="absolute -left-1 -top-1 h-4 w-4 sm:h-5 sm:w-5" />
             </div>
             <p className="min-w-0 text-[14.5px] font-black leading-[1.45] text-slate sm:text-[18px]">
-              実在する女性に
-              <br />
-              相談して、
+              実在する女性に相談して、
               <br />
               本音の反応を<span className="text-brand">確カメる</span>。
             </p>
@@ -269,18 +267,18 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
           {/* モックと同じく、狭い画面でも横に2つ。
               「文字か、声か」は見比べて決めるものなので、
               縦に積むと片方ずつしか目に入らない */}
-          <ul className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
+          <ul className="mt-2.5 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
             {ways.map((w) => (
               <li
                 key={w.id}
-                className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-[999px] px-2.5 py-2.5 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 ${
+                className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-[999px] px-2.5 py-2 text-center shadow-card sm:flex-row sm:gap-2.5 sm:px-4 ${
                   w.id === "call" ? "bg-ok-tint" : "bg-paper"
                 }`}
               >
                 {w.id === "call" ? (
                   <span
                     aria-hidden
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper text-ok-text sm:h-9 sm:w-9"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-paper text-ok-text sm:h-9 sm:w-9"
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                       <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.2 2.2Z" />
@@ -289,12 +287,12 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
                 ) : (
                   // 文字と画像。2つ並べて「どちらも出せる」ことを出す
                   <span aria-hidden className="flex shrink-0 items-center gap-1">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-paper sm:h-9 sm:w-9">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-paper sm:h-9 sm:w-9">
                       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                         <path d="M4 5h16v11H7.5L4 19.5V5Zm3 3v1.6h10V8H7Zm0 3.7v1.6h7v-1.6H7Z" />
                       </svg>
                     </span>
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-9 sm:w-9">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-tint text-brand sm:h-9 sm:w-9">
                       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                         <path d="M4 5h16v14H4V5Zm2 2v8l4-4 3 3 3-3 2 2V7H6Zm3 2a1.4 1.4 0 1 1 0 2.8A1.4 1.4 0 0 1 9 9Z" />
                       </svg>
