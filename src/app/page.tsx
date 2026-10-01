@@ -759,21 +759,25 @@ export default async function HomePage() {
       </Block>
 
 
-      {/* ══ 2.4 こんな選択を、選ぶ前に ══ */}
+      {/* ══ 2.4 返ってくるもの ══ */}
       {/* 売るのはここ。
           道のりの節は考え方だけにしたので、
           「実際に何が返ってくるか」はこちらで見せる。
-          頭に置くのは場面名ではなく、そこで迷っている選択。 */}
+
+          見出しは「こんな選択を、選ぶ前に。」だった。やめた。
+          すぐ上に「こんな瞬間、ありませんか？」と
+          「段ごとに、こんなことで手が止まります」がある。
+          3つ続けて同じことを言っていて、読む人は同じ節を3回読む。
+          場面を並べるのは上の2つに任せ、ここは下にあるものの名前にする。 */}
       <Block tint>
         <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
         <h2 className="mt-2 text-huge font-black text-slate">
-          こんな選択を、
+          返ってくるのは、
           <br className="sm:hidden" />
-          選ぶ前に。
+          こういうものです。
         </h2>
         <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          自己紹介文、LINE、誘い方、デートのあと、切り出すとき。
-          どれも実在の女性が読んで、実際にどう受け取ったかを返します。
+          実在の女性が読んで、実際にどう受け取ったかを返します。
           そのうえで決めるのは、あなたです。
         </p>
 
@@ -974,57 +978,7 @@ export default async function HomePage() {
         </div>
       </Block>
 
-      {/* ══ 6. よくある質問 ══ */}
-      {/* 安心・安全は、節として独立させていた。
-          並べた6つは全部「知られませんか？」への答えで、
-          その質問はこの下にある。答えを2か所に置くと、
-          どちらも読まれない。畳んで、聞かれた場所で答える。 */}
-      {/* 6つ全部開いていると、それだけで3画面分になる。
-          見出しだけ並べて、読みたいものだけ開く。 */}
-      <Block tint id="faq">
-        <H>よくある質問。</H>
-        <div className="mt-7 overflow-hidden rounded-card border border-line bg-paper shadow-card">
-          {FAQ.map((f, i) => (
-            <details key={f.q} className={`group ${i > 0 ? "border-t border-line" : ""}`}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 text-[14.5px] font-bold leading-[1.6] text-slate sm:p-5">
-                {f.q}
-                <span
-                  aria-hidden
-                  className="shrink-0 text-[18px] leading-none text-steel transition-transform group-open:rotate-45"
-                >
-                  +
-                </span>
-              </summary>
-              <p className="px-4 pb-4 text-[13.5px] leading-[1.9] text-steel sm:px-5">{f.a}</p>
-              {f.extra === "ai" && <AiSplit />}
-              {f.extra === "flow" && <Flow />}
-              {f.extra === "safety" && <Safety />}
-            </details>
-          ))}
-        </div>
-      </Block>
-
-      {/* 「裏で、こんな女性が読んでいます。」の節は、ここに置いていた。
-          顔・年代・確認していること・選べる条件まで、1節ぶん。
-
-          受付の表の上へ、短くして移した。
-          「今日いる人」を見せる前に、そもそも誰が読むのかを言う。
-          離して置くと、表を見ている人には届かない。
-
-          確認していることと選べる条件は、よくある質問と
-          /answerers が持っている。 */}
-
-      {/* ここに「言いにくいことほど、女性に確かめる。」の節を置いていた。
-          トップで大きく立てると、それを目当てに来る人が増えて、
-          いちばん来てほしい人が引く。
-
-          機能そのものは残っている。
-          相談のカテゴリ「距離感・言いにくいこと」から入れるし、
-          線と決まりは lib/ask/sensitive.ts が持っていて、
-          選んだ人には相談を書く画面で出る。
-          トップから売り込むのをやめただけ。 */}
-
-      {/* ══ 7. サービスプラン ══ */}
+      {/* ══ 6. サービスプラン ══ */}
       {/* ここは「どれを使えばいい？」と「料金」の2節だった。
           前の節は、3つの役割を1枚ずつ並べて、それぞれに
           いちばん安い商品の名前と値段を書いていた。
@@ -1085,6 +1039,56 @@ export default async function HomePage() {
           </Link>
         </p>
       </Block>
+
+      {/* ══ 7. よくある質問 ══ */}
+      {/* 安心・安全は、節として独立させていた。
+          並べた6つは全部「知られませんか？」への答えで、
+          その質問はこの下にある。答えを2か所に置くと、
+          どちらも読まれない。畳んで、聞かれた場所で答える。 */}
+      {/* 6つ全部開いていると、それだけで3画面分になる。
+          見出しだけ並べて、読みたいものだけ開く。 */}
+      <Block tint id="faq">
+        <H>よくある質問。</H>
+        <div className="mt-7 overflow-hidden rounded-card border border-line bg-paper shadow-card">
+          {FAQ.map((f, i) => (
+            <details key={f.q} className={`group ${i > 0 ? "border-t border-line" : ""}`}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 text-[14.5px] font-bold leading-[1.6] text-slate sm:p-5">
+                {f.q}
+                <span
+                  aria-hidden
+                  className="shrink-0 text-[18px] leading-none text-steel transition-transform group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="px-4 pb-4 text-[13.5px] leading-[1.9] text-steel sm:px-5">{f.a}</p>
+              {f.extra === "ai" && <AiSplit />}
+              {f.extra === "flow" && <Flow />}
+              {f.extra === "safety" && <Safety />}
+            </details>
+          ))}
+        </div>
+      </Block>
+
+      {/* 「裏で、こんな女性が読んでいます。」の節は、ここに置いていた。
+          顔・年代・確認していること・選べる条件まで、1節ぶん。
+
+          受付の表の上へ、短くして移した。
+          「今日いる人」を見せる前に、そもそも誰が読むのかを言う。
+          離して置くと、表を見ている人には届かない。
+
+          確認していることと選べる条件は、よくある質問と
+          /answerers が持っている。 */}
+
+      {/* ここに「言いにくいことほど、女性に確かめる。」の節を置いていた。
+          トップで大きく立てると、それを目当てに来る人が増えて、
+          いちばん来てほしい人が引く。
+
+          機能そのものは残っている。
+          相談のカテゴリ「距離感・言いにくいこと」から入れるし、
+          線と決まりは lib/ask/sensitive.ts が持っていて、
+          選んだ人には相談を書く画面で出る。
+          トップから売り込むのをやめただけ。 */}
 
       {/* ══ 8. 最後 ══ */}
       <section className="bg-paper">

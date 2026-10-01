@@ -311,6 +311,32 @@ export function isRelationId(x: unknown): x is RelationId {
   return typeof x === "string" && RELATIONS.some((r) => r.id === x);
 }
 
+/* ── 関係の段階は、端から端まで用意しておく ─────────────
+   「この誘い方は早いか」は、段階が分かって初めて答えられる。
+   マッチした翌日と、何度か会ったあとでは、同じ文の答えが逆になる。
+
+   だからここは、相談画面で折りたたまずに見せている（AskFlow）。
+   そして溜めたものを段階ごとに見るので（reaction_stats）、
+   途中の段階が抜けると、抜けた分がまとめて「未回答」に落ちる。
+   減らすときは、集計のほうも一緒に考えること。 */
+{
+  const need: RelationId[] = ["matched", "messaging", "met_few", "dating"];
+  for (const id of need) {
+    if (!RELATIONS.some((r) => r.id === id)) {
+      throw new Error(`関係の段階に「${id}」がありません（段階が飛ぶと集計が崩れます）`);
+    }
+  }
+  // 入口が最初に来ていること。並びがそのまま段階の順になっている。
+  if (RELATIONS[0].id !== "matched") {
+    throw new Error("関係の段階の先頭が「マッチしたばかり」ではありません");
+  }
+  // 「分からない／まだ無い」の逃げ道があること。
+  // これが無いと、当てはまらない人が適当に押すことになる。
+  if (!RELATIONS.some((r) => r.id === "unknown")) {
+    throw new Error("関係の段階に、当てはまらない人の選択肢がありません");
+  }
+}
+
 /* ── 誰に聞くか ────────────────────────────────
    ここがこの製品のいちばん大事なところ。
    「誰か女性に聞いた」と「気になっている相手に近い5人に聞いた」は、
