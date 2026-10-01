@@ -11,6 +11,7 @@ import {
   plan as getPlan, isSellable, allowsTargeting, priceOf, DEFAULT_PLAN, ENTRY_PLAN,
   type PlanId,
 } from "@/lib/ask/plans";
+import { ASKS, type AskId } from "@/lib/ask/asks";
 import { redact, mayContainName } from "@/lib/ask/redact";
 import {
   BigAsk as Ask, Choice, AttributeChip as Chip, Action, Note, FieldLabel as Label,
@@ -101,6 +102,8 @@ export default function AskFlow({
   const [askerAge, setAskerAge] = useState<AgeBand | null>(null);
   const [otherAge, setOtherAge] = useState<AgeBand | null>(null);
   const [relation, setRelation] = useState<RelationId | null>(null);
+  // 女性に何を聞きたいか。任意。押さなければ null のまま
+  const [ask, setAsk] = useState<AskId | null>(null);
   const [askedAi, setAskedAi] = useState<boolean | null>(null);
 
   // ヒーローの「うまく書けない」から来たら、最初から開いておく。
@@ -187,7 +190,7 @@ export default function AskFlow({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           category: cat, isAb, body: text, optionA: a, optionB: b,
-          askerAge, otherAge, relation, panelAge, panelAttrs, askedAi,
+          askerAge, otherAge, relation, ask, panelAge, panelAttrs, askedAi,
           // 恋愛のどの段階か。相手の情報ではないので保存してよい。
           step: stepId,
           // 金額は送らない。プランIDだけ。
@@ -507,6 +510,32 @@ export default function AskFlow({
                   </button>
                 </div>
               ))}
+
+            {/* ── 女性に、何を聞くか ──
+                文面だけ渡しても、読む側は何に答えればいいか決められない。
+                「このまま送っていいか」なのか「どう直すか」まで要るのか。
+                聞かれていないことに答えると、長いだけで当たらない。
+
+                書かせない。文面の欄ですでに書いてもらっているので、
+                同じ画面で2回書かせると、2つ目は空のまま出る。
+                押すだけにして、押さずに進むこともできるようにする。
+
+                「脈ありだと思う？」は入れていない（規約 第12条）。
+                言葉と判定は lib/ask/asks.ts。 */}
+            <div className="mt-6">
+              <Label>女性に、何を聞きたい？</Label>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {ASKS.map((a) => (
+                  <Chip
+                    key={a.id}
+                    on={ask === a.id}
+                    onClick={() => setAsk(ask === a.id ? null : a.id)}
+                  >
+                    {a.label}
+                  </Chip>
+                ))}
+              </div>
+            </div>
 
             {/* ── いまの関係 ──
                 ここだけは、折りたたみの中から出してある。

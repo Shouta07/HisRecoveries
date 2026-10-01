@@ -2326,3 +2326,28 @@ select
 from responses r
 join consultations c on c.id = r.consultation_id
 group by c.category;
+
+-- ══════════════════════════════════════════════════
+-- 女性に、何を聞きたいか
+-- ══════════════════════════════════════════════════
+-- 文面だけ渡すと、読む側は何に答えればいいか決められない。
+-- 「このまま送っていいか」なのか「どう直すか」まで要るのか。
+--
+-- 押すだけの設問なので、答えないことも多い。null を許す。
+-- 値は lib/ask/asks.ts の AskId と同じ。増やすときは両方。
+alter table consultations add column if not exists ask text;
+alter table consultations drop constraint if exists consultations_ask_check;
+alter table consultations add constraint consultations_ask_check
+  check (ask is null or ask in ('ok', 'how', 'which', 'early', 'fix'));
+
+-- 何を聞かれることが多いか。相談の種類ごとに見る。
+-- 「どう直したらいい？」が多いなら、回答の形をそちらへ寄せる。
+create or replace view ask_stats as
+select
+  category,
+  ask,
+  count(*) as n
+from consultations
+where ask is not null
+group by category, ask
+order by category, n desc;
