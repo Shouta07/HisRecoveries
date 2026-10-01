@@ -55,6 +55,28 @@
         "source_type": "message_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261001173219082672",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-01T17:32:19.082686",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "文面はもうできてる。\n誤字もない。\nそれでも送信ボタンの前で止まる。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-before-send",
+        "hypothesis_name": "引用リソース src-before-send",
+        "topic_slug": "src-before-send",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
