@@ -23,7 +23,7 @@ import HeroBoard from "@/components/brand/HeroBoard";
 import VideoEmbed from "@/components/brand/VideoEmbed";
 import MomentsArt from "@/components/brand/MomentsArt";
 import { hasPublicFile } from "@/lib/publicFile";
-import ChatCase from "@/components/brand/ChatCase";
+import ResultCase from "@/components/brand/ResultCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
 
@@ -809,7 +809,7 @@ export default async function HomePage() {
               実際に起きるのは、送る前に止まって、読んでもらって、
               返ってきて、決める、という順番のある出来事。
               その順番のまま、やりとりの形で出す */}
-          <ChatCase c={OPEN_CASES[0]} />
+          <ResultCase c={OPEN_CASES[0]} />
         </div>
 
         <div className="mt-7 max-w-[26em]">
