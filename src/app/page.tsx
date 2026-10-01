@@ -91,18 +91,50 @@ import Yen from "@/components/brand/Yen";
 export const metadata: Metadata = {
   // タブに出るのは店名。住所（hisrecoveries.com）とは別
   title: { absolute: TAB_TITLE },
-  description: `${DEFINITION}${THESIS} ${SUB}`,
+  /* 検索結果に出る説明。
+     DEFINITION（誰が誰に何をするか）＋ HERO_HOW（何を渡すと何が返るか）。
+     THESIS と SUB は考え方の文で、検索結果では場所の無駄になっていた。
+     人数は plans.ts と突き合わせている（voice.ts の HERO_HOW）。 */
+  description: `${DEFINITION}${HERO_HOW}`,
   alternates: { canonical: site.url },
+  /* ── シェアされたときのカードを、この面が自分で持つ ──────
+     ここは openGraph を持っていなかったので layout のものを
+     継いでいた。layout は運営・記事側の名乗り（site.name）なので、
+     トップを貼ると「His Recoveries — 送る前に、女性の目を通す」の
+     カードが出ていた。前の屋号。
+
+     /articles で同じことが起きて直したが、トップが残っていた。
+
+     Next.js はページ側で openGraph を書くと親を丸ごと置き換える。
+     images を書き忘れるとカードから画像が消えるので、一緒に渡す。 */
+  openGraph: {
+    type: "website",
+    locale: site.locale,
+    url: site.url,
+    siteName: NAME,
+    title: TAB_TITLE,
+    description: `${DEFINITION}${HERO_HOW}`,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: TAB_TITLE }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TAB_TITLE,
+    description: `${DEFINITION}${HERO_HOW}`,
+    images: ["/opengraph-image"],
+  },
 };
 
+/* ── 行き先を2つ外した ──────────────────────────────
+   #before-after  その節は前に外してあり、アンカーが残っていなかった。
+                  押すと何も起きないリンクが、ずっと出ていた。
+
+   /reviewers     トップから外した「今日、受け付けている人」と
+                  同じ一覧。実在しない4人が出る面なので、
+                  いちばん目立つところから案内しない。
+                  面そのものは消していない（実在の人が入ったら戻す）。 */
 const NAV = [
   ["#moments", "恋愛の道のり"],
-  ["#before-after", "実例"],
-  // 作った受付の表が、どこからも行けない状態だった
-  ["/reviewers", "今日の受付"],
   ["#faq", "よくある質問"],
-  // 「どれを使う？」は、別の節として持っていた。
-  // 料金と1つにしたので、行き先も1つでいい
   ["#price", "料金とプラン"],
 ] as const;
 
@@ -334,7 +366,10 @@ function Block({
       id={id}
       className={`scroll-mt-20 ${dark ? "bg-slate" : tint ? "bg-mist" : "bg-paper"}`}
     >
-      <Wrap className="py-12 sm:py-16 lg:py-20">{children}</Wrap>
+      {/* 上下の余白。py-12 だった。
+          節が9つあるので、1つ24px詰めると画面1/4ぶん縮む。
+          文字は減らさずに、間だけ詰める。 */}
+      <Wrap className="py-9 sm:py-14 lg:py-16">{children}</Wrap>
     </section>
   );
 }
@@ -480,12 +515,25 @@ export default async function HomePage() {
             </ul>
             {/* 答える側の入口（/join）は、ページごと畳んだ。
                 募集は個別に案内する。公開の入口は置かない。 */}
+            {/* ── ずっと出ている押す場所 ──────────────────
+                これが固定CTAそのもの。header が sticky なので、
+                下まで読んでも常に出ている。
+
+                下に別の固定バーを足すことは、しない。
+                携帯の画面でヘッダーとバーの両方が居座ると、
+                読むところが2本ぶん狭くなる。
+                同じ役の押す場所を2つ出す理由も無い。
+
+                文言は「確かめる」だった。何を確かめるのかが
+                入っていないので、ページ全体と同じ言い方にそろえた。
+                行き先も、いちばん軽い入口（ENTRY_PLAN）に変えた。
+                ずっと出ているボタンが、いちばん高い商品を指していた。 */}
             <PlanCta
-              plan={DEFAULT_PLAN}
+              plan={ENTRY_PLAN}
               from="header"
-              className="min-h-[42px] rounded-pill bg-brand px-4 text-[13.5px] !text-paper shadow-card sm:px-5"
+              className="min-h-[42px] whitespace-nowrap rounded-pill bg-brand px-3.5 text-[13px] !text-paper shadow-card sm:px-5 sm:text-[13.5px]"
             >
-              確かめる
+              女性に確カメる
             </PlanCta>
             {/* フッターを外したので、ほかの面への行き先はここに畳んである。
                 特商法の表記とプライバシーも、ここから辿れる */}
@@ -820,19 +868,17 @@ export default async function HomePage() {
           あちらが持っていなかった電話の場面は、MOMENTS へ移した
           （pain.ts の判定が、消えたら落とす）。
 
-          押す場所は残す。ここが唯一の、値段へ降りる導線だった。 */}
-      <section className="bg-mist">
-        <Wrap className="py-10 sm:py-12">
-          <div className="max-w-[26em]">
-            <Link
-              href="#price"
-              className="inline-flex min-h-[54px] w-full items-center justify-center rounded-pill border border-brand bg-paper px-8 text-[15.5px] font-bold text-brand shadow-card transition-shadow hover:shadow-card-hover"
-            >
-              プランを詳しく見る <span aria-hidden className="ml-2">&darr;</span>
-            </Link>
-          </div>
-        </Wrap>
-      </section>
+          押す場所も外した。
+
+          ── なぜ外せるようになったか ──────────────────
+          ここは「唯一の、値段へ降りる導線」だった。
+          だから節が無くなったあとも、帯だけ残していた。
+
+          いまは1画面目と、各節の下に「女性に確カメる」がある。
+          文言も全部そろえてあるので、どこから押しても同じ場所に着く。
+          値段だけを見に行く帯は、もう要らない。
+
+          134px、何も書いていない帯が1つ減る。 */}
 
       {/* ══ 3.「相談前と、相談後」は外した ══ */}
       {/* ══════════════════════════════════════════════
@@ -1019,31 +1065,21 @@ export default async function HomePage() {
             売るのは、次の「こんな選択を、選ぶ前に」と料金の節。 */}
         <Journey />
 
-        {/* 一度で終わらせない。次の分岐点が来たときに、また開くもの。
-            ここは機能の説明ではなく、続けて使える理由として書く。 */}
-        <div className="mt-9 flex items-start gap-4 rounded-card border border-line bg-paper px-5 py-5 shadow-card">
-          <span
-            aria-hidden
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5M12 7v5l3.5 2" />
-            </svg>
-          </span>
-          <div className="min-w-0">
-            <p className="text-[14.5px] font-black leading-[1.6] text-slate">
-              一度使ったあとは、前回の続きから進められます。
-            </p>
-            <p className="mt-2 text-[13.5px] leading-[1.9] text-steel">
-              相手のことも、これまでの流れも、毎回ゼロから説明し直す必要はありません。
-              次は「今回どうするか」だけを書けば済みます。
-            </p>
-            <p className="mt-2 text-[12.5px] leading-[1.85] text-steel">
-              残すのは、あなたが書いたことと、返ってきた反応だけです。
-              相手の実名も、連絡先も、メッセージの全文も保存しません。
-            </p>
-          </div>
-        </div>
+        {/* ── 「前回の続きから進められます」の箱を外した ──────
+            276px あった。買う前に読むものとしては長い。
+
+            書いてあったのは3つ。
+              一度使ったあとは、前回の続きから進められる
+              毎回ゼロから説明し直さなくてよい
+              相手の実名・連絡先・メッセージ全文は保存しない
+
+            どれも本当だが、どれも2回目以降の話と、
+            仕組みの話。まだ1回も使っていない人が、
+            買うかどうかを決める材料にはならない。
+
+            保存しないことは、プライバシーの方針（/privacy）と
+            よくある質問が持っている。隠していない。 */}
+
       </Block>
 
 
@@ -1076,9 +1112,25 @@ export default async function HomePage() {
             3つの役割を覚えてもらう必要も、
             どの役割に当たるかを引く表も、要らない。
             選ぶのは「文字か、声か」だけ。 */}
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
+        {/* ── はじめの1件を、まず見せる ────────────────────
+            ここは「文字か、声か」から始まっていた。
+            選び方の話で、いくらかは下のカードを見るまで分からない。
+
+            いちばん止まるのは、選び方ではなく
+            「女性に読んでもらう」が分からないまま払うこと。
+            一度でも反応が返れば、次からは想像できる。
+            だから最初に出すのは、その一度の値段。
+
+            金額は書かない。plans.ts から引く
+            （画面に直接書くと prebuild の check-prices が落とす）。 */}
+        <p className="mt-4 max-w-[30em] text-[17px] font-black leading-[1.7] text-slate sm:text-[19px]">
+          はじめの1件は <Yen yen={getPlan(ENTRY_PLAN).yen} />。
+          <br className="sm:hidden" />
+          女性ひとりが読んで、どう受け取ったかが返ってきます。
+        </p>
+        <p className="mt-2.5 max-w-[34em] text-[14px] leading-[1.85] text-steel">
           選ぶのは、文字で見てもらうか、声で話すかだけです。
-          どちらも1回から試せます。ただ、判断は1回では終わりません。
+          月額はありません。自動更新もしません。
         </p>
 
         {/* 選ぶのは「文字か、声か」だけ。
@@ -1162,8 +1214,10 @@ export default async function HomePage() {
 
       {/* ══ 8. 最後 ══ */}
       <section className="bg-paper">
-        <Wrap className="pb-20 pt-6 sm:pb-24">
-          <div className="relative overflow-hidden rounded-card bg-brand p-8 text-paper shadow-card sm:p-14">
+        {/* 上下 pb-20 pt-6 と内側 p-8 だった。
+            最後の節は押すだけの場所なので、ここまで広く取らない。 */}
+        <Wrap className="pb-12 pt-4 sm:pb-20">
+          <div className="relative overflow-hidden rounded-card bg-brand p-7 text-paper shadow-card sm:p-12">
             {/* いちばん最後に、もう一度出す。背景は抜いてあるので青の上に乗る */}
             {/* 右下に置く。右上だと見出しに被る（「話す前に。」が読めなくなる）。
                 下は文字が終わっていて、いちばん空いている。 */}
@@ -1176,18 +1230,21 @@ export default async function HomePage() {
                 残したいのは、自分で選べたという感触のほう。 */}
             {/* 2行とも15字前後あるので、text-huge だと390pxで語の途中で折れる。
                 1段下げたうえ、狭い画面では1行目をもう一度折る */}
+            {/* ── 見出しを繰り返さない ────────────────────
+                ここは「恋愛は、小さな選択の積み重ね。だから、選ぶ前に
+                確かめる。」だった。恋愛プロセスの節と同じ見出し。
+                同じ文を2回読ませると、2回目は読まれない。
+
+                最後に要るのは考え方ではなく、押す場所と、
+                押したあと何が起きるかの1行。 */}
             <p className="relative text-big font-black leading-[1.5]">
-              {THESIS_A1}
-              <br className="sm:hidden" />
-              {THESIS_A2}
-              <br />
               {THESIS_B}
             </p>
-            <p className="relative mt-5 max-w-[26em] text-[16px] leading-[1.85]">
+            <p className="relative mt-4 max-w-[26em] text-[15px] leading-[1.8]">
               Aならこう感じた、Bならこう感じた。そこまでがこちらの仕事です。
               どちらにするかは、あなたが決めてください。
             </p>
-            <div className="mt-9">
+            <div className="mt-7">
               <PlanCta
                 plan={DEFAULT_PLAN}
                 from="final"
