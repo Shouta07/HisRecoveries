@@ -24,7 +24,7 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, isOpenCategory, type AttrId, type PanelAge } from "./model";
-import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary, NAME } from "../voice";
+import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary, NAME, HERO_HOW } from "../voice";
 import { site } from "../site";
 
 /**
@@ -840,15 +840,22 @@ export function clampTargeting(
      説明文とプランが別のファイルにあって、誰も突き合わせていなかったから。
      人数を変えたら、ここで止まる。 */
   const answerCounts = new Set(PLANS.map((p) => p.answers));
-  const hits = site.description.match(/女性\s*(\d+)\s*人/g) ?? [];
-  for (const hit of hits) {
-    const n = Number(hit.replace(/\D/g, ""));
-    if (!answerCounts.has(n)) {
-      throw new Error(
-        `サイトの説明文が「${hit}」と言っていますが、売っているのは ${[...answerCounts].join("・")}人です`,
-      );
+  const where: [string, string][] = [
+    ["サイトの説明文", site.description],
+    ["1画面目の受け渡しの行", HERO_HOW],
+  ];
+  for (const [name, text] of where) {
+    const hits = text.match(/女性\s*(\d+)\s*人/g) ?? [];
+    for (const hit of hits) {
+      const n = Number(hit.replace(/\D/g, ""));
+      if (!answerCounts.has(n)) {
+        throw new Error(
+          `${name}が「${hit}」と言っていますが、売っているのは ${[...answerCounts].join("・")}人です`,
+        );
+      }
     }
   }
+  const hits = site.description.match(/女性\s*(\d+)\s*人/g) ?? [];
   // 人数を一言も書かないのは良いが、書くなら合っていること。
   // 「1人」と書いてあるのに全プランが1人でない、という逆も止める。
   if (hits.length === 0 && /\d+\s*人の女性/.test(site.description)) {

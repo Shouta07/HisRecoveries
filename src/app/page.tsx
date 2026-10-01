@@ -23,7 +23,7 @@ import {
   SHOWN_ALTERNATIVES,
 } from "@/lib/ask/compare";
 import { VERDICTS, PANEL_AGES, ATTRS_OPEN } from "@/lib/ask/model";
-import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, TAGLINE, TAB_TITLE } from "@/lib/voice";
+import { NAME, SUB, THESIS, THESIS_A, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
@@ -531,8 +531,23 @@ export default async function HomePage() {
               />
             </span>
           </h1>
-          <p className="mt-2.5 max-w-[38em] text-[13.5px] font-bold leading-[1.6] text-steel sm:text-[15.5px]">
+          {/* ── 大きさの順番を直した ──────────────────
+              見出し30px、この文13.5pxのグレーだった。
+              いちばん大きいのが標語で、何のサービスかを言う文が
+              いちばん小さい。ぱっと見で何屋か分からないのは、
+              言葉が足りないのではなく、この順番が逆だったから。
+
+              色も steel（グレー）から slate（本文の色）にした。
+              グレーは「読み飛ばしていい文字」の色で、
+              いちばん読んでほしい1文に使う色ではない。 */}
+          <p className="mt-2.5 max-w-[26em] text-[16px] font-bold leading-[1.65] text-slate sm:max-w-[38em] sm:text-[18px]">
             {DEFINITION}
+          </p>
+          {/* 渡すものと、返るもの。
+              吹き出しが渡すものを見せているので、返るものを言葉にする。
+              細く小さくして、上の1文と大きさを争わせない。 */}
+          <p className="mt-1.5 max-w-[26em] text-[13px] leading-[1.7] text-steel sm:max-w-[38em] sm:text-[14px]">
+            {HERO_HOW}
           </p>
         </Wrap>
 
@@ -540,8 +555,16 @@ export default async function HomePage() {
             片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
         <HeroBoard openIds={openPlanIds()} />
 
-        <Wrap className="relative pb-10 pt-3 sm:pb-16 sm:pt-8 lg:pt-8">
-          <div className="lg:max-w-[34em]">
+        {/* ── 中身の無い余白を外した ──────────────────
+            ここは Wrap(pb-10 pt-3) + div だけが残っていて、
+            中に描くものが1つも無かった。
+            携帯で52px、机で96px、何も無い帯が出ていた。
+
+            1画面目を詰めたいのに、詰めた分をここが食べていた。
+            下の節との間だけ空ける。
+
+            なぜ中身が無いのかは、下に残してある。 */}
+        <div className="h-3 sm:h-8" />
 
             {/* ここに「¥7,980 / 5回分 ｜ 月額なし ｜ 匿名」を出していた。
                 何のサービスかを言い終わる前に金額が目に入って、
@@ -549,7 +572,6 @@ export default async function HomePage() {
 
                 値段は、何が返ってくるかを見たあとで見るもの。
                 料金の節（#price）と /plans にある。隠してはいない。 */}
-
             {/* ══════════════════════════════════════════
                 押す場所と4つの印は、また外した
                 ══════════════════════════════════════════
@@ -564,13 +586,8 @@ export default async function HomePage() {
                 追加料金なし）は、よくある質問と料金の節が持っている。
                 1画面目で条件を先に並べても、まだ何のサービスか
                 分かっていないので読まれない。 */}
-
             {/* 受け付けていないことの断りは、値段の節（買う場所）に置いてある。
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
-
-
-          </div>
-        </Wrap>
 
       </section>
 
