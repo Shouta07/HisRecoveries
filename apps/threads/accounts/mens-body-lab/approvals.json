@@ -27,6 +27,34 @@
         "source_type": "distance_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261001044837165000",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-01T04:48:37.165013",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "AIには通した。\n誤字もない。\n\nそれでも送信ボタンの前で、\n一回止まる。\n\n———\n\n止まるのは、たぶん慎重だから。\n適当な人は止まらない。\n\n———\n\nただ、いくら読み返しても\n「自分がどう読むか」しか分からない。\n受け取る側の目は、自分の中には無い。\n\n———\n\nだから、送る前に\n相手と同じ側に立つ人に 読んでもらう。\n\n返ってくるのは、実際にどう受け取ったか。\n\n———\n\nその文面、送る前に止まったことありますか。",
+        "posts": [
+          "AIには通した。\n誤字もない。\n\nそれでも送信ボタンの前で、\n一回止まる。",
+          "止まるのは、たぶん慎重だから。\n適当な人は止まらない。",
+          "ただ、いくら読み返しても\n「自分がどう読むか」しか分からない。\n受け取る側の目は、自分の中には無い。",
+          "だから、送る前に\n相手と同じ側に立つ人に 読んでもらう。\n\n返ってくるのは、実際にどう受け取ったか。",
+          "その文面、送る前に止まったことありますか。"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
+        "cta_used": "https://hisrecoveries.com/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
+        "hypothesis_id": "message",
+        "hypothesis_name": "送る前のLINEで止まる",
+        "topic_slug": "message",
+        "buzz_score": 8,
+        "source_type": "message_thread",
+        "product": null
+      }
     }
   ]
 }
