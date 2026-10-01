@@ -508,7 +508,36 @@ export default function AskFlow({
                 </div>
               ))}
 
-            {/* 状況。任意。開かなければ未回答のまま送る */}
+            {/* ── いまの関係 ──
+                ここだけは、折りたたみの中から出してある。
+
+                「この誘い方は早いか」は、段階が分からないと答えられない。
+                マッチした翌日と、3回会ったあとでは、同じ文の答えが逆になる。
+                折りたたみの中にあったあいだ、ここはほぼ空のまま送られていた。
+                回答する女性が本文から段階を推測していたし、
+                溜めても「どの段階だと早いと言われるか」が出せなかった。
+
+                質問は増やしていない。元からある設問を、見える場所に出しただけ。
+                1タップで、押さずに進むこともできる。 */}
+            <div className="mt-6">
+              <Label>いまの関係</Label>
+              <p className="mt-1 text-[12.5px] leading-[1.7] text-steel">
+                答えによって、同じ文でも読み方が変わります。
+              </p>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {RELATIONS.map((r) => (
+                  <Chip
+                    key={r.id}
+                    on={relation === r.id}
+                    onClick={() => setRelation(relation === r.id ? null : r.id)}
+                  >
+                    {r.label}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+
+            {/* 年代。任意。開かなければ未回答のまま送る */}
             <div className="mt-6 rounded-card border border-line bg-paper shadow-card">
               <button
                 type="button"
@@ -517,7 +546,7 @@ export default function AskFlow({
                 className="flex min-h-[52px] w-full items-center justify-between gap-3 px-4 text-left"
               >
                 <span className="text-[14px] text-steel">
-                  状況も伝える
+                  年代も伝える
                   <span className="ml-2 text-[12px]">任意</span>
                 </span>
                 <span className="shrink-0 text-[12px] font-bold text-steel">
@@ -533,7 +562,7 @@ export default function AskFlow({
                       ["相手の年代", otherAge, setOtherAge],
                     ] as const
                   ).map(([label, val, set]) => (
-                    <div key={label} className="mb-5">
+                    <div key={label} className="mb-5 last:mb-0">
                       <Label>{label}</Label>
                       <div className="mt-2.5 flex flex-wrap gap-2">
                         {AGE_BANDS.map((x) => (
@@ -544,18 +573,6 @@ export default function AskFlow({
                       </div>
                     </div>
                   ))}
-                  <Label>いまの関係</Label>
-                  <div className="mt-2.5 flex flex-wrap gap-2">
-                    {RELATIONS.map((r) => (
-                      <Chip
-                        key={r.id}
-                        on={relation === r.id}
-                        onClick={() => setRelation(relation === r.id ? null : r.id)}
-                      >
-                        {r.label}
-                      </Chip>
-                    ))}
-                  </div>
                 </div>
               )}
             </div>

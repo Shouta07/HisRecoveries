@@ -5,6 +5,10 @@ import {
   VERDICTS, PICKS, SECONDS, COMMENT_MIN, COMMENT_MAX,
   type Verdict, type Pick, type Second,
 } from "@/lib/ask/model";
+import {
+  DISTANCES, REPLY_URGE_LABEL, REPLY_URGE_ENDS, REPLY_URGE_MIN, REPLY_URGE_MAX,
+  type Distance,
+} from "@/lib/ask/reaction";
 import { Choice, Action, Note, FieldLabel as Label, inputClass } from "@/components/brand/kit";
 
 // 回答の入力。
@@ -42,6 +46,9 @@ export default function RespondForm({
   secondAsk?: string;
 }) {
   const [verdict, setVerdict] = useState<Verdict | null>(null);
+  // どちらも任意。合わない相談では、空のまま出せる
+  const [distance, setDistance] = useState<Distance | null>(null);
+  const [replyUrge, setReplyUrge] = useState<number | null>(null);
   const [pick, setPick] = useState<Pick | null>(null);
   const [second, setSecond] = useState<Second | null>(null);
   const [comment, setComment] = useState("");
@@ -67,7 +74,7 @@ export default function RespondForm({
       const res = await fetch(`/api/respond/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ verdict, pick, second, comment: comment.trim(), fix: fix.trim() }),
+        body: JSON.stringify({ verdict, pick, second, distance, replyUrge, comment: comment.trim(), fix: fix.trim() }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -158,6 +165,77 @@ export default function RespondForm({
           </div>
         </div>
       )}
+
+      {/* ══════════════════════════════════════════════
+          溜めて比べられる形で、2つだけ聞く
+          ══════════════════════════════════════════════
+          文だけだと、10件たまっても「だいたい好評」以上のことが
+          言えない。同じ尺度で答えてもらうと、溜めたものが効く。
+
+          足したのは2つだけ。増やすと、答える人の手間がそのまま増える。
+          「第一印象」は足していない。上の判定が同じことを聞いている
+          （理由は lib/ask/reaction.ts）。
+
+          どちらも任意。自己紹介文の相談に「距離感」を必須で聞くと、
+          関係ない設問に何かを選ばせることになる。
+          埋まっているだけで中身の無い答えが増える。 */}
+      <div className="mt-9">
+        <Label>
+          この距離感、どう感じましたか
+          <span className="ml-2 text-[12px] font-normal text-steel">任意</span>
+        </Label>
+        <div className="mt-3 flex gap-2.5">
+          {DISTANCES.map((d) => (
+            <button
+              key={d.id}
+              type="button"
+              onClick={() => setDistance(distance === d.id ? null : d.id)}
+              aria-pressed={distance === d.id}
+              title={d.hint}
+              className={`inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[10px] border px-1 text-[13.5px] leading-[1.3] transition-colors duration-200 ${
+                distance === d.id
+                  ? "border-slate bg-brand text-paper"
+                  : "border-line bg-transparent text-slate hover:border-slate"
+              }`}
+            >
+              {d.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-9">
+        <Label>
+          {REPLY_URGE_LABEL}
+          <span className="ml-2 text-[12px] font-normal text-steel">任意</span>
+        </Label>
+        <div className="mt-3 flex gap-2">
+          {Array.from(
+            { length: REPLY_URGE_MAX - REPLY_URGE_MIN + 1 },
+            (_, i) => REPLY_URGE_MIN + i,
+          ).map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setReplyUrge(replyUrge === n ? null : n)}
+              aria-pressed={replyUrge === n}
+              aria-label={`${n}`}
+              className={`inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[10px] border text-[16px] font-bold tabular-nums transition-colors duration-200 ${
+                replyUrge === n
+                  ? "border-slate bg-brand text-paper"
+                  : "border-line bg-transparent text-slate hover:border-slate"
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+        {/* 数字だけだと、どちらが高いのか分からない */}
+        <div className="mt-1.5 flex justify-between text-[11.5px] text-steel">
+          <span>{REPLY_URGE_ENDS.low}</span>
+          <span>{REPLY_URGE_ENDS.high}</span>
+        </div>
+      </div>
 
       <div className="mt-9">
         <Label>そう思った理由</Label>

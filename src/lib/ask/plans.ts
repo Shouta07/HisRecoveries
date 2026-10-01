@@ -24,7 +24,8 @@
 // 買えてしまうと、届けられない約束を売ることになる。
 
 import { isPanelSize, isOpenCategory, type AttrId, type PanelAge } from "./model";
-import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary, NAME } from "../voice";
+import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary, NAME, HERO_HOW } from "../voice";
+import { site } from "../site";
 
 /**
  * 売るもの。
@@ -826,5 +827,38 @@ export function clampTargeting(
     if (/\d\s*回答/.test(p.tagline)) {
       throw new Error(`プラン「${p.id}」が回答の個数を売っています（仕上げの深さで書いてください）`);
     }
+  }
+
+  /* ── 検索結果に出る説明文と、売っているものを突き合わせる ──
+     site.description は、サイト全体の schema.org・OGP・
+     記事ページのメタ記述が全部読んでいる1行。
+     買う前にいちばん多く読まれる場所なので、
+     ここに実際と違う人数が出ていると、買う人が人数を誤解する。
+
+     実際にそうなっていた（「女性3人に読んでもらう」と書いてあり、
+     売っている4商品はどれも1人）。気づけなかったのは、
+     説明文とプランが別のファイルにあって、誰も突き合わせていなかったから。
+     人数を変えたら、ここで止まる。 */
+  const answerCounts = new Set(PLANS.map((p) => p.answers));
+  const where: [string, string][] = [
+    ["サイトの説明文", site.description],
+    ["1画面目の受け渡しの行", HERO_HOW],
+  ];
+  for (const [name, text] of where) {
+    const hits = text.match(/女性\s*(\d+)\s*人/g) ?? [];
+    for (const hit of hits) {
+      const n = Number(hit.replace(/\D/g, ""));
+      if (!answerCounts.has(n)) {
+        throw new Error(
+          `${name}が「${hit}」と言っていますが、売っているのは ${[...answerCounts].join("・")}人です`,
+        );
+      }
+    }
+  }
+  const hits = site.description.match(/女性\s*(\d+)\s*人/g) ?? [];
+  // 人数を一言も書かないのは良いが、書くなら合っていること。
+  // 「1人」と書いてあるのに全プランが1人でない、という逆も止める。
+  if (hits.length === 0 && /\d+\s*人の女性/.test(site.description)) {
+    throw new Error("サイトの説明文の人数が、突き合わせられない書き方になっています");
   }
 }

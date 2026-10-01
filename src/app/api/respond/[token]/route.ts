@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbSelect, dbInsertReturning, dbUpdate, dbAdminEnabled } from "@/lib/db";
 import { isVerdict, isPick, isSecond, COMMENT_MIN, COMMENT_MAX } from "@/lib/ask/model";
+import { isDistance, isReplyUrge } from "@/lib/ask/reaction";
 import { redact } from "@/lib/ask/redact";
 import { isPlanId } from "@/lib/ask/plans";
 import { credit, rateFor, balanceOf, type Tier } from "@/lib/responder/balance";
@@ -102,6 +103,10 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
     verdict,
     pick,
     second: isSecond(body.second) ? body.second : null,
+    // 反応の尺度。どちらも任意なので、合わないものは黙って落とす。
+    // 入れ損なうより、入っていないことが分かるほうがよい。
+    distance: isDistance(body.distance) ? body.distance : null,
+    reply_urge: isReplyUrge(body.replyUrge) ? body.replyUrge : null,
     comment: redact(comment.slice(0, COMMENT_MAX)).text,
     // どう変われば自然か。任意。
     // ここも伏せ字を通す（相手の名前が混ざることがある）。
