@@ -105,6 +105,28 @@
         "source_type": "photo_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261002165133535444",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-02T16:51:33.535465",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "何度読み返しても、分かるのは「自分がどう読むか」だけ。\n受け取る側の目は、自分の中には無い。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-before-send",
+        "hypothesis_name": "引用リソース src-before-send",
+        "topic_slug": "src-before-send",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
