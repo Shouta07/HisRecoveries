@@ -60,17 +60,31 @@ class GitHubStorage:
 
     必要な環境変数:
       GITHUB_TOKEN  : repo書き込み権限のあるトークン
-      GITHUB_REPO   : "owner/repo"（例 Shouta07/threads）
+      GITHUB_REPO   : "owner/repo"（例 Shouta07/HisRecoveries）
       GITHUB_BRANCH : 対象ブランチ（既定 main）
+      GITHUB_PATH_PREFIX : リポジトリ内でこのアプリが置かれている場所
+                           （monorepo では "apps/threads"。単独リポジトリなら空）
+
+    prefix が無いと accounts/<id>/ をリポジトリ直下として読み書きする。
+    これは単独リポジトリ（Shouta07/threads）の形。monorepo に移したあとは
+    実体が apps/threads/accounts/ にあるので、prefix を入れないと
+    リポジトリ直下に accounts/ を新規作成してしまい、編集が
+    どのワークフローにも届かない（ワークフローは apps/threads を読む）。
     """
 
     backend = "github"
     API = "https://api.github.com"
 
-    def __init__(self, token: str, repo: str, branch: str = "main"):
+    def __init__(self, token: str, repo: str, branch: str = "main", prefix: str = ""):
         self.token = token
         self.repo = repo
         self.branch = branch
+        self.prefix = prefix.strip("/")
+
+    def _path(self, *parts: str) -> str:
+        """リポジトリ内のパスを組む。prefix があれば前に付ける。"""
+        joined = "/".join(p.strip("/") for p in parts if p)
+        return f"{self.prefix}/{joined}" if self.prefix else joined
 
     def _req(self, method: str, path: str, body: dict | None = None) -> dict:
         url = f"{self.API}/repos/{self.repo}/{path}"
@@ -86,14 +100,14 @@ class GitHubStorage:
 
     def list_accounts(self) -> list[str]:
         try:
-            items = self._req("GET", f"contents/accounts?ref={self.branch}")
+            items = self._req("GET", f"contents/{self._path('accounts')}?ref={self.branch}")
             return sorted(i["name"] for i in items if i.get("type") == "dir")
         except Exception:
             # フォールバック: バンドルされたローカルコピー
             return LocalStorage().list_accounts()
 
     def read(self, account: str, filename: str) -> str | None:
-        path = f"accounts/{account}/{filename}"
+        path = self._path("accounts", account, filename)
         try:
             res = self._req("GET", f"contents/{path}?ref={self.branch}")
             content = res.get("content", "")
@@ -122,7 +136,7 @@ class GitHubStorage:
             raise
 
     def write(self, account: str, filename: str, content: str, message: str) -> str:
-        path = f"accounts/{account}/{filename}"
+        path = self._path("accounts", account, filename)
         sha = self._sha(path)
         body = {
             "message": message,
@@ -145,5 +159,8 @@ def get_storage():
     repo = os.getenv("GITHUB_REPO", "")
     if token and repo:
         branch = os.getenv("GITHUB_BRANCH", "main")
-        return GitHubStorage(token, repo, branch)
+        # monorepo では "apps/threads"。設定していないと、リポジトリ直下に
+        # accounts/ を作って、編集がワークフローに届かない。
+        prefix = os.getenv("GITHUB_PATH_PREFIX", "")
+        return GitHubStorage(token, repo, branch, prefix)
     return LocalStorage()
