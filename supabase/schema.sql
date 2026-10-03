@@ -2512,3 +2512,85 @@ select id, token, created_at
 from talks
 where (data_voided = true or status = 'no_consent')
   and transcript is not null;
+
+-- ══════════════════════════════════════════════════
+-- 恋亀との会話
+-- ══════════════════════════════════════════════════
+-- 相手（people）は relationship_cases をそのまま使う。
+-- 呼び名・出会ったアプリ・段階・次の予定を、もう持っている。
+-- 同じものを2つ作ると、どちらが本当か分からなくなる。
+
+-- 1回の音声セッション
+create table if not exists voice_sessions (
+  id uuid primary key default gen_random_uuid(),
+  token text unique not null,
+  case_id uuid references relationship_cases(id) on delete set null,
+  -- どの版の恋亀と話したか。これが無いと
+  -- 「最近の恋亀、感じ悪くない？」を確かめられない
+  prompt_version text not null,
+  started_at timestamptz default now(),
+  ended_at timestamptz,
+  seconds int,
+  -- 文字起こし。構造化が済んだら本文を消す
+  transcript text,
+  transcript_deleted_at timestamptz,
+  -- live / done / failed / dropped
+  status text not null default 'live',
+  created_at timestamptz default now()
+);
+create index if not exists voice_sessions_case_idx
+  on voice_sessions (case_id, created_at desc);
+
+-- ══════════════════════════════════════════════════
+-- 恋愛エピソード
+-- ══════════════════════════════════════════════════
+-- 画面では「EP.01」と出す。CRMとは呼ばない。
+--
+-- 1回の会話＝1エピソード。番号は相手ごとに1から振る。
+-- 細かい粒（事実・気持ち・推測）は case_notes が持つ。
+-- ここは「その回に何があったか」の見出しだけ。
+create table if not exists episodes (
+  id uuid primary key default gen_random_uuid(),
+  case_id uuid not null references relationship_cases(id) on delete cascade,
+  voice_session_id uuid references voice_sessions(id) on delete set null,
+  -- 相手ごとの通し番号。1から
+  episode_number int not null,
+  -- 「2回目デート」のような短い名前
+  title text not null,
+  summary text,
+  -- その回に決めた、次にやること。1つだけ
+  next_action text,
+  occurred_at timestamptz default now(),
+  created_at timestamptz default now(),
+  unique (case_id, episode_number)
+);
+create index if not exists episodes_case_idx
+  on episodes (case_id, episode_number desc);
+
+-- この人の恋愛の目的。NEXT の出し方が変わる
+alter table relationship_cases add column if not exists relationship_goal text;
+
+-- 画面に出す一覧。EP.01 から順に
+create or replace view episode_list as
+select
+  e.id,
+  e.case_id,
+  rc.partner_label,
+  rc.dating_app,
+  e.episode_number,
+  e.title,
+  e.summary,
+  e.next_action,
+  e.occurred_at
+from episodes e
+join relationship_cases rc on rc.id = e.case_id
+order by e.case_id, e.episode_number desc;
+
+-- 構造化が済んだのに文字起こしが残っているもの。
+-- 消し忘れが1件でもあると、残り続ける
+create or replace view voice_to_purge as
+select id, token, created_at
+from voice_sessions
+where status in ('done', 'failed', 'dropped')
+  and transcript is not null
+  and transcript_deleted_at is null;
