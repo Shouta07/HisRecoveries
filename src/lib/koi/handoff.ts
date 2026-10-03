@@ -39,17 +39,99 @@ export const HANDOFF_VERSION = VERSION;
  * ここが、毎回いちから説明しなくてよくなる仕組みそのもの。
  */
 export function handoffPrompt(m: Memory = {}): string {
-  const lines = [
+  return [
     buildSystemPrompt(m),
     "",
     "――",
     "",
-    "この指示のとおりに、わたしの恋愛相談に乗ってください。",
-    "まとめや要約は要りません。ふつうに会話してください。",
+    "【この会話の目的】",
+    "ただの恋愛相談ではありません。",
+    "複数のマッチングアプリで、複数人と同時にやり取りすることで生まれる",
+    "「判断疲れ」を減らすために、相手ごとに次のことを整理します。",
+    "　誰との話か ／ どのアプリか ／ いまどの段階か ／ 何が起きたか",
+    "　何に迷っているか ／ 次に何をするか ／ いつ動くか",
+    "　相手待ちなのか ／ 実際どうなったか",
+    "",
+    "【声で話すとき】",
+    "電話のように、短く、テンポよく。1回の返事は2文まで。質問は1つずつ。",
+    "尋問にしない。全部を聞き出そうとしない。今回の相談に要ることだけ。",
+    "",
+    "【相談の進め方】",
+    "1. まず状況を整理する",
+    "2. 足りない大事なことだけ確認する",
+    "3. 選択肢を並べる",
+    "4. いちばん自然な次の一手を1つ決める",
+    "5. いつ動くかも、分かれば決める",
+    "6. いま「動く」のか「待つ」のかを、はっきりさせる",
+    "7. 前回の相談があるなら、その後どうなったかを必ず聞く",
+    "",
+    "【人に確カメたほうがよい場面】",
+    "このLINEを実際にどう感じるか／誘い方が自然か／デート後の印象など、",
+    "実在の異性の感覚を聞く価値が高いときは、そう伝えてください。",
+    "人に聞くのは正解を出すためではなく、判断材料を増やすためです。",
+    "",
+    "【終わりの合図】",
+    "「まとめて」「終了」「タシカメに保存」のどれかを言われたら、終わります。",
+    "",
+    "【終わるときに出すもの】",
+    "まず、本人向けに短くこれを出してください。",
+    "　【今回の整理】",
+    "　・いまの状況 ・今回の悩み ・考えられる選択肢 ・次の一手",
+    "　・いつ動くか ・いまは動く / 待つ ・気をつけること",
+    "　・実在の異性に確カメるとよいこと",
+    "",
+    "そのあと、下のJSONだけを続けて出してください。",
+    `JSONの前後に説明は書かないでください。キー名と階層は変えないでください。`,
+    "分からないことは推測せず、文字列は空、数値と真偽値は null にしてください。",
+    "",
+    SCHEMA,
+    "",
+    "【決まった言葉から選ぶもの】",
+    `current_stage: ${STAGES_OUT.join(" / ")}`,
+    `waiting_on: ${WAITING.join(" / ")}`,
+    "",
+    "この形を埋めるためだけに、質問しないでください。",
+    "会話から分かる範囲だけ入れて、分からないものは空のままにしてください。",
+    "",
+    "today_action は、今日やることがあるときだけ書いてください。",
+    "何もしないほうがよいときは「今日は待つ」と書いてください。",
+    "human_review.recommended は、実在の異性に聞く価値が高いときだけ true。",
+    "timeline.timeline_summary は、次にこの相手の話をするときに",
+    "前回の状況が一文で分かる要約にしてください。",
+    "",
+    "まとめや要約は、終わりの合図があるまで出さないでください。",
+    "それまでは、ふつうに会話してください。",
     `最初のひとことは「${FIRST_LINE}」でお願いします。`,
-  ];
-  return lines.join("\n");
+  ].join("\n");
 }
+
+/** 相談の段階。JSONで受け取る語 */
+export const STAGES_OUT = [
+  "matched", "messaging", "line_exchanged", "calling",
+  "before_first_date", "after_first_date", "dating_multiple_times",
+  "before_confession", "in_relationship", "paused", "ended", "unclear",
+] as const;
+
+export const MOMENTUM = ["improving", "stable", "slowing", "waiting", "unclear"] as const;
+export const PRIORITY = ["high", "medium", "low"] as const;
+export const WAITING = ["user", "partner", "scheduled_event", "none", "unclear"] as const;
+export const INPUT_MODE = ["voice", "text", "unknown"] as const;
+
+/**
+ * 受け取るJSONの形。
+ *
+ * ここを直したら、intake.ts の読み取りも一緒に直すこと。
+ * 片方だけ直すと、AIは新しい形で返すのに、こちらが読めない。
+ */
+const SCHEMA = `{
+  "person": { "name": "", "dating_app": "" },
+  "relationship_state": { "current_stage": "", "last_contact_at": "", "next_scheduled_event": "" },
+  "consultation": { "main_issue": "", "user_goal": "", "next_action": "", "next_action_due": "", "suggested_message": "" },
+  "management": { "waiting_on": "", "today_action": "", "status_label": "" },
+  "human_review": { "recommended": false, "question_to_ask": "" },
+  "result": { "previous_outcome": "", "current_outcome": "" },
+  "timeline": { "event_summary": "", "timeline_summary": "" }
+}`;
 
 /* ══════════════════════════════════════════════════
    貼られたものを、会話に戻す
@@ -121,18 +203,55 @@ export function readPaste(input: string): Line[] {
     throw new Error("渡すプロンプトの人格が、prompt.ts のものと違います");
   }
 
-  /* まとめさせないこと。
-     まとめさせると、まとめ方が毎回変わって、整理が効かなくなる。 */
-  if (!/まとめや要約は要りません/.test(p)) {
-    throw new Error("渡すプロンプトに、まとめさせない指示がありません");
+  /* ══════════════════════════════════════════════
+     まとめは、合図があるまで出させない
+     ══════════════════════════════════════════════
+     前は「まとめや要約は要りません」と書いて、
+     整理はこちらのAIでやっていた（structure.ts）。
+
+     話したAI自身にJSONを出させる形に変えた。
+     呼び出しが1回減り、記録1件あたりの原価がほぼゼロになる。
+
+     ただし、途中でまとめ始められると会話が止まる。
+     合図（まとめて / 終了 / タシカメに保存）まで出させない。 */
+  if (!/終わりの合図があるまで出さない/.test(p)) {
+    throw new Error("渡すプロンプトに、合図までまとめさせない指示がありません");
+  }
+  for (const w of ["まとめて", "終了", "タシカメに保存"]) {
+    if (!p.includes(w)) throw new Error(`終わりの合図に「${w}」がありません`);
   }
 
-  /* JSONの話を書かないこと。
-     本人はふつうに話すだけでよい。構造はこちらで作る。 */
-  for (const w of ["JSON", "json", "{", "}"]) {
-    if (p.includes(w)) {
-      throw new Error(`渡すプロンプトに「${w}」が入っています（本人に構造を見せない）`);
-    }
+  /* 受け取る形が、書いてあること。
+     キー名か階層が抜けると、こちらが読めないものが返る。 */
+  for (const k of [
+    "person", "relationship_state", "consultation",
+    "management", "human_review", "result", "timeline",
+  ]) {
+    if (!p.includes(`"${k}"`)) throw new Error(`渡すJSONの形に「${k}」がありません`);
+  }
+  /* ダッシュボードを動かすのに要る4つが、必ず入っていること。
+     ここが欠けると、今日やること／誰待ち／前回どうなったが出せない。 */
+  for (const k of ["today_action", "waiting_on", "next_action_due", "previous_outcome"]) {
+    if (!p.includes(k)) throw new Error(`渡すJSONの形に「${k}」がありません`);
+  }
+  /* 決まった言葉から選ばせること。
+     自由に書かせると、段階が毎回ちがう言葉になって集計できない。 */
+  for (const v of ["matched", "partner"]) {
+    if (!p.includes(v)) throw new Error(`選ばせる言葉に「${v}」がありません`);
+  }
+  // 推測させないこと。
+  if (!/分からないことは推測せず/.test(p)) {
+    throw new Error("渡すプロンプトに、推測させない指示がありません");
+  }
+  /* 形を埋めるために質問させないこと。
+     ここが抜けると、聞き取りの長い恋亀になる。
+     それはこの製品がいちばん避けたい形。 */
+  if (!/埋めるためだけに、質問しないで/.test(p)) {
+    throw new Error("渡すプロンプトに、形を埋めるために質問させない指示がありません");
+  }
+  // 待つことも書かせること。
+  if (!/今日は待つ/.test(p)) {
+    throw new Error("渡すプロンプトに、待つときの書き方がありません");
   }
 
   // 前回までのことを渡せること。ここが「続きから」の仕組みそのもの。

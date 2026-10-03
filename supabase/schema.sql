@@ -2641,6 +2641,54 @@ create index if not exists episodes_case_idx
 -- この人の恋愛の目的。NEXT の出し方が変わる
 alter table relationship_cases add column if not exists relationship_goal text;
 
+
+-- ═══════════════════════════════════════════════════════════════
+-- ダッシュボードを動かすための列
+--
+-- 会話したAIが返すJSON（lib/koi/handoff.ts の形）を受け取るための列。
+-- ここが無いと、読み取れても保存できない。
+--
+-- 画面のどこに出るか:
+--   today_action      ホームの「今日やること」
+--   waiting_on        誰待ちか（自分 / 相手 / 予定 / なし）
+--   status_label      カードの状態（2回目デート後 など）
+--   next_action_due   いつ動くか（今日の夜 / 明日 / 未定）
+--   timeline_summary  次に話すときの「前回どこまで」
+--
+-- current_stage は決まった語彙（talk/shape.ts の STAGES）だが、
+-- status_label は本人向けの短い言葉。別に持つ。
+-- 語彙を1つにすると、画面に出せる言葉か、集計できる言葉かの
+-- どちらかを諦めることになる。
+-- ═══════════════════════════════════════════════════════════════
+
+-- 今日やること。無ければ null。「今日は待つ」も入る
+alter table relationship_cases add column if not exists today_action text;
+-- 誰待ちか。user / partner / scheduled_event / none / unclear
+alter table relationship_cases add column if not exists waiting_on text;
+-- 本人向けの短い状態。「2回目デート後」「返信待ち」など
+alter table relationship_cases add column if not exists status_label text;
+-- いつ動くか。「今日の夜」「明日」「未定」など
+alter table relationship_cases add column if not exists next_action_due text;
+-- 次に話すときの、前回どこまでの一文
+alter table relationship_cases add column if not exists timeline_summary text;
+-- 最後に連絡した日（本人が話した範囲）
+alter table relationship_cases add column if not exists last_contact_at text;
+-- 次の予定（「水族館」など）
+alter table relationship_cases add column if not exists next_scheduled_event text;
+
+-- 1回ぶんの記録に、前回どうなったかを残す
+-- 「相談して終わりじゃない」を成立させるのは、この列
+alter table episodes add column if not exists previous_outcome text;
+alter table episodes add column if not exists current_outcome text;
+-- 人に聞くことを勧められたか。勧めただけで、まだ聞いていない
+alter table episodes add column if not exists human_suggested boolean default false;
+alter table episodes add column if not exists human_question text;
+
+-- 今日やることがある相手を、上から出す
+create index if not exists relationship_cases_today_idx
+  on relationship_cases (pass_token, updated_at desc)
+  where today_action is not null;
+
 -- 画面に出す一覧。EP.01 から順に
 create or replace view episode_list as
 select

@@ -34,12 +34,24 @@ export type KoiCase = {
   id: string;
   token: string;
   partner_label: string | null;
+  dating_app: string | null;
   current_stage: string | null;
   last_decision: string | null;
   updated_at: string;
+  /* ダッシュボードを動かす列。handoff.ts のJSONから来る */
+  today_action: string | null;
+  waiting_on: string | null;
+  status_label: string | null;
+  next_action_due: string | null;
+  timeline_summary: string | null;
+  last_contact_at: string | null;
+  next_scheduled_event: string | null;
 };
 
-const SELECT = "id,token,partner_label,current_stage,last_decision,updated_at";
+const SELECT =
+  "id,token,partner_label,dating_app,current_stage,last_decision,updated_at," +
+  "today_action,waiting_on,status_label,next_action_due,timeline_summary," +
+  "last_contact_at,next_scheduled_event";
 
 /** その人が話している相手の一覧。新しい順 */
 export async function peopleOf(talker: string): Promise<KoiCase[]> {
@@ -48,6 +60,26 @@ export async function peopleOf(talker: string): Promise<KoiCase[]> {
     `relationship_cases?pass_token=eq.${encodeURIComponent(talker)}` +
       `&status=eq.active&select=${SELECT}&order=updated_at.desc&limit=20`,
   );
+}
+
+/**
+ * いま何人・何記録ためているか。
+ *
+ * 無料の上限に当たっているかを見るのに使う。
+ * 数えるのはサーバー。画面に数えさせると、書き換えられる。
+ */
+export async function usageOf(talker: string): Promise<{ people: number; records: number }> {
+  if (!dbAdminEnabled || !isTalkerToken(talker)) return { people: 0, records: 0 };
+  const people = await dbSelect<{ id: string }>(
+    `relationship_cases?pass_token=eq.${encodeURIComponent(talker)}&status=eq.active&select=id`,
+  );
+  if (people.length === 0) return { people: 0, records: 0 };
+  // その人のケースに紐づく記録だけを数える
+  const ids = people.map((x) => x.id).join(",");
+  const records = await dbSelect<{ id: string }>(
+    `episodes?case_id=in.(${encodeURIComponent(ids)})&select=id`,
+  );
+  return { people: people.length, records: records.length };
 }
 
 /**
@@ -98,16 +130,24 @@ export async function addPerson(
     dating_app: sourceApp ?? null,
   });
   const row = ins.rows[0];
-  return row
-    ? {
-        id: row.id,
-        token: row.token,
-        partner_label: row.partner_label,
-        current_stage: row.current_stage,
-        last_decision: row.last_decision,
-        updated_at: row.updated_at,
-      }
-    : null;
+  if (!row) return null;
+  // 新しく作った行は、まだ何も分かっていない
+  return {
+    id: row.id,
+    token: row.token,
+    partner_label: row.partner_label,
+    dating_app: row.dating_app ?? null,
+    current_stage: row.current_stage,
+    last_decision: row.last_decision,
+    updated_at: row.updated_at,
+    today_action: null,
+    waiting_on: null,
+    status_label: null,
+    next_action_due: null,
+    timeline_summary: null,
+    last_contact_at: null,
+    next_scheduled_event: null,
+  };
 }
 
 /** いまどこにいるかを変える */
@@ -178,6 +218,59 @@ export async function addEpisode(
   // 相手の「次にやること」も、最後のEPに合わせる
   if (ep.nextAction) await setNextAction(talker, c.id, ep.nextAction);
   return { number: n };
+}
+
+/**
+ * 会話から読み取ったものを、まとめて保存する。
+ *
+ * ══════════════════════════════════════════════════
+ * 空で上書きしない
+ * ══════════════════════════════════════════════════
+ * AIが返さなかった項目は null で来る。
+ * それをそのまま入れると、前に分かっていたことが消える。
+
+ * 例：今回は相手の呼び名の話しかしなかった回で、
+ *     前回決めた「水族館の日程を決める」が消える。
+ *
+ * 値があるものだけ書く。無いものは触らない。
+ */
+export async function applyIntake(
+  talker: string,
+  caseId: string,
+  v: {
+    stage?: string | null;
+    statusLabel?: string | null;
+    todayAction?: string | null;
+    waitingOn?: string | null;
+    nextAction?: string | null;
+    nextActionDue?: string | null;
+    timelineSummary?: string | null;
+    lastContactAt?: string | null;
+    nextEvent?: string | null;
+  },
+): Promise<boolean> {
+  const c = await ownedBy(talker, caseId);
+  if (!c) return false;
+
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  const put = (k: string, x: string | null | undefined) => {
+    if (typeof x === "string" && x.trim()) patch[k] = x.trim().slice(0, 300);
+  };
+  // 段階は、決まった語彙のときだけ
+  if (v.stage && (STAGES as readonly string[]).includes(v.stage)) {
+    patch.current_stage = v.stage;
+  }
+  put("status_label", v.statusLabel);
+  put("today_action", v.todayAction);
+  put("waiting_on", v.waitingOn);
+  put("last_decision", v.nextAction);
+  put("next_action_due", v.nextActionDue);
+  put("timeline_summary", v.timelineSummary);
+  put("last_contact_at", v.lastContactAt);
+  put("next_scheduled_event", v.nextEvent);
+
+  await dbUpdate("relationship_cases", `id=eq.${encodeURIComponent(c.id)}`, patch);
+  return true;
 }
 
 /** その相手の、直近のEP。恋亀が前回の続きを出すために読む */

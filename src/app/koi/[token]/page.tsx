@@ -11,8 +11,12 @@ import VoiceRoom from "@/components/koi/VoiceRoom";
 import PasteTalk from "@/components/koi/PasteTalk";
 import { handoffPrompt } from "@/lib/koi/handoff";
 import PersonBoard from "@/components/koi/PersonBoard";
-import { peopleOf } from "@/lib/koi/store";
-import { toBoard } from "@/lib/koi/board";
+import { peopleOf, usageOf } from "@/lib/koi/store";
+import { toBoard, todayOf } from "@/lib/koi/board";
+import TodayList from "@/components/koi/TodayList";
+import UsageMeter from "@/components/koi/UsageMeter";
+import Greeting from "@/components/koi/Greeting";
+import { passEnabled } from "@/lib/stripe";
 
 // 恋亀と話す画面。
 //
@@ -59,6 +63,8 @@ export default async function KoiPage({ params }: { params: { token: string } })
      だから、ここを開いたときにまず分かるのは
      「誰と、どこまで、次に何を」であること。 */
   const board = toBoard(await peopleOf(params.token));
+  const usage = await usageOf(params.token);
+  const today = todayOf(board);
 
   return (
     <div data-brand className="min-h-screen bg-paper text-slate">
@@ -80,12 +86,49 @@ export default async function KoiPage({ params }: { params: { token: string } })
           話すたびに、ここが更新されます。
         </p>
 
-        {/* いま誰がいて、次に何をすることになっているか。
-            1人もいなければ出さない（空の枠を見せない）。 */}
+        {/* ══════════════════════════════════════════
+            今日やること → 相手の一覧、の順
+            ══════════════════════════════════════════
+            開く理由は「今日は何をすればいいか」なので、
+            一覧より先にそれを出す。
+
+            1人もいなければ、どちらも出さない。
+            空の枠を見せると、使っていないことを突きつけるだけになる。 */}
         {board.length > 0 && (
-          <div className="mt-8">
-            <PersonBoard cards={board} />
-          </div>
+          <>
+            {/* 恋亀が1行だけ言う。開いた瞬間に今日の量が分かる */}
+            <div className="mt-7">
+              <Greeting count={today.filter((t) => !t.waiting).length} />
+            </div>
+
+            <div className="mt-7">
+              <div className="flex items-baseline justify-between gap-3">
+                <h2 className="text-[15px] font-black text-slate">今日やること</h2>
+                <span className="text-[11.5px] text-steel">{today.length}件</span>
+              </div>
+              <div className="mt-2.5">
+                <TodayList items={today} />
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <div className="flex items-baseline justify-between gap-3">
+                <h2 className="text-[15px] font-black text-slate">相手一覧</h2>
+              </div>
+              <div className="mt-2.5">
+                <PersonBoard
+                  cards={board}
+                  showLine={false}
+                  hrefOf={(c) => `/koi/${params.token}/${c.id}`}
+                />
+              </div>
+            </div>
+
+            {/* 無料枠は、控えめに。残りが少なくても赤くしない */}
+            <div className="mt-6 border-t border-line pt-4">
+              <UsageMeter usage={usage} paid={passEnabled} />
+            </div>
+          </>
         )}
 
         {/* ══════════════════════════════════════════

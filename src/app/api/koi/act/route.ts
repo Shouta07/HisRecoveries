@@ -5,8 +5,10 @@ import { koiEnabled } from "@/lib/koi/gate";
 import { decide, type Used } from "@/lib/koi/dispatch";
 import { TOOLS } from "@/lib/koi/tools";
 import {
-  peopleOf, addPerson, setStage, setNextAction, addEpisode, recentEpisodes,
+  peopleOf, usageOf, addPerson, setStage, setNextAction, addEpisode, recentEpisodes,
 } from "@/lib/koi/store";
+import { wallOf, upsellFor } from "@/lib/pass/free";
+import { passEnabled } from "@/lib/stripe";
 
 // 恋亀が呼んだ道具を、実際に動かす口。
 //
@@ -132,6 +134,34 @@ export async function POST(req: NextRequest) {
      画面が confirm を立てて、もう一度呼ぶ。 */
   if (d.confirm) {
     return NextResponse.json({ ok: false, needsConfirm: true, why: "本人の確認が要ります" });
+  }
+
+  /* ══════════════════════════════════════════════
+     無料の上限は、サーバーで止める
+     ══════════════════════════════════════════════
+     画面でも出すが、あれは知らせるため。
+     ブラウザは書き換えられるので、通ったかどうかを
+     画面の言うとおりにしない。
+
+     止めるのは「増やすこと」だけ。
+     入れたものは消さないし、見られなくもしない。
+
+     ［要確認］いまは passEnabled（Stripeの鍵が揃っているか）で
+     有料かどうかを見ている。1人ずつの契約を見る仕組みが
+     できたら、そちらに差し替えること。 */
+  {
+    const want =
+      name === "create_person" ? "person"
+      : name === "create_episode" ? "record"
+      : name === "request_human_feedback" ? "human"
+      : null;
+    if (want) {
+      const wall = wallOf(await usageOf(talker as string), passEnabled, want);
+      if (wall) {
+        const up = upsellFor(wall);
+        return NextResponse.json({ ok: false, wall, why: up?.title ?? "", upsell: up });
+      }
+    }
   }
 
   const pid = str(args.person_id, 40);

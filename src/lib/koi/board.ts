@@ -31,6 +31,48 @@ import { MIND_READING } from "../ask/model";
    並べる順は、最後に動きがあった順。
    古いものが下に行くが、赤くしたり責めたりしない。 */
 
+/* ══════════════════════════════════════════════════
+   やりとりの温度感
+   ══════════════════════════════════════════════════
+
+   ── 人を評価しない ──────────────────────────────
+   「良好／様子見／停滞」という札を、相手の名前の横に置くと、
+   相手を採点しているように読める。
+
+   札が指しているのは、相手ではなく「やりとり」のほう。
+   言葉もそう読めるものにする。
+     進んでる  ひと息  止まってる
+
+   ── 見えることだけで決める ──────────────────────
+   相手の気持ちは使わない（利用規約 第12条）。
+   使うのは2つだけ。
+
+     最後に動きがあってから、何日たったか
+     次にやることが、決まっているか
+
+   どちらも、本人が話したことと本人が決めたことから出る。
+   推測は1つも入れない。 */
+
+export type Heat = "moving" | "pause" | "stalled";
+
+export const HEAT_LABEL: Record<Heat, string> = {
+  moving: "進んでる",
+  pause: "ひと息",
+  stalled: "止まってる",
+};
+
+/** 動きが無いとみなす日数 */
+const PAUSE_DAYS = 4;
+const STALLED_DAYS = 8;
+
+export function heatOf(updatedAt: string, hasNext: boolean, now = Date.now()): Heat {
+  const days = Math.floor((now - new Date(updatedAt).getTime()) / 86400000);
+  if (days >= STALLED_DAYS) return "stalled";
+  if (!hasNext) return "pause";
+  if (days >= PAUSE_DAYS) return "pause";
+  return "moving";
+}
+
 export type BoardCard = {
   id: string;
   /** 呼び名。本名は扱わない */
@@ -43,6 +85,16 @@ export type BoardCard = {
   next: string | null;
   /** 最後に動いたのはいつか。ISO */
   updatedAt: string;
+  /** 画面に出す「最終更新」。今日 / 昨日 / 3日前 */
+  since: string;
+  /** やりとりの温度感。相手の評価ではない */
+  heat: Heat;
+  /** 直近に何があったか。1行 */
+  recent?: string | null;
+  /** 記録の数 */
+  records?: number;
+  /** 今日やること。次の一手とは別 */
+  todayAction?: string | null;
 };
 
 export type BoardRow = {
@@ -52,6 +104,15 @@ export type BoardRow = {
   current_stage: string | null;
   last_decision: string | null;
   updated_at: string;
+  /* 本人向けの短い状態。あればこちらを出す。
+     current_stage は集計のための語彙で、画面に出す言葉ではない。 */
+  status_label?: string | null;
+  /** 今日やること。NEXT とは別（今日やらないこともある） */
+  today_action?: string | null;
+  /** 直近に何があったか。episodes の最後の見出しから来る */
+  recent?: string | null;
+  /** 記録の数 */
+  records?: number;
 };
 
 /** 名乗りの揺れをそろえる。表記はアプリ側の正式なものに寄せる */
@@ -64,6 +125,14 @@ const APP_LABEL: Record<string, string> = {
   bumble: "Bumble",
 };
 
+/* 画面に名前を出すアプリ。
+   APP_LABEL から引くので、受け取れる名前と出す名前がずれない。
+   ずれると「Tinder も対応」と書いてあるのに、
+   貼ったときに名前が揃わない、が起きる。
+
+   ロゴは置かない。他社の商標なので、使うには許諾が要る。 */
+export const KNOWN_APPS = ["with", "Pairs", "タップル", "Tinder"] as const;
+
 export function appLabel(x: string | null | undefined): string | null {
   if (!x) return null;
   const k = x.trim().toLowerCase();
@@ -75,15 +144,30 @@ export function stageLabel(x: string | null | undefined): string | null {
   return STAGE_LABEL[x as Stage] ?? null;
 }
 
+/** 最後に動いてからの日数を、読める言葉に */
+export function sinceLabel(updatedAt: string, now = Date.now()): string {
+  const days = Math.floor((now - new Date(updatedAt).getTime()) / 86400000);
+  if (days <= 0) return "今日";
+  if (days === 1) return "昨日";
+  return `${days}日前`;
+}
+
 /** 行をカードにする。足さない。無いものは null のまま出す */
-export function toCard(r: BoardRow): BoardCard {
+export function toCard(r: BoardRow, now = Date.now()): BoardCard {
+  const next = (r.last_decision ?? "").trim() || null;
   return {
     id: r.id,
     who: (r.partner_label ?? "").trim() || "名前なし",
     app: appLabel(r.dating_app),
-    stage: stageLabel(r.current_stage),
-    next: (r.last_decision ?? "").trim() || null,
+    // 本人向けの言葉があれば、そちらを出す
+    stage: (r.status_label ?? "").trim() || stageLabel(r.current_stage),
+    next,
     updatedAt: r.updated_at,
+    since: sinceLabel(r.updated_at, now),
+    heat: heatOf(r.updated_at, Boolean(next), now),
+    recent: (r.recent ?? "").trim() || null,
+    records: r.records,
+    todayAction: (r.today_action ?? "").trim() || null,
   };
 }
 
@@ -94,10 +178,53 @@ export function toCard(r: BoardRow): BoardCard {
  * やることが無い人（返信を待っている人）が下に沈むと、
  * 待つという判断をしたことまで忘れる。
  */
-export function toBoard(rows: BoardRow[]): BoardCard[] {
+export function toBoard(rows: BoardRow[], now = Date.now()): BoardCard[] {
   return rows
-    .map(toCard)
+    .map((r) => toCard(r, now))
     .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+}
+
+/* ══════════════════════════════════════════════════
+   今日やること
+   ══════════════════════════════════════════════════
+
+   ── 開いて最初に見るのは、これ ──────────────────
+   一覧より先に、「今日は何をすればいいか」を出す。
+   そのために来ているので。
+
+   ── 待つことも、やること ────────────────────────
+   次の一手が無い相手を、一覧から落とさない。
+   「今日は待つ」と出す。待つと決めたことも判断なので。
+
+   ── 急かさない ──────────────────────────────────
+   「3日連絡していません」は出さない。赤くしない。
+   出すのは、本人が決めたことだけ。 */
+
+export type Todo = {
+  id: string;
+  who: string;
+  /** やること。本人が決めたもの */
+  what: string;
+  /** 待つだけの人か */
+  waiting: boolean;
+};
+
+export function todayOf(cards: BoardCard[]): Todo[] {
+  return cards.map((c) => {
+    /* 今日やること（today_action）と、次の一手（next）は別物。
+       次の一手が「水族館の日程を決める」でも、
+       今日は「相手の返事を待つ」ことがある。
+
+       today_action があれば、そちらを出す。
+       無ければ次の一手を出す。どちらも無ければ待つ。 */
+    const what = c.todayAction ?? c.next ?? "今日は待つ";
+    return {
+      id: c.id,
+      who: c.who,
+      what,
+      waiting: !c.todayAction && !c.next ? true : /待つ|待ち/.test(what),
+    };
+  });
 }
 
 /** 一覧の上に出す1行。何人いて、何をすることになっているか */
@@ -182,6 +309,74 @@ export function boardLine(cards: BoardCard[]): string {
   // 誰もいないときに、嘘の数を出さないこと。
   if (!boardLine([]).includes("まだ誰も")) {
     throw new Error("誰もいないときの言い方が、ありません");
+  }
+
+  /* ══════════════════════════════════════════════
+     温度感が、相手の評価にならないこと
+     ══════════════════════════════════════════════
+     札が指しているのは、相手ではなく「やりとり」。
+     言葉もそう読めるものであること。 */
+  for (const [k, v] of Object.entries(HEAT_LABEL)) {
+    if (/良|悪|優|劣|脈|好|ダメ|有望|見込/.test(v)) {
+      throw new Error(`温度感の「${v}」（${k}）が、相手の評価に読めます`);
+    }
+  }
+
+  /* 見えることだけで決めること。
+     日数と、次にやることがあるかどうか。それだけ。 */
+  {
+    const DAY = 86400000;
+    const now = Date.UTC(2026, 9, 10);
+    const cases: [number, boolean, Heat][] = [
+      [0, true, "moving"],     // 今日動いた。次もある
+      [3, true, "moving"],     // 3日前。まだ動いている
+      [4, true, "pause"],      // 4日空いた
+      [0, false, "pause"],     // 今日動いたが、次が決まっていない
+      [8, true, "stalled"],    // 8日空いた
+      [30, false, "stalled"],  // ずっと動いていない
+    ];
+    for (const [days, hasNext, want] of cases) {
+      const got = heatOf(new Date(now - days * DAY).toISOString(), hasNext, now);
+      if (got !== want) {
+        throw new Error(`${days}日前・次${hasNext ? "あり" : "なし"} が ${got} です（${want}）`);
+      }
+    }
+  }
+
+  // 最終更新の言い方。
+  {
+    const DAY = 86400000;
+    const now = Date.UTC(2026, 9, 10);
+    for (const [days, want] of [[0, "今日"], [1, "昨日"], [3, "3日前"]] as const) {
+      const got = sinceLabel(new Date(now - days * DAY).toISOString(), now);
+      if (got !== want) throw new Error(`${days}日前が「${got}」です（${want}）`);
+    }
+  }
+
+  /* 今日やることに、待つ人も出ること。
+     落とすと、待つと決めたことまで忘れる。 */
+  {
+    const t = todayOf(b);
+    if (t.length !== b.length) throw new Error("今日やることから、誰かが落ちています");
+    const wait = t.find((x) => x.waiting);
+    if (!wait) throw new Error("待つ人が、今日やることに出ていません");
+    if (!wait.what.includes("待つ")) {
+      throw new Error(`待つ人のやることが「${wait.what}」になっています`);
+    }
+    // 急かす言い方をしないこと。
+    for (const x of t) {
+      if (/早く|急いで|放置|遅れ/.test(x.what)) {
+        throw new Error(`今日やること「${x.what}」が、急かす言い方です`);
+      }
+    }
+  }
+
+  /* 画面に出すアプリ名が、受け取れる名前と揃っていること。
+     揃っていないと「対応」と書いてあるのに名前が揃わない。 */
+  for (const a of KNOWN_APPS) {
+    if (appLabel(a) !== a) {
+      throw new Error(`「${a}」を画面に出していますが、受け取ると「${appLabel(a)}」になります`);
+    }
   }
 
   // 呼び名が空でも、落ちないこと。

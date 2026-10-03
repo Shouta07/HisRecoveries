@@ -143,6 +143,8 @@ export const CONVERSION_EVENTS = [
   "price_period_picked", // 期間を選んだ（props: months）
   "price_pay_picked", // 払い方を選んだ（props: pay）
   "price_cta_click", // 始めるを押した（props: months, pay）
+  // AIに渡す文章をコピーした。ここが「毎回説明しなくていい」の実体
+  "koi_brief_copied",
   // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
   "call_joined", // 通話に入れた（props: plan）
   "call_ended", // 通話が終わった（props: plan, reason）
