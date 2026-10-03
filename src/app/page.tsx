@@ -12,6 +12,7 @@ import { DEMO_AGAIN } from "@/lib/koi/demo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import { PASS_YEN, INCLUDED } from "@/lib/pass/entitle";
+import PassButton from "@/components/pass/PassButton";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
@@ -1078,6 +1079,10 @@ export default async function HomePage() {
               </li>
             ))}
           </ul>
+
+          {/* 申し込み・管理。値段と枠はサーバーが決めるので、
+              ここは押す場所を置くだけ（components/pass/PassButton）。 */}
+          {passEnabled && <PassButton />}
 
           <p className="mt-3.5 text-[12.5px] leading-[1.8] text-steel">
             {MANAGE_NOTE}
