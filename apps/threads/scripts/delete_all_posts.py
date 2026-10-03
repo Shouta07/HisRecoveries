@@ -15,12 +15,22 @@ THREADS_USER_ID のアカウント（現在: @koikame.jp）の全投稿を一括
 `Threads Delete All Posts (manual)` を手動実行する（Secrets のトークンを使う）。
 その経路では --yes が付くので、確認はワークフロー側の入力で行う。
 
-必要な権限:
-  - threads_basic
-  - threads_content_publish
-  - threads_delete（Meta App Review で追加申請が必要な場合あり）
-    → 足りないと DELETE が HTTP 403 で全件失敗する。先に --dry-run で件数を確認し、
-      1件目の結果を見てから続ける。
+必要な権限（2026-10-03 に実地で確認）:
+  - threads_basic   すべての呼び出しに必要
+  - threads_delete  削除に必要。**別の権限で、投稿用のトークンには入っていない**
+
+  足りないと、全件がこう返る（403ではなく500で来る）:
+    HTTP 500 {"error":{"message":"Application does not have permission
+              for this action","code":10,"type":"THApiException"}}
+
+  直し方:
+    1. Metaの開発者ダッシュボード → アプリ → ユースケースに threads_delete を追加
+    2. **トークンを発行し直す**。スコープはトークンに焼き込まれるので、
+       アプリ側に権限を足しただけでは既存トークンでは通らない
+
+上限:
+  - **削除は1アカウントあたり1日100件まで。** 超える分は翌日に回す。
+    既定の --limit 100 はこの上限に合わせてある。
 
 投稿履歴（accounts/*/history.json）は別物。Threads上から消しても自動では減らない
 （現在は空なので、やることは無い）。
@@ -89,6 +99,11 @@ def api_get(endpoint, params=None):
 
 
 def api_delete(thread_id):
+    """1件削除する。Returns (成功したか, 失敗の理由)。
+
+    以前は失敗を None で返していたので、呼び出し側が理由を区別できず、
+    権限が無いまま153件を6分かけて叩き続けた。理由を返す。
+    """
     token = get_token()
     url = f"{API_BASE}/{thread_id}?{urllib.parse.urlencode({'access_token': token})}"
     req = urllib.request.Request(url, method="DELETE")
@@ -96,7 +111,10 @@ def api_delete(thread_id):
     for attempt in range(MAX_RETRIES):
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:
-                return json.loads(resp.read().decode())
+                data = json.loads(resp.read().decode())
+            if data.get("success", False):
+                return True, None
+            return False, f"success=false {json.dumps(data, ensure_ascii=False)[:200]}"
         except urllib.error.HTTPError as e:
             body = ""
             try:
@@ -107,9 +125,33 @@ def api_delete(thread_id):
                 print(f"  Rate limited. Waiting {RETRY_WAIT * (attempt + 1)}s...")
                 time.sleep(RETRY_WAIT * (attempt + 1))
                 continue
-            print(f"  DELETE failed: HTTP {e.code} {body[:200]}")
-            return None
-    return None
+            reason = f"HTTP {e.code} {body[:200]}"
+            print(f"  DELETE failed: {reason}")
+            return False, reason
+    return False, "リトライ上限"
+
+
+# 権限不足のときに返ってくる文言（403ではなく500で来る）
+_NO_PERMISSION = "does not have permission"
+
+# 1日の上限に当たったときの文言
+_RATE_LIMITED = ("rate limit", "too many", "limit reached")
+
+
+def _permission_help() -> str:
+    return (
+        "\n"
+        "=== 削除の権限がありません ===\n"
+        "Metaアプリに threads_delete が付いていません。投稿用の権限とは別物です。\n"
+        "\n"
+        "  1. developers.facebook.com → 該当アプリ → ユースケースに threads_delete を追加\n"
+        "  2. **トークンを発行し直す**\n"
+        "     スコープはトークンに焼き込まれるので、アプリ側に足しただけでは\n"
+        "     いま使っているトークンでは通りません。\n"
+        "  3. 新しいトークンを Secrets の THREADS_ACCESS_TOKEN に入れて、もう一度実行\n"
+        "\n"
+        "※ 削除は1アカウント1日100件まで。それ以上は翌日に回してください。\n"
+    )
 
 
 def fetch_all_posts(user_id):
@@ -135,11 +177,25 @@ def fetch_all_posts(user_id):
     return all_posts
 
 
+def _arg_value(name: str, default: int) -> int:
+    """--name N の形で渡された整数を読む。"""
+    if name in sys.argv:
+        i = sys.argv.index(name)
+        if i + 1 < len(sys.argv):
+            try:
+                return int(sys.argv[i + 1])
+            except ValueError:
+                pass
+    return default
+
+
 def main():
     dry_run = "--dry-run" in sys.argv
     # --yes は CI 用。対話の入力が使えない場所で、確認を呼び出し側に委ねる。
     # 手で実行するときは付けない（yes の入力を求めるのが安全側）。
     assume_yes = "--yes" in sys.argv
+    # Threads API の削除は1アカウント1日100件まで。既定をそこに合わせる。
+    limit = _arg_value("--limit", 100)
     user_id = get_user_id()
 
     print(f"アカウント: {user_id}")
@@ -166,6 +222,9 @@ def main():
 
     if dry_run:
         print(f"DRY RUN: {len(posts)}件の投稿が削除対象です。")
+        if len(posts) > limit:
+            print(f"  うち今回消せるのは {limit}件（1日の上限）。"
+                  f"残り {len(posts) - limit}件は翌日以降。")
         print("実行するには --dry-run を外して再実行してください。")
         return
 
@@ -189,25 +248,48 @@ def main():
             print("キャンセルしました。")
             return
 
-    # 削除実行
+    # 削除実行。1日の上限までしか触らない
+    targets = posts[:limit]
     deleted = 0
     failed = 0
-    for i, post in enumerate(posts):
+    stopped = ""
+    for i, post in enumerate(targets):
         thread_id = post["id"]
         text_preview = post.get("text", "")[:40].replace("\n", " ")
-        print(f"  [{i+1}/{len(posts)}] 削除中: {thread_id} ({text_preview}...)")
+        print(f"  [{i+1}/{len(targets)}] 削除中: {thread_id} ({text_preview}...)")
 
-        result = api_delete(thread_id)
-        if result and result.get("success", False):
+        ok, reason = api_delete(thread_id)
+        if ok:
             deleted += 1
         else:
             failed += 1
+            low = (reason or "").lower()
+            # 権限が無いなら、残りを叩いても全部同じ。1件目で止める
+            if _NO_PERMISSION in low:
+                stopped = "permission"
+                break
+            if any(w in low for w in _RATE_LIMITED):
+                stopped = "rate_limit"
+                break
 
         # レート制限回避: 1件ずつ間隔を空ける
         time.sleep(2)
 
+    remaining = len(posts) - deleted
     print()
     print(f"完了: {deleted}件削除, {failed}件失敗")
+    if stopped == "permission":
+        print(_permission_help())
+    elif stopped == "rate_limit":
+        print("\n1日の上限（100件）に達したので止めました。明日もう一度実行してください。")
+    if remaining > 0:
+        print(f"残り {remaining}件。もう一度実行すると続きから消します"
+              f"（1日100件まで）。")
+
+    # 1件でも失敗したら失敗として返す。
+    # 以前は常に0で終わっていたので、153件全部失敗してもワークフローは緑だった。
+    if failed:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
