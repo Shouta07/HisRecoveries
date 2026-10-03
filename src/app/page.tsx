@@ -10,6 +10,9 @@ import { AB_DEMO } from "@/lib/ask/ab";
 import TalkDemo from "@/components/koi/TalkDemo";
 import { DEMO_AGAIN } from "@/lib/koi/demo";
 import { heroSub } from "@/lib/koi/gate";
+import { passEnabled } from "@/lib/stripe";
+import { PASS_YEN, INCLUDED } from "@/lib/pass/entitle";
+import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { VERDICTS } from "@/lib/ask/model";
 import { HERO_A, HERO_B, NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
@@ -1305,33 +1308,79 @@ export default async function HomePage() {
             3つの役割を覚えてもらう必要も、
             どの役割に当たるかを引く表も、要らない。
             選ぶのは「文字か、声か」だけ。 */}
-        {/* ── はじめの1件を、まず見せる ────────────────────
-            ここは「文字か、声か」から始まっていた。
-            選び方の話で、いくらかは下のカードを見るまで分からない。
+        {/* ── 月額を中心に置いた ──────────────────────────
+            ここは「はじめの1件は ¥980」から始まっていた。
+            都度課金が中心の、前のモデルの料金表。
 
-            いちばん止まるのは、選び方ではなく
-            「女性に読んでもらう」が分からないまま払うこと。
-            一度でも反応が返れば、次からは想像できる。
-            だから最初に出すのは、その一度の値段。
+            売っているものが変わった。
+            いま売るのは「覚えてもらっている状態」で、
+            そのうえで、迷ったときに人にも聞ける。
 
-            金額は書かない。plans.ts から引く
-            （画面に直接書くと prebuild の check-prices が落とす）。 */}
-        <p className="mt-4 max-w-[30em] text-[17px] font-black leading-[1.7] text-slate sm:text-[19px]">
-          はじめの1件は <Yen yen={getPlan(ENTRY_PLAN).yen} />。
-          <br className="sm:hidden" />
-          まず1人に読んでもらって、何が返ってくるかを見られます。
-        </p>
-        <p className="mt-2.5 max-w-[34em] text-[14px] leading-[1.85] text-steel">
-          選ぶのは、文字で見てもらうか、声で話すかだけです。
-          月額はありません。自動更新もしません。
-        </p>
+            1件いくらで並べると、毎回いちいち買う形に見える。
+            それだと「覚えている」に値段が付かない。
 
-        {/* 選ぶのは「文字か、声か」だけ。
-            商品を4枚並べるのをやめて、家族2つにした。
-            1回と5回分は、同じ商品の買い方なのでカードの中に入れる */}
-        <div className="mt-6">
-          <FamilyCards openIds={openPlanIds()} />
+            ── まだ買えない ──────────────────────────
+            Price ID（STRIPE_PASS_PRICE_ID）が入っていないので、
+            月額は受付前。入れば、ひとりでに開く。
+
+            単発は、月のぶんを使い切ったときのために下に残す。 */}
+        <div className="mt-5 max-w-[30em] rounded-card border-2 border-brand bg-paper p-5 shadow-card sm:p-6">
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-[12px] font-black tracking-[0.06em] text-brand">
+              {PAYWALL_NAME}
+            </p>
+            {!passEnabled && (
+              <span className="rounded-pill bg-mist px-2.5 py-1 text-[10.5px] font-bold text-steel">
+                受付前
+              </span>
+            )}
+          </div>
+
+          <p className="mt-2 text-[17px] font-black leading-[1.6] text-slate sm:text-[19px]">
+            {PAYWALL_HEAD}
+          </p>
+
+          <p className="mt-3 text-[30px] font-black leading-none text-slate sm:text-[34px]">
+            <Yen yen={PASS_YEN} />
+            <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
+          </p>
+
+          <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">
+            {INCLUDED.map((x) => (
+              <li key={x} className="flex items-start gap-2 text-[13px] leading-[1.7]">
+                <span aria-hidden className="mt-[3px] shrink-0 text-[11px] font-black text-brand">
+                  ✓
+                </span>
+                <span className="min-w-0 text-slate">{x}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-3.5 text-[12.5px] leading-[1.8] text-steel">
+            {MANAGE_NOTE}
+          </p>
         </div>
+
+        {/* ── 単発は、残すが主役にしない ──────────────────
+            月のぶん（月1回）を使い切ったときのために置いておく。
+
+            §52 で「単発商品が大量に並ぶ価格表」を削るよう言われている。
+            消さずに畳む。使い切った人には要るし、
+            月額が開くまでは、ここだけが買える口になる。 */}
+        <details className="group mt-6">
+          <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-3 rounded-card border border-line bg-paper px-4 text-[13.5px] font-bold text-steel shadow-card">
+            1回ずつ買う
+            <span aria-hidden className="text-[12px] group-open:hidden">
+              開く
+            </span>
+            <span aria-hidden className="hidden text-[12px] group-open:inline">
+              閉じる
+            </span>
+          </summary>
+          <div className="mt-4">
+            <FamilyCards openIds={openPlanIds()} />
+          </div>
+        </details>
 
         {/* ここに「たとえば、こんな5回」の一覧（5項目）と、
             「1回だけの相談ではありません…」の説明、
