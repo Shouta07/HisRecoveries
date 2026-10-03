@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import { DEMO_TALK, DEMO_EP, DEMO_ASK } from "@/lib/koi/demo";
 
 /* 恋亀との会話を、そのまま見せる。
@@ -9,61 +6,33 @@ import { DEMO_TALK, DEMO_EP, DEMO_ASK } from "@/lib/koi/demo";
  * 「話すだけで整理されます」と書いても伝わらない。
  * やりとりを見せて、そのあとに、できたものを出す。
  *
- * ── 順番に出す ──────────────────────────────────
- * 全部いきなり出すと、ただの画面写真になる。
- * 1往復ずつ出すと、話が進んでいることが伝わる。
+ * ══════════════════════════════════════════════════
+ * 1往復ずつ出すのをやめた
+ * ══════════════════════════════════════════════════
+ * 前は IntersectionObserver で見え始めたのを拾って、
+ * 900ms ごとに1往復ずつ出していた。
+ * 「話が進んでいることが伝わる」つもりだった。
  *
- * 出る前の場所は高さを取っておく（下が飛ばない）。
- * 動きを切っている人には最初から全部出す。
+ * 実測すると、全部出るまで 6.3 秒かかっていた。
+ * その間ここは空の箱で、下のEPまで含めて何も見えない。
+ * スクロールして最初に目に入るのが、空白になっていた。
+ *
+ * 看板で見せたいのは「話すだけで、ここまで残る」で、
+ * 会話が進む様子ではない。最初から全部出す。
+ *
+ * 動きを消したので、client である必要も無くなった。
+ * 配る JavaScript も、そのぶん減る。
  */
 
-const STEP_MS = 900;
-
 export default function TalkDemo() {
-  const box = useRef<HTMLDivElement | null>(null);
-  const [shown, setShown] = useState(0);
-  // 会話のあと、できたものと、人に聞く提案
-  const total = DEMO_TALK.length + 2;
-
-  useEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (still) {
-      setShown(total);
-      return;
-    }
-    const timers: number[] = [];
-    const io = new IntersectionObserver(
-      (es) => {
-        if (!es[0]?.isIntersecting) return;
-        io.disconnect();
-        for (let i = 1; i <= total; i++) {
-          timers.push(window.setTimeout(() => setShown(i), STEP_MS * i));
-        }
-      },
-      { threshold: 0.2 },
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      timers.forEach(window.clearTimeout);
-    };
-  }, [total]);
-
-  const at = (n: number) =>
-    `transition-all duration-300 ${
-      shown >= n ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
-    }`;
-
   return (
-    <div ref={box} className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       {/* やりとり */}
       <ul className="flex flex-col gap-2.5 rounded-card bg-sky px-3 py-4 sm:px-4">
         {DEMO_TALK.map((t, i) => (
           <li
             key={t.say}
-            className={`flex ${t.who === "me" ? "justify-end" : "justify-start"} ${at(i + 1)}`}
+            className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}
           >
             <div className="flex max-w-[86%] items-end gap-2">
               {t.who === "koi" && (
@@ -89,11 +58,7 @@ export default function TalkDemo() {
       </ul>
 
       {/* 話した結果できたもの。入力していないのに埋まっている、が見せたいこと */}
-      <div
-        className={`rounded-card border border-line bg-paper p-4 shadow-card ${at(
-          DEMO_TALK.length + 1,
-        )}`}
-      >
+      <div className="rounded-card border border-line bg-paper p-4 shadow-card">
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-[15px] font-black text-slate">
             {DEMO_EP.person}
@@ -130,7 +95,7 @@ export default function TalkDemo() {
       </div>
 
       {/* 人に聞ける、が最後に来る。押し売りにしない */}
-      <div className={`flex items-start gap-2 ${at(total)}`}>
+      <div className="flex items-start gap-2">
         <span
           aria-hidden
           className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-paper text-[15px] shadow-card"

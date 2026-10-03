@@ -749,39 +749,32 @@ export default async function HomePage() {
           <TalkDemo />
         </div>
 
-        <p className="mt-4 text-[12px] leading-[1.8] text-steel">
-          ※ 画面の見本です。特定の利用者のやりとりではありません。
-        </p>
-      </Block>
+        {/* ══════════════════════════════════════════════
+            「2回目は、続きから」を、ここに畳んだ
+            ══════════════════════════════════════════════
+            前は、すぐ下に独立した節として置いていた。
 
-      {/* ══ 1.15 2回目は、続きから ══ */}
-      {/* ══════════════════════════════════════════════
-          ここが月額の理由そのもの
-          ══════════════════════════════════════════════
-          1回目は「話しただけでできてる」。
-          2回目は「覚えてる」。
+            同じ恋亀との会話を、見出し・説明・吹き出しの組で
+            2回続けて出していたので、読む人は
+            「さっきと同じものをもう一度見せられている」と感じる。
+            実測で、デモ3つがページの45%を占めていた。
 
-          覚えていることを見せないと、
-          月額が「AIの利用料」にしか見えない。
+            中身（2回目は覚えている）は残す。ここが月額の理由で、
+            消すと月額が「AIの利用料」にしか見えなくなる。
+            ただし、節ではなく、1回目の続きとして小さく出す。
 
-          利用者は名前を言うだけで、状況を説明しない。
-          説明させた時点で、覚えている意味が無くなる。
-
-          判定で縛ってある（lib/koi/demo.ts）。
-            2回目が恋亀から始まると落ちる（聞き直している）
-            利用者の最初の一言が長いと落ちる（説明させている）
-            1回目の「次にやること」とつながっていないと落ちる */}
-      <Block>
-        <h2 className="text-huge font-black leading-[1.35] text-slate">
-          2回目は、
-          <br className="sm:hidden" />
-          続きから。
-        </h2>
-        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          前回どこまで話したかを、もう一度説明しなくて済みます。
+            判定は lib/koi/demo.ts にそのまま置いてある。
+              2回目が恋亀から始まると落ちる（聞き直している）
+              利用者の最初の一言が長いと落ちる（説明させている）
+              1回目の「次にやること」とつながっていないと落ちる */}
+        <p className="mt-7 max-w-[30em] text-[14px] font-black leading-[1.7] text-slate">
+          2回目は、続きから。
+          <span className="ml-1.5 font-bold text-steel">
+            前回どこまで話したかを、もう一度説明しなくて済みます。
+          </span>
         </p>
 
-        <ul className="mt-6 flex max-w-[34em] flex-col gap-2.5 rounded-card bg-mist px-3 py-4 sm:px-4">
+        <ul className="mt-3 flex max-w-[34em] flex-col gap-2.5 rounded-card bg-paper px-3 py-4 sm:px-4">
           {DEMO_AGAIN.map((t) => (
             <li key={t.say} className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}>
               <div className="flex max-w-[86%] items-end gap-2">
@@ -807,8 +800,12 @@ export default async function HomePage() {
           ))}
         </ul>
 
-        <p className="mt-4 max-w-[30em] text-[13px] leading-[1.8] text-steel">
+        <p className="mt-3 max-w-[30em] text-[12.5px] leading-[1.8] text-steel">
           相手が何人いても、それぞれ別に覚えています。
+        </p>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者のやりとりではありません。
         </p>
       </Block>
 
@@ -849,8 +846,15 @@ export default async function HomePage() {
           3つ続けて同じことを言っていて、読む人は同じ節を3回読む。
           場面を並べるのは上の2つに任せ、ここは下にあるものの名前にする。 */}
       <Block tint>
-        <Eyebrow>MEN&apos;S EXAMPLE</Eyebrow>
-        <h2 className="mt-2 text-huge font-black text-slate">
+        {/* 「MEN'S EXAMPLE」の肩見出しを外した。
+            理由は2つ。
+
+            1つは、すぐ下の見出しが「返ってくるのは、こういうものです。」で、
+            肩見出しが同じことを英語で言い直しているだけだったこと。
+
+            もう1つは、相手の呼び方を「異性」に統一したのに、
+            ここだけ MEN'S と書いてあって、男性だけの面に見えたこと。 */}
+        <h2 className="text-huge font-black text-slate">
           返ってくるのは、
           <br className="sm:hidden" />
           こういうものです。
