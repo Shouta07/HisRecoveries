@@ -132,6 +132,7 @@ export const CONVERSION_EVENTS = [
      話した中身は送らない（ここは計測で、相談の中身ではない）。 */
   "koi_call_started", // 恋亀とつながった
   "koi_tool_decided", // 道具の呼び出しを、通した／止めた（props: tool, ok）
+  "koi_card_made", // 話したあと、状況の1枚ができた
   // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
   "call_joined", // 通話に入れた（props: plan）
   "call_ended", // 通話が終わった（props: plan, reason）
