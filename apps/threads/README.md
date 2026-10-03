@@ -1,7 +1,12 @@
-# Threads CEO - 完全自動SNS収益化システム
+# Threads 自動運用システム
 
-8エージェント構成によるThreads完全自動投稿・マネタイズシステム。
-マルチテナント対応で、複数アカウントの同時運用・他社納品が可能。
+**いま動いている構成は `CLAUDE.md` と `SYSTEM_DESIGN.md` を読むこと。**
+稼働アカウントは1つ（タシカメ / @koikame.jp）で、生成 → 人間の承認 → 投稿。
+マネタイズ（CTA挿入・商材選定）は**無効**。
+
+このREADMEは土台の汎用エンジン（8エージェント構成・マルチテナント）の説明で、
+一部は旧事業（収益化・RSS・OpenAI）の前提で書かれたまま残っている。
+矛盾したときは CLAUDE.md が正しい。
 
 ## アーキテクチャ（8エージェント）
 
@@ -60,7 +65,11 @@ python -m core.main token-refresh exchange   # 短命→長命（60日）
 python -m core.main token-refresh refresh    # 長命の延長
 ```
 
-## マネタイズの仕組み
+## マネタイズの仕組み（現在は無効）
+
+> `accounts/mens-body-lab/monetize.json` は `enabled: false`。
+> 以下は土台の機能説明で、タシカメでは使っていない。
+> 送客は場面別の連投の最終投稿に置く /ask リンク1本だけが担う。
 
 ```
 投稿 → プロフィールリンクへ誘導（CTA） → リンクまとめページ → 商材LP
@@ -99,17 +108,26 @@ python -m core.main token-refresh refresh    # 長命の延長
 
 ## 投稿サイクルのフロー
 
+土台の汎用フロー:
+
 ```
 1. Supervisor   →  KILL_SWITCH / レートリミットチェック
 2. Researcher   →  RSSからネタ収集・ジャンルフィルタリング
-3. Monetize     →  商材関連のネタを優先選定
-4. Writer       →  OpenAI APIで投稿文生成
+3. Monetize     →  商材関連のネタを優先選定（タシカメでは無効）
+4. Writer       →  投稿文生成
    └─ Validator →  NG表現・薬機法/景表法・文字数チェック
-   └─ Monetize  →  CTA自動挿入（40%確率）
 5. Supervisor   →  最終安全チェック
 6. Poster       →  Threads APIで投稿（ランダム30〜120秒待機）
-7. Monetize     →  収益トラッキング記録
-8. Analyst      →  パフォーマンス分析（10投稿ごと）
+7. Analyst      →  パフォーマンス分析
+```
+
+タシカメで実際に走るのはこちら（`immediate_posting_forbidden: true` のため、
+生成と投稿が別の工程に分かれている）:
+
+```
+09:00/21:00 JST  場面選択(朝/夜) → Writer(Gemini) → Validator → 承認キュー
+3hおき           承認済みだけを投稿
+毎朝             import-history + collect（閲覧数の回収）
 ```
 
 ## 安全機能
@@ -156,13 +174,16 @@ threads/
 │   ├── config.py                  # 共通設定管理
 │   └── scheduler.py               # 定時投稿スケジューラ
 ├── accounts/                      # マルチテナント：アカウント別設定
-│   └── mens-body-lab/
-│       ├── persona.json           # キャラ・口調・投稿ルール
-│       ├── patterns.md            # 15種バズ構文パターン
-│       ├── history.json           # 投稿履歴（ループ防止）
-│       ├── rss_feeds.json         # RSS設定
-│       └── monetize.json          # マネタイズ設定
-├── tests/                         # テスト（69件）
+│   └── mens-body-lab/             # タシカメ（内部IDは変更しない）
+│       ├── persona.json           # 語り手・口調・投稿ルール
+│       ├── hypotheses.json        # 5場面＋CTAの行き先
+│       ├── thread_templates.json  # 連投テンプレ（mock/フォールバック）
+│       ├── content_sources.json   # 引用リソース（1件=14投稿）
+│       ├── patterns.md            # 場面別の連投パターン
+│       ├── approvals.json         # 承認キュー
+│       ├── history.json           # 投稿履歴＋metrics
+│       └── monetize.json          # マネタイズ設定（enabled: false）
+├── tests/                         # テスト（211件）
 ├── deploy/                        # 本番デプロイ用
 │   ├── setup.sh                   # 自動セットアップ
 │   ├── threads-ceo.service        # systemdサービス
@@ -177,7 +198,7 @@ threads/
 ## テスト
 
 ```bash
-python -m pytest tests/ -v   # 69 tests
+python -m pytest tests/ -v   # 211 tests
 ```
 
 ## 他社納品時のチェックリスト
@@ -185,8 +206,8 @@ python -m pytest tests/ -v   # 69 tests
 1. `new-account` で顧客用アカウントを作成
 2. `persona.json` を顧客のジャンル・キャラに合わせて設定
 3. `patterns.md` をジャンルに特化したバズ構文に書き換え
-4. `rss_feeds.json` にジャンル関連のRSSフィードを設定
-5. `monetize.json` で顧客のアフィリエイトリンク・商材を設定
+4. `hypotheses.json` に場面とCTAの行き先を設定
+5. `monetize.json` を使う場合は商材を設定（タシカメでは無効）
 6. `validate` で設定チェック
 7. `post --dry-run` で生成テスト
 8. 本番デプロイ（systemd or crontab）

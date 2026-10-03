@@ -1,6 +1,6 @@
 {
   "account_id": "mens-body-lab",
-  "threads_handle": "@hisrecoveries_jp",
+  "threads_handle": "@koikame.jp",
   "display_name": "タシカメ",
   "genre": "タシカメ（マチアプで迷った男性が、実在の女性に相談できるサービス）。送信ボタンの前で手が止まる瞬間を書く。",
   "target_audience": "マッチングアプリを使っている20〜30代の男性。文面は自分で作れるが、送る直前に『これでいいのか』で止まる人。AIに通したあとで、まだ不安が残っている人。",
@@ -138,11 +138,12 @@
     },
     "posting_types": {
       "automated": {
-        "description": "AI生成の連投。機会別(誕生日/記念日/結婚式/転職/父の日)にギフトとして勧める。",
-        "frequency": "毎日1本(連投)",
+        "description": "AI生成の連投。場面別(送る前のLINE/自己紹介文/誘うタイミング/デートのあと/距離感)に、手が止まる瞬間から書く。売り込まない。",
+        "frequency": "1日1〜2本(連投)",
         "automation": "生成→承認→投稿",
         "immediate_posting_forbidden": true,
         "preferred_time": [
+          "09:00",
           "21:00"
         ]
       }

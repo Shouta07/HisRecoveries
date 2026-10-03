@@ -323,14 +323,22 @@ def _fmt(n) -> str:
 
 
 def _link_dest(link: str) -> str:
+    """CTAの行き先をラベルにする。/ask が現在の唯一の入口。
+
+    /apply・/areas・/check は旧事業（His Recoveries）の導線。
+    過去の投稿履歴に残っているので、集計が「その他」に落ちないよう
+    ラベルだけ残してある。
+    """
     if not link:
         return "なし"
+    if "/ask" in link:
+        return "/ask"
     if "/apply" in link:
-        return "/apply"
+        return "/apply（旧）"
     if "/areas" in link:
-        return "/areas"
+        return "/areas（旧）"
     if "/check" in link:
-        return "/check"
+        return "/check（旧）"
     return "その他"
 
 
@@ -448,7 +456,7 @@ def render_analytics(acc: str, flash: str = "", q: str = "", sort: str = "imp") 
 <th style="text-align:right">エンゲ率</th><th style="text-align:left">リンク</th></tr>
 {''.join(rows)}</table></div>
 <p class="muted">閲覧数はThreads API由来（collect.ymlが日次取得 / import-historyで過去分も取込）。
-/apply・/areasへの遷移率はGA4側で確認します。</p>"""
+/ask への遷移率はGA4側で確認します。</p>"""
     return page(f"{acc} 分析", body)
 
 

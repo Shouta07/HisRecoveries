@@ -92,8 +92,8 @@ def _analyze_single_post(text: str, likes: int, gemini_key: str) -> dict | None:
   "topic": "テーマ（例: 清潔感、自信、孤独、習慣）",
   "length_type": "短文/中文/長文",
   "cta_presence": "CTAの有無と種類",
-  "reusable_pattern": "His Recoveriesで再利用可能な構造パターンの説明",
-  "suggested_template": "この構造を使ったHis Recoveries向けの投稿テンプレート（1行のみ）"
+  "reusable_pattern": "このアカウントで再利用可能な構造パターンの説明",
+  "suggested_template": "この構造を使った投稿テンプレート（1行のみ・事業名は入れない）"
 }}"""
 
     model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
@@ -254,7 +254,7 @@ def build_writer_context(max_patterns: int = 3) -> str:
         if template and template != '不明':
             lines.append(f"  テンプレート: {template}")
 
-    lines.append("\n上記の構造を参考に、His Recoveriesのトーンで投稿を生成してください。")
+    lines.append("\n上記の構造を参考に、このアカウントのトーン（persona）で投稿を生成してください。")
     lines.append("ただしコピーは禁止。構造と感情の流れだけ参考にすること。")
 
     return "\n".join(lines)
