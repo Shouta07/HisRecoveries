@@ -152,8 +152,19 @@ admin/
   threads-collect.yml       毎朝 import-history + collect(数値取得)
   threads-token-refresh.yml 長命トークンの更新(45日周期)
   threads-delete-all-posts.yml 過去投稿の一括削除(手動のみ・既定dry_run・取り消し不可)
+  threads-ci.yml            apps/threads の変更で pytest + validate
+                            （以前は apps/threads/.github/workflows/ci.yml にあり、
+                              GitHubはルートしか読まないので一度も走っていなかった）
   （いずれも working-directory: apps/threads で実行）
 KILL_SWITCH      このファイルがあると threads-post / post-approved は投稿しない(存在=停止中)
+
+2026-10-03 に削除したもの（どこにもデプロイされておらず、承認ゲートを
+通らずに投稿する経路だった）:
+  deploy/            VPS用（setup.sh / systemd / crontab。/opt/threads-ceo 前提）
+  Procfile / run.sh  Heroku・Railway用のワーカーと起動スクリプト
+  archive/           さらに前のペルソナ（りょうた｜マチアプ5人同時進行）
+  .github/workflows/ GitHubはルートしか読まないので、一度も走っていなかった
+                     （ci.yml はルートの threads-ci.yml に移した）
 pyproject.toml   [tool.vercel] entrypoint = "admin.server:Handler"
 vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 ```
