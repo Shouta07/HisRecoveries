@@ -27,9 +27,7 @@ import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
 import HeroBoard from "@/components/brand/HeroBoard";
-import VideoEmbed from "@/components/brand/VideoEmbed";
 import MomentsArt from "@/components/brand/MomentsArt";
-import { hasPublicFile } from "@/lib/publicFile";
 import ResultCase from "@/components/brand/ResultCase";
 import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
@@ -767,45 +765,21 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 1.2 紹介動画 ══ */}
+      {/* ══ 1.2 紹介動画を外した ══ */}
       {/* ══════════════════════════════════════════════
-          なぜ1画面目のすぐ下なのか
+          中身が、いまの商品と合わなくなった
           ══════════════════════════════════════════════
-          1画面目で「何のサービスか」を読んだ人が、
-          次にやることは1つしかない。もう少し知る、か、離れる。
+          「タシカメは、どういうサービスか」という動画だったが、
+          説明しているのは確カメる（送る前に女性に見てもらう）のほう。
 
-          文章で説明を足すと、読む量が増えるだけになる。
-          動画は、見るかどうかを見る側が選べる。
-          押さなければ何も起きず、そのまま下へ進める。
+          いまの中心は恋亀に話すことなので、
+          見出しで恋亀を名乗ったすぐ下に、別の商品の説明が来ていた。
 
-          ══════════════════════════════════════════════
-          押されるまで、何も読み込まない
-          ══════════════════════════════════════════════
-          YouTube の埋め込みは、置いただけで1MB近く読む。
-          このサイトは Web フォントすら使っていないので、
-          そのまま置くと、トップでいちばん重いものが紹介動画になる。
+          外した。277px。
 
-          最初は画像とボタンだけ。押されたときに iframe を作る
-          （components/brand/VideoEmbed.tsx）。
-          見ていない人に Cookie も入らない。 */}
-      <section className="bg-paper">
-        <Wrap>
-          <div className="mx-auto max-w-[760px] py-10 sm:py-14">
-            {/* 表紙が置いてあれば、そちらを使う（YouTube の絵を当てにしない）。
-                public/img/video-poster.jpg */}
-            <VideoEmbed
-              title="タシカメは、どういうサービスか"
-              poster={hasPublicFile("/img/video-poster.jpg") ? "/img/video-poster.jpg" : null}
-            />
-          </div>
-        </Wrap>
-      </section>
-
-      {/* 「今日、受け付けている人」は、ここに置いていた。
-          1画面目の直後だと、まだ何のサービスか分からないうちに
-          人と時間の表が出てくる。
-          「こんな選択を、選ぶ前に」で何が返ってくるかを見せたあと、
-          その下へ移した。 */}
+          部品（VideoEmbed）と動画そのものは消していない。
+          撮り直したら、ここへ戻す。
+          押されるまで iframe を作らない作りもそのまま残っている。 */}
 
       {/* ══ 1.5 手が止まる瞬間 ══ */}
       {/* ══════════════════════════════════════════════
