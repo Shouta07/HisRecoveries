@@ -44,7 +44,7 @@ export default function Header() {
   const BRAND_PAGES = [
     "/mine", "/legal", "/talk", "/plans",
     "/reviewers", "/articles", "/terms",
-    "/privacy", "/trial",
+    "/privacy", "/trial", "/koi",
   ];
   const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/", "/call/"];
   if (

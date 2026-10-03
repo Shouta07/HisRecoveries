@@ -128,6 +128,10 @@ export const CONVERSION_EVENTS = [
      後者が出ているあいだは、申し込みが取りこぼされている。 */
   "trial_booked", // 体験を申し込んだ（props: intake）
   "trial_mailto", // 保存できず、メールで送る側に回った
+  /* 恋亀と話す。見たいのは、つながったかと、記録の動き。
+     話した中身は送らない（ここは計測で、相談の中身ではない）。 */
+  "koi_call_started", // 恋亀とつながった
+  "koi_tool_decided", // 道具の呼び出しを、通した／止めた（props: tool, ok）
   // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
   "call_joined", // 通話に入れた（props: plan）
   "call_ended", // 通話が終わった（props: plan, reason）
