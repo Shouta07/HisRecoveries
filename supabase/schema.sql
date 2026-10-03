@@ -2594,3 +2594,74 @@ from voice_sessions
 where status in ('done', 'failed', 'dropped')
   and transcript is not null
   and transcript_deleted_at is null;
+
+-- ══════════════════════════════════════════════════
+-- 女性3人に確カメる（月額に月1回ぶん含まれる）
+-- ══════════════════════════════════════════════════
+create table if not exists human_requests (
+  id uuid primary key default gen_random_uuid(),
+  token text unique not null,
+  case_id uuid references relationship_cases(id) on delete set null,
+  -- 回答者へ渡す、匿名化済みのまとめ。恋亀が作る
+  summary text not null,
+  question text not null,
+  -- 何月ぶんとして数えるか。'2026-10' の形
+  billing_month text not null,
+  -- 月額に含まれるぶんか、別に払ったものか
+  included_in_subscription boolean not null default true,
+  required_responses int not null default 3,
+  completed_responses int not null default 0,
+  -- open / done / short / cancelled
+  --   short = 人が足りずに揃わなかった
+  status text not null default 'open',
+  created_at timestamptz default now(),
+  completed_at timestamptz
+);
+create index if not exists human_requests_month_idx
+  on human_requests (billing_month, created_at desc);
+
+create table if not exists human_responses (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references human_requests(id) on delete cascade,
+  -- 回答者。相談者には出さない
+  advisor_id uuid,
+  display_age_band text,
+  body text not null,
+  created_at timestamptz default now()
+);
+create index if not exists human_responses_req_idx on human_responses (request_id);
+
+-- 回答者の割り当て。辞退と振替を追う
+create table if not exists advisor_assignments (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references human_requests(id) on delete cascade,
+  advisor_id uuid not null,
+  -- sent / accepted / declined / knows_them / answered / expired
+  --   knows_them = 「知っている人かもしれない」
+  --   理由は残さない。残すと、誰だったかを推測する材料になる
+  status text not null default 'sent',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique (request_id, advisor_id)
+);
+
+-- ══════════════════════════════════════════════════
+-- 月の残りは、揃った依頼だけで数える
+-- ══════════════════════════════════════════════════
+-- 回答者が3人しかいないあいだ、1人が「知っている人かも」で
+-- 辞退すると、3人そろわない。振替先がいない。
+--
+-- そのとき月のぶんを使ったことにすると、
+-- 届いていないのに権利だけ減る。それがいちばん不満になる。
+--
+-- 揃ったものだけ数える。揃わなかったぶんは、また使える。
+create or replace view human_usage_by_month as
+select
+  rc.pass_token,
+  hr.billing_month,
+  count(*) filter (where hr.status = 'done') as used,
+  count(*) filter (where hr.status = 'open') as waiting,
+  count(*) filter (where hr.status = 'short') as short
+from human_requests hr
+join relationship_cases rc on rc.id = hr.case_id
+group by rc.pass_token, hr.billing_month;
