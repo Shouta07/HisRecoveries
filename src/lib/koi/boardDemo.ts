@@ -29,13 +29,13 @@ export const DEMO_BOARD: BoardCard[] = toBoard([
     updated_at: ago(0),
   },
   {
-    id: "d2", partner_label: "Bさん", dating_app: "tapple",
-    current_stage: "messaging", last_decision: "20時以降で電話に誘う",
+    id: "d2", partner_label: "Bさん", dating_app: "pairs",
+    current_stage: "messaging", last_decision: "今夜、電話に誘う",
     recent: "夜なら電話できそう", records: 2,
     updated_at: ago(1),
   },
   {
-    id: "d3", partner_label: "Cさん", dating_app: "pairs",
+    id: "d3", partner_label: "Cさん", dating_app: "tapple",
     current_stage: "messaging", last_decision: null,
     recent: "返信待ち", records: 1,
     updated_at: ago(3),

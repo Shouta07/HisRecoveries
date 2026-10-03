@@ -47,7 +47,7 @@ const SUB_KOI = "恋亀に話すだけ。";
 
    先に言うのは、複数の相手を1つにまとめること。
    実在の異性は、そのあとの節で出す。 */
-const SUB_NOW = "複数人のマッチ後を、1つにまとめる。";
+const SUB_NOW = "複数人のマッチ後を、1つに整理。";
 
 export const heroSub = koiEnabled ? SUB_KOI : SUB_NOW;
 
@@ -55,7 +55,12 @@ export const heroSub = koiEnabled ? SUB_KOI : SUB_NOW;
 {
   // 2つとも、短いこと。見出しの下に置くので、折り返すと弱くなる。
   for (const t of [SUB_KOI, SUB_NOW]) {
-    if (t.length > 20) throw new Error(`1画面目の2行目「${t}」が長すぎます（20字まで）`);
+    /* 20字まで、から18字までに縮めた。
+       この行は 18px で出る。390px の本文幅は 350px なので、
+       全角19字（342px）が上限。20字だと最後の1字が
+       2行目に落ちて、「る。」だけが残っていた。
+       携帯で読めない折り返しは、字数のほうで止める。 */
+    if (t.length > 18) throw new Error(`1画面目の2行目「${t}」が長すぎます（18字まで）`);
     /* 何をすればいいかが、書いてあること。
 
        最初「〜る。」で終わるかだけ見ていたが、
