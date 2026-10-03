@@ -311,7 +311,7 @@ def linked_account_dir(tmp_path):
         "link_config": {
             "link_ratio_by_type": {"photo": 1.0},
             "base_urls": {
-                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}",
+                "apply": "https://tashikame.app/ask?plan=review&c={slug}",
             },
             "link_intro_phrases": {"photo": ["出す前に、一度だけ。"]},
         },
@@ -340,7 +340,7 @@ class TestSinglePostLink:
         data = json.loads((linked_account_dir / "hypotheses.json").read_text())
         data["hypotheses"][0]["link_key"] = "areas"
         data["link_config"]["base_urls"]["areas"] = (
-            "https://hisrecoveries.com/areas/{slug}"
+            "https://tashikame.app/areas/{slug}"
         )
         (linked_account_dir / "hypotheses.json").write_text(
             json.dumps(data, ensure_ascii=False)
@@ -383,7 +383,7 @@ def thread_account_dir(tmp_path):
         "link_config": {
             "link_ratio_by_type": {"message": 1.0},
             "base_urls": {
-                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}"
+                "apply": "https://tashikame.app/ask?plan=review&c={slug}"
                          "&utm_campaign={slug}",
             },
         },
@@ -494,7 +494,7 @@ class TestSlotTypeRouting:
                  "current_posts": 0},
             ],
             "link_config": {"base_urls": {
-                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}"
+                "apply": "https://tashikame.app/ask?plan=review&c={slug}"
                          "&utm_campaign={slug}"}},
             "discovery_questions": [],
             "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
@@ -559,7 +559,7 @@ class TestNoLink:
                             "no_link": True,
                             "min_posts_to_evaluate": 10, "current_posts": 0}],
             "link_config": {"link_ratio_by_type": {"signal": 1.0}, "base_urls": {
-                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}"}},
+                "apply": "https://tashikame.app/ask?plan=review&c={slug}"}},
             "discovery_questions": [],
             "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
                                   "evaluation_threshold_posts": 10, "phase": "explore"},
@@ -577,7 +577,7 @@ class TestThreadLinkKeyOverride:
         data = json.loads((thread_account_dir / "hypotheses.json").read_text())
         data["hypotheses"][0]["link_key"] = "guide"
         data["link_config"]["base_urls"]["guide"] = (
-            "https://hisrecoveries.com/guide/{slug}"
+            "https://tashikame.app/guide/{slug}"
         )
         (thread_account_dir / "hypotheses.json").write_text(
             json.dumps(data, ensure_ascii=False)

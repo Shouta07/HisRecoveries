@@ -11,7 +11,9 @@
     "video:studio": "npm -w @hr/video run studio",
     "check:schema": "node scripts/check-schema.mjs",
     "check:copy": "node scripts/check-copy.mjs",
-    "prebuild": "node scripts/check-schema.mjs && node scripts/check-copy.mjs && node scripts/check-prices.mjs",
+    "prebuild": "node scripts/check-schema.mjs && node scripts/check-copy.mjs && node scripts/check-prices.mjs && node scripts/check-chrome.mjs && node scripts/check-domain.mjs",
+    "check:chrome": "node scripts/check-chrome.mjs",
+    "check:domain": "node scripts/check-domain.mjs",
     "check:prices": "node scripts/check-prices.mjs"
   },
   "dependencies": {

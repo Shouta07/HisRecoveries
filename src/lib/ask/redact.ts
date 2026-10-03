@@ -58,8 +58,31 @@ const RULES: Rule[] = [
   {
     kind: "sns",
     label: "SNSのアカウント名",
-    re: /(?:^|[\s(（「【])@[A-Za-z0-9._]{2,30}/g,
-    mask: " ［アカウント名］",
+    /* ── 日本語の句読点のあとが、漏れていた ──────────
+       前は直前を [\s(（「【] だけに限っていた。
+       日本語だと、こう書かれることのほうが多い。
+
+         電話は 090-1234-5678。@my_insta も見てほしい
+
+       「。」は一覧に無いので、@my_insta はそのまま残っていた。
+       実際に残っているのを見つけた。
+
+       直前は「アカウント名に使える字でないこと」だけ見る。
+       これで句読点・かっこ・日本語の文字が全部入る。
+
+       @ が付いた語をメールアドレスと間違えないこと:
+       メールの判定（email）はこれより先に動くので、
+       foo@example.com はここへ来る前に伏せられている。
+
+       直前の1文字は $1 で書き戻す。
+       消すと「。」が落ちて、文が1つにつながる。
+
+       数字だけのものは、アカウント名にしない:
+       広げた直後、「値段は1個@100円でした」の @100 を
+       伏せてしまった。日本語で @ は単価の意味でも使う。
+       英字か _ が1つは入っていることを求める。 */
+    re: /(^|[^A-Za-z0-9._@-])@(?=[0-9.]*[A-Za-z_])[A-Za-z0-9._]{2,30}/g,
+    mask: "$1［アカウント名］",
   },
   {
     kind: "sns_labeled",
@@ -128,6 +151,10 @@ export function mayContainName(text: string): boolean {
     { in: "LINE ID: taro_1234 を交換した", mustGo: "taro_1234", kind: "LINE ID" },
     { in: "インスタ → yuki.photo みてほしい", mustGo: "yuki.photo", kind: "SNSのアカウント名" },
     { in: "彼女の @kana_0101 を見た", mustGo: "@kana_0101", kind: "SNSのアカウント名" },
+    // 日本語の句読点のあと。空白で区切らない書き方のほうが多い
+    { in: "連絡はこれだけ。@my_insta も見てほしい", mustGo: "@my_insta", kind: "SNSのアカウント名" },
+    { in: "インスタは、@yuki.photo です", mustGo: "@yuki.photo", kind: "SNSのアカウント名" },
+    { in: "彼女@kana_0101 のストーリー", mustGo: "@kana_0101", kind: "SNSのアカウント名" },
     { in: "https://example.com/abc を送った", mustGo: "https://example.com/abc", kind: "リンク" },
     { in: "〒150-0001 に住んでいる", mustGo: "150-0001", kind: "郵便番号" },
     { in: "東京都渋谷区神宮前1-2-3 で待ち合わせ", mustGo: "神宮前1-2-3", kind: "住所" },
@@ -151,6 +178,39 @@ export function mayContainName(text: string): boolean {
   }
   if (out.findings.length !== 0) {
     throw new Error("普通の文から個人情報を検出しています（過検出）");
+  }
+
+  /* 直前の1文字を、消さないこと。
+     アカウント名の判定は直前の1文字を含めて拾うので、
+     書き戻さないと「。」が落ちて、前後の文が1つにつながる。 */
+  {
+    const src = "もう連絡はしない。@my_insta だけ見ている";
+    const r = redact(src);
+    if (!r.text.includes("しない。")) {
+      throw new Error(`アカウント名の手前の文字が消えています: ${src} → ${r.text}`);
+    }
+  }
+
+  /* メールアドレスを、アカウント名として半分だけ伏せないこと。
+     メールの判定が先に動いていることが前提になっている。 */
+  {
+    const r = redact("taro.yamada@example.co.jp に送った");
+    if (/［アカウント名］/.test(r.text)) {
+      throw new Error(`メールアドレスがアカウント名として扱われています: ${r.text}`);
+    }
+    if (!/［メールアドレス］/.test(r.text)) {
+      throw new Error(`メールアドレスが伏せられていません: ${r.text}`);
+    }
+  }
+
+  /* 単価の @ を、アカウント名として伏せないこと。
+     日本語では @ を「1個あたり」の意味でも書く。
+     伏せると、金額の話が読めなくなる。 */
+  for (const s of ["値段は1個@100円でした", "@1200 で買えた", "@2024 の話"]) {
+    const r = redact(s);
+    if (r.text !== s) {
+      throw new Error(`単価の@が伏せられています: ${s} → ${r.text}`);
+    }
   }
 
   if (!mayContainName("ゆいさんに送るLINE")) {

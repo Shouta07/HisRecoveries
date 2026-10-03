@@ -694,6 +694,77 @@ group by 1, 2
 order by 1 desc;
 
 
+-- ═══════════════════════════════════════════════════════════════
+-- 体験の予約
+--
+-- 決済の口が開くまで、相談する人の道は /ask で止まる。
+-- 文章の相談は手でも届けられるので、そのあいだはここで受ける。
+--
+-- ── 悩みを預かるのは、届ける気があるときだけ ──────────────
+-- talk_waitlist は連絡先しか持たない（買えないものの入口なので）。
+-- こちらは実際に読んでもらって返すので、確かめたいことも受け取る。
+-- ただし任意。書かずに申し込める。
+--
+-- ── 伏せ字をかけてから入れる ──────────────────────────────
+-- 電話番号・メール・LINE ID・SNS名・住所は、入る前に落とす
+-- （lib/ask/redact.ts）。何を落としたかだけ redacted に残す。
+--
+-- ── 回答者が揃っていない向きは、断らずに順番待ちで受ける ──
+-- 断ると、その向きの人が何人来たのか分からない。
+-- 分からないままだと、回答者を集める理由が作れない。
+create table if not exists trial_bookings (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  -- 相談する側の性別。どちらの回答者に渡すかが決まる
+  asker_gender text not null check (asker_gender in ('male', 'female')),
+  -- new       体験として受けた。これから連絡する
+  -- waitlist  回答者が揃っていない向き。揃ったら連絡する
+  -- contacted 連絡済み
+  -- done      返し終わった
+  -- declined  お断りした（こちらの都合で届けられなかった）
+  status text not null default 'new'
+    check (status in ('new', 'waitlist', 'contacted', 'done', 'declined')),
+  -- 確かめたいこと（伏せ字をかけたあと）。任意
+  topic text,
+  -- 何を伏せたか。本人に伝えるためだけに持つ
+  redacted text[],
+  utm_source text,
+  referrer_host text,
+  contacted_at timestamptz,
+  created_at timestamptz default now()
+);
+
+-- 同じ人が二度押しても増えない。大文字小文字は同じものとして扱う。
+create unique index if not exists trial_bookings_email_uniq
+  on trial_bookings (lower(email));
+
+-- 1日に受けた件数を数えるため（手で回せる数で止める）。
+create index if not exists trial_bookings_created_idx
+  on trial_bookings (created_at desc);
+
+-- 運営が見る順番。古いものから先に返す。
+-- 待たせている人を後回しにしないため、作成の古い順に並べる。
+create or replace view trial_queue as
+select
+  t.id,
+  t.email,
+  t.asker_gender,
+  t.status,
+  t.topic,
+  t.redacted,
+  t.utm_source,
+  t.created_at,
+  t.contacted_at,
+  -- 何時間待たせているか。返事の期限を超えたものが上に来る
+  round(extract(epoch from (now() - t.created_at)) / 3600) as waiting_hours
+from trial_bookings t
+where t.status in ('new', 'waitlist')
+order by
+  -- 体験として受けたものが先。順番待ちは回答者が揃ってから
+  case t.status when 'new' then 0 else 1 end,
+  t.created_at asc;
+
+
 -- 「話す」の順番待ち。
 -- まだ売れない商品の需要だけ先に測る。お金は受け取らない。
 -- 何に迷っているかは聞かない（買えないものの入口で悩みを預からせない）。

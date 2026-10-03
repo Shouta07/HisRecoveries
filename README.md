@@ -101,7 +101,7 @@ related: ["other-slug-1", "other-slug-2"]
 `.env.local` で以下を設定できます（すべて任意）。
 
 ```
-NEXT_PUBLIC_SITE_URL=https://hisrecoveries.com
+NEXT_PUBLIC_APP_URL=https://tashikame.app
 ```
 
 アナリティクスを使う場合は、`src/app/layout.tsx` にスクリプトタグを追加してください。
@@ -121,7 +121,7 @@ NEXT_PUBLIC_SITE_URL=https://hisrecoveries.com
 1. https://vercel.com/new で本リポジトリ（`Shouta07/HisRecoveries`）を Import
 2. **Framework Preset**: Next.js（自動検出）
 3. **Environment Variables** に以下を追加:
-   - `NEXT_PUBLIC_SITE_URL` = `https://hisrecoveries.com`
+   - `NEXT_PUBLIC_APP_URL` = `https://tashikame.app`
 4. 「Deploy」
 
 ### 本番ブランチを `main` に固定する設定
@@ -140,10 +140,10 @@ Vercel プロジェクト作成後、以下を **必ず確認**:
 
 ### 独自ドメイン
 
-1. Vercel プロジェクトの **Settings → Domains** で `hisrecoveries.com` を追加
+1. Vercel プロジェクトの **Settings → Domains** で `tashikame.app` を追加し、Primary にする
 2. ドメインレジストラ側で、表示された DNS レコード（A / CNAME）を設定
 3. Vercel が自動で HTTPS を有効化するのを待つ（数分〜数十分）
-4. `hisrecoveries.jp` も同じプロジェクトに追加し、`hisrecoveries.com` への
+4. 旧ドメイン `hisrecoveries.com` も同じプロジェクトに残し、`tashikame.app` への
    **Redirect** として設定（Vercel の Domains 画面で Redirect 設定可能）
 
 ### 日々の運用

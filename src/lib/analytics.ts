@@ -121,6 +121,13 @@ export const CONVERSION_EVENTS = [
   "safety_report_submitted", // 通報を出した（props: reason）
   "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
   "talk_waitlist", // 話す商品の順番待ちに登録した
+  /* 体験の入口（/trial）。決済が開くまで、ここが相談する人の入口になる。
+     見たいのは2つ。
+       どれだけ申し込まれたか（intake: trial / waitlist）
+       保存できずにメールへ回った数（trial_mailto）
+     後者が出ているあいだは、申し込みが取りこぼされている。 */
+  "trial_booked", // 体験を申し込んだ（props: intake）
+  "trial_mailto", // 保存できず、メールで送る側に回った
   // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
   "call_joined", // 通話に入れた（props: plan）
   "call_ended", // 通話が終わった（props: plan, reason）

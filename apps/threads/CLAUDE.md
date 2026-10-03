@@ -86,7 +86,7 @@ Threads の役割は「手が止まる瞬間に置かれること」。共感で
 2026-10-03 13:43 JST の実行で実際に出ていたもの:
 ```
 仮説   areas-face（顔の印象（/areasへ））
-CTA    https://hisrecoveries.com/areas/face?utm...
+CTA    https://tashikame.app/areas/face?utm...
 本文   「目の下のクマ、これ何だろう」——疲れだけじゃない気がしていた。
 結果   3投の連投を実投稿（head=18129975754750497, replies=2/2）
 ```

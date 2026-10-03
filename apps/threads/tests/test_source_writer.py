@@ -23,7 +23,7 @@ def source_account_dir(tmp_path):
     sources = {
         "sources": [{
             "id": "src-test",
-            "url": "https://hisrecoveries.com/areas/face?utm_campaign=src-test",
+            "url": "https://tashikame.app/areas/face?utm_campaign=src-test",
             "materials": {
                 "empathy": [f"共感の投稿{i}。鏡の前の話。" for i in range(1, 5)],
                 "insight": [f"気づきの投稿{i}。そう思っていた。でも違った。" for i in range(1, 5)],
@@ -48,7 +48,7 @@ class TestGenerateSourcePost:
             if r is None:
                 break
             seq.append(r["cta_variant"])
-            if "hisrecoveries.com" in r["text"]:
+            if "tashikame.app" in r["text"]:
                 url_count += 1
         assert len(seq) == 14
         assert Counter(seq) == {"empathy": 4, "insight": 4, "question": 3, "fact": 2, "cta": 1}
@@ -113,7 +113,7 @@ class TestGenerateSourcePost:
                             "topics": ["汗"], "status": "active",
                             "min_posts_to_evaluate": 10, "current_posts": 0}],
             "link_config": {"link_ratio_by_type": {"areas": 1.0}, "base_urls": {
-                "areas": "https://hisrecoveries.com/areas/{slug}?utm_campaign=areas-{slug}"}},
+                "areas": "https://tashikame.app/areas/{slug}?utm_campaign=areas-{slug}"}},
             "discovery_questions": [],
             "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
                                   "evaluation_threshold_posts": 10, "phase": "explore"},

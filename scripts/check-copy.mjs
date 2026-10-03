@@ -22,11 +22,15 @@
 //         記事の本文（clusters.ts）。売り込みを見分ける話で語そのものが出る。
 //         そちらは monetization.ts の PROMO_WORDS が見ている。
 
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
-const LOOK = ["src/app", "src/components", "src/lib/ask", "src/lib/responder"];
+const LOOK = [
+  "src/app", "src/components", "src/lib/ask", "src/lib/responder",
+  // 体験の入口の文。広告から最初に来る面なので、ここも見る。
+  "src/lib/trial.ts",
+];
 
 /**
  * voice.ts の SCARE と同じもの。ここを直したら両方直す。
@@ -114,7 +118,19 @@ async function files(dir) {
   try {
     entries = await readdir(join(ROOT, dir), { withFileTypes: true });
   } catch {
-    return found;
+    /* ── 1つのファイルを渡されたときに、黙って0件にしない ──
+       LOOK にはディレクトリだけが並んでいた。
+       ファイルを1つ足したら readdir が ENOTDIR で落ちて、
+       この catch が空配列を返し、そのファイルは見られないまま
+       「見ました」の扱いになっていた。
+
+       ファイルなら、それ1つを返す。
+       それ以外（存在しない）なら、ここで止める。
+       黙って0件にすると、確認したつもりで通ってしまう。 */
+    const st = await stat(join(ROOT, dir)).catch(() => null);
+    if (st?.isFile()) return /\.(tsx?|mdx?)$/.test(dir) ? [dir] : found;
+    console.error(`見る場所がありません: ${dir}`);
+    process.exit(1);
   }
   for (const e of entries) {
     const rel = `${dir}/${e.name}`;
