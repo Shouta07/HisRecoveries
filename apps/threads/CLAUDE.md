@@ -135,6 +135,13 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 
 ## 5. 環境変数／シークレット（2系統・別物）
 
+> **現状（2026-10-03 確認）: `THREADS_ACCESS_TOKEN` と `THREADS_USER_ID` が未設定。**
+> Actions のログに `THREADS_ACCESS_TOKEN is not set` が出ており、
+> 投稿・数値回収・過去投稿の削除は、どれも動かない（生成だけが承認キューに積まれる）。
+> `history.json` が空で `collect` が毎朝「0 posts」なのも同じ理由。
+> `threads-token-refresh.yml` も手動で Disable されている。
+> 入れる値の作り方は §6。
+
 **GitHub Secrets（自動投稿=Actions用）** Settings→Secrets and variables→Actions:
 - `THREADS_ACCESS_TOKEN`（@koikame.jp の長命トークン。**アカウント変更時はここ**）
 - `THREADS_USER_ID`（同アカウントのユーザーID）
@@ -169,6 +176,7 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 
 ## 8. 現状と次の候補
 
+- **最初にやること: GitHub Secrets（§5）。** トークンが無いあいだ、投稿は1本も出ない。
 - 実装済み: タシカメ一本化（生成プロンプトの persona 駆動化、5場面の連投、
   テンプレの {link} 修正、旧実験記録のリセット）、承認ゲート、連投投稿、
   管理ページ（編集・プレビュー・下書き・閲覧数分析＋検索）、過去取込、Vercel対応。
