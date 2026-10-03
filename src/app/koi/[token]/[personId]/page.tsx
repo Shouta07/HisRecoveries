@@ -9,6 +9,8 @@ import { toCard, appLabel, HEAT_LABEL } from "@/lib/koi/board";
 import { toTimeline } from "@/lib/koi/timeline";
 import Timeline from "@/components/koi/Timeline";
 import KoiFace from "@/components/koi/KoiFace";
+import BriefCard from "@/components/koi/BriefCard";
+import { briefFor } from "@/lib/koi/brief";
 
 // 相手1人の画面。
 //
@@ -58,6 +60,7 @@ export default async function PersonPage({
   });
   const eps = await recentEpisodes(params.token, params.personId, 10);
   const timeline = toTimeline(eps);
+  const brief = briefFor(row);
 
   const waiting =
     row.waiting_on === "partner" ? "相手の返事を待っています"
@@ -141,6 +144,25 @@ export default async function PersonPage({
             </p>
           )}
         </div>
+
+        {/* ── AIに渡す文章 ───────────────────────── */}
+        {/* ══════════════════════════════════════════
+            ここが「毎回説明しなくていい」の実体
+            ══════════════════════════════════════════
+            何を渡しているかを、本人が読める形で出す。
+            中に隠して渡すこともできるが、そうすると
+            何が外へ出るのか分からないまま貼ることになる。
+
+            恋愛の話なので、そこは見えていること。
+            間違っていたら、気づいて直せる。
+
+            何も分かっていないうちは出さない。
+            「Aさんの話です。」だけ渡しても意味が無い。 */}
+        {!brief.empty && (
+          <div className="mt-8">
+            <BriefCard text={brief.text} />
+          </div>
+        )}
 
         {/* ── 次に話す ─────────────────────────── */}
         {/* ══════════════════════════════════════════

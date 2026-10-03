@@ -9,6 +9,8 @@ import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
 import KoiFace from "@/components/koi/KoiFace";
 import Timeline from "@/components/koi/Timeline";
+import BriefCard from "@/components/koi/BriefCard";
+import { DEMO_BRIEF } from "@/lib/koi/briefDemo";
 import { DEMO_TIMELINE } from "@/lib/koi/timelineDemo";
 import { DEMO_TALK } from "@/lib/koi/demo";
 import SituationCardView from "@/components/koi/SituationCard";
@@ -1029,6 +1031,20 @@ export default async function HomePage() {
         <p className="mt-6 max-w-[30em] text-[15px] font-bold leading-[1.85] text-slate">
           次に話すときは、「Aさんなんやけど」から始められます。
         </p>
+
+        {/* ══════════════════════════════════════════
+            何を渡すのかを、見せる
+            ══════════════════════════════════════════
+            「前回の続きから相談できます」と書いても、
+            どうやって続くのかが分からない。
+
+            渡す文章そのものを出す。これを見れば、
+            毎回いちから説明しなくて済む理由が1秒で分かる。
+
+            文章は lib/koi/brief.ts が作る。実際に出るものと同じ。 */}
+        <div className="mt-5 max-w-[26em]">
+          <BriefCard text={DEMO_BRIEF} demo />
+        </div>
         <p className="mt-1.5 max-w-[30em] text-[13px] leading-[1.8] text-steel">
           相手が何人いても、それぞれ別に覚えています。
         </p>
