@@ -7,7 +7,7 @@
 Checkout に出る文言は、全部同じでなければならない。
 どれか1つでも違っていたら、それは審査に対する虚偽になる。
 
-作成 2026-09-30 ／ 対象 https://hisrecoveries.com
+作成 2026-09-30 ／ 対象 https://tashikame.app
 
 ---
 
@@ -189,9 +189,9 @@ AIが行うのは、相談内容の整理、文脈の要約、論点の整理、
 また、ユーザーと女性回答者とのあいだに売買その他の契約が
 成立しないことも、同条に明記しています。
 
-利用規約   https://hisrecoveries.com/terms
-特定商取引法に基づく表記  https://hisrecoveries.com/legal
-プライバシー  https://hisrecoveries.com/privacy
+利用規約   https://tashikame.app/terms
+特定商取引法に基づく表記  https://tashikame.app/legal
+プライバシー  https://tashikame.app/privacy
 ```
 
 ---
@@ -217,7 +217,7 @@ AIが行うのは、相談内容の整理、文脈の要約、論点の整理、
 
 ・返金は、決済に用いられた方法により行います
 
-全文：https://hisrecoveries.com/legal
+全文：https://tashikame.app/legal
 ```
 
 ---
@@ -257,7 +257,7 @@ AIが行うのは、相談内容の整理、文脈の要約、論点の整理、
 ```
 メール：contact@vitality-design.jp
 所在地・電話番号・代表者名：
-  https://hisrecoveries.com/legal に掲載
+  https://tashikame.app/legal に掲載
 ```
 
 ---

@@ -203,8 +203,8 @@ export const ONE_LINER = "選ぶ前に、確かめられる。";
  * ══════════════════════════════════════════════════
  * 住所と、店名は違う
  * ══════════════════════════════════════════════════
- * 住所は hisrecoveries.com のままでいい。
- * ただしタブに出るのは店名であるべきで、
+ * 住所は tashikame.app になった（2026-10-03）。
+ * それでもタブに出るのは店名であるべきで、
  * 「His Recoveries」では何の店か分からない。
  *
  * 「タシカメ｜マチアプで迷ったら、女性に確かめる」。
@@ -559,7 +559,7 @@ export function assertWeight(text: string, where: string): string {
     throw new Error(`タブの名乗りが長すぎます（${TAB_TITLE.length}文字）`);
   }
   // ── 住所を店名にしないこと ──────────────────
-  // hisrecoveries.com は住所であって、店名ではない。
+  // 住所は住所であって、店名ではない。
   if (/His Recoveries/i.test(TAB_TITLE)) {
     throw new Error("タブの名乗りが、住所の名前になっています");
   }

@@ -35,7 +35,7 @@ export const DRIVE_ROOT =
 // 画面内表示は API 連携（GA4 Data API / Search Console API）が必要。
 export const EXTERNAL_LINKS = {
   searchConsole:
-    "https://search.google.com/u/5/search-console?resource_id=https%3A%2F%2Fhisrecoveries.com%2F",
+    "https://search.google.com/u/5/search-console?resource_id=https%3A%2F%2Ftashikame.app%2F",
   analytics:
     "https://analytics.google.com/analytics/web/?authuser=5#/a396283552p539570437/reports/intelligenthome",
   drive: "https://drive.google.com/drive/folders/1xThBT2L4-ImeEIYTyWVx6qMpRmYmcEZ3",

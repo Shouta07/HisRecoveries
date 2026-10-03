@@ -1,6 +1,6 @@
 # SEO / GEO 運用手順（Search Console ほか）
 
-> 対象: His Recoveries（hisrecoveries.com）
+> 対象: タシカメ（tashikame.app。2026-10-03 に hisrecoveries.com から移した）
 > 前提: GA4（G-DWTE9DWQ0S）導入済み、sitemap.xml / llms.txt / 構造化データ（Article・FAQPage・Breadcrumb）実装済み、robots は主要AIクローラを全許可済み。
 
 ---
@@ -11,7 +11,7 @@
 1. https://search.google.com/search-console → プロパティを追加。
 2. **「ドメイン」プロパティ**を推奨（DNS TXT で確認 → www有無/httpsをまとめて計測）。
    - 取得した TXT レコードをドメインの DNS に追加。
-   - DNS をいじれない場合は **「URL プレフィックス」プロパティ**（`https://hisrecoveries.com/`）にし、**GA4 連携で所有権確認**（GA4 が入っているので最短）。
+   - DNS をいじれない場合は **「URL プレフィックス」プロパティ**（`https://tashikame.app/`）にし、**GA4 連携で所有権確認**（GA4 が入っているので最短）。
 
 ### 1-2. サイトマップ送信
 - 「サイトマップ」→ `sitemap.xml` を送信。
@@ -19,13 +19,13 @@
 
 ### 1-3. 主要URLのインデックス登録リクエスト
 「URL 検査」に以下を入れて **インデックス登録をリクエスト**：
-- `https://hisrecoveries.com/`
-- `https://hisrecoveries.com/areas/hair`
-- `https://hisrecoveries.com/areas/sweat`
-- `https://hisrecoveries.com/areas/skin`
-- `https://hisrecoveries.com/areas/face`
-- `https://hisrecoveries.com/areas/body-hair`
-- `https://hisrecoveries.com/areas/self`
+- `https://tashikame.app/`
+- `https://tashikame.app/areas/hair`
+- `https://tashikame.app/areas/sweat`
+- `https://tashikame.app/areas/skin`
+- `https://tashikame.app/areas/face`
+- `https://tashikame.app/areas/body-hair`
+- `https://tashikame.app/areas/self`
 
 ### 1-4. 旧URLの掃除（古いインデックス対策）
 - 古い `/about`・`/legal` 等は `next.config.mjs` で 301 リダイレクト済み。
@@ -53,7 +53,7 @@
 
 ## 3. GEO（生成エンジン最適化）の確認
 
-- `https://hisrecoveries.com/llms.txt` が現行内容で配信されているか確認（AI クローラ向け要約）。
+- `https://tashikame.app/llms.txt` が現行内容で配信されているか確認（AI クローラ向け要約）。
 - `robots.txt`（`/robots.txt`）で GPTBot・ClaudeBot・PerplexityBot・Google-Extended 等が allow になっているか確認（実装済み）。
 - 各 `/areas` ページの**冒頭「要点」**と**FAQ**が、AIに抽出されやすい自己完結文になっているか（実装済み）。
 - 出典（引用）を入れるほど、AI が「根拠つき」で引用しやすくなる → `citations.ts` を充実。

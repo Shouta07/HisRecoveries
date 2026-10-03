@@ -2,8 +2,16 @@
 
 作成 2026-09-30
 
-koikame.jp を取得した。**まだ何の住所にするかは決めていない。**
-決めたときに、ここを見れば足りるようにしておく。
+**2026-10-03、住所を `https://tashikame.app/` に決めた。**
+選んだのは **A（サイト全体を移す）**。
+
+リポジトリ側の差し替えは済んでいる（下の「いま、どこに住所が書いてあるか」は
+全部直した）。**残っているのは、コードの外の手順だけ**（下の「手順」）。
+
+> koikame.jp も持っているが、住所には使わなかった。
+> Threads のハンドルは `@koikame.jp` のままなので、ハンドルと住所は一致しない。
+> 「この亀なんなん」→ プロフィール → 住所、の流れで一度またぐことになる。
+> それを承知のうえで、サービス名（タシカメ）と住所を揃えるほうを採った。
 
 サービス名は「タシカメ」のまま。住所と名前は別のもの。
 
@@ -15,11 +23,11 @@ koikame.jp を取得した。**まだ何の住所にするかは決めていな�
 
 | 場所 | 中身 | 移すとき |
 |---|---|---|
-| `src/lib/site.ts:26` | `process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com"` | **環境変数で上書きできる。** 既定値も直す |
-| `src/lib/studio.ts:38` | Search Console のリンク（運営画面） | 直す |
-| `apps/threads/.../hypotheses.json` | Threads の CTA | 直す |
-| `apps/threads/.../content_sources.json` | 同上 | 直す |
-| `apps/threads/.../seo_clusters.json` | 同上 | 直す |
+| `src/lib/site.ts` | `process.env.NEXT_PUBLIC_SITE_URL ?? "https://tashikame.app"` | **済**（環境変数のほうが優先される） |
+| `src/lib/studio.ts` | Search Console のリンク（運営画面） | **済** |
+| `apps/threads/.../hypotheses.json` | Threads の CTA | **済** |
+| `apps/threads/.../content_sources.json` | 同上 | **済** |
+| `apps/threads/.../seo_clusters.json` | 同上 | **済** |
 | `next.config.mjs` の `redirects()` | source は `/how` のような相対パス | **直さなくてよい**（住所に依らない） |
 | `src/lib/clusters.ts`（記事55本の本文） | **0件** | 直さなくてよい |
 
@@ -63,10 +71,11 @@ canonical・OGP・sitemap・robots・feed は、すべて `site.url` を読ん�
 
 - [ ] Vercel にドメインを追加し、DNS を向ける
 - [ ] **旧ドメインを手放さない。** 301 を返し続ける設定にする
-- [ ] `NEXT_PUBLIC_SITE_URL` を新しい住所にする
-- [ ] `site.ts` の既定値も直す（環境変数が無い環境でずれないように）
-- [ ] `studio.ts` の Search Console リンク
-- [ ] Threads の3ファイル（CTA が旧住所のままだと、押した人が301を1回踏む）
+- [ ] `NEXT_PUBLIC_SITE_URL` を新しい住所にする（既定値が tashikame.app なので、
+      **変数を消すだけでもよい**。旧住所のまま止めたいときだけ明示的に入れる）
+- [x] `site.ts` の既定値も直す（環境変数が無い環境でずれないように）
+- [x] `studio.ts` の Search Console リンク
+- [x] Threads の3ファイル（CTA が旧住所のままだと、押した人が301を1回踏む）
 
 ### 2. 出したあと
 
@@ -78,8 +87,15 @@ canonical・OGP・sitemap・robots・feed は、すべて `site.url` を読ん�
 
 ### 3. 決済まわり
 
-- [ ] `docs/STRIPE_REVIEW.md` §16 の URL 一覧
-- [ ] `docs/STRIPE_APPLICATION.md` の URL
+> **ドメインが生きる前にデプロイしない。**
+> Checkout の `success_url` / `cancel_url` は `site.url` から作る。
+> 住所が引けない状態で決済を通すと、**払ったあとに行き先が無い**。
+> Vercel にドメインを足して DNS が通るのが先。
+> 先にコードを出したいときは、`NEXT_PUBLIC_SITE_URL` に旧住所を入れて止めておく。
+
+
+- [x] `docs/STRIPE_REVIEW.md` §16 の URL 一覧
+- [x] `docs/STRIPE_APPLICATION.md` の URL
 - [ ] Stripe に事業内容を出したあとなら、**住所が変わったことを伝える**
       （申請時と違うドメインで決済が動いていると、そこを聞かれる）
 - [ ] Checkout の `success_url` / `cancel_url` は `site.url` から作っているので、

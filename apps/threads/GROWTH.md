@@ -35,19 +35,25 @@ export const koiEnabled = Boolean(KEY);
 鍵が入るまで、投稿 C・D は「恋亀と話す」ではなく
 **「実在する女性に確カメる」**を書く（§4.3）。
 
-### 0.2 `tashikame.app` が無い
+### 0.2 住所 — 決まった
 
-- 実際に持っているドメインは **`koikame.jp`**（`docs/DOMAIN_MIGRATION.md`、2026-09-30 取得）
-- `NEXT_PUBLIC_SITE_URL` の既定は `https://hisrecoveries.com`
-- `tashikame.app` はコードのどこにも無い
+**`https://tashikame.app/`**（2026-10-03）。差し替えは済んでいる。
 
-ブリーフが `tashikame.app` 前提なので、**どれを住所にするかを先に決める**。
-決めるまで、プロフィールと投稿に書く URL は確定できない。
+- `src/lib/site.ts` の既定値（canonical・OGP・sitemap・feed・Checkout が全部ここを読む）
+- Threads の CTA（`hypotheses.json` / `content_sources.json` / `seo_clusters.json`）
+- Search Console のリンク、Stripe 申請の URL 一覧
 
-> ハンドルは `@koikame.jp`、サービス名は「タシカメ」。
-> 住所が `tashikame.app` だと、**Threads のハンドルと住所が一致しない**。
-> 「この亀なんなん」→ プロフィール → 住所、の流れで一度つまずく。
-> `koikame.jp` を住所にすると、ハンドル・キャラクター・住所が揃う。
+**残っているのはコードの外**（`docs/DOMAIN_MIGRATION.md` の「手順」）。
+Vercel にドメインを足す・DNS を向ける・旧住所から301・Search Console の
+アドレス変更・Stripe への連絡。
+
+> **ドメインが生きる前にデプロイしない。** Checkout の `success_url` は
+> `site.url` から作るので、住所が引けない状態で決済を通すと、
+> 払ったあとに行き先が無い。
+
+> ハンドルは `@koikame.jp` のままなので、**ハンドルと住所は一致しない**。
+> 「この亀なんなん」→ プロフィール → 住所、で一度またぐ。
+> プロフィールの最後の行で、亀と住所がつながって見えるようにしておく（§2）。
 
 ### 0.3 課金の先が「確カメる」のまま
 
@@ -159,8 +165,11 @@ Threads でも同じだけ効く。
 LINE・デート・相手の温度感について喋ってます。
 迷ったら、人にも確カメる。
 ↓
-（住所は §0.2 で決める）
+tashikame.app
 ```
+
+ハンドル（`@koikame.jp`）と住所（`tashikame.app`）が違うので、
+**「確カメる」の一行が、2つをつなぐ唯一の手がかり**になる。ここは削らない。
 
 - 「人にも確カメる」は、いま売っているものと一致している（§0.3）。そのまま使える
 - 企業名は出さない。**法務情報はサイト側**（特商法・規約）で正確に出す
@@ -410,7 +419,8 @@ Dは全体の1割＝**週に2本ほど**。ここだけ人が見ても手間は�
 > 旧事業（His Recoveries）の153件は 2026-10-03 に削除済み。
 > アカウントは空の状態から始まる。
 
-- [ ] **住所を決める**（§0.2）。`koikame.jp` / `tashikame.app` / 据え置き
+- [x] **住所を決める**（§0.2）→ `tashikame.app`。コード側は差し替え済み
+- [ ] Vercel にドメインを足して DNS を向ける（`docs/DOMAIN_MIGRATION.md`）
 - [ ] **音声の鍵を入れるかどうか**（§0.1）。入らないなら C・D は確カメる版で書く
 - [ ] 1日2時間を30日続けられるかを決める（§6）
 
@@ -470,6 +480,7 @@ Dは全体の1割＝**週に2本ほど**。ここだけ人が見ても手間は�
 | 8 | 代弁チェック（`NEVER` と同じ線） | `core/validator.py`, `src/lib/threadsEval.ts` |
 | — | 投稿枠を1日3本に | `threads-post.yml`, `threads-post-approved.yml` |
 | — | A・B・C の自動承認（上限・KILL_SWITCH つき） | `core/approvals.py`, `core/main.py` |
+| 4 | 住所を `tashikame.app` に | `site.ts`, `studio.ts`, Threadsの3ファイル, 決済の文書 |
 | — | 1回の投稿本数を1本に絞る | `core/main.py` の `run_approved_cycle` |
 | — | 管理ページ・シート連携を型に向け直し | `admin/server.py`, `core/sheets_sync.py` |
 
@@ -482,7 +493,7 @@ Dは全体の1割＝**週に2本ほど**。ここだけ人が見ても手間は�
 
 | # | 何を | いつ | 詰まり |
 |---|---|---|---|
-| 4 | 住所の差し替え | Phase 0 の決定後 | §0.2 |
+
 | — | C・D を「恋亀に話す」版へ | 音声の鍵が入ったら | §0.1 |
 | 7 | プロフィール閲覧の取得 | Phase 2 | Threads Insights の口を足す |
 | 9 | テーマ別の週次集計 | Phase 3 | 母数が溜まってから |

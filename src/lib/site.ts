@@ -31,15 +31,30 @@ export const site = {
   // 人数は plans.ts と突き合わせて、ずれたら公開を止める（下の確認）。
   description:
     "タシカメは、マッチングアプリで迷った男性が、実在する女性に見てもらえるサービスです。LINEの文面、誘い方、自己紹介文、写真。1回につき実在する女性3人が読み、それぞれどう受け取ったかと、その理由が返ってきます。通話で話すこともできます。効果や結果の保証はしません。",
+  // ══════════════════════════════════════════════
+  // 住所は tashikame.app（2026-10-03 に決めた）
+  // ══════════════════════════════════════════════
+  // canonical・OGP・sitemap・robots・feed・Checkout の success_url が
+  // すべてここを読む。だから、ここを変えれば全部ついてくる。
+  //
+  // 環境変数のほうが優先される。Vercel にドメインを足して DNS が
+  // 通るまでは、NEXT_PUBLIC_SITE_URL に旧住所を入れて止めておける。
+  //
+  // 旧住所（hisrecoveries.com）は手放さない。301 を返し続けているあいだに、
+  // 記事55本の検索評価が新しい住所へ移っていく。手順は
+  // docs/DOMAIN_MIGRATION.md。
   url:
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://tashikame.app",
   author: "His Recoveries",
   // authorBio を消した。旧事業（第一印象改善・ウェルネス伴走）の説明が
   // 入ったまま残っていたが、読んでいる場所が1つも無かった。
   handle: "@his_recoveries",
   email: "contact@vitality-design.jp",
   social: {
-    threads: "https://www.threads.com/@hisrecoveries_jp",
+    // 旧事業のアカウント（@hisrecoveries_jp）のままだった。
+    // socialSameAs → schema.org の sameAs に出るので、
+    // 持っていないアカウントを「うちのもの」と出していた。
+    threads: "https://www.threads.com/@koikame.jp",
     x: "https://x.com/his_recoveries",
     note: "https://note.com/his_recoveries",
     substack: "https://hisrecoveries.substack.com",

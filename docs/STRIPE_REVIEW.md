@@ -1,6 +1,6 @@
 # Stripe 事業審査 提出資料（タシカメ）
 
-作成 2026-09-30 ／ 対象 https://hisrecoveries.com
+作成 2026-09-30 ／ 対象 https://tashikame.app
 
 この文書は、Stripe の事業審査に対して事実を説明するためのもの。
 **「Stripe に通すための見せ方」ではない。** ここに書いてあることと、
@@ -331,11 +331,11 @@ Checkout の表示・実装は、すべて一致している必要がある。
 
 | 面 | URL |
 |---|---|
-| トップ | https://hisrecoveries.com/ |
-| 料金 | https://hisrecoveries.com/plans |
-| 利用規約 | https://hisrecoveries.com/terms |
-| 特定商取引法に基づく表記 | https://hisrecoveries.com/legal |
-| プライバシー・免責事項 | https://hisrecoveries.com/privacy |
+| トップ | https://tashikame.app/ |
+| 料金 | https://tashikame.app/plans |
+| 利用規約 | https://tashikame.app/terms |
+| 特定商取引法に基づく表記 | https://tashikame.app/legal |
+| プライバシー・免責事項 | https://tashikame.app/privacy |
 
 トップのフッターから、運営会社名・所在地・連絡先と上記3つの法務面へ
 1クリックで到達できる。決済直前の画面からも同じ3つへリンクしている。
@@ -418,10 +418,10 @@ Stripe の決済フローとは分離しています（Connect は使用して�
 事業内容の詳細、利用規約、特定商取引法に基づく表記は
 以下でご確認いただけます。
 
-  サービス      https://hisrecoveries.com/
-  利用規約      https://hisrecoveries.com/terms
-  特商法表記    https://hisrecoveries.com/legal
-  プライバシー  https://hisrecoveries.com/privacy
+  サービス      https://tashikame.app/
+  利用規約      https://tashikame.app/terms
+  特商法表記    https://tashikame.app/legal
+  プライバシー  https://tashikame.app/privacy
 
 ご確認のほど、よろしくお願いいたします。
 ```

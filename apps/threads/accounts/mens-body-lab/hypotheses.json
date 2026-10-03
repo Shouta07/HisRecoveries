@@ -186,7 +186,7 @@
   "link_config": {
     "note": "リンクを置くのは D（告知）だけ。A・B・C はリンク無しで回し、送客はプロフィールが担う（GROWTH.md §5）。リンクを置くかどうかは post_forms.json の category.link が決めるので、ここの比率は使わない。utm_content には投稿ごとの追跡コードが入る。これが無いと、どの投稿が効いたかを1本ずつ見られない（GROWTH.md §7）。",
     "base_urls": {
-      "apply": "https://hisrecoveries.com/ask?plan=first&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}&utm_content={code}"
+      "apply": "https://tashikame.app/ask?plan=first&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}&utm_content={code}"
     }
   },
   "discovery_questions": [

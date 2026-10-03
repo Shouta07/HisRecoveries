@@ -59,10 +59,10 @@
     {
       "id": "20261001173219082672",
       "account_id": "mens-body-lab",
-      "status": "pending",
+      "status": "rejected",
       "created_at": "2026-10-01T17:32:19.082686",
-      "decided_at": null,
-      "decided_by": null,
+      "decided_at": "2026-10-03T09:18:27.273152",
+      "decided_by": "claude (恋亀への切り替えで作り直し。旧テーマ・旧住所のため)",
       "posted_at": null,
       "payload": {
         "text": "文面はもうできてる。\n誤字もない。\nそれでも送信ボタンの前で止まる。",
@@ -109,10 +109,10 @@
     {
       "id": "20261002165133535444",
       "account_id": "mens-body-lab",
-      "status": "pending",
+      "status": "rejected",
       "created_at": "2026-10-02T16:51:33.535465",
-      "decided_at": null,
-      "decided_by": null,
+      "decided_at": "2026-10-03T09:18:27.273173",
+      "decided_by": "claude (恋亀への切り替えで作り直し。旧テーマ・旧住所のため)",
       "posted_at": null,
       "payload": {
         "text": "何度読み返しても、分かるのは「自分がどう読むか」だけ。\n受け取る側の目は、自分の中には無い。",
@@ -131,10 +131,10 @@
     {
       "id": "20261003042216882601",
       "account_id": "mens-body-lab",
-      "status": "pending",
+      "status": "rejected",
       "created_at": "2026-10-03T04:22:16.882617",
-      "decided_at": null,
-      "decided_by": null,
+      "decided_at": "2026-10-03T09:18:27.273174",
+      "decided_by": "claude (恋亀への切り替えで作り直し。旧テーマ・旧住所のため)",
       "posted_at": null,
       "payload": {
         "text": "送る前に手が止まったこと、ありますか。",
