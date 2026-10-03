@@ -1,5 +1,6 @@
 import { advisorWord } from "../who";
 import { PASS_YEN, INCLUDED, VOICE_MINUTES_PER_MONTH, HUMAN_PER_MONTH } from "./entitle";
+import { koiEnabled } from "../koi/gate";
 
 /* ══════════════════════════════════════════════════
    月額を、何として売るか
@@ -84,8 +85,11 @@ export const MANAGE_NOTE =
   /* 上限を、買う前に書くこと。
      買ったあとで知ると、それだけで解約の理由になる。 */
   const shown = INCLUDED.join("");
-  if (!shown.includes(`${VOICE_MINUTES_PER_MONTH}分`)) {
-    throw new Error("月額に含まれるものに、話せる分数が書かれていません");
+  /* 分数は、音声が開いているときだけ。
+     同じことを entitle.ts でも見ている。
+     こちらは「買う前に上限が書いてあるか」を見る側。 */
+  if (koiEnabled && !shown.includes(`${VOICE_MINUTES_PER_MONTH}分`)) {
+    throw new Error("声で話せるのに、含まれるものに分数が書かれていません");
   }
   if (!shown.includes(`月${HUMAN_PER_MONTH}回`)) {
     throw new Error("月額に含まれるものに、確カメる回数が書かれていません");

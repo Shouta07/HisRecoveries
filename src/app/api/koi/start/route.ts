@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { makeTalkerToken } from "@/lib/ask/token";
-import { koiEnabled } from "@/lib/koi/gate";
 
 // 話す人の鍵を発行する。
 //
@@ -20,12 +19,22 @@ import { koiEnabled } from "@/lib/koi/gate";
 // ══════════════════════════════════════════════════
 // ブラウザでも作れるが、短い鍵や使い回しを選べてしまう。
 // 乱数の質をこちらで持つ。
+//
+// ══════════════════════════════════════════════════
+// 鍵が無くても動く
+// ══════════════════════════════════════════════════
+// 会話は ChatGPT でしてもらうので、こちらに音声の鍵は要らない。
+// 要るのは整理のAIだけで、それは貼られたあとに1回呼ぶ。
 
 export const runtime = "edge";
 
 export async function POST() {
-  if (!koiEnabled) {
-    return NextResponse.json({ error: "いま恋亀と話せません。" }, { status: 503 });
-  }
+  /* ── 鍵（REALTIME_API_KEY）で止めない ──────────────
+     ここは前、koiEnabled を見て 503 を返していた。
+     声でつなぐことが前提だったころの名残。
+
+     会話は ChatGPT でしてもらう形にしたので、
+     鍵が1本も無くても、鍵の発行も整理も記録も回る。
+     ここで止めると、貼る道ごと止まる（実際に止まった）。 */
   return NextResponse.json({ talker: makeTalkerToken() });
 }

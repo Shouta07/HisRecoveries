@@ -1,4 +1,5 @@
 import { advisorWord } from "../who";
+import { koiEnabled } from "../koi/gate";
 /* ══════════════════════════════════════════════════
    月額に、何がどれだけ含まれるか
    ══════════════════════════════════════════════════
@@ -45,6 +46,28 @@ import { advisorWord } from "../who";
 
 /** 月額。Stripe の Price ID は環境変数で持つ（コードに書かない） */
 export const PASS_YEN = 2980;
+
+/**
+ * はじめの100人の値段。
+ *
+ * ══════════════════════════════════════════════════
+ * 「安いから入る」にしない
+ * ══════════════════════════════════════════════════
+ * 値引きではなく、まだ出来上がっていないものに
+ * 最初から付き合ってもらうぶんの値段。
+ *
+ * 「今だけ」「先着」とは書かない（voice.ts の CHEAP）。
+ * 書くのは「はじめの100人」という事実だけ。
+ * 100人に達したら、この値段は無くなる。
+ *
+ * ── こちらも採算を通すこと ──────────────────────
+ * 下の確認は、両方の値段で見る。
+ * 安いほうが床を割っていたら、公開の前に止まる。
+ */
+export const EARLY_YEN = 1980;
+
+/** はじめの何人まで、その値段か */
+export const EARLY_SEATS = 100;
 
 /**
  * 月に、異性3人へ確カメられる回数。
@@ -157,11 +180,15 @@ export const HUMAN_OVER =
   "今月のぶんは、もう使ってるみたい。来月からまた聞けるで。";
 
 /** 月額に含まれるもの。画面に出す言葉 */
+/* 含まれるもの。
+   開いていないものを書かない。
+   音声は鍵が入っているときだけ出す（閉じているのに
+   「月50分まで」と書くと、申し込めないものを売ることになる）。 */
 export const INCLUDED: string[] = [
-  "恋亀と話す（月50分まで）",
+  "相手ごとに、話したことが残る",
   "前回の続きから話せる",
-  "相手ごとの記録（EP）",
   "次にやることが1つ残る",
+  ...(koiEnabled ? [`恋亀と声で話す（月${VOICE_MINUTES_PER_MONTH}分まで）`] : []),
   `月${HUMAN_PER_MONTH}回、実在する${advisorWord()}${PANEL_SIZE}人に確カメる`,
 ];
 
@@ -174,19 +201,42 @@ export const INCLUDED: string[] = [
   const refund = Math.round(PASS_YEN * 0.03);
   const misc = 10;
   const human = PANEL_SIZE * PANEL_REWARD * HUMAN_USE_RATE * HUMAN_PER_MONTH;
-  const voice = VOICE_MINUTES_PER_MONTH * VOICE_COST_PER_MIN;
-  const variable = fee + refund + misc + human + voice;
-  const margin = (PASS_YEN - variable) / PASS_YEN;
 
-  if (margin < PASS_MARGIN_FLOOR) {
-    throw new Error(
-      `月額の限界利益率が ${(margin * 100).toFixed(1)}% です（${Math.round(
-        PASS_MARGIN_FLOOR * 100,
-      )}% 以上）。` +
-        `音声の上限 ${VOICE_MINUTES_PER_MONTH}分（¥${voice}）か、` +
-        `確カメるの回数（¥${Math.round(human)}）を見直してください`,
-    );
+  /* ══════════════════════════════════════════════
+     音声は、開いているときだけ原価に乗る
+     ══════════════════════════════════════════════
+     会話は ChatGPT でしてもらう形にした。
+     本人が自分の ChatGPT で話し、会話をこちらに貼る。
+     こちらが払うのは、整理のAIを1回呼ぶぶんだけ。
+
+     声を自前でつなぐ道（/koi の音声）は、鍵が入っているときだけ開く。
+     そのときだけ、月50分ぶんを原価に乗せる。
+
+     これを「常に乗る」としていたころ、
+     はじめの100人の値段（¥1,980）が 34.8% で床を割っていた。
+     実際には音声を開いていないので、割っていなかった。 */
+  const voice = koiEnabled ? VOICE_MINUTES_PER_MONTH * VOICE_COST_PER_MIN : 0;
+  /* 整理のAI。会話1回ぶんを数回。声に比べると桁が違うので、
+     細かく置かずに丸めてある（misc とは別に見えるようにしておく）。 */
+  const ai = 20;
+  const variable = fee + refund + misc + human + voice + ai;
+
+  /* 両方の値段で見る。
+     安いほうだけが床を割る、が起きる。 */
+  for (const [name, yen] of [["通常", PASS_YEN], ["はじめの100人", EARLY_YEN]] as const) {
+    const m = (yen - variable) / yen;
+    if (m < PASS_MARGIN_FLOOR) {
+      throw new Error(
+        `${name}の月額（¥${yen}）の限界利益率が ${(m * 100).toFixed(1)}% です（${Math.round(
+          PASS_MARGIN_FLOOR * 100,
+        )}% 以上）。` +
+          (voice ? `音声の上限 ${VOICE_MINUTES_PER_MONTH}分（¥${voice}）か、` : "") +
+          `確カメるの回数（¥${Math.round(human)}）を見直してください`,
+      );
+    }
   }
+  const margin = (PASS_YEN - variable) / PASS_YEN;
+  if (margin < PASS_MARGIN_FLOOR) throw new Error("採算の計算が壊れています");
 
   // 使い放題と書かないこと。書かなければ守れる。
   for (const t of [...INCLUDED, VOICE_OVER, HUMAN_OVER]) {
@@ -197,8 +247,18 @@ export const INCLUDED: string[] = [
 
   // 上限があることを、含まれるものの中に書くこと。
   // 書いていないと、当たったときに「聞いてない」になる。
-  if (!INCLUDED.some((t) => t.includes(`${VOICE_MINUTES_PER_MONTH}分`))) {
-    throw new Error("月額の説明に、話せる分数が書かれていません");
+  /* 分数は、音声が開いているときだけ書くこと。
+     閉じているのに「月50分まで」と書くと、
+     申し込めないものを売っていることになる。
+     開いているのに書かないと、当たったときに「聞いてない」になる。 */
+  {
+    const written = INCLUDED.some((t) => t.includes(`${VOICE_MINUTES_PER_MONTH}分`));
+    if (koiEnabled && !written) {
+      throw new Error("声で話せるのに、月額の説明に分数が書かれていません");
+    }
+    if (!koiEnabled && written) {
+      throw new Error("声で話せないのに、月額の説明に分数が書かれています");
+    }
   }
   if (!INCLUDED.some((t) => t.includes(`月${HUMAN_PER_MONTH}回`))) {
     throw new Error("月額の説明に、確カメる回数が書かれていません");

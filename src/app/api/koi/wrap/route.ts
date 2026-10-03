@@ -6,6 +6,7 @@ import { readTalkUpdate } from "@/lib/talk/shape";
 import { cardOf } from "@/lib/koi/card";
 import { buildStructurePrompt, STRUCTURE_MODEL, STRUCTURE_URL } from "@/lib/koi/structure";
 import { ownedBy, addEpisode } from "@/lib/koi/store";
+import { readPaste } from "@/lib/koi/handoff";
 import { dbAdminEnabled } from "@/lib/db";
 
 // 話し終わったあと、会話を1枚のカードにする。
@@ -41,11 +42,17 @@ const TRANSCRIPT_MAX = 12000;
 type Line = { who: string; say: string };
 
 export async function POST(req: NextRequest) {
-  if (!koiEnabled) {
-    return NextResponse.json({ error: "いま恋亀と話せません。" }, { status: 503 });
-  }
+  /* ここは、鍵（REALTIME_API_KEY）が無くても動く。
+     声でつなぐのは /api/koi/session のほうで、
+     こちらは「貼られた会話を整理する」だけだから。
 
-  let body: { talker?: unknown; personId?: unknown; who?: unknown; lines?: unknown };
+     会話を ChatGPT でしてもらう形にしたので、
+     鍵が1本も無い状態でも、整理と記録は回る。 */
+
+  let body: {
+    talker?: unknown; personId?: unknown; who?: unknown;
+    lines?: unknown; paste?: unknown;
+  };
   try {
     body = await req.json();
   } catch {
@@ -57,9 +64,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "この会話は見つかりません" }, { status: 400 });
   }
 
-  const lines = Array.isArray(body.lines) ? (body.lines as Line[]) : [];
-  if (lines.length < 2) {
+  /* 受け取り方は2つ。
+       lines  こちらの画面で話したとき（/koi の音声）
+       paste  ChatGPT で話して、貼って持ち帰ったとき
+
+     貼られたものの読み取りは、こちらでやる。
+     画面側でやると、読み方を変えるたびに両方直すことになる。 */
+  const lines: Line[] = Array.isArray(body.lines)
+    ? (body.lines as Line[])
+    : typeof body.paste === "string"
+      ? readPaste(body.paste)
+      : [];
+
+  if (lines.length < 1) {
+    return NextResponse.json({ error: "話した内容が空です" }, { status: 400 });
+  }
+  if (lines.length < 2 && lines[0].say.length < 40) {
     // 2往復に満たないものは、整理しても何も出ない。呼ばない。
+    // 短すぎるものは、整理しても何も出ない。呼ばない（料金も無駄になる）
     return NextResponse.json({ error: "まだ整理できるほど話していません" }, { status: 400 });
   }
 
