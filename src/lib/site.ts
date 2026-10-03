@@ -1,7 +1,16 @@
 export const site = {
-  // ここは運営・記事側の名前。プロダクト（タシカメ）の名乗りは lib/voice.ts。
-  // 記事20ルートと旧サービスがこの name を使っているので、変えない。
-  name: "His Recoveries",
+  /* ── 旧ブランドをやめた ──────────────────────────
+     ここは長いあいだ "His Recoveries" だった。
+     運営・記事側の名前で、記事20ルートが使っているから、
+     という理由で残していた。
+
+     残した結果、application-name / author / creator / publisher に
+     旧ブランドが載り、全ページの <head> に出ていた。
+     SNSに貼ったときのカードにも出る。
+
+     サービスはタシカメ1つになったので、名乗りも1つにする。
+     記事側のタイトルも、これで「— タシカメ」になる。 */
+  name: "タシカメ",
   // タイトルタグの後半に毎回入る文字列。英語のブランドコピーではなく、
   // 「何のサイトか」を検索結果でそのまま読ませるほうが取れる。
   //
@@ -32,11 +41,19 @@ export const site = {
   description:
     "タシカメは、マッチングアプリで迷った男性が、実在する女性に見てもらえるサービスです。LINEの文面、誘い方、自己紹介文、写真。1回につき実在する女性3人が読み、それぞれどう受け取ったかと、その理由が返ってきます。通話で話すこともできます。効果や結果の保証はしません。",
   url:
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com",
-  author: "His Recoveries",
+    /* 正式ドメインは tashikame.app。
+       hisrecoveries.com は旧ドメインで、新規の正式URLには使わない。
+
+       既定値もこちらにする。環境変数が無い環境で
+       旧ドメインに戻るのを防ぐ（canonical・OGP・sitemap・
+       robots・feed・Checkout の戻り先が、全部ここを読む）。 */
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    "https://tashikame.app",
+  author: "タシカメ",
   // authorBio を消した。旧事業（第一印象改善・ウェルネス伴走）の説明が
   // 入ったまま残っていたが、読んでいる場所が1つも無かった。
-  handle: "@his_recoveries",
+  handle: "@tashikame_app",
   email: "contact@vitality-design.jp",
   social: {
     threads: "https://www.threads.com/@hisrecoveries_jp",
@@ -153,4 +170,37 @@ export const categories: Record<
 
 export function categoryLabel(slug: string): string {
   return categories[slug as CategorySlug]?.label ?? slug;
+}
+
+/* ── 公開の前に止めること ───────────────────────── */
+{
+  /* 旧ドメインが、既定値として戻ってこないこと。
+
+     ここは canonical・OGP・sitemap・robots・feed・
+     Checkout の戻り先が、全部読んでいる1か所。
+     ここが旧ドメインに戻ると、全部が旧ドメインに戻る。 */
+  if (/hisrecoveries\.com/.test(site.url)) {
+    throw new Error(`正式URLが旧ドメインになっています（${site.url}）`);
+  }
+  // https であること。.app は HTTPS 前提のドメイン。
+  if (!site.url.startsWith("https://")) {
+    throw new Error(`正式URLが https ではありません（${site.url}）`);
+  }
+  // www を付けない形であること。www は 301 で寄せている（next.config.mjs）。
+  if (/^https:\/\/www\./.test(site.url)) {
+    throw new Error(`正式URLに www が付いています（${site.url}）`);
+  }
+  // 末尾のスラッシュを付けない。付くと、つなげたときに // になる。
+  if (site.url.endsWith("/")) {
+    throw new Error(`正式URLの末尾にスラッシュがあります（${site.url}）`);
+  }
+
+  /* 旧ブランドが、名乗りに戻ってこないこと。
+     application-name / author / creator / publisher に載って、
+     全ページの <head> に出る。SNSのカードにも出る。 */
+  for (const [k, v] of Object.entries({ name: site.name, author: site.author })) {
+    if (/His Recoveries/i.test(String(v))) {
+      throw new Error(`site.${k} が旧ブランドのままです（${v}）`);
+    }
+  }
 }

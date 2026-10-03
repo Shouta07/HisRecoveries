@@ -1,3 +1,4 @@
+import { site } from "./site";
 // Studio（管理・分析）のデータ層。
 // 記事（clusters）と、生成済み動画（packages/video）を突き合わせて、
 // 「何が記事化され、何が動画化され、どこが手薄か」を数字で見えるようにする。
@@ -35,7 +36,7 @@ export const DRIVE_ROOT =
 // 画面内表示は API 連携（GA4 Data API / Search Console API）が必要。
 export const EXTERNAL_LINKS = {
   searchConsole:
-    "https://search.google.com/u/5/search-console?resource_id=https%3A%2F%2Fhisrecoveries.com%2F",
+    `https://search.google.com/u/5/search-console?resource_id=${encodeURIComponent(site.url + "/")}`,
   analytics:
     "https://analytics.google.com/analytics/web/?authuser=5#/a396283552p539570437/reports/intelligenthome",
   drive: "https://drive.google.com/drive/folders/1xThBT2L4-ImeEIYTyWVx6qMpRmYmcEZ3",

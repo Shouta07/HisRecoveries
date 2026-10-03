@@ -128,7 +128,13 @@ export default function RootLayout({
     "@type": "Organization",
     "@id": `${site.url}/#publisher`,
     name: site.name,
-    alternateName: ["His Recoveries", "男性ウェルネスメディア"],
+    /* ここに旧ブランドと旧カテゴリを残していた。
+       検索エンジンに「別名はこれです」と伝える欄なので、
+       残すと旧ブランドで引き続き紐づく。
+
+       「男性ウェルネスメディア」は、男性限定に見える表現でもある。
+       サービスは男女どちらでも使える形にしたので、両方外す。 */
+    alternateName: "恋亀",
     url: site.url,
     logo: {
       "@type": "ImageObject",

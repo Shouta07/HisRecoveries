@@ -81,7 +81,7 @@
       "distance": 1.0
     },
     "base_urls": {
-      "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}"
+      "apply": "https://tashikame.app/ask?plan=review&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}"
     }
   },
   "discovery_questions": [

@@ -33,7 +33,7 @@ export default async function Image() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          <div style={{ fontSize: 84, color: "#1B2024", display: "flex" }}>His Recoveries</div>
+          <div style={{ fontSize: 84, color: "#1B2024", display: "flex" }}>タシカメ</div>
           <div style={{ fontSize: 30, color: "#414A50", display: "flex", lineHeight: 1.6 }}>
             髪、肌、眠り、疲れ、体、パートナーとのこと。
           </div>
