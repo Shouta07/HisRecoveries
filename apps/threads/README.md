@@ -143,19 +143,15 @@ python -m core.main token-refresh refresh    # 長命の延長
 | APIリトライ | 指数バックオフで最大3回リトライ |
 | トークン更新 | CLI経由で長命トークンの取得・延長 |
 
-## 本番デプロイ
+## 本番運用
 
-```bash
-# 自動セットアップ
-sudo bash deploy/setup.sh
+GitHub Actions（monorepo ルートの `.github/workflows/`）とVercel（管理ページ）。
+サーバーは立てない。
 
-# systemdサービス
-sudo systemctl start threads-ceo
-sudo systemctl enable threads-ceo
-
-# または crontab
-sudo -u threads crontab deploy/crontab.example
-```
+VPS向けの一式（`deploy/setup.sh`・systemdサービス・crontab）と、
+Heroku/Railway用の `Procfile`・`run.sh` は 2026-10-03 に削除した。
+どこにもデプロイされておらず、`/opt/threads-ceo` 前提で書かれていて、
+しかも承認ゲートを通らずに投稿する経路だった。
 
 ## ディレクトリ構成
 
@@ -183,11 +179,10 @@ threads/
 │       ├── approvals.json         # 承認キュー
 │       ├── history.json           # 投稿履歴＋metrics
 │       └── monetize.json          # マネタイズ設定（enabled: false）
-├── tests/                         # テスト（211件）
-├── deploy/                        # 本番デプロイ用
-│   ├── setup.sh                   # 自動セットアップ
-│   ├── threads-ceo.service        # systemdサービス
-│   └── crontab.example            # cron設定例
+├── scripts/
+│   └── delete_all_posts.py        # 過去投稿の一括削除（取り消し不可）
+├── admin/                         # 管理ページ（Vercel / ローカル）
+├── tests/                         # テスト（213件）
 ├── data/                          # ランタイムデータ（gitignored）
 ├── logs/                          # ログ出力（gitignored）
 ├── .env                           # APIキー（gitignored）
