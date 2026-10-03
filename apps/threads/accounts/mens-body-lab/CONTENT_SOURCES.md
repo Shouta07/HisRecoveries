@@ -19,7 +19,7 @@ Threads自動投稿の「素」を貯めるための型。
 - 主語は読者。「みんな」「男性全般」は禁止。一人に絞る
 - **ポエム調にしない**（重要）。体言止めの連発・比喩・過剰な余白（空行）を避け、
   **実際に会話で言う言葉**で書く。「〜、あの感じ。」のような詩的余韻より、
-  「うわ、疲れてる」のような素の口語を優先する。
+  「これ、重くないかな」のような素の口語を優先する。
 
 ## 配分（1リソース＝14本）
 
@@ -39,22 +39,22 @@ empathy → question → insight → empathy → fact → insight → question �
 
 ```json
 {
-  "id": "src-face-tired",
+  "id": "src-before-send",
   "kind": "experience",
-  "url": "https://hisrecoveries.com/areas/face?utm_source=threads&utm_medium=social&utm_campaign=src-face-tired",
+  "url": "https://hisrecoveries.com/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=src-before-send",
   "reader": {
-    "persona": "30歳前後、出張や残業が続く会社員",
-    "inner_voice": "疲れてるのが顔に出てるって、自分でもわかる",
-    "scene": "出張先のホテル、夜。洗面所の照明で自分の顔を見た直後",
-    "search_words": ["顔 疲れ すぐ 治す"]
+    "persona": "20代後半〜30代、マッチングアプリを使っている会社員",
+    "inner_voice": "文面はできた。でも、これで送っていいのか分からない",
+    "scene": "平日の夜。ベッドの上。入力欄に文字を打ち込んだまま、指が止まっている",
+    "search_words": ["マッチングアプリ 返信 例文", "LINE 送る前 確認"]
   },
-  "entry_line": "ホテルの洗面所の照明は、今日の疲れを隠してくれない。",
+  "entry_line": "打ち終わってから、送信を押すまでが一番長い。",
   "min_action": {
-    "action": "濡らしたタオルをレンジ40秒で温めて顔に1分乗せる",
-    "minutes": 2,
-    "tools": "タオルと電子レンジ（なければ熱めの湯）"
+    "action": "送る前に、その文面を声に出して一度読む",
+    "minutes": 1,
+    "tools": "なし"
   },
-  "reframe": "疲れた顔を、放置するものではなく、1分でリセットできるものとして見直す",
+  "reframe": "手が止まるのは優柔不断だからではなく、受け取る側の目が自分の中に無いから",
   "materials": {
     "empathy": ["投稿本文そのまま ×4"],
     "insight": ["×4"],
@@ -89,15 +89,15 @@ empathy → question → insight → empathy → fact → insight → question �
 ## システムの消費のしかた
 
 - `persona.json` の `posting.source_post_ratio`（0〜1）の確率で、
-  連投（gift/areas）の代わりに**在庫から単発1本**を投稿する
+  場面別の連投の代わりに**在庫から単発1本**を投稿する
 - 順序は上の固定シーケンス。`used_count` で進捗管理（1リソース=14日ぶん）
 - cta の本文は自動組立: `core` ＋「まとめた記事を、ここに置いておく。」＋ `url`
-- 在庫が尽きたら自動的に連投（gift/areas）にフォールバック
+- 在庫が尽きたら自動的に場面別の連投にフォールバック
 - すべて `core/validator.py` を通る（煽り語・売り込み・絵文字超過は機械的に弾かれる）
 
 ## 運用フロー（リソースの作り方）
 
-1. 体験メモ or /areas 記事を用意する
+1. 体験メモ or 記事を用意する
 2. Q1〜Q5テンプレで「読者起点」に変換（このファイル上部の対応表どおり）
 3. 手順書STEP1で素材を分解 → 各分類の**完成本文**を書く
 4. 管理ページ（設定ファイル編集 → content_sources.json）に1件追加して保存

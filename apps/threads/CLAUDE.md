@@ -1,50 +1,67 @@
-# CLAUDE.md — His Recoveries Threads 自動運用システム
+# CLAUDE.md — タシカメ Threads 自動運用システム
 
-新しいセッションはこの文書を読めば設計思想と構成を引き継げる。最終更新: 2026-07-05
+新しいセッションはこの文書を読めば設計思想と構成を引き継げる。最終更新: 2026-10-03
 
 ## 0. これは何か
 
-His Recoveries（男性のコンプレックスに、完全守秘・中立で伴走するウェルネス
-サービス）の **Threads 自動投稿＋管理＋分析システム**。Python + GitHub Actions +
-Vercel(管理ページ)。外部依存は最小（標準ライブラリ中心、python-dotenv/gspreadのみ）。
+**タシカメ**（マッチングアプリで迷った男性が、送る前の文面・写真・自己紹介文を
+実在する女性に読んでもらえるサービス）の **Threads 自動投稿＋管理＋分析システム**。
+Python + GitHub Actions + Vercel(管理ページ)。外部依存は最小
+（標準ライブラリ中心、python-dotenv/gspreadのみ）。
 
-集客全体の中で Threads は「**ソーシャル＝二本目の流入**」。主エンジンは Web(/areas)の
-SEO/GEO。Threads は共感で拡散し、サイト(/areas)と予約(/apply)へ送客する役割。
+Threads の役割は「手が止まる瞬間に置かれること」。共感で広がり、
+**/ask（相談の入口）** へ送る。
+
+> **前史（重要）**: このシステムは旧事業 **His Recoveries**（男性ウェルネス。
+> ギフト／母／緊急／悩み検索の4読者層、第一印象パッケージ、完全守秘訴求）の
+> ために作られていた。アカウント設定（persona.json / hypotheses.json /
+> thread_templates.json）はタシカメに書き換えられていたが、**生成プロンプトが
+> コードに直接埋まっていた**ため、実際に生成されるのは旧事業のギフト訴求だった
+> （`_build_gift_thread_prompt`）。2026-10-03にそこを persona 駆動へ直した。
+> **事業の文面をコードに書かない。** 書くと同じことが起きる。
 
 ## 1. ブランド／編集の絶対ルール（全投稿で厳守）
 
-- **売らない・煽らない・断定しない。** 効果を保証しない。ビフォーアフター誇張禁止。
-  医療的断定（治る/若返る等）禁止（薬機法・景表法）。
-- **一般化しない**（「男はみんな〜」等）。
-- **完全守秘を安心材料に。** 「本人だけが内容を決められる」「贈り主にも知らされない」。
-- **ギフト訴求は"応援"であって"指摘"ではない（侮辱回避が最重要）。**
-  ○「いつも頑張ってるから」「これからの自分に」「もっと自信を持つあなたが見たい」
-  ✕「あなたのここを直して」「気になってたから」
-- 絵文字は0〜2、ハッシュタグは0〜1。
-- これらは `core/validator.py` が機械的に弾く（アカウント別に緩和可 = `persona["validation"]`）。
+- **女性の反応を、こちらで作らない。** 「女性はこう思っています」と書かない。
+  実在の回答が集まるまで、具体的な「女性の声」は出さない。
+  それを売っているサービスが、AIの作り話を出したら商品そのものが嘘になる。
+- **相手の気持ちを判定しない。** 脈あり・脈なしは扱わない。
+- **効果・結果を保証しない。** モテる・落とす・攻略・成功率は書かない。
+- **読む人を責めない。** 手が止まるのは慎重さであって、欠点ではない。
+- **AIや友達に聞くことを否定しない。** 足りないところだけを書く。
+- 価格・割引には触れない。絵文字は0〜2、ハッシュタグは0〜1。
+- これらは `core/validator.py` が機械的に弾く。線引きは
+  `persona["character"]["ng_words"]`、厳格度は `persona["validation"]`。
+  **コード側の既定値は旧事業向けなので、アカウント側の設定が優先される。**
 
 ## 2. アカウント構成（重要）
 
-- **唯一のアカウント: `accounts/mens-body-lab/`**（`account_id` は内部IDなので変更しない）。
-  - 表示名 His Recoveries、実ハンドル **@hisrecoveries_jp**。
-  - かつての当事者ペルソナ「Nagi」は**廃止**。gift-only の別アカウント nagi-gift も**削除済み**。
+- **唯一のアカウント: `accounts/mens-body-lab/`**（`account_id` は内部IDなので変更しない。
+  env のキーに使う）。
+  - 表示名 **タシカメ**、実ハンドル **@koikame.jp**。
+  - 旧ペルソナ「Nagi」は廃止。gift-only の別アカウント nagi-gift も削除済み。
 - 投稿フォーマットは **thread（連投）**：`persona.json` の `posting.format = "thread"`。
 
-### 4系統のコンテンツ＝3読者層＋SEO増幅（hypotheses.json の type で分岐）
-| type | 読者 | 内容 | リンク先 | 例slug |
-|---|---|---|---|---|
-| `gift` | 妻・彼女 | ギフトを贈る連投（応援フレーミング） | **/apply** | gift-birthday … |
-| `mother` | 息子を想う母 | 直接言えない気がかり→守秘の伴走を入口に | **/apply** | mother-teen-skin … |
-| `urgent` | 本人（期日層） | 結婚式/面接/決意の夜→今できる準備 | **/apply** | urgent-wedding … |
-| `areas` | 本人（検索層） | 悩みに寄り添う短文（GEO質問=見出し） | **/areas/{slug}** | hair, sweat … |
+### 5場面（hypotheses.json の slug）
+| slug | 場面 | 心理の芯 | リンク先 |
+|---|---|---|---|
+| `message` | 送る前のLINE | 読み返しても自分の目しか無い | **/ask?c=message** |
+| `photo` | 自己紹介文・プロフィール | 書いた本人がいちばん読めない | **/ask?c=photo** |
+| `date` | 誘うタイミング | 早いと重い・遅いと冷める | **/ask?c=date** |
+| `signal` | デートのあと | 温度感が自分の記憶からしか分からない | **/ask?c=signal** |
+| `distance` | 距離感・言いにくいこと | 友達にも相手にも聞けない | **/ask?c=distance** |
 
-**時間帯×読者層の出し分け**: `persona.posting.slot_type_map`
-= 朝9時→`["mother","areas"]` / 夜21時→`["gift","urgent"]`（writer.\_current_time_slot がJSTで判定、
-select_hypothesis に allowed_types として渡る。スロット対象が全停止なら全activeにフォールバック）。
-均等選択は各スロット内で機能。PDCA画面の停止/集中もそのまま効く。
-**訴求は「完全守秘」**（完全匿名は廃止。「内容は本人以外に知らされない」が安心材料）。
+**時間帯×場面の出し分け**: `persona.posting.slot_type_map`
+= 朝9時→`["message","photo"]`（出す前のもの）/ 夜21時→`["date","signal","distance"]`
+（会ったあと・誘う前・距離感。夜のほうが手が止まる）。
+`writer._current_time_slot` がJSTで判定し、`select_hypothesis` に allowed_types として渡る。
+スロット対象が全停止なら全activeにフォールバック。PDCA画面の停止/集中もそのまま効く。
 
-### 第3の系統: 引用リソース（content_sources.json）
+**行き先の増やし方**: `hypotheses.link_config.base_urls` にキーを足し、
+仮説に `link_key` を書く。無ければ type と同名のキー → `apply` の順で解決される
+（`apply` が現在の /ask。キー名は歴史的なもの）。`no_link: true` ならリンク無し。
+
+### 引用リソース（content_sources.json）
 記事/体験メモを**1リソース=14投稿の在庫**に変換して積む型。仕様は
 `accounts/mens-body-lab/CONTENT_SOURCES.md`（配分: 共感4/気づき4/問題提起3/実績2/誘導1、
 **URLは誘導の1本だけ・必ず最後**）。`persona.posting.source_post_ratio`（現在0.5）の確率で
@@ -63,40 +80,45 @@ python -m core.main queue <acct>             # 承認待ち一覧（id確認）
 python -m core.main approve <acct> <id>      # 承認（却下は reject）
 python -m core.main post-approved <acct>     # 承認済みだけ投稿（cron想定）
 ```
-※ cron を復活させる場合は「post=生成」「post-approved=投稿」の2本立てにする。
 
 ## 3. 主要ファイル地図
 
 ```
 accounts/mens-body-lab/
-  persona.json          ペルソナ＋posting.format=thread＋validation緩和設定
-  hypotheses.json       gift/areas仮説 + link_config(base_urls: apply/gift/areas)
-  thread_templates.json 連投テンプレ(mock)。CTA投稿に {link} プレースホルダ
-  seo_clusters.json     /areasクラスタ＋GEO質問＋キーワード（生成の素・編集可）
+  persona.json          語り手＋トーン＋posting.format=thread＋validation緩和設定
+  hypotheses.json       5場面 + link_config(base_urls: apply=/ask) + discovery_questions
+  thread_templates.json 連投テンプレ(mock/フォールバック)。CTA投稿に {link} プレースホルダ
+  seo_clusters.json     場面別の検索クラスタ＋GEO質問（生成の素・編集可。生成は読まない）
   content_sources.json  引用リソース（1件=14投稿の在庫）。管理ページで編集可
-  CONTENT_SOURCES.md    引用リソースの型の仕様（作り方Q1-Q5対応表つき）
-  GIFT_PROMPT.md        ギフト投稿の正式プロンプト仕様
-  GIFT_STRATEGY.md      ギフト自動化の仕組み説明
+  CONTENT_SOURCES.md    引用リソースの型の仕様
+  READ_DESIGN.md        読まれる投稿設計（フックの型×5場面）
+  patterns.md           連投パターン（場面別の構造）
+  approvals.json        承認キュー
   history.json          投稿履歴＋metrics(閲覧数など)。分析の元データ
+  experiments.json      場面別の投稿数・フェーズ（旧事業の121本は2026-10-03にリセット）
 core/
-  writer.py    generate_post→format==thread なら generate_thread。type別リンク。
-               mock=テンプレ / 非mock=Geminiで生成。record=Falseで副作用なし生成
-  validator.py validate_post。persona["validation"]でアカウント別に厳格度調整
+  writer.py    generate_post→format==thread なら generate_thread（本線）。
+               プロンプトは _build_thread_prompt が persona.json から組む。
+               mock/キー無しのときだけ thread_templates.json を使う。
+               slug に対応するテンプレが無ければ生成を中止する（別場面の文面で代用しない）
+  validator.py validate_post。persona["validation"] / allowed_topics でアカウント別に調整
   poster.py    Threads API。create_thread_post / create_thread_chain(連投=reply_to_id)
   collector.py collect_metrics(既存投稿の数値取得) / import_history(過去投稿を全件取込)
   fetcher.py   Threads API GET(insights/threads一覧)
   main.py      CLI: post / collect / import-history / validate / status …
+scripts/
+  delete_all_posts.py   アカウントの過去投稿をAPIで一括削除（--dry-run あり・取り消し不可）
 admin/
   server.py    管理ページ本体(標準ライブラリ)。dispatch()をlocal http.server と Vercelで共用
   storage.py   LocalStorage / GitHubStorage(環境変数で自動切替)
   README.md    起動・Vercelデプロイ手順
 ../../.github/workflows/   ← 稼働ワークフローは monorepo ルートに置く（GitHubはルートのみ実行）
-  threads-post.yml          朝09/夜21 JST 生成→承認キュー(approvals.json)。※mock卒業済(Gemini生成)
+  threads-post.yml          朝09/夜21 JST 生成→承認キュー(approvals.json)。Gemini生成
   threads-post-approved.yml 承認済みだけを投稿(3hおき)。承認が無ければ何もしない
   threads-collect.yml       毎朝 import-history + collect(数値取得)
   threads-token-refresh.yml 長命トークンの更新(45日周期)
+  threads-delete-all-posts.yml 過去投稿の一括削除(手動のみ・既定dry_run・取り消し不可)
   （いずれも working-directory: apps/threads で実行）
-apps/threads/.github/workflows/  ← 休眠(参考): ci.yml / sheets-sync.yml / check-connection.yml
 KILL_SWITCH      このファイルがあると threads-post / post-approved は投稿しない(存在=停止中)
 pyproject.toml   [tool.vercel] entrypoint = "admin.server:Handler"
 vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
@@ -108,48 +130,56 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 - Vercel: `admin.server:Handler` をサーバーレス配信。**編集＝GitHubへコミット**（GitHubStorage）。
 - 機能: ダッシュボード / 連投テンプレ編集 / 設定ファイル編集(JSON検証付) /
   プレビュー生成(record=Falseで状態を汚さない) / 下書きCRUD /
-  **閲覧数・分析**(投稿ごとのviews/いいね/返信/RP、機会別集計、キーワード検索、並び替え)。
+  **閲覧数・分析**(投稿ごとのviews/いいね/返信/RP、場面別集計、キーワード検索、並び替え)。
 - 認証: `ADMIN_USER`+`ADMIN_PASSWORD`（または複数人用 `ADMIN_USERS` JSON）。未設定ならローカル扱い。
 
 ## 5. 環境変数／シークレット（2系統・別物）
 
+> **現状（2026-10-03 確認）: `THREADS_ACCESS_TOKEN` と `THREADS_USER_ID` が未設定。**
+> Actions のログに `THREADS_ACCESS_TOKEN is not set` が出ており、
+> 投稿・数値回収・過去投稿の削除は、どれも動かない（生成だけが承認キューに積まれる）。
+> `history.json` が空で `collect` が毎朝「0 posts」なのも同じ理由。
+> `threads-token-refresh.yml` も手動で Disable されている。
+> 入れる値の作り方は §6。
+
 **GitHub Secrets（自動投稿=Actions用）** Settings→Secrets and variables→Actions:
-- `THREADS_ACCESS_TOKEN`（@hisrecoveries_jp の長命トークン。**アカウント変更時はここ**）
+- `THREADS_ACCESS_TOKEN`（@koikame.jp の長命トークン。**アカウント変更時はここ**）
 - `THREADS_USER_ID`（同アカウントのユーザーID）
 - `THREADS_APP_SECRET`（Metaアプリのシークレット。トークン更新用）
-- `GEMINI_API_KEY`（AI生成する場合。mockなら不要）
+- `GEMINI_API_KEY`（AI生成。mockなら不要）
 - `GOOGLE_SHEETS_ID` / `GOOGLE_SHEETS_CREDENTIALS_JSON`（任意）
 
 **Vercel Environment Variables（管理ページ用）**:
 - `ADMIN_USER` / `ADMIN_PASSWORD`（ログイン）
-- `GITHUB_TOKEN`（repo書込PAT）/ `GITHUB_REPO`=Shouta07/threads / `GITHUB_BRANCH`=main
+- `GITHUB_TOKEN`（repo書込PAT）/ `GITHUB_REPO` / `GITHUB_BRANCH`=main
 
 > 注意: account_id `mens-body-lab` は内部ID。ワークフローは**base**の
 > `THREADS_ACCESS_TOKEN` を渡すので、アカウントを変えても**コード変更は不要**。
 
 ## 6. Threadsアカウントを変更する手順
 
-Instagram/Threadsアカウントが変わったら、以下だけ更新すれば回る:
 1. 新アカウントの**長命アクセストークン**を発行（同じMetaアプリに新アカウントを接続）。
-2. **GitHub Secrets** を更新: `THREADS_ACCESS_TOKEN`（新トークン）、`THREADS_USER_ID`（新ID）、
+2. **GitHub Secrets** を更新: `THREADS_ACCESS_TOKEN`、`THREADS_USER_ID`、
    `THREADS_APP_SECRET`（Metaアプリが変わった場合のみ）。
-3. `accounts/mens-body-lab/persona.json` の `threads_handle` を新ハンドルに（表示のみ・任意）。
-4. 動作確認: Actions で post.yml を `dry_run=true, mock=true` 手動実行 → 生成が通るか。
-   実投稿は `dry_run=false`。`python -m core.main validate mens-body-lab` でも設定確認可。
-- **account_id は変更しない**（envのbaseキーを使うため）。コードもワークフローも変更不要。
+3. `accounts/mens-body-lab/persona.json` の `threads_handle` を新ハンドルに（表示のみ）。
+4. 動作確認: Actions で threads-post.yml を `dry_run=true, mock=true` 手動実行。
+   `python -m core.main validate mens-body-lab` でも設定確認可。
+- **account_id は変更しない**（envのbaseキーを使うため）。
 
 ## 7. 運用フロー・約束事
 
-- 開発ブランチ: `claude/setup-ryota-marketing-tL9Vg`。**mainへ直pushは不可** → PRでマージ。
+- **mainへ直pushは不可** → ブランチを切ってPRでマージ。
 - 反映の流れ: **ブランチ→mainにマージ→(Vercel自動再デプロイ / 次のActionsで新内容)**。
   「画面や投稿に出ない＝たいていマージ待ち」。
-- テスト: `python -m pytest -q`（現在 173+ pass）。変更後は必ず実行。
+- テスト: `python -m pytest -q`（現在 211 pass）。変更後は必ず実行。
 - 一時停止: `KILL_SWITCH` を置く / Actionsでワークフローを Disable。再開は逆。
 
 ## 8. 現状と次の候補
 
-- 実装済み: His Recoveries一本化、gift(応援フレーミング)＋areas(SEO/GEO→/areas)の生成、
-  連投投稿、管理ページ(編集・プレビュー・下書き・**閲覧数分析＋検索**)、過去取込、Vercel対応(GitHub保存＋ID/PW)。
-- 未了/候補: GA4遷移率を分析画面に統合、gift↔areasの比率制御、note/X展開、
-  贈り手向け/areasクラスタ記事の連携、AI生成(GEMINI)本番化。
-- 補足: 閲覧数はThreads API由来（保存数はAPIに無く取得不可）。/apply・/areas遷移率はGA4側。
+- **最初にやること: GitHub Secrets（§5）。** トークンが無いあいだ、投稿は1本も出ない。
+- 実装済み: タシカメ一本化（生成プロンプトの persona 駆動化、5場面の連投、
+  テンプレの {link} 修正、旧実験記録のリセット）、承認ゲート、連投投稿、
+  管理ページ（編集・プレビュー・下書き・閲覧数分析＋検索）、過去取込、Vercel対応。
+- 未了/候補: GA4遷移率を分析画面に統合、場面ごとの比率制御、
+  content_sources の在庫追加（現在1リソース＝14本ぶんだけ）、note/X展開。
+- 補足: 閲覧数はThreads API由来（保存数はAPIに無く取得不可）。/ask 遷移率はGA4側。

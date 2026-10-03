@@ -1,4 +1,10 @@
-"""Tests for core.writer"""
+"""Tests for core.writer
+
+アカウントの中身（語り手・場面・行き先）は persona.json / hypotheses.json /
+thread_templates.json が持つ。ここのフィクスチャは、いま稼働している
+タシカメ（送る前の文面を女性に読んでもらうサービス）の形に合わせてある。
+以前は旧事業（ギフト／areas／母／施術者）のフィクスチャだった。
+"""
 
 import json
 from pathlib import Path
@@ -9,53 +15,77 @@ import pytest
 from core import writer
 
 
+# 連投テンプレの既定値（場面 = hypotheses.json の slug）
+DEFAULT_SCENES = ["message", "photo", "date", "signal", "distance"]
+
+# 緩和プロファイル。タシカメの persona.json と同じ設定。
+RELAXED_VALIDATION = {
+    "require_first_person_boku": False,
+    "max_emoji": 2,
+    "max_hashtags": 1,
+    "require_recommended_words": False,
+    "require_allowed_topics": False,
+    "require_three_stage": False,
+    "check_similarity": False,
+}
+
+
 @pytest.fixture
 def account_dir(tmp_path):
-    """テスト用アカウントディレクトリ"""
+    """単発投稿アカウント（format を thread にしない）のテスト用ディレクトリ"""
     persona = {
         "account_id": "test",
-        "genre": "男性の体の悩み・Recovery（多汗症・ニキビ・ワキガ・顔の自信）",
-        "target_audience": "10代後半〜30代の体の悩みを抱える男性",
+        "display_name": "タシカメ",
+        "genre": "タシカメ（マチアプで迷った男性が、実在の女性に相談できるサービス）",
+        "target_audience": "マッチングアプリを使っている20〜30代の男性",
         "tone": {
-            "style": "丁寧体・観察スタイル",
-            "formality": "丁寧体",
-            "emoji_usage": "完全禁止",
-            "line_breaks": "1文ごとに改行",
-            "recommended_words": ["気づいた", "思った", "だった", "整える", "向き合う", "続けている", "静かに"],
+            "style": "口語・断定しない",
+            "formality": "親しみのある口語",
+            "emoji_usage": "0〜2個まで",
+            "hashtag_usage": "0〜1個まで",
+            "line_breaks": "改行多め",
+            "recommended_words": ["止まる", "読み返す", "決める", "確かめる"],
             "forbidden_words": ["マジで", "実は", "正直", "おすすめです"],
         },
         "character": {
-            "name": "Nagi",
-            "background": "多汗症・ニキビ・ワキガと向き合い続けている当事者",
-            "first_person": "僕",
-            "values": ["観察を主張に優先する"],
-            "ng_words": ["マジで", "実は", "正直", "俺"],
+            "name": "タシカメ（運営の語り手）",
+            "background": "送信ボタンの前で止まる人を、たくさん見てきた側",
+            "first_person": "",
+            "values": ["断定しない。当てにいかない"],
+            "ng_words": ["脈あり", "モテる", "落とす", "攻略"],
         },
-        "posting": {
-            "max_chars": 450,
-            "min_chars": 30,
-            "hashtag_count": [0, 0],
-        },
-        "allowed_topics": ["鏡", "写真", "清潔感", "匂い", "汗", "肌", "整える", "皮膚科", "顔", "疲", "自信", "印象", "自意識", "髪", "髭", "朝", "距離", "ニキビ", "ワキガ"],
+        "validation": RELAXED_VALIDATION,
+        "posting": {"max_chars": 500, "min_chars": 10, "hashtag_count": [0, 1]},
+        "allowed_topics": [
+            "送る前のLINE", "返信の間", "誘い方", "自己紹介文", "距離感", "既読",
+        ],
     }
     (tmp_path / "persona.json").write_text(
         json.dumps(persona, ensure_ascii=False, indent=2)
     )
     (tmp_path / "patterns.md").write_text(
         "# Patterns\n"
-        "## 1. mirror\n**構造**: test\n**例**: test\n\n"
-        "## 2. photo\n**構造**: test\n**例**: test\n\n"
-        "## 3. cleanliness\n**構造**: test\n**例**: test\n\n"
-        "## 4. sweat-odor\n**構造**: test\n**例**: test\n\n"
-        "## 5. mind-awareness\n**構造**: test\n**例**: test\n"
+        "## 1. message\n**場面**: 送る前のLINE\n\n"
+        "## 2. photo\n**場面**: 自己紹介文\n\n"
+        "## 3. date\n**場面**: 誘うタイミング\n\n"
+        "## 4. signal\n**場面**: デートのあと\n\n"
+        "## 5. distance\n**場面**: 距離感\n"
     )
+    (tmp_path / "thread_templates.json").write_text(json.dumps({
+        "message": [
+            "文面はもうできてる。\n誤字もない。\nそれでも送信ボタンの前で止まる。",
+            "読み返しても、分かるのは「自分がどう読むか」だけ。",
+            "送る前に、一度だけ知らない人の目を通しておく。{link}",
+        ],
+    }, ensure_ascii=False))
     (tmp_path / "history.json").write_text(
         json.dumps({"posts": [], "last_posted_at": None, "total_count": 0})
     )
     (tmp_path / "hypotheses.json").write_text(json.dumps({
         "hypotheses": [
-            {"id": "mirror", "type": "feeling", "name": "鏡", "slug": "mirror",
-             "topics": ["鏡"], "status": "active", "min_posts_to_evaluate": 10, "current_posts": 0}
+            {"id": "message", "type": "message", "name": "送る前のLINEで止まる",
+             "slug": "message", "topics": ["LINE"], "status": "active",
+             "min_posts_to_evaluate": 10, "current_posts": 0}
         ],
         "link_config": {"has_link_ratio": 0, "base_urls": {}, "link_intro_phrases": []},
         "discovery_questions": [],
@@ -69,22 +99,23 @@ def account_dir(tmp_path):
 @pytest.fixture
 def persona():
     return {
-        "genre": "男性の体の悩み・Recovery（多汗症・ニキビ・ワキガ・顔の自信）",
-        "target_audience": "10代後半〜30代の体の悩みを抱える男性",
+        "display_name": "タシカメ",
+        "genre": "タシカメ（送る前の文面を、実在の女性に読んでもらうサービス）",
+        "target_audience": "マッチングアプリを使っている20〜30代の男性",
     }
 
 
 class TestLoadPersona:
     def test_loads(self, account_dir):
         persona = writer.load_persona(account_dir)
-        assert "Recovery" in persona["genre"]
+        assert "タシカメ" in persona["genre"]
 
 
 class TestLoadPatterns:
     def test_extracts_patterns(self, account_dir):
         patterns = writer.load_patterns(account_dir)
         assert len(patterns) == 5
-        assert "mirror" in patterns
+        assert "message" in patterns
         assert "photo" in patterns
 
 
@@ -174,13 +205,46 @@ class TestBuildRewritePrompt:
         assert "リライト" in prompt
 
     def test_without_source_with_topic(self, persona):
-        prompt = writer._build_rewrite_prompt(persona, "", "共感型", topic="手汗")
-        assert "手汗" in prompt
+        prompt = writer._build_rewrite_prompt(persona, "", "共感型", topic="既読")
+        assert "既読" in prompt
         assert "リライト" not in prompt
 
     def test_without_source_or_topic(self, persona):
         prompt = writer._build_rewrite_prompt(persona, "", "逆説型")
         assert "逆説型" in prompt
+
+    def test_persona_drives_the_rules(self):
+        # 事業の文面をコードに書かない。線引きは persona が持つ
+        p = {
+            "character": {"first_person": "", "ng_words": ["脈あり", "モテる"]},
+            "tone": {"emoji_usage": "0〜2個まで"},
+            "allowed_topics": ["送る前のLINE"],
+            "posting": {"min_chars": 10, "max_chars": 500},
+        }
+        prompt = writer._build_rewrite_prompt(p, "", "共感型")
+        assert "脈あり" in prompt
+        assert "送る前のLINE" in prompt
+        assert "一人称は使わない" in prompt
+        # 旧事業の名指しが残っていない
+        assert "Nagi" not in prompt
+        assert "多汗症" not in prompt
+
+
+class TestGenerateMockPost:
+    def test_uses_account_templates(self, account_dir):
+        persona = writer.load_persona(account_dir)
+        text = writer._generate_mock_post(
+            persona, "message", None, account_dir=account_dir,
+        )
+        assert text
+        assert "{link}" not in text
+
+    def test_empty_when_no_template(self, account_dir):
+        persona = writer.load_persona(account_dir)
+        text = writer._generate_mock_post(
+            persona, "存在しない場面", None, account_dir=account_dir,
+        )
+        assert text == ""
 
 
 class TestSelfScoreBuzz:
@@ -211,47 +275,45 @@ class TestSelfScoreBuzz:
 
 
 @pytest.fixture
-def gift_account_dir(tmp_path):
-    """ギフト導線（贈り手の視点）アカウントのテスト用ディレクトリ"""
+def linked_account_dir(tmp_path):
+    """単発投稿で、場面ごとのCTAリンクが付くアカウント。"""
     persona = {
-        "account_id": "nagi-gift",
-        "genre": "贈り手の視点で第一印象を整える贈り物を置く",
-        "target_audience": "大切な人の見た目の変化に気づいている人",
-        "tone": {
-            "style": "丁寧体・観察スタイル",
-            "emoji_usage": "完全禁止",
-            "forbidden_words": ["あなたも", "おすすめです", "ぜひ"],
-        },
-        "character": {
-            "name": "灯",
-            "first_person": "私",
-            "ng_words": ["あなたも", "おすすめです", "ぜひ", "恋愛", "デート"],
-        },
-        "posting": {"max_chars": 450, "min_chars": 30, "hashtag_count": [0, 0]},
-        "allowed_topics": ["第一印象", "印象", "整える", "贈り物", "診断"],
+        "account_id": "test-linked",
+        "display_name": "タシカメ",
+        "genre": "送る前に、女性の目を通す",
+        "tone": {"style": "口語", "emoji_usage": "0〜2個まで", "hashtag_usage": "0個"},
+        "character": {"name": "タシカメ", "first_person": "", "ng_words": ["脈あり"]},
+        "validation": RELAXED_VALIDATION,
+        "posting": {"max_chars": 500, "min_chars": 10, "hashtag_count": [0, 0]},
+        "allowed_topics": ["自己紹介文", "プロフィール"],
     }
     (tmp_path / "persona.json").write_text(
         json.dumps(persona, ensure_ascii=False, indent=2)
     )
     (tmp_path / "patterns.md").write_text(
-        "# Patterns\n## 1. gift-notice\n**構造**: test\n**例**: test\n"
+        "# Patterns\n## 1. photo\n**場面**: 自己紹介文\n"
     )
+    (tmp_path / "thread_templates.json").write_text(json.dumps({
+        "photo": [
+            "マッチはする。\nでも、そこから続かない。",
+            "自己紹介文は、書いた本人がいちばん読めない。",
+        ],
+    }, ensure_ascii=False))
     (tmp_path / "history.json").write_text(
         json.dumps({"posts": [], "last_posted_at": None, "total_count": 0})
     )
     (tmp_path / "hypotheses.json").write_text(json.dumps({
         "hypotheses": [
-            {"id": "gift-notice", "type": "gift", "name": "気づき",
-             "slug": "gift-notice", "topics": ["気づき"], "status": "active",
+            {"id": "photo", "type": "photo", "name": "自己紹介文が読まれているか",
+             "slug": "photo", "topics": ["自己紹介文"], "status": "active",
              "min_posts_to_evaluate": 10, "current_posts": 0}
         ],
         "link_config": {
-            "link_ratio_by_type": {"gift": 1.0},
+            "link_ratio_by_type": {"photo": 1.0},
             "base_urls": {
-                "check": "https://hisrecoveries.com/check?utm_campaign={slug}",
-                "gift": "https://hisrecoveries.com/gift?utm_campaign={slug}",
+                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}",
             },
-            "link_intro_phrases": {"gift": ["自分を知る時間を、贈れる場所がある。"]},
+            "link_intro_phrases": {"photo": ["出す前に、一度だけ。"]},
         },
         "discovery_questions": [],
         "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
@@ -261,56 +323,68 @@ def gift_account_dir(tmp_path):
     return tmp_path
 
 
-class TestGiftLinkBranch:
-    def test_gift_post_links_to_check_with_slug_utm(self, gift_account_dir):
-        # gift type は診断(/check)へ、slug一致のUTM付きで遷移する
-        result = writer.generate_post(gift_account_dir, mock=True)
+class TestSinglePostLink:
+    def test_links_to_ask_with_slug(self, linked_account_dir):
+        # 既定の行き先は base_urls["apply"]（= /ask）。slug が c= に入る
+        result = writer.generate_post(linked_account_dir, mock=True)
         assert result is not None
-        assert result["topic_type"] == "gift"
-        assert result["topic_slug"] == "gift-notice"
+        assert result["topic_type"] == "photo"
+        assert result["topic_slug"] == "photo"
         assert result["has_link"] is True
-        assert "/check?utm_campaign=gift-notice" in result["link"]
+        assert "/ask?plan=review&c=photo" in result["link"]
         # 本文とリンクのslugが一致している（食い違いバグ防止）
-        assert "gift-notice" in result["text"]
+        assert "c=photo" in result["text"]
+
+    def test_link_key_overrides_destination(self, linked_account_dir):
+        # 仮説に link_key があれば、その行き先が優先される
+        data = json.loads((linked_account_dir / "hypotheses.json").read_text())
+        data["hypotheses"][0]["link_key"] = "areas"
+        data["link_config"]["base_urls"]["areas"] = (
+            "https://hisrecoveries.com/areas/{slug}"
+        )
+        (linked_account_dir / "hypotheses.json").write_text(
+            json.dumps(data, ensure_ascii=False)
+        )
+        result = writer.generate_post(linked_account_dir, mock=True)
+        assert "/areas/photo" in result["link"]
 
 
 @pytest.fixture
-def gift_thread_account_dir(tmp_path):
-    """連投(スレッド)フォーマットのギフトアカウント。"""
+def thread_account_dir(tmp_path):
+    """連投(スレッド)フォーマットのアカウント。稼働中の構成と同じ。"""
     persona = {
-        "account_id": "nagi-gift",
-        "genre": "ギフト連投",
-        "character": {"name": "贈り手", "first_person": "私", "ng_words": []},
+        "account_id": "tashikame",
+        "display_name": "タシカメ",
+        "genre": "送る前に、女性の目を通す",
+        "character": {"name": "タシカメ", "first_person": "", "ng_words": []},
         "posting": {
             "format": "thread", "max_chars": 500, "min_chars": 10,
             "hashtag_count": [0, 1],
+            "thread": {"min_posts": 3, "max_posts": 6, "url_in_last_only": True},
         },
-        "validation": {
-            "require_first_person_boku": False, "max_emoji": 2, "max_hashtags": 1,
-            "require_recommended_words": False, "require_allowed_topics": False,
-            "require_three_stage": False, "check_similarity": False,
-        },
-        "allowed_topics": ["第一印象", "贈り物"],
+        "validation": RELAXED_VALIDATION,
+        "allowed_topics": ["送る前のLINE", "自己紹介文"],
     }
     (tmp_path / "persona.json").write_text(
         json.dumps(persona, ensure_ascii=False, indent=2)
     )
     (tmp_path / "patterns.md").write_text(
-        "# Patterns\n## 1. gift-birthday\n**機会**: 誕生日\n"
+        "# Patterns\n## 1. message\n**場面**: 送る前のLINE\n"
     )
     (tmp_path / "history.json").write_text(
         json.dumps({"posts": [], "last_posted_at": None, "total_count": 0})
     )
     (tmp_path / "hypotheses.json").write_text(json.dumps({
         "hypotheses": [
-            {"id": "gift-birthday", "type": "gift", "name": "誕生日に自信を贈る",
-             "slug": "gift-birthday", "topics": ["誕生日"], "status": "active",
+            {"id": "message", "type": "message", "name": "送る前のLINEで止まる",
+             "slug": "message", "topics": ["LINE", "送信前"], "status": "active",
              "min_posts_to_evaluate": 10, "current_posts": 0}
         ],
         "link_config": {
-            "link_ratio_by_type": {"gift": 1.0},
+            "link_ratio_by_type": {"message": 1.0},
             "base_urls": {
-                "apply": "https://hisrecoveries.com/apply?utm_campaign={slug}",
+                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}"
+                         "&utm_campaign={slug}",
             },
         },
         "discovery_questions": [],
@@ -322,98 +396,106 @@ def gift_thread_account_dir(tmp_path):
 
 
 class TestThreadTemplateLoading:
-    def test_loads_from_file_when_present(self, gift_thread_account_dir):
+    def test_loads_from_file_when_present(self, thread_account_dir):
         # thread_templates.json があれば優先して読む
-        (gift_thread_account_dir / "thread_templates.json").write_text(
-            json.dumps({"gift-birthday": ["カスタム1 第一印象", "カスタム2 {link}"]},
+        (thread_account_dir / "thread_templates.json").write_text(
+            json.dumps({"message": ["カスタム1 送る前", "カスタム2 {link}"]},
                        ensure_ascii=False)
         )
-        templates = writer._load_thread_templates(gift_thread_account_dir)
-        assert templates["gift-birthday"][0] == "カスタム1 第一印象"
+        templates = writer._load_thread_templates(thread_account_dir)
+        assert templates["message"][0] == "カスタム1 送る前"
 
-    def test_falls_back_to_defaults_when_absent(self, gift_thread_account_dir):
-        # ファイルが無ければ既定テンプレにフォールバック
-        templates = writer._load_thread_templates(gift_thread_account_dir)
-        assert "gift-anniversary" in templates
+    def test_falls_back_to_defaults_when_absent(self, thread_account_dir):
+        # ファイルが無ければ既定テンプレ（タシカメの5場面）にフォールバック
+        templates = writer._load_thread_templates(thread_account_dir)
+        for scene in DEFAULT_SCENES:
+            assert scene in templates
+        # 旧事業（ギフト）の既定テンプレは残っていない
+        assert not any(k.startswith("gift-") for k in templates)
 
-    def test_custom_template_used_in_generation(self, gift_thread_account_dir):
-        (gift_thread_account_dir / "thread_templates.json").write_text(
-            json.dumps({"gift-birthday": [
-                "私はこれを贈った。第一印象を整える体験。",
-                "節目に、自信をひとつ。{link}",
+    def test_custom_template_used_in_generation(self, thread_account_dir):
+        (thread_account_dir / "thread_templates.json").write_text(
+            json.dumps({"message": [
+                "打ち終わってから、送信を押すまでが一番長い。",
+                "送る前に、読んでもらう。{link}",
+                "その文面、止まったことありますか。",
             ]}, ensure_ascii=False)
         )
-        result = writer.generate_post(gift_thread_account_dir, mock=True)
-        assert any("私はこれを贈った" in p for p in result["posts"])
+        result = writer.generate_post(thread_account_dir, mock=True)
+        assert any("打ち終わってから" in p for p in result["posts"])
+
+    def test_aborts_when_scene_has_no_template(self, thread_account_dir):
+        # slug に対応するテンプレが無ければ、別の場面の文面で代用しない
+        (thread_account_dir / "thread_templates.json").write_text(
+            json.dumps({"distance": ["踏み込みたい。", "でも踏み込みすぎたくない。",
+                                     "どこで決めてますか。"]}, ensure_ascii=False)
+        )
+        assert writer.generate_thread(
+            thread_account_dir, mock=True, record=False,
+        ) is None
 
 
-@pytest.fixture
-def areas_thread_account_dir(tmp_path):
-    """areas(SEO/GEO→/areas)トラックのアカウント。"""
-    persona = {
-        "account_id": "hr", "genre": "areas",
-        "character": {"first_person": "私", "ng_words": []},
-        "posting": {"format": "thread", "max_chars": 500, "min_chars": 10, "hashtag_count": [0, 1]},
-        "validation": {"require_first_person_boku": False, "max_emoji": 2, "max_hashtags": 1,
-                       "require_recommended_words": False, "require_allowed_topics": False,
-                       "require_three_stage": False, "check_similarity": False},
-        "allowed_topics": [],
-    }
-    (tmp_path / "persona.json").write_text(json.dumps(persona, ensure_ascii=False))
-    (tmp_path / "patterns.md").write_text("# P\n## 1. sweat\n**機会**: 汗\n")
-    (tmp_path / "history.json").write_text(
-        json.dumps({"posts": [], "last_posted_at": None, "total_count": 0}))
-    (tmp_path / "thread_templates.json").write_text(json.dumps({
-        "sweat": ["ワキガって自分で気づける？", "個人差があるらしい。", "仕組みを書いている。{link}"]
-    }, ensure_ascii=False))
-    (tmp_path / "hypotheses.json").write_text(json.dumps({
-        "hypotheses": [{"id": "areas-sweat", "type": "areas", "name": "汗", "slug": "sweat",
-                        "topics": ["汗"], "status": "active", "min_posts_to_evaluate": 10,
-                        "current_posts": 0}],
-        "link_config": {"link_ratio_by_type": {"areas": 1.0}, "base_urls": {
-            "apply": "https://hisrecoveries.com/apply?utm_campaign={slug}",
-            "areas": "https://hisrecoveries.com/areas/{slug}?utm_campaign=areas-{slug}"}},
-        "discovery_questions": [],
-        "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
-                              "evaluation_threshold_posts": 10, "phase": "explore"}
-    }, ensure_ascii=False))
-    (tmp_path / "monetize.json").write_text(json.dumps({"enabled": False}))
-    return tmp_path
+class TestThreadPrompt:
+    def test_built_from_persona(self, thread_account_dir):
+        persona = writer.load_persona(thread_account_dir)
+        prompt = writer._build_thread_prompt(
+            persona, "送る前のLINEで止まる", ["LINE", "送信前"],
+        )
+        assert "タシカメ" in prompt
+        assert "送る前のLINEで止まる" in prompt
+        assert "{link}" in prompt
+        # 旧事業（ギフト訴求）の仕様が埋まっていない
+        for gone in ("第一印象パッケージ", "完全守秘", "贈り物", "His Recoveries"):
+            assert gone not in prompt
+
+    def test_ng_words_and_principles_are_passed(self):
+        persona = {
+            "display_name": "タシカメ",
+            "character": {"ng_words": ["脈あり", "攻略"], "first_person": ""},
+            "brand": {"editorial_principles": ["女性の反応を、こちらで作らない"]},
+            "posting": {"thread": {"min_posts": 3, "max_posts": 6}},
+        }
+        prompt = writer._build_thread_prompt(persona, "距離感で迷う")
+        assert "脈あり" in prompt
+        assert "女性の反応を、こちらで作らない" in prompt
 
 
 class TestSlotTypeRouting:
-    """時間帯×読者層の出し分け（朝=mother/areas、夜=gift/urgent）"""
+    """時間帯×場面の出し分け（朝=出す前のもの、夜=会ったあと・距離感）"""
 
     def _account(self, tmp_path):
         persona = {
-            "account_id": "hr",
-            "character": {"first_person": "私", "ng_words": []},
+            "account_id": "tashikame",
+            "display_name": "タシカメ",
+            "character": {"first_person": "", "ng_words": []},
             "posting": {"format": "thread", "max_chars": 500, "min_chars": 10,
                         "hashtag_count": [0, 1],
-                        "slot_type_map": {"morning": ["mother"], "night": ["gift"]}},
-            "validation": {"require_first_person_boku": False, "max_emoji": 2,
-                           "max_hashtags": 1, "require_recommended_words": False,
-                           "require_allowed_topics": False, "require_three_stage": False,
-                           "check_similarity": False},
+                        "slot_type_map": {"morning": ["photo"], "night": ["distance"]}},
+            "validation": RELAXED_VALIDATION,
         }
         (tmp_path / "persona.json").write_text(json.dumps(persona, ensure_ascii=False))
         (tmp_path / "history.json").write_text(
             json.dumps({"posts": [], "last_posted_at": None, "total_count": 0}))
         (tmp_path / "thread_templates.json").write_text(json.dumps({
-            "mother-a": ["息子が鏡を見なくなった気がする。", "完全守秘で、何をするかは本人が決める。",
-                         "母親にできるのは入口を置くことまで。{link}"],
-            "gift-a": ["彼は写真が苦手みたい。", "完全守秘で、何をするかは本人が選ぶ。",
-                       "節目に自信をひとつ贈りたい。{link}"],
+            "photo": ["マッチはする。でも、そこから続かない。",
+                      "自己紹介文は、書いた本人がいちばん読めない。",
+                      "出す前に、一度だけ通しておく。{link}"],
+            "distance": ["踏み込みたい。でも、踏み込みすぎたくない。",
+                         "友達にも、相手にも聞けない。",
+                         "距離感、どこで決めてますか。{link}"],
         }, ensure_ascii=False))
         (tmp_path / "hypotheses.json").write_text(json.dumps({
             "hypotheses": [
-                {"id": "mother-a", "type": "mother", "name": "母", "slug": "mother-a",
-                 "topics": [], "status": "active", "min_posts_to_evaluate": 10, "current_posts": 0},
-                {"id": "gift-a", "type": "gift", "name": "贈", "slug": "gift-a",
-                 "topics": [], "status": "active", "min_posts_to_evaluate": 10, "current_posts": 0},
+                {"id": "photo", "type": "photo", "name": "自己紹介文", "slug": "photo",
+                 "topics": [], "status": "active", "min_posts_to_evaluate": 10,
+                 "current_posts": 0},
+                {"id": "distance", "type": "distance", "name": "距離感", "slug": "distance",
+                 "topics": [], "status": "active", "min_posts_to_evaluate": 10,
+                 "current_posts": 0},
             ],
             "link_config": {"base_urls": {
-                "apply": "https://hisrecoveries.com/apply?utm_campaign={slug}"}},
+                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}"
+                         "&utm_campaign={slug}"}},
             "discovery_questions": [],
             "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
                                   "evaluation_threshold_posts": 10, "phase": "explore"},
@@ -421,121 +503,92 @@ class TestSlotTypeRouting:
         (tmp_path / "monetize.json").write_text(json.dumps({"enabled": False}))
         return tmp_path
 
-    def test_morning_selects_mother(self, tmp_path):
+    def test_morning_selects_photo(self, tmp_path):
         acc = self._account(tmp_path)
         with mock.patch.object(writer, "_current_time_slot", return_value="morning"):
             for _ in range(5):
                 r = writer.generate_thread(acc, mock=True, record=False)
-                assert r["topic_type"] == "mother"
+                assert r["topic_type"] == "photo"
 
-    def test_night_selects_gift(self, tmp_path):
+    def test_night_selects_distance(self, tmp_path):
         acc = self._account(tmp_path)
         with mock.patch.object(writer, "_current_time_slot", return_value="night"):
             for _ in range(5):
                 r = writer.generate_thread(acc, mock=True, record=False)
-                assert r["topic_type"] == "gift"
+                assert r["topic_type"] == "distance"
 
     def test_fallback_when_slot_types_all_paused(self, tmp_path):
         # スロット対象typeが全部停止中なら全activeにフォールバック
         acc = self._account(tmp_path)
         data = json.loads((acc / "hypotheses.json").read_text())
-        data["hypotheses"][0]["status"] = "paused"   # mother停止
+        data["hypotheses"][0]["status"] = "paused"   # photo停止
         (acc / "hypotheses.json").write_text(json.dumps(data, ensure_ascii=False))
         with mock.patch.object(writer, "_current_time_slot", return_value="morning"):
             r = writer.generate_thread(acc, mock=True, record=False)
         assert r is not None
-        assert r["topic_type"] == "gift"   # フォールバック
+        assert r["topic_type"] == "distance"   # フォールバック
 
-    def test_mother_and_urgent_link_to_apply(self, tmp_path):
+    def test_links_to_ask_with_matching_slug(self, tmp_path):
         acc = self._account(tmp_path)
         with mock.patch.object(writer, "_current_time_slot", return_value="morning"):
             r = writer.generate_thread(acc, mock=True, record=False)
-        assert "/apply?utm_campaign=mother-a" in r["link"]
+        assert "c=photo" in r["link"]
+        assert "utm_campaign=photo" in r["link"]
 
 
-class TestFanNoLink:
+class TestNoLink:
     def test_no_link_hypothesis_generates_without_url(self, tmp_path):
         persona = {
-            "account_id": "hr", "character": {"first_person": "私", "ng_words": []},
+            "account_id": "tashikame",
+            "character": {"first_person": "", "ng_words": []},
             "posting": {"format": "thread", "max_chars": 500, "min_chars": 10,
                         "hashtag_count": [0, 1]},
-            "validation": {"require_first_person_boku": False, "max_emoji": 2,
-                           "max_hashtags": 1, "require_recommended_words": False,
-                           "require_allowed_topics": False, "require_three_stage": False,
-                           "check_similarity": False},
+            "validation": RELAXED_VALIDATION,
         }
         (tmp_path / "persona.json").write_text(json.dumps(persona, ensure_ascii=False))
         (tmp_path / "history.json").write_text(
             json.dumps({"posts": [], "last_posted_at": None, "total_count": 0}))
         (tmp_path / "thread_templates.json").write_text(json.dumps({
-            "fan-x": ["深夜に検索してしまう夜がある。", "誰にも聞けないから、スマホに聞く。",
-                      "そういう夜、ありませんか？"],
+            "signal": ["デートは楽しかった。と思う。",
+                       "帰ってから、温度感が読めなくなる。",
+                       "デートのあと、すぐ送る派ですか。"],
         }, ensure_ascii=False))
         (tmp_path / "hypotheses.json").write_text(json.dumps({
-            "hypotheses": [{"id": "fan-x", "type": "fan", "name": "ファン化", "slug": "fan-x",
-                            "topics": [], "status": "active", "no_link": True,
+            "hypotheses": [{"id": "signal", "type": "signal", "name": "デートのあと",
+                            "slug": "signal", "topics": [], "status": "active",
+                            "no_link": True,
                             "min_posts_to_evaluate": 10, "current_posts": 0}],
-            "link_config": {"link_ratio_by_type": {"fan": 1.0}, "base_urls": {
-                "apply": "https://hisrecoveries.com/apply?utm_campaign={slug}"}},
+            "link_config": {"link_ratio_by_type": {"signal": 1.0}, "base_urls": {
+                "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}"}},
             "discovery_questions": [],
             "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
                                   "evaluation_threshold_posts": 10, "phase": "explore"},
         }, ensure_ascii=False))
         (tmp_path / "monetize.json").write_text(json.dumps({"enabled": False}))
         r = writer.generate_thread(tmp_path, mock=True, record=False)
-        assert r["topic_type"] == "fan"
+        assert r["topic_type"] == "signal"
         assert r["has_link"] is False
         assert not any("http" in p for p in r["posts"])   # 全投稿にURL無し
 
 
-class TestB2BTrack:
-    def test_b2b_links_to_partner_url(self, tmp_path):
-        persona = {
-            "account_id": "hr", "character": {"first_person": "私", "ng_words": []},
-            "posting": {"format": "thread", "max_chars": 500, "min_chars": 10,
-                        "hashtag_count": [0, 1]},
-            "validation": {"require_first_person_boku": False, "max_emoji": 2,
-                           "max_hashtags": 1, "require_recommended_words": False,
-                           "require_allowed_topics": False, "require_three_stage": False,
-                           "check_similarity": False},
-        }
-        (tmp_path / "persona.json").write_text(json.dumps(persona, ensure_ascii=False))
-        (tmp_path / "history.json").write_text(
-            json.dumps({"posts": [], "last_posted_at": None, "total_count": 0}))
-        (tmp_path / "thread_templates.json").write_text(json.dumps({
-            "b2b-x": ["腕はいいのに広告費ばかりかさむ。", "患者側から中立に送客したい。",
-                      "興味がある方、話せたら。{link}"],
-        }, ensure_ascii=False))
-        (tmp_path / "hypotheses.json").write_text(json.dumps({
-            "hypotheses": [{"id": "b2b-x", "type": "b2b", "name": "施術者", "slug": "b2b-x",
-                            "topics": [], "status": "active",
-                            "min_posts_to_evaluate": 10, "current_posts": 0}],
-            "link_config": {"link_ratio_by_type": {"b2b": 1.0}, "base_urls": {
-                "apply": "https://hisrecoveries.com/apply?utm_campaign={slug}",
-                "partner": "https://hisrecoveries.com/partner?utm_campaign={slug}"}},
-            "discovery_questions": [],
-            "experiment_config": {"posts_per_day": 1, "discovery_questions_per_week": 0,
-                                  "evaluation_threshold_posts": 10, "phase": "explore"},
-        }, ensure_ascii=False))
-        (tmp_path / "monetize.json").write_text(json.dumps({"enabled": False}))
-        r = writer.generate_thread(tmp_path, mock=True, record=False)
-        assert r["topic_type"] == "b2b"
-        assert "/partner?utm_campaign=b2b-x" in r["link"]   # /apply でなく /partner
-
-
-class TestAreasTrack:
-    def test_areas_links_to_areas_url(self, areas_thread_account_dir):
-        result = writer.generate_post(areas_thread_account_dir, mock=True, record=False)
-        assert result is not None
-        assert result["topic_type"] == "areas"
-        assert "/areas/sweat" in result["link"]
-        # 本文末のCTAに /areas リンクが入る
-        assert any("/areas/sweat" in p for p in result["posts"])
+class TestThreadLinkKeyOverride:
+    def test_link_key_wins_over_apply(self, thread_account_dir):
+        # 行き先を増やすときは base_urls にキーを足し、仮説に link_key を書く
+        data = json.loads((thread_account_dir / "hypotheses.json").read_text())
+        data["hypotheses"][0]["link_key"] = "guide"
+        data["link_config"]["base_urls"]["guide"] = (
+            "https://hisrecoveries.com/guide/{slug}"
+        )
+        (thread_account_dir / "hypotheses.json").write_text(
+            json.dumps(data, ensure_ascii=False)
+        )
+        r = writer.generate_thread(thread_account_dir, mock=True, record=False)
+        assert "/guide/message" in r["link"]   # /ask でなく /guide
 
 
 class TestGenerateThread:
-    def test_thread_format_returns_multiple_posts(self, gift_thread_account_dir):
-        result = writer.generate_post(gift_thread_account_dir, mock=True)
+    def test_thread_format_returns_multiple_posts(self, thread_account_dir):
+        result = writer.generate_post(thread_account_dir, mock=True)
         assert result is not None
         assert result["is_thread"] is True
         posts = result["posts"]
@@ -543,19 +596,19 @@ class TestGenerateThread:
         # 全投稿が空でない
         assert all(p.strip() for p in posts)
 
-    def test_thread_cta_link_in_one_post_only(self, gift_thread_account_dir):
-        result = writer.generate_post(gift_thread_account_dir, mock=True)
+    def test_thread_cta_link_in_one_post_only(self, thread_account_dir):
+        result = writer.generate_post(thread_account_dir, mock=True)
         posts = result["posts"]
         link = result["link"]
-        assert "gift-birthday" in link
+        assert "c=message" in link
         # URLは連投の中で1投にだけ含まれる（最終投稿に1つだけ、の原則）
         posts_with_link = [p for p in posts if link in p]
         assert len(posts_with_link) == 1
 
-    def test_thread_all_posts_pass_validation(self, gift_thread_account_dir):
+    def test_thread_all_posts_pass_validation(self, thread_account_dir):
         from core.validator import validate_post
-        persona = writer.load_persona(gift_thread_account_dir)
-        result = writer.generate_post(gift_thread_account_dir, mock=True)
+        persona = writer.load_persona(thread_account_dir)
+        result = writer.generate_post(thread_account_dir, mock=True)
         for p in result["posts"]:
             is_valid, errors = validate_post(p, persona)
             assert is_valid, (p, errors)
