@@ -917,9 +917,8 @@ export default async function HomePage() {
           <br className="sm:hidden" />
           こういうものです。
         </h2>
-        <p className="mt-4 max-w-[34em] text-[15px] leading-[1.85] text-steel">
-          実在の女性が読んで、実際にどう受け取ったかを返します。
-          そのうえで決めるのは、あなたです。
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          実在の女性3人が読んで、どう受け取ったかを返します。決めるのは、あなたです。
         </p>
 
         <div className="mt-7">
@@ -927,7 +926,7 @@ export default async function HomePage() {
               実際に起きるのは、送る前に止まって、読んでもらって、
               返ってきて、決める、という順番のある出来事。
               その順番のまま、やりとりの形で出す */}
-          <ResultCase c={OPEN_CASES[0]} />
+          <ResultCase c={OPEN_CASES[0]} compact />
         </div>
 
         <div className="mt-7 max-w-[26em]">
@@ -1015,52 +1014,21 @@ export default async function HomePage() {
           押す場所は減らしていない。ここにあった
           「自分のも見てもらう」は、上の見本の直後に同じものがある。 */}
 
-      {/* ══ 3.5 何を確カメられるか ══ */}
+      {/* ══ 3.5 「何を確カメられるか」を外した ══ */}
       {/* ══════════════════════════════════════════════
-          4つに絞る
+          恋亀が主役になって、役目が終わった
           ══════════════════════════════════════════════
-          受け付けているカテゴリは8つあるが、ここでは4つだけ出す。
-          増やすと「どれを押すか」を決める作業になり、
-          決められない人はそのまま帰る。
+          LINE / 写真・プロフィール / 誘い方 / デートのあと の
+          4枚を出していた。押すと、その種類で相談が始まる。
 
-          残りは相談を書く画面の最初で選べるので、
-          ここに全部並べる必要は無い。
+          それは「相談の種類を自分で選んでから書く」作りのときに要るもの。
+          いまの中心は、恋亀に話すこと。種類は選ばない。話せば決まる。
 
-          並びは恋愛の進み方そのもの。
-            写真で会う前 → LINE → 誘う → 会ったあと
+          4つの場面そのものは、すぐ上の「こんな瞬間」の絵と、
+          やりとりの見本が見せている。3回目になっていた。
 
-          ── 「脈を確カメる」にはしない ──────────────
-          4つ目は「デートのあと」。
-          相手がどう思ったかは当てられないので、聞くのは
-          「昨日の自分が、どう映ったか」。答えるのは読んだ本人。
-          言葉の判定は lib/ask/examples.ts が持つ。 */}
-      <Block>
-        <h2 className="text-huge font-black leading-[1.35] text-slate">
-          何を確カメられる？
-        </h2>
-
-        <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
-          {TOPICS.map((t) => (
-            <li key={t.id}>
-              <Link
-                href={`/ask?c=${t.id}`}
-                className="flex min-h-[92px] flex-col justify-center rounded-card border border-line bg-paper p-5 shadow-card transition-shadow hover:shadow-card-hover"
-              >
-                <span className="text-[15.5px] font-black leading-[1.45] text-slate">
-                  {t.head}
-                </span>
-                <span className="mt-1.5 text-[13px] leading-[1.6] text-steel">
-                  「{t.voice}」
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        <p className="mt-4 text-[12.5px] leading-[1.8] text-steel">
-          ほかの場面も相談できます。書くときに選べます。
-        </p>
-      </Block>
+          568px。言葉と判定（lib/ask/examples.ts の TOPICS）は
+          消していない。相談を書く画面では、まだ使える。 */}
 
       {/* ══ 3.7 AとBを並べる ══ */}
       {/* ══════════════════════════════════════════════
@@ -1204,61 +1172,23 @@ export default async function HomePage() {
       </Block>
 
       {/* ══ 5. 恋愛のどこで迷うか ══ */}
-      {/* ここは「2. 恋愛の道のりと、その場面」として、
-          1画面目のすぐ下にあった。料金より前、デモより前。
+      {/* ここは 968px あった。見出しの上下に長い説明が付いていた。
 
-          1305px あって、買うかどうかを決める前にいちばん長い節だった。
-          しかもここは「どの場面で使うか」の話で、
-          何が返ってくるかを見る前に読んでも、読む土台が無い。
+          恋亀が「前回の続きから」を見せるようになったので、
+          「何度も迷う場面がある」は、そちらで伝わっている。
+          ここに残す意味は、図そのもの（どの段で迷うか）だけ。
 
-          何が返ってくるか（デモ）→ 何を確カメられるか → AIとの違い
-          を読んだあとに置く。そこまで読んだ人には、
-          「自分はこの段にいる」が意味を持つ。 */}
-      {/* ここがこの製品の中身。
-          「悩みの一覧」ではなく「そこで実際に迷う選択」を出す。
-          状態を並べると相談窓口の一覧になり、困ったときにだけ開くものになる。
-          選択を並べると、次の一手を決める前に開くものになる。
-
-          形は渡された案のとおり、1本の線に沿って左右へ振る。
-          縦に同じ箱を積むと一覧表に見えるが、線に沿わせると
-          「順番に進むもの」に見える。実際そう進むので、そちらが正しい。
-
-          問いは lib/ask/journey.ts の choices。受け取れない問いはビルドで弾く。 */}
+          説明を落として、図だけにした。 */}
       <Block id="moments">
-        <div className="relative">
-          {/* 考え方は、ここの見出しが持つ。1画面目では言わない（2回出すと弱くなる）。
-              折る場所はこちらで決める。放っておくと「積み重／ね。」で折れる */}
-          <h2 className="text-huge font-black leading-[1.35] text-slate">
-            {THESIS_A1}
-            <br />
-            {THESIS_A2}
-          </h2>
-          <p className="mt-2 text-[16px] font-bold leading-[1.6] text-steel sm:text-[18px]">
-            次の一手を、選ぶ前に確かめる。
-          </p>
-          {/* 案内役の下に潜り込まないよう、狭い画面では幅を詰める */}
-          <p className="mt-4 max-w-[15em] text-[14.5px] leading-[1.85] text-steel sm:max-w-[24em] sm:text-[15px]">
-            今どこまで進んでいますか？ 段ごとに、こんなことで手が止まります。
-          </p>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          迷うのは、
+          <br className="sm:hidden" />
+          一度じゃない。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          どの段でも、同じように手が止まります。
+        </p>
 
-          {/* 案内役。見出しの下、説明の右。見出しに被らせない。
-              名前を下に置く。名前があると、絵が飾りではなく
-              「この子が案内してくれる」に変わる */}
-          <div className="pointer-events-none absolute right-0 top-[96px] flex flex-col items-center sm:top-[70px] lg:top-[56px]">
-            <Tashikame
-              size={92}
-              className="opacity-95 sm:!h-[150px] sm:!w-[150px] lg:!h-[180px] lg:!w-[180px]"
-            />
-            <span className="mt-0.5 text-[12px] font-black tracking-[0.08em] text-steel sm:text-[13px]">
-              恋亀
-            </span>
-          </div>
-        </div>
-
-        {/* ここでは売らない。どの段で何に迷うかを書くだけ。
-            押せる場所を作らない（作ると、この節が考え方と商品の入口を
-            両方背負って、どちらも中途半端になる）。
-            売るのは、次の「こんな選択を、選ぶ前に」と料金の節。 */}
         <Journey />
 
         {/* ── 「前回の続きから進められます」の箱を外した ──────
