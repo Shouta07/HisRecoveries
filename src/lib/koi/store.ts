@@ -51,6 +51,26 @@ export async function peopleOf(talker: string): Promise<KoiCase[]> {
 }
 
 /**
+ * いま何人・何記録ためているか。
+ *
+ * 無料の上限に当たっているかを見るのに使う。
+ * 数えるのはサーバー。画面に数えさせると、書き換えられる。
+ */
+export async function usageOf(talker: string): Promise<{ people: number; records: number }> {
+  if (!dbAdminEnabled || !isTalkerToken(talker)) return { people: 0, records: 0 };
+  const people = await dbSelect<{ id: string }>(
+    `relationship_cases?pass_token=eq.${encodeURIComponent(talker)}&status=eq.active&select=id`,
+  );
+  if (people.length === 0) return { people: 0, records: 0 };
+  // その人のケースに紐づく記録だけを数える
+  const ids = people.map((x) => x.id).join(",");
+  const records = await dbSelect<{ id: string }>(
+    `episodes?case_id=in.(${encodeURIComponent(ids)})&select=id`,
+  );
+  return { people: people.length, records: records.length };
+}
+
+/**
  * そのケースが、その人のものか。
  *
  * ここが、この仕組みで唯一の壁。
