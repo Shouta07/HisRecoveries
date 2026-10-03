@@ -25,14 +25,16 @@ import KoiFace from "@/components/koi/KoiFace";
 
    ここを抜けると、会話の勢いで記録が書き換わる。
 
-   ── いまは、書き込まない ────────────────────────
-   このサービスには会員登録が無く、相談ごとのリンク（トークン）
-   だけで本人を見分けている。
-   話している相手が誰かを示すトークンが、この画面にはまだ無い。
+   ── 画面の判定は、表示のため ────────────────────
+   ここでも decide() を通すが、それは「何が起きたか」を出すため。
+   ブラウザは書き換えられるので、通ったかどうかを画面の言うとおりにしない。
 
-   誰のものか分からないまま書くと、他人の記録に混ざる。
-   だから今は、判定まで通して「こう判断した」を出すところで止める。
-   保存はしない。画面にもそう書く。
+   実際に書くのは /api/koi/act で、そちらでもう一度 decide() を通す。
+   画面を書き換えても、サーバーで止まる。
+
+   ── 誰のものかは、鍵で決める ────────────────────
+   会員登録が無いので、話す人の鍵（t...）が本人の証拠。
+   呼び出しのたびに鍵を送り、サーバーがその鍵の記録だけを触る。
 
    ── 終わりを決めておく ──────────────────────────
    つなぎっぱなしにされると、そのぶん課金が走る。
@@ -43,7 +45,7 @@ type Note = { ok: boolean; text: string };
 
 type Phase = "idle" | "connecting" | "live" | "ended" | "error";
 
-export default function VoiceRoom() {
+export default function VoiceRoom({ talker }: { talker: string }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
@@ -100,14 +102,38 @@ export default function VoiceRoom() {
         /* 壊れていれば、判定が弾く */
       }
       const d = decide({ name, args }, usedRef.current);
+      const seen = { ...usedRef.current };
       usedRef.current[name] = (usedRef.current[name] ?? 0) + 1;
-      setNotes((xs) => [
-        ...xs,
-        d.ok
-          ? { ok: true, text: `${name} を通しました（まだ保存はしていません）` }
-          : { ok: false, text: `${name} を止めました：${d.why}` },
-      ]);
       track("koi_tool_decided", { tool: name, ok: d.ok ? "1" : "0" });
+
+      if (!d.ok) {
+        setNotes((xs) => [...xs, { ok: false, text: `${name} を止めました：${d.why}` }]);
+        return;
+      }
+
+      /* 通ったものだけ、サーバーへ渡す。
+         サーバーがもう一度 decide() を通してから書く。
+         こちらの「通った」は、あくまで表示用。 */
+      void (async () => {
+        try {
+          const r = await fetch("/api/koi/act", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ talker, name, args: d.args, used: seen }),
+          });
+          const j = await r.json().catch(() => ({}));
+          setNotes((xs) => [
+            ...xs,
+            j.ok
+              ? { ok: true, text: `${name} を残しました` }
+              : j.needsConfirm
+                ? { ok: false, text: `${name} は、本人の確認が要ります` }
+                : { ok: false, text: `${name} は残せませんでした：${j.why ?? ""}` },
+          ]);
+        } catch {
+          setNotes((xs) => [...xs, { ok: false, text: `${name} を残せませんでした` }]);
+        }
+      })();
       return;
     }
 
@@ -116,7 +142,7 @@ export default function VoiceRoom() {
       setPhase("error");
       stop("error");
     }
-  }, [stop]);
+  }, [stop, talker]);
 
   async function start() {
     if (phase !== "idle" && phase !== "ended" && phase !== "error") return;

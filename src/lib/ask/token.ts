@@ -84,7 +84,32 @@ export function makeReplyToken(): string {
   return make("r");
 }
 
-const SHAPE = new RegExp(`^[crps][${ALPHABET}]{${LEN}}$`);
+/**
+ * 恋亀と話す人の鍵。
+ *
+ * ══════════════════════════════════════════════════
+ * なぜ、相談の鍵と別にするか
+ * ══════════════════════════════════════════════════
+ * 相談の鍵（c...）は、相談1件ぶんの鍵。
+ * 恋亀は、相手が何人いても、何か月でも同じ人と話し続ける。
+ * 1件に紐づく鍵では足りない。
+ *
+ * relationship_cases.pass_token が「同じ持ち主のケースをまとめる鍵」
+ * として既にある。恋亀の鍵は、そこに入れる。
+ * 新しい表を増やさない。
+ *
+ * 別の頭文字にするのは、取り違えを形で止めるため。
+ * 相談の鍵をそのまま渡しても、判定で弾かれる。
+ */
+export function makeTalkerToken(): string {
+  return make("t");
+}
+
+export function isTalkerToken(x: unknown): boolean {
+  return isToken(x) && typeof x === "string" && x.startsWith("t");
+}
+
+const SHAPE = new RegExp(`^[crpst][${ALPHABET}]{${LEN}}$`);
 
 export function isToken(x: unknown): x is string {
   return typeof x === "string" && SHAPE.test(x);
@@ -134,6 +159,22 @@ export function isReplyToken(x: unknown): boolean {
   if (!isReplyToken(r)) throw new Error(`回答の鍵の形が不正です: ${r}`);
   // 種類を取り違えると、回答用のURLで結果が見えてしまう。
   if (isConsultToken(r) || isReplyToken(c)) throw new Error("鍵の種類が区別できていません");
+  /* 話す人の鍵が、ほかの鍵と取り違えられないこと。
+     取り違えると、相談の鍵で他人の記録に書き込める。 */
+  {
+    const t = makeTalkerToken();
+    if (!isTalkerToken(t)) throw new Error(`話す人の鍵の形が不正です: ${t}`);
+    if (isConsultToken(t) || isReplyToken(t) || isResponderToken(t) || isShareToken(t)) {
+      throw new Error("話す人の鍵が、ほかの鍵として通っています");
+    }
+    for (const other of [c, r, pp, sh]) {
+      if (isTalkerToken(other)) {
+        throw new Error(`ほかの鍵（${other[0]}...）が、話す人の鍵として通っています`);
+      }
+    }
+    if (t.length !== LEN + 1) throw new Error("話す人の鍵の長さが足りません");
+  }
+
   if (c.length !== LEN + 1) throw new Error("鍵の長さが足りません");
   if (isToken("c" + "0".repeat(LEN))) throw new Error("使っていない文字を受け入れています");
   if (isToken("")) throw new Error("空文字を鍵として受け入れています");
