@@ -15,7 +15,8 @@ import SituationCardView from "@/components/koi/SituationCard";
 import { DEMO_CARD } from "@/lib/koi/cardDemo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
-import { PASS_YEN, EARLY_YEN, EARLY_SEATS, earlyOpen, INCLUDED } from "@/lib/pass/entitle";
+import { INCLUDED } from "@/lib/pass/entitle";
+import PriceChooser from "@/components/pass/PriceChooser";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
@@ -1297,40 +1298,27 @@ export default async function HomePage() {
           </p>
 
           {/* ══════════════════════════════════════════
-              はじめの100人の値段を、隠さない
+              期間と払い方を、分けて選ばせる
               ══════════════════════════════════════════
-              「今だけ」「先着」とは書かない（voice.ts の CHEAP）。
-              書くのは「はじめの100人」という事実だけ。
-              100人に達したら、EARLY_SEATS を見て消す。
+              期間4つ × 払い方2つで7通り。
+              カードを7枚並べると、どれを見ればいいか分からない。
 
-              安いほうを大きく、通常をその下に小さく。
-              取り消し線は引かない。値引きに見せない。 */}
-          {/* 人数に達したら、はじめの値段ごと消える（earlyOpen）。
-              「先着100名」と書く以上、本当に100名で終わらせないと
-              景表法（有利誤認）に触れる。手で消すと必ず忘れる。 */}
-          {earlyOpen ? (
-            <>
-              <p className="mt-3 flex flex-wrap items-baseline gap-x-2.5 text-[30px] font-black leading-none text-slate sm:text-[34px]">
-                <span>
-                  <Yen yen={EARLY_YEN} />
-                  <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
-                </span>
-                <span className="rounded-pill bg-brand px-2.5 py-1 text-[11px] font-black text-paper">
-                  先着{EARLY_SEATS}名
-                </span>
-              </p>
-              <p className="mt-1.5 text-[12.5px] leading-[1.75] text-steel">
-                まだ出来上がっていないものに、最初から付き合ってもらうぶんの値段です。
-                <br />
-                {EARLY_SEATS}名に達したら <Yen yen={PASS_YEN} />／月 になります。
-              </p>
-            </>
-          ) : (
-            <p className="mt-3 text-[30px] font-black leading-none text-slate sm:text-[34px]">
-              <Yen yen={PASS_YEN} />
-              <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
-            </p>
-          )}
+                1 使う期間を選ぶ（1 / 3 / 6 / 12か月）
+                2 払い方を選ぶ（一括 / 月々）
+
+              月払いは「いつでも解約」ではない。期間が決まっていて、
+              支払いだけ分けるもの。札にも断りにも、必ず期間を書く。
+              「月々2,780円」だけを大きく出さない。
+
+              値段・採算・特典は lib/pass/periods.ts。
+              一括が月払いより高い／長いほうが月あたり高い／
+              どれかが限界利益率の床を割ると、公開の前に止まる。
+
+              創業メンバー価格はやめた。一度下げた値段は、
+              上げるときに必ず揉める。先着は、値段ではなく中身を足す。 */}
+          <div className="mt-5">
+            <PriceChooser />
+          </div>
 
           <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">
             {INCLUDED.map((x) => (
