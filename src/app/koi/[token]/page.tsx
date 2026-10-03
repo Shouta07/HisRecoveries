@@ -15,6 +15,7 @@ import { peopleOf, usageOf } from "@/lib/koi/store";
 import { toBoard, todayOf } from "@/lib/koi/board";
 import TodayList from "@/components/koi/TodayList";
 import UsageMeter from "@/components/koi/UsageMeter";
+import Greeting from "@/components/koi/Greeting";
 import { passEnabled } from "@/lib/stripe";
 
 // 恋亀と話す画面。
@@ -95,7 +96,12 @@ export default async function KoiPage({ params }: { params: { token: string } })
             空の枠を見せると、使っていないことを突きつけるだけになる。 */}
         {board.length > 0 && (
           <>
-            <div className="mt-8">
+            {/* 恋亀が1行だけ言う。開いた瞬間に今日の量が分かる */}
+            <div className="mt-7">
+              <Greeting count={today.filter((t) => !t.waiting).length} />
+            </div>
+
+            <div className="mt-7">
               <div className="flex items-baseline justify-between gap-3">
                 <h2 className="text-[15px] font-black text-slate">今日やること</h2>
                 <span className="text-[11.5px] text-steel">{today.length}件</span>

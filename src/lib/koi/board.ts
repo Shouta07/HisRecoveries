@@ -93,6 +93,8 @@ export type BoardCard = {
   recent?: string | null;
   /** 記録の数 */
   records?: number;
+  /** 今日やること。次の一手とは別 */
+  todayAction?: string | null;
 };
 
 export type BoardRow = {
@@ -102,6 +104,11 @@ export type BoardRow = {
   current_stage: string | null;
   last_decision: string | null;
   updated_at: string;
+  /* 本人向けの短い状態。あればこちらを出す。
+     current_stage は集計のための語彙で、画面に出す言葉ではない。 */
+  status_label?: string | null;
+  /** 今日やること。NEXT とは別（今日やらないこともある） */
+  today_action?: string | null;
   /** 直近に何があったか。episodes の最後の見出しから来る */
   recent?: string | null;
   /** 記録の数 */
@@ -144,13 +151,15 @@ export function toCard(r: BoardRow, now = Date.now()): BoardCard {
     id: r.id,
     who: (r.partner_label ?? "").trim() || "名前なし",
     app: appLabel(r.dating_app),
-    stage: stageLabel(r.current_stage),
+    // 本人向けの言葉があれば、そちらを出す
+    stage: (r.status_label ?? "").trim() || stageLabel(r.current_stage),
     next,
     updatedAt: r.updated_at,
     since: sinceLabel(r.updated_at, now),
     heat: heatOf(r.updated_at, Boolean(next), now),
     recent: (r.recent ?? "").trim() || null,
     records: r.records,
+    todayAction: (r.today_action ?? "").trim() || null,
   };
 }
 
@@ -193,12 +202,21 @@ export type Todo = {
 };
 
 export function todayOf(cards: BoardCard[]): Todo[] {
-  return cards.map((c) => ({
-    id: c.id,
-    who: c.who,
-    what: c.next ?? "今日は待つ",
-    waiting: !c.next,
-  }));
+  return cards.map((c) => {
+    /* 今日やること（today_action）と、次の一手（next）は別物。
+       次の一手が「水族館の日程を決める」でも、
+       今日は「相手の返事を待つ」ことがある。
+
+       today_action があれば、そちらを出す。
+       無ければ次の一手を出す。どちらも無ければ待つ。 */
+    const what = c.todayAction ?? c.next ?? "今日は待つ";
+    return {
+      id: c.id,
+      who: c.who,
+      what,
+      waiting: !c.todayAction && !c.next ? true : /待つ|待ち/.test(what),
+    };
+  });
 }
 
 /** 一覧の上に出す1行。何人いて、何をすることになっているか */
