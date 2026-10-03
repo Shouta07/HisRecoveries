@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbSelect, dbUpdate, dbAdminEnabled } from "@/lib/db";
+import { dbSelect, dbUpdate, dbInsert, dbAdminEnabled } from "@/lib/db";
 import { verifyWebhook } from "@/lib/stripe";
 import { fulfil, paymentBySession, type Payment } from "@/lib/ask/fulfil";
+import { apply, isPassEvent, type PassRow } from "@/lib/pass/store";
 
 // Stripe からの通知。
 //
@@ -24,6 +25,20 @@ import { fulfil, paymentBySession, type Payment } from "@/lib/ask/fulfil";
 
 export const runtime = "edge";
 
+/** DBの行を、lib/pass/store の形に戻す */
+function fromRow(r: Record<string, unknown>): PassRow {
+  return {
+    userToken: String(r.user_token ?? ""),
+    customerId: (r.stripe_customer_id as string | null) ?? null,
+    subscriptionId: (r.stripe_subscription_id as string | null) ?? null,
+    priceId: (r.stripe_price_id as string | null) ?? null,
+    status: (r.status as PassRow["status"]) ?? "incomplete",
+    periodStart: (r.current_period_start as string | null) ?? null,
+    periodEnd: (r.current_period_end as string | null) ?? null,
+    cancelAtPeriodEnd: r.cancel_at_period_end === true,
+  };
+}
+
 type StripeEvent = {
   id: string;
   type: string;
@@ -32,6 +47,8 @@ type StripeEvent = {
       id: string;
       payment_intent?: string | null;
       client_reference_id?: string | null;
+    // 月額かどうか。単発と同じ口に来るので、ここで分ける
+    mode?: string;
       metadata?: Record<string, string>;
       amount_refunded?: number;
     };
@@ -63,6 +80,74 @@ export async function POST(req: NextRequest) {
   }
 
   const obj = ev.data?.object;
+
+  /* ══════════════════════════════════════════════
+     同じ通知を、二度効かせない
+     ══════════════════════════════════════════════
+     Stripe は再送する。順番も前後する。
+     id を先に置いて、置けなかったら（＝もう来ている）帰る。
+
+     単発のほうは fulfil() が自前で二重配布を防いでいるので、
+     ここを通らなくても壊れない。
+     月額は「状態の上書き」なので、順番が狂うと古い状態に戻る。
+     だから、こちらは必ず通す。 */
+  if (dbAdminEnabled && ev.id) {
+    const seen = await dbSelect<{ id: string }>(
+      `stripe_events?id=eq.${encodeURIComponent(ev.id)}&select=id&limit=1`,
+    );
+    if (seen.length > 0) return NextResponse.json({ received: true, duplicate: true });
+    await dbInsert("stripe_events", { id: ev.id, type: ev.type });
+  }
+
+  /* ══════════════════════════════════════════════
+     月額
+     ══════════════════════════════════════════════
+     checkout.session.completed は単発と同じ口に来る。
+     月額でなければ apply() が null を返すので、
+     そのまま下の単発の処理へ落ちる。 */
+  if (isPassEvent(ev.type) && dbAdminEnabled) {
+    const token =
+      (obj.client_reference_id as string | undefined) ??
+      (obj.metadata as Record<string, string> | undefined)?.user_token ??
+      null;
+
+    // いま持っている状態を取る。無ければ初めて
+    let now: PassRow | null = null;
+    if (token) {
+      const rows = await dbSelect<Record<string, unknown>>(
+        `subscriptions?user_token=eq.${encodeURIComponent(token)}&select=*&limit=1`,
+      );
+      if (rows[0]) now = fromRow(rows[0]);
+    }
+
+    const next = apply(ev.type, obj as Record<string, unknown>, now);
+    if (next) {
+      const patch = {
+        user_token: next.userToken,
+        stripe_customer_id: next.customerId,
+        stripe_subscription_id: next.subscriptionId,
+        stripe_price_id: next.priceId,
+        status: next.status,
+        current_period_start: next.periodStart,
+        current_period_end: next.periodEnd,
+        cancel_at_period_end: next.cancelAtPeriodEnd,
+        updated_at: new Date().toISOString(),
+      };
+      const existing = await dbSelect<{ id: string }>(
+        `subscriptions?user_token=eq.${encodeURIComponent(next.userToken)}&select=id&limit=1`,
+      );
+      if (existing[0]) await dbUpdate("subscriptions", existing[0].id, patch);
+      else await dbInsert("subscriptions", patch);
+
+      // 月額として処理したものは、単発の処理へ落とさない
+      if (ev.type !== "checkout.session.completed") {
+        return NextResponse.json({ received: true });
+      }
+      if (obj.mode === "subscription") {
+        return NextResponse.json({ received: true });
+      }
+    }
+  }
 
   switch (ev.type) {
     case "checkout.session.completed": {
