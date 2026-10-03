@@ -2351,3 +2351,317 @@ from consultations
 where ask is not null
 group by category, ask
 order by category, n desc;
+
+-- ══════════════════════════════════════════════════
+-- 話したことが、勝手に残る
+-- ══════════════════════════════════════════════════
+-- docs/REDESIGN_MEET_CRM.md の設計。
+--
+-- 利用者に管理表を書かせない。相談するだけで、
+-- 相手ごとの状況が残っていくのが商品そのもの。
+--
+-- ── いちばん守ること ──────────────────────────────
+-- AIが出したものを、本体へ直接書き込まない。
+-- talk_updates に置いて、利用者が押してから入れる。
+--
+-- 事実と推測を混ぜない。混ぜると、AIの当て推量が
+-- 「前回こうだった」として次の相談に渡っていく。
+
+-- 相手カードを、段階と予定に対応させる。
+-- 既存の relationship_cases に足すだけ（作り直さない）。
+alter table relationship_cases add column if not exists stage text;
+alter table relationship_cases add column if not exists date_count int not null default 0;
+alter table relationship_cases add column if not exists next_date date;
+alter table relationship_cases add column if not exists next_date_status text;
+alter table relationship_cases add column if not exists last_contact_date date;
+alter table relationship_cases add column if not exists reply_status text;
+-- 相談者自身の気持ち。相手の気持ちではない（列名で分ける）
+alter table relationship_cases add column if not exists user_interest_level int;
+alter table relationship_cases add column if not exists next_action text;
+
+alter table relationship_cases drop constraint if exists relationship_cases_stage_check;
+alter table relationship_cases add constraint relationship_cases_stage_check
+  check (stage is null or stage in (
+    'matched', 'messaging', 'calling',
+    'first_date_scheduled', 'first_date_completed',
+    'second_date_scheduled', 'second_date_completed',
+    'third_date_plus', 'relationship_decision', 'dating', 'ended'
+  ));
+alter table relationship_cases drop constraint if exists relationship_cases_interest_check;
+alter table relationship_cases add constraint relationship_cases_interest_check
+  check (user_interest_level is null or user_interest_level between 1 and 5);
+
+-- ══════════════════════════════════════════════════
+-- 通話1回
+-- ══════════════════════════════════════════════════
+create table if not exists talks (
+  id uuid primary key default gen_random_uuid(),
+  -- 利用者が開く鍵（t + 32文字）。会員登録は無い
+  token text unique not null,
+  case_id uuid references relationship_cases(id) on delete set null,
+  consultation_id uuid references consultations(id),
+  -- 今日、何を聞くか
+  topic text,
+  minutes int not null,
+  -- ══════════════════════════════════════════════
+  -- 録る前に、両方から同意を取る
+  -- ══════════════════════════════════════════════
+  -- 公開しているプライバシー方針は「録音はしません」だった。
+  -- 文字にするなら、方針を直したうえで、毎回ことわる。
+  --
+  -- どちらかが false なら録らない。
+  -- 録らなくても通話はできる（断ったら使えない、にしない）。
+  consent_user boolean not null default false,
+  consent_reviewer boolean not null default false,
+  room_url text,
+  started_at timestamptz,
+  ended_at timestamptz,
+  -- 文字起こし。構造化が済んだら本文を消す。
+  -- 「あとで揉めたときの証拠」ではなく「次回の続きを作る材料」なので、
+  -- 材料として使い終わったら持たない。
+  transcript text,
+  transcript_deleted_at timestamptz,
+  -- scheduled / live / done / failed / no_consent
+  status text not null default 'scheduled',
+  created_at timestamptz default now()
+);
+create index if not exists talks_case_idx on talks (case_id, created_at desc);
+
+-- ══════════════════════════════════════════════════
+-- 事実・気持ち・人の意見・AIの推測を、混ぜないで持つ
+-- ══════════════════════════════════════════════════
+-- 1つの表に列で足すと、どれがどれか分からなくなる。
+-- 分けておくと、画面で出し分けられるし、
+-- 「AIが言っただけのこと」を事実として次へ渡さずに済む。
+create table if not exists case_notes (
+  id uuid primary key default gen_random_uuid(),
+  case_id uuid not null references relationship_cases(id) on delete cascade,
+  talk_id uuid references talks(id) on delete set null,
+  -- fact      起きたこと（会った、返信が来た）。発言の引用が要る
+  -- feeling   相談者自身の気持ち
+  -- opinion   回答者（人）が言ったこと
+  -- inference AIの推測
+  -- action    次にやること
+  kind text not null check (kind in ('fact', 'feeling', 'opinion', 'inference', 'action')),
+  body text not null,
+  -- fact のときは、元の発言。これが無いものは事実として扱わない
+  quote text,
+  -- AIが出したものだけ、どのくらい確からしいか
+  confidence real check (confidence is null or confidence between 0 and 1),
+  -- 利用者が確認したか。推測は確認されるまで「仮」
+  confirmed boolean not null default false,
+  created_at timestamptz default now()
+);
+create index if not exists case_notes_case_idx on case_notes (case_id, created_at desc);
+
+-- ══════════════════════════════════════════════════
+-- AIが出した更新案。押すまで本体に入れない
+-- ══════════════════════════════════════════════════
+create table if not exists talk_updates (
+  id uuid primary key default gen_random_uuid(),
+  talk_id uuid not null references talks(id) on delete cascade,
+  -- lib/talk/shape.ts の形そのまま
+  payload jsonb not null,
+  -- 形が合わなかったときの理由。捨てずに残して、作り直せるようにする
+  rejected_why text,
+  applied_at timestamptz,
+  created_at timestamptz default now()
+);
+create index if not exists talk_updates_talk_idx on talk_updates (talk_id, created_at desc);
+
+-- いまの状況。ホーム画面がこれを読む。
+-- 「案件」「パイプライン」とは呼ばない（画面では「いまの状況」）。
+create or replace view case_board as
+select
+  rc.id,
+  rc.token,
+  rc.partner_label,
+  rc.dating_app,
+  rc.stage,
+  rc.date_count,
+  rc.next_date,
+  rc.next_date_status,
+  rc.reply_status,
+  rc.next_action,
+  rc.updated_at,
+  (select count(*) from talks t where t.case_id = rc.id and t.status = 'done') as talks_done
+from relationship_cases rc
+where rc.status = 'active'
+order by rc.updated_at desc;
+
+-- ══════════════════════════════════════════════════
+-- 回答者が、相談者の知り合いだったとき
+-- ══════════════════════════════════════════════════
+-- 完全には防げない。当たったときに何も漏れないことを優先する。
+--
+-- 回答者の画面に常に「知っている人かもしれない」を出す。
+-- 押されたら、その場で終了し、別の回答者へ振り替える。
+--
+-- ── 理由を残さない ────────────────────────────────
+-- なぜ止めたかは記録しない。
+-- 残すと、あとから「誰だったか」を推測する材料になる。
+-- 回答者の安全を守るために、こちらも知らないままにする。
+alter table talks add column if not exists swapped_from uuid references talks(id);
+-- その回のデータを使わない印。構造化もしない。
+alter table talks add column if not exists data_voided boolean not null default false;
+
+-- 使わないと決めた回の文字起こしは、必ず消えていること。
+-- 消し忘れが1件でもあると、残り続ける。
+create or replace view talks_to_purge as
+select id, token, created_at
+from talks
+where (data_voided = true or status = 'no_consent')
+  and transcript is not null;
+
+-- ══════════════════════════════════════════════════
+-- 恋亀との会話
+-- ══════════════════════════════════════════════════
+-- 相手（people）は relationship_cases をそのまま使う。
+-- 呼び名・出会ったアプリ・段階・次の予定を、もう持っている。
+-- 同じものを2つ作ると、どちらが本当か分からなくなる。
+
+-- 1回の音声セッション
+create table if not exists voice_sessions (
+  id uuid primary key default gen_random_uuid(),
+  token text unique not null,
+  case_id uuid references relationship_cases(id) on delete set null,
+  -- どの版の恋亀と話したか。これが無いと
+  -- 「最近の恋亀、感じ悪くない？」を確かめられない
+  prompt_version text not null,
+  started_at timestamptz default now(),
+  ended_at timestamptz,
+  seconds int,
+  -- 文字起こし。構造化が済んだら本文を消す
+  transcript text,
+  transcript_deleted_at timestamptz,
+  -- live / done / failed / dropped
+  status text not null default 'live',
+  created_at timestamptz default now()
+);
+create index if not exists voice_sessions_case_idx
+  on voice_sessions (case_id, created_at desc);
+
+-- ══════════════════════════════════════════════════
+-- 恋愛エピソード
+-- ══════════════════════════════════════════════════
+-- 画面では「EP.01」と出す。CRMとは呼ばない。
+--
+-- 1回の会話＝1エピソード。番号は相手ごとに1から振る。
+-- 細かい粒（事実・気持ち・推測）は case_notes が持つ。
+-- ここは「その回に何があったか」の見出しだけ。
+create table if not exists episodes (
+  id uuid primary key default gen_random_uuid(),
+  case_id uuid not null references relationship_cases(id) on delete cascade,
+  voice_session_id uuid references voice_sessions(id) on delete set null,
+  -- 相手ごとの通し番号。1から
+  episode_number int not null,
+  -- 「2回目デート」のような短い名前
+  title text not null,
+  summary text,
+  -- その回に決めた、次にやること。1つだけ
+  next_action text,
+  occurred_at timestamptz default now(),
+  created_at timestamptz default now(),
+  unique (case_id, episode_number)
+);
+create index if not exists episodes_case_idx
+  on episodes (case_id, episode_number desc);
+
+-- この人の恋愛の目的。NEXT の出し方が変わる
+alter table relationship_cases add column if not exists relationship_goal text;
+
+-- 画面に出す一覧。EP.01 から順に
+create or replace view episode_list as
+select
+  e.id,
+  e.case_id,
+  rc.partner_label,
+  rc.dating_app,
+  e.episode_number,
+  e.title,
+  e.summary,
+  e.next_action,
+  e.occurred_at
+from episodes e
+join relationship_cases rc on rc.id = e.case_id
+order by e.case_id, e.episode_number desc;
+
+-- 構造化が済んだのに文字起こしが残っているもの。
+-- 消し忘れが1件でもあると、残り続ける
+create or replace view voice_to_purge as
+select id, token, created_at
+from voice_sessions
+where status in ('done', 'failed', 'dropped')
+  and transcript is not null
+  and transcript_deleted_at is null;
+
+-- ══════════════════════════════════════════════════
+-- 女性3人に確カメる（月額に月1回ぶん含まれる）
+-- ══════════════════════════════════════════════════
+create table if not exists human_requests (
+  id uuid primary key default gen_random_uuid(),
+  token text unique not null,
+  case_id uuid references relationship_cases(id) on delete set null,
+  -- 回答者へ渡す、匿名化済みのまとめ。恋亀が作る
+  summary text not null,
+  question text not null,
+  -- 何月ぶんとして数えるか。'2026-10' の形
+  billing_month text not null,
+  -- 月額に含まれるぶんか、別に払ったものか
+  included_in_subscription boolean not null default true,
+  required_responses int not null default 3,
+  completed_responses int not null default 0,
+  -- open / done / short / cancelled
+  --   short = 人が足りずに揃わなかった
+  status text not null default 'open',
+  created_at timestamptz default now(),
+  completed_at timestamptz
+);
+create index if not exists human_requests_month_idx
+  on human_requests (billing_month, created_at desc);
+
+create table if not exists human_responses (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references human_requests(id) on delete cascade,
+  -- 回答者。相談者には出さない
+  advisor_id uuid,
+  display_age_band text,
+  body text not null,
+  created_at timestamptz default now()
+);
+create index if not exists human_responses_req_idx on human_responses (request_id);
+
+-- 回答者の割り当て。辞退と振替を追う
+create table if not exists advisor_assignments (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references human_requests(id) on delete cascade,
+  advisor_id uuid not null,
+  -- sent / accepted / declined / knows_them / answered / expired
+  --   knows_them = 「知っている人かもしれない」
+  --   理由は残さない。残すと、誰だったかを推測する材料になる
+  status text not null default 'sent',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique (request_id, advisor_id)
+);
+
+-- ══════════════════════════════════════════════════
+-- 月の残りは、揃った依頼だけで数える
+-- ══════════════════════════════════════════════════
+-- 回答者が3人しかいないあいだ、1人が「知っている人かも」で
+-- 辞退すると、3人そろわない。振替先がいない。
+--
+-- そのとき月のぶんを使ったことにすると、
+-- 届いていないのに権利だけ減る。それがいちばん不満になる。
+--
+-- 揃ったものだけ数える。揃わなかったぶんは、また使える。
+create or replace view human_usage_by_month as
+select
+  rc.pass_token,
+  hr.billing_month,
+  count(*) filter (where hr.status = 'done') as used,
+  count(*) filter (where hr.status = 'open') as waiting,
+  count(*) filter (where hr.status = 'short') as short
+from human_requests hr
+join relationship_cases rc on rc.id = hr.case_id
+group by rc.pass_token, hr.billing_month;

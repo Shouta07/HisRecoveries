@@ -200,6 +200,8 @@ export const REWARD_CAP: Record<PlanId, number> = {
   first: 545,
   // 15分 ¥2,980。決済手数料などを引いて粗利60%を守ると、
   // 1回に払える上限は ¥966。
+  // 10分 ¥1,980。下限50%を守ると、払える上限は ¥820。
+  talk10: 820,
   call15: 966,
   // 15分×5回 ¥12,000。1回あたり ¥2,400。
   // まとめ買いでも、答える人の取り分は1回ぶんで見る。
@@ -314,6 +316,9 @@ export const COSTS: Record<PlanId, CostModel> = {
   // 15分、1人と話す。
   // 1回売りもまとめ買いも、やることは同じ15分。だから同じ額にする。
   // 買い方で取り分が変わるのは、答える側から見ると理由の無い差になる。
+  // 10分。15分より短いが、1件として受けてもらう重さは大きく変わらない。
+  // 回答者集めが詰まっているので、受けやすい額にしてある。
+  talk10: { parts: [{ kind: "talk_short", n: 1, atYen: 800 }] },
   call15: { parts: [{ kind: "talk_short", n: 1, atYen: 750 }] },
   call5: { parts: [{ kind: "talk_short", n: 1, atYen: 750 }] },
 };
@@ -567,7 +572,24 @@ export function withinCap(id: PlanId, plannedRewardYen: number): boolean {
       const entry =
         PLANS.find((x) => x.featured) ??
         [...PLANS].sort((a, b) => a.yen - b.yen)[0];
-      if (p.id !== entry.id && !p.trial) {
+      /* 下げてよいのは3つ。
+
+           おすすめ（featured） 実際に人を入れている商品
+           お試し（trial）       一度体験してもらうための軽い入口
+           まだ売れない商品      売上ではなく、計画だから
+
+         3つ目を足した。新しい中核（talk10）が、まだ繋がっていない。
+         featured は「売れる商品」であることが条件なので、
+         繋がるまでは featured にできない。
+
+         ここで止めると、設計した採算をコードに置けなくなる。
+         置けないと、別の場所に書かれて二重管理になる。
+
+         そのかわり、売り物にした瞬間にこの判定が効く。
+         available を true にしたとき、おすすめかお試しでなければ
+         ここで落ちる。そのときに、下限を上げるか、
+         おすすめにするかを決めることになる。仕掛けとして、ここに置く。 */
+      if (p.id !== entry.id && !p.trial && p.available) {
         throw new Error(
           `プラン「${p.id}」は、おすすめでもお試しでもないので、限界利益率の下限を下げられません`,
         );

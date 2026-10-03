@@ -151,11 +151,22 @@ export default function PlanCards({
         const normals = list.filter((p) => !p.trial);
         const includes = (normals[0] ?? list[0]).includes;
         const trial = list.find((p) => p.trial);
-        // お試しで返らないもの。書いてあるものを引くだけなので、
-        // 中身を変えたら、ここも自動で追いつく。
+        /* お試しと通常で、返ってくるものが重なっているか。
+
+           前は「返らないもの」を引き算で出していた。
+           通常を3人パネルにしたとき、お試し（1人の詳しい報告）と
+           中身が完全に別物になり、引き算の結果が全項目になった。
+
+           画面にはこう出ていた。
+             「この回だけ、〔4項目すべて〕は返りません」
+           ¥980 払って何も返らない、と読める。実際は1人ぶんの報告が返る。
+
+           重なりがあるなら、引き算で「返らないもの」を出す。
+           重なりが無いなら、別物なので、返るものをそのまま出す。 */
         const notInTrial = trial
           ? includes.filter((x) => !trial.includes.includes(x))
           : [];
+        const trialIsSubset = trial ? notInTrial.length < includes.length : true;
 
         return (
           <Reveal key={fid} delay={i * 60}>
@@ -184,7 +195,9 @@ export default function PlanCards({
                          下の「返ってくるもの」だけ見て買うと、
                          お試しには入っていないものを期待することになる。 */
                       <li className="-mt-1 pb-4 text-[11.5px] leading-[1.7] text-steel">
-                        この回だけ、{notInTrial.join("・")}は返りません。
+                        {trialIsSubset
+                          ? `この回だけ、${notInTrial.join("・")}は返りません。`
+                          : `この回に返るのは、${p.includes.join("・")}です。`}
                       </li>
                     )}
                   </li>
@@ -235,6 +248,25 @@ export default function PlanCards({
     if (!list.some((p) => !p.uses)) {
       throw new Error(`「${f.label}」に1回だけの買い方がありません`);
     }
+    /* お試しの注記が「全部返らない」にならないこと。
+
+       引き算で出しているので、中身が別物になると
+       全項目が並んで「何も返らない」ように読める。
+       実際に一度そうなった。 */
+    {
+      const tr = list.find((p) => p.trial);
+      if (tr) {
+        const normalsForTrial = list.filter((p) => !p.trial && !p.uses);
+        if (normalsForTrial.length > 0) {
+          const base = normalsForTrial[0].includes;
+          const missing = base.filter((x) => !tr.includes.includes(x));
+          if (missing.length === base.length && tr.includes.length === 0) {
+            throw new Error(`お試し「${tr.id}」が、何も返さないことになっています`);
+          }
+        }
+      }
+    }
+
     // 同じ家族なら、返ってくるものは同じであること。
     // ここが食い違うと、家族に1つだけ出している説明が嘘になる。
     //
