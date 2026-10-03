@@ -177,6 +177,74 @@ def _parse_insights(insights: dict) -> dict:
     return metrics
 
 
+def collect_account_metrics(account_dir: Path, account_id: str = "") -> dict:
+    """アカウント全体の数字を1日1行で残す（account_metrics.json）。
+
+    投稿ごとの数値（history.json の metrics）だけでは、
+    「伸びているのか」が分からない。1本が当たっただけなのか、
+    アカウント全体が持ち上がったのかを、後から見分けられるようにする。
+
+    ブリーフのKPIの2番目が「プロフィール閲覧」だが、Threads の Insights に
+    その名前があるかは未確認（fetcher.UNCERTAIN_USER_METRICS）。
+    取れたら入れる。取れなくても、他の数字は残す。
+    """
+    from core import fetcher, poster
+
+    path = account_dir / "account_metrics.json"
+    data = safe_load_json(path, {"days": {}})
+    today = datetime.now().date().isoformat()
+
+    try:
+        user_id = poster.get_user_id(account_id=account_id)
+    except Exception as e:
+        logger.warning("アカウント指標: user_id が引けませんでした: %s", e)
+        return {}
+
+    row: dict = {"collected_at": datetime.now().isoformat()}
+
+    try:
+        insights = fetcher.get_user_insights(user_id, account_id=account_id)
+        for item in insights.get("data", []):
+            name = item.get("name", "")
+            values = item.get("values", [])
+            value = (
+                values[0].get("value")
+                if values else item.get("total_value", {}).get("value")
+            )
+            if name:
+                row[name] = value
+    except Exception as e:
+        logger.warning("アカウント指標の取得に失敗: %s", e)
+        return {}
+
+    # 取れるか分からないものは1つずつ。落ちても上の数字は残る。
+    for metric in fetcher.UNCERTAIN_USER_METRICS:
+        if metric in row:
+            continue
+        got = fetcher.get_optional_user_metric(
+            metric, user_id, account_id=account_id,
+        )
+        if not got:
+            continue
+        for item in got.get("data", []):
+            values = item.get("values", [])
+            value = (
+                values[0].get("value")
+                if values else item.get("total_value", {}).get("value")
+            )
+            row[item.get("name", metric)] = value
+            logger.info("ユーザー指標 %s が取れました: %s", metric, value)
+
+    data["days"][today] = row
+    # 1年ぶん残す。それ以上は週次の集計で足りる。
+    if len(data["days"]) > 400:
+        for k in sorted(data["days"])[:-400]:
+            del data["days"][k]
+    atomic_write_json(path, data)
+    logger.info("アカウント指標を記録: %s", {k: v for k, v in row.items() if k != "collected_at"})
+    return row
+
+
 def update_hypothesis_metrics(account_dir: Path, updated_posts: list[dict]) -> dict:
     """仮説ごとにメトリクスを集計する"""
     hypotheses_path = account_dir / "hypotheses.json"
@@ -262,6 +330,10 @@ def run_collection(account_id: str = "mens-body-lab", days_back: int = 3) -> Non
     updated = collect_metrics(account_dir, account_id=account_id, days_back=days_back)
     logger.info("Collected metrics for %d posts", len(updated))
 
+    # アカウント全体の数字。投稿が1本も無い日も残したいので、
+    # updated が空でも通る位置に置く。
+    collect_account_metrics(account_dir, account_id=account_id)
+
     if updated:
         results = update_hypothesis_metrics(account_dir, updated)
         for h_id, data in results.items():
@@ -270,12 +342,19 @@ def run_collection(account_id: str = "mens-body-lab", days_back: int = 3) -> Non
                         data["avg_likes"], data["engagement_rate"])
 
     # トレンド分析（伸びてる投稿の構造を解析してDBに蓄積）
+    #
+    # 他人のバズ投稿の構造を writer に渡すためのもの。恋亀（format=single）は
+    # 型とテーマから自分で書くので読まない。毎朝RSSを叩いて失敗するだけなので
+    # 飛ばす（run_post_cycle の Researcher と同じ理由）。
     try:
         from core.researcher import collect_viral_posts, load_viral_posts
         from core.trend_analyzer import analyze_trending_posts
         from core.writer import load_persona
 
         persona = load_persona(account_dir)
+        if persona.get("posting", {}).get("format") == "single":
+            logger.info("トレンド分析: 飛ばす（format=single は元ネタを使わない）")
+            return
         rss_feeds_path = account_dir / "rss_feeds.json"
         rss_feeds = []
         if rss_feeds_path.exists():

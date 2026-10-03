@@ -858,6 +858,22 @@ def cmd_daemon(args) -> int:
     return 0
 
 
+def cmd_report(args) -> int:
+    """report サブコマンド: 週次の集計を出す。
+
+    数字を見るだけで、設定は書き換えない。止める判断は人がする
+    （GROWTH.md §5。少ない本数で切ると、効くものを先に捨てる）。
+    """
+    setup_logging(args.account)
+    from core import report
+    from core.config import ACCOUNTS_DIR
+
+    account_dir = ACCOUNTS_DIR / args.account
+    out = Path(args.out) if args.out else None
+    print(report.run(account_dir, days=args.days, out=out))
+    return 0
+
+
 def cmd_collect(args) -> int:
     """collect サブコマンド: 投稿の成果データを回収"""
     setup_logging(args.account)
@@ -1124,6 +1140,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_collect.add_argument("account", nargs="?", default="mens-body-lab")
     p_collect.add_argument("--days", type=int, default=3, help="何日前まで遡るか")
     p_collect.set_defaults(func=cmd_collect)
+
+    p_report = sub.add_parser("report", help="週次の集計（型・テーマべつ）を出す")
+    p_report.add_argument("account", nargs="?", default="mens-body-lab")
+    p_report.add_argument("--days", type=int, default=7, help="何日ぶんを見るか")
+    p_report.add_argument("--out", help="書き出す先（省略すると表示のみ）")
+    p_report.set_defaults(func=cmd_report)
 
     p_import = sub.add_parser("import-history", help="Threadsの過去投稿を全件取り込む")
     p_import.add_argument("account", nargs="?", default="mens-body-lab")

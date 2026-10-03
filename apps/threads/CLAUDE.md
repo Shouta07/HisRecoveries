@@ -4,68 +4,95 @@
 
 ## 0. これは何か
 
-**タシカメ**（マッチングアプリで迷った男性が、送る前の文面・写真・自己紹介文を
-実在する女性に読んでもらえるサービス）の **Threads 自動投稿＋管理＋分析システム**。
+**恋亀**（タシカメのキャラクター）が日々恋愛について喋っている Threads
+アカウントの、**自動投稿＋管理＋分析システム**。
 Python + GitHub Actions + Vercel(管理ページ)。外部依存は最小
 （標準ライブラリ中心、python-dotenv/gspreadのみ）。
 
-Threads の役割は「手が止まる瞬間に置かれること」。共感で広がり、
-**/ask（相談の入口）** へ送る。
+Threads は広告媒体ではなく**会話の発生装置**。恋亀が問いを出し、人が答える。
+サービスを売り込まず、キャラクターへの好意から「自分の話も聞いてほしい」を作る。
+
+**回し方・測り方・やめ方は `GROWTH.md`。** この文書は実装の地図。
+人格の正は `src/lib/koi/prompt.ts`（アプリの恋亀と同じ人格にする）。
 
 > **前史（重要）**: このシステムは旧事業 **His Recoveries**（男性ウェルネス。
 > ギフト／母／緊急／悩み検索の4読者層、第一印象パッケージ、完全守秘訴求）の
-> ために作られていた。アカウント設定（persona.json / hypotheses.json /
-> thread_templates.json）はタシカメに書き換えられていたが、**生成プロンプトが
+> ために作られていた。アカウント設定（persona.json / hypotheses.json）は
+> タシカメに書き換えられていたが、**生成プロンプトが
 > コードに直接埋まっていた**ため、実際に生成されるのは旧事業のギフト訴求だった
 > （`_build_gift_thread_prompt`）。2026-10-03にそこを persona 駆動へ直した。
 > **事業の文面をコードに書かない。** 書くと同じことが起きる。
 
 ## 1. ブランド／編集の絶対ルール（全投稿で厳守）
 
-- **女性の反応を、こちらで作らない。** 「女性はこう思っています」と書かない。
-  実在の回答が集まるまで、具体的な「女性の声」は出さない。
-  それを売っているサービスが、AIの作り話を出したら商品そのものが嘘になる。
-- **相手の気持ちを判定しない。** 脈あり・脈なしは扱わない。
+`src/lib/koi/prompt.ts` の `NEVER` と同じ線。**アプリの恋亀と Threads の恋亀を
+別人にしない**（好きになった人が、話してみた瞬間に離れる）。
+
+- **異性全体を代弁しない。** 「女性はこう思っています」と書かない。
+  **聞くのは可**（「女性はどう受け取る？」）。言い切るのが不可。
+  「やっぱこれ割れるな」は代弁の逆で、むしろ出したい形。
+- **相手の気持ちを当てない。** 脈あり・脈なし・本命は使わない。
+  扱いたい心理は言い換えで全部書ける（`GROWTH.md` §1 の対応表）。
 - **効果・結果を保証しない。** モテる・落とす・攻略・成功率は書かない。
-- **読む人を責めない。** 手が止まるのは慎重さであって、欠点ではない。
-- **AIや友達に聞くことを否定しない。** 足りないところだけを書く。
-- 価格・割引には触れない。絵文字は0〜2、ハッシュタグは0〜1。
-- これらは `core/validator.py` が機械的に弾く。線引きは
-  `persona["character"]["ng_words"]`、厳格度は `persona["validation"]`。
+- **読む人を責めない。** 迷うのは相手を大事に思っているから。
+- **小細工を扱わない。** 既読スルー・駆け引き・焦らす。
+- **企業として名乗らない。** 弊社・当社・運営。恋亀本人として書く。
+- 価格・割引には触れない。**🐢を1個だけ**、ハッシュタグは使わない。
+- これらは `core/validator.py` と `src/lib/threadsEval.ts` が機械的に弾く。
+  線引きは `persona["character"]["ng_words"]`、厳格度は `persona["validation"]`。
+  代弁は `validation.forbid_speaking_for` で正規表現が見る。
   **コード側の既定値は旧事業向けなので、アカウント側の設定が優先される。**
 
 ## 2. アカウント構成（重要）
 
 - **唯一のアカウント: `accounts/mens-body-lab/`**（`account_id` は内部IDなので変更しない。
   env のキーに使う）。
-  - 表示名 **タシカメ**、実ハンドル **@koikame.jp**。
+  - 表示名 **恋亀**、実ハンドル **@koikame.jp**、住所 **tashikame.app**。
+    ハンドルと住所は一致していない（`docs/DOMAIN_MIGRATION.md` に経緯）。
   - 旧ペルソナ「Nagi」は廃止。gift-only の別アカウント nagi-gift も削除済み。
-- 投稿フォーマットは **thread（連投）**：`persona.json` の `posting.format = "thread"`。
+- 投稿フォーマットは **single（単発）**：`persona.json` の `posting.format = "single"`。
+  1日3本（08:00 / 12:30 / 21:00 JST）。
+  連投（`generate_thread`）の経路は残っているが、どのアカウントも使っていない。
 
-### 5場面（hypotheses.json の slug）
-| slug | 場面 | 心理の芯 | リンク先 |
-|---|---|---|---|
-| `message` | 送る前のLINE | 読み返しても自分の目しか無い | **/ask?c=message** |
-| `photo` | 自己紹介文・プロフィール | 書いた本人がいちばん読めない | **/ask?c=photo** |
-| `date` | 誘うタイミング | 早いと重い・遅いと冷める | **/ask?c=date** |
-| `signal` | デートのあと | 温度感が自分の記憶からしか分からない | **/ask?c=signal** |
-| `distance` | 距離感・言いにくいこと | 友達にも相手にも聞けない | **/ask?c=distance** |
+### 投稿の型（post_forms.json）
 
-**時間帯×場面の出し分け**: `persona.posting.slot_type_map`
-= 朝9時→`["message","photo"]`（出す前のもの）/ 夜21時→`["date","signal","distance"]`
-（会ったあと・誘う前・距離感。夜のほうが手が止まる）。
-`writer._current_time_slot` がJSTで判定し、`select_hypothesis` に allowed_types として渡る。
-スロット対象が全停止なら全activeにフォールバック。PDCA画面の停止/集中もそのまま効く。
+**何を書くか**は型が決め、**何について書くか**はテーマが決める。掛け合わせて1本になる。
+
+| カテゴリ | 比率 | リンク | 承認 | 型 |
+|---|---:|---|---|---|
+| A 共感・あるある | 40% | 無し | 自動 | 型2 違和感 / 型1 二択 |
+| B 男女で割れる問い | 30% | 無し | 自動 | 型3 男女差 / 型1 二択 |
+| C 恋亀コンテンツ | 20% | 無し | 自動 | 型5 人間の反応 / 型4 実演 |
+| D 告知 | 10% | **有り** | **人** | D 告知 |
+
+**リンクが付くのは D だけ**（`categories[].link`）。Threadsはリンク付き投稿の
+露出を落とすので、送客はプロフィールが担う（`GROWTH.md` §5）。
+
+### テーマ（hypotheses.json の slug・13個）
+
+`before-line` 送る前のLINE / `slow-reply` 返信が遅い / `when-to-ask` 次に誘うタイミング /
+`after-first` 初デートのあと / `second-date` 2回目デート / `they-asked` 相手からの誘い /
+`warm-cold` 会うと優しいのにLINEが冷たい / `many-at-once` 複数人と進行中 /
+`not-sure` 確信が持てない / `polite-no` 社交辞令 / `before-ask` 告白の前 /
+`distance` 距離感 / `temperature` 相手の温度感
+
+**時間帯でテーマを縛らない。** 縛ると、夜のテーマが朝に出せなくなって同じ話が続く。
+散らすのは型の比率が担う。PDCA画面の停止/集中はそのまま効く。
 
 **行き先の増やし方**: `hypotheses.link_config.base_urls` にキーを足し、
 仮説に `link_key` を書く。無ければ type と同名のキー → `apply` の順で解決される
-（`apply` が現在の /ask。キー名は歴史的なもの）。`no_link: true` ならリンク無し。
+（`apply` が現在の /ask）。**告知で行き先が引けなければ生成を中止する**
+（別の型で代用しない）。
+
+`utm_content` には投稿ごとの追跡コードが入る。Threads のIDは投稿後にしか
+分からないが、リンクは投稿前に埋め込まれるので、こちらで先に振る
+（`writer._tracking_code`）。`history.json` に一緒に残るので、
+サイト側の着地・購入を投稿まで戻せる。
 
 ### 引用リソース（content_sources.json）
 記事/体験メモを**1リソース=14投稿の在庫**に変換して積む型。仕様は
-`accounts/mens-body-lab/CONTENT_SOURCES.md`（配分: 共感4/気づき4/問題提起3/実績2/誘導1、
-**URLは誘導の1本だけ・必ず最後**）。`persona.posting.source_post_ratio`（現在0.5）の確率で
-在庫から単発1本を消費し、在庫切れなら連投へフォールバック。`writer.generate_source_post` が実装。
+`accounts/mens-body-lab/CONTENT_SOURCES.md`。
+**恋亀では使っていない**（`source_post_ratio = 0`）。経路は残してある。
 
 ## 2.6 前の系統: `Shouta07/threads`（2026-10-03 に停止）
 
@@ -130,30 +157,43 @@ python -m core.main post-approved <acct>     # 承認済みだけ投稿（cron�
 `post-approved` は1回につき `max_per_run`（既定1本）だけ出す。全部出すと、
 夜にまとめて積んだ3本が、朝の枠で立て続けに出てしまう。
 
+**週次の集計**: `python -m core.main report <acct> --days 7`。
+型・テーマべつの表示数（中央値）と返信率、`utm_content` → 投稿 の対応表を出す。
+毎朝の `threads-collect` が `reports/weekly.md` に上書きするので、推移は
+そのファイルの git の履歴が持つ。**数字を出すだけで、設定は書き換えない。**
+
 ## 3. 主要ファイル地図
 
 ```
 GROWTH.md               恋亀Threads運用設計。「何を回すか・何を測るか・何をやめるか」
 accounts/mens-body-lab/
-  persona.json          語り手＋トーン＋posting.format=thread＋validation緩和設定
-  hypotheses.json       5場面 + link_config(base_urls: apply=/ask) + discovery_questions
+  persona.json          恋亀の人格（prompt.ts の写し）＋posting.format=single＋validation
+  hypotheses.json       13テーマ + link_config(base_urls: apply=/ask) + discovery_questions
   post_forms.json       投稿の型。A/B/C/D の比率と型1〜5（構造・規則・例）。告知の例に {link}
-  seo_clusters.json     場面別の検索クラスタ＋GEO質問（生成の素・編集可。生成は読まない）
-  content_sources.json  引用リソース（1件=14投稿の在庫）。管理ページで編集可
+  seo_clusters.json     検索クラスタ＋GEO質問（生成の素・編集可。生成は読まない）
+  content_sources.json  引用リソース（恋亀では未使用。source_post_ratio=0）
   CONTENT_SOURCES.md    引用リソースの型の仕様
-  READ_DESIGN.md        読まれる投稿設計（フックの型×5場面）。「どう書くか」
-  patterns.md           連投パターン（場面別の構造）
+  READ_DESIGN.md        読まれる投稿設計（フックの型）。「どう書くか」
+  patterns.md           連投パターン（恋亀は単発なので未使用）
   approvals.json        承認キュー
+  account_metrics.json  アカウント全体の数字（日次。フォロワー・表示数ほか）
   history.json          投稿履歴＋metrics(閲覧数など)。分析の元データ
-  experiments.json      場面別の投稿数・フェーズ（旧事業の121本は2026-10-03にリセット）
+  experiments.json      テーマ別の投稿数・フェーズ（2026-10-03に13テーマで作り直し）
+reports/
+  weekly.md             直近7日の集計。毎朝 threads-collect が上書きする
 core/
-  writer.py    generate_post→format==thread なら generate_thread（本線）。
-               プロンプトは _build_thread_prompt が persona.json から組む。
-               mock/キー無しのときだけ post_forms.json の例文を使う。
-               slug に対応するテンプレが無ければ生成を中止する（別場面の文面で代用しない）
+  report.py    週次の集計。型・テーマべつの表示数（中央値）と返信率、
+               utm_content → 投稿 の対応表。数字を出すだけで設定は変えない
+  writer.py    generate_post→format==single なら generate_single（本線）。
+               型（post_forms.json）とテーマ（hypotheses.json）を選び、
+               _build_single_prompt が persona.json から組む。
+               mock/キー無しのときは型の examples を使う。
+               重複は history.json と突き合わせて見る（validator の類似チェックは
+               プロセス内バッファで、毎回新プロセスの本番では常に空だった）
   validator.py validate_post。persona["validation"] / allowed_topics でアカウント別に調整
   poster.py    Threads API。create_thread_post / create_thread_chain(連投=reply_to_id)
   collector.py collect_metrics(既存投稿の数値取得) / import_history(過去投稿を全件取込)
+               / collect_account_metrics(アカウント全体の数字を日次で残す)
   fetcher.py   Threads API GET(insights/threads一覧)
   main.py      CLI: post / collect / import-history / validate / status …
 scripts/
@@ -192,9 +232,9 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 - **monorepo では `GITHUB_PATH_PREFIX=apps/threads` が要る。** 無いとリポジトリ直下に
   `accounts/` を新規作成し、編集がどのワークフローにも届かない（実体は apps/threads/accounts）。
   `GITHUB_REPO` も旧リポジトリ（`Shouta07/threads`）のままだと、編集が旧リポジトリに入る。
-- 機能: ダッシュボード / 連投テンプレ編集 / 設定ファイル編集(JSON検証付) /
+- 機能: ダッシュボード / 投稿の型を編集（例文のみ）/ 設定ファイル編集(JSON検証付) /
   プレビュー生成(record=Falseで状態を汚さない) / 下書きCRUD /
-  **閲覧数・分析**(投稿ごとのviews/いいね/返信/RP、場面別集計、キーワード検索、並び替え)。
+  **閲覧数・分析**(投稿ごとのviews/いいね/返信/RP、テーマ別集計、キーワード検索、並び替え)。
 - 認証: `ADMIN_USER`+`ADMIN_PASSWORD`（または複数人用 `ADMIN_USERS` JSON）。未設定ならローカル扱い。
 
 ## 5. 環境変数／シークレット（2系統・別物）
@@ -244,16 +284,32 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 - **mainへ直pushは不可** → ブランチを切ってPRでマージ。
 - 反映の流れ: **ブランチ→mainにマージ→(Vercel自動再デプロイ / 次のActionsで新内容)**。
   「画面や投稿に出ない＝たいていマージ待ち」。
-- テスト: `python -m pytest -q`（現在 211 pass）。変更後は必ず実行。
+- テスト: `python -m pytest -q`（現在 243 pass）。変更後は必ず実行。
+  web側は `npx tsc --noEmit` と `npm run build`（リポジトリのルートで）。
 - 一時停止: `KILL_SWITCH` を置く / Actionsでワークフローを Disable。再開は逆。
 
 ## 8. 現状と次の候補
 
-- **最初にやること: GitHub Secrets（§5）と、旧系統からの引き継ぎ（§2.6）。**
-  トークンが無いあいだ、ここからの投稿は1本も出ない。
-- 実装済み: タシカメ一本化（生成プロンプトの persona 駆動化、5場面の連投、
-  テンプレの {link} 修正、旧実験記録のリセット）、承認ゲート、連投投稿、
-  管理ページ（編集・プレビュー・下書き・閲覧数分析＋検索）、過去取込、Vercel対応。
-- 未了/候補: GA4遷移率を分析画面に統合、場面ごとの比率制御、
-  content_sources の在庫追加（現在1リソース＝14本ぶんだけ）、note/X展開。
-- 補足: 閲覧数はThreads API由来（保存数はAPIに無く取得不可）。/ask 遷移率はGA4側。
+**最初にやること**
+
+1. **GitHub Secrets**（§5）と、旧系統からの引き継ぎ（§2.6）。
+   トークンが無いあいだ、ここからの投稿は1本も出ない。
+2. **Vercel に `tashikame.app` を足して DNS を向ける**（`docs/DOMAIN_MIGRATION.md`）。
+   ドメインが生きる前にデプロイすると、Checkout の `success_url` の行き先が無い。
+
+**実装済み（2026-10-03）**
+
+恋亀への切り替え（人格の移植・単発化・型と13テーマ・代弁チェック）、
+承認ゲート＋A/B/Cの自動承認、`utm_content` の追跡コード、
+アカウント指標の日次記録、週次の集計（`reports/weekly.md`）、
+管理ページ（編集・プレビュー・下書き・閲覧数分析＋検索）、過去取込、Vercel対応。
+
+**まだのもの**
+
+- C・D を「恋亀に話す」版へ（`REALTIME_API_KEY` が入ったら。`GROWTH.md` §0.1）
+- 着地・購入を投稿に戻す（`events` × `utm_content`。投稿が出はじめてから）
+- 負けているテーマの自動停止（母数が溜まってから。いまは集計を出すだけ）
+
+**補足**: 閲覧数は Threads API 由来（保存数はAPIに無く取得不可）。
+プロフィール閲覧が API で取れるかは未確認で、`profile_views` / `clicks` /
+`link_clicks` を1つずつ試している（`fetcher.UNCERTAIN_USER_METRICS`）。

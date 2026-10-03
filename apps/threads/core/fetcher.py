@@ -111,12 +111,43 @@ def get_user_insights(
     """ユーザーレベルのインサイトを取得"""
     return _api_get(
         f"{user_id}/threads_insights",
-        {
-            "metric": "views,likes,replies,reposts,quotes,followers_count",
-            "period": period,
-        },
+        {"metric": KNOWN_USER_METRICS, "period": period},
         account_id=account_id,
     )
+
+
+# アカウント全体で取れると分かっている指標。
+# 1回の呼び出しに混ぜるので、1つでも名前が通らないと全部落ちる。
+KNOWN_USER_METRICS = "views,likes,replies,reposts,quotes,followers_count"
+
+# 取れるかどうか、実際に叩くまで分からない指標。
+#
+# ブリーフのKPIの2番目が「プロフィール閲覧」だが、Threads の Insights に
+# この名前があるかを確かめられていない（トークンが別リポジトリの Secrets に
+# あり、ここから叩けない）。
+#
+# 分からないものを KNOWN_USER_METRICS に混ぜると、名前が1つ違うだけで
+# フォロワー数まで取れなくなる。だから別の呼び出しにして、落ちても
+# 他を巻き込まないようにしてある。
+UNCERTAIN_USER_METRICS = ["profile_views", "clicks", "link_clicks"]
+
+
+def get_optional_user_metric(
+    metric: str, user_id: str = "me", period: str = "day", account_id: str = "",
+) -> dict | None:
+    """取れるかどうか分からない指標を、1つだけ試す。
+
+    取れなければ None を返す（例外にしない）。呼ぶ側は「無い」として扱う。
+    """
+    try:
+        return _api_get(
+            f"{user_id}/threads_insights",
+            {"metric": metric, "period": period},
+            account_id=account_id,
+        )
+    except Exception as e:
+        logger.info("ユーザー指標 %s は取れませんでした: %s", metric, e)
+        return None
 
 
 def get_all_threads_paginated(
