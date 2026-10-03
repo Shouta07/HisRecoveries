@@ -292,3 +292,127 @@ class TestSanitizePost:
         text = "僕は多汗症と向き合う日々を続けている。気づいたことがある。"
         result = sanitize_post(text, persona)
         assert result == text
+
+
+# ──────────────────────────────────────────────────────────────
+# 恋亀の線（src/lib/koi/prompt.ts の NEVER と同じもの）
+# ──────────────────────────────────────────────────────────────
+
+import json as _json
+from pathlib import Path as _Path
+
+_ACCOUNT = _Path(__file__).resolve().parent.parent / "accounts" / "mens-body-lab"
+
+
+def _koi_persona():
+    return _json.loads((_ACCOUNT / "persona.json").read_text(encoding="utf-8"))
+
+
+class TestSelfIntro:
+    """誰もフォローしていないアカウントの自己紹介は、誰も読まない。"""
+
+    def test_rejects_koi_introducing_itself(self):
+        ok, errors = validate_post(
+            "はじめまして、恋亀です🐢\n"
+            "マチアプで出会ったあとの恋愛について喋っていきます。\n"
+            "よろしくお願いします。",
+            _koi_persona(),
+        )
+        assert not ok
+        assert any("自己紹介" in e for e in errors)
+
+    def test_allows_a_quoted_greeting(self):
+        """恋亀が人の文面を引用しているだけなら、恋亀の自己紹介ではない。"""
+        ok, errors = validate_post(
+            "プロフィールの一行目。\n\n"
+            "①「はじめまして！よろしくお願いします」\n"
+            "②いきなり趣味の話\n\n"
+            "恋亀は②。\n"
+            "①は、読まんでも中身が分かってまうから。\n\n"
+            "これ怒られるやつかな🐢",
+            _koi_persona(),
+        )
+        assert ok, errors
+
+
+class TestSpeakingFor:
+    """聞くのは可。言い切るのは不可。"""
+
+    def test_rejects_an_assertion(self):
+        ok, errors = validate_post(
+            "女性はこう思っています。送る前に一度よく考えたほうがええで🐢",
+            _koi_persona(),
+        )
+        assert not ok
+        assert any("代弁" in e for e in errors)
+
+    def test_allows_asking(self):
+        ok, errors = validate_post(
+            "男性に聞きたい。\n\n"
+            "女性から「また空いてる日おしえて〜」って来たらどう受け取る？\n\n"
+            "女性側の意図も気になる🐢",
+            _koi_persona(),
+        )
+        assert ok, errors
+
+    def test_allows_quoting_someone_else(self):
+        ok, errors = validate_post(
+            "友達に「女性はこう思ってるって」って言われたけど、\n"
+            "ほんまにそうなんかな。\n\n"
+            "恋亀には分からん🐢",
+            _koi_persona(),
+        )
+        assert ok, errors
+
+
+class TestLegacyNgSets:
+    """旧事業の禁止語は、アカウントが選んだぶんだけ効く。"""
+
+    def test_koi_can_use_casual_words(self):
+        """「マジで」「正直」は前のペルソナが使いすぎたから禁止されただけ。"""
+        ok, errors = validate_post(
+            "マジでこれ分からん。\n\n"
+            "正直、返信が来ないよりも来るけど短いほうがこたえる🐢",
+            _koi_persona(),
+        )
+        assert ok, errors
+
+    def test_koi_still_cannot_solicit_reactions(self):
+        ok, errors = validate_post(
+            "これ刺さった人おったら、いいねして拡散してもらえると嬉しい🐢",
+            _koi_persona(),
+        )
+        assert not ok
+
+    def test_accounts_without_the_setting_keep_every_list(self):
+        """指定が無いアカウントは今までどおり全部効く。"""
+        ok, _ = validate_post(
+            "マジでこれは正直しんどい話やと思う。ぶっちゃけ無理。",
+            {"posting": {"min_chars": 1, "max_chars": 300},
+             "validation": {"require_first_person_boku": False,
+                            "require_recommended_words": False,
+                            "require_allowed_topics": False,
+                            "require_three_stage": False,
+                            "check_similarity": False}},
+        )
+        assert not ok
+
+
+class TestExampleFilesStayValid:
+    """同梱の例文が、自分の検証を通ること。
+
+    例文は mock の出力であり、AI生成の手本でもある。ここが落ちると、
+    手本が落ちる文面になる。
+    """
+
+    def _texts(self, path, key):
+        data = _json.loads((_ACCOUNT / path).read_text(encoding="utf-8"))
+        for f in data[key].values():
+            for ex in f.get("examples", []):
+                yield ex.replace("{link}", "https://tashikame.app/ask?utm_source=threads")
+
+    def test_every_post_example_passes(self):
+        persona = _koi_persona()
+        for text in self._texts("post_forms.json", "forms"):
+            ok, errors = validate_post(text, persona)
+            assert ok, (errors, text[:60])

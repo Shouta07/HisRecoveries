@@ -139,7 +139,9 @@
       "commercial",
       "reaction_solicitation"
     ],
-    "_legacy_ng_sets_note": "旧事業の禁止語のうち、恋亀にも効かせるもの。evangelism（あなたも変われる・簡単に）/ commercial（おすすめです・ぜひ）/ reaction_solicitation（いいねして・拡散して）は、恋亀でも書かない。ryouta（マジで・正直）と casual_buzz（ぶっちゃけ・ガチで）は外した。前のペルソナが使いすぎたから禁止されただけで、恋亀の口調そのもの。assertive（絶対・間違いなく）は character.ng_words 側に同じものがある。"
+    "_legacy_ng_sets_note": "旧事業の禁止語のうち、恋亀にも効かせるもの。evangelism（あなたも変われる・簡単に）/ commercial（おすすめです・ぜひ）/ reaction_solicitation（いいねして・拡散して）は、恋亀でも書かない。ryouta（マジで・正直）と casual_buzz（ぶっちゃけ・ガチで）は外した。前のペルソナが使いすぎたから禁止されただけで、恋亀の口調そのもの。assertive（絶対・間違いなく）は character.ng_words 側に同じものがある。",
+    "forbid_self_intro": true,
+    "_forbid_self_intro_note": "誰もフォローしていないアカウントの自己紹介は、誰も読まない。恋亀は名乗らず、いきなり本題から入る（OPENING.md）。AIに『Threadsの投稿を書いて』と言うと、放っておくとここに寄る。"
   },
   "posting": {
     "format": "single",

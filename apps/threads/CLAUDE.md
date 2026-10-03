@@ -174,6 +174,8 @@ accounts/mens-body-lab/
   content_sources.json  引用リソース（恋亀では未使用。source_post_ratio=0）
   CONTENT_SOURCES.md    引用リソースの型の仕様
   READ_DESIGN.md        読まれる投稿設計（フックの型）。「どう書くか」
+  REPLY_PLAYBOOK.md     恋亀の返信。1日20〜30件・人がやる。この設計で最も効く手
+  OPENING.md            最初の10本。手で積む。告知は10本目まで出さない
   patterns.md           連投パターン（恋亀は単発なので未使用）
   approvals.json        承認キュー
   account_metrics.json  アカウント全体の数字（日次。フォロワー・表示数ほか）

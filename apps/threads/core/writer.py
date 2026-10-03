@@ -543,7 +543,10 @@ def _load_post_forms(account_dir: Path | None) -> dict:
 
 
 def _select_category(
-    forms_config: dict, persona: dict | None = None, slot: str | None = None,
+    forms_config: dict,
+    persona: dict | None = None,
+    slot: str | None = None,
+    recent: list[dict] | None = None,
 ) -> dict | None:
     """A共感40% / B問い30% / C恋亀20% / D告知10% から1つ選ぶ。
 
@@ -577,7 +580,61 @@ def _select_category(
             )
             weights = [float(c["ratio"]) for c in categories]
 
+    # 直近に出した型を避ける。
+    #
+    # 避けないと、60日のうち34日で1日3本の型が重なった。
+    # 告知が同じ日に2本出る日もあった（1日2回の売り込みになる）。
+    # 同じ形が続くと、恋亀がテンプレを回しているように見える。
+    #
+    # 禁止ではなく重みを下げるだけ。直前と同じ型しか選べない状況でも
+    # 生成が止まらないようにする。
+    if recent:
+        last_categories = [r.get("category") for r in recent[:2]]
+        for i, c in enumerate(categories):
+            if c["id"] == last_categories[0]:
+                weights[i] *= 0.25            # 直前と同じ
+            elif c["id"] in last_categories:
+                weights[i] *= 0.6             # 2つ前と同じ
+        if sum(weights) <= 0:
+            weights = [float(c["ratio"]) for c in categories]
+
     return random.choices(categories, weights=weights, k=1)[0]
+
+
+def _recent_posts_meta(account_dir: Path | None, n: int = 4) -> list[dict]:
+    """直近に作った投稿の型・カテゴリを、新しい順で返す。
+
+    history.json だけでは足りない。恋亀は1日3本をまとめて生成するが、
+    history に入るのは**投稿したあと**なので、同じ生成の中で作った
+    直前の1本が見えない。承認キューも一緒に見る。
+    """
+    if not account_dir:
+        return []
+
+    out: list[dict] = []
+
+    # まだ出していないぶん（承認待ち・承認済み）
+    queue = safe_load_json(account_dir / "approvals.json", {"items": []})
+    for it in reversed(queue.get("items", [])):
+        if it.get("status") in ("pending", "approved"):
+            pl = it.get("payload") or {}
+            out.append({
+                "form": pl.get("post_form"),
+                "category": pl.get("post_category"),
+            })
+        if len(out) >= n:
+            return out
+
+    # 出したぶん
+    history = safe_load_json(account_dir / "history.json", {"posts": []})
+    for post in reversed(history.get("posts", [])):
+        out.append({
+            "form": post.get("post_form"),
+            "category": post.get("post_category"),
+        })
+        if len(out) >= n:
+            break
+    return out
 
 
 def _tracking_code() -> str:
@@ -751,7 +808,8 @@ def generate_single(
     )
 
     forms_config = _load_post_forms(account_dir)
-    category = _select_category(forms_config, persona, slot)
+    recent = _recent_posts_meta(account_dir)
+    category = _select_category(forms_config, persona, slot, recent)
     if not category:
         logger.error(
             "generate_single: post_forms.json に categories がありません "
@@ -768,7 +826,11 @@ def generate_single(
             category.get("id"), form_ids,
         )
         return None
-    form_id = random.choice(usable)
+    # 同じカテゴリの中でも、直前と同じ型は避ける。
+    # 使える型が1つしか無ければ、それを使う（止めない）。
+    recent_forms = [r.get("form") for r in recent[:2]]
+    fresh = [f for f in usable if f not in recent_forms]
+    form_id = random.choice(fresh or usable)
     form = all_forms[form_id]
 
     hypothesis = select_hypothesis(account_dir)

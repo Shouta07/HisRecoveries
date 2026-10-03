@@ -146,3 +146,77 @@ class TestRouting:
         monkeypatch.setattr(writer, "generate_single", fake)
         writer.generate_post(ACCOUNT, mock=True, record=False)
         assert called.get("yes"), "format=single が generate_single に行っていない"
+
+
+class TestVariety:
+    """同じ形が続かないこと。
+
+    避けないと、60日のうち34日で1日3本の型が重なった。
+    告知が同じ日に2本出る日もあった（1日2回の売り込みになる）。
+    """
+
+    def _account(self, tmp_path):
+        for f in ("persona.json", "post_forms.json", "hypotheses.json", "experiments.json"):
+            (tmp_path / f).write_text((ACCOUNT / f).read_text(encoding="utf-8"), encoding="utf-8")
+        (tmp_path / "approvals.json").write_text('{"items": []}', encoding="utf-8")
+        (tmp_path / "history.json").write_text('{"posts": []}', encoding="utf-8")
+        return tmp_path
+
+    def _queue(self, d, form, category):
+        q = json.loads((d / "approvals.json").read_text(encoding="utf-8"))
+        q["items"].append({
+            "status": "pending",
+            "payload": {"post_form": form, "post_category": category},
+        })
+        (d / "approvals.json").write_text(json.dumps(q), encoding="utf-8")
+
+    def test_sees_the_queue_not_just_history(self, tmp_path):
+        """1日3本をまとめて作るので、history だけだと直前の1本が見えない。"""
+        d = self._account(tmp_path)
+        self._queue(d, "gap", "split")
+        recent = writer._recent_posts_meta(d)
+        assert recent and recent[0]["form"] == "gap"
+
+    def test_avoids_repeating_the_last_form(self, tmp_path):
+        random.seed(21)
+        d = self._account(tmp_path)
+        self._queue(d, "odd", "empathy")
+        repeats = sum(
+            1 for _ in range(60)
+            if writer.generate_single(d, mock=True, record=False, slot="morning")["post_form"] == "odd"
+        )
+        # 禁止ではなく重みを下げるだけなので0にはならない。明確に減ればよい
+        assert repeats < 20, repeats
+
+    def test_a_day_rarely_repeats_a_form(self, tmp_path):
+        random.seed(23)
+        same = 0
+        for _ in range(30):
+            d = self._account(tmp_path)
+            forms = []
+            for slot in ("morning", "noon", "night"):
+                r = writer.generate_single(d, mock=True, record=False, slot=slot)
+                forms.append(r["post_form"])
+                self._queue(d, r["post_form"], r["post_category"])
+            if len(set(forms)) < 3:
+                same += 1
+        assert same <= 6, f"30日のうち{same}日で型が重なった"
+
+    def test_never_two_announcements_in_one_day(self, tmp_path):
+        """1日2回の売り込みにしない。"""
+        random.seed(29)
+        for _ in range(30):
+            d = self._account(tmp_path)
+            cats = []
+            for slot in ("morning", "noon", "night"):
+                r = writer.generate_single(d, mock=True, record=False, slot=slot)
+                cats.append(r["post_category"])
+                self._queue(d, r["post_form"], r["post_category"])
+            assert cats.count("announce") <= 1, cats
+
+    def test_still_generates_when_only_one_form_is_left(self, tmp_path):
+        """直前と同じ型しか選べなくても、生成を止めない。"""
+        d = self._account(tmp_path)
+        self._queue(d, "announce", "announce")
+        r = writer.generate_single(d, mock=True, record=False, slot="noon")
+        assert r is not None

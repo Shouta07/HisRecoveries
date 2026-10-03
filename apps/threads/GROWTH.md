@@ -401,7 +401,13 @@ D（10%）        リンク有り  →  直接
 - **効き目** — ブリーフ9のねらいは「この亀なんなん」を作ること。
   定型文を配っても、そうはならない
 
-→ **返信は Threads アプリで手でやる。** ここは設計から外す。
+→ **返信は Threads アプリで手でやる。**
+
+やり方は `REPLY_PLAYBOOK.md`。返す相手の選び方、返信の型4つ、
+書かないこと、反論が来たときの受け方まで。
+
+**反論が来たら勝たない。** 訂正されるために見立てを出している。
+言い負かすと、二度と書き込まれない。
 
 ### 承認ゲートは外さない。ただし型で分ける
 
@@ -538,6 +544,11 @@ git log -p apps/threads/reports/weekly.md
 
 ### Phase 1 — 恋亀を立てる（1〜2週）
 
+> **最初の10本は手で積む**（`OPENING.md`）。自動生成は型をランダムに掛けるので、
+> 誰もまだ恋亀を知らないうちに商品の話が先に来ることがある。
+> **告知は10本目まで出さない。** 9本ぶん、ただの亀でいる。
+
+
 売らない。**人格を固めて、地力を測る。**
 
 - [ ] `persona.json` を恋亀の人格に（`prompt.ts` から写す。§1）
@@ -602,6 +613,9 @@ git log -p apps/threads/reports/weekly.md
 | — | 時間帯で型を寄せる | `persona.posting.slot_category_weights`, `writer._select_category` |
 | — | 旧事業の禁止語をアカウント選択制に | `core/validator.py` の `_NG_SETS` |
 | — | 1行目と意見の不在の検査 | `src/lib/threadsEval.ts` |
+| — | 同じ型が続かないようにする（34/60日 → 6/60日） | `writer._recent_posts_meta`, `_select_category` |
+| — | 自己紹介の検査（引用は除く） | `core/validator.py` |
+| — | 返信の型と、最初の10本 | `REPLY_PLAYBOOK.md`, `OPENING.md` |
 
 **リンクが付くのは告知（D）だけ。** 型が決める（`post_forms.json` の `categories[].link`）。
 

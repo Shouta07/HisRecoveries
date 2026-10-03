@@ -47,6 +47,34 @@ _NG_DATING: list[str] = []
 # だから「〜は」のあとに断定が続く形だけを見る。
 # 取りこぼしは出るが、誤検出で生成が丸ごと止まるほうが高くつく。
 # 最後の砦は承認ゲート（人）であって、ここではない。
+def _without_quotes(text: str) -> str:
+    """「」の中を外した本文を返す。
+
+    恋亀は人の文面を引用する。それは恋亀が言ったことではない。
+
+      プロフィールの一行目。
+      ①「はじめまして！よろしくお願いします」
+      ②いきなり趣味の話
+
+    これを自己紹介と取ると、引用を含む投稿が全部落ちる（実際に落ちた）。
+    言い回しを見る検査は、引用を外してから当てる。
+    """
+    return re.sub(r"「[^」]*」", "", text)
+
+
+# 自己紹介・名乗り。
+#
+# 誰もフォローしていないアカウントの自己紹介は、誰も読まれない
+# （accounts/<id>/OPENING.md）。恋亀は名乗らず、いきなり本題から入る。
+# AIに「Threadsの投稿を書いて」と言うと、放っておくとここに寄る。
+_SELF_INTRO_PATTERNS = [
+    r"^(はじめまして|初めまして)",
+    r"(です|といいます|と申します)[。、]?\s*$",
+    r"(よろしくお願い|よろしくです)",
+    r"(喋って|話して|発信して|投稿して)(いき|い)?ます",
+    r"^.{0,20}(アカウント|垢)です",
+]
+
 _SPEAK_FOR_PATTERNS = [
     # 女性は〜と思っています / 男性はこう感じている
     r"(女性|男性|女子|男子|女|男)は[^。！？\n]{0,20}?(と)?(思って|感じて|考えて|見て)(います|いる|ます|る)",
@@ -363,11 +391,24 @@ def validate_post(
         if word not in legacy and word in text:
             errors.append(f"NG表現を検出: 「{word}」")
 
+    # 自己紹介（validation.forbid_self_intro が true のときだけ）。
+    if vcfg.get("forbid_self_intro", False):
+        own_words = _without_quotes(text)
+        for pat in _SELF_INTRO_PATTERNS:
+            m = re.search(pat, own_words, re.MULTILINE)
+            if m:
+                errors.append(
+                    f"自己紹介になっています: 「{m.group(0).strip()}」"
+                    "（名乗らない。いきなり本題から入る）"
+                )
+                break
+
     # 異性全体の代弁（validation.forbid_speaking_for が true のときだけ）。
     # 聞くのは通す。言い切るのだけ落とす。
     if vcfg.get("forbid_speaking_for", False):
+        own_words = _without_quotes(text)
         for pat in _SPEAK_FOR_PATTERNS:
-            m = re.search(pat, text)
+            m = re.search(pat, own_words)
             if m:
                 errors.append(
                     f"異性全体を代弁しています: 「{m.group(0)}」"
