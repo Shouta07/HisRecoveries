@@ -37,6 +37,7 @@
 // これらは advisorWord() に置き換えると、かえって嘘になる。
 
 import { readdir, readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = process.cwd();
@@ -191,7 +192,7 @@ if (hits.length > 0) {
   process.exit(1);
 }
 
-/* ── 2. 1画面目で断っていること ────────────────────── */
+/* ── 2. 1画面目で、誰に向けた製品かを名乗っていること ── */
 /* ── コメントを外してから測る ──────────────────────
    前は生のファイルで字数を測っていた。
 
@@ -205,47 +206,149 @@ const lp = stripComments(await readFile(join(ROOT, "src/app/page.tsx"), "utf8"))
 
 /* 1画面目の目印。
    前は from="hero" のボタンそのものを探していた。
-   第一CTAを「まず1回、無料で整理する」（ただのリンク）に
-   変えたとき、目印ごと消えて判定が落ちた。
-
+   第一CTAをただのリンクに変えたとき、目印ごと消えて判定が落ちた。
    目印は、ボタンではなく1画面目の見出しにする。
    見出しは、CTAを入れ替えても残る。 */
 const hero = lp.indexOf("{HERO_A}");
-const note = lp.indexOf("notYetNote()");
 
 if (hero < 0) {
   console.error("トップに1画面目の見出し（HERO_A）が見つかりません。");
   console.error("このファイルの判定が、画面の作りに追いつけていません。");
   process.exit(1);
 }
-if (note < 0) {
-  console.error("トップに、使えない向きの断り（notYetNote）がありません。");
-  console.error("");
-  console.error("相手を「異性」と呼んでいるので、どちらの向きも");
-  console.error("開いているように読めます。実際は片方だけです（lib/who.ts）。");
-  process.exit(1);
+
+/* ══════════════════════════════════════════════════
+   断りを置く場所を、1画面目から下へ移した
+   ══════════════════════════════════════════════════
+   前はこう見ていた。
+
+     1画面目の押す場所のすぐ下（2000字以内）に
+     notYetNote（いま確カメるをお使いいただけるのは…）があること
+
+   狙いは正しかった。1画面目で「使える」と思った人が、
+   買ってから使えないと気づくのを防ぐためのもの。
+
+   ただ、置いた結果がよくなかった。
+   押す場所の真下でいちばん目に入るのが断りで、しかも
+   来た男性にとっては1行も自分の話ではない。
+
+   有料100人までは、男性のマチアプ利用者だけに絞ると決めた。
+   絞るなら、断るより先に名乗るほうが早い。
+
+     1画面目   男性のマチアプ恋愛を、マッチ後からまとめる。
+     断り      よくある質問・フッター・買う場所
+
+   だから、見るものを入れ替える。
+
+     ① 1画面目に、開いている向きが書いてあること（名乗り）
+     ② 断りが、どこかには出ていること（逃げ場をなくさない）
+     ③ 買う場所に、断りがあること（お金が動く前に言う）
+
+   ①が守られていれば、②を1画面目に置く必要はない。
+   両方の向きが開いたら、①も②も要らなくなる（下で外れる）。 */
+
+/* who.ts は TypeScript なので、node からそのままは読み込めない
+   （型の構文があるので import すると落ちる）。
+   読むのは1つの定数だけなので、ファイルの中身から拾う。 */
+function openSideLabels() {
+  const who = readFileSync(join(ROOT, "src/lib/who.ts"), "utf8");
+  const block = who.match(/ASKER_OPEN[^=]*=\s*\{([\s\S]*?)\}/);
+  if (!block) {
+    console.error("lib/who.ts に ASKER_OPEN が見つかりません。");
+    console.error("このファイルの判定が、who.ts の作りに追いつけていません。");
+    process.exit(1);
+  }
+  const label = { male: "男性", female: "女性" };
+  const open = [];
+  for (const [, g, v] of block[1].matchAll(/(male|female)\s*:\s*(true|false)/g)) {
+    if (v === "true") open.push(label[g]);
+  }
+  if (open.length === 0) {
+    console.error("lib/who.ts で、どの向きも開いていません。");
+    process.exit(1);
+  }
+  // 両方開いていたら、名乗る必要は無い
+  return open.length === 2 ? [] : open;
 }
 
-/* 1画面目のボタンの近くにあること。
-   「近く」を字数で見る。節をまたぐと必ず 2000 字を超える。
-   下のほう（料金の節）にしか無いと、ここで止まる。 */
-/* 「近く」を字数で見る。1画面目の見出しから断りまで。
-   コメントを外した状態なので、ここは画面に出る字だけ。
-   節をまたぐと必ず超える。 */
-const NEAR = 2000;
-/* コメントは、行番号を保つために同じ長さの空白にしてある。
-   だから引き算だけでは距離が変わらない（実際に変わらなかった）。
-   空白を除いて、画面に出る字だけで測る。 */
-const gap = note > hero ? lp.slice(hero, note).replace(/\s+/g, "").length : -1;
+const open = openSideLabels();
 
-if (gap < 0 || gap > NEAR) {
-  console.error("使えない向きの断りが、1画面目から離れています。");
-  console.error("");
-  console.error(`  あいだの字数  ${gap}（${NEAR} 字まで）`);
-  console.error("");
-  console.error("1画面目で「使える」と思った人は、下まで読みません。");
-  console.error("押す場所のすぐ下に置いてください。");
-  process.exit(1);
+if (open.length > 0) {
+  /* ① 1画面目で名乗っていること。
+
+     名乗りの文そのものは page.tsx には書いていない。
+     lib/koi/gate.ts の heroSubLines が持っていて、画面はそれを出す。
+     （恋亀と話せるかどうかで中身が変わるので、1か所にまとめてある）
+
+     だから2段で見る。
+       1画面目の近くで heroSubLines を出していること
+       heroSubLines のほうに、開いている向きが書いてあること
+
+     どちらか片方だけだと素通りする。
+     画面が別の文を直書きしても、gate.ts だけ直しても、ここで止まる。 */
+  const NEAR = 1200;
+  const head = lp.slice(hero, hero + 20000).replace(/\s+/g, "");
+  const marks = [...open, "heroSubLines"];
+  const at = marks.map((w) => head.indexOf(w)).filter((i) => i >= 0);
+  const found = at.length > 0 ? Math.min(...at) : -1;
+
+  if (found < 0 || found > NEAR) {
+    console.error("1画面目に、誰に向けた製品かが書かれていません。");
+    console.error("");
+    console.error(`  いま開いているのは  ${open.join("・")}`);
+    console.error(`  1画面目からの字数  ${found < 0 ? "見つからず" : found}（${NEAR} 字まで）`);
+    console.error("");
+    console.error("片方の向きしか開いていないあいだは、1画面目で名乗ってください。");
+    console.error("名乗らないと、使えない人が読み進めてから気づくことになります。");
+    console.error("（lib/koi/gate.ts の heroSubLines が、その行を持っています）");
+    process.exit(1);
+  }
+
+  /* 名乗りの中身。gate.ts の、恋亀と話せないときの2行目を見る。
+     ここが「複数人のマッチ後を、1つに整理。」のような
+     誰のためか書いていない文に戻ったら、止める。 */
+  {
+    const gate = stripComments(await readFile(join(ROOT, "src/lib/koi/gate.ts"), "utf8"));
+    const said = open.some((w) => gate.includes(w));
+    if (!said) {
+      console.error("1画面目の2行目に、誰に向けた製品かが書かれていません。");
+      console.error("");
+      console.error(`  いま開いているのは  ${open.join("・")}`);
+      console.error("");
+      console.error("lib/koi/gate.ts の SUB_NOW に書いてください。");
+      console.error("画面はそこから引いているので、ここを直せば1画面目も変わります。");
+      process.exit(1);
+    }
+  }
+
+  /* ② 断りが、どこかには出ていること。
+     名乗っただけでは「いつ開くのか」が分からない。 */
+  if (lp.indexOf("notYetNote()") < 0) {
+    console.error("トップに、まだ開いていない向きの断り（notYetNote）がありません。");
+    console.error("");
+    console.error("1画面目で名乗るのとは別に、いつ開くのかを書く場所が要ります。");
+    console.error("よくある質問とフッターに置いてください。");
+    process.exit(1);
+  }
+
+  /* ③ 買う場所にも、断りがあること。
+     買ったあとで「使えなかった」と気づくのが、いちばん悪い。
+     料金の節（id="price"）から、次の節までのあいだを見る。 */
+  const price = lp.indexOf('id="price"');
+  if (price < 0) {
+    console.error("トップに料金の節（id=\"price\"）が見つかりません。");
+    console.error("このファイルの判定が、画面の作りに追いつけていません。");
+    process.exit(1);
+  }
+  const priceEnd = lp.indexOf('id="faq"', price);
+  const inPrice = lp.slice(price, priceEnd > 0 ? priceEnd : price + 20000);
+  if (!inPrice.includes("notYetNote()")) {
+    console.error("買う場所に、まだ開いていない向きの断りがありません。");
+    console.error("");
+    console.error("本文のどこかにあるだけでは足りません。");
+    console.error("お金が動く前に、その場で言ってください。");
+    process.exit(1);
+  }
 }
 
 /* ── 3. 会話の相手が、恋亀であること ───────────────
@@ -281,4 +384,6 @@ if (gap < 0 || gap > NEAR) {
   }
 }
 
-console.log("who チェック: 直書き0件 — 1画面目で断っています — 相手は恋亀です");
+console.log(
+  `who チェック: 直書き0件 — 1画面目で${open.length > 0 ? open.join("・") + "と名乗っています" : "名乗り不要（両方開いています）"} — 相手は恋亀です`,
+);

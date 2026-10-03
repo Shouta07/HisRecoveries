@@ -90,15 +90,37 @@ export function advisorWord(): string {
   return "異性";
 }
 
-/** まだ開いていない向きがあるときの、断り */
+/**
+ * まだ開いていない向きがあるときの、断り。
+ *
+ * ══════════════════════════════════════════════════
+ * 断りを、謝りにしない
+ * ══════════════════════════════════════════════════
+ * 前はこう書いていた。
+ *   いま確カメるをお使いいただけるのは、男性の方のみです。
+ *   女性の方向けは、回答者が揃い次第はじめます。
+ *
+ * 間違ってはいないが、2つまずい。
+ *
+ * 1 「確カメる」だけの話に読める。
+ *    実際は、いま出しているのは男性向けの製品そのもの。
+ *    一部の機能が使えないのではなく、全体がそう。
+ *
+ * 2 1画面目に置くには長い。2行あって、押す場所の真下で
+ *    いちばん目に入るのが断りになっていた。
+ *    来た男性にとっては、1行も自分に関係がない。
+ *
+ * 短くして、前を向いた言い方にする。
+ * 置き場所も変えた（1画面目 → よくある質問とフッター）。
+ * 1画面目は「男性の」と名乗ることで、同じ役を果たしている。
+ */
 export function notYetNote(): string | null {
   if (bothWaysOpen) return null;
   const closed = (Object.keys(ASKER_OPEN) as Gender[]).filter((g) => !ASKER_OPEN[g]);
   if (closed.length === 0) return null;
+  const open = openAskers().map((g) => GENDER_LABEL[g]).join("・");
   const who = closed.map((g) => GENDER_LABEL[g]).join("・");
-  return `いま確カメるをお使いいただけるのは、${openAskers()
-    .map((g) => GENDER_LABEL[g])
-    .join("・")}の方のみです。${who}の方向けは、回答者が揃い次第はじめます。`;
+  return `現在は${open}向けに提供しています。${who}向けは順次対応予定です。`;
 }
 
 /* ── 公開の前に止めること ───────────────────────── */
@@ -121,14 +143,29 @@ export function notYetNote(): string | null {
     throw new Error("両方開いているのに、断りが残っています");
   }
 
-  // 断りに、誰が使えて誰が使えないかが書いてあること。
+  /* 断りに、誰が使えて誰が使えないかが書いてあること。
+     言い回しを変えたので、言葉そのものではなく中身で見る。 */
   const note = notYetNote();
   if (note) {
-    if (!/のみです/.test(note)) {
-      throw new Error("断りに、いま使える人が書かれていません");
+    for (const g of openAskers()) {
+      if (!note.includes(GENDER_LABEL[g])) {
+        throw new Error(`断りに、いま使える人（${GENDER_LABEL[g]}）が書かれていません`);
+      }
     }
-    if (!/揃い次第/.test(note)) {
-      throw new Error("断りに、あとで開くことが書かれていません");
+    const closed = (Object.keys(ASKER_OPEN) as Gender[]).filter((g) => !ASKER_OPEN[g]);
+    for (const g of closed) {
+      if (!note.includes(GENDER_LABEL[g])) {
+        throw new Error(`断りに、まだ使えない人（${GENDER_LABEL[g]}）が書かれていません`);
+      }
+    }
+    // あとで開くことが書いてあること。「使えません」で終わらせない。
+    if (!/予定|順次|次第|はじめます/.test(note)) {
+      throw new Error(`断りに、あとで開くことが書かれていません（${note}）`);
+    }
+    /* 1画面目ではなく、よくある質問とフッターに置く長さであること。
+       長いと、置いた場所でいちばん目立つものになる。 */
+    if (note.length > 40) {
+      throw new Error(`断りが長すぎます（${note.length}字／40字まで）`);
     }
   }
 

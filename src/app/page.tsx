@@ -7,7 +7,7 @@ import FamilyCards from "@/components/brand/FamilyCards";
 import KoiFace from "@/components/koi/KoiFace";
 import BriefCard from "@/components/koi/BriefCard";
 import { DEMO_BRIEF } from "@/lib/koi/briefDemo";
-import { heroSub } from "@/lib/koi/gate";
+import { heroSubLines } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import { INCLUDED, HUMAN_PER_MONTH } from "@/lib/pass/entitle";
 import PriceChooser from "@/components/pass/PriceChooser";
@@ -157,6 +157,19 @@ const FAQ: { q: string; a: string; safety?: boolean }[] = [
     safety: true,
   },
   {
+    /* ══════════════════════════════════════════════
+       聞かれる前に、ここで答える
+       ══════════════════════════════════════════════
+       1画面目から断りを外したので、
+       「女性は使えないのか」の答えが要る場所はここになる。
+
+       謝らない。順番の話として書く。
+       実際、恋亀と記録のほうは性別で変わらない。
+       変わるのは確カメる（回答者が女性だけ）の1つ。 */
+    q: "女性も使えますか？",
+    a: `${notYetNote() ?? "男女どちらの方にもお使いいただけます。"}まずは一方に絞って、使う人の近くで作り込んでいます。順番の話で、どちらが大事ということではありません。`,
+  },
+  {
     q: "解約はいつでもできますか？",
     a: "会員ページから、こちらに連絡しなくても解約できます。解約したあとも、お支払い済みの期間の終わりまでは使えます。期間が決まっているプラン（3か月・6か月・12か月）の月払いは、途中でやめても残りのご請求は止まりません。",
   },
@@ -285,11 +298,12 @@ function AfterCard() {
 
       {/* 状態と、次の予定。
           「次の予定 未定」を隠さない。埋まっていないことも結果 */}
+      {/* 「次の予定 未定」も出していたが、外した。
+          NEXT と状態が決まっていれば、見本としては足りる。
+          行が1本減ると、この1組が1画面に収まる。
+          実際の画面では、分かっているときだけ出している。 */}
       <dl className="mt-3 flex flex-col gap-1.5 text-[12.5px] leading-[1.7]">
-        {[
-          ["状態", "自分から動く"],
-          ["次の予定", "未定"],
-        ].map(([k, v]) => (
+        {[["状態", "自分から動く"]].map(([k, v]) => (
           <div key={k} className="flex gap-3">
             <dt className="w-[4.5em] shrink-0 text-steel">{k}</dt>
             <dd className="min-w-0 font-bold text-slate">{v}</dd>
@@ -407,8 +421,16 @@ export default async function HomePage() {
           {/* 何をする場所かを1行。
               恋亀と話せるかどうかで中身が変わる（lib/koi/gate.ts）。
               手で書き換えないので、入れ忘れ・戻し忘れが起きない。 */}
+          {/* 誰に向けた製品かを、ここで名乗る。
+              行ごとに出す。長さ・折る場所は lib/koi/gate.ts が持つ
+              （携帯で最後の1字だけが落ちるのを、字数のほうで止めている）。 */}
           <p className="mt-3 text-[18px] font-black leading-[1.5] text-brand sm:text-[20px]">
-            {heroSub}
+            {heroSubLines.map((line, i) => (
+              <span key={line} className="block">
+                {line}
+                {i < heroSubLines.length - 1 && <span className="sr-only"> </span>}
+              </span>
+            ))}
           </p>
 
           {/* 何を渡すと、何が残るか。1画面目に要るのはこの1文だけ。
@@ -430,21 +452,20 @@ export default async function HomePage() {
             <p className="mt-2 text-[12px] leading-[1.7] text-steel">{CTA_NOTE}</p>
 
             {/* ══════════════════════════════════════════
-                「異性」と書く以上、ここで断る
+                断りを、1画面目から下へ移した
                 ══════════════════════════════════════════
-                相手の呼び方は「異性」に統一した（lib/who.ts）。
-                男女どちらが読んでも自分のことだと分かる代わりに、
-                どちらの向きも開いているように読める。
+                ここには「いま確カメるをお使いいただけるのは、
+                男性の方のみです。女性の方向けは…」の2行を置いていた。
 
-                実際に開いているのは男性からの相談だけ。
-                押す場所のすぐ下に置く。下のほうに置くと、
-                1画面目で「使える」と思った人はそこまで読まない。
+                押す場所の真下で、いちばん目に入るのが断りだった。
+                そして来た男性にとっては、1行も自分の話ではない。
+
+                2行目で「男性のマチアプ恋愛を、」と名乗るようにしたので、
+                誰に向けた製品かは、断る前に分かる。
+                断りそのものは、よくある質問とフッターに置いた
+                （買う場所にも1行だけ残してある）。
+
                 両方の向きが開いたら、ひとりでに消える。 */}
-            {notYetNote() && (
-              <p className="mt-3 rounded-soft bg-mist px-3.5 py-3 text-[12px] leading-[1.8] text-steel">
-                {notYetNote()}
-              </p>
-            )}
 
             {/* 自分のアプリが入っているかは、文字で「複数アプリ」と
                 書いても分からない。名前を並べる。
@@ -503,10 +524,10 @@ export default async function HomePage() {
 
         <ul className="mt-6 flex max-w-[34em] flex-col gap-2.5">
           {[
-            ["Aさん", "何送ったっけ？"],
-            ["Bさん", "電話した？"],
+            ["Aさん", "前回、何話した？"],
+            ["Bさん", "電話、誘ったっけ？"],
             ["Cさん", "次いつ会う？"],
-            ["ChatGPT", "前回、何相談した？"],
+            ["ChatGPT", "また最初から説明する？"],
           ].map(([who, say]) => (
             <li
               key={who}
@@ -519,9 +540,9 @@ export default async function HomePage() {
         </ul>
 
         <p className="mt-6 max-w-[30em] text-[15.5px] font-bold leading-[1.85] text-slate">
-          恋愛に疲れているというより、
+          恋愛に疲れてるというより、
           <br className="sm:hidden" />
-          判断と記憶に疲れている。
+          判断と記憶に疲れてる。
         </p>
         <p className="mt-2.5 max-w-[30em] text-[14px] leading-[1.9] text-steel">
           頭の中だけで、全部覚えておかなくていい。
@@ -536,7 +557,7 @@ export default async function HomePage() {
         <Eyebrow>HOW IT WORKS</Eyebrow>
         <div className="mt-1.5">
           <H>
-            AIで話す。貼る。
+            話す。貼る。
             <br className="sm:hidden" />
             次が決まる。
           </H>
@@ -629,9 +650,9 @@ export default async function HomePage() {
           分からないまま貼ることになる。恋愛の話なので、そこは見えていること。 */}
       <Block tint>
         <H>
-          次の相談で、
+          毎回、最初から
           <br className="sm:hidden" />
-          最初から説明しなくていい。
+          説明しなくていい。
         </H>
         <p className="mt-4 max-w-[30em] text-[14.5px] leading-[1.9] text-steel">
           前回までの流れをタシカメが覚えているので、次は「Aさんなんやけど」から始められます。
@@ -663,10 +684,14 @@ export default async function HomePage() {
           出した時点で、実在しない誰かの回答を見せることになる
           （審査を通った人が入ったら、そのとき実物を出す）。 */}
       <Block>
+        {/* 携帯だと「AIで決めきれないところだけ、」が14字あって、
+            「け、」だけが2行目に落ちていた。
+            text-huge は 26px。360px の本文幅は 320px なので、
+            どの行も全角12字までにする。 */}
         <H>
-          AIで決めきれないところだけ、
+          AIで決めきれない
           <br className="sm:hidden" />
-          人に確カメる。
+          ときだけ、人に確カメる。
         </H>
 
         <ul className="mt-7 flex max-w-[30em] flex-col gap-2.5">
@@ -685,8 +710,8 @@ export default async function HomePage() {
         </ul>
 
         <p className="mt-6 max-w-[30em] text-[14px] leading-[1.9] text-steel">
-          AIの予測だけではなく、実際の人がどう受け取るかも判断材料にできます。
-          正解を決めてもらうためではありません。
+          AIの予測ではなく、受け取る側に立つ人が、実際にどう感じたかが返ります。
+          正解をもらうためではなく、判断の材料を1つ増やすためです。
         </p>
         <p className="mt-4 max-w-[30em] text-[16px] font-black leading-[1.7] text-slate">
           月{HUMAN_PER_MONTH}回、実在する{advisorWord()}に確カメられる。
@@ -764,14 +789,16 @@ export default async function HomePage() {
         <H>
           {NAME}は、
           <br className="sm:hidden" />
-          恋愛の何でも屋ではありません。
+          恋愛の何でも屋
+          <br className="sm:hidden" />
+          ではありません。
         </H>
 
         <ul className="mt-7 flex max-w-[32em] flex-col gap-2">
           {[
-            "マッチ率を上げる攻略サービスではありません",
-            "高額な恋愛コンサルでもありません",
-            "AIチャットを置き換えるサービスでもありません",
+            "マッチ率やいいねを増やすサービスではありません",
+            "脈あり判定も、相手を動かす駆け引きもありません",
+            "高額な恋愛コンサルでも、AIチャットの置き換えでもありません",
           ].map((t) => (
             <li
               key={t}
@@ -786,9 +813,12 @@ export default async function HomePage() {
         </ul>
 
         <p className="mt-6 max-w-[30em] text-[16px] font-black leading-[1.8] text-slate">
-          マッチした後の、情報・判断・次の行動。
+          相手を動かすのではなく、
           <br className="sm:hidden" />
-          そこに集中します。
+          自分の判断をラクにする。
+        </p>
+        <p className="mt-2.5 max-w-[30em] text-[14px] leading-[1.9] text-steel">
+          マッチした後の、記憶・判断・次の行動。そこに集中します。
         </p>
       </Block>
 
@@ -809,17 +839,27 @@ export default async function HomePage() {
 
           おすすめは 6か月。複数人が同時に進む長さのほう。 */}
       <Block tint id="price">
-        <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <p className="text-[12px] font-black tracking-[0.06em] text-brand">{PAYWALL_NAME}</p>
+        {/* ══════════════════════════════════════════
+            商品名を見出しにした
+            ══════════════════════════════════════════
+            前は商品名を12pxの小さな札にして、
+            サブコピー（恋亀に、続きを覚えてもらう。）を
+            見出しの大きさで出していた。大小が逆。
+
+            しかもサブコピーは14字あって、携帯だと
+            「う。」だけが2行目に落ちていた。
+            見出しの大きさで出すものではない。 */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <H>{PAYWALL_NAME}</H>
           {!passEnabled && (
             <span className="rounded-pill bg-paper px-2.5 py-1 text-[10.5px] font-bold text-steel">
               受付前
             </span>
           )}
         </div>
-        <div className="mt-1.5">
-          <H>{PAYWALL_HEAD}</H>
-        </div>
+        <p className="mt-2 text-[19px] font-black leading-[1.55] text-slate sm:text-[21px]">
+          {PAYWALL_HEAD}
+        </p>
 
         {/* ── 携帯でも2列にする ──────────────────────────
             1列に積むと、4枚で携帯の2画面ぶん（約680px）になる。
@@ -939,12 +979,17 @@ export default async function HomePage() {
           </Link>
         </p>
 
-        {/* 買う場所で、開いていない向きを断る。
-            買ったあとで気づくのが、いちばん悪い（lib/who.ts） */}
+        {/* ══════════════════════════════════════════
+            買う場所にだけは、残す
+            ══════════════════════════════════════════
+            LPの本文からは、使えない向きの話を全部外した
+            （1画面目で「男性の」と名乗っているので、読めば分かる）。
+
+            ただし、お金が動く場所だけは別。
+            買ったあとで「使えなかった」と気づくのが、いちばん悪い。
+            枠も色も付けず、ほかの但し書きと同じ重さで1行だけ。 */}
         {notYetNote() && (
-          <p className="mt-3 max-w-[32em] rounded-soft bg-paper px-3.5 py-3 text-[12px] leading-[1.8] text-steel">
-            {notYetNote()}
-          </p>
+          <p className="mt-2 text-[12px] leading-[1.85] text-steel">{notYetNote()}</p>
         )}
       </Block>
 
@@ -1026,7 +1071,15 @@ export default async function HomePage() {
       <footer className="border-t border-line bg-paper">
         <Wrap className="py-7 sm:py-8">
           <div className="flex flex-col gap-2.5 text-[11.5px] leading-[1.7] text-steel sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <p className="min-w-0">{site.company.name}</p>
+            {/* 社名の隣に、いま誰に出しているかを1行。
+                よくある質問まで開かない人のために、ここにも置く。
+                両方の向きが開いたら、ひとりでに消える。 */}
+            <p className="min-w-0">
+              {site.company.name}
+              {notYetNote() && (
+                <span className="mt-1 block text-[11px] text-steel">{notYetNote()}</span>
+              )}
+            </p>
             <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
               {[
                 ["/legal", "特定商取引法に基づく表記"],

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { FREE_PEOPLE, FREE_RECORDS } from "@/lib/pass/free";
 import Link from "next/link";
 import { NAME } from "@/lib/voice";
 import KoiFace from "@/components/koi/KoiFace";
@@ -93,18 +94,28 @@ export default function KoiEntry() {
             ══════════════════════════════════════════
             前は「思っていることを、そのまま。」だけだった。
             既にこの製品を知っている人向けの言い方で、
-            トップで「まず1回、無料で整理する」を押して来た人には、
+            トップで「無料で始める」を押して来た人には、
             これから何が起きるのかが分からない。
 
-            何をするか、何が返ってくるか、何分かかるかを先に書く。 */}
+            何をするか、何が返ってくるか、何分かかるかを先に書く。
+
+            ── 「1人ぶん」をやめた ──────────────────
+            無料の形を「1回だけ」から「2人・10記録まで」に変えた。
+            ここだけ古い言い方（1人ぶん整理する）が残っていて、
+            トップと食い違っていた。
+
+            1人だと「並ぶ」が体験できない。
+            この製品の良さは、貯まって並んでから出る。 */}
         <h1 className="mt-6 text-center text-huge font-black leading-[1.35]">
           気になっている人を、
           <br />
-          1人ぶん整理する。
+          まとめはじめる。
         </h1>
 
         <p className="mt-5 text-center text-[15px] leading-[1.95] text-steel">
           登録はありません。いまから5分くらいです。
+          <br />
+          {FREE_PEOPLE}人・{FREE_RECORDS}記録まで無料です。
         </p>
 
         {/* これから何が起きるかを、3つだけ。
