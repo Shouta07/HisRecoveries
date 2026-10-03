@@ -106,8 +106,31 @@ export const MANAGE_NOTE =
     throw new Error("プランを管理の説明に、解約が書かれていません");
   }
 
-  // 値段が、plans ではなく entitle から来ていること（二重管理にしない）。
-  if (PASS_YEN !== 1980) {
-    throw new Error(`月額が ¥${PASS_YEN} です。画面の言葉と合わせてください`);
+  /* ══════════════════════════════════════════════
+     値段を、画面の言葉に直書きしないこと
+     ══════════════════════════════════════════════
+     ここは前、こう書いてあった。
+
+       if (PASS_YEN !== 1980) throw ...
+
+     「entitle から来ていること」を見るつもりで、金額そのものを
+     固定していた。二重管理は1つも防げず、値段を動かした日に
+     ここだけが止まる。実際、¥1,980 → ¥2,980 で止まった。
+
+     見たいのは「画面の言葉の中に、金額が直に書かれていないか」。
+     PASS_YEN から作った文字列なら、何円になっても通る。 */
+  for (const [k, v] of Object.entries({
+    PAYWALL_HEAD, PAYWALL_NAME, PAYWALL_CTA, PAYWALL_LATER,
+    PAYWALL_HUMAN, MANAGE_LABEL, MANAGE_NOTE,
+    PAYWALL_BODY: PAYWALL_BODY.join(" "),
+  })) {
+    const yen = String(v).match(/(\d[\d,]{2,})\s*円|¥\s*(\d[\d,]{2,})/);
+    if (!yen) continue;
+    const n = Number((yen[1] ?? yen[2]).replace(/,/g, ""));
+    if (n !== PASS_YEN) {
+      throw new Error(
+        `${k} に、月額と違う金額（¥${n}）が直に書かれています。PASS_YEN から作ってください`,
+      );
+    }
   }
 }
