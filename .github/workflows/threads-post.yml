@@ -58,6 +58,14 @@ jobs:
           GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
         run: python -m core.main sheets-sync pull mens-body-lab || true
 
+      - name: Check secrets
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::warning::GEMINI_API_KEY が未設定です。AI生成ではなく thread_templates.json のテンプレートが投稿されます（同じ文面が繰り返されます）。"
+          fi
+
       - name: Generate (Gemini) → approval queue
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

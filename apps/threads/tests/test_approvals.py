@@ -117,3 +117,38 @@ def test_run_approved_cycle_posts_only_approved(monkeypatch, tmp_path):
     assert calls["n"] == 1  # 承認済み1件だけ投稿
     assert approvals.get(tmp_path, a)["status"] == "posted"
     assert approvals.count(tmp_path, "pending") == 1  # 未承認は残る
+
+
+def test_run_approved_cycle_fails_when_nothing_could_be_posted(monkeypatch, tmp_path):
+    # トークンが無いなど、承認済みを1本も出せなかったときは失敗を返す。
+    # 緑のまま終わると「承認したのに投稿されない」が見えない。
+    persona = {"posting": {"format": "thread"}}
+    monkeypatch.setattr(main, "load_account_config", lambda acc: {
+        "account_dir": str(tmp_path), "history_path": str(tmp_path / "history.json"),
+        "persona": persona, "rss_feeds": [],
+    })
+    monkeypatch.setattr(main.poster, "set_current_account", lambda *a, **k: None)
+    monkeypatch.setattr(main.poster, "get_user_id", lambda *a, **k: "uid")
+    monkeypatch.setattr(main, "record_post_with_cta", lambda *a, **k: None)
+
+    def _boom(*a, **k):
+        raise ValueError("THREADS_ACCESS_TOKEN is not set")
+    monkeypatch.setattr(main.poster, "create_thread_chain", _boom)
+
+    a = approvals.enqueue(tmp_path, {"text": "承認する", "posts": ["x"], "is_thread": True})
+    approvals.approve(tmp_path, a)
+
+    assert main.run_approved_cycle("acc", dry_run=False, mock=False) is False
+    # 失敗した分は approved のまま残す（投稿済みにしない）
+    assert approvals.get(tmp_path, a)["status"] == "approved"
+
+
+def test_run_approved_cycle_succeeds_when_queue_is_empty(monkeypatch, tmp_path):
+    # 承認済みが無いのは正常。失敗にしない
+    persona = {"posting": {"format": "thread"}}
+    monkeypatch.setattr(main, "load_account_config", lambda acc: {
+        "account_dir": str(tmp_path), "history_path": str(tmp_path / "history.json"),
+        "persona": persona, "rss_feeds": [],
+    })
+    monkeypatch.setattr(main.poster, "set_current_account", lambda *a, **k: None)
+    assert main.run_approved_cycle("acc", dry_run=False, mock=False) is True

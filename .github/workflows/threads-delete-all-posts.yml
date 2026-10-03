@@ -51,6 +51,21 @@ jobs:
             exit 1
           fi
 
+      - name: Check secrets
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+        run: |
+          MISSING=""
+          [ -z "$THREADS_ACCESS_TOKEN" ] && MISSING="$MISSING THREADS_ACCESS_TOKEN"
+          [ -z "$THREADS_USER_ID" ] && MISSING="$MISSING THREADS_USER_ID"
+          if [ -n "$MISSING" ]; then
+            echo "::error::GitHub Secrets が未設定です:$MISSING"
+            echo "Settings → Secrets and variables → Actions で設定してください。"
+            echo "長命アクセストークンの発行は apps/threads/CLAUDE.md §6 の手順。"
+            exit 1
+          fi
+
       - name: Delete posts
         env:
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}

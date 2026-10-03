@@ -172,6 +172,18 @@ def run_approved_cycle(
         posted += 1
         logger.info("Posted approved item %s: %s", item["id"], result["text"][:50])
     logger.info("Approved cycle done: %d posted.", posted)
+
+    # 承認済みがあったのに1本も出せなかったら、失敗として返す。
+    # 以前は常に True だったので、THREADS_ACCESS_TOKEN が無いときも
+    # ワークフローは緑のまま終わり、「承認したのに投稿されない」が
+    # 誰にも見えなかった（失敗は1件ずつ log に出るだけ）。
+    if posted == 0:
+        logger.error(
+            "Approved cycle: %d item(s) were approved but none were posted. "
+            "THREADS_ACCESS_TOKEN / THREADS_USER_ID を確認してください。",
+            len(pending_approved),
+        )
+        return False
     return True
 
 
