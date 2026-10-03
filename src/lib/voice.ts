@@ -1,3 +1,4 @@
+import { advisorWord } from "./who";
 // タシカメが名乗る言葉。
 //
 // ══════════════════════════════════════════════════
@@ -82,7 +83,7 @@ export const OPERATOR = "His Recoveries";
  * ここを濁した時点で、値段の付かない画面になる。
  */
 export const DEFINITION =
-  "タシカメは、マッチングアプリで迷った男性が、実在する女性に相談できるサービスです。";
+  "タシカメは、マッチングアプリで出会ったあとの迷いを、恋亀に話すだけで整理できるサービスです。本当に迷ったときは、実在する異性にも確カメられます。";
 
 /**
  * 1画面目で、受け渡しを言う行。
@@ -131,7 +132,7 @@ export const HERO_B = "全部考えなくていい。";
    ここに書くと、鍵が入っていないのに「話すだけ」と出てしまう。 */
 
 export const HERO_HOW =
-  "送る前の文面や写真を、実在する女性3人が読んで、それぞれどう受け取ったかが返ってきます。";
+  "話した内容から、相手ごとの記録が残ります。本当に迷ったときは、実在する異性3人にも確カメられます。";
 
 /**
  * 名前の上に置く行。
@@ -379,7 +380,7 @@ export function assertWhoReads(text: string, where: string): string {
     "実在する人",
   ];
   const hit = VAGUE.find((v) => text.includes(v));
-  if (hit && !text.includes("女性")) {
+  if (hit && !text.includes(advisorWord()) && !text.includes("異性")) {
     throw new Error(
       `${where} の「${hit}」が誰を指すのか分かりません。買う人の画面では「女性」と書いてください`,
     );
@@ -514,12 +515,28 @@ export function assertWeight(text: string, where: string): string {
   // 「小さな選択の積み重ね」だけだと、ただの恋愛論になる。
   // 「選ぶ前に確かめる」だけだと、何を確かめるのか分からない。
   // 何のサービスかを、ぼかさない。
-  // 男性が相談する側、女性が答える側。どちらが欠けても通さない。
+  /* 前は「男性が相談する側、女性が答える側」を必ず書かせていた。
+     男女どちらの相談も受ける形にしたので、性別では縛らない。
+
+     かわりに「何をする場所か」が書いてあることを見る。
+     ここが抜けると、何のサービスか分からない説明に戻る。 */
   for (const [t, where] of [
     [DEFINITION, "サービスの説明"],
   ] as const) {
-    if (!t.includes("男性")) throw new Error(`${where} に、誰が使うのかが書かれていません`);
-    if (!t.includes("女性")) throw new Error(`${where} に、誰が答えるのかが書かれていません`);
+    if (!/恋亀|話す|整理/.test(t)) {
+      throw new Error(`${where} に、何をする場所かが書かれていません`);
+    }
+    /* 人に聞けることを、必ず書くこと。
+
+       前は「女性」と書いてあるかだけ見ていた。
+       男女どちらの相談も受ける形にしたので、性別では縛らない。
+
+       ただし人に聞けること自体は落とさない。
+       そこが「結局AIアプリ」との違いなので、
+       消えると値段の理由が消える。 */
+    if (!t.includes(advisorWord()) && !t.includes("異性")) {
+      throw new Error(`${where} に、人に聞けることが書かれていません`);
+    }
     if (!t.endsWith("。")) throw new Error(`${where} が文になっていません`);
     assertNotScary(t, where);
     assertNotCheap(t, where);
@@ -533,7 +550,7 @@ export function assertWeight(text: string, where: string): string {
   }
   // ── 何の店かが書いてあること ────────────────
   // 名前だけだと、初めて見た人には何も伝わらない。
-  if (!/マチアプ|アプリ/.test(TAB_TITLE) || !TAB_TITLE.includes("女性")) {
+  if (!/マチアプ|アプリ/.test(TAB_TITLE)) {
     throw new Error(`タブの名乗りに、何の店かが書かれていません（${TAB_TITLE}）`);
   }
   // ── 長すぎないこと ──────────────────────────

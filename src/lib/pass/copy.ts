@@ -1,3 +1,4 @@
+import { advisorWord } from "../who";
 import { PASS_YEN, INCLUDED, VOICE_MINUTES_PER_MONTH, HUMAN_PER_MONTH } from "./entitle";
 
 /* ══════════════════════════════════════════════════
@@ -40,7 +41,7 @@ export const PAYWALL_CTA = "続きを覚えてもらう";
 export const PAYWALL_LATER = "あとで";
 
 /** 月額の下に出す、いちばん効く1行 */
-export const PAYWALL_HUMAN = `月${HUMAN_PER_MONTH}回、実在する女性3人にも確カメられます。`;
+export const PAYWALL_HUMAN = `月${HUMAN_PER_MONTH}回、実在する${advisorWord()}3人にも確カメられます。`;
 
 /** 設定にある、解約へ行く場所 */
 export const MANAGE_LABEL = "プランを管理";
@@ -92,7 +93,7 @@ export const MANAGE_NOTE =
 
   // 人に聞けることを、必ず出すこと。
   // ここが AI だけのサービスとの違いなので、隠すと値段の理由が消える。
-  if (!/実在する女性/.test(PAYWALL_HUMAN)) {
+  if (!/実在する/.test(PAYWALL_HUMAN)) {
     throw new Error("月額の説明に、実在の女性に聞けることが書かれていません");
   }
 

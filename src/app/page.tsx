@@ -13,6 +13,7 @@ import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import { PASS_YEN, INCLUDED } from "@/lib/pass/entitle";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
+import { notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
 import { HERO_A, HERO_B, NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
@@ -781,98 +782,15 @@ export default async function HomePage() {
           撮り直したら、ここへ戻す。
           押されるまで iframe を作らない作りもそのまま残っている。 */}
 
-      {/* ══ 1.5 手が止まる瞬間 ══ */}
-      {/* ══════════════════════════════════════════════
-          なぜ1画面目の直後なのか
-          ══════════════════════════════════════════════
-          1画面目は「何のサービスか」を言う場所で、
-          「それ、自分のことだ」と思ってもらう場所ではない。
+      {/* ══ 1.5 「こんな瞬間」を外した ══ */}
+      {/* 絵と、相談の例12件を並べていた。
 
-          ここを1画面目の中に入れると、押す場所が下へ押し出される。
-          いまスマホで、押す場所は 844px のうち 687px のところにある。
-          7行足すと画面の外へ出る。それは割に合わない。
+          どちらも「こういう場面で使える」を見せるもの。
+          恋亀との会話が、同じことを実際のやりとりで見せている。
+          絵で場面を並べるより、会話1本のほうが早い。
 
-          1回スワイプした先に置く。順番はこう。
-            何のサービスか（1画面目）
-            それ、自分のことだ（ここ）
-            ほかの手段では足りない理由（ここの下半分）
-            どんな場面で使えるか（この下）
-
-          ══════════════════════════════════════════════
-          状態ではなく、瞬間を書く
-          ══════════════════════════════════════════════
-          「恋愛で悩んでいませんか？」とは書かない。
-          悩んでいる人は、自分を悩んでいる人だと思っていない。
-          思っているのは「このLINE、重くないかな」だけ。
-
-          言葉は lib/ask/pain.ts。
-          答えられないこと（写真・脈あり）は、向こうの判定が弾く。 */}
-      <Block>
-        <h2 className="text-huge font-black leading-[1.35] text-slate">
-          こんな瞬間、
-          <br className="sm:hidden" />
-          ありませんか？
-        </h2>
-
-        {/* 絵。置かれていなければ、何も出ない（MomentsArt）。
-            吹き出しの言葉は画像に焼き込まれているので、
-            これで下の一覧を置き換えない。
-            置き換えると、押せなくなり、読み上げにも検索にも乗らなくなる */}
-        <MomentsArt alt="送る前に手が止まる、いくつもの場面" />
-
-        {/* ══════════════════════════════════════════
-            8つの一覧は外した
-            ══════════════════════════════════════════
-            場面を1つずつ押せるようにしていた（押すとその
-            カテゴリを選んだ状態で相談が始まる）。
-
-            絵の中に同じ場面が全部描かれているので、
-            下に文字で並べると二度読ませることになっていた。
-
-            押す先は1つだけ残す。カテゴリの選択は、
-            相談を書く画面の最初で選べる。 */}
-        {/* ── 実際に相談されている形を、そのまま並べる ──────
-            絵は場面を見せるが、言葉になっていない。
-            「自分のも聞いていいのか」が分かるのは、
-            他人が何を聞いているかを見たとき。
-
-            押すとそのカテゴリを選んだ状態で相談が始まる。
-            横に流すのは、縦に12枚積むとこの節だけで2画面になるから。
-            端を少し見せて、続きがあることを分かるようにしてある。 */}
-        <ul
-          className="-mx-5 mt-6 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
-          style={{ scrollbarWidth: "none" }}
-        >
-          {EXAMPLES.map((e) => (
-            <li key={e.q} className="shrink-0 snap-start">
-              <Link
-                href={`/ask?c=${e.cat}`}
-                className="flex min-h-[52px] items-center rounded-pill border border-line bg-paper px-4 text-[14px] font-bold leading-[1.5] text-slate shadow-card transition-shadow hover:shadow-card-hover"
-              >
-                {e.q}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-6 max-w-[26em]">
-          <PlanCta
-            plan={DEFAULT_PLAN}
-            from="pain"
-            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-          >
-            女性に確カメる <span aria-hidden className="ml-2">&rarr;</span>
-          </PlanCta>
-        </div>
-
-        {/* 「検索すれば／AIに聞けば」の3行は、ここに置いていた。
-            置き場所としては早すぎた。
-            まだ何のサービスか分からない段階で、ほかの手段と比べても、
-            比べる先が頭の中に無い。
-
-            「ほかの選び方と、どう違うか」の節へ移した。
-            友達とAIの話をしている、まさにその場所。 */}
-      </Block>
+          絵（public/img/moments.jpg）と部品は消していない。
+          相談の例（examples.ts）も残っている。 */}
 
       {/* ══ 2.4 返ってくるもの ══ */}
       {/* 売るのはここ。
@@ -1004,83 +922,15 @@ export default async function HomePage() {
           568px。言葉と判定（lib/ask/examples.ts の TOPICS）は
           消していない。相談を書く画面では、まだ使える。 */}
 
-      {/* ══ 3.7 AとBを並べる ══ */}
-      {/* ══════════════════════════════════════════════
-          できるのに、言っていなかった
-          ══════════════════════════════════════════════
-          相談を書く画面には「AとBを比べる」があり、
-          回答画面はどちらを選んだかを数えて、
-          割れたかどうかまで出す（aggregate.ts）。
+      {/* ══ 3.7 「AとBを並べる」を外した ══ */}
+      {/* 票と理由を見せる節。作りとしては良かったが、
+          確カメるの見せ方が2つ（やりとりの見本とこれ）になっていた。
 
-          作りは入っているのに、トップで一度も言っていなかった。
+          恋亀が主役になって、確カメるは「本当に迷ったときの手段」に
+          なったので、見せ方は1つでいい。
 
-          ここが効くのは、答える側が楽だから。
-          「この文面どう？」は、良い悪いの線が人によって違うので、
-          答えるほうも難しい。「どっち？」なら即答できる。
-          答えやすい設問は、返ってくるのも速い。
-
-          買う側にとっても、いちばん結果が読みやすい。
-          2対1でも、割れたことがそのまま分かる。
-
-          票数はおすすめの商品の人数と突き合わせている（ab.ts）。 */}
-      <Block>
-        <h2 className="text-huge font-black leading-[1.35] text-slate">
-          どっちがいい？は、
-          <br className="sm:hidden" />
-          人に聞く。
-        </h2>
-        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          写真、文面、プロフィール、誘い方。AとBで迷ったら、並べて出すだけです。
-        </p>
-
-        <div className="mt-6 rounded-card border border-line bg-paper p-5 shadow-card">
-          <p className="text-[11.5px] font-bold text-steel">{AB_DEMO.subject}</p>
-          <p className="mt-1 text-[16px] font-black leading-[1.5] text-slate">
-            {AB_DEMO.question}
-          </p>
-
-          {/* 票。棒の長さで、数をそのまま見せる */}
-          <ul className="mt-4 flex flex-col gap-2.5">
-            {([AB_DEMO.a, AB_DEMO.b] as const).map((x, i) => {
-              const total = AB_DEMO.a.votes + AB_DEMO.b.votes;
-              return (
-                <li key={x.label} className="flex items-center gap-3">
-                  <span className="w-5 shrink-0 text-[14px] font-black text-slate">
-                    {x.label}
-                  </span>
-                  <span className="h-7 min-w-0 flex-1 overflow-hidden rounded-pill bg-mist">
-                    <span
-                      className={`block h-full rounded-pill ${i === 0 ? "bg-brand" : "bg-steel/40"}`}
-                      style={{ width: `${(x.votes / total) * 100}%` }}
-                    />
-                  </span>
-                  <span className="w-12 shrink-0 text-right text-[13px] font-bold tabular-nums text-steel">
-                    {x.votes}票
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-
-          {/* 数だけだと、なぜそう選んだかが残らない。
-              理由まで返るのが、投票アプリとの違い */}
-          <ul className="mt-4 flex flex-col gap-2 border-t border-line pt-4">
-            {AB_DEMO.says.map((s) => (
-              <li key={s.say} className="text-[12.5px] leading-[1.8] text-steel">
-                <span className="font-bold text-slate">
-                  {s.age}歳・{s.pick.toUpperCase()}
-                </span>
-                {"　"}
-                {s.say}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <p className="mt-4 text-[12px] leading-[1.8] text-steel">
-          ※ 画面の見本です。特定の利用者の結果ではありません。
-        </p>
-      </Block>
+          仕組み（PICKS / aggregate）も言葉（ab.ts）も消していない。
+          相談を書く画面では、いまも AとB を選べる。 */}
 
       {/* ══ 4. AIとの役割の違い ══ */}
       {/* ══════════════════════════════════════════════
@@ -1103,7 +953,7 @@ export default async function HomePage() {
         <h2 className="text-huge font-black leading-[1.35] text-slate">
           AIで考える。
           <br className="sm:hidden" />
-          女性に確カメる。
+          人に確カメる。
         </h2>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -1116,7 +966,7 @@ export default async function HomePage() {
             {
               who: "タシカメ",
               can: "実際にどう受け取られるかを聞く",
-              lead: "送る相手に近い女性が、ひとり読む。感じたことがそのまま返る。",
+              lead: "送る相手に近い人が、実際に読む。感じたことがそのまま返る。",
               ours: true,
             },
           ].map((x) => (
@@ -1140,49 +990,18 @@ export default async function HomePage() {
         </div>
 
         <p className="mt-5 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          AIは、女性が実際にどう感じるかまでは分かりません。
-          そこだけ、女性本人に聞いたほうが早い。
+          AIは、相手側の人が実際にどう感じるかまでは分かりません。
+          そこだけ、本人に聞いたほうが早い。
         </p>
       </Block>
 
-      {/* ══ 5. 恋愛のどこで迷うか ══ */}
-      {/* ここは 968px あった。見出しの上下に長い説明が付いていた。
+      {/* ══ 5. 「迷うのは、一度じゃない」を外した ══ */}
+      {/* 恋愛のどの段で迷うかを、図で見せていた。
 
-          恋亀が「前回の続きから」を見せるようになったので、
-          「何度も迷う場面がある」は、そちらで伝わっている。
-          ここに残す意味は、図そのもの（どの段で迷うか）だけ。
+          「何度も迷う」は、恋亀の「2回目は、続きから」が
+          実際のやりとりで見せている。図は、その説明をもう一度していた。
 
-          説明を落として、図だけにした。 */}
-      <Block id="moments">
-        <h2 className="text-huge font-black leading-[1.35] text-slate">
-          迷うのは、
-          <br className="sm:hidden" />
-          一度じゃない。
-        </h2>
-        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          どの段でも、同じように手が止まります。
-        </p>
-
-        <Journey />
-
-        {/* ── 「前回の続きから進められます」の箱を外した ──────
-            276px あった。買う前に読むものとしては長い。
-
-            書いてあったのは3つ。
-              一度使ったあとは、前回の続きから進められる
-              毎回ゼロから説明し直さなくてよい
-              相手の実名・連絡先・メッセージ全文は保存しない
-
-            どれも本当だが、どれも2回目以降の話と、
-            仕組みの話。まだ1回も使っていない人が、
-            買うかどうかを決める材料にはならない。
-
-            保存しないことは、プライバシーの方針（/privacy）と
-            よくある質問が持っている。隠していない。 */}
-
-      </Block>
-
-
+          Journey の部品と journey.ts は消していない。 */}
 
       {/* ══ 6. サービスプラン ══ */}
       {/* ここは「どれを使えばいい？」と「料金」の2節だった。
@@ -1263,6 +1082,15 @@ export default async function HomePage() {
           <p className="mt-3.5 text-[12.5px] leading-[1.8] text-steel">
             {MANAGE_NOTE}
           </p>
+
+          {/* 開いていない向きがあるなら、買う場所で断る。
+              いま回答者は女性だけなので、女性の方は確カメるを使えない。
+              買ったあとで気づくのが、いちばん悪い（lib/who.ts）。 */}
+          {notYetNote() && (
+            <p className="mt-2.5 rounded-soft bg-mist px-3 py-2.5 text-[12px] leading-[1.75] text-steel">
+              {notYetNote()}
+            </p>
+          )}
         </div>
 
         {/* ── 単発は、残すが主役にしない ──────────────────
