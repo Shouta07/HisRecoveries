@@ -26,15 +26,71 @@ import { advisorWord } from "../who";
    「今月はここまで」と伝えて、来月から戻る。
    会話の途中で切れるのがいちばん悪い。 */
 
+/* ══════════════════════════════════════════════════
+   値段
+   ══════════════════════════════════════════════════
+
+   ── ¥2,980 は、売り方ではなく採算が決めた ──────────
+   ¥1,980 のままだと、恋亀との会話を入れた時点で
+   限界利益率が 34.8% になる（下の確認が止める）。
+   50% を守れる最低の価格が ¥2,980。
+
+   ── β は「安くした」のではなく「まだ少ない」 ───────
+   恋亀との会話は REALTIME_API_KEY が入るまで公開できない
+   （src/lib/koi/gate.ts）。だから β に音声は含まれない。
+   含まれないぶん安い、という順番。
+
+   **「通常¥2,980を今だけ¥1,980」とは書かない。**
+   一度も売っていない価格を通常価格として並べるのは、
+   景品表示法の有利誤認（二重価格表示）に当たる。
+   書くなら「先着100人は¥1,980。音声が入ったら¥2,980」。
+   過去ではなく、これからの値段を言う。 */
+
 /** 月額。Stripe の Price ID は環境変数で持つ（コードに書かない） */
-export const PASS_YEN = 1980;
+export const PASS_YEN = 2980;
+
+/** β（先着）の月額。音声を含まないぶん安い */
+export const BETA_YEN = 1980;
+
+/** β の枠。ここに達したら、新しい人は PASS_YEN になる */
+export const BETA_SEATS = 100;
+
+/**
+ * β で入った人が、音声が入ったあとどうなるか。
+ *
+ * ここは金額がそのまま乗るので、決めたら画面にも必ず出す。
+ * 「あとで決める」はできない。買う前に書いていないと、
+ * 値上げした時点で「聞いてない」になる。
+ *
+ *   "keep"  …… 100人はずっと ¥1,980
+ *               音声ありで利益率 34.8%。100人で月 ¥69,000
+ *   "raise" …… 1か月前に知らせて ¥2,980 へ
+ *               100人で月 ¥162,400。差は月 ¥93,400
+ */
+export type BetaAfterVoice = "keep" | "raise";
+export const BETA_AFTER_VOICE: BetaAfterVoice = "raise";
+
+/** 据え置くなら、β も音声ありの採算を通さないといけない */
+const BETA_NEEDS_VOICE_MARGIN: Record<BetaAfterVoice, boolean> = {
+  keep: true,
+  raise: false,
+};
 
 /** 月に、女性3人へ確カメられる回数 */
 export const HUMAN_PER_MONTH = 1;
 /** 1回に何人へ届くか */
 export const PANEL_SIZE = 3;
-/** 回答者1人あたりの報酬 */
-export const PANEL_REWARD = 250;
+/**
+ * 回答者1人あたりの報酬。
+ *
+ * ここが ¥250 で入っていた。実際に払っているのは ¥500 で
+ * （src/lib/ask/plans.ts。「答える人の取り分は ¥500 のまま」）、
+ * 下の採算の確認が、半額の原価で通っていた。
+ *
+ * 直した結果、¥1,980 に音声を入れると 34.8% になって止まる。
+ * 止まるのが正しい。それがこの確認の役目。
+ */
+export const PANEL_REWARD = 500;
 
 /**
  * 月に、恋亀と話せる分数。
@@ -100,27 +156,55 @@ export const INCLUDED: string[] = [
   `月${HUMAN_PER_MONTH}回、実在する${advisorWord()}${PANEL_SIZE}人に確カメる`,
 ];
 
+/**
+ * その値段で、限界利益率が足りているか。
+ *
+ * withVoice は、恋亀との会話を含むかどうか。β は含まない
+ * （REALTIME_API_KEY が入るまで公開できない。src/lib/koi/gate.ts）。
+ */
+export function passMargin(yen: number, withVoice: boolean) {
+  const fee = Math.round(yen * 0.036);
+  const refund = Math.round(yen * 0.03);
+  const misc = 10;
+  const human = PANEL_SIZE * PANEL_REWARD * HUMAN_USE_RATE * HUMAN_PER_MONTH;
+  const voice = withVoice ? VOICE_MINUTES_PER_MONTH * VOICE_COST_PER_MIN : 0;
+  const variable = fee + refund + misc + human + voice;
+  return { variable, margin: (yen - variable) / yen, human, voice };
+}
+
 /* ── 公開の前に止めること ───────────────────────── */
 {
   /* 採算が合っていること。
      上限を上げるのは簡単だが、上げた瞬間に赤字になることがある。
-     上げたらここで止まる。 */
-  const fee = Math.round(PASS_YEN * 0.036);
-  const refund = Math.round(PASS_YEN * 0.03);
-  const misc = 10;
-  const human = PANEL_SIZE * PANEL_REWARD * HUMAN_USE_RATE * HUMAN_PER_MONTH;
-  const voice = VOICE_MINUTES_PER_MONTH * VOICE_COST_PER_MIN;
-  const variable = fee + refund + misc + human + voice;
-  const margin = (PASS_YEN - variable) / PASS_YEN;
+     上げたらここで止まる。
 
-  if (margin < PASS_MARGIN_FLOOR) {
-    throw new Error(
-      `月額の限界利益率が ${(margin * 100).toFixed(1)}% です（${Math.round(
-        PASS_MARGIN_FLOOR * 100,
-      )}% 以上）。` +
-        `音声の上限 ${VOICE_MINUTES_PER_MONTH}分（¥${voice}）か、` +
-        `確カメるの回数（¥${Math.round(human)}）を見直してください`,
-    );
+     β も同じ確認を通す。安いほうを素通しにすると、
+     「先着だから」で赤字の値段を出せてしまう。 */
+  const checks: [string, number, boolean][] = [
+    ["月額", PASS_YEN, true],
+    ["β（音声なし）", BETA_YEN, false],
+  ];
+  // 据え置くなら、β は音声ありでも採算が合っていなければならない
+  if (BETA_NEEDS_VOICE_MARGIN[BETA_AFTER_VOICE]) {
+    checks.push(["β（音声が入ったあと・据え置き）", BETA_YEN, true]);
+  }
+
+  for (const [name, yen, withVoice] of checks) {
+    const { margin, variable, human, voice } = passMargin(yen, withVoice);
+    if (margin < PASS_MARGIN_FLOOR) {
+      throw new Error(
+        `${name} ¥${yen} の限界利益率が ${(margin * 100).toFixed(1)}% です` +
+          `（${Math.round(PASS_MARGIN_FLOOR * 100)}% 以上）。変動費 ¥${variable}` +
+          `（確カメる ¥${Math.round(human)} / 音声 ¥${voice}）。` +
+          `値段か、音声の上限 ${VOICE_MINUTES_PER_MONTH}分か、` +
+          `確カメるの回数 月${HUMAN_PER_MONTH}回を見直してください`,
+      );
+    }
+  }
+
+  // β のほうが高いのは、ただの書き間違い
+  if (BETA_YEN >= PASS_YEN) {
+    throw new Error(`β ¥${BETA_YEN} が、通常の月額 ¥${PASS_YEN} を下回っていません`);
   }
 
   // 使い放題と書かないこと。書かなければ守れる。

@@ -106,8 +106,22 @@ export const MANAGE_NOTE =
     throw new Error("プランを管理の説明に、解約が書かれていません");
   }
 
-  // 値段が、plans ではなく entitle から来ていること（二重管理にしない）。
-  if (PASS_YEN !== 1980) {
-    throw new Error(`月額が ¥${PASS_YEN} です。画面の言葉と合わせてください`);
+  /* 値段が、画面に直接書かれていないこと。
+
+     ここは以前 `PASS_YEN !== 1980` で止めていた。値段を変えた瞬間に
+     止まるので、気づける仕掛けとしては効いていたが、**値段を変えるたびに
+     このファイルも直す**ことになっていた（二重管理そのもの）。
+
+     見たいのは「金額が画面の言葉に焼き込まれていないか」なので、
+     そちらを見る。entitle.ts が唯一の出どころ。 */
+  const money = /[¥￥]\s?[0-9０-９][0-9０-９,，]*|[0-9０-９][0-9０-９,，]*\s?円/;
+  for (const [name, text] of Object.entries({
+    PAYWALL_HUMAN, PAYWALL_LATER, MANAGE_NOTE,
+  })) {
+    if (typeof text === "string" && money.test(text)) {
+      throw new Error(
+        `${name} に金額が書かれています（値段は entitle.ts の PASS_YEN だけが持つ）`,
+      );
+    }
   }
 }
