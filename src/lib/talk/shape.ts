@@ -42,7 +42,7 @@ export type TalkUpdate = {
   feelings: string[];
   opinions: string[];
   inferences: Inference[];
-  stageUpdate: { from: string; to: string; confidence: number } | null;
+  stageUpdate: { from: Stage; to: Stage; confidence: number } | null;
   nextDateUpdate: { date: string | null; status: "confirmed" | "proposed" | "none" } | null;
   concernsAdd: string[];
   signalsAdd: string[];
