@@ -18,8 +18,8 @@
           "距離感、どこで決めてますか。"
         ],
         "is_thread": true,
-        "link": "https://hisrecoveries.com/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance",
-        "cta_used": "https://hisrecoveries.com/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance",
+        "link": "https://tashikame.app/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance",
         "hypothesis_id": "distance",
         "hypothesis_name": "距離感で迷う",
         "topic_slug": "distance",
@@ -46,8 +46,8 @@
           "その文面、送る前に止まったことありますか。"
         ],
         "is_thread": true,
-        "link": "https://hisrecoveries.com/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
-        "cta_used": "https://hisrecoveries.com/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
+        "link": "https://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
         "hypothesis_id": "message",
         "hypothesis_name": "送る前のLINEで止まる",
         "topic_slug": "message",
@@ -96,8 +96,8 @@
           "自己紹介文、最後に書き直したのはいつですか。"
         ],
         "is_thread": true,
-        "link": "https://hisrecoveries.com/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
-        "cta_used": "https://hisrecoveries.com/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
+        "link": "https://tashikame.app/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
         "hypothesis_id": "photo",
         "hypothesis_name": "自己紹介文が読まれているか",
         "topic_slug": "photo",

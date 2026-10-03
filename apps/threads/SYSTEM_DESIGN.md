@@ -7,7 +7,7 @@
 | アカウント | @koikame.jp |
 | プロダクト | タシカメ（送る前に、女性の目を通す） |
 | 運営 | His Recoveries / バイタリティデザイン合同会社 |
-| 行き先 | https://hisrecoveries.com/ask （相談の入口） |
+| 行き先 | https://tashikame.app/ask （相談の入口） |
 | 目的 | 手が止まる瞬間に置かれること。5場面のどれが反応されるかを測る |
 | 現フェーズ | explore（5場面を均等検証） |
 | 内部ID | `accounts/mens-body-lab/`（env のキーに使うので変更しない） |

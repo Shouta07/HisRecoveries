@@ -3,7 +3,7 @@
 // Playwright で描画 → public/broll/<name>.png（Remotion から Img で読める）。
 //
 //   node scripts/broll.mjs <url> <name> [--full]
-//   例) node scripts/broll.mjs https://www.hisrecoveries.com/areas/skin areas-skin
+//   例) node scripts/broll.mjs https://tashikame.app/areas/skin areas-skin
 // --full でページ全体、無指定でファーストビュー(1080x1920)。
 // ※ ネットワーク到達が前提（サンドボックスの制約で失敗する場合あり）。
 

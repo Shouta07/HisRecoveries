@@ -41,7 +41,7 @@ empathy → question → insight → empathy → fact → insight → question �
 {
   "id": "src-before-send",
   "kind": "experience",
-  "url": "https://hisrecoveries.com/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=src-before-send",
+  "url": "https://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=src-before-send",
   "reader": {
     "persona": "20代後半〜30代、マッチングアプリを使っている会社員",
     "inner_voice": "文面はできた。でも、これで送っていいのか分からない",

@@ -95,7 +95,7 @@ import Yen from "@/components/brand/Yen";
 // ══════════════════════════════════════════════════════════════
 
 export const metadata: Metadata = {
-  // タブに出るのは店名。住所（hisrecoveries.com）とは別
+  // タブに出るのは店名。住所（tashikame.app）とは別
   title: { absolute: TAB_TITLE },
   /* 検索結果に出る説明。
      DEFINITION（誰が誰に何をするか）＋ HERO_HOW（何を渡すと何が返るか）。

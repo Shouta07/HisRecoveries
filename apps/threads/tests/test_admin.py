@@ -131,10 +131,10 @@ class TestAnalytics:
     def test_renders_metrics_sorted(self, monkeypatch):
         sample = {"posts": [
             {"posted_at": "2026-06-30T22:30:00", "text": "A", "hypothesis_name": "記念日",
-             "link": "https://hisrecoveries.com/apply?x",
+             "link": "https://tashikame.app/apply?x",
              "metrics": {"impressions": 1240, "likes": 38, "replies": 5, "reposts": 3}},
             {"posted_at": "2026-06-29T22:30:00", "text": "B", "hypothesis_name": "誕生日",
-             "link": "https://hisrecoveries.com/apply?y",
+             "link": "https://tashikame.app/apply?y",
              "metrics": {"impressions": 2980, "likes": 51, "replies": 9, "reposts": 7}},
             {"posted_at": "2026-06-28T22:30:00", "text": "C", "hypothesis_name": "結婚式"},
         ]}
@@ -149,7 +149,7 @@ class TestAnalytics:
     def test_link_dest_and_engagement(self, monkeypatch):
         sample = {"posts": [
             {"posted_at": "2026-06-30", "text": "A", "hypothesis_name": "x",
-             "link": "https://hisrecoveries.com/areas/hair",
+             "link": "https://tashikame.app/areas/hair",
              "metrics": {"impressions": 1000, "likes": 30, "replies": 10, "reposts": 10}},
         ]}
         monkeypatch.setattr(s.ST, "read_json",

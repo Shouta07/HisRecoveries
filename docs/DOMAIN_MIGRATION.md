@@ -39,12 +39,80 @@ Mixed Content があると、画像1枚でもページが壊れる。
 | 正式URLの既定値 | `NEXT_PUBLIC_APP_URL ?? NEXT_PUBLIC_SITE_URL ?? "https://tashikame.app"` |
 | 旧ブランドの削除 | `His Recoveries` は配信物から0件（全ページ実測済み） |
 | `www` の正規化 | `www.tashikame.app` → `tashikame.app` の301（`next.config.mjs`） |
-| Threads の CTA | 3ファイルを新ドメインへ |
+| Threads の CTA | 投稿に載る行き先を新ドメインへ（下記） |
 | Search Console のリンク | `site.url` から作る形に |
 | 戻ってこない判定 | 旧ドメイン・`www`・`http`・末尾スラッシュ・旧ブランドで、公開前に止まる |
 
 **canonical・OGP・sitemap・robots・feed・Stripe の戻り先は、全部 `site.url` を読んでいる。**
 環境変数を1つ入れれば、全部ついてくる。
+
+### 実測した配信物（ローカルの本番ビルド）
+
+| | |
+|---|---|
+| canonical | `https://tashikame.app/...`（`/` `/trial` `/legal` で確認） |
+| `og:url` / `og:site_name` | `https://tashikame.app` ／ `タシカメ` |
+| `sitemap.xml` | 出てくるホストは `tashikame.app` だけ |
+| `robots.txt` | `Host:` と `Sitemap:` が新ドメイン |
+| `feed.xml` | 同上 |
+| 構造化データ | `url` は新ドメイン（`sameAs` は後述） |
+| `llms.txt` | 新ドメイン |
+| Stripe の `success_url` / `cancel_url` | `site.url` から作る（`api/checkout/route.ts`） |
+
+`src/` の中に、自サイトのURLをベタ書きしている場所は **0件**。
+正式URLを持つのは `lib/site.ts` だけ。
+
+### src の外にも、外へ出ていく口があった
+
+`src/` を直しても、**Threads に投稿されるCTAは旧ドメインのまま**だった。
+`apps/threads` は別のアプリで `site.ts` を読めないので、取り残されていた。
+
+直したもの（投稿の行き先を作る側）:
+
+- `accounts/mens-body-lab/hypotheses.json` の `link_config.base_urls.apply`
+  — **新しい投稿のCTAは、ここ1か所から作られる**
+- `seo_clusters.json` の `ask_url`
+- `content_sources.json`
+- `approvals.json`（まだ**1件も投稿していない**ので、6件すべてが「これから出すもの」）
+- 文書とテスト
+
+> 投稿**済み**のものは書き換えない。何を出したかの記録なので、
+> 書き換えると記録が嘘になる。`check-domain.mjs` も、
+> `posted_at` が入っているものは見ない。
+
+### 戻ってこないようにした
+
+`scripts/check-domain.mjs` が、公開の前に2つを見る。
+
+1. 旧ドメインが**URLとして**残っていないこと（コメントと `*.md` は見ない）
+2. 正式ドメインが `src/` に**ベタ書き**されていないこと（持つのは `site.ts` だけ）
+
+見る範囲は `src` / `apps/threads` / `packages` / `scripts` / `next.config.mjs`。
+どちらかに当たると `npm run build` が止まる。
+
+### ログイン／登録URLについて
+
+**このサービスに会員登録とログインは無い。**
+相談ごとに発行されるリンク（トークン）だけで結果を見る形なので、
+認証の戻りURLは存在しない。Supabase Auth の設定は、
+将来使うときのために入れておく（下の手順6）。
+
+### 外部アカウントは、勝手に変えていない
+
+構造化データの `sameAs` に、こう残っている。
+
+```
+https://hisrecoveries.substack.com
+https://www.threads.com/@hisrecoveries_jp
+https://x.com/his_recoveries
+https://note.com/his_recoveries
+```
+
+これらは**旧ドメインではなく、実在する外部アカウントの名前**。
+こちらで書き換えるとリンクが切れる。
+
+アカウント名を変えるかどうかは運営の判断。変えたら `lib/site.ts` の
+`social` と `handle` を直す（`sameAs` は自動でついてくる）。
 
 ---
 

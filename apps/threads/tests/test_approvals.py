@@ -54,7 +54,7 @@ def _stub_generation(monkeypatch, tmp_path, posted_flag):
     monkeypatch.setattr(main.poster, "set_current_account", lambda *a, **k: None)
     monkeypatch.setattr(main.writer, "generate_post", lambda *a, **k: {
         "text": "1本目\n2本目", "posts": ["1本目", "2本目"], "is_thread": True,
-        "link": "https://hisrecoveries.com/apply", "cta_used": None,
+        "link": "https://tashikame.app/apply", "cta_used": None,
         "hypothesis_id": "h1", "hypothesis_name": "gift", "topic_slug": "gift-birthday",
         "buzz_score": 0, "source_type": "template",
     })
