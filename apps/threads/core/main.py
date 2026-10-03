@@ -162,6 +162,24 @@ def run_approved_cycle(
         logger.info("No approved items to post.")
         return True
 
+    # 1回の実行で出す本数を絞る。
+    #
+    # 生成は夜にまとめて3本積むので、ここで全部出すと、朝8時の枠で
+    # 3本が立て続けに出る。枠を3つに分けた意味が無くなるうえ、
+    # 連投でもないものが数十秒おきに並ぶのは、人がやる形ではない。
+    per_run = (
+        persona.get("posting", {})
+        .get("posting_types", {})
+        .get("automated", {})
+        .get("max_per_run", 1)
+    )
+    if per_run and len(pending_approved) > per_run:
+        logger.info(
+            "承認済み %d 本のうち、古いほうから %d 本だけ出します",
+            len(pending_approved), per_run,
+        )
+        pending_approved = pending_approved[:per_run]
+
     posted = 0
     for item in pending_approved:
         try:
@@ -323,10 +341,23 @@ def run_post_cycle(
     if require_approval and not dry_run:
         payload = _payload_from_result(post_result)
         item_id = approvals.enqueue(account_dir, payload, account_id=account_id)
-        logger.info(
-            "=== Approval required: queued (id=%s), NOT posted. "
-            "承認後に `post-approved` で投稿されます ===", item_id,
+
+        # 型によっては、人を通さずに承認する（approvals.auto_approve_decision）。
+        # ゲートそのものは外さない。外すと、止めたいときに止める口が無くなる。
+        auto_ok, reason = approvals.auto_approve_decision(
+            persona, payload, account_dir,
         )
+        if auto_ok:
+            approvals.approve(account_dir, item_id, by=approvals.AUTO_APPROVER)
+            logger.info(
+                "=== Auto-approved (id=%s): %s. "
+                "次の post-approved で投稿されます ===", item_id, reason,
+            )
+        else:
+            logger.info(
+                "=== Approval required: queued (id=%s), NOT posted. %s ===",
+                item_id, reason,
+            )
         return True
 
     # 6. Poster: 投稿

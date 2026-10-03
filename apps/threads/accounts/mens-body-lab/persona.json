@@ -157,13 +157,26 @@
       "automated": {
         "description": "恋亀の単発投稿。post_forms.json の型（二択/違和感/男女差/実演/人間の反応）をA共感40% B問い30% C恋亀20% D告知10% の比率で出す。",
         "frequency": "1日3本",
-        "automation": "生成→承認→投稿",
+        "automation": "生成→自動承認（A/B/C）→投稿。D（告知）だけ人が承認する",
         "immediate_posting_forbidden": true,
         "preferred_time": [
           "08:00",
           "12:30",
           "21:00"
-        ]
+        ],
+        "auto_approve": {
+          "enabled": true,
+          "note": "危なさが一様ではないので、型で分ける。A（共感）B（問い）C（恋亀）はリンクも商品の話も持たないので、外しても滑るだけで済む。D（告知）はURLを貼ってサービスの話をするので、書き方を1つ間違えると、できないことを売ったことになる（恋亀と話す機能はまだ公開していない。src/lib/koi/gate.ts）。Dは全体の1割＝週に2本ほどなので、ここだけ人が見ても手間は小さい。accounts/<id>/KILL_SWITCH を置けば、設定を触らなくても全部止まる。",
+          "categories": [
+            "empathy",
+            "split",
+            "product"
+          ],
+          "max_per_day": 5,
+          "max_pending_approved": 10
+        },
+        "max_per_run": 1,
+        "max_per_run_note": "post-approved 1回につき出す本数。枠が3つあるので1本ずつ。全部出すと、朝8時に3本まとめて出て、枠を分けた意味が無くなる。"
       }
     }
   },

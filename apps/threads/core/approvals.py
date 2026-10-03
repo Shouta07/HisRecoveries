@@ -16,6 +16,10 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+# 自動承認の印。人が押したものと区別できないと、
+# 「これ誰が通した？」に答えられなくなる。
+AUTO_APPROVER = "auto"
+
 STATUSES = ("pending", "approved", "rejected", "posted")
 
 
@@ -75,6 +79,67 @@ def enqueue(account_dir: str | Path, payload: dict, account_id: str = "") -> str
     _save(account_dir, data)
     logger.info("Queued for approval: id=%s", item_id)
     return item_id
+
+
+def auto_approve_decision(
+    persona: dict, payload: dict, account_dir: str | Path,
+) -> tuple[bool, str]:
+    """この1本を、人を通さずに承認してよいか。
+
+    Returns: (承認してよいか, 理由)
+
+    ── なぜ型で分けるのか ──────────────────────────
+    危なさが一様ではない。
+
+    A（共感）B（問い）C（恋亀）は、リンクも商品の話も持たない。
+    外した投稿が出ても、滑るだけで済む。
+
+    D（告知）はURLを貼り、サービスの話をする。
+    いまは恋亀と話す機能が公開されていない（src/lib/koi/gate.ts）ので、
+    書き方を1つ間違えると、できないことを売ったことになる。
+    D は全体の1割（週に2本ほど）なので、ここだけ人が見ても手間は小さい。
+
+    ── 止める口を残す ──────────────────────────────
+    accounts/<id>/KILL_SWITCH があれば、何があっても自動承認しない。
+    設定をいじらなくても、ファイルを1つ置けば止まる。
+    """
+    cfg = (
+        persona.get("posting", {})
+        .get("posting_types", {})
+        .get("automated", {})
+        .get("auto_approve", {})
+    )
+    if not cfg.get("enabled", False):
+        return False, "自動承認が無効"
+
+    if (Path(account_dir) / "KILL_SWITCH").exists():
+        return False, "KILL_SWITCH があるので自動承認しない"
+
+    category = payload.get("post_category")
+    allowed = cfg.get("categories", [])
+    if category not in allowed:
+        return False, f"型 {category} は人の承認が要る"
+
+    # 承認済み（まだ投稿されていない）が溜まりすぎていたら止める。
+    # 投稿側が詰まっているのに生成だけ進むと、古い投稿が後から出る。
+    cap = cfg.get("max_pending_approved", 10)
+    waiting = len(list_items(account_dir, status="approved"))
+    if waiting >= cap:
+        return False, f"投稿待ちが{waiting}本たまっている（上限{cap}）"
+
+    # 1日に自動で通す本数の上限。生成が暴走したときの最後の歯止め。
+    daily = cfg.get("max_per_day", 0)
+    if daily:
+        today = datetime.now().date().isoformat()
+        done = [
+            it for it in list_items(account_dir)
+            if (it.get("decided_by") == AUTO_APPROVER)
+            and str(it.get("decided_at") or "").startswith(today)
+        ]
+        if len(done) >= daily:
+            return False, f"今日はすでに{len(done)}本自動承認した（上限{daily}）"
+
+    return True, f"型 {category} は自動承認の対象"
 
 
 def list_items(account_dir: str | Path, status: str | None = None) -> list:

@@ -152,3 +152,131 @@ def test_run_approved_cycle_succeeds_when_queue_is_empty(monkeypatch, tmp_path):
     })
     monkeypatch.setattr(main.poster, "set_current_account", lambda *a, **k: None)
     assert main.run_approved_cycle("acc", dry_run=False, mock=False) is True
+
+
+# ──────────────────────────────────────────────────────────────
+# 自動承認（型ごとに、人を通すかどうかを分ける）
+# ──────────────────────────────────────────────────────────────
+
+
+def _persona(**over):
+    cfg = {
+        "enabled": True,
+        "categories": ["empathy", "split", "product"],
+        "max_per_day": 5,
+        "max_pending_approved": 10,
+    }
+    cfg.update(over)
+    return {
+        "posting": {
+            "format": "single",
+            "posting_types": {"automated": {"auto_approve": cfg}},
+        }
+    }
+
+
+class TestAutoApprove:
+    def test_low_risk_categories_pass(self, tmp_path):
+        for cat in ("empathy", "split", "product"):
+            ok, why = approvals.auto_approve_decision(
+                _persona(), {"post_category": cat}, tmp_path,
+            )
+            assert ok, (cat, why)
+
+    def test_announcements_need_a_human(self, tmp_path):
+        """告知はURLを貼って商品の話をする。ここは人が見る。"""
+        ok, why = approvals.auto_approve_decision(
+            _persona(), {"post_category": "announce"}, tmp_path,
+        )
+        assert not ok
+        assert "announce" in why
+
+    def test_disabled_by_default(self, tmp_path):
+        ok, _ = approvals.auto_approve_decision(
+            {"posting": {}}, {"post_category": "empathy"}, tmp_path,
+        )
+        assert not ok, "設定が無いアカウントで勝手に通ってはいけない"
+
+    def test_kill_switch_stops_everything(self, tmp_path):
+        (tmp_path / "KILL_SWITCH").write_text("stop")
+        ok, why = approvals.auto_approve_decision(
+            _persona(), {"post_category": "empathy"}, tmp_path,
+        )
+        assert not ok
+        assert "KILL_SWITCH" in why
+
+    def test_stops_when_posting_is_backed_up(self, tmp_path):
+        """投稿側が詰まっているのに生成だけ進むと、古い投稿が後から出る。"""
+        for _ in range(10):
+            i = approvals.enqueue(tmp_path, {"text": "x"})
+            approvals.approve(tmp_path, i, by="auto")
+        ok, why = approvals.auto_approve_decision(
+            _persona(), {"post_category": "empathy"}, tmp_path,
+        )
+        assert not ok
+        assert "たまって" in why
+
+    def test_daily_cap(self, tmp_path):
+        for _ in range(2):
+            i = approvals.enqueue(tmp_path, {"text": "x"})
+            approvals.approve(tmp_path, i, by=approvals.AUTO_APPROVER)
+            approvals.set_status(tmp_path, i, "posted")
+        ok, why = approvals.auto_approve_decision(
+            _persona(max_per_day=2), {"post_category": "empathy"}, tmp_path,
+        )
+        assert not ok
+        assert "上限2" in why
+
+    def test_human_approvals_do_not_count_toward_the_cap(self, tmp_path):
+        """人が押したぶんで、自動の枠を食わない。"""
+        for _ in range(3):
+            i = approvals.enqueue(tmp_path, {"text": "x"})
+            approvals.approve(tmp_path, i, by="shota")
+            approvals.set_status(tmp_path, i, "posted")
+        ok, _ = approvals.auto_approve_decision(
+            _persona(max_per_day=2), {"post_category": "empathy"}, tmp_path,
+        )
+        assert ok
+
+
+class TestPerRunLimit:
+    """post-approved 1回で出す本数。
+
+    生成は夜にまとめて3本積む。ここで全部出すと朝8時に3本まとめて出て、
+    枠を3つに分けた意味が無くなる。
+    """
+
+    def test_posts_one_at_a_time_by_default(self, tmp_path, monkeypatch):
+        from core import main
+
+        for n in range(3):
+            i = approvals.enqueue(tmp_path, {"text": f"post {n}", "is_thread": False})
+            approvals.approve(tmp_path, i, by="auto")
+
+        published = []
+        monkeypatch.setattr(
+            main, "_publish_payload",
+            lambda account_id, persona, payload, dry_run=False: (
+                published.append(payload["text"]) or {"id": "x", "text": payload["text"]}
+            ),
+        )
+        monkeypatch.setattr(
+            main, "load_account_config",
+            lambda account_id: {
+                "account_dir": tmp_path,
+                "persona": {
+                    "posting": {
+                        "posting_types": {"automated": {"max_per_run": 1}},
+                    }
+                },
+            },
+        )
+        monkeypatch.setattr(main.poster, "set_current_account", lambda *a, **k: None)
+        monkeypatch.setattr(main.writer, "save_to_history", lambda *a, **k: None)
+        monkeypatch.setattr(main, "record_post_with_cta", lambda *a, **k: None)
+
+        assert main.run_approved_cycle("acct") is True
+        assert published == ["post 0"], "1回で1本だけ、古いほうから"
+
+        assert main.run_approved_cycle("acct") is True
+        assert published == ["post 0", "post 1"]
