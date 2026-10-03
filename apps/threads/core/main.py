@@ -256,6 +256,22 @@ def run_post_cycle(
         logger.warning("Preflight check failed. Aborting cycle.")
         return False
 
+    # 最初の10本が残っているあいだは、生成そのものをしない。
+    #
+    # 自動承認は止まっているので、生成しても承認されない下書きが
+    # 1日3本ずつ溜まるだけになる。10本を出し終える3〜4日で12本。
+    # どれも誰も見ていないのに、承認待ちの山だけができる。
+    #
+    # ワークフローを手で止めなくて済むよう、ここで止める。
+    waiting = approvals.opening_remaining(account_dir)
+    if waiting and not dry_run:
+        logger.info(
+            "=== 最初の10本が残っています（あと%d本）。生成しません。"
+            "承認して出し切ると、ひとりでに再開します（OPENING.md）===",
+            waiting,
+        )
+        return True
+
     # 2. Researcher: バズ投稿収集
     #
     # 他人のバズ投稿をペルソナ口調に書き換える経路のための材料。

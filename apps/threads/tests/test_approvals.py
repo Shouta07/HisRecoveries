@@ -321,3 +321,44 @@ class TestOpeningSequence:
             _persona(), {"post_category": "empathy"}, tmp_path,
         )
         assert ok
+
+
+class TestOpeningBlocksGeneration:
+    """最初の10本が残っているあいだは、生成そのものをしない。
+
+    自動承認は止まっているので、生成しても承認されない下書きが
+    1日3本ずつ溜まるだけになる。
+    """
+
+    def test_counts_what_is_left(self, tmp_path):
+        a = approvals.enqueue(tmp_path, {"text": "1", "opening": True})
+        approvals.enqueue(tmp_path, {"text": "2", "opening": True})
+        approvals.enqueue(tmp_path, {"text": "ふつうの投稿"})
+        assert approvals.opening_remaining(tmp_path) == 2
+
+        approvals.set_status(tmp_path, a, "posted")
+        assert approvals.opening_remaining(tmp_path) == 1
+
+    def test_post_cycle_stops_while_they_wait(self, tmp_path, monkeypatch):
+        from core import main
+
+        approvals.enqueue(tmp_path, {"text": "1本目", "opening": True})
+        generated = []
+        monkeypatch.setattr(
+            main, "load_account_config",
+            lambda account_id: {
+                "account_dir": tmp_path,
+                "persona": {"posting": {"format": "single"}},
+                "rss_feeds": [],
+                "history_path": tmp_path / "history.json",
+            },
+        )
+        monkeypatch.setattr(main.poster, "set_current_account", lambda *a, **k: None)
+        monkeypatch.setattr(main.supervisor, "preflight_check", lambda *a, **k: True)
+        monkeypatch.setattr(
+            main.writer, "generate_post",
+            lambda *a, **k: generated.append(1) or {"text": "x"},
+        )
+
+        assert main.run_post_cycle("acct") is True
+        assert generated == [], "生成してしまっている"
