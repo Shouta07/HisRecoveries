@@ -148,8 +148,14 @@ export const DEFINITION =
    多いのは考えることではなく、覚えておくこと。
    考えるのはAIがやるので、こちらが引き受けるのは記憶のほう。
    困りごとを、そのまま名指しする。 */
-export const HERO_A = "マッチした後、誰に";
-export const HERO_B = "何したか分からなくなる。";
+export const HERO_A = "マッチした後、";
+export const HERO_B = "誰に何したか分からなくなる。";
+
+/* 見出しの折り返し。
+   携帯（390px）だと HERO_B が2行になり、
+   「る。」だけが3行目に落ちる。語の途中で切らせない。 */
+export const HERO_B1 = "誰に何したか";
+export const HERO_B2 = "分からなくなる。";
 /* 2行目はここに置かない。
    恋亀と話せるかどうかで変わるので、lib/koi/gate.ts が持つ。
    ここに書くと、鍵が入っていないのに「話すだけ」と出てしまう。 */

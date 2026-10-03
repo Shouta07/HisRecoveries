@@ -12,9 +12,6 @@ import Timeline from "@/components/koi/Timeline";
 import BriefCard from "@/components/koi/BriefCard";
 import { DEMO_BRIEF } from "@/lib/koi/briefDemo";
 import { DEMO_TIMELINE } from "@/lib/koi/timelineDemo";
-import { DEMO_TALK } from "@/lib/koi/demo";
-import SituationCardView from "@/components/koi/SituationCard";
-import { DEMO_CARD } from "@/lib/koi/cardDemo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import { INCLUDED } from "@/lib/pass/entitle";
@@ -23,7 +20,7 @@ import { FREE_PEOPLE, FREE_RECORDS } from "@/lib/pass/free";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
-import { HERO_A, HERO_B, NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
+import { HERO_A, HERO_B1, HERO_B2, NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
@@ -593,10 +590,15 @@ export default async function HomePage() {
             同じ文を2回出すと、どちらも弱くなる。 */}
         <Wrap className="pb-2 pt-3 sm:pb-4 sm:pt-6">
           <h1 className="text-mega font-black leading-[1.15] text-slate">
+            {/* 携帯（390px）だと HERO_B が2行になり、
+                「る。」だけが3行目に落ちていた。語の途中で切らせない。
+                下線は、最後の行だけに引く（2行にまたがると汚い）。 */}
             {HERO_A}
             <br />
+            {HERO_B1}
+            <br />
             <span className="relative inline-block">
-              {HERO_B}
+              {HERO_B2}
               <span
                 aria-hidden
                 className="absolute -bottom-0.5 left-0 -z-10 h-[0.42em] w-full rounded-[2px] bg-brand/25"
@@ -620,15 +622,25 @@ export default async function HomePage() {
               色も steel（グレー）から slate（本文の色）にした。
               グレーは「読み飛ばしていい文字」の色で、
               いちばん読んでほしい1文に使う色ではない。 */}
+          {/* ══════════════════════════════════════════
+              1画面目に、長い定義を置かない
+              ══════════════════════════════════════════
+              ここは DEFINITION（3文・100字）を太字で置いていた。
+              携帯で6行。読み終える前にスクロールされる。
+
+              1画面目に要るのは、何が残るかの1文だけ。
+              定義そのものは、検索結果とOGPが持っている
+              （site.description が DEFINITION を読んでいる）。 */}
           <p className="mt-2.5 max-w-[26em] text-[16px] font-bold leading-[1.65] text-slate sm:max-w-[38em] sm:text-[18px]">
-            {DEFINITION}
+            話した内容を貼るだけで、誰とどこまで進んでいて、次に何するかが残る。
           </p>
           {/* 渡すものと、返るもの。
               吹き出しが渡すものを見せているので、返るものを言葉にする。
               細く小さくして、上の1文と大きさを争わせない。 */}
-          <p className="mt-1.5 max-w-[26em] text-[13px] leading-[1.7] text-steel sm:max-w-[38em] sm:text-[14px]">
-            {HERO_HOW}
-          </p>
+          {/* HERO_HOW（話した内容から、相手ごとの記録が残ります）を外した。
+              すぐ上の1文と、ほぼ同じことを言っている。
+              2行続けて同じことを読ませると、2行目は読まれない。
+              検索結果の説明文（metadata）では、いまも使っている。 */}
 
           {/* ── 押す場所を1画面目に戻した ──────────────────
               一度外して、また戻している。前と事情が変わった。
@@ -1054,77 +1066,21 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 1.1 話す → 1枚になる ══ */}
+      {/* ══ 1.1 「話したら、1枚になって返る。」を畳んだ ══ */}
       {/* ══════════════════════════════════════════════
-          1節に、1つのことだけ
+          同じ変換を、2回見せていた
           ══════════════════════════════════════════════
-          ここは 1,193px あって、トップでいちばん高かった。
-          中に3つ入っていたため。
-            恋亀との会話（7往復→5往復に減らしたもの）
-            できたもの（EPのカード）
-            2回目は、続きから（もう1本の会話）
+          実測 1,146px。トップで2番目に高い節だった。
 
-          3つめは、すぐ上の節（ここまでが残る）が同じことを
-          言っている。「次に話すときは『Aさんなんやけど』から」。
-          2つめも、出している形が違うだけで同じ。
+          やっていたのは「話す → 1枚になる」の1本。
+          すぐ上の「AIで話す。貼る。終わり。」が、同じことを
+          もっと短く見せている（相談の1行 → カード）。
 
-          残すのは1つ。「話す」と「返ってくる1枚」の関係。
-          会話は3往復だけ見せて、矢印で1枚につなぐ。
+          違いは、カードの中身が詳しいかどうかだけ。
+          詳しいほうを見たい人は、1画面目の一覧で足りる。
 
-          出している1枚は、実際に返ってくるものと同じ部品
-          （SituationCard）。ここだけ別に作ると、
-          見せている1枚と返ってくる1枚がずれる。
-
-          会話は ChatGPT でしてもらうので、吹き出しの上に
-          そう書いておく。ここで話すと思われると、着いてから戸惑う。 */}
-      <Block tint>
-        <h2 className="text-huge font-black leading-[1.35] text-slate">
-          話したら、
-          <br className="sm:hidden" />
-          1枚になって返る。
-        </h2>
-        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          入力する欄はありません。まとめなくても大丈夫です。
-        </p>
-
-        <div className="mt-7 max-w-[26em]">
-          <p className="text-[11.5px] font-bold text-steel">ChatGPT で話す</p>
-          <ul className="mt-2 flex flex-col gap-2.5 rounded-card bg-paper px-3 py-4 sm:px-4">
-            {DEMO_TALK.slice(0, 4).map((t, i) => (
-              <li
-                key={t.say}
-                className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}
-              >
-                <div className="flex max-w-[86%] items-end gap-2">
-                  {t.who === "koi" && (
-                    <KoiFace size={30} delay={i * 0.4} className="-mb-1" />
-                  )}
-                  <p
-                    className={`rounded-card px-3.5 py-2.5 text-[13px] leading-[1.75] ${
-                      t.who === "me"
-                        ? "rounded-br-[4px] bg-brand font-bold text-paper"
-                        : "rounded-bl-[4px] bg-mist text-slate"
-                    }`}
-                  >
-                    {t.say}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          <p aria-hidden className="py-3 text-center text-[18px] font-black text-brand">
-            ↓
-          </p>
-
-          <p className="mb-2 text-[11.5px] font-bold text-steel">タシカメに残る</p>
-          <SituationCardView card={DEMO_CARD} />
-        </div>
-
-        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
-          ※ 画面の見本です。特定の利用者のやりとりではありません。
-        </p>
-      </Block>
+          部品（SituationCard）と見本（cardDemo.ts）は消していない。
+          /koi の整理が終わったときに、同じものを出している。 */}
 
       {/* ══ 1.2 紹介動画を外した ══ */}
       {/* ══════════════════════════════════════════════
