@@ -2690,6 +2690,39 @@ create table if not exists subscriptions (
 create index if not exists subscriptions_customer_idx
   on subscriptions (stripe_customer_id);
 
+-- 月額で、今月なにをどれだけ使ったか。
+--
+-- ── 「残り」という列を持たない ────────────────────
+-- ask_passes / pass_uses と同じ作り。使った記録を数えて残りを出す。
+-- 残りを列で持つと、二重に引いたり、引き忘れたりが起きる。
+--
+-- ── 期間は subscriptions が持つ ──────────────────
+-- 今月ぶんかどうかは current_period_start / end で決める。
+-- 「暦の月」で数えると、15日に入った人が15日で2か月ぶん使える。
+create table if not exists subscription_uses (
+  id uuid primary key default gen_random_uuid(),
+  -- 会員登録が無いので、これが持ち主の証（subscriptions.user_token）
+  user_token text not null,
+  -- human（実在する女性に確カメる・回数）/ voice（恋亀と話す・分）
+  kind text not null check (kind in ('human', 'voice')),
+  -- human なら回数、voice なら分
+  amount int not null default 1 check (amount > 0),
+  -- どれで使ったか。返金や問い合わせのときに辿る
+  consultation_id uuid references consultations(id) on delete set null,
+  call_session_id uuid references call_sessions(id) on delete set null,
+  used_at timestamptz default now()
+);
+
+create index if not exists subscription_uses_token_idx
+  on subscription_uses (user_token, used_at desc);
+
+-- 同じ相談で二重に引かない。
+-- 画面が二度押されても、ここで止まる。
+create unique index if not exists subscription_uses_consult_uniq
+  on subscription_uses (consultation_id) where consultation_id is not null;
+create unique index if not exists subscription_uses_call_uniq
+  on subscription_uses (call_session_id) where call_session_id is not null;
+
 -- Webhook は同じものが何度も届く。1回だけ効かせる。
 create table if not exists stripe_events (
   id text primary key,

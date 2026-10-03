@@ -416,3 +416,53 @@ class TestExampleFilesStayValid:
         for text in self._texts("post_forms.json", "forms"):
             ok, errors = validate_post(text, persona)
             assert ok, (errors, text[:60])
+
+
+class TestVerdict:
+    """相手の気持ちを「当てる」言い方。
+
+    語そのものは禁じない。読む人に聞くのと、恋亀が言い切るのは別のこと。
+    利用規約 第12条の約束は「サービスが相手の気持ちを判定しない」ことで、
+    問いを出すのは判定ではない。
+    """
+
+    def test_asking_is_allowed(self):
+        for text in [
+            "初デートのあと「今日はありがとう！楽しかった！」だけ来た。\n\n"
+            "これ脈ありだと思う？\n恋亀は判断つかんかった🐢",
+            "これ脈あり？\nそれとも社交辞令？\n\n恋亀にはどっちにも見える🐢",
+        ]:
+            ok, errors = validate_post(text, _koi_persona())
+            assert ok, (errors, text[:40])
+
+    def test_quoting_an_answer_is_allowed(self):
+        """実際に返ってきた反応の引用。これがこの商品の中身。"""
+        ok, errors = validate_post(
+            "3人中2人が「脈ありそう」って言うてた。\n"
+            "1人は「まだ分からん」。\n\n"
+            "割れたのは「！」の数やった🐢",
+            _koi_persona(),
+        )
+        assert ok, errors
+
+    def test_asserting_is_blocked(self):
+        for text in [
+            "これは脈あり。間違いない。次は向こうから誘ってくるで🐢",
+            "それ脈なしやで。もう次いったほうがええと思う🐢",
+            "この返信パターンは脈あり率80%らしいから大丈夫やで🐢",
+        ]:
+            ok, errors = validate_post(text, _koi_persona())
+            assert not ok, text
+            assert any("当てています" in e for e in errors), errors
+
+    def test_the_whole_sentence_decides(self):
+        """問いかどうかは文の終わりで決まる。
+
+        最初は「脈あり」の次の1文字だけを見ていて、
+        「これ脈ありだと思う？」が止まった（次の文字が「だ」だったため）。
+        """
+        ok, errors = validate_post(
+            "送ったあと既読だけついて3日。\n\nこれ脈ありだと思う？🐢",
+            _koi_persona(),
+        )
+        assert ok, errors

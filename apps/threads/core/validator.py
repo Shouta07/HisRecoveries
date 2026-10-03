@@ -62,6 +62,56 @@ def _without_quotes(text: str) -> str:
     return re.sub(r"「[^」]*」", "", text)
 
 
+# 相手の気持ちを「当てる」言い方。
+#
+# 「脈あり」という語そのものは禁じない。
+# 読む人に **聞く** のと、恋亀が **言い切る** のは別のこと。
+#
+#   これ脈ありだと思う？          聞いている。通す
+#   3人中2人が「脈ありそう」      事実の引用。通す
+#   これは脈あり                  恋亀が当てている。止める
+#
+# 利用規約 第12条の約束は「サービスが相手の気持ちを判定しない」こと。
+# 問いを出すのは判定ではない。むしろ Yes/No で終わらないぶん、
+# 「どう受け取る？」と同じだけ返信が来る。
+#
+# 代弁（_SPEAK_FOR_PATTERNS）と同じ線の引き方にしてある。
+_VERDICT_PATTERNS = [
+    # これは脈あり / 完全に脈なし / それ脈ありだよ
+    r"(これ|それ|あれ|完全に|絶対|たぶん|もう)\s*(は|が|って)?\s*(脈あり|脈なし|本命)",
+    # 脈ありです / 脈なしやで（恋亀の断定）
+    r"(脈あり|脈なし|本命)(です|だよ|やで|やな|確定|で間違いない)",
+    # 脈あり率 80%
+    r"(脈あり|脈なし)率",
+]
+
+# その文が、問いで閉じているか。
+#
+# 最初は「脈あり」の次の1文字だけを見ていたが、
+#   これ脈ありだと思う？
+# が止まった（次の文字は「だ」）。問いかどうかは文の終わりで決まるので、
+# マッチを含む一文を取り出して、その終わり方を見る。
+_QUESTION_END = re.compile(
+    r"(？|\?|か|かな|かね|やろか|と思う|どう思う|どう見る|ちゃう|ない\?|教えて|おしえて)"
+    r"[\s🐢]*$"
+)
+_SENTENCE_BREAK = "。！？?\n"
+
+
+def _sentence_around(text: str, at: int) -> str:
+    """その位置を含む一文を返す（句点・改行で切る）。"""
+    start = 0
+    for ch in _SENTENCE_BREAK:
+        i = text.rfind(ch, 0, at)
+        if i + 1 > start:
+            start = i + 1
+    end = len(text)
+    for ch in _SENTENCE_BREAK:
+        i = text.find(ch, at)
+        if i != -1 and i + 1 < end:
+            end = i + 1
+    return text[start:end].strip()
+
 # 自己紹介・名乗り。
 #
 # 誰もフォローしていないアカウントの自己紹介は、誰も読まれない
@@ -401,6 +451,23 @@ def validate_post(
                     f"自己紹介になっています: 「{m.group(0).strip()}」"
                     "（名乗らない。いきなり本題から入る）"
                 )
+                break
+
+    # 相手の気持ちを当てる言い方（validation.forbid_verdict が true のときだけ）。
+    # 聞くのは通す。恋亀が言い切るのだけ落とす。
+    if vcfg.get("forbid_verdict", False):
+        own_words = _without_quotes(text)
+        for pat in _VERDICT_PATTERNS:
+            for m in re.finditer(pat, own_words):
+                # 問いで閉じている文は通す。聞いているだけなので。
+                if _QUESTION_END.search(_sentence_around(own_words, m.start())):
+                    continue
+                errors.append(
+                    f"相手の気持ちを当てています: 「{m.group(0).strip()}」"
+                    "（聞くのは可。言い切るのは不可）"
+                )
+                break
+            if errors and "気持ちを当て" in errors[-1]:
                 break
 
     # 異性全体の代弁（validation.forbid_speaking_for が true のときだけ）。
