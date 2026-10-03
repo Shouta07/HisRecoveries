@@ -125,6 +125,14 @@ const APP_LABEL: Record<string, string> = {
   bumble: "Bumble",
 };
 
+/* 画面に名前を出すアプリ。
+   APP_LABEL から引くので、受け取れる名前と出す名前がずれない。
+   ずれると「Tinder も対応」と書いてあるのに、
+   貼ったときに名前が揃わない、が起きる。
+
+   ロゴは置かない。他社の商標なので、使うには許諾が要る。 */
+export const KNOWN_APPS = ["with", "Pairs", "タップル", "Tinder"] as const;
+
 export function appLabel(x: string | null | undefined): string | null {
   if (!x) return null;
   const k = x.trim().toLowerCase();
@@ -360,6 +368,14 @@ export function boardLine(cards: BoardCard[]): string {
       if (/早く|急いで|放置|遅れ/.test(x.what)) {
         throw new Error(`今日やること「${x.what}」が、急かす言い方です`);
       }
+    }
+  }
+
+  /* 画面に出すアプリ名が、受け取れる名前と揃っていること。
+     揃っていないと「対応」と書いてあるのに名前が揃わない。 */
+  for (const a of KNOWN_APPS) {
+    if (appLabel(a) !== a) {
+      throw new Error(`「${a}」を画面に出していますが、受け取ると「${appLabel(a)}」になります`);
     }
   }
 

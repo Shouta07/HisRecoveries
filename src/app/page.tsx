@@ -17,6 +17,7 @@ import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import { INCLUDED } from "@/lib/pass/entitle";
 import PriceChooser from "@/components/pass/PriceChooser";
+import { FREE_PEOPLE, FREE_RECORDS } from "@/lib/pass/free";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
@@ -31,6 +32,7 @@ import TashikameGuide from "@/components/brand/TashikameGuide";
 import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
+import { KNOWN_APPS } from "@/lib/koi/board";
 import type { ImageKey } from "@/lib/images";
 import HeroDashboard from "@/components/koi/HeroDashboard";
 import MomentsArt from "@/components/brand/MomentsArt";
@@ -725,6 +727,31 @@ export default async function HomePage() {
                 {notYetNote()}
               </p>
             )}
+
+            {/* ══════════════════════════════════════════
+                どのアプリでも、を先に出す
+                ══════════════════════════════════════════
+                「複数アプリ」と文字で書いても、自分のアプリが
+                入っているかは分からない。名前を並べる。
+
+                アプリ名は lib/koi/board.ts の APP_LABEL から引く。
+                そこが受け取れる名前と、ここに出す名前がずれると、
+                「Tinder も対応」と書いてあるのに
+                貼ったら名前が揃わない、が起きる。
+
+                ロゴは置かない。他社の商標なので、使うには許諾が要る。
+                名前だけにする。 */}
+            <div className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+              {KNOWN_APPS.map((a) => (
+                <span
+                  key={a}
+                  className="rounded-pill border border-line bg-paper px-2.5 py-1 text-[11.5px] font-bold text-steel"
+                >
+                  {a}
+                </span>
+              ))}
+              <span className="text-[11.5px] text-steel">そのほかのアプリにも対応</span>
+            </div>
           </div>
         </Wrap>
 
@@ -840,7 +867,10 @@ export default async function HomePage() {
             ["withのAさん", "昨日、何話したっけ"],
             ["PairsのBさん", "電話、いつするんやっけ"],
             ["タップルのCさん", "これ、返信したっけ"],
-            ["Dさん", "初デート、いつやった"],
+            /* 4つ目は、相手のことではない。
+               AIに毎回いちから説明し直す負担のほう。
+               ここが入っていないと、ただの物忘れの話に見える。 */
+            ["AIに相談", "また最初から説明するの？"],
           ].map(([who, say]) => (
             <li
               key={who}
@@ -878,6 +908,83 @@ export default async function HomePage() {
           一覧は1画面目が持つ。
           ここで言いたかった1行（頭の中だけで覚えなくていい）は、
           その上の「判断疲れ」の節の締めに移した。 */}
+
+      {/* ══ 1.065 AIで話す。貼る。終わり。 ══ */}
+      {/* ══════════════════════════════════════════════
+          やることを、3つに見せる
+          ══════════════════════════════════════════════
+          「ChatGPTで話して、貼ってください」と文で書くと、
+          手間が多そうに読める。実際は3つしかない。
+
+          数を先に見せる。1 話す／2 貼る／3 整理される。
+          3つ目は本人がやることではないので、そこも伝わる。
+
+          そのあとに、入れたものと出てくるものを並べる。
+          変換そのものが商品なので、言葉で説明するより早い。 */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          AIで話す。貼る。
+          <br className="sm:hidden" />
+          終わり。
+        </h2>
+
+        <ol className="mt-7 flex flex-col gap-2.5">
+          {[
+            ["1", "AIで話す", "ChatGPT Voice がおすすめ。Claude や Gemini でも大丈夫です。"],
+            ["2", "タシカメに貼る", "相談の中身を、そのまま貼るだけ。まとめなくて大丈夫です。"],
+            ["3", "整理される", "誰と／どこまで／次に何するか、が残ります。ここは何もしません。"],
+          ].map(([n, head, sub]) => (
+            <li key={n} className="flex items-start gap-3 rounded-soft bg-mist px-4 py-3.5">
+              <span
+                aria-hidden
+                className="mt-[1px] flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand text-[12px] font-black text-paper"
+              >
+                {n}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[14.5px] font-black leading-[1.5] text-slate">{head}</span>
+                <span className="mt-0.5 block text-[12.5px] leading-[1.75] text-steel">{sub}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+
+        {/* 入れたものと、出てくるもの。変換そのものが商品 */}
+        <div className="mt-8 max-w-[26em]">
+          <p className="text-[11.5px] font-bold text-steel">たとえば、こんな相談から</p>
+          <p className="mt-2 rounded-card rounded-bl-[4px] bg-brand px-4 py-3 text-[13.5px] font-bold leading-[1.75] text-paper">
+            昨日Aさんと2回目会って、水族館行きたいって言われた
+          </p>
+
+          <p aria-hidden className="py-3 text-center text-[18px] font-black text-brand">
+            ↓
+          </p>
+
+          <p className="mb-2 text-[11.5px] font-bold text-steel">こう整理されます</p>
+          <div className="rounded-card border border-line bg-paper p-4 shadow-card">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="text-[15px] font-black text-slate">Aさん</span>
+              <span className="rounded-pill bg-mist px-2 py-0.5 text-[10.5px] font-bold text-steel">
+                with
+              </span>
+              <span className="text-[12px] font-bold text-steel">2回目デート後</span>
+            </div>
+            <div className="mt-2.5 flex items-start gap-2 border-t border-line pt-2.5">
+              <span aria-hidden className="mt-[1px] shrink-0 text-[10px] font-black text-brand">
+                NEXT
+              </span>
+              <span className="min-w-0 flex-1 text-[13.5px] font-bold leading-[1.6] text-slate">
+                水族館の日程を決める
+              </span>
+            </div>
+            <p className="mt-2 text-[11.5px] text-steel">いまは、自分から動く番</p>
+          </div>
+        </div>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者のやりとりではありません。
+        </p>
+      </Block>
 
       {/* ══ 1.07 ここまでが残る ══ */}
       {/* ══════════════════════════════════════════════
@@ -1469,54 +1576,43 @@ export default async function HomePage() {
           トップから売り込むのをやめただけ。 */}
 
       {/* ══ 8. 最後 ══ */}
+      {/* ══════════════════════════════════════════════
+          最後は、覚えなくていいことで締める
+          ══════════════════════════════════════════════
+          ここは「Aならこう感じた、Bならこう感じた」で締めていた。
+          異性に読んでもらうサービスだったころの締め。
+
+          いま売っているのは、覚えておくこと。
+          締めも、そちらにする。
+
+          押す場所は1画面目と同じ「無料で整理する」。
+          最後だけ別の行き先にすると、どちらが本筋か分からなくなる。 */}
       <section className="bg-paper">
-        {/* 上下 pb-20 pt-6 と内側 p-8 だった。
-            最後の節は押すだけの場所なので、ここまで広く取らない。 */}
         <Wrap className="pb-12 pt-4 sm:pb-20">
           <div className="relative overflow-hidden rounded-card bg-brand p-7 text-paper shadow-card sm:p-12">
-            {/* いちばん最後に、もう一度出す。背景は抜いてあるので青の上に乗る */}
-            {/* 右下に置く。右上だと見出しに被る（「話す前に。」が読めなくなる）。
-                下は文字が終わっていて、いちばん空いている。 */}
             <Tashikame
               size={104}
               className="pointer-events-none absolute -bottom-3 -right-3 sm:!h-[168px] sm:!w-[168px]"
             />
-            {/* 最後は、考え方で締める。
-                「選び間違いで終わらせないために」は、怖さで押していた。
-                残したいのは、自分で選べたという感触のほう。 */}
-            {/* 2行とも15字前後あるので、text-huge だと390pxで語の途中で折れる。
-                1段下げたうえ、狭い画面では1行目をもう一度折る */}
-            {/* ── 見出しを繰り返さない ────────────────────
-                ここは「恋愛は、小さな選択の積み重ね。だから、選ぶ前に
-                確かめる。」だった。恋愛プロセスの節と同じ見出し。
-                同じ文を2回読ませると、2回目は読まれない。
-
-                最後に要るのは考え方ではなく、押す場所と、
-                押したあと何が起きるかの1行。 */}
             <p className="relative text-big font-black leading-[1.5]">
-              {THESIS_B}
+              もう、ひとりで
+              <br />
+              全部覚えなくていい。
             </p>
             <p className="relative mt-4 max-w-[26em] text-[15px] leading-[1.8]">
-              Aならこう感じた、Bならこう感じた。そこまでがこちらの仕事です。
-              どちらにするかは、あなたが決めてください。
+              AIで考える。タシカメが覚える。迷ったら、人に確カメる。
             </p>
             <div className="mt-7">
-              <PlanCta
-                plan={DEFAULT_PLAN}
-                from="final"
-                className="min-h-[60px] w-full rounded-pill bg-paper px-9 text-[16.5px] !text-brand-deep sm:w-auto"
+              <Link
+                href="/koi"
+                className="flex min-h-[60px] w-full items-center justify-center rounded-pill bg-paper px-9 text-[16.5px] font-bold text-brand-deep sm:w-auto"
               >
-                {advisorWord()}に確カメる <span aria-hidden className="ml-2">→</span>
-              </PlanCta>
+                無料で整理する <span aria-hidden className="ml-2">→</span>
+              </Link>
+              <p className="mt-2.5 text-[12.5px] leading-[1.7] text-paper/90">
+                {FREE_PEOPLE}人・{FREE_RECORDS}記録まで無料。登録はありません。
+              </p>
             </div>
-            <ul className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] font-bold text-paper">
-              <li>匿名</li>
-              <li>都度払い</li>
-              <li>実在する{advisorWord()}が回答</li>
-              <li>
-                {entry.name} <Yen yen={entry.yen} /> から
-              </li>
-            </ul>
           </div>
         </Wrap>
       </section>
