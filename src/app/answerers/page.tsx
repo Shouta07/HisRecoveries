@@ -9,6 +9,7 @@ import Says from "@/components/brand/Says";
 import WhoReads from "@/components/brand/WhoReads";
 import { EMPTY } from "@/lib/tashikame";
 import { plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
+import { advisorWord } from "@/lib/who";
 
 // 見出しの人数は、実際に売っている人数から引く。
 // 手で「5人」と書くと、商品を組み直した日に古い数字が残る。
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   // プロダクトの名乗りはタシカメなので、ここで完結させる。
   title: { absolute: "誰が読むのか — タシカメ" },
   description:
-    "読むのは、審査を通った女性だけです。年齢と立場を確認し、通った方にだけお願いしています。名前や連絡先は出しません。",
+    `読むのは、審査を通った${advisorWord()}だけです。年齢と立場を確認し、通った方にだけお願いしています。名前や連絡先は出しません。`,
   alternates: { canonical: `${site.url}/answerers` },
 };
 
@@ -97,7 +98,7 @@ export default async function AnswerersPage() {
             href="/ask"
             className="inline-flex min-h-[42px] shrink-0 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-[13.5px] font-bold text-paper shadow-card transition-shadow hover:shadow-card-hover"
           >
-            女性{entryAnswers}人に確かめる
+            {advisorWord()}{entryAnswers}人に確かめる
           </Link>
         </div>
       </header>
@@ -105,7 +106,7 @@ export default async function AnswerersPage() {
       <div className="mx-auto w-full max-w-[1180px] px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
         <Eyebrow>誰が読むのか</Eyebrow>
         <h1 className="mt-6 max-w-[14em] text-huge font-black text-slate">
-          どの女性でも
+          どの{advisorWord()}でも
           <br />
           読めるわけではない。
         </h1>

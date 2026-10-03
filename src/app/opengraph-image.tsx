@@ -5,6 +5,7 @@ import { ogFont } from "@/lib/ogFont";
 import { site } from "@/lib/site";
 import { NAME, ONE_LINER } from "@/lib/voice";
 import { ENTRY_PLAN, DEFAULT_PLAN, plan as getPlan } from "@/lib/ask/plans";
+import { advisorWord } from "@/lib/who";
 
 // X・Threads・LINE に貼ったときのカード。
 //
@@ -66,7 +67,7 @@ export default async function Image() {
             失敗する前に相談する。
           </div>
           <div style={{ fontSize: 30, color: "#5B6676", display: "flex", lineHeight: 1.6 }}>
-            送る前のLINE、アプリの自己紹介文。実在の女性{main.answers}人が読んで、正直に返します。
+            送る前のLINE、アプリの自己紹介文。実在する{advisorWord()}{main.answers}人が読んで、正直に返します。
           </div>
         </div>
 

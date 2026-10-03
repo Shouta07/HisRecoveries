@@ -8,6 +8,7 @@ import { NAME } from "@/lib/voice";
 import { MEDIA } from "@/lib/media";
 import Mark from "@/components/brand/Mark";
 import MenuButton from "@/components/brand/MenuButton";
+import { advisorWord } from "@/lib/who";
 
 // 下層ページのヘッダー。トップの GlassNav と同じ見え方に揃える
 // （ロゴ＋肩書き1行、記事が先頭）。メディアが主、サービスが従。
@@ -109,7 +110,7 @@ export default function Header() {
             className="inline-flex shrink-0 whitespace-nowrap rounded-full bg-[#2563EB] px-3.5 py-2 text-[12.5px] font-bold text-white transition-opacity hover:opacity-90 sm:px-4 sm:text-[13.5px]"
           >
             <span className="sm:hidden">確かめる</span>
-            <span className="hidden sm:inline">女性に確かめる</span>
+            <span className="hidden sm:inline">{advisorWord()}に確かめる</span>
           </Link>
           <SearchButton />
           {/* フッターを外したので、ほかの面への行き先はここに畳んである。

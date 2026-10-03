@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
+import { advisorWord } from "@/lib/who";
 
 // 誰が読むのか。
 //
@@ -35,7 +36,7 @@ export default function WhoReads() {
   return (
     <div className="rounded-card border border-line bg-paper px-5 py-5">
       <p className="text-[13.5px] font-black leading-[1.6] text-slate">
-        裏で、こんな女性が読んでいます。
+        裏で、こんな{advisorWord()}が読んでいます。
       </p>
       <p className="mt-1.5 text-[12.5px] leading-[1.8] text-steel">
         年齢と立場を確認し、通った方にだけお願いしています。

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
+import { advisorWord } from "@/lib/who";
 
 // 編集方針。
 //
@@ -93,7 +94,7 @@ export default function AboutPage() {
       </p>
 
       <p className="mt-12 border-t border-shironezu pt-7 text-[14px] leading-[1.95] text-keshizumi">
-        送る前のメッセージや自己紹介文を、実在の女性に読んでもらうほうは
+        送る前のメッセージや自己紹介文を、実在する{advisorWord()}に読んでもらうほうは
         <Link
           href="/ask"
           className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"

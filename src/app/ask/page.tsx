@@ -4,6 +4,7 @@ import Link from "next/link";
 import AskFlow from "@/components/ask/AskFlow";
 import { readyToSell } from "@/lib/ready";
 import { imagesEnabled } from "@/lib/ask/images";
+import { advisorWord } from "@/lib/who";
 
 
 // 設定は実行時に読む。
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   // プロダクトの名乗りはタシカメなので、ここで完結させる。
   title: { absolute: "今の選択を確かめる — タシカメ" },
   description:
-    "自己紹介文、LINE、誘い方、デートの前後。選ぶ前に、実在の女性が実際にどう受け取ったかを匿名で確かめられます。",
+    `自己紹介文、LINE、誘い方、デートの前後。選ぶ前に、実在する${advisorWord()}が実際にどう受け取ったかを匿名で確かめられます。`,
   robots: { index: false, follow: true },
 };
 

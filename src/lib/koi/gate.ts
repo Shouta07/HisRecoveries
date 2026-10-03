@@ -1,3 +1,4 @@
+import { advisorWord } from "../who";
 /* ══════════════════════════════════════════════════
    恋亀と、いま話せるか
    ══════════════════════════════════════════════════
@@ -38,7 +39,7 @@ export function whyKoiDisabled(): string | null {
 /** 恋亀と話せるとき */
 const SUB_KOI = "恋亀に話すだけ。";
 /** まだ話せないとき。いまできること */
-const SUB_NOW = "迷ったら、実在する女性に確カメる。";
+const SUB_NOW = `迷ったら、実在する${advisorWord()}に確カメる。`;
 
 export const heroSub = koiEnabled ? SUB_KOI : SUB_NOW;
 

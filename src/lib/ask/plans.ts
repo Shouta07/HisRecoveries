@@ -26,6 +26,7 @@
 import { isPanelSize, isOpenCategory, type AttrId, type PanelAge } from "./model";
 import { assertWeight, assertWhoReads, assertPlain, assertNotCheap, assertNotScary, NAME, HERO_HOW } from "../voice";
 import { site } from "../site";
+import { advisorWord } from "../who";
 
 /**
  * 売るもの。
@@ -71,7 +72,7 @@ export const FAMILIES: { id: Family; label: string; lead: string }[] = [
     // 正式な商品名。タシカメの動詞なので、ここだけ片仮名で書く
     // （本文は「確かめる」のまま。読ませる文で片仮名が続くと読みにくい）。
     label: "文章・画像で確カメる",
-    lead: "出すものが決まっているとき。送る前に、女性の目で見てもらう。",
+    lead: `出すものが決まっているとき。送る前に、${advisorWord()}の目で見てもらう。`,
   },
   {
     id: "call",
@@ -374,7 +375,7 @@ export const PLANS: Plan[] = [
     id: "first",
     family: "text",
     name: "はじめの1件",
-    tagline: "まず1件、女性に読んでもらう。",
+    tagline: `まず1件、${advisorWord()}に読んでもらう。`,
     value: "どんな反応が返ってくるかを、一度だけ確かめる。",
     yen: 980,
     depth: 1,
@@ -382,9 +383,9 @@ export const PLANS: Plan[] = [
     rounds: 1,
     targeting: false,
     includes: [
-      "女性から見た第一印象",
+      `${advisorWord()}から見た第一印象`,
       "気になったところ",
-      "女性側がそう感じる理由",
+      `${advisorWord()}側がそう感じる理由`,
       "そのまま使える修正文",
     ],
     fits: ["はじめて使うとき"],
@@ -505,7 +506,7 @@ export const PLANS: Plan[] = [
     family: "call",
     name: "15分 × 5回パス",
     tagline: "声で5回確カメる。",
-    value: "迷いが大きいときは、女性と話して次の一手を決める。",
+    value: `迷いが大きいときは、${advisorWord()}と話して次の一手を決める。`,
     yen: 12000,
     uses: 5,
     depth: 2,

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { NAME } from "@/lib/voice";
 import { site } from "@/lib/site";
-import { notYetNote } from "@/lib/who";
+import { advisorWord, notYetNote } from "@/lib/who";
 import { readyToSell } from "@/lib/ready";
 import { Eyebrow } from "@/components/brand/kit";
 import TrialForm from "@/components/trial/TrialForm";
@@ -39,7 +39,8 @@ export const metadata: Metadata = {
   // プロダクトの名乗りはタシカメなので、ここで完結させる。
   title: { absolute: "体験してみる — タシカメ" },
   description:
-    "送ろうとしている文や、迷っている場面を1つ。実在する女性が読んで、どう受け取ったかをそのまま返します。体験にお金はかかりません。",
+    `送ろうとしている文や、迷っている場面を1つ。実在する${advisorWord()}が読んで、` +
+    `どう受け取ったかをそのまま返します。${TRIAL_MONEY}`,
   alternates: { canonical: `${site.url}/trial` },
 };
 

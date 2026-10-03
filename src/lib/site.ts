@@ -1,4 +1,5 @@
 import { DEFINITION } from "./voice";
+import { advisorWord } from "./who";
 export const site = {
   /* ── 旧ブランドをやめた ──────────────────────────
      ここは長いあいだ "His Recoveries" だった。
@@ -28,7 +29,7 @@ export const site = {
   // 「5人に聞く」は無料のアンケートと同じ形をしている。
   // 同じ形のものに値段を付けると、高く見えるのは当たり前だった。
   // 主語を変える。自分が聞くのではなく、相手側に読まれる。
-  tagline: "送る前に、女性の目を通す",
+  tagline: `送る前に、${advisorWord()}の目を通す`,
   promise: "勘で、出さない。",
   // ── 「3人」をやめた ────────────────────────────
   // ここは検索結果に出る説明文で、サイト全体の schema.org と

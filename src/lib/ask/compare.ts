@@ -29,6 +29,7 @@
 // 書くのは「提供している範囲が違う」までにする。
 
 import { assertNotCheap } from "../voice";
+import { advisorWord } from "../who";
 
 export type Alternative = {
   id: string;
@@ -107,7 +108,7 @@ export const COMPARE: CompareRow[] = [
     id: "answer",
     label: "返ってくるもの",
     cells: {
-      us: "実在の女性が読んで、実際にどう受け取ったか",
+      us: `実在する${advisorWord()}が読んで、実際にどう受け取ったか`,
       app: "相手からの返信、または無反応",
       coach: "担当者の助言と、進め方の計画",
       agency: "担当者の助言",

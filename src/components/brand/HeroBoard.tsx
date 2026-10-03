@@ -1,6 +1,7 @@
 import Slot from "@/components/brand/Slot";
 import { PLANS, FAMILIES } from "@/lib/ask/plans";
 import { IMAGES } from "@/lib/images";
+import { advisorWord } from "@/lib/who";
 
 // ファーストビューの絵。
 //
@@ -257,7 +258,7 @@ export default function HeroBoard({ openIds = [] }: { openIds?: string[] }) {
               <Sparks className="absolute -left-1 -top-1 h-4 w-4 sm:h-5 sm:w-5" />
             </div>
             <p className="min-w-0 text-[14.5px] font-black leading-[1.45] text-slate sm:text-[18px]">
-              実在する女性に相談して、
+              実在する{advisorWord()}に相談して、
               <br />
               本音の反応を<span className="text-brand">確カメる</span>。
             </p>
