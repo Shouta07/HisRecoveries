@@ -7,11 +7,12 @@ import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO } from "@/lib/ask/demo";
 import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
-import TalkDemo from "@/components/koi/TalkDemo";
 import KoiFace from "@/components/koi/KoiFace";
 import Timeline from "@/components/koi/Timeline";
 import { DEMO_TIMELINE } from "@/lib/koi/timelineDemo";
-import { DEMO_AGAIN } from "@/lib/koi/demo";
+import { DEMO_TALK } from "@/lib/koi/demo";
+import SituationCardView from "@/components/koi/SituationCard";
+import { DEMO_CARD } from "@/lib/koi/cardDemo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import { PASS_YEN, EARLY_YEN, EARLY_SEATS, earlyOpen, INCLUDED } from "@/lib/pass/entitle";
@@ -899,80 +900,72 @@ export default async function HomePage() {
         </p>
       </Block>
 
-      {/* ══ 1.1 恋亀との会話 ══ */}
+      {/* ══ 1.1 話す → 1枚になる ══ */}
       {/* ══════════════════════════════════════════════
-          説明より先に、会話を見せる
+          1節に、1つのことだけ
           ══════════════════════════════════════════════
-          「話すだけで整理されます」と書いても伝わらない。
-          やりとりを見せて、そのあとに、できたものを出す。
+          ここは 1,193px あって、トップでいちばん高かった。
+          中に3つ入っていたため。
+            恋亀との会話（7往復→5往復に減らしたもの）
+            できたもの（EPのカード）
+            2回目は、続きから（もう1本の会話）
 
-          順番は 会話 → できたもの（EP）→ 人に聞く提案。
-          最後が「人に聞ける」なのは、そこが値段の理由だから。
+          3つめは、すぐ上の節（ここまでが残る）が同じことを
+          言っている。「次に話すときは『Aさんなんやけど』から」。
+          2つめも、出している形が違うだけで同じ。
 
-          言葉と判定は lib/koi/demo.ts。
-          恋亀の返事が2文を超えたり、質問が2つ入ったり、
-          会話に出ていないことがEPに入ると、公開前に止まる。 */}
+          残すのは1つ。「話す」と「返ってくる1枚」の関係。
+          会話は3往復だけ見せて、矢印で1枚につなぐ。
+
+          出している1枚は、実際に返ってくるものと同じ部品
+          （SituationCard）。ここだけ別に作ると、
+          見せている1枚と返ってくる1枚がずれる。
+
+          会話は ChatGPT でしてもらうので、吹き出しの上に
+          そう書いておく。ここで話すと思われると、着いてから戸惑う。 */}
       <Block tint>
         <h2 className="text-huge font-black leading-[1.35] text-slate">
           話したら、
           <br className="sm:hidden" />
-          ここまで残る。
+          1枚になって返る。
         </h2>
         <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          入力する欄はありません。話した内容から、ひとりでに残ります。
+          入力する欄はありません。まとめなくても大丈夫です。
         </p>
 
-        <div className="mt-6 max-w-[34em]">
-          <TalkDemo />
+        <div className="mt-7 max-w-[26em]">
+          <p className="text-[11.5px] font-bold text-steel">ChatGPT で話す</p>
+          <ul className="mt-2 flex flex-col gap-2.5 rounded-card bg-paper px-3 py-4 sm:px-4">
+            {DEMO_TALK.slice(0, 4).map((t, i) => (
+              <li
+                key={t.say}
+                className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}
+              >
+                <div className="flex max-w-[86%] items-end gap-2">
+                  {t.who === "koi" && (
+                    <KoiFace size={30} delay={i * 0.4} className="-mb-1" />
+                  )}
+                  <p
+                    className={`rounded-card px-3.5 py-2.5 text-[13px] leading-[1.75] ${
+                      t.who === "me"
+                        ? "rounded-br-[4px] bg-brand font-bold text-paper"
+                        : "rounded-bl-[4px] bg-mist text-slate"
+                    }`}
+                  >
+                    {t.say}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <p aria-hidden className="py-3 text-center text-[18px] font-black text-brand">
+            ↓
+          </p>
+
+          <p className="mb-2 text-[11.5px] font-bold text-steel">タシカメに残る</p>
+          <SituationCardView card={DEMO_CARD} />
         </div>
-
-        {/* ══════════════════════════════════════════════
-            「2回目は、続きから」を、ここに畳んだ
-            ══════════════════════════════════════════════
-            前は、すぐ下に独立した節として置いていた。
-
-            同じ恋亀との会話を、見出し・説明・吹き出しの組で
-            2回続けて出していたので、読む人は
-            「さっきと同じものをもう一度見せられている」と感じる。
-            実測で、デモ3つがページの45%を占めていた。
-
-            中身（2回目は覚えている）は残す。ここが月額の理由で、
-            消すと月額が「AIの利用料」にしか見えなくなる。
-            ただし、節ではなく、1回目の続きとして小さく出す。
-
-            判定は lib/koi/demo.ts にそのまま置いてある。
-              2回目が恋亀から始まると落ちる（聞き直している）
-              利用者の最初の一言が長いと落ちる（説明させている）
-              1回目の「次にやること」とつながっていないと落ちる */}
-        <p className="mt-7 max-w-[30em] text-[14px] font-black leading-[1.7] text-slate">
-          2回目は、続きから。
-          <span className="ml-1.5 font-bold text-steel">
-            前回どこまで話したかを、もう一度説明しなくて済みます。
-          </span>
-        </p>
-
-        <ul className="mt-3 flex max-w-[34em] flex-col gap-2.5 rounded-card bg-paper px-3 py-4 sm:px-4">
-          {DEMO_AGAIN.map((t) => (
-            <li key={t.say} className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}>
-              <div className="flex max-w-[86%] items-end gap-2">
-                {t.who === "koi" && <KoiFace size={34} delay={0.4} className="-mb-1" />}
-                <p
-                  className={`rounded-card px-3.5 py-2.5 text-[13.5px] leading-[1.75] ${
-                    t.who === "me"
-                      ? "rounded-br-[4px] bg-brand font-bold text-paper"
-                      : "rounded-bl-[4px] bg-paper text-slate shadow-card"
-                  }`}
-                >
-                  {t.say}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <p className="mt-3 max-w-[30em] text-[12.5px] leading-[1.8] text-steel">
-          相手が何人いても、それぞれ別に覚えています。
-        </p>
 
         <p className="mt-5 text-[12px] leading-[1.8] text-steel">
           ※ 画面の見本です。特定の利用者のやりとりではありません。
