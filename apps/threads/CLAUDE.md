@@ -116,6 +116,20 @@ python -m core.main approve <acct> <id>      # 承認（却下は reject）
 python -m core.main post-approved <acct>     # 承認済みだけ投稿（cron想定）
 ```
 
+**自動承認（2026-10-03〜）**: ゲートは残したまま、型で分ける。
+設定は `persona.posting.posting_types.automated.auto_approve`、判定は
+`core/approvals.py` の `auto_approve_decision`。
+
+- A（共感）B（問い）C（恋亀）は自動で承認される。リンクも商品の話も持たない
+- D（告知）だけ人が承認する。URLを貼ってサービスの話をするので、書き方を
+  1つ間違えると、できないことを売ることになる（GROWTH.md §0.1）
+- 歯止め: `max_per_day`（1日5本）/ `max_pending_approved`（投稿待ち10本）/
+  `accounts/<id>/KILL_SWITCH`（置けば全部止まる）
+- 自動で通したものは `decided_by: "auto"` が残る。人が押したぶんは枠を食わない
+
+`post-approved` は1回につき `max_per_run`（既定1本）だけ出す。全部出すと、
+夜にまとめて積んだ3本が、朝の枠で立て続けに出てしまう。
+
 ## 3. 主要ファイル地図
 
 ```
