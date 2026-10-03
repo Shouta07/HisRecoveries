@@ -7,6 +7,7 @@ import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO } from "@/lib/ask/demo";
 import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
+import TalkDemo from "@/components/koi/TalkDemo";
 import { VERDICTS } from "@/lib/ask/model";
 import { NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
@@ -662,6 +663,38 @@ export default async function HomePage() {
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
 
       </section>
+
+      {/* ══ 1.1 恋亀との会話 ══ */}
+      {/* ══════════════════════════════════════════════
+          説明より先に、会話を見せる
+          ══════════════════════════════════════════════
+          「話すだけで整理されます」と書いても伝わらない。
+          やりとりを見せて、そのあとに、できたものを出す。
+
+          順番は 会話 → できたもの（EP）→ 人に聞く提案。
+          最後が「人に聞ける」なのは、そこが値段の理由だから。
+
+          言葉と判定は lib/koi/demo.ts。
+          恋亀の返事が2文を超えたり、質問が2つ入ったり、
+          会話に出ていないことがEPに入ると、公開前に止まる。 */}
+      <Block tint>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          話したら、
+          <br className="sm:hidden" />
+          ここまで残る。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          入力する欄はありません。話した内容から、ひとりでに残ります。
+        </p>
+
+        <div className="mt-6 max-w-[34em]">
+          <TalkDemo />
+        </div>
+
+        <p className="mt-4 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者のやりとりではありません。
+        </p>
+      </Block>
 
       {/* ══ 1.2 紹介動画 ══ */}
       {/* ══════════════════════════════════════════════
