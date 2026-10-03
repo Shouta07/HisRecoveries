@@ -119,6 +119,7 @@ python -m core.main post-approved <acct>     # 承認済みだけ投稿（cron�
 ## 3. 主要ファイル地図
 
 ```
+GROWTH.md               有料100人までの設計。「何を回すか・何を測るか・何をやめるか」
 accounts/mens-body-lab/
   persona.json          語り手＋トーン＋posting.format=thread＋validation緩和設定
   hypotheses.json       5場面 + link_config(base_urls: apply=/ask) + discovery_questions
@@ -126,7 +127,7 @@ accounts/mens-body-lab/
   seo_clusters.json     場面別の検索クラスタ＋GEO質問（生成の素・編集可。生成は読まない）
   content_sources.json  引用リソース（1件=14投稿の在庫）。管理ページで編集可
   CONTENT_SOURCES.md    引用リソースの型の仕様
-  READ_DESIGN.md        読まれる投稿設計（フックの型×5場面）
+  READ_DESIGN.md        読まれる投稿設計（フックの型×5場面）。「どう書くか」
   patterns.md           連投パターン（場面別の構造）
   approvals.json        承認キュー
   history.json          投稿履歴＋metrics(閲覧数など)。分析の元データ
