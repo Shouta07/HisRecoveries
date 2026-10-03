@@ -125,10 +125,25 @@ export async function POST(req: NextRequest) {
     referrer_host: a.referrer_host ?? null,
   });
 
-  // 同じ人が二度押しても、申し込み済みとして扱う（一意制約に当たるだけ）
+  /* 同じ人が二度押しても、申し込み済みとして扱う（一意制約に当たるだけ）。
+
+     ── 入らなかったときも、取りこぼさない ────────────
+     ここは前、500 を返していた。画面はただのエラーになり、
+     書いたものはそこで消えていた。
+
+     いちばん起きやすいのは、schema.sql をまだ本番に当てていない場合。
+     trial_bookings が無いので、鍵は入っているのに毎回落ちる。
+     広告を回し始めた日に、全員ぶんが消える形になっていた。
+
+     理由が何であれ、保存できなかったことは同じ。
+     保存先が無いときと同じ 503 を返して、メールの道に移す。
+     何が起きたかは、こちら側のログに残す。 */
   if (!ins.ok && !/duplicate|unique/i.test(ins.error ?? "")) {
     console.error("[trial] insert failed", ins.error);
-    return NextResponse.json({ error: "お預かりできませんでした" }, { status: 500 });
+    return NextResponse.json(
+      { error: "いまこの画面からお預かりできません。", fallback: true },
+      { status: 503 },
+    );
   }
 
   /* 返す言葉。何が起きたかをそのまま書く。

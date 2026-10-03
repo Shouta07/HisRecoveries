@@ -47,6 +47,20 @@ Stripe の審査が終わるまでのあいだ、相談する人の入口にな�
 
 ---
 
+## 公開の前に、1つだけやること
+
+`supabase/schema.sql` の **`trial_bookings`** と **`trial_queue`** を、本番に当てる。
+
+Supabase の SQL エディタに、この2つの定義を貼って実行する
+（`create table if not exists` と `create or replace view` なので、
+何度実行しても既にあるものは壊れない）。
+
+当てていないと、鍵が入っていても保存は毎回落ちる。
+そのときも画面はメールの道に切り替わるので**申し込みは消えない**が、
+データベースには1件も残らない。
+
+---
+
 ## 届いたものを見る
 
 Supabase の SQL エディタで:
