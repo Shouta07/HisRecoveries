@@ -9,10 +9,12 @@ import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
 import TalkDemo from "@/components/koi/TalkDemo";
 import KoiFace from "@/components/koi/KoiFace";
+import PersonBoard from "@/components/koi/PersonBoard";
+import { DEMO_BOARD } from "@/lib/koi/boardDemo";
 import { DEMO_AGAIN } from "@/lib/koi/demo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
-import { PASS_YEN, INCLUDED } from "@/lib/pass/entitle";
+import { PASS_YEN, EARLY_YEN, EARLY_SEATS, INCLUDED } from "@/lib/pass/entitle";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
@@ -546,13 +548,16 @@ export default async function HomePage() {
                 入っていないので、ページ全体と同じ言い方にそろえた。
                 行き先も、いちばん軽い入口（ENTRY_PLAN）に変えた。
                 ずっと出ているボタンが、いちばん高い商品を指していた。 */}
-            <PlanCta
-              plan={ENTRY_PLAN}
-              from="header"
-              className="min-h-[42px] whitespace-nowrap rounded-pill bg-brand px-3.5 text-[13px] !text-paper shadow-card sm:px-5 sm:text-[13.5px]"
+            {/* ずっと出ているボタン。
+                前は「異性に確カメる」で /ask へ行っていた。
+                第一CTAを「整理する」に変えたので、ここも合わせる。
+                上下で行き先が違うと、どちらが本筋か分からなくなる。 */}
+            <Link
+              href="/trial"
+              className="inline-flex min-h-[42px] shrink-0 items-center justify-center whitespace-nowrap rounded-pill bg-brand px-3.5 text-[13px] font-bold text-paper shadow-card sm:px-5 sm:text-[13.5px]"
             >
-              {advisorWord()}に確カメる
-            </PlanCta>
+              無料で整理する
+            </Link>
             {/* フッターを外したので、ほかの面への行き先はここに畳んである。
                 特商法の表記とプライバシーも、ここから辿れる */}
             <MenuButton />
@@ -621,16 +626,29 @@ export default async function HomePage() {
 
               文言はページ全部でこれに統一した。
               押すたびに言い方が変わると、同じ場所に行くことが分からない。 */}
+          {/* ══════════════════════════════════════════
+              第一CTAを「整理する」にした
+              ══════════════════════════════════════════
+              前はここが「異性に確カメる」で、/ask へ行っていた。
+
+              それだと、来た人が最初に受け取るのが
+              「異性に相談できるサービス」になる。
+              単発の相談に見えて、月額の理由がぼける。
+
+              最初に体験してほしいのは、相談そのものより
+              「話した結果、自分の状況が1枚になって出てくる」ほう。
+              そこへ行く道（/trial）を第一にする。
+
+              「異性に確カメる」は下げて、節のほうで出す。 */}
           <div className="mt-5 max-w-[22em]">
-            <PlanCta
-              plan={ENTRY_PLAN}
-              from="hero"
-              className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[16px] !text-paper shadow-card"
+            <Link
+              href="/trial"
+              className="flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-8 text-[16px] font-bold text-paper shadow-card"
             >
-              {advisorWord()}に確カメる <span aria-hidden className="ml-2">&rarr;</span>
-            </PlanCta>
+              まず1回、無料で整理する <span aria-hidden className="ml-2">&rarr;</span>
+            </Link>
             <p className="mt-2 text-[12px] leading-[1.7] text-steel">
-              LINE・写真・プロフィール・誘い方に対応。
+              登録なし。気になっている人のことを1人ぶん話すだけです。
             </p>
             {/* ══════════════════════════════════════════
                 はじめての人の道を、ここで分ける
@@ -646,15 +664,18 @@ export default async function HomePage() {
                 出し分けない。出し分けると、鍵を入れても
                 作り直すまで画面が変わらない。
                 /trial 側が、自分の開き閉じを実行時に見る。 */}
+            {/* 第二CTA。AIで決めきれないときの道。
+                第一CTAと役が違うので、見た目でも差を付ける。 */}
             <p className="mt-3 text-[13px] leading-[1.8] text-steel">
-              はじめてなら{" "}
-              <Link
-                href="/trial"
-                className="font-bold text-brand underline decoration-line underline-offset-4"
+              AIで決めきれないときは{" "}
+              <PlanCta
+                plan={ENTRY_PLAN}
+                from="hero_second"
+                className="!inline font-bold text-brand underline decoration-line underline-offset-4"
               >
-                1件だけ試す
-              </Link>{" "}
-              こともできます。
+                {advisorWord()}に確カメる
+              </PlanCta>
+              {" "}こともできます。
             </p>
 
             {/* ══════════════════════════════════════════
@@ -720,6 +741,86 @@ export default async function HomePage() {
                 1画面目で先に言うと、見る前に帰る。隠してはいない。 */}
 
       </section>
+
+      {/* ══ 1.05 判断疲れ ══ */}
+      {/* ══════════════════════════════════════════════
+          疲れているのは、恋愛にではない
+          ══════════════════════════════════════════════
+          「恋愛相談がしたい」人は、そんなに多くない。
+          多いのは、マッチはしていて、そのあとで止まっている人。
+
+            withのAさん、昨日何話したっけ
+            PairsのBさん、電話いつするんやっけ
+            タップルのCさん、これ返信したっけ
+
+          アプリが複数、相手が複数。そのたびに小さな判断が増える。
+          疲れているのは、判断に。
+
+          ここを名指しできると、ChatGPT とも友達とも
+          競合しなくて済む。困りごとの形が違うので。 */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          マッチするほど、
+          <br className="sm:hidden" />
+          考えることが増えていく。
+        </h2>
+
+        <ul className="mt-7 flex max-w-[34em] flex-col gap-2.5">
+          {[
+            ["withのAさん", "昨日、何話したっけ"],
+            ["PairsのBさん", "電話、いつするんやっけ"],
+            ["タップルのCさん", "これ、返信したっけ"],
+            ["Dさん", "初デート、いつやった"],
+          ].map(([who, say]) => (
+            <li
+              key={who}
+              className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 rounded-soft bg-mist px-4 py-3.5"
+            >
+              <span className="text-[12.5px] font-black text-steel">{who}</span>
+              <span className="text-[14.5px] font-bold leading-[1.7] text-slate">{say}</span>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-6 max-w-[30em] text-[15px] font-bold leading-[1.85] text-slate">
+          恋愛に疲れているというより、
+          <br className="sm:hidden" />
+          判断に疲れているのかもしれません。
+        </p>
+      </Block>
+
+      {/* ══ 1.06 全部ひとつに ══ */}
+      {/* ══════════════════════════════════════════════
+          ここが、このサービスの芯
+          ══════════════════════════════════════════════
+          上で名指しした困りごとに、そのまま answer を返す節。
+
+          文字で説明しない。画面を出す。
+          「誰と」「どのアプリで」「どこまで」「次に何を」が
+          1枚で分かることが、ここで伝わればよい。
+
+          出している部品（PersonBoard）は、実際の画面
+          （/koi/<鍵>）と同じもの。見本の中身だけが違う。
+          別に作ると、売っている画面と見せている画面がずれる。 */}
+      <Block tint>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          複数アプリ、複数人。
+          <br />
+          全部ここに。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          誰に何を送ったか。誰と電話したか。次に誰と会うか。
+          頭の中だけで覚えておかなくて大丈夫です。
+        </p>
+
+        <div className="mt-7 max-w-[30em]">
+          <PersonBoard cards={DEMO_BOARD} />
+        </div>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者の記録ではありません。
+        </p>
+      </Block>
 
       {/* ══ 1.1 恋亀との会話 ══ */}
       {/* ══════════════════════════════════════════════
@@ -1072,9 +1173,24 @@ export default async function HomePage() {
             {PAYWALL_HEAD}
           </p>
 
+          {/* ══════════════════════════════════════════
+              はじめの100人の値段を、隠さない
+              ══════════════════════════════════════════
+              「今だけ」「先着」とは書かない（voice.ts の CHEAP）。
+              書くのは「はじめの100人」という事実だけ。
+              100人に達したら、EARLY_SEATS を見て消す。
+
+              安いほうを大きく、通常をその下に小さく。
+              取り消し線は引かない。値引きに見せない。 */}
           <p className="mt-3 text-[30px] font-black leading-none text-slate sm:text-[34px]">
-            <Yen yen={PASS_YEN} />
+            <Yen yen={EARLY_YEN} />
             <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
+          </p>
+          <p className="mt-1.5 text-[12.5px] leading-[1.75] text-steel">
+            はじめの{EARLY_SEATS}人の値段です。
+            まだ出来上がっていないものに、最初から付き合ってもらうぶん。
+            <br />
+            そのあとは <Yen yen={PASS_YEN} />／月 になります。
           </p>
 
           <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">

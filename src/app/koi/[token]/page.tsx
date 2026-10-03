@@ -10,6 +10,9 @@ import { VOICE_MINUTES_PER_MONTH } from "@/lib/pass/entitle";
 import VoiceRoom from "@/components/koi/VoiceRoom";
 import PasteTalk from "@/components/koi/PasteTalk";
 import { handoffPrompt } from "@/lib/koi/handoff";
+import PersonBoard from "@/components/koi/PersonBoard";
+import { peopleOf } from "@/lib/koi/store";
+import { toBoard } from "@/lib/koi/board";
 
 // 恋亀と話す画面。
 //
@@ -39,11 +42,23 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function KoiPage({ params }: { params: { token: string } }) {
+export default async function KoiPage({ params }: { params: { token: string } }) {
   /* 鍵の形が違うものは、ここで終わり。
      形だけ見る。行があるかは見ない（まだ1件も話していない人は、
      行が無いのが正しい状態なので）。 */
   if (!isTalkerToken(params.token)) notFound();
+
+  /* ══════════════════════════════════════════════
+     開いて最初に出すのは、会話ではなく一覧
+     ══════════════════════════════════════════════
+     困っているのは「恋愛相談がしたい」ではない。
+       withのAさん、昨日何話したっけ
+       PairsのBさん、電話いつするんやっけ
+     アプリが複数、相手が複数。そのたびに判断が増える。
+
+     だから、ここを開いたときにまず分かるのは
+     「誰と、どこまで、次に何を」であること。 */
+  const board = toBoard(await peopleOf(params.token));
 
   return (
     <div data-brand className="min-h-screen bg-paper text-slate">
@@ -58,14 +73,20 @@ export default function KoiPage({ params }: { params: { token: string } }) {
 
       <div className="mx-auto w-full max-w-[720px] px-5 pb-24 pt-10 sm:px-10">
         <h1 className="text-huge font-black leading-[1.35]">
-          思っていることを、
-          <br className="sm:hidden" />
-          そのまま。
+          いま、どうなってる。
         </h1>
         <p className="mt-5 text-[15.5px] leading-[1.95] text-steel">
-          うまくまとまっていなくて大丈夫です。話した内容から、相手ごとの記録が残ります。
-          次に来たときは、続きから話せます。
+          誰と、どこまで進んでいて、次に何をするか。
+          話すたびに、ここが更新されます。
         </p>
+
+        {/* いま誰がいて、次に何をすることになっているか。
+            1人もいなければ出さない（空の枠を見せない）。 */}
+        {board.length > 0 && (
+          <div className="mt-8">
+            <PersonBoard cards={board} />
+          </div>
+        )}
 
         {/* ══════════════════════════════════════════
             会話は ChatGPT、記録はこちら
