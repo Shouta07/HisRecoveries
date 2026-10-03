@@ -6,6 +6,7 @@ import { ENTRY_PLAN, plan as getPlan } from "@/lib/ask/plans";
 import { publishedAt } from "@/lib/articleDates";
 import { site } from "@/lib/site";
 import { LAST_UPDATED } from "@/lib/updates";
+import { advisorWord } from "@/lib/who";
 
 // /llms.txt — 生成AI・AI検索向けの、このサイトの案内図。
 //
@@ -78,7 +79,7 @@ ${areaBlocks}
 
 ## サービス
 
-- タシカメ（送る前に、実在の女性に読んでもらう）: ${site.url}/ask
+- タシカメ（送る前に、実在する${advisorWord()}に読んでもらう）: ${site.url}/ask
   LINEの文面、デートの誘い方、アプリの自己紹介文を、確認の済んだ女性が読む。
   返るのは「このままでOK / 少し気になる / 変えた方がいい」と、そう思った理由。
   1回ごとの支払いで、${entryPlan.yen.toLocaleString()}円から。匿名。効果や結果は保証しない。

@@ -13,7 +13,7 @@ import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import { PASS_YEN, INCLUDED } from "@/lib/pass/entitle";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
-import { notYetNote } from "@/lib/who";
+import { advisorWord, notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
 import { HERO_A, HERO_B, NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
@@ -146,7 +146,7 @@ const NAV = [
 
 const STEPS = [
   { n: "01", t: "送る前のものを出す", d: "送る前のLINE、または自己紹介文。そのまま貼るだけです。" },
-  { n: "02", t: "条件に合う女性に届く", d: "年代や立場を選べます。確認が済んだ女性にだけ届きます。" },
+  { n: "02", t: `条件に合う${advisorWord()}に届く`, d: `年代や立場を選べます。確認が済んだ方にだけ届きます。` },
   { n: "03", t: "一人ずつ返ってくる", d: "このままでOK / 少し気になる / 変えた方がいい と、そう思った理由。" },
   { n: "04", t: "直すか、そのまま出すか決める", d: "大丈夫そうならそのまま。気になる点が出たら、直してから。" },
 ];
@@ -165,12 +165,12 @@ const STEPS = [
 const FAQ: { q: string; a: string; extra?: "ai" | "flow" | "safety" }[] = [
   {
     q: "AIに聞くのと何が違いますか？",
-    a: "AIが出すのは「たぶんこう思われます」です。ここで返ってくるのは、実在の女性が実際にどう思ったかです。予想ではなく、本当の反応です。まずAIに聞いていい。文面を作るのも、考えをまとめるのもAIのほうが得意です。それでも最後に残る「実際どう思われるか」だけ、人に聞きます。",
+    a: `AIが出すのは「たぶんこう思われます」です。ここで返ってくるのは、実在する${advisorWord()}が実際にどう思ったかです。予想ではなく、本当の反応です。まずAIに聞いていい。文面を作るのも、考えをまとめるのもAIのほうが得意です。それでも最後に残る「実際どう思われるか」だけ、人に聞きます。`,
     extra: "ai",
   },
   {
     q: "どうやって進みますか？",
-    a: "4つです。送る前のものを出す、条件に合う女性に届く、一人ずつ返ってくる、直すかそのまま出すかを決める。出すのは送る前のLINEか自己紹介文で、そのまま貼るだけです。",
+    a: `4つです。送る前のものを出す、条件に合う${advisorWord()}に届く、一人ずつ返ってくる、直すかそのまま出すかを決める。出すのは送る前のLINEか自己紹介文で、そのまま貼るだけです。`,
     extra: "flow",
   },
   {
@@ -187,8 +187,8 @@ const FAQ: { q: string; a: string; extra?: "ai" | "flow" | "safety" }[] = [
     a: "それで大丈夫です。ここは正解を決める場所ではありません。感じ方が人によって違うこと自体が、知りたかったことです。3人とも気になると言えば、一度立ち止まれます。分かれたなら「人による」と分かります。どちらに寄せるかは、あなたが決めてください。",
   },
   {
-    q: "3人がそう言えば、女性みんながそう思うということですか？",
-    a: "違います。読んだ人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。女性みんなの答えではありません。",
+    q: `3人がそう言えば、${advisorWord()}みんながそう思うということですか？`,
+    a: `違います。読んだ人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。${advisorWord()}みんなの答えではありません。`,
   },
   {
     q: "悪いところを無理に探されませんか？",
@@ -196,12 +196,12 @@ const FAQ: { q: string; a: string; extra?: "ai" | "flow" | "safety" }[] = [
   },
   {
     q: "相手に知られませんか？",
-    a: "知られません。匿名で使えて、相手の名前・写真・連絡先は保存していません。答えてくれた女性とあなたが直接つながる仕組みも、作っていません。",
+    a: `知られません。匿名で使えて、相手の名前・写真・連絡先は保存していません。答えてくれた${advisorWord()}とあなたが直接つながる仕組みも、作っていません。`,
     extra: "safety",
   },
   {
     q: "どのくらいで返ってきますか？",
-    a: "条件に合う女性が何人いるかによります。実際のところが分かるまでは、何分とは言いません。いま何人に届いて何人が見ているかは、画面で分かるようにしてあります。",
+    a: `条件に合う${advisorWord()}が何人いるかによります。実際のところが分かるまでは、何分とは言いません。いま何人に届いて何人が見ているかは、画面で分かるようにしてあります。`,
   },
   {
     q: "集まらなかったら？",
@@ -237,7 +237,7 @@ function AiSplit() {
         </p>
 
         <div className="rounded-card border border-brand bg-paper p-4">
-          <p className="text-[11.5px] font-black text-brand">実在の女性{DEMO.says.length}人</p>
+          <p className="text-[11.5px] font-black text-brand">実在する{advisorWord()}{DEMO.says.length}人</p>
           <ul className="mt-2.5 flex flex-col gap-2.5">
             {DEMO.says.map((x) => (
               <li key={x.age} className="flex items-start gap-2.5">
@@ -259,7 +259,7 @@ function AiSplit() {
       </div>
 
       <p className="mt-4 text-[15px] font-black leading-[1.6] text-slate">
-        AIは予測する。女性は、実際に受け取る。
+        AIは予測する。{advisorWord()}は、実際に受け取る。
       </p>
 
       {/* 敵対させない。AIで選択肢を作り、その選択肢を人で確かめる */}
@@ -270,7 +270,7 @@ function AiSplit() {
             who: "タシカメがやること",
             on: true,
             list: [
-              "その選択肢を実在の女性が読む",
+              `その選択肢を実在する${advisorWord()}が読む`,
               "実際にどう受け取ったかを返す",
               "なぜそう感じたかを書く",
             ],
@@ -319,8 +319,8 @@ function Safety() {
           "匿名で使えます。名前もメールアドレスも要りません",
           "相手の名前・連絡先は保存しません",
           "送る前に、個人情報は自動で伏せます",
-          "答えてくれた女性と直接つながる仕組みはありません",
-          "年齢と立場を確認した女性だけが見ます",
+          `答えてくれた${advisorWord()}と直接つながる仕組みはありません`,
+          `年齢と立場を確認した${advisorWord()}だけが見ます`,
           "18歳未満に関する相談はお受けしていません",
         ].map((t) => (
           <li
@@ -552,7 +552,7 @@ export default async function HomePage() {
               from="header"
               className="min-h-[42px] whitespace-nowrap rounded-pill bg-brand px-3.5 text-[13px] !text-paper shadow-card sm:px-5 sm:text-[13.5px]"
             >
-              女性に確カメる
+              {advisorWord()}に確カメる
             </PlanCta>
             {/* フッターを外したので、ほかの面への行き先はここに畳んである。
                 特商法の表記とプライバシーも、ここから辿れる */}
@@ -628,7 +628,7 @@ export default async function HomePage() {
               from="hero"
               className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[16px] !text-paper shadow-card"
             >
-              女性に確カメる <span aria-hidden className="ml-2">&rarr;</span>
+              {advisorWord()}に確カメる <span aria-hidden className="ml-2">&rarr;</span>
             </PlanCta>
             <p className="mt-2 text-[12px] leading-[1.7] text-steel">
               LINE・写真・プロフィール・誘い方に対応。
@@ -657,6 +657,28 @@ export default async function HomePage() {
               </Link>{" "}
               こともできます。
             </p>
+
+            {/* ══════════════════════════════════════════
+                「異性」と書く以上、ここで断る
+                ══════════════════════════════════════════
+                相手の呼び方を「異性」に統一した（lib/who.ts）。
+                男女どちらが読んでも自分のことだと分かる代わりに、
+                どちらの向きも開いているように読める。
+
+                実際に開いているのは男性からの相談だけ。
+                女性の回答者しかいないので、女性の方には届けられない。
+
+                断りは、前は料金のところにしか無かった。
+                6500px の下のほうなので、1画面目で「使える」と
+                思った人は、そこまで読まない。
+
+                押す場所のすぐ下に置く。
+                両方の向きが開いたら、ひとりでに消える。 */}
+            {notYetNote() && (
+              <p className="mt-3 rounded-soft bg-mist px-3.5 py-3 text-[12px] leading-[1.8] text-steel">
+                {notYetNote()}
+              </p>
+            )}
           </div>
         </Wrap>
 
@@ -834,7 +856,7 @@ export default async function HomePage() {
           こういうものです。
         </h2>
         <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          実在の女性3人が読んで、どう受け取ったかを返します。決めるのは、あなたです。
+          実在する{advisorWord()}3人が読んで、どう受け取ったかを返します。決めるのは、あなたです。
         </p>
 
         <div className="mt-7">
@@ -851,7 +873,7 @@ export default async function HomePage() {
             from="cases"
             className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
           >
-            女性に確カメる <span aria-hidden className="ml-2">&rarr;</span>
+            {advisorWord()}に確カメる <span aria-hidden className="ml-2">&rarr;</span>
           </PlanCta>
         </div>
 
@@ -1248,13 +1270,13 @@ export default async function HomePage() {
                 from="final"
                 className="min-h-[60px] w-full rounded-pill bg-paper px-9 text-[16.5px] !text-brand-deep sm:w-auto"
               >
-                女性に確カメる <span aria-hidden className="ml-2">→</span>
+                {advisorWord()}に確カメる <span aria-hidden className="ml-2">→</span>
               </PlanCta>
             </div>
             <ul className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] font-bold text-paper">
               <li>匿名</li>
               <li>都度払い</li>
-              <li>実在女性が回答</li>
+              <li>実在する{advisorWord()}が回答</li>
               <li>
                 {entry.name} <Yen yen={entry.yen} /> から
               </li>

@@ -8,6 +8,7 @@ import { ENTRY_PLAN } from "@/lib/ask/plans";
 import { NAME, ONE_LINER } from "@/lib/voice";
 import Donut from "@/components/brand/Donut";
 import PlanCta from "@/components/brand/PlanCta";
+import { advisorWord } from "@/lib/who";
 
 // 共有された A/B の結果。
 //
@@ -32,7 +33,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: `${ONE_LINER} — ${NAME}`,
-  description: "AとB、実在の女性はどちらを選んだか。",
+  description: `AとB、実在する${advisorWord()}はどちらを選んだか。`,
   // 人から人へ渡すための画面。検索には載せない。
   // 中身は誰かの相談なので、リンクを持っている人だけが見るものにする。
   // リンク自体は動くので、広がり方は変わらない。

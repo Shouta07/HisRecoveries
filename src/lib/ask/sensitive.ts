@@ -1,5 +1,6 @@
 import { assertPlain, assertNotScary } from "../voice";
 import { NEVER } from "../responder/policy";
+import { advisorWord } from "../who";
 
 // 言いにくい相談。
 //
@@ -97,7 +98,7 @@ export const ASK_SHAPE = {
  * どう確かめるか、までを返す。
  */
 export const RETURNS = [
-  "女性から見た印象",
+  `${advisorWord()}から見た印象`,
   "相手の反応で見るところ",
   "急がないほうがいいサイン",
   "自然に確かめる方法",

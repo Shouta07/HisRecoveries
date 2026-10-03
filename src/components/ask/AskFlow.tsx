@@ -29,6 +29,7 @@ import { isStepId, step as getStep } from "@/lib/ask/journey";
 import { WAIT_MINUTES } from "@/lib/ask/shortfall";
 import Yen from "@/components/brand/Yen";
 import PurchaseTerms from "@/components/ask/PurchaseTerms";
+import { advisorWord } from "@/lib/who";
 
 // 相談を出す。
 //
@@ -324,7 +325,7 @@ export default function AskFlow({
                 1行だけ置く。ここが無いと、値段を知らないまま
                 3画面目まで進むことになる。 */}
             <ul className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] font-bold text-steel">
-              <li>実在の女性{getPlan(DEFAULT_PLAN).answers}人が読みます</li>
+              <li>実在する{advisorWord()}{getPlan(DEFAULT_PLAN).answers}人が読みます</li>
               <li aria-hidden className="text-line">|</li>
               <li><Yen yen={getPlan(ENTRY_PLAN).yen} />から</li>
               <li aria-hidden className="text-line">|</li>
@@ -698,7 +699,7 @@ export default function AskFlow({
               {/* 何が返るか。押す直前にもう一度出す */}
               <dl className="divide-y divide-line text-[13px] leading-[1.75]">
                 {[
-                  ["読む人", `実在の女性 ${answers}人`],
+                  ["読む人", `実在する${advisorWord()} ${answers}人`],
                   [
                     "返るもの",
                     "第一印象、良いところ、気になったところ、そう感じた理由、直し方、そのまま使える修正文、次にやること",

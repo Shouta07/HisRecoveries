@@ -1,5 +1,6 @@
 import type { Verdict } from "./model";
 import { PLANS } from "./plans";
+import { advisorWord } from "../who";
 
 // こういう相談が来ます。
 //
@@ -166,7 +167,7 @@ export const CASES: Case[] = [
     scene: "プロフィールを見直したい",
     decision: "この自己紹介文でいい？",
     worry: "自己紹介文に何を書けばいいか分からない",
-    what: "マッチしても続かないので、女性の目で自己紹介文を読んでほしい。",
+    what: `マッチしても続かないので、${advisorWord()}の目で自己紹介文を読んでほしい。`,
     draft: {
       label: "いまの自己紹介文",
       text: "カフェ巡りや映画が好きです。一緒に楽しめる方と、素敵な時間を過ごしたいです。",
@@ -186,7 +187,7 @@ export const CASES: Case[] = [
     scene: "誘う前に確かめたい",
     decision: "そろそろ誘う？",
     worry: "この誘い方で、重く思われませんか？",
-    what: "次に誘うときの言い方と店選びを、女性の目で見てほしい。",
+    what: `次に誘うときの言い方と店選びを、${advisorWord()}の目で見てほしい。`,
     draft: { label: "送ろうとしている誘い方", text: "今度の土曜、前に話してたお店に行きませんか？" },
     says: [
       { age: 26, verdict: "as_is", say: "具体的でいいと思います。予定が立てやすいです。" },

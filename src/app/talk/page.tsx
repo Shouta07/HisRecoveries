@@ -6,6 +6,7 @@ import { PLANS, plan as getPlan, ENTRY_PLAN } from "@/lib/ask/plans";
 import TalkWaitlist from "@/components/ask/TalkWaitlist";
 import PlanCta from "@/components/brand/PlanCta";
 import Yen from "@/components/brand/Yen";
+import { advisorWord } from "@/lib/who";
 
 // 人と話す。まだ受け付けていない。
 //
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   // プロダクトの名乗りはタシカメなので、ここで完結させる。
   title: { absolute: "人と話す — タシカメ" },
   description:
-    "まだ、うまく言葉になってなくてもいい。審査を通った女性と話しながら、何に迷っているのかを見つける。いまは順番待ちのみ受け付けています。",
+    `まだ、うまく言葉になってなくてもいい。審査を通った${advisorWord()}と話しながら、何に迷っているのかを見つける。いまは順番待ちのみ受け付けています。`,
   alternates: { canonical: `${site.url}/talk` },
 };
 
@@ -48,7 +49,7 @@ export default function TalkPage() {
             from="talk_page"
             className="min-h-[42px] rounded-pill bg-brand px-5 text-[13.5px] !text-paper shadow-card"
           >
-            女性{entryAnswers}人に確かめる
+            {advisorWord()}{entryAnswers}人に確かめる
           </PlanCta>
         </div>
       </header>
@@ -65,7 +66,7 @@ export default function TalkPage() {
         </h1>
 
         <p className="mt-6 text-[16px] leading-[1.95] text-steel">
-          審査を通った女性と話しながら、状況をそのまま話して、相手側から聞かれて、
+          審査を通った{advisorWord()}と話しながら、状況をそのまま話して、相手側から聞かれて、
           自分が何に迷っているのかを見つける。そういう使い方です。
         </p>
 
@@ -105,7 +106,7 @@ export default function TalkPage() {
           </ul>
 
           <p className="mt-6 text-[14px] leading-[1.9] text-steel">
-            どれもまだ受け付けていません。相手も実在の女性なので、時間の決め方と、
+            どれもまだ受け付けていません。相手も実在する{advisorWord()}なので、時間の決め方と、
             その場を見る体制が用意できてから開きます。
             先に売って、あとから体制を整えることはしません。
           </p>

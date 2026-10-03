@@ -1,5 +1,6 @@
 import { MIND_READING } from "../ask/model";
 import { FIRST_LINE } from "./prompt";
+import { advisorWord } from "../who";
 
 /* ══════════════════════════════════════════════════
    トップに出す、恋亀との会話
@@ -67,7 +68,7 @@ export const DEMO_AGAIN: Turn[] = [
 ];
 
 /** そのあと、人に聞くことを提案する一言 */
-export const DEMO_ASK = "これ、実際の女性にも聞いてみる？";
+export const DEMO_ASK = `これ、実際の${advisorWord()}にも聞いてみる？`;
 
 /* ── 公開の前に止めること ───────────────────────── */
 {

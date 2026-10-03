@@ -10,6 +10,7 @@ import {
 import Mark from "@/components/brand/Mark";
 import PlanCta from "@/components/brand/PlanCta";
 import Slot from "@/components/brand/Slot";
+import { advisorWord } from "@/lib/who";
 
 // たしかメディア。
 //
@@ -305,7 +306,7 @@ export default function ArticlesPage() {
             {MEDIA.bridge}
           </p>
           <p className="mt-2 max-w-[30em] text-[13.5px] leading-[1.85] text-steel">
-            一般論では決まらないところを、実在の女性が読んで、
+            一般論では決まらないところを、実在する{advisorWord()}が読んで、
             実際にどう受け取ったかを返します。文章でも、画像でも。
           </p>
           <div className="mt-5 max-w-[24em]">

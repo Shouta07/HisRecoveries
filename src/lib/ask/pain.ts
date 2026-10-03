@@ -1,4 +1,5 @@
 import { assertPlain, assertNotScary, assertNotCheap } from "../voice";
+import { advisorWord } from "../who";
 
 // 手が止まる瞬間。
 //
@@ -36,7 +37,7 @@ import { assertPlain, assertNotScary, assertNotCheap } from "../voice";
  */
 export const BRIDGE = {
   known: "検索すれば、一般論は出てくる。AIに聞けば、それっぽい答えも返ってくる。",
-  gap: "知りたいのは、実際の女性なら、どう感じるか。",
+  gap: `知りたいのは、実際の${advisorWord()}なら、どう感じるか。`,
   close: "送ってから考えるのではなく、送る前に確かめる。",
 };
 

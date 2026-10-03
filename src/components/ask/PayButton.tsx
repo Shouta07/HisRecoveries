@@ -5,6 +5,7 @@ import { track } from "@/lib/analytics";
 import { plan as getPlan, isSellable, DEFAULT_PLAN, type PlanId } from "@/lib/ask/plans";
 import Yen from "@/components/brand/Yen";
 import PurchaseTerms from "@/components/ask/PurchaseTerms";
+import { advisorWord } from "@/lib/who";
 
 // 支払いへ進む。
 //
@@ -98,7 +99,7 @@ export default function PayButton({
         <p className="text-[12px] font-bold text-steel">
           {p.talk
             ? "この相談で受け取るもの"
-            : `実在の女性${p.answers}人が読んで、返ってくるもの`}
+            : `実在する${advisorWord()}${p.answers}人が読んで、返ってくるもの`}
         </p>
         <ul className="mt-2.5 flex flex-col gap-1.5">
           {p.includes.map((x) => (
