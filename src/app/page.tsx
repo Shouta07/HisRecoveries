@@ -8,6 +8,7 @@ import { DEMO } from "@/lib/ask/demo";
 import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
 import TalkDemo from "@/components/koi/TalkDemo";
+import KoiFace from "@/components/koi/KoiFace";
 import { DEMO_AGAIN } from "@/lib/koi/demo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
@@ -778,14 +779,7 @@ export default async function HomePage() {
           {DEMO_AGAIN.map((t) => (
             <li key={t.say} className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}>
               <div className="flex max-w-[86%] items-end gap-2">
-                {t.who === "koi" && (
-                  <span
-                    aria-hidden
-                    className="mb-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-paper text-[15px] shadow-card"
-                  >
-                    🐢
-                  </span>
-                )}
+                {t.who === "koi" && <KoiFace size={34} delay={0.4} className="-mb-1" />}
                 <p
                   className={`rounded-card px-3.5 py-2.5 text-[13.5px] leading-[1.75] ${
                     t.who === "me"

@@ -16,10 +16,11 @@
 // 画面はそこから引く。
 //
 // ══════════════════════════════════════════════════
-// 2つを見る
+// 3つを見る
 // ══════════════════════════════════════════════════
 // 1. 「◯◯に確カメる」を直書きしていないこと
 // 2. 1画面目に、使えない向きの断りが出ていること
+// 3. 会話の相手に、亀の絵文字を使っていないこと
 //
 //    「異性」と書くと、どちらの向きも開いているように読める。
 //    実際に開いているのは片方だけ（ASKER_OPEN）。
@@ -224,4 +225,37 @@ if (note < hero || note - hero > NEAR) {
   process.exit(1);
 }
 
-console.log("who チェック: 直書き0件 — 1画面目で断っています");
+/* ── 3. 会話の相手が、恋亀であること ───────────────
+   吹き出しの横は、ずっと 🐢 の絵文字だった。
+   絵文字は端末が描くので、こちらの恋亀とは別の亀が出る。
+   iPhone・Android・Windows で、それぞれ違う顔の亀になる。
+
+   恋亀はこの製品で唯一ずっと出てくる相手なので、
+   そこだけは、見る人の端末によらず同じ顔にする。
+   components/koi/KoiFace.tsx を使うこと。 */
+{
+  const turtle = [];
+  for (const dir of ["src/app", "src/components"]) {
+    for (const f of await files(dir)) {
+      if (f.endsWith("KoiFace.tsx")) continue; // 経緯を書いてある
+      const src = stripComments(await readFile(join(ROOT, f), "utf8"));
+      src.split("\n").forEach((line, n) => {
+        if (line.includes("\u{1F422}")) {
+          turtle.push({ f, n: n + 1, line: line.trim().slice(0, 70) });
+        }
+      });
+    }
+  }
+  if (turtle.length > 0) {
+    console.error("会話の相手に、亀の絵文字を使っています。");
+    console.error("");
+    for (const h of turtle) console.error(`  ${h.f}:${h.n}\n    ${h.line}`);
+    console.error("");
+    console.error("絵文字は端末が描くので、iPhone・Android・Windows で");
+    console.error("それぞれ違う顔の亀が出ます。");
+    console.error("components/koi/KoiFace.tsx を使ってください。");
+    process.exit(1);
+  }
+}
+
+console.log("who チェック: 直書き0件 — 1画面目で断っています — 相手は恋亀です");

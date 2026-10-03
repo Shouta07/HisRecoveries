@@ -401,6 +401,38 @@ a {
   animation: tashikame-bob 2.8s ease-in-out infinite;
 }
 
+/* ══════════════════════════════════════════════════
+   恋亀の顔。少しだけ立体に見せる
+   ══════════════════════════════════════════════════
+   吹き出しの横に置く顔が止まっていると、貼り付けた
+   画像に見える。少しだけ動かして、生きている相手にする。
+
+   平らな絵なので、上下に揺らすだけでは紙が動いて見える。
+   perspective を入れて、Y軸に振る。奥行きが付いて、
+   こちらを向いている・少し向こうを向く、の間を行き来する。
+
+   やりすぎない。読むのは吹き出しの中の文で、顔ではない。
+     振れ幅  2px
+     回転    左右6度・前後2度
+     周期    3.6秒（心拍より遅い。急かさない）
+
+   動きを切っている人には止める（下の判定に名前を足してある）。 */
+@keyframes koi-alive {
+  0%,
+  100% {
+    transform: perspective(120px) translateY(0) rotateY(-6deg) rotateX(2deg);
+  }
+  50% {
+    transform: perspective(120px) translateY(-2px) rotateY(6deg) rotateX(-2deg);
+  }
+}
+
+.koi-alive {
+  animation: koi-alive 3.6s ease-in-out infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
 @keyframes soft-float {
   0%,
   100% {
@@ -458,7 +490,8 @@ html {
   .marquee-track,
   .draw-in,
   .soft-float,
-  .tashikame-bob {
+  .tashikame-bob,
+  .koi-alive {
     animation: none !important;
     transform: none !important;
   }

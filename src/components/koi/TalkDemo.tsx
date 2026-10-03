@@ -1,4 +1,5 @@
 import { DEMO_TALK, DEMO_EP, DEMO_ASK } from "@/lib/koi/demo";
+import KoiFace from "@/components/koi/KoiFace";
 
 /* 恋亀との会話を、そのまま見せる。
  *
@@ -35,14 +36,7 @@ export default function TalkDemo() {
             className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}
           >
             <div className="flex max-w-[86%] items-end gap-2">
-              {t.who === "koi" && (
-                <span
-                  aria-hidden
-                  className="mb-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-paper text-[15px] shadow-card"
-                >
-                  🐢
-                </span>
-              )}
+              {t.who === "koi" && <KoiFace size={34} delay={i * 0.4} className="-mb-1" />}
               <p
                 className={`rounded-card px-3.5 py-2.5 text-[13.5px] leading-[1.75] ${
                   t.who === "me"
@@ -96,12 +90,7 @@ export default function TalkDemo() {
 
       {/* 人に聞ける、が最後に来る。押し売りにしない */}
       <div className="flex items-start gap-2">
-        <span
-          aria-hidden
-          className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-paper text-[15px] shadow-card"
-        >
-          🐢
-        </span>
+        <KoiFace size={34} delay={DEMO_TALK.length * 0.4} className="-mt-0.5" />
         <p className="min-w-0 rounded-card rounded-bl-[4px] bg-paper px-3.5 py-2.5 text-[13.5px] leading-[1.75] text-slate shadow-card">
           {DEMO_ASK}
         </p>
