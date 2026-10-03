@@ -1,4 +1,4 @@
-import { buildSystemPrompt, VERSION, type Memory } from "./prompt";
+import { buildSystemPrompt, FIRST_LINE, VERSION, type Memory } from "./prompt";
 
 /* ══════════════════════════════════════════════════
    ChatGPT で話してもらって、結果を持ち帰る
@@ -88,21 +88,20 @@ export function handoffPrompt(m: Memory = {}): string {
     "",
     "【決まった言葉から選ぶもの】",
     `current_stage: ${STAGES_OUT.join(" / ")}`,
-    `momentum: ${MOMENTUM.join(" / ")}`,
-    `priority: ${PRIORITY.join(" / ")}`,
     `waiting_on: ${WAITING.join(" / ")}`,
-    `input_mode: ${INPUT_MODE.join(" / ")}`,
+    "",
+    "この形を埋めるためだけに、質問しないでください。",
+    "会話から分かる範囲だけ入れて、分からないものは空のままにしてください。",
     "",
     "today_action は、今日やることがあるときだけ書いてください。",
     "何もしないほうがよいときは「今日は待つ」と書いてください。",
     "human_review.recommended は、実在の異性に聞く価値が高いときだけ true。",
     "timeline.timeline_summary は、次にこの相手の話をするときに",
     "前回の状況が一文で分かる要約にしてください。",
-    "follow_up.next_follow_up_question は、次に開いたとき最初に聞くことを1つ。",
     "",
     "まとめや要約は、終わりの合図があるまで出さないでください。",
     "それまでは、ふつうに会話してください。",
-    `最初のひとことは「${FIRST_LINE_OUT}」でお願いします。`,
+    `最初のひとことは「${FIRST_LINE}」でお願いします。`,
   ].join("\n");
 }
 
@@ -118,9 +117,6 @@ export const PRIORITY = ["high", "medium", "low"] as const;
 export const WAITING = ["user", "partner", "scheduled_event", "none", "unclear"] as const;
 export const INPUT_MODE = ["voice", "text", "unknown"] as const;
 
-/** 最初のひとこと。判断疲れのほうに寄せる */
-const FIRST_LINE_OUT = "今日は誰との、どんなことを確カメたい？";
-
 /**
  * 受け取るJSONの形。
  *
@@ -128,16 +124,13 @@ const FIRST_LINE_OUT = "今日は誰との、どんなことを確カメたい�
  * 片方だけ直すと、AIは新しい形で返すのに、こちらが読めない。
  */
 const SCHEMA = `{
-  "person": { "name": "", "dating_app": "", "matched_at": "", "met_count": null, "called": null },
-  "relationship_state": { "current_stage": "", "momentum": "", "last_contact_at": "", "next_scheduled_event": "" },
-  "communication": { "message_frequency": "", "latest_event": "", "partner_reaction": "", "user_action": "" },
-  "consultation": { "main_issue": "", "user_goal": "", "interpretation": [], "options": [], "next_action": "", "next_action_due": "", "suggested_message": "", "cautions": [] },
-  "management": { "priority": "", "waiting_on": "", "status_label": "", "today_action": "" },
+  "person": { "name": "", "dating_app": "" },
+  "relationship_state": { "current_stage": "", "last_contact_at": "", "next_scheduled_event": "" },
+  "consultation": { "main_issue": "", "user_goal": "", "next_action": "", "next_action_due": "", "suggested_message": "" },
+  "management": { "waiting_on": "", "today_action": "", "status_label": "" },
   "human_review": { "recommended": false, "question_to_ask": "" },
-  "result": { "previous_action_taken": "", "previous_outcome": "", "current_action_taken": "", "current_outcome": "", "next_step": "" },
-  "timeline": { "event_summary": "", "timeline_summary": "" },
-  "source": { "ai_provider": "", "input_mode": "" },
-  "follow_up": { "next_follow_up_question": "" }
+  "result": { "previous_outcome": "", "current_outcome": "" },
+  "timeline": { "event_summary": "", "timeline_summary": "" }
 }`;
 
 /* ══════════════════════════════════════════════════
@@ -231,8 +224,8 @@ export function readPaste(input: string): Line[] {
   /* 受け取る形が、書いてあること。
      キー名か階層が抜けると、こちらが読めないものが返る。 */
   for (const k of [
-    "person", "relationship_state", "communication", "consultation",
-    "management", "human_review", "result", "timeline", "source", "follow_up",
+    "person", "relationship_state", "consultation",
+    "management", "human_review", "result", "timeline",
   ]) {
     if (!p.includes(`"${k}"`)) throw new Error(`渡すJSONの形に「${k}」がありません`);
   }
@@ -243,12 +236,18 @@ export function readPaste(input: string): Line[] {
   }
   /* 決まった言葉から選ばせること。
      自由に書かせると、段階が毎回ちがう言葉になって集計できない。 */
-  for (const v of ["matched", "improving", "high", "partner", "voice"]) {
+  for (const v of ["matched", "partner"]) {
     if (!p.includes(v)) throw new Error(`選ばせる言葉に「${v}」がありません`);
   }
   // 推測させないこと。
   if (!/分からないことは推測せず/.test(p)) {
     throw new Error("渡すプロンプトに、推測させない指示がありません");
+  }
+  /* 形を埋めるために質問させないこと。
+     ここが抜けると、聞き取りの長い恋亀になる。
+     それはこの製品がいちばん避けたい形。 */
+  if (!/埋めるためだけに、質問しないで/.test(p)) {
+    throw new Error("渡すプロンプトに、形を埋めるために質問させない指示がありません");
   }
   // 待つことも書かせること。
   if (!/今日は待つ/.test(p)) {
