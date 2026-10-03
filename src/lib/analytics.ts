@@ -132,6 +132,17 @@ export const CONVERSION_EVENTS = [
      話した中身は送らない（ここは計測で、相談の中身ではない）。 */
   "koi_call_started", // 恋亀とつながった
   "koi_tool_decided", // 道具の呼び出しを、通した／止めた（props: tool, ok）
+  "koi_card_made", // 話したあと、状況の1枚ができた（props: from）
+  /* ChatGPT で話して持ち帰る道。どこで落ちるかを見る。
+     コピーした数 ＞ 開いた数 ＞ できた数、と減っていく。
+     どの段で落ちているかが分からないと、直しようがない。 */
+  "koi_prompt_copied", // 恋亀の文をコピーした
+  "koi_chatgpt_opened", // ChatGPT を開いた
+  /* 料金の選び方。期間と払い方を分けて選ばせるので、
+     どちらで落ちているかが分からないと直しようがない。 */
+  "price_period_picked", // 期間を選んだ（props: months）
+  "price_pay_picked", // 払い方を選んだ（props: pay）
+  "price_cta_click", // 始めるを押した（props: months, pay）
   // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
   "call_joined", // 通話に入れた（props: plan）
   "call_ended", // 通話が終わった（props: plan, reason）

@@ -5,6 +5,8 @@ import { decide, type Used } from "@/lib/koi/dispatch";
 import { mask } from "@/lib/koi/mask";
 import { track } from "@/lib/analytics";
 import KoiFace from "@/components/koi/KoiFace";
+import SituationCardView from "@/components/koi/SituationCard";
+import type { SituationCard } from "@/lib/koi/card";
 
 /* ══════════════════════════════════════════════════
    恋亀と話す部屋
@@ -51,11 +53,51 @@ export default function VoiceRoom({ talker }: { talker: string }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [leftSec, setLeftSec] = useState<number | null>(null);
+  /* 終わったあとに出す、状況の1枚。
+     話している最中は出さない（読みながら話せない）。 */
+  const [card, setCard] = useState<SituationCard | null>(null);
+  const [wrapping, setWrapping] = useState(false);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const micRef = useRef<MediaStream | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const usedRef = useRef<Used>({});
+  /* まとめるときに使う会話。state だと、切る瞬間に古いものを掴む */
+  const linesRef = useRef<Line[]>([]);
+
+  /* 話し終わったら、1枚にまとめる。
+     話している最中は出さない（読みながら話せない）。
+     2往復に満たないものは、整理しても何も出ないので呼ばない。 */
+  const wrap = useCallback(async () => {
+    const said = linesRef.current;
+    if (said.length < 2 || wrapping) return;
+    setWrapping(true);
+    try {
+      const r = await fetch("/api/koi/wrap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ talker, lines: said }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (j.card) {
+        setCard(j.card as SituationCard);
+        track("koi_card_made", {});
+        if (typeof j.dropped === "number" && j.dropped > 0) {
+          // 捨てたものは黙って消さない
+          setNotes((xs) => [
+            ...xs,
+            { ok: false, text: `話していないことが ${j.dropped} 件あったので、入れていません` },
+          ]);
+        }
+      } else if (j.error) {
+        setNotes((xs) => [...xs, { ok: false, text: j.error }]);
+      }
+    } catch {
+      setNotes((xs) => [...xs, { ok: false, text: "いま整理できませんでした" }]);
+    } finally {
+      setWrapping(false);
+    }
+  }, [talker, wrapping]);
 
   const stop = useCallback((why: Phase = "ended") => {
     pcRef.current?.close();
@@ -64,7 +106,9 @@ export default function VoiceRoom({ talker }: { talker: string }) {
     micRef.current = null;
     setLeftSec(null);
     setPhase((p) => (p === "error" ? p : why));
-  }, []);
+    // ふつうに終わったときだけ、1枚にまとめる
+    if (why === "ended") void wrap();
+  }, [wrap]);
 
   // 画面を離れたら必ず切る。残すとマイクが開いたままになる
   useEffect(() => () => stop("ended"), [stop]);
@@ -82,12 +126,18 @@ export default function VoiceRoom({ talker }: { talker: string }) {
     // 話した言葉。こちらの声も、恋亀の声も、文字で出す
     if (type === "conversation.item.input_audio_transcription.completed") {
       const t = String(e.transcript ?? "").trim();
-      if (t) setLines((xs) => [...xs, { who: "me", say: t }]);
+      if (t) {
+        linesRef.current = [...linesRef.current, { who: "me", say: t }];
+        setLines(linesRef.current);
+      }
       return;
     }
     if (type === "response.audio_transcript.done") {
       const t = String(e.transcript ?? "").trim();
-      if (t) setLines((xs) => [...xs, { who: "koi", say: t }]);
+      if (t) {
+        linesRef.current = [...linesRef.current, { who: "koi", say: t }];
+        setLines(linesRef.current);
+      }
       return;
     }
 
@@ -149,7 +199,9 @@ export default function VoiceRoom({ talker }: { talker: string }) {
     setPhase("connecting");
     setError(null);
     setLines([]);
+    linesRef.current = [];
     setNotes([]);
+    setCard(null);
     usedRef.current = {};
 
     try {
@@ -279,6 +331,15 @@ export default function VoiceRoom({ talker }: { talker: string }) {
           {error}
         </p>
       )}
+
+      {/* 終わったあとの1枚。話した結果がここに出る。
+          JSONは出さない（読むのは、読んで分かる形のほう）。 */}
+      {wrapping && (
+        <p className="rounded-card border border-line bg-paper px-4 py-3.5 text-[13.5px] leading-[1.8] text-steel">
+          話したことを、まとめています…
+        </p>
+      )}
+      {card && <SituationCardView card={card} />}
 
       {/* 話した言葉。伏せ字をかけてから出す */}
       {lines.length > 0 && (

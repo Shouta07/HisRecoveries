@@ -88,16 +88,52 @@ export default function KoiEntry() {
           <KoiFace size={88} />
         </div>
 
+        {/* ══════════════════════════════════════════
+            ここは、トップから来た人が最初に着く場所
+            ══════════════════════════════════════════
+            前は「思っていることを、そのまま。」だけだった。
+            既にこの製品を知っている人向けの言い方で、
+            トップで「まず1回、無料で整理する」を押して来た人には、
+            これから何が起きるのかが分からない。
+
+            何をするか、何が返ってくるか、何分かかるかを先に書く。 */}
         <h1 className="mt-6 text-center text-huge font-black leading-[1.35]">
-          思っていることを、
+          気になっている人を、
           <br />
-          そのまま。
+          1人ぶん整理する。
         </h1>
 
         <p className="mt-5 text-center text-[15px] leading-[1.95] text-steel">
-          うまくまとまっていなくて大丈夫です。
+          登録はありません。いまから5分くらいです。
+        </p>
+
+        {/* これから何が起きるかを、3つだけ。
+            多いと読まれない。少ないと身構える。 */}
+        <ol className="mt-7 flex flex-col gap-2.5">
+          {[
+            ["1", "恋亀の文をコピーして、ChatGPT に貼る", "次のページでボタン1つです"],
+            ["2", "気になっている人のことを、普通に話す", "まとまっていなくて大丈夫です"],
+            ["3", "会話をここに貼り戻す", "1枚に整理されて返ってきます"],
+          ].map(([n, head, sub]) => (
+            <li key={n} className="flex items-start gap-3 rounded-soft bg-mist px-4 py-3.5">
+              <span
+                aria-hidden
+                className="mt-[1px] flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-[11px] font-black text-paper"
+              >
+                {n}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[14px] font-bold leading-[1.6] text-slate">{head}</span>
+                <span className="mt-0.5 block text-[12px] leading-[1.7] text-steel">{sub}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+
+        <p className="mt-6 text-center text-[13px] leading-[1.9] text-steel">
+          返ってくるのは、いまどこまで進んでいて、
           <br className="hidden sm:block" />
-          話した内容から、相手ごとの記録が残ります。
+          次に何をするかの1枚です。
         </p>
 
         {state === "ready" && token ? (
@@ -123,7 +159,7 @@ export default function KoiEntry() {
               {state === "making" ? "…" : "はじめる"}
             </button>
             <p className="mt-3 text-center text-[12.5px] leading-[1.8] text-steel">
-              登録はありません。押すとすぐ始まります。
+              押すとすぐ始まります。お金はかかりません。
             </p>
           </>
         )}

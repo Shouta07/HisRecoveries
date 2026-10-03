@@ -192,13 +192,29 @@ if (hits.length > 0) {
 }
 
 /* ── 2. 1画面目で断っていること ────────────────────── */
-const lp = await readFile(join(ROOT, "src/app/page.tsx"), "utf8");
+/* ── コメントを外してから測る ──────────────────────
+   前は生のファイルで字数を測っていた。
 
-const hero = lp.indexOf('from="hero"');
+   このファイルは、なぜそうしたかを日本語のコメントで
+   たくさん書いてある。CTAを入れ替えた理由を1つ足しただけで
+   距離が4,273字になり、判定が落ちた。
+
+   画面に出ない字で距離が伸びるのは、測り方が違う。
+   コメントを外した状態で測る。 */
+const lp = stripComments(await readFile(join(ROOT, "src/app/page.tsx"), "utf8"));
+
+/* 1画面目の目印。
+   前は from="hero" のボタンそのものを探していた。
+   第一CTAを「まず1回、無料で整理する」（ただのリンク）に
+   変えたとき、目印ごと消えて判定が落ちた。
+
+   目印は、ボタンではなく1画面目の見出しにする。
+   見出しは、CTAを入れ替えても残る。 */
+const hero = lp.indexOf("{HERO_A}");
 const note = lp.indexOf("notYetNote()");
 
 if (hero < 0) {
-  console.error("トップに1画面目のボタン（from=\"hero\"）が見つかりません。");
+  console.error("トップに1画面目の見出し（HERO_A）が見つかりません。");
   console.error("このファイルの判定が、画面の作りに追いつけていません。");
   process.exit(1);
 }
@@ -213,12 +229,19 @@ if (note < 0) {
 /* 1画面目のボタンの近くにあること。
    「近く」を字数で見る。節をまたぐと必ず 2000 字を超える。
    下のほう（料金の節）にしか無いと、ここで止まる。 */
+/* 「近く」を字数で見る。1画面目の見出しから断りまで。
+   コメントを外した状態なので、ここは画面に出る字だけ。
+   節をまたぐと必ず超える。 */
 const NEAR = 2000;
-if (note < hero || note - hero > NEAR) {
+/* コメントは、行番号を保つために同じ長さの空白にしてある。
+   だから引き算だけでは距離が変わらない（実際に変わらなかった）。
+   空白を除いて、画面に出る字だけで測る。 */
+const gap = note > hero ? lp.slice(hero, note).replace(/\s+/g, "").length : -1;
+
+if (gap < 0 || gap > NEAR) {
   console.error("使えない向きの断りが、1画面目から離れています。");
   console.error("");
-  console.error(`  1画面目のボタン  ${hero} 文字目`);
-  console.error(`  断り             ${note} 文字目`);
+  console.error(`  あいだの字数  ${gap}（${NEAR} 字まで）`);
   console.error("");
   console.error("1画面目で「使える」と思った人は、下まで読みません。");
   console.error("押す場所のすぐ下に置いてください。");

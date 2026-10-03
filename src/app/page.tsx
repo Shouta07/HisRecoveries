@@ -7,12 +7,16 @@ import FamilyCards from "@/components/brand/FamilyCards";
 import { DEMO } from "@/lib/ask/demo";
 import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
-import TalkDemo from "@/components/koi/TalkDemo";
 import KoiFace from "@/components/koi/KoiFace";
-import { DEMO_AGAIN } from "@/lib/koi/demo";
+import Timeline from "@/components/koi/Timeline";
+import { DEMO_TIMELINE } from "@/lib/koi/timelineDemo";
+import { DEMO_TALK } from "@/lib/koi/demo";
+import SituationCardView from "@/components/koi/SituationCard";
+import { DEMO_CARD } from "@/lib/koi/cardDemo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
-import { PASS_YEN, INCLUDED } from "@/lib/pass/entitle";
+import { INCLUDED } from "@/lib/pass/entitle";
+import PriceChooser from "@/components/pass/PriceChooser";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
@@ -28,7 +32,7 @@ import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
-import HeroBoard from "@/components/brand/HeroBoard";
+import HeroDashboard from "@/components/koi/HeroDashboard";
 import MomentsArt from "@/components/brand/MomentsArt";
 import Yen from "@/components/brand/Yen";
 
@@ -161,50 +165,57 @@ const STEPS = [
 // ── 開かなくても分かる答えを、先に書く ────────────
 // extra が付くものは、開くと絵も出る。
 // ただし a だけ読んでも答えになっていること（検索結果にはこちらが出る）。
+/* ── 質問を、芯に合わせて入れ替えた ────────────────
+   前は「3人の意見が割れたら」「集まらなかったら」など、
+   単発で異性に読んでもらう前提の質問が中心だった。
+
+   いま最初に来るのは、そこではない。
+     ChatGPT を使っているのに、これも要るのか
+     アプリを何個使っていても大丈夫か
+     何人まで登録できるか
+   先に答えるのは、こちらにする。
+
+   異性に読んでもらう側の質問（意見が割れたら等）は
+   /plans と /ask が持っている。 */
 const FAQ: { q: string; a: string; extra?: "ai" | "flow" | "safety" }[] = [
   {
-    q: "AIに聞くのと何が違いますか？",
-    a: `AIが出すのは「たぶんこう思われます」です。ここで返ってくるのは、実在する${advisorWord()}が実際にどう思ったかです。予想ではなく、本当の反応です。まずAIに聞いていい。文面を作るのも、考えをまとめるのもAIのほうが得意です。それでも最後に残る「実際どう思われるか」だけ、人に聞きます。`,
+    q: "ChatGPTを使っていても、必要ですか？",
+    a: "ChatGPTはそのまま使ってください。倒しにいっていません。足りないのは、話したことが残らないところです。次に相談するとき、また最初から説明することになります。タシカメは、相手ごとに「どこまで進んでいて、次に何をするか」を覚えておく側です。恋亀の文を渡すので、話し相手は変わりません。",
     extra: "ai",
   },
   {
+    q: "複数のマッチングアプリを使っていても大丈夫ですか？",
+    a: "そのための形にしてあります。with・Pairs・タップルなど、どこで出会ったかを相手ごとに持つので、アプリをまたいで一覧になります。アプリごとに見比べる必要はありません。",
+  },
+  {
+    q: "何人まで登録できますか？",
+    a: "いまは上限を決めていません。同時に何人と進んでいても、それぞれ別に覚えています。一覧では、最後に動いた順に並びます。",
+  },
+  {
     q: "どうやって進みますか？",
-    a: `4つです。送る前のものを出す、条件に合う${advisorWord()}に届く、一人ずつ返ってくる、直すかそのまま出すかを決める。出すのは送る前のLINEか自己紹介文で、そのまま貼るだけです。`,
+    a: "3つです。恋亀の文をコピーしてChatGPTに貼る、気になっている人のことを普通に話す、その会話をタシカメに貼り戻す。あとは1枚に整理されて返ってきます。まとめてから貼る必要はありません。",
     extra: "flow",
   },
   {
-    // ── いちばん言いたいこと ────────────────────────
-    // 3人に見せると、答えが割れることがある。
-    // そのとき「どっちが正しいの？」が最初に来る。
-    //
-    // ここで「多いほうが正解です」と答えると、
-    // 多数決を売っていることになる。売っているのは反応のほう。
-    //
-    // 割れたことを、失敗や中途半端として見せない。
-    // 人によって違うと分かること自体が、聞いた結果。
-    q: "3人の意見が全部違ったら、どうすればいいですか？",
-    a: "それで大丈夫です。ここは正解を決める場所ではありません。感じ方が人によって違うこと自体が、知りたかったことです。3人とも気になると言えば、一度立ち止まれます。分かれたなら「人による」と分かります。どちらに寄せるかは、あなたが決めてください。",
+    q: "無料体験では何ができますか？",
+    a: "気になっている人を1人ぶん、整理できます。いまどこまで進んでいるか、次に何をするかまで出ます。登録もお支払いもありません。続きを覚えておくところから先が、月額です。",
   },
   {
-    q: `3人がそう言えば、${advisorWord()}みんながそう思うということですか？`,
-    a: `違います。読んだ人がそう感じた、というだけです。だから意見が分かれたところも、そのまま出します。${advisorWord()}みんなの答えではありません。`,
+    q: `実在する${advisorWord()}には、何を聞けますか？`,
+    a: `「これを送ったら、実際どう受け取られるか」です。AIには分からないところだけ、人に回ります。毎回ではありません。月額に月1回ぶん含まれていて、それ以上は別にお申し込みいただきます。`,
   },
   {
-    q: "悪いところを無理に探されませんか？",
-    a: "探しません。問題が無ければ「このままで大丈夫そう」と返ってきます。それも答えです。悪いところ探しになると、本当に直すべきところが埋もれます。",
+    q: "友達に相談するのと、何が違いますか？",
+    a: "友達に聞けるなら、そのほうがいいです。置き換えるつもりはありません。埋まっていないのは、聞きにくいときのほうです。同じ人の話を何度もするのは気が引ける、異性の友達がそんなに多くない、気を遣わない返事がほしい。そういうときの、もう一つの手です。",
   },
   {
-    q: "相手に知られませんか？",
-    a: `知られません。匿名で使えて、相手の名前・写真・連絡先は保存していません。答えてくれた${advisorWord()}とあなたが直接つながる仕組みも、作っていません。`,
+    q: "相談した内容は、相手に知られませんか？",
+    a: `知られません。相手の名前・写真・連絡先は保存していません。電話番号やアカウント名が会話に出てきても、こちらに届く前に伏せ字にします。答えてくれた${advisorWord()}とあなたが直接つながる仕組みも、作っていません。`,
     extra: "safety",
   },
   {
-    q: "どのくらいで返ってきますか？",
-    a: `条件に合う${advisorWord()}が何人いるかによります。実際のところが分かるまでは、何分とは言いません。いま何人に届いて何人が見ているかは、画面で分かるようにしてあります。`,
-  },
-  {
-    q: "集まらなかったら？",
-    a: "集まらなかった分はお返しします。条件を広げてもう少し待つか、全額返してもらうかを選べます。こちらで勝手に決めません。",
+    q: "解約はいつでもできますか？",
+    a: "できます。会員ページから、こちらに連絡しなくても解約できます。解約したあとも、お支払い済みの期間の終わりまでは使えます。",
   },
 ];
 
@@ -546,13 +557,20 @@ export default async function HomePage() {
                 入っていないので、ページ全体と同じ言い方にそろえた。
                 行き先も、いちばん軽い入口（ENTRY_PLAN）に変えた。
                 ずっと出ているボタンが、いちばん高い商品を指していた。 */}
-            <PlanCta
-              plan={ENTRY_PLAN}
-              from="header"
-              className="min-h-[42px] whitespace-nowrap rounded-pill bg-brand px-3.5 text-[13px] !text-paper shadow-card sm:px-5 sm:text-[13.5px]"
+            {/* ずっと出ているボタン。
+                前は「異性に確カメる」で /ask へ行っていた。
+                第一CTAを「整理する」に変えたので、ここも合わせる。
+                上下で行き先が違うと、どちらが本筋か分からなくなる。 */}
+            {/* 行き先を /trial から /koi へ変えた。
+                /trial は「文章1件を異性が読む」体験で、
+                ここで約束している「整理する」とは別のもの。
+                押した人が着く先が違っていた。 */}
+            <Link
+              href="/koi"
+              className="inline-flex min-h-[42px] shrink-0 items-center justify-center whitespace-nowrap rounded-pill bg-brand px-3.5 text-[13px] font-bold text-paper shadow-card sm:px-5 sm:text-[13.5px]"
             >
-              {advisorWord()}に確カメる
-            </PlanCta>
+              無料で整理する
+            </Link>
             {/* フッターを外したので、ほかの面への行き先はここに畳んである。
                 特商法の表記とプライバシーも、ここから辿れる */}
             <MenuButton />
@@ -621,16 +639,42 @@ export default async function HomePage() {
 
               文言はページ全部でこれに統一した。
               押すたびに言い方が変わると、同じ場所に行くことが分からない。 */}
+          {/* ══════════════════════════════════════════
+              第一CTAを「整理する」にした
+              ══════════════════════════════════════════
+              前はここが「異性に確カメる」で、/ask へ行っていた。
+
+              それだと、来た人が最初に受け取るのが
+              「異性に相談できるサービス」になる。
+              単発の相談に見えて、月額の理由がぼける。
+
+              最初に体験してほしいのは、相談そのものより
+              「話した結果、自分の状況が1枚になって出てくる」ほう。
+              そこへ行く道（/trial）を第一にする。
+
+              「異性に確カメる」は下げて、節のほうで出す。 */}
           <div className="mt-5 max-w-[22em]">
-            <PlanCta
-              plan={ENTRY_PLAN}
-              from="hero"
-              className="min-h-[56px] w-full rounded-pill bg-brand px-8 text-[16px] !text-paper shadow-card"
+            {/* ══════════════════════════════════════════
+                着地先を /trial から /koi へ変えた
+                ══════════════════════════════════════════
+                「まず1回、無料で整理する」と書いているのに、
+                /trial は「送る前の文章を1件、異性が読む」体験だった。
+                押した人が、整理ではなく添削の画面に着いていた。
+
+                /koi が、ここで約束しているものそのもの。
+                  恋亀の文を受け取る → ChatGPTで話す → 貼る → 1枚になる
+                登録も鍵も要らない。今日から動く。
+
+                /trial（異性に読んでもらう体験）は消していない。
+                あちらは「異性に確カメる」側の入口として、下の節から行く。 */}
+            <Link
+              href="/koi"
+              className="flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-8 text-[16px] font-bold text-paper shadow-card"
             >
-              {advisorWord()}に確カメる <span aria-hidden className="ml-2">&rarr;</span>
-            </PlanCta>
+              まず1回、無料で整理する <span aria-hidden className="ml-2">&rarr;</span>
+            </Link>
             <p className="mt-2 text-[12px] leading-[1.7] text-steel">
-              LINE・写真・プロフィール・誘い方に対応。
+              登録なし。気になっている人のことを1人ぶん話すだけです。
             </p>
             {/* ══════════════════════════════════════════
                 はじめての人の道を、ここで分ける
@@ -646,15 +690,18 @@ export default async function HomePage() {
                 出し分けない。出し分けると、鍵を入れても
                 作り直すまで画面が変わらない。
                 /trial 側が、自分の開き閉じを実行時に見る。 */}
+            {/* 第二CTA。AIで決めきれないときの道。
+                第一CTAと役が違うので、見た目でも差を付ける。 */}
             <p className="mt-3 text-[13px] leading-[1.8] text-steel">
-              はじめてなら{" "}
-              <Link
-                href="/trial"
-                className="font-bold text-brand underline decoration-line underline-offset-4"
+              AIで決めきれないときは{" "}
+              <PlanCta
+                plan={ENTRY_PLAN}
+                from="hero_second"
+                className="!inline font-bold text-brand underline decoration-line underline-offset-4"
               >
-                1件だけ試す
-              </Link>{" "}
-              こともできます。
+                {advisorWord()}に確カメる
+              </PlanCta>
+              {" "}こともできます。
             </p>
 
             {/* ══════════════════════════════════════════
@@ -681,9 +728,23 @@ export default async function HomePage() {
           </div>
         </Wrap>
 
-        {/* 相談する男性と、読んで返す女性を1枚に入れる。
-            片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
-        <HeroBoard openIds={openPlanIds()} />
+        {/* ══════════════════════════════════════════
+            1画面目の絵を、入れ替えた
+            ══════════════════════════════════════════
+            ここには Before → 実在する異性に相談 → After の3枚があった。
+
+            見出しとボタンを「整理する」に変えたあとも、
+            すぐ下のこの絵がいちばん大きく
+            「異性に相談するサービス」と言い続けていた。
+            絵のほうが強いので、変えた芯が打ち消されていた。
+
+            実際の画面（相手の一覧）を出す。
+            複数のアプリ、複数の相手、それぞれの次の一手。
+            5秒で「何をする場所か」が分かるのは、言葉よりこちら。
+
+            前の絵（components/brand/HeroBoard.tsx）は消した。
+            残しておくと、芯が戻ったときに戻される。 */}
+        <HeroDashboard />
 
         {/* ── 中身の無い余白を外した ──────────────────
             ここは Wrap(pb-10 pt-3) + div だけが残っていて、
@@ -721,80 +782,191 @@ export default async function HomePage() {
 
       </section>
 
-      {/* ══ 1.1 恋亀との会話 ══ */}
+      {/* ══ 1.05 判断疲れ ══ */}
       {/* ══════════════════════════════════════════════
-          説明より先に、会話を見せる
+          疲れているのは、恋愛にではない
           ══════════════════════════════════════════════
-          「話すだけで整理されます」と書いても伝わらない。
-          やりとりを見せて、そのあとに、できたものを出す。
+          「恋愛相談がしたい」人は、そんなに多くない。
+          多いのは、マッチはしていて、そのあとで止まっている人。
 
-          順番は 会話 → できたもの（EP）→ 人に聞く提案。
-          最後が「人に聞ける」なのは、そこが値段の理由だから。
+            withのAさん、昨日何話したっけ
+            PairsのBさん、電話いつするんやっけ
+            タップルのCさん、これ返信したっけ
 
-          言葉と判定は lib/koi/demo.ts。
-          恋亀の返事が2文を超えたり、質問が2つ入ったり、
-          会話に出ていないことがEPに入ると、公開前に止まる。 */}
-      <Block tint>
+          アプリが複数、相手が複数。そのたびに小さな判断が増える。
+          疲れているのは、判断に。
+
+          ここを名指しできると、ChatGPT とも友達とも
+          競合しなくて済む。困りごとの形が違うので。 */}
+      <Block>
         <h2 className="text-huge font-black leading-[1.35] text-slate">
-          話したら、
+          マッチするほど、
           <br className="sm:hidden" />
-          ここまで残る。
+          考えることが増えていく。
         </h2>
-        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          入力する欄はありません。話した内容から、ひとりでに残ります。
-        </p>
 
-        <div className="mt-6 max-w-[34em]">
-          <TalkDemo />
-        </div>
-
-        {/* ══════════════════════════════════════════════
-            「2回目は、続きから」を、ここに畳んだ
-            ══════════════════════════════════════════════
-            前は、すぐ下に独立した節として置いていた。
-
-            同じ恋亀との会話を、見出し・説明・吹き出しの組で
-            2回続けて出していたので、読む人は
-            「さっきと同じものをもう一度見せられている」と感じる。
-            実測で、デモ3つがページの45%を占めていた。
-
-            中身（2回目は覚えている）は残す。ここが月額の理由で、
-            消すと月額が「AIの利用料」にしか見えなくなる。
-            ただし、節ではなく、1回目の続きとして小さく出す。
-
-            判定は lib/koi/demo.ts にそのまま置いてある。
-              2回目が恋亀から始まると落ちる（聞き直している）
-              利用者の最初の一言が長いと落ちる（説明させている）
-              1回目の「次にやること」とつながっていないと落ちる */}
-        <p className="mt-7 max-w-[30em] text-[14px] font-black leading-[1.7] text-slate">
-          2回目は、続きから。
-          <span className="ml-1.5 font-bold text-steel">
-            前回どこまで話したかを、もう一度説明しなくて済みます。
-          </span>
-        </p>
-
-        <ul className="mt-3 flex max-w-[34em] flex-col gap-2.5 rounded-card bg-paper px-3 py-4 sm:px-4">
-          {DEMO_AGAIN.map((t) => (
-            <li key={t.say} className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}>
-              <div className="flex max-w-[86%] items-end gap-2">
-                {t.who === "koi" && <KoiFace size={34} delay={0.4} className="-mb-1" />}
-                <p
-                  className={`rounded-card px-3.5 py-2.5 text-[13.5px] leading-[1.75] ${
-                    t.who === "me"
-                      ? "rounded-br-[4px] bg-brand font-bold text-paper"
-                      : "rounded-bl-[4px] bg-paper text-slate shadow-card"
-                  }`}
-                >
-                  {t.say}
-                </p>
-              </div>
+        <ul className="mt-7 flex max-w-[34em] flex-col gap-2.5">
+          {[
+            ["withのAさん", "昨日、何話したっけ"],
+            ["PairsのBさん", "電話、いつするんやっけ"],
+            ["タップルのCさん", "これ、返信したっけ"],
+            ["Dさん", "初デート、いつやった"],
+          ].map(([who, say]) => (
+            <li
+              key={who}
+              className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 rounded-soft bg-mist px-4 py-3.5"
+            >
+              <span className="text-[12.5px] font-black text-steel">{who}</span>
+              <span className="text-[14.5px] font-bold leading-[1.7] text-slate">{say}</span>
             </li>
           ))}
         </ul>
 
-        <p className="mt-3 max-w-[30em] text-[12.5px] leading-[1.8] text-steel">
+        <p className="mt-6 max-w-[30em] text-[15px] font-bold leading-[1.85] text-slate">
+          恋愛に疲れているというより、
+          <br className="sm:hidden" />
+          判断に疲れているのかもしれません。
+        </p>
+        {/* 畳んだ節から移した1行。
+            上の絵（1画面目の一覧）が答えなので、ここは言葉だけでよい。 */}
+        <p className="mt-3 max-w-[30em] text-[14px] leading-[1.9] text-steel">
+          誰に何を送ったか。誰と電話したか。次に誰と会うか。
+          頭の中だけで覚えておかなくて大丈夫です。
+        </p>
+      </Block>
+
+      {/* ══ 1.06 「複数アプリ、複数人。全部ここに。」を畳んだ ══ */}
+      {/* ══════════════════════════════════════════════
+          同じ画面を、2回続けて出していた
+          ══════════════════════════════════════════════
+          1画面目の絵を、Before/After から相手の一覧に替えた。
+          その直後にこの節があり、同じ一覧をもう一度出していた。
+
+          携帯で見ると、2画面続けて同じカードが並ぶ。
+          読む人は「さっき見た」と思って飛ばす。
+
+          一覧は1画面目が持つ。
+          ここで言いたかった1行（頭の中だけで覚えなくていい）は、
+          その上の「判断疲れ」の節の締めに移した。 */}
+
+      {/* ══ 1.07 ここまでが残る ══ */}
+      {/* ══════════════════════════════════════════════
+          相談して終わりじゃない
+          ══════════════════════════════════════════════
+          相談だけが並んでいると、相談サービスに見える。
+
+          並べるのは 相談 → 行動 → 結果。
+            2回目に誘うか話した   （相談）
+            誘ってOKをもらった    （行動と結果）
+            NEXT 日程を決める     （次）
+
+          ここが続いているから、次に話すときに
+          「Aさんなんやけど」から始められる。
+          それが月額の理由そのもの。
+
+          判定は lib/koi/timelineDemo.ts。
+          相談だけ／行動だけになったら、公開の前に止まる。 */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          相談して、
+          <br className="sm:hidden" />
+          終わりじゃない。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          送った。返信が来た。電話した。会った。
+          その結果まで残るから、次の相談がラクになります。
+        </p>
+
+        <div className="mt-7 max-w-[26em] rounded-card border border-line bg-paper p-5 shadow-card">
+          <p className="text-[13px] font-black text-slate">
+            Aさん
+            <span className="ml-2 rounded-pill bg-mist px-2 py-0.5 text-[10.5px] font-bold text-steel">
+              with
+            </span>
+          </p>
+          <div className="mt-4">
+            <Timeline items={DEMO_TIMELINE} />
+          </div>
+        </div>
+
+        <p className="mt-6 max-w-[30em] text-[15px] font-bold leading-[1.85] text-slate">
+          次に話すときは、「Aさんなんやけど」から始められます。
+        </p>
+        <p className="mt-1.5 max-w-[30em] text-[13px] leading-[1.8] text-steel">
           相手が何人いても、それぞれ別に覚えています。
         </p>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者の記録ではありません。
+        </p>
+      </Block>
+
+      {/* ══ 1.1 話す → 1枚になる ══ */}
+      {/* ══════════════════════════════════════════════
+          1節に、1つのことだけ
+          ══════════════════════════════════════════════
+          ここは 1,193px あって、トップでいちばん高かった。
+          中に3つ入っていたため。
+            恋亀との会話（7往復→5往復に減らしたもの）
+            できたもの（EPのカード）
+            2回目は、続きから（もう1本の会話）
+
+          3つめは、すぐ上の節（ここまでが残る）が同じことを
+          言っている。「次に話すときは『Aさんなんやけど』から」。
+          2つめも、出している形が違うだけで同じ。
+
+          残すのは1つ。「話す」と「返ってくる1枚」の関係。
+          会話は3往復だけ見せて、矢印で1枚につなぐ。
+
+          出している1枚は、実際に返ってくるものと同じ部品
+          （SituationCard）。ここだけ別に作ると、
+          見せている1枚と返ってくる1枚がずれる。
+
+          会話は ChatGPT でしてもらうので、吹き出しの上に
+          そう書いておく。ここで話すと思われると、着いてから戸惑う。 */}
+      <Block tint>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          話したら、
+          <br className="sm:hidden" />
+          1枚になって返る。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          入力する欄はありません。まとめなくても大丈夫です。
+        </p>
+
+        <div className="mt-7 max-w-[26em]">
+          <p className="text-[11.5px] font-bold text-steel">ChatGPT で話す</p>
+          <ul className="mt-2 flex flex-col gap-2.5 rounded-card bg-paper px-3 py-4 sm:px-4">
+            {DEMO_TALK.slice(0, 4).map((t, i) => (
+              <li
+                key={t.say}
+                className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}
+              >
+                <div className="flex max-w-[86%] items-end gap-2">
+                  {t.who === "koi" && (
+                    <KoiFace size={30} delay={i * 0.4} className="-mb-1" />
+                  )}
+                  <p
+                    className={`rounded-card px-3.5 py-2.5 text-[13px] leading-[1.75] ${
+                      t.who === "me"
+                        ? "rounded-br-[4px] bg-brand font-bold text-paper"
+                        : "rounded-bl-[4px] bg-mist text-slate"
+                    }`}
+                  >
+                    {t.say}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <p aria-hidden className="py-3 text-center text-[18px] font-black text-brand">
+            ↓
+          </p>
+
+          <p className="mb-2 text-[11.5px] font-bold text-steel">タシカメに残る</p>
+          <SituationCardView card={DEMO_CARD} />
+        </div>
 
         <p className="mt-5 text-[12px] leading-[1.8] text-steel">
           ※ 画面の見本です。特定の利用者のやりとりではありません。
@@ -941,42 +1113,49 @@ export default async function HomePage() {
           仕組み（PICKS / aggregate）も言葉（ab.ts）も消していない。
           相談を書く画面では、いまも AとB を選べる。 */}
 
-      {/* ══ 4. AIとの役割の違い ══ */}
+      {/* ══ 4. 3つの役割 ══ */}
       {/* ══════════════════════════════════════════════
-          比較表（110行）を、短い1節にした
+          ChatGPT を倒しにいかない
           ══════════════════════════════════════════════
-          タシカメ / AI / 友達 / 恋愛コンサル の4列を
-          どの幅でも表で出していた。作りとしては正しく動いていたが、
-          買うかどうかを決める場面で、4つを見比べる表は重い。
+          ここは「AI / タシカメ」の2枚だった。
+          2枚だと、どうしても「どちらが優れているか」に読める。
 
-          ここで言いたいことは1つだけ。
-            AIは予測する。タシカメは、実際の反応を聞く。
+          実際は競っていない。
+          ChatGPT は会話が得意で、そのまま使ってもらう。
+          タシカメが持つのは、相手ごとに覚えておくほう。
 
-          AIを下に置かない。
-          実際、文面を作るところまではAIのほうが速い。
-          競っていないので、競っているように書かない。
+          3つに分けて、それぞれの持ち場を書く。
+          AIを下に置かない。友達も下に置かない。
+          「ここだけ埋まっていない」が伝わればよい。
 
-          表の中身と、景表法まわりの判定は lib/ask/compare.ts に残してある。
-          （shown を true に戻せば、また出せる） */}
+          前の比較表（タシカメ / AI / 友達 / 恋愛コンサルの4列）は
+          lib/ask/compare.ts に残してある（shown を true で戻せる）。 */}
       <Block tint>
         <h2 className="text-huge font-black leading-[1.35] text-slate">
-          AIで考える。
+          考えるのはAI。
+          <br />
+          確カメるのは人。
           <br className="sm:hidden" />
-          人に確カメる。
+          覚えておくのがタシカメ。
         </h2>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-7 flex flex-col gap-3">
           {[
             {
-              who: "AI",
-              can: "文章や選択肢を考える",
-              lead: "何パターンでも、すぐ出てくる。たたき台を作るのは速い。",
+              who: "ChatGPT",
+              can: "考える",
+              lead: "返信案も、言い方も、選択肢も。いま使っているなら、そのまま使ってください。恋亀の文を渡すので、話し相手だけ変わります。",
             },
             {
               who: "タシカメ",
-              can: "実際にどう受け取られるかを聞く",
-              lead: "送る相手に近い人が、実際に読む。感じたことがそのまま返る。",
+              can: "覚えておく",
+              lead: "誰と、どのアプリで、どこまで進んでいて、次に何をするか。話すたびに1か所にたまります。毎回いちから説明しなくて済みます。",
               ours: true,
+            },
+            {
+              who: `実在する${advisorWord()}`,
+              can: "確カメる",
+              lead: "AIで決めきれないときだけ。実際に読んだ人が、どう受け取ったかを返します。毎回ではありません。",
             },
           ].map((x) => (
             <div
@@ -985,23 +1164,69 @@ export default async function HomePage() {
                 x.ours ? "border-brand bg-paper" : "border-line bg-paper"
               }`}
             >
-              <p
-                className={`text-[12px] font-black ${x.ours ? "text-brand" : "text-steel"}`}
-              >
-                {x.who}
-              </p>
-              <p className="mt-1.5 text-[16px] font-black leading-[1.5] text-slate">
-                {x.can}
-              </p>
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <p className={`text-[12px] font-black ${x.ours ? "text-brand" : "text-steel"}`}>
+                  {x.who}
+                </p>
+                <p className="text-[17px] font-black leading-[1.4] text-slate">{x.can}</p>
+              </div>
               <p className="mt-2 text-[13px] leading-[1.8] text-steel">{x.lead}</p>
             </div>
           ))}
         </div>
+      </Block>
 
-        <p className="mt-5 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          AIは、相手側の人が実際にどう感じるかまでは分かりません。
-          そこだけ、本人に聞いたほうが早い。
+      {/* ══ 4.5 友達との役割 ══ */}
+      {/* ══════════════════════════════════════════════
+          友達も、競合にしない
+          ══════════════════════════════════════════════
+          「友達より正確です」とは書かない。書けない。
+          友達に聞けるなら、そのほうがいい。
+
+          埋まっていないのは、聞ける相手がいない瞬間ではなく、
+          聞きにくい瞬間のほう。
+            毎回は聞きにくい
+            同じ相談を何度もしたくない
+            異性の友達がいない
+            気を遣わない返事がほしい
+
+          ここを名指しできると、友達を否定せずに済む。 */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          友達に聞きたい。
+          <br />
+          でも、毎回は聞きにくい。
+        </h2>
+
+        <ul className="mt-7 flex max-w-[32em] flex-col gap-2.5">
+          {[
+            "同じ人の話を、何度もするのは気が引ける",
+            "異性の友達が、そんなに多くない",
+            "気を遣わない返事が、ほしいときがある",
+          ].map((t) => (
+            <li
+              key={t}
+              className="rounded-soft bg-mist px-4 py-3.5 text-[14px] leading-[1.8] text-steel"
+            >
+              {t}
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-6 max-w-[30em] text-[15px] font-bold leading-[1.85] text-slate">
+          友達の代わりではありません。
+          <br className="sm:hidden" />
+          聞きにくいときの、もう一つの手です。
         </p>
+
+        {/* 「異性に確カメる」側の入口。
+            第一CTA（整理する）とは役が違うので、ここに置く。 */}
+        <Link
+          href="/trial"
+          className="mt-6 inline-flex min-h-[50px] items-center justify-center rounded-pill border border-brand bg-paper px-6 text-[14.5px] font-bold text-brand"
+        >
+          {advisorWord()}に読んでもらう <span aria-hidden className="ml-1.5">&rarr;</span>
+        </Link>
       </Block>
 
       {/* ══ 5. 「迷うのは、一度じゃない」を外した ══ */}
@@ -1072,10 +1297,28 @@ export default async function HomePage() {
             {PAYWALL_HEAD}
           </p>
 
-          <p className="mt-3 text-[30px] font-black leading-none text-slate sm:text-[34px]">
-            <Yen yen={PASS_YEN} />
-            <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
-          </p>
+          {/* ══════════════════════════════════════════
+              期間と払い方を、分けて選ばせる
+              ══════════════════════════════════════════
+              期間4つ × 払い方2つで7通り。
+              カードを7枚並べると、どれを見ればいいか分からない。
+
+                1 使う期間を選ぶ（1 / 3 / 6 / 12か月）
+                2 払い方を選ぶ（一括 / 月々）
+
+              月払いは「いつでも解約」ではない。期間が決まっていて、
+              支払いだけ分けるもの。札にも断りにも、必ず期間を書く。
+              「月々2,780円」だけを大きく出さない。
+
+              値段・採算・特典は lib/pass/periods.ts。
+              一括が月払いより高い／長いほうが月あたり高い／
+              どれかが限界利益率の床を割ると、公開の前に止まる。
+
+              創業メンバー価格はやめた。一度下げた値段は、
+              上げるときに必ず揉める。先着は、値段ではなく中身を足す。 */}
+          <div className="mt-5">
+            <PriceChooser />
+          </div>
 
           <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">
             {INCLUDED.map((x) => (
