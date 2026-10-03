@@ -15,6 +15,8 @@ import { PERIODS, perMonth, perksFor } from "@/lib/pass/periods";
 import { FREE_PEOPLE, FREE_RECORDS } from "@/lib/pass/free";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
+import { canSellCalls } from "@/lib/call/gate";
+import { CALL_OPTIONS, CALL_ENTRY } from "@/lib/call/menu";
 import { HERO_A, HERO_B1, HERO_B2, NAME, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE, TRIAD, TRIAD_LINES } from "@/lib/voice";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
@@ -141,23 +143,23 @@ const CTA_NOTE = `${FREE_PEOPLE}人・${FREE_RECORDS}記録まで無料。登録
 const FAQ: { q: string; a: string; safety?: boolean }[] = [
   {
     q: "ChatGPTを使っていても、必要ですか？",
-    a: "ChatGPTはそのまま使ってください。倒しにいっていません。足りないのは、話したことが残らないところです。次に相談するとき、また最初から説明することになります。タシカメは、相手ごとに「どこまで進んでいて、次に何をするか」を覚えておく側です。",
+    a: "そのまま使ってください。足りないのは、話したことが残らないところです。次に相談するとき、また最初から説明することになります。タシカメは、覚えておく側です。",
   },
   {
     q: "複数のマッチングアプリでも使えますか？",
-    a: "そのための形にしてあります。with・Pairs・タップルなど、どこで出会ったかを相手ごとに持つので、アプリをまたいで1つの一覧になります。アプリごとに見比べる必要はありません。",
+    a: "そのための形にしてあります。with・Pairs・タップルなど、どこで出会ったかを相手ごとに持つので、アプリをまたいで1つの一覧になります。",
   },
   {
     q: "無料では何ができますか？",
-    a: `${FREE_PEOPLE}人・${FREE_RECORDS}記録まで、そのまま使えます。貼って整理して、次にやることが残るところまでです。登録もお支払いもありません。相手が増えてきたら Tashikame Pass です。`,
+    a: `${FREE_PEOPLE}人・${FREE_RECORDS}記録まで、そのまま使えます。貼って整理して、次にやることが残るところまで。登録もお支払いもありません。`,
   },
   {
     q: `実在する${advisorWord()}には、何を聞けますか？`,
-    a: `「これを送ったら、実際どう受け取られるか」です。このLINEどう感じる、この誘い方どう見える、この写真どう、デート後のこの状況どう見える。AIの予測では埋まらないところだけ、人に回ります。Pass に月${HUMAN_PER_MONTH}回ぶん含まれています。`,
+    a: `「これを送ったら、実際どう受け取られるか」です。LINE、誘い方、写真、デート後の状況。AIの予測では埋まらないところだけ、人に回ります。Pass に月${HUMAN_PER_MONTH}回ぶん含まれています。`,
   },
   {
     q: "相談した内容は、相手に知られませんか？",
-    a: `知られません。相手の名前・写真・連絡先は保存していません。電話番号やアカウント名が会話に出てきても、こちらに届く前に伏せ字にします。答えてくれた${advisorWord()}とあなたが直接つながる仕組みも、作っていません。`,
+    a: `知られません。相手の名前・写真・連絡先は保存していません。電話番号やアカウント名が会話に出てきても、こちらに届く前に伏せ字にします。`,
     safety: true,
   },
   {
@@ -171,11 +173,11 @@ const FAQ: { q: string; a: string; safety?: boolean }[] = [
        実際、恋亀と記録のほうは性別で変わらない。
        変わるのは確カメる（回答者が女性だけ）の1つ。 */
     q: "女性も使えますか？",
-    a: `${notYetNote() ?? "男女どちらの方にもお使いいただけます。"}まずは一方に絞って、使う人の近くで作り込んでいます。順番の話で、どちらが大事ということではありません。`,
+    a: `${notYetNote() ?? "男女どちらの方にもお使いいただけます。"}まずは一方に絞って、使う人の近くで作り込んでいます。順番の話です。`,
   },
   {
     q: "解約はいつでもできますか？",
-    a: "会員ページから、こちらに連絡しなくても解約できます。解約したあとも、お支払い済みの期間の終わりまでは使えます。期間が決まっているプラン（3か月・6か月・12か月）の月払いは、途中でやめても残りのご請求は止まりません。",
+    a: "会員ページから、こちらに連絡せずに解約できます。お支払い済みの期間の終わりまでは使えます。期間が決まっているプランの月払いは、途中でやめても残りのご請求は止まりません。",
   },
 ];
 
@@ -542,38 +544,25 @@ export default async function HomePage() {
         </div>
         <p className="mt-2 text-[11px] leading-[1.7] text-steel">※ 写真はイメージです。</p>
 
-        {/* ── いま、3人と並行している ───────────────
-            アプリ名を出す。「複数人」と書くより、
-            with / Pairs / タップル と並ぶほうが自分の画面に見える。 */}
-        <ul className="mt-8 flex max-w-[30em] flex-col gap-1.5">
-          {[
-            ["with", "Aさんとマッチ。"],
-            ["Pairs", "Bさんとやりとり中。"],
-            ["タップル", "Cさんとは、土曜に初デート。"],
-          ].map(([app, say]) => (
-            <li key={app} className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-              <span className="rounded-pill bg-mist px-2 py-0.5 text-[11px] font-bold text-steel">
-                {app}
-              </span>
-              <span className="text-[15px] font-bold leading-[1.8] text-slate">{say}</span>
-            </li>
-          ))}
-        </ul>
+        {/* ══════════════════════════════════════════
+            ストーリーを、短い具体例に戻した
+            ══════════════════════════════════════════
+            ここは一度、ひとりの男性の1週間として長く書いた
+            （3つのアプリ ／ 最初は楽しい ／ 開くたびに説明し直す ／
+              返信を考える・誘う時期を考える ／ そして、また次の人）。
 
-        <p className="mt-6 max-w-[30em] text-[15px] leading-[1.9] text-steel">
-          最初は、楽しい。
-          <br />
-          でも人数が増えると、こうなる。
-        </p>
+            実測 1,222px。携帯で1.5画面ぶんあった。
+            「これ俺やん」は、読ませる量ではなく、
+            自分が口に出したことがある一言が並ぶかどうかで決まる。
 
-        {/* ── 思い出せないこと ──────────────────────
-            口に出るときの言い方そのままにする。
-            「記憶の負担」と書いた瞬間に、他人の話になる。 */}
-        <ul className="mt-5 flex max-w-[26em] flex-col gap-2">
+            口に出る形だけを、テンポよく並べる。
+            説明は足さない。足した時点で、他人の話になる。 */}
+        <ul className="mt-8 flex max-w-[26em] flex-col gap-2">
           {[
-            "Aさん、昨日なんの話したっけ？",
-            "Bさん、もう電話誘った？",
-            "Cさん、店まだ決めてない。",
+            "Aさん、昨日何話したっけ。",
+            "Bさん、電話誘ったっけ。",
+            "Cさん、次いつ会う？",
+            "ChatGPTにまた最初から説明する？",
           ].map((t) => (
             <li
               key={t}
@@ -584,44 +573,24 @@ export default async function HomePage() {
           ))}
         </ul>
 
-        {/* ── 開くたびに、説明し直す ────────────────
-            ここがいちばん効く。3つ開いて、3回同じことを言う。
-            短い行を重ねて、繰り返している感じを出す。 */}
-        <div className="mt-8 max-w-[30em]">
-          <p className="flex flex-wrap gap-x-4 gap-y-1 text-[15px] font-bold leading-[1.9] text-slate">
-            <span>LINEを開く。</span>
-            <span>アプリを開く。</span>
-            <span>ChatGPTを開く。</span>
-          </p>
-          <p className="mt-3 text-[14.5px] leading-[1.95] text-steel">
-            そのたびに、
-            <br />
-            「この人とはこういう状況で、前回こうなって……」
-            <br />
-            を、最初から説明する。
-          </p>
-        </div>
-
-        {/* ── そして、また次の人 ────────────────────
-            考えることを3つ並べて、最後に「また次の人」で畳む。
-            終わらないことが伝わればよい。 */}
-        <div className="mt-7 max-w-[30em] border-l-2 border-line pl-4">
-          <p className="text-[14.5px] leading-[2.05] text-steel">
-            返信を考える。
-            <br />
-            誘うタイミングを考える。
-            <br />
-            今日は動くのか、待つのか考える。
-          </p>
-          <p className="mt-2.5 text-[14.5px] font-bold leading-[1.9] text-slate">
-            そして、また次の人。
-          </p>
-        </div>
+        {/* 開いて、また考える。4行で終わらせる */}
+        <p className="mt-7 max-w-[30em] text-[15px] font-bold leading-[2.05] text-steel">
+          LINEを開く。
+          <br />
+          マチアプを開く。
+          <br />
+          ChatGPTを開く。
+          <br />
+          <span className="text-slate">また考える。</span>
+        </p>
 
         <p className="mt-9 max-w-[30em] text-[19px] font-black leading-[1.75] text-slate sm:text-[22px]">
           恋愛に疲れてるというより、
           <br />
           判断と記憶に疲れてる。
+        </p>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.9] text-steel">
+          頭の中だけで、全部覚えておかなくていい。
         </p>
       </Block>
 
@@ -812,6 +781,65 @@ export default async function HomePage() {
         </Link>
       </Block>
 
+      {/* ══ 6.5 電話 ══ */}
+      {/* ══════════════════════════════════════════════
+          主役にしない
+          ══════════════════════════════════════════════
+          売っているのは「判断を10〜30分で片付けること」で、
+          話すこと自体ではない。
+
+          大きくすると、製品が「異性と話せるサービス」に見える。
+          そう見えた時点で、月額の理由が消える。
+          だから、ひとつ前の節（人に確カメる）の続きとして、
+          枠に入れて小さく置く。見出しも立てない。
+
+          値段と原価は lib/call/menu.ts。
+          長いほど1分あたりが安いこと、どの長さも床（50%）を守ること、
+          答える人への支払いが帯の中に収まっていること、
+          30分を超えないこと、入口が既存の15分より安いこと、
+          そして説明が話し相手の商売になっていないことを見ている。
+
+          通話の鍵（DAILY_API_KEY）が入るまでは「受付前」。
+          canSellCalls() を見るので、手で書き換えない。 */}
+      <Block tint>
+        <div className="max-w-[32em] rounded-card border border-line bg-paper p-5 shadow-card sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-[12px] font-black tracking-[0.06em] text-brand">電話で確カメる</p>
+            {!canSellCalls() && (
+              <span className="rounded-pill bg-mist px-2.5 py-1 text-[10.5px] font-bold text-steel">
+                受付前
+              </span>
+            )}
+          </div>
+
+          <p className="mt-2 text-[18px] font-black leading-[1.6] text-slate sm:text-[20px]">
+            文字より、話した方が早いときに。
+          </p>
+          <p className="mt-2.5 text-[13.5px] leading-[1.85] text-steel">
+            マッチングアプリを使っている{advisorWord()}に、{CALL_ENTRY.minutes}分から直接。
+            「これどう感じる？」を、その場で話せます。
+          </p>
+
+          <ul className="mt-4 grid grid-cols-3 gap-2">
+            {CALL_OPTIONS.map((o) => (
+              <li
+                key={o.minutes}
+                className="rounded-soft border border-line bg-mist px-2 py-2.5 text-center"
+              >
+                <span className="block text-[12px] font-bold text-steel">{o.minutes}分</span>
+                <span className="mt-0.5 block text-[16px] font-black tabular-nums text-slate">
+                  ¥{o.yen.toLocaleString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-3 text-[12px] leading-[1.8] text-steel">
+            税込。通話の準備ができ次第、順次はじめます。
+          </p>
+        </div>
+      </Block>
+
       {/* ══ 7. 役割分担 ══ */}
       {/* ══════════════════════════════════════════════
           ChatGPT を倒しにいかない
@@ -891,31 +919,32 @@ export default async function HomePage() {
           ではありません。
         </H>
 
-        {/* 札（グレーの箱）を3枚並べていた。
-            やらないことに箱を使うと、やることと同じ重さに見える。
-            行だけにして、高さを 1/3 にした。 */}
-        <ul className="mt-6 flex max-w-[32em] flex-col gap-1.5">
-          {[
-            "マッチ率やいいねを増やすサービスではありません",
-            "脈あり判定も、相手を動かす駆け引きもありません",
-            "高額な恋愛コンサルでも、AIチャットの置き換えでもありません",
-          ].map((t) => (
-            <li key={t} className="flex items-start gap-2.5 text-[14px] leading-[1.85] text-steel">
-              <span aria-hidden className="mt-[2px] shrink-0 text-[12px] font-black text-steel">
-                ×
-              </span>
-              <span className="min-w-0">{t}</span>
+        {/* ══════════════════════════════════════════
+            文から、印に変えた
+            ══════════════════════════════════════════
+            「マッチ率やいいねを増やすサービスではありません」のような
+            文を3つ並べていた。読ませると、やらないことに
+            やることと同じ時間を使わせることになる。
+
+            やらないことは、名前だけで足りる。
+            読む人は、自分が探しているものがここに入っているかを
+            見ているだけなので。 */}
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {["マッチ率攻略", "脈あり判定", "駆け引き", "高額恋愛コンサル"].map((t) => (
+            <li
+              key={t}
+              className="flex items-center gap-1.5 rounded-pill border border-line bg-paper px-3.5 py-2 text-[13px] font-bold text-steel"
+            >
+              <span aria-hidden className="text-[12px]">×</span>
+              {t}
             </li>
           ))}
         </ul>
 
-        <p className="mt-6 max-w-[30em] text-[16px] font-black leading-[1.8] text-slate">
-          相手を動かすのではなく、
+        <p className="mt-7 max-w-[30em] text-[16px] font-black leading-[1.85] text-slate">
+          マッチした後の、記憶・判断・次の行動。
           <br className="sm:hidden" />
-          自分の判断をラクにする。
-        </p>
-        <p className="mt-2.5 max-w-[30em] text-[14px] leading-[1.9] text-steel">
-          マッチした後の、記憶・判断・次の行動。そこに集中します。
+          そこに集中します。
         </p>
       </Block>
 

@@ -1,4 +1,5 @@
 import { PERIODS, perMonth } from "./periods";
+import { HUMAN_PER_MONTH } from "./entitle";
 
 /* ══════════════════════════════════════════════════
    無料でできること
@@ -96,12 +97,30 @@ export type Upsell = {
   later: string;
 };
 
+/* ══════════════════════════════════════════════════
+   並べるのは3つまで
+   ══════════════════════════════════════════════════
+   ここは5つ並べていた。
+     3人目から先も、まとめて管理
+     記録の上限なし
+     複数人を並べて見る
+     実在する異性に確カメる（月1回）   ← 月3回になったのに、ここだけ古い
+     電話など、会員だけのお願い
+
+   壁に当たった人が読むのは、いちばん長くて3行。
+   5つ並べると、どれも読まれないまま「あとで」が押される。
+
+   読む人が知りたいのは「いま止まったことが、どうなるか」。
+   止まったこと（人数・記録）を1つ目に置いて、あと2つだけ。
+
+   ── 回数を、直書きしない ────────────────────────
+   月1回のまま残っていた。トップの「月3回」と食い違う。
+   買う直前にいちばん大事な数字が違っていると、それだけで止まる。
+   entitle.ts の HUMAN_PER_MONTH から作る。下の判定でも見る。 */
 const UNLOCKS = [
-  "3人目から先も、まとめて管理",
-  "記録の上限なし",
-  "複数人を並べて見る",
-  `実在する異性に確カメる（月1回）`,
-  "電話など、会員だけのお願い",
+  `人数も記録も、上限なし（無料は${FREE_PEOPLE}人・${FREE_RECORDS}記録）`,
+  "前回の続きから、AIに相談できる",
+  `月${HUMAN_PER_MONTH}回、実在する異性に確カメる`,
 ];
 
 export function upsellFor(wall: Wall): Upsell | null {
@@ -109,10 +128,7 @@ export function upsellFor(wall: Wall): Upsell | null {
   if (wall === "people") {
     return {
       title: `${FREE_PEOPLE + 1}人目も、まとめますか。`,
-      body:
-        `無料では${FREE_PEOPLE}人まで管理できます。` +
-        `Tashikame Pass なら、アプリをまたいで何人でも、` +
-        `どこまで進んでいて次に何をするかを1か所にまとめられます。`,
+      body: `この続きを、タシカメに覚えてもらう。`,
       unlocks: UNLOCKS,
       cta: "プランを見る",
       later: "あとで",
@@ -121,10 +137,7 @@ export function upsellFor(wall: Wall): Upsell | null {
   if (wall === "records") {
     return {
       title: "記録が、たまってきました。",
-      body:
-        `無料でためられるのは${FREE_RECORDS}件までです。` +
-        `タシカメは、たまるほど前回の続きから話せるようになります。` +
-        `この続きを残すには Pass へ。`,
+      body: `この続きを、タシカメに覚えてもらう。`,
       unlocks: UNLOCKS,
       cta: "この続きを残す",
       later: "あとで",
@@ -132,9 +145,7 @@ export function upsellFor(wall: Wall): Upsell | null {
   }
   return {
     title: "人に確カメるのは、Pass からです。",
-    body:
-      "AIで決めきれないときだけ、実在する異性が実際にどう受け取ったかを返します。" +
-      "Pass に入ると、月1回ぶん使えます。それ以上は、そのつどお申し込みいただけます。",
+    body: "この続きを、タシカメに覚えてもらう。",
     unlocks: UNLOCKS,
     cta: "Pass に入る",
     later: "あとで",
@@ -213,6 +224,29 @@ export function usageLine(u: Usage): string {
     if (!u.later) throw new Error(`${w} の画面に、あとでにする道がありません`);
     // 何ができるようになるかが、書いてあること。
     if (u.unlocks.length === 0) throw new Error(`${w} に、何ができるようになるかがありません`);
+    /* 並べるのは3つまで。
+       壁に当たった人が読むのは、いちばん長くて3行。
+       5つ並べると、どれも読まれないまま「あとで」が押される。 */
+    if (u.unlocks.length > 3) {
+      throw new Error(`${w} に、できるようになることが ${u.unlocks.length} 個あります（3つまで）`);
+    }
+    /* 主コピーが、全部の壁で同じであること。
+       壁ごとに言い方が変わると、買うものが違うように読める。 */
+    if (!u.body.includes("この続きを、タシカメに覚えてもらう")) {
+      throw new Error(`${w} の主コピーが、ほかの壁と違います（${u.body}）`);
+    }
+  }
+
+  /* 確カメるの回数が、いまの設定と合っていること。
+     ここは「月1回」のまま残っていて、トップの「月3回」と
+     食い違っていた。買う直前にいちばん大事な数字が違うと、
+     それだけで止まる。 */
+  {
+    const line = UNLOCKS.find((t) => t.includes("確カメ"));
+    if (!line) throw new Error("できるようになることに、確カメるが入っていません");
+    if (!line.includes(`月${HUMAN_PER_MONTH}回`)) {
+      throw new Error(`壁の言葉「${line}」が、月${HUMAN_PER_MONTH}回になっていません`);
+    }
   }
 
   // 壁が無いときは、何も出さないこと。
