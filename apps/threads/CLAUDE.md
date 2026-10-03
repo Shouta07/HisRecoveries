@@ -119,7 +119,7 @@ python -m core.main post-approved <acct>     # 承認済みだけ投稿（cron�
 ## 3. 主要ファイル地図
 
 ```
-GROWTH.md               有料100人までの設計。「何を回すか・何を測るか・何をやめるか」
+GROWTH.md               恋亀Threads運用設計。「何を回すか・何を測るか・何をやめるか」
 accounts/mens-body-lab/
   persona.json          語り手＋トーン＋posting.format=thread＋validation緩和設定
   hypotheses.json       5場面 + link_config(base_urls: apply=/ask) + discovery_questions
