@@ -3,10 +3,10 @@
     {
       "id": "20260930170207225870",
       "account_id": "mens-body-lab",
-      "status": "pending",
+      "status": "rejected",
       "created_at": "2026-09-30T17:02:07.225887",
-      "decided_at": null,
-      "decided_by": null,
+      "decided_at": "2026-10-03T05:53:02.486806",
+      "decided_by": "claude (link欠落のため出し直し)",
       "posted_at": null,
       "payload": {
         "text": "踏み込みたい。\nでも、踏み込みすぎたくない。\n\n———\n\nこの距離の話は、\n友達には聞きにくい。\n相手には、もっと聞けない。\n\n———\n\nだから、ずっと自分の中だけで回している。\n\n———\n\n本人には聞けないことを、\n同じ側に立つ人に聞いてみる。\n\n判定ではなく、どう受け取ったかが返る。\n\n———\n\n距離感、どこで決めてますか。",
@@ -31,10 +31,10 @@
     {
       "id": "20261001044837165000",
       "account_id": "mens-body-lab",
-      "status": "pending",
+      "status": "rejected",
       "created_at": "2026-10-01T04:48:37.165013",
-      "decided_at": null,
-      "decided_by": null,
+      "decided_at": "2026-10-03T05:53:02.568283",
+      "decided_by": "claude (link欠落のため出し直し)",
       "posted_at": null,
       "payload": {
         "text": "AIには通した。\n誤字もない。\n\nそれでも送信ボタンの前で、\n一回止まる。\n\n———\n\n止まるのは、たぶん慎重だから。\n適当な人は止まらない。\n\n———\n\nただ、いくら読み返しても\n「自分がどう読むか」しか分からない。\n受け取る側の目は、自分の中には無い。\n\n———\n\nだから、送る前に\n相手と同じ側に立つ人に 読んでもらう。\n\n返ってくるのは、実際にどう受け取ったか。\n\n———\n\nその文面、送る前に止まったことありますか。",
@@ -81,10 +81,10 @@
     {
       "id": "20261002043941912789",
       "account_id": "mens-body-lab",
-      "status": "pending",
+      "status": "rejected",
       "created_at": "2026-10-02T04:39:41.912801",
-      "decided_at": null,
-      "decided_by": null,
+      "decided_at": "2026-10-03T05:53:02.652918",
+      "decided_by": "claude (link欠落のため出し直し)",
       "posted_at": null,
       "payload": {
         "text": "マッチはする。\nでも、そこから続かない。\n\n———\n\n写真を変えてみる。\n変わらない。\n\n読まれているのは、その下の文章かもしれない。\n\n———\n\n自己紹介文は、書いた本人がいちばん読めない。\n何度も読み返したぶん、\n初めて読む人の目が想像できなくなる。\n\n———\n\n出す前に、一度だけ\n知らない人の目を通しておく。\n\n———\n\n自己紹介文、最後に書き直したのはいつですか。",
