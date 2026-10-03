@@ -8,8 +8,10 @@ import { DEMO } from "@/lib/ask/demo";
 import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
 import TalkDemo from "@/components/koi/TalkDemo";
+import { DEMO_AGAIN } from "@/lib/koi/demo";
+import { heroSub } from "@/lib/koi/gate";
 import { VERDICTS } from "@/lib/ask/model";
-import { NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
+import { HERO_A, HERO_B, NAME, SUB, THESIS, THESIS_A1, THESIS_A2, THESIS_B, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
 import { supply } from "@/lib/supply";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
@@ -568,16 +570,24 @@ export default async function HomePage() {
             同じ文を2回出すと、どちらも弱くなる。 */}
         <Wrap className="pb-2 pt-3 sm:pb-4 sm:pt-6">
           <h1 className="text-mega font-black leading-[1.15] text-slate">
-            迷ったら、
+            {HERO_A}
             <br />
             <span className="relative inline-block">
-              女性に聞けばいい。
+              {HERO_B}
               <span
                 aria-hidden
                 className="absolute -bottom-0.5 left-0 -z-10 h-[0.42em] w-full rounded-[2px] bg-brand/25"
               />
             </span>
           </h1>
+          {/* 何をすればいいかを1つだけ。いちばん軽い動作を書く。
+
+              恋亀と話せるかどうかで中身が変わる（lib/koi/gate.ts）。
+              鍵が入っていないあいだは、いまできること（確カメる）が出る。
+              手で書き換えないので、入れ忘れ・戻し忘れが起きない。 */}
+          <p className="mt-2.5 text-[18px] font-black leading-[1.5] text-brand sm:text-[20px]">
+            {heroSub}
+          </p>
           {/* ── 大きさの順番を直した ──────────────────
               見出し30px、この文13.5pxのグレーだった。
               いちばん大きいのが標語で、何のサービスかを言う文が
@@ -693,6 +703,64 @@ export default async function HomePage() {
 
         <p className="mt-4 text-[12px] leading-[1.8] text-steel">
           ※ 画面の見本です。特定の利用者のやりとりではありません。
+        </p>
+      </Block>
+
+      {/* ══ 1.15 2回目は、続きから ══ */}
+      {/* ══════════════════════════════════════════════
+          ここが月額の理由そのもの
+          ══════════════════════════════════════════════
+          1回目は「話しただけでできてる」。
+          2回目は「覚えてる」。
+
+          覚えていることを見せないと、
+          月額が「AIの利用料」にしか見えない。
+
+          利用者は名前を言うだけで、状況を説明しない。
+          説明させた時点で、覚えている意味が無くなる。
+
+          判定で縛ってある（lib/koi/demo.ts）。
+            2回目が恋亀から始まると落ちる（聞き直している）
+            利用者の最初の一言が長いと落ちる（説明させている）
+            1回目の「次にやること」とつながっていないと落ちる */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          2回目は、
+          <br className="sm:hidden" />
+          続きから。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          前回どこまで話したかを、もう一度説明しなくて済みます。
+        </p>
+
+        <ul className="mt-6 flex max-w-[34em] flex-col gap-2.5 rounded-card bg-mist px-3 py-4 sm:px-4">
+          {DEMO_AGAIN.map((t) => (
+            <li key={t.say} className={`flex ${t.who === "me" ? "justify-end" : "justify-start"}`}>
+              <div className="flex max-w-[86%] items-end gap-2">
+                {t.who === "koi" && (
+                  <span
+                    aria-hidden
+                    className="mb-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-paper text-[15px] shadow-card"
+                  >
+                    🐢
+                  </span>
+                )}
+                <p
+                  className={`rounded-card px-3.5 py-2.5 text-[13.5px] leading-[1.75] ${
+                    t.who === "me"
+                      ? "rounded-br-[4px] bg-brand font-bold text-paper"
+                      : "rounded-bl-[4px] bg-paper text-slate shadow-card"
+                  }`}
+                >
+                  {t.say}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-4 max-w-[30em] text-[13px] leading-[1.8] text-steel">
+          相手が何人いても、それぞれ別に覚えています。
         </p>
       </Block>
 
