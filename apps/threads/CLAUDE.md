@@ -123,7 +123,7 @@ GROWTH.md               恋亀Threads運用設計。「何を回すか・何を�
 accounts/mens-body-lab/
   persona.json          語り手＋トーン＋posting.format=thread＋validation緩和設定
   hypotheses.json       5場面 + link_config(base_urls: apply=/ask) + discovery_questions
-  thread_templates.json 連投テンプレ(mock/フォールバック)。CTA投稿に {link} プレースホルダ
+  post_forms.json       投稿の型。A/B/C/D の比率と型1〜5（構造・規則・例）。告知の例に {link}
   seo_clusters.json     場面別の検索クラスタ＋GEO質問（生成の素・編集可。生成は読まない）
   content_sources.json  引用リソース（1件=14投稿の在庫）。管理ページで編集可
   CONTENT_SOURCES.md    引用リソースの型の仕様
@@ -135,7 +135,7 @@ accounts/mens-body-lab/
 core/
   writer.py    generate_post→format==thread なら generate_thread（本線）。
                プロンプトは _build_thread_prompt が persona.json から組む。
-               mock/キー無しのときだけ thread_templates.json を使う。
+               mock/キー無しのときだけ post_forms.json の例文を使う。
                slug に対応するテンプレが無ければ生成を中止する（別場面の文面で代用しない）
   validator.py validate_post。persona["validation"] / allowed_topics でアカウント別に調整
   poster.py    Threads API。create_thread_post / create_thread_chain(連投=reply_to_id)

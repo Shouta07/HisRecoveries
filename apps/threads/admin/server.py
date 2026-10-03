@@ -31,7 +31,7 @@ EDITABLE_FILES = [
     ("persona.json", "ペルソナ", "json"),
     ("hypotheses.json", "仮説・リンク設定", "json"),
     ("patterns.md", "パターン", "md"),
-    ("thread_templates.json", "連投テンプレ(raw)", "json"),
+    ("post_forms.json", "投稿の型(raw)", "json"),
     ("seo_clusters.json", "SEO/GEOクラスタ", "json"),
     ("content_sources.json", "引用リソース(投稿の素)", "json"),
     ("CONTENT_SOURCES.md", "引用リソースの型(仕様)", "md"),
@@ -184,8 +184,8 @@ def render_account(acc: str, flash: str = "") -> bytes:
 <div>{esc(label)} <span class="tag">{esc(fname)}</span></div>
 <a class="btn sec" href="/a/{esc(acc)}/edit?f={esc(fname)}">編集</a></div>""")
     tmpl_link = ""
-    if ST.read(acc, "thread_templates.json") is not None:
-        tmpl_link = f'<a class="btn" href="/a/{esc(acc)}/templates">連投テンプレを編集</a> '
+    if ST.read(acc, "post_forms.json") is not None:
+        tmpl_link = f'<a class="btn" href="/a/{esc(acc)}/templates">投稿の型を編集</a> '
     flash_html = f'<div class="flash">{esc(flash)}</div>' if flash else ""
     body = f"""{flash_html}
 <p class="muted"><a href="/">← ダッシュボード</a></p>
@@ -203,25 +203,36 @@ def render_account(acc: str, flash: str = "") -> bytes:
 
 
 def render_templates(acc: str, flash: str = "") -> bytes:
-    data = ST.read_json(acc, "thread_templates.json", {})
+    """投稿の型（post_forms.json の forms）を編集する。
+
+    触れるのは examples だけ。構造と規則（structure / rule）は
+    設計そのものなので、ここからは変えられないようにしてある
+    （変えるなら post_forms.json を直接編集する）。
+    """
+    data = ST.read_json(acc, "post_forms.json", {})
+    forms = data.get("forms", {}) if isinstance(data, dict) else {}
     blocks = []
-    for occ, posts in data.items():
-        joined = POST_SEP.join(posts)
-        rows = len(joined.splitlines()) + 2
-        blocks.append(f"""<div class="card"><h3>{esc(occ)}
-<span class="tag">{len(posts)}投</span></h3>
-<div class="muted">投稿の区切りは <code>---</code> だけの行。CTAには <code>{{link}}</code> を置く。</div>
-<textarea name="tmpl__{esc(occ)}" rows="{rows}">{esc(joined)}</textarea></div>""")
+    for fid, form in forms.items():
+        examples = form.get("examples") or []
+        joined = POST_SEP.join(examples)
+        rows = len(joined.splitlines()) + 3
+        blocks.append(f"""<div class="card"><h3>{esc(form.get("label", fid))}
+<span class="tag">{esc(fid)}</span> <span class="tag">{len(examples)}例</span></h3>
+<div class="muted">{esc(form.get("structure", ""))}</div>
+<div class="muted">{esc(form.get("rule", ""))}</div>
+<div class="muted">例の区切りは <code>---</code> だけの行。告知には <code>{{link}}</code> を置く。</div>
+<textarea name="tmpl__{esc(fid)}" rows="{rows}">{esc(joined)}</textarea></div>""")
     flash_html = f'<div class="flash">{esc(flash)}</div>' if flash else ""
     body = f"""{flash_html}
 <p class="muted"><a href="/a/{esc(acc)}">← {esc(acc)}</a></p>
-<h2>連投テンプレート <span class="tag">thread_templates.json</span></h2>
+<h2>投稿の型 <span class="tag">post_forms.json</span></h2>
+<p class="muted">ここで編集するのは例文だけです。mock と、AI生成のときの手本に使われます。</p>
 <form method="post" action="/a/{esc(acc)}/templates">
 {''.join(blocks)}
 <div class="row"><button type="submit">保存</button>
 <a class="btn sec" href="/a/{esc(acc)}/preview">保存後にプレビュー</a></div>
 </form>"""
-    return page(f"{acc} テンプレ", body)
+    return page(f"{acc} 投稿の型", body)
 
 
 def render_edit(acc: str, fname: str, flash: str = "") -> bytes:
@@ -629,13 +640,23 @@ def split_posts(text: str) -> list[str]:
 
 
 def save_templates(acc: str, form: dict) -> str:
-    data = {}
+    """例文だけを書き戻す。
+
+    丸ごと作り直すと、categories（比率）と structure / rule が
+    画面に出ていないぶん消える。既存のJSONに差し込む。
+    """
+    data = ST.read_json(acc, "post_forms.json", {})
+    if not isinstance(data, dict) or "forms" not in data:
+        return "❌ post_forms.json が読めないため保存しませんでした"
     for key, val in form.items():
-        if key.startswith("tmpl__"):
-            data[key[len("tmpl__"):]] = split_posts(val)
+        if not key.startswith("tmpl__"):
+            continue
+        fid = key[len("tmpl__"):]
+        if fid in data["forms"]:
+            data["forms"][fid]["examples"] = split_posts(val)
     content = json.dumps(data, ensure_ascii=False, indent=2)
-    return ST.write(acc, "thread_templates.json", content,
-                    f"admin: update thread templates ({acc})")
+    return ST.write(acc, "post_forms.json", content,
+                    f"admin: update post forms ({acc})")
 
 
 def save_edit(acc: str, fname: str, content: str) -> str:

@@ -32,7 +32,12 @@ def build(account_id: str, out_path: str) -> str:
     acc = ROOT / "accounts" / account_id
     persona = _load(acc, "persona.json", {})
     hyp = _load(acc, "hypotheses.json", {"hypotheses": []})
-    tmpl = _load(acc, "thread_templates.json", {})
+    # 恋亀は単発なので、場面別の連投ではなく型（post_forms.json）を出す
+    forms_file = _load(acc, "post_forms.json", {})
+    tmpl = {
+        fid: (f.get("examples") or [])
+        for fid, f in (forms_file.get("forms") or {}).items()
+    }
     csrc = _load(acc, "content_sources.json", {"sources": []})
 
     wb = Workbook()

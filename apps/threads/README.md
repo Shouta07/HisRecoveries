@@ -173,7 +173,7 @@ threads/
 │   └── mens-body-lab/             # タシカメ（内部IDは変更しない）
 │       ├── persona.json           # 語り手・口調・投稿ルール
 │       ├── hypotheses.json        # 5場面＋CTAの行き先
-│       ├── thread_templates.json  # 連投テンプレ（mock/フォールバック）
+│       ├── post_forms.json        # 投稿の型（A/B/C/D × 型1〜5・例文）
 │       ├── content_sources.json   # 引用リソース（1件=14投稿）
 │       ├── patterns.md            # 場面別の連投パターン
 │       ├── approvals.json         # 承認キュー

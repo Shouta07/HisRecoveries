@@ -2,9 +2,13 @@ name: Threads Post Approved (publish)
 
 # 承認済み(approved)の下書きだけを投稿する。承認が無ければ何もしない（安全）。
 
+# 恋亀の投稿枠は1日3本（persona.posting.time_slots = 08:00 / 12:30 / 21:00）。
+# 承認済みが無ければ何もしないので、枠が余るぶんには害が無い。
 on:
   schedule:
-    - cron: "30 1,4,7,10,13 * * *"
+    - cron: "0 23 * * *"   # 08:00 JST
+    - cron: "30 3 * * *"   # 12:30 JST
+    - cron: "0 12 * * *"   # 21:00 JST
   workflow_dispatch:
     inputs:
       dry_run:

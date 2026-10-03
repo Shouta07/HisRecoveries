@@ -22,7 +22,7 @@ python -m admin.server --port 9000
 - 全アカウント一覧（表示名・ID・投稿フォーマット・下書き件数）
 
 ### アカウント画面（`/a/<id>`）
-- **連投テンプレを編集**（thread_templates.json があるアカウント）
+- **投稿の型を編集**（post_forms.json があるアカウント）
 - **投稿をプレビュー生成**（mockで1本作って確認）
 - **下書き一覧**
 - **設定ファイルの編集**: persona.json / hypotheses.json / patterns.md /
@@ -31,7 +31,7 @@ python -m admin.server --port 9000
 ### 連投テンプレ編集（`/a/<id>/templates`）
 - 機会別（誕生日・記念日…）に連投テンプレを編集
 - **投稿の区切りは `---` だけの行**。CTA投稿には `{link}` を置く（投稿時にUTM付きURLへ置換）
-- 保存すると `thread_templates.json` に書き込まれ、次回生成から反映
+- 保存すると `post_forms.json` の examples に書き込まれ、次回生成から反映
 
 ### プレビュー（`/a/<id>/preview`）
 - mockで連投を1本生成して表示（**状態は汚さない**＝history/experimentsは変わらない）

@@ -126,6 +126,18 @@ export const CONVERSION_EVENTS = [
   "call_ended", // 通話が終わった（props: plan, reason）
   "call_rated", // 終わったあとの振り返りを出した（props: rating）
   // 5回パス。買った回数のうち、何回目で離れるかを見る。
+  // ── 恋亀（Threadsから来た人の受け皿）──
+  // apps/threads/GROWTH.md §3 の導線を、ここまで測れるようにする。
+  // この4つが無いと、Threadsの投稿を評価する段（恋亀開始・初回完了・2回目）が
+  // 丸ごと測れず、「いいね」ではなく「利用」で判断する、ができない。
+  "koi_started", // 恋亀と話し始めた（props: from, nth）
+  "koi_completed", // 最後まで話した（props: minutes, nth）
+  "koi_returned", // 2回目以降に戻ってきた（props: nth, days_since）
+  // 恋亀との話から確カメる（有料）へ進んだ（props: category）。
+  // 無料の恋亀と有料の確カメるの、つなぎ目。ここが動かないなら、
+  // 恋亀をいくら育てても売上にならない。
+  "koi_to_ask",
+
   "pass_used", // 1回ぶんを使った（props: remaining）
   "pass_empty", // 使い切った画面を見た
   "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）

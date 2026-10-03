@@ -102,12 +102,12 @@ class TestRendering:
         # 既存アカウントが並ぶ
         assert "mens-body-lab" in html
 
-    def test_templates_page_lists_scenes(self):
+    def test_templates_page_lists_forms(self):
         html = s.render_templates("mens-body-lab").decode()
-        # 連投テンプレは場面（hypotheses.json の slug）別に並ぶ
-        assert "message" in html
-        assert "distance" in html
-        # CTA投稿には {link} プレースホルダが入っている
+        # 投稿の型（post_forms.json の forms）別に並ぶ
+        assert "型2 違和感" in html
+        assert "型3 男女差" in html
+        # 告知の例には {link} プレースホルダが入っている
         assert "{link}" in html
 
     def test_preview_does_not_pollute_state(self, tmp_path):

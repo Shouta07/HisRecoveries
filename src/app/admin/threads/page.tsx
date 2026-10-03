@@ -34,13 +34,6 @@ export default function ThreadsPreviewPage() {
   const snap = readThreadsSnapshot();
   const plan = readThreadsPlan();
 
-  // タイプ別にまとめる（読者層ごと）
-  const byType = new Map<string, typeof plan.types>();
-  for (const h of plan.types) {
-    const arr = byType.get(h.type) ?? [];
-    arr.push(h);
-    byType.set(h.type, arr);
-  }
 
   return (
     <div className="bg-brand text-brand-cream min-h-[calc(100vh-49px)]">
@@ -98,7 +91,7 @@ export default function ThreadsPreviewPage() {
                 <div key={s.time} className="rounded-lg border border-brand-cream/12 bg-brand-cream/[0.03] px-4 py-3">
                   <p className="text-[13px] text-brand-cream">{s.time}</p>
                   <p className="mt-1 text-[11px] text-brand-cream/60 leading-[1.7]">
-                    {s.types.join(" ／ ")}
+                    {s.types.length ? s.types.join(" ／ ") : "テーマは固定しない"}
                   </p>
                 </div>
               ))}
@@ -106,44 +99,65 @@ export default function ThreadsPreviewPage() {
           </section>
         ) : null}
 
-        {/* タイプ別の投稿例 */}
+        {/* 投稿の型 */}
+        {plan.forms.length > 0 ? (
+          <section className="mt-10">
+            <h2 className="text-[11px] tracking-[0.25em] text-sage uppercase mb-1">
+              投稿の型（この構造で生成されます）
+            </h2>
+            <p className="text-[11px] text-brand-cream/45 mb-4">
+              実際は Gemini がこの型・トーンで毎回作り直す。以下は各型の見本。
+              リンクが付くのは告知だけ。
+            </p>
+            <div className="space-y-3">
+              {plan.forms.map((f) => (
+                <details
+                  key={f.id}
+                  className="rounded-xl border border-brand-cream/12 bg-brand-cream/[0.04] p-4"
+                >
+                  <summary className="cursor-pointer list-none">
+                    <span className="text-[13px] text-brand-cream">{f.label}</span>
+                    <span className="ml-2 text-[10px] text-sage">{f.category}</span>
+                    <span className="ml-2 text-[10px] text-brand-cream/45">
+                      {Math.round(f.ratio * 100)}%
+                    </span>
+                    {f.link ? (
+                      <span className="ml-2 text-[10px] text-brand-cream/40">リンクあり</span>
+                    ) : null}
+                  </summary>
+                  <div className="mt-3 space-y-3">
+                    <p className="text-[11px] text-brand-cream/60 leading-[1.7]">{f.structure}</p>
+                    {f.rule ? (
+                      <p className="text-[11px] text-brand-cream/45 leading-[1.7]">{f.rule}</p>
+                    ) : null}
+                    <Thread posts={f.examples} />
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* テーマ */}
         <section className="mt-10">
           <h2 className="text-[11px] tracking-[0.25em] text-sage uppercase mb-1">
-            タイプ別の投稿例（この型で生成されます）
+            テーマ（型と掛け合わせて出ます）
           </h2>
           <p className="text-[11px] text-brand-cream/45 mb-4">
-            実際は Gemini がこの型・トーンで毎回作り直す。以下は各タイプの見本。
+            時間帯でテーマは固定しない。固定すると、夜のテーマが朝に出せなくなって同じ話が続く。
           </p>
-          <div className="space-y-6">
-            {[...byType.entries()].map(([type, list]) => (
-              <div key={type}>
-                <h3 className="font-mincho text-[15px] text-brand-cream mb-2">
-                  {typeLabel(type)}
-                  <span className="ml-2 text-[11px] text-brand-cream/45">{list.length}種</span>
-                </h3>
-                <div className="space-y-3">
-                  {list.map((h) => (
-                    <details
-                      key={h.id}
-                      className="rounded-xl border border-brand-cream/12 bg-brand-cream/[0.04] p-4"
-                    >
-                      <summary className="cursor-pointer list-none">
-                        <span className="text-[13px] text-brand-cream">{h.name}</span>
-                        <span className="ml-2 text-[10px] text-sage">
-                          {h.when.length ? h.when.join("・") : "—"}
-                        </span>
-                        {h.topics.length ? (
-                          <span className="ml-2 text-[10px] text-brand-cream/40">
-                            {h.topics.slice(0, 3).join(" / ")}
-                          </span>
-                        ) : null}
-                      </summary>
-                      <div className="mt-3">
-                        <Thread posts={h.sample} />
-                      </div>
-                    </details>
-                  ))}
-                </div>
+          <div className="grid sm:grid-cols-2 gap-2">
+            {plan.types.map((h) => (
+              <div
+                key={h.id}
+                className="rounded-lg border border-brand-cream/12 bg-brand-cream/[0.03] px-4 py-3"
+              >
+                <p className="text-[13px] text-brand-cream">{typeLabel(h.type)}</p>
+                {h.topics.length ? (
+                  <p className="mt-1 text-[11px] text-brand-cream/45">
+                    {h.topics.join(" / ")}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>

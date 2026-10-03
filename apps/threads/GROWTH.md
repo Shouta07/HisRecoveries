@@ -423,23 +423,34 @@ D（10%）        リンク有り  →  直接
 
 ---
 
-## 9. 実装の変更一覧
+## 9. 実装の状態
 
-| # | 何を | どこ | Phase |
+### 入れたもの（2026-10-03）
+
+| # | 何を | どこ |
+|---|---|---|
+| 1 | 人格を恋亀に（`prompt.ts` の写し） | `accounts/mens-body-lab/persona.json` |
+| 2 | 連投 → 単発。型1〜5 と A/B/C/D の比率 | `post_forms.json`（新規）, `core/writer.py` の `generate_single` |
+| 3 | テーマを13個に | `hypotheses.json`, `experiments.json` |
+| 5 | `utm_content` に投稿ごとの追跡コード | `writer.py` の `_tracking_code`, `core/main.py` |
+| 6 | `koi_started` / `koi_completed` / `koi_returned` / `koi_to_ask` | `src/lib/analytics.ts` |
+| 8 | 代弁チェック（`NEVER` と同じ線） | `core/validator.py`, `src/lib/threadsEval.ts` |
+| — | 投稿枠を1日3本に | `threads-post.yml`, `threads-post-approved.yml` |
+| — | 管理ページ・シート連携を型に向け直し | `admin/server.py`, `core/sheets_sync.py` |
+
+**リンクが付くのは告知（D）だけ。** 型が決める（`post_forms.json` の `categories[].link`）。
+
+重複は `history.json` と突き合わせて見る。`validator` の類似チェックは
+プロセス内バッファを見ていて、毎回新しいプロセスで走る本番では常に空だった。
+
+### まだのもの
+
+| # | 何を | いつ | 詰まり |
 |---|---|---|---|
-| 1 | 人格を恋亀に | `accounts/mens-body-lab/persona.json` | 1 |
-| 2 | 連投 → 単発、型1〜5 | `persona.posting.format`, `thread_templates.json` | 1 |
-| 3 | テーマを17の13個に | `hypotheses.json` | 1 |
-| 4 | 住所を差し替え | `hypotheses.json`, `content_sources.json`, `seo_clusters.json`, `NEXT_PUBLIC_SITE_URL`, `site.ts` | 1 |
-| 5 | `utm_content={post_id}` | `writer.py`（リンク組み立て） | 2 |
-| 6 | `koi_*` 4イベント | `src/lib/analytics.ts` | 2 |
-| 7 | プロフィール閲覧の取得 | `core/fetcher.py`, `core/collector.py` | 2 |
-| 8 | 禁止語に `prompt.ts` の NEVER を揃える | `persona.json`, `src/lib/threadsEval.ts` | 1 |
-| 9 | テーマ別の週次集計 | 新規 | 3 |
-
-**8 が抜けると、脈ありが混ざった投稿が通る。** 最初に入れる。
-
----
+| 4 | 住所の差し替え | Phase 0 の決定後 | §0.2 |
+| — | C・D を「恋亀に話す」版へ | 音声の鍵が入ったら | §0.1 |
+| 7 | プロフィール閲覧の取得 | Phase 2 | Threads Insights の口を足す |
+| 9 | テーマ別の週次集計 | Phase 3 | 母数が溜まってから |
 
 ## 10. この設計が前提にしていること
 

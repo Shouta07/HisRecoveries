@@ -198,13 +198,30 @@ def _read_tab(name: str) -> list[list]:
         return []
 
 
+def _forms_as_templates(account_dir: Path) -> tuple[dict, dict]:
+    """post_forms.json を、テンプレタブの形（{id: [本文...]}）に直す。
+
+    シートの行は (ネタID, 種別, 順番, 本文) で、もともと
+    thread_templates.json（場面 → 連投）を入れていた。恋亀は単発なので、
+    場面ではなく型（post_forms.json の forms）を入れる。
+    種別には、その型が属するカテゴリ（A 共感・あるある など）を出す。
+    """
+    data = _load(account_dir, "post_forms.json", {})
+    forms = data.get("forms", {}) if isinstance(data, dict) else {}
+    category_of = {}
+    for c in data.get("categories", []) if isinstance(data, dict) else []:
+        for fid in c.get("forms", []):
+            category_of[fid] = c.get("label", "")
+    tmpl = {fid: (f.get("examples") or []) for fid, f in forms.items()}
+    return tmpl, category_of
+
+
 def push_content(account_dir: Path) -> bool:
     """現在のJSON内容を全タブへ書き出す（初期化・現状反映）。"""
-    tmpl = _load(account_dir, "thread_templates.json", {})
+    tmpl, slug_type = _forms_as_templates(account_dir)
     hyps = _load(account_dir, "hypotheses.json", {"hypotheses": []}).get("hypotheses", [])
     csrc = _load(account_dir, "content_sources.json", {"sources": []})
     persona = _load(account_dir, "persona.json", {})
-    slug_type = {h.get("slug", h["id"]): h.get("type", "") for h in hyps}
 
     ok = True
     ok &= _write_tab(TAB_TEMPLATES, H_TEMPLATES, templates_to_rows(tmpl, slug_type))
@@ -222,8 +239,21 @@ def pull_content(account_dir: Path) -> bool:
     rows = _read_tab(TAB_TEMPLATES)
     if rows:
         tmpl = rows_to_templates(rows)
-        if tmpl:
-            _save(account_dir, "thread_templates.json", tmpl)
+        # 例文だけを差し込む。型そのもの（structure / rule）と比率は
+        # シートに出していないので、丸ごと書き戻すと消える。
+        data = _load(account_dir, "post_forms.json", {})
+        forms = data.get("forms", {}) if isinstance(data, dict) else {}
+        touched = False
+        for fid, examples in tmpl.items():
+            if fid in forms:
+                forms[fid]["examples"] = examples
+                touched = True
+            else:
+                logger.warning(
+                    "pull_content: シートに知らない型があります: %s（無視）", fid,
+                )
+        if touched:
+            _save(account_dir, "post_forms.json", data)
             changed = True
 
     rows = _read_tab(TAB_SOURCES)

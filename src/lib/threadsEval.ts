@@ -38,11 +38,22 @@ const FORBIDDEN = [
   { re: /(必ず|確実に|絶対に|100%|間違いなく)/g, msg: "断定（必ず・絶対・確実）は使わない" },
   // 旧事業の名残（第一印象パッケージ・完全守秘のギフト訴求）
   { re: /(完全守秘|第一印象パッケージ|ギフトでも申し込め)/g, msg: "旧事業（His Recoveries のギフト訴求）の言い方が残っています" },
+  // 小細工（src/lib/koi/prompt.ts の NEVER）
+  { re: /(既読スルー|駆け引き|焦らす|焦らせ)/g, msg: "相手を動かす小細工（既読スルー・駆け引き）は扱わない" },
+  // 企業として名乗らない。Threads では恋亀本人が書く（GROWTH.md §1）
+  { re: /(弊社|当社|運営です|公式アカウント)/g, msg: "Threads では企業として名乗らない（恋亀本人として書く）" },
 ];
 
-// 女性の反応を、こちらで作らない。実在の回答が集まるまで「女性の声」は出さない。
-// それを売っているサービスが、AIの作り話を出したら商品そのものが嘘になる。
-const INVENTED_REACTION = /女性(は|が|って)[^。、]{0,12}(思|感じ|考え|言)/g;
+// 異性全体を代弁しない（src/lib/koi/prompt.ts の NEVER）。
+//
+// 恋亀は、答えを持っている亀ではなく、問いを持っている亀。
+// 「女性はこう思っている」と書いた時点で、実在の人に聞く意味が消える。
+// それを売っているサービスが作り話を出したら、商品そのものが嘘になる。
+//
+// 聞くのは通す。「女性はどう受け取る？」はむしろ出したい形なので、
+// 断定で閉じている形だけを見る（apps/threads/core/validator.py と同じ線）。
+const INVENTED_REACTION =
+  /(女性|男性|女子|男子)(は|って)[^。、？?]{0,15}(思って|感じて|考えて|見て)(いま|い)?(す|る)/g;
 
 // Soft signals.
 const FIRST_PERSON_HINTS = /(僕|私は|私が|俺)/;
@@ -98,7 +109,7 @@ export function evaluateThreadsPost(text: string): EvalResult {
     rules.push({
       id: "invented-reaction",
       level: "error",
-      message: "女性の反応を創作しない（実在の回答が集まるまで「女性の声」は書かない）",
+      message: "異性全体を代弁しない（聞くのは可。「◯性はこう思っている」は不可）",
       matches: Array.from(new Set(invented)),
     });
   }
@@ -136,32 +147,45 @@ export function evaluateThreadsPost(text: string): EvalResult {
     });
   }
 
-  // Emoji — persona は0〜2個まで
+  // 絵文字 — 恋亀は🐢を1個だけ。
+  //
+  // アプリの恋亀は絵文字を使わない（画面が亀を出すから）。
+  // Threads には画面が無いので、🐢が恋亀がそこにいる唯一の印になる。
+  // 2個以上だと「キャラ運用」に見えて、人格に見えなくなる（GROWTH.md §1）。
   const emojis = trimmed.match(EMOJI);
-  if (emojis && emojis.length > 2) {
+  if (emojis && emojis.length > 1) {
     rules.push({
       id: "emoji",
       level: "warn",
-      message: `絵文字 ${emojis.length} 個 — 0〜2 個まで`,
+      message: `絵文字 ${emojis.length} 個 — 🐢を1個だけ`,
       matches: Array.from(new Set(emojis)),
     });
   }
+  if (emojis && emojis.some((e) => e !== "🐢")) {
+    rules.push({
+      id: "emoji-not-turtle",
+      level: "warn",
+      message: "🐢以外の絵文字は使わない",
+      matches: Array.from(new Set(emojis.filter((e) => e !== "🐢"))),
+    });
+  }
 
-  // 語り手の手がかり（soft）。一人称は使わない語り手なので、
-  // 「僕/私」が出てきたら当事者の独白に戻っていないか確認する。
+  // 一人称（soft）。恋亀は「恋亀」と名乗る。
+  // 「僕/私/俺」が出たら、別の誰かの独白になっていないか確認する。
   if (FIRST_PERSON_HINTS.test(trimmed)) {
     rules.push({
       id: "first-person",
       level: "info",
-      message: "一人称（僕・私）があります。運営の語り手は一人称を使いません",
+      message: "一人称（僕・私・俺）があります。恋亀は「恋亀」と名乗ります",
     });
   }
-  // 連投の最終投稿は開いた問いで閉じる（返信＝伸びる信号）
-  if (!OPEN_QUESTION.test(trimmed) && charCount > 120) {
+  // 問いで閉じる（返信＝伸びる信号）。恋亀の投稿は短いので、
+  // 連投のときの 120 字ではなく 60 字から見る。
+  if (!OPEN_QUESTION.test(trimmed) && charCount > 60) {
     rules.push({
       id: "no-open-question",
       level: "info",
-      message: "問いで閉じていません（最終投稿は開いた問いで終える）",
+      message: "問いで閉じていません（恋亀の投稿は問いで終える）",
     });
   }
 

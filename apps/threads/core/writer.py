@@ -146,10 +146,17 @@ def generate_post(
         if source_post:
             return source_post
 
-    # ── 連投(スレッド)フォーマットのアカウントは専用パスへ ──
-    # posting.format == "thread" の場合、複数投稿(連投)を生成して返す。
-    # mens-body-lab(タシカメ)はここを通る＝ generate_thread が本線。
-    if persona.get("posting", {}).get("format") == "thread":
+    # ── フォーマット別の専用パスへ ──
+    # single = 恋亀の単発投稿。型（post_forms.json）が構造とリンクの有無を決める。
+    #          mens-body-lab(恋亀)はここを通る＝ generate_single が本線。
+    # thread = 連投。いまどのアカウントも使っていないが、経路は残してある。
+    post_format = persona.get("posting", {}).get("format")
+    if post_format == "single":
+        return generate_single(
+            account_dir, persona=persona, mock=mock, account_id=account_id,
+            record=record,
+        )
+    if post_format == "thread":
         return generate_thread(
             account_dir, persona=persona, mock=mock, account_id=account_id,
             record=record,
@@ -500,6 +507,326 @@ def _current_time_slot() -> str:
     from datetime import datetime, timezone, timedelta
     jst_hour = datetime.now(timezone(timedelta(hours=9))).hour
     return "morning" if 4 <= jst_hour < 15 else "night"
+
+
+def _load_post_forms(account_dir: Path | None) -> dict:
+    """恋亀の投稿の型（post_forms.json）を読む。
+
+    categories が A/B/C/D の比率とリンクの有無、forms が型1〜5 の
+    構造・規則・例を持つ。GROWTH.md §4 と同じもの。
+
+    ここに型を直書きしない。writer.py に人格を直書きして
+    persona.json が効かなくなった失敗と、同じ種類の失敗になる。
+    """
+    if not account_dir:
+        return {}
+    path = account_dir / "post_forms.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception as e:
+        logger.warning("Failed to load post_forms.json: %s", e)
+        return {}
+
+
+def _select_category(forms_config: dict) -> dict | None:
+    """A共感40% / B問い30% / C恋亀20% / D告知10% から1つ選ぶ。
+
+    ratio をそのまま重みに使う。比率を変えるときは post_forms.json を触る。
+    """
+    categories = [c for c in forms_config.get("categories", []) if c.get("ratio", 0) > 0]
+    if not categories:
+        return None
+    weights = [float(c["ratio"]) for c in categories]
+    return random.choices(categories, weights=weights, k=1)[0]
+
+
+def _tracking_code() -> str:
+    """投稿1本を見分けるための短い符号。
+
+    Threads の投稿IDは投稿したあとにしか分からないが、リンクは
+    投稿する前に本文へ埋め込まれる。だから、こちらで先に振る。
+    history.json に一緒に残すので、あとから
+    utm_content → 投稿 → 表示数 の順でたどれる。
+
+    これが無いと、utm_campaign（テーマ）までしか分からず、
+    「3千表示→恋亀開始15 の投稿を高く評価する」が実行できない
+    （GROWTH.md §7）。
+    """
+    import uuid
+    return uuid.uuid4().hex[:8]
+
+
+def _build_single_prompt(
+    persona: dict,
+    category: dict,
+    form: dict,
+    scene_name: str,
+    scene_topics: list[str] | None = None,
+) -> str:
+    """恋亀の単発投稿を生成するプロンプトを組む。
+
+    人格は persona.json（src/lib/koi/prompt.ts の写し）、
+    型は post_forms.json。ここは組み立てだけを持つ。
+    """
+    ch = persona.get("character", {}) or {}
+    tone = persona.get("tone", {}) or {}
+    brand = persona.get("brand", {}) or {}
+    biz = persona.get("business_context", {}) or {}
+    posting = persona.get("posting", {}) or {}
+
+    def block(title: str, items) -> str:
+        items = [str(x).strip() for x in (items or []) if str(x).strip()]
+        if not items:
+            return ""
+        return "\n【" + title + "】\n" + "\n".join("- " + x for x in items) + "\n"
+
+    who = [
+        f"あなたは「{ch.get('name') or persona.get('display_name') or '恋亀'}」本人です。",
+        "運営でも公式アカウントでもありません。企業として名乗りません。",
+    ]
+    if ch.get("background"):
+        who.append(ch["background"])
+    if persona.get("role_description"):
+        who.append(persona["role_description"])
+
+    parts = [
+        "Threadsの投稿を1本だけ書いてください。",
+        block("あなたは誰か", who),
+        block("話し方", ch.get("speech")),
+        block("大事にしていること", ch.get("values")),
+        block("書かないこと", ch.get("never_write_list")),
+        block("使わない言葉", ch.get("ng_words")),
+        block("編集方針", brand.get("editorial_principles")),
+    ]
+
+    form_rules = [
+        f"型: {form.get('label', '')}",
+        f"構造: {form.get('structure', '')}",
+    ]
+    if form.get("rule"):
+        form_rules.append(form["rule"])
+    parts.append(block("今回の型", form_rules))
+
+    examples = form.get("examples") or []
+    if examples:
+        parts.append(
+            "\n【この型の例（丸写ししない。構造だけ真似る）】\n"
+            + "\n\n---\n\n".join(examples) + "\n"
+        )
+
+    scene = [f"今回のテーマ: {scene_name}"]
+    if scene_topics:
+        scene.append("扱う言葉: " + " / ".join(str(t) for t in scene_topics))
+    scene.append(f"ねらい: {category.get('goal', '')}")
+    parts.append(block("今回の中身", scene))
+
+    fmt = [
+        f"長さ: {posting.get('min_chars', 20)}〜{posting.get('max_chars', 300)}文字",
+        tone.get("line_breaks", "改行多め。1投稿4〜8行"),
+        tone.get("emoji_usage", "🐢を1個だけ、文末に"),
+        "ハッシュタグは使わない",
+        "最後は問いで閉じる。質問は1つだけ",
+        "いいね・シェア・拡散をお願いしない",
+        "価格・割引・キャンペーンには触れない",
+    ]
+    if category.get("link"):
+        fmt.append("最後の行に {link} とだけ書く（URLは後でこちらが入れる）")
+    else:
+        fmt.append("URLは書かない")
+    parts.append(block("形式", fmt))
+
+    if biz.get("available_now"):
+        parts.append(block("いま書いてよいこと", [biz["available_now"]]))
+
+    parts.append("\n投稿文だけを出力してください。前置きも説明も要りません。\n")
+    return "".join(x for x in parts if x)
+
+
+def generate_single(
+    account_dir: Path,
+    persona: dict | None = None,
+    mock: bool = False,
+    account_id: str = "",
+    max_retries: int = 3,
+    record: bool = True,
+) -> dict | None:
+    """恋亀の単発投稿を1本生成する。posting.format == "single" のときの本線。
+
+    連投（generate_thread）との違いは3つ。
+      - 1投稿で完結する
+      - リンクを置くのは D（告知）だけ。型が決める（post_forms.json）
+      - utm_content に追跡コードを入れる（投稿単位で効果を見るため）
+    """
+    if persona is None:
+        persona = load_persona(account_dir)
+
+    from core.hypothesis import (
+        load_hypotheses, select_hypothesis,
+        record_post as record_hypothesis_post,
+    )
+
+    forms_config = _load_post_forms(account_dir)
+    category = _select_category(forms_config)
+    if not category:
+        logger.error(
+            "generate_single: post_forms.json に categories がありません "
+            "(accounts/<id>/post_forms.json)",
+        )
+        return None
+
+    form_ids = category.get("forms") or []
+    all_forms = forms_config.get("forms", {})
+    usable = [f for f in form_ids if f in all_forms]
+    if not usable:
+        logger.error(
+            "generate_single: category=%s に使える型がありません (forms=%s)",
+            category.get("id"), form_ids,
+        )
+        return None
+    form_id = random.choice(usable)
+    form = all_forms[form_id]
+
+    hypothesis = select_hypothesis(account_dir)
+    if not hypothesis:
+        logger.error("generate_single: no hypothesis available")
+        return None
+
+    h_id = hypothesis.get("id", "unknown")
+    h_slug = hypothesis.get("slug", h_id)
+    h_type = hypothesis.get("type", h_slug)
+    scene_name = hypothesis.get("name", h_slug)
+    scene_topics = hypothesis.get("topics", [])
+
+    # リンクは型が決める。A・B・C は付けない（Threadsはリンク付きの露出を落とす）。
+    code = _tracking_code()
+    link_url = ""
+    if category.get("link"):
+        hconfig = load_hypotheses(account_dir)
+        base_urls = hconfig.get("link_config", {}).get("base_urls", {})
+        for key in (hypothesis.get("link_key"), h_type, "apply"):
+            if key and key in base_urls:
+                link_url = base_urls[key].format(slug=h_slug, code=code)
+                break
+        if not link_url:
+            logger.error(
+                "generate_single: 告知の型なのに行き先がありません "
+                "(hypotheses.json の link_config.base_urls に apply を置く)",
+            )
+            return None
+
+    def _example_post() -> str:
+        """mock / キー無しのとき。型の例から1つ選ぶ。"""
+        examples = form.get("examples") or []
+        if not examples:
+            logger.error(
+                "generate_single: 型 %s に例がありません "
+                "(post_forms.json の forms.%s.examples)", form_id, form_id,
+            )
+            return ""
+        return random.choice(examples)
+
+    # 同じことを何度も言う亀にしない。
+    #
+    # validator の類似チェックはプロセス内のバッファを見ているので、
+    # ワークフローが毎回新しいプロセスで走る本番では、常に空になる。
+    # 実際に避けたいのは「先週と同じ投稿」なので、history.json と比べる。
+    #
+    # mock では見ない。型ごとの例が数本しか無いので必ず当たるし、
+    # mock は画面で型を確かめるためのもので、投稿はされない。
+    history = [] if mock else load_history(account_dir)
+
+    text = ""
+    if mock:
+        text = _example_post()
+    else:
+        gemini_key = (
+            get_account_env("GEMINI_API_KEY", account_id)
+            if account_id else os.getenv("GEMINI_API_KEY", "")
+        )
+        if not gemini_key:
+            logger.warning("generate_single: no GEMINI_API_KEY, using example")
+            text = _example_post()
+        else:
+            system_prompt = _build_single_prompt(
+                persona, category, form, scene_name, scene_topics,
+            )
+            for _ in range(max_retries):
+                raw = (_call_gemini(gemini_key, system_prompt, "投稿を1本書いてください。") or "").strip()
+                if not raw:
+                    continue
+                candidate = raw.replace("{link}", link_url).strip()
+                ok, errors = validate_post(candidate, persona)
+                if not ok:
+                    fixed = sanitize_post(candidate, persona)
+                    ok, errors = validate_post(fixed, persona)
+                    if ok:
+                        candidate = fixed
+                if ok and is_too_similar(candidate, history):
+                    logger.info("generate_single: 過去の投稿に似すぎ。書き直す")
+                    continue
+                if ok:
+                    text = candidate
+                    break
+                logger.warning("generate_single: invalid post: %s", errors)
+            if not text:
+                logger.warning("generate_single: AI generation failed, using example")
+                text = _example_post()
+
+    if not text:
+        return None
+
+    text = text.replace("{link}", link_url).strip()
+    # 告知なのにリンクが落ちていたら、末尾に足す
+    if link_url and link_url not in text:
+        text = f"{text}\n\n{link_url}"
+
+    is_valid, errors = validate_post(text, persona)
+    if not is_valid:
+        fixed = sanitize_post(text, persona)
+        is_valid, errors = validate_post(fixed, persona)
+        if is_valid:
+            text = fixed
+    if not is_valid:
+        logger.warning("generate_single: post invalid after sanitize: %s", errors)
+        return None
+
+    if is_too_similar(text, history):
+        logger.warning(
+            "generate_single: 過去の投稿に似すぎているので出しません "
+            "(theme=%s, form=%s)", h_id, form_id,
+        )
+        return None
+
+    if record:
+        record_hypothesis_post(account_dir, h_id, "none")
+
+    logger.info(
+        "Generated single (theme=%s, category=%s, form=%s, link=%s, code=%s)",
+        h_id, category.get("id"), form_id, bool(link_url), code,
+    )
+    return {
+        "text": text,
+        "link": link_url,
+        "cta_used": link_url or None,
+        "product": None,
+        "buzz_score": 8,
+        "source_type": f"{category.get('id')}_{form_id}",
+        "hypothesis_id": h_id,
+        "hypothesis_name": scene_name,
+        "has_link": bool(link_url),
+        "topic_type": h_type,
+        "topic_slug": h_slug,
+        "cta_variant": "none",
+        "template_type": form_id,
+        "post_category": category.get("id"),
+        "post_form": form_id,
+        # utm_content に入れた値。history.json から、
+        # どの投稿がサイトまで連れてきたかをたどるための鍵。
+        "tracking_code": code,
+    }
 
 
 def _load_thread_templates(account_dir: Path | None) -> dict:

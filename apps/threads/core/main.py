@@ -88,6 +88,11 @@ def _payload_from_result(post_result: dict) -> dict:
         "text", "posts", "is_thread", "link", "cta_used",
         "hypothesis_id", "hypothesis_name", "topic_slug",
         "buzz_score", "source_type",
+        # 恋亀の単発投稿。どの型で出したか（A/B/C/D と型1〜5）と、
+        # リンクの utm_content に入れた追跡コード。
+        # ここで落とすと、本文のURLにコードが入ったまま、どの投稿のものか
+        # 分からなくなる（GROWTH.md §7 の投稿単位の評価ができない）。
+        "post_category", "post_form", "tracking_code",
     )
     payload = {k: post_result.get(k) for k in keys}
     product = post_result.get("product")
@@ -128,6 +133,9 @@ def _publish_payload(
     result["hypothesis_name"] = payload.get("hypothesis_name")
     result["topic_slug"] = payload.get("topic_slug")
     result["link"] = payload.get("link") or payload.get("cta_used")
+    result["post_category"] = payload.get("post_category")
+    result["post_form"] = payload.get("post_form")
+    result["tracking_code"] = payload.get("tracking_code")
     result["is_thread"] = is_thread
     if is_thread:
         result["post_count"] = len(thread_posts)
@@ -226,23 +234,34 @@ def run_post_cycle(
         return False
 
     # 2. Researcher: バズ投稿収集
-    logger.info("=== [2/8] Researcher: collecting viral posts ===")
-    try:
-        viral_posts = researcher.collect_viral_posts(
-            account_dir, persona, rss_feeds, account_id=account_id,
-        )
-        researcher.save_viral_posts(viral_posts)
-        logger.info("Collected %d viral posts", len(viral_posts))
-    except Exception as e:
-        logger.warning("Viral post collection failed (non-fatal): %s", e)
-        viral_posts = []
-    # 後方互換: topicsも収集（fallback用）
-    topics = []
-    try:
-        topics = researcher.collect_topics(rss_feeds, persona)
-        researcher.save_topics(topics)
-    except Exception as e:
-        logger.debug("Topic collection failed (non-fatal): %s", e)
+    #
+    # 他人のバズ投稿をペルソナ口調に書き換える経路のための材料。
+    # 恋亀（posting.format == "single"）はそこを通らず、型とテーマから
+    # 自分で書くので、集めても誰も読まない。それでも毎回 RSS を叩いて
+    # 失敗ログを出していた（キーワードは別アカウントの「転職」「キャリア」
+    # のまま残っていた）ので、使わないアカウントでは飛ばす。
+    uses_viral_sources = persona.get("posting", {}).get("format") != "single"
+    viral_posts: list = []
+    topics: list = []
+    if not uses_viral_sources:
+        logger.info("=== [2/8] Researcher: skipped (format=single は元ネタを使わない) ===")
+    else:
+        logger.info("=== [2/8] Researcher: collecting viral posts ===")
+        try:
+            viral_posts = researcher.collect_viral_posts(
+                account_dir, persona, rss_feeds, account_id=account_id,
+            )
+            researcher.save_viral_posts(viral_posts)
+            logger.info("Collected %d viral posts", len(viral_posts))
+        except Exception as e:
+            logger.warning("Viral post collection failed (non-fatal): %s", e)
+            viral_posts = []
+        # 後方互換: topicsも収集（fallback用）
+        try:
+            topics = researcher.collect_topics(rss_feeds, persona)
+            researcher.save_topics(topics)
+        except Exception as e:
+            logger.debug("Topic collection failed (non-fatal): %s", e)
 
     # フォロワー数取得（CTA挿入率の段階調整に使用）
     follower_count = 0
@@ -360,6 +379,9 @@ def run_post_cycle(
     result["hypothesis_name"] = post_result.get("hypothesis_name")
     result["topic_slug"] = post_result.get("topic_slug")
     result["link"] = post_result.get("link") or cta_used
+    result["post_category"] = post_result.get("post_category")
+    result["post_form"] = post_result.get("post_form")
+    result["tracking_code"] = post_result.get("tracking_code")
     result["is_thread"] = post_result.get("is_thread", False)
     if is_thread:
         result["post_count"] = len(thread_posts)

@@ -1,10 +1,10 @@
 {
   "hypotheses": [
     {
-      "id": "message",
-      "type": "message",
-      "name": "送る前のLINEで止まる",
-      "slug": "message",
+      "id": "before-line",
+      "type": "before-line",
+      "name": "送る前のLINE",
+      "slug": "before-line",
       "topics": [
         "LINE",
         "送信前",
@@ -15,42 +15,140 @@
       "current_posts": 0
     },
     {
-      "id": "photo",
-      "type": "photo",
-      "name": "自己紹介文が読まれているか",
-      "slug": "photo",
+      "id": "slow-reply",
+      "type": "slow-reply",
+      "name": "返信が遅い",
+      "slug": "slow-reply",
       "topics": [
-        "自己紹介文",
-        "プロフィール",
-        "第一印象"
+        "返信",
+        "既読",
+        "待つ時間"
       ],
       "status": "active",
       "min_posts_to_evaluate": 10,
       "current_posts": 0
     },
     {
-      "id": "date",
-      "type": "date",
-      "name": "誘うタイミングが決まらない",
-      "slug": "date",
+      "id": "when-to-ask",
+      "type": "when-to-ask",
+      "name": "次に誘うタイミング",
+      "slug": "when-to-ask",
       "topics": [
         "誘い方",
         "タイミング",
-        "デート"
+        "日程"
       ],
       "status": "active",
       "min_posts_to_evaluate": 10,
       "current_posts": 0
     },
     {
-      "id": "signal",
-      "type": "signal",
-      "name": "デートのあと、どう動くか",
-      "slug": "signal",
+      "id": "after-first",
+      "type": "after-first",
+      "name": "初デートのあと",
+      "slug": "after-first",
       "topics": [
         "デート後",
-        "次の一手",
-        "返信"
+        "お礼",
+        "次の一手"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "second-date",
+      "type": "second-date",
+      "name": "2回目デート",
+      "slug": "second-date",
+      "topics": [
+        "2回目",
+        "距離",
+        "進み方"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "they-asked",
+      "type": "they-asked",
+      "name": "相手からの誘い",
+      "slug": "they-asked",
+      "topics": [
+        "誘われた",
+        "社交辞令",
+        "受け取り方"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "warm-cold",
+      "type": "warm-cold",
+      "name": "会うと優しいのにLINEが冷たい",
+      "slug": "warm-cold",
+      "topics": [
+        "温度差",
+        "LINE",
+        "会ったとき"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "many-at-once",
+      "type": "many-at-once",
+      "name": "複数人と進行中",
+      "slug": "many-at-once",
+      "topics": [
+        "同時進行",
+        "優先順位",
+        "迷い"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "not-sure",
+      "type": "not-sure",
+      "name": "確信が持てない",
+      "slug": "not-sure",
+      "topics": [
+        "分からない",
+        "確信",
+        "考えすぎ"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "polite-no",
+      "type": "polite-no",
+      "name": "社交辞令",
+      "slug": "polite-no",
+      "topics": [
+        "また行こう",
+        "社交辞令",
+        "本気度"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "before-ask",
+      "type": "before-ask",
+      "name": "告白の前",
+      "slug": "before-ask",
+      "topics": [
+        "告白",
+        "タイミング",
+        "怖さ"
       ],
       "status": "active",
       "min_posts_to_evaluate": 10,
@@ -59,12 +157,26 @@
     {
       "id": "distance",
       "type": "distance",
-      "name": "距離感で迷う",
+      "name": "距離感",
       "slug": "distance",
       "topics": [
         "距離感",
-        "言いにくいこと",
-        "踏み込み方"
+        "踏み込む",
+        "引く"
+      ],
+      "status": "active",
+      "min_posts_to_evaluate": 10,
+      "current_posts": 0
+    },
+    {
+      "id": "temperature",
+      "type": "temperature",
+      "name": "相手の温度感",
+      "slug": "temperature",
+      "topics": [
+        "温度感",
+        "熱量",
+        "合わせる"
       ],
       "status": "active",
       "min_posts_to_evaluate": 10,
@@ -72,16 +184,9 @@
     }
   ],
   "link_config": {
-    "note": "行き先は /ask のみ。slug をそのまま相談カテゴリ(c=)に渡すので、押した人は、その場面を選んだ状態で書き始められる。CTAは最終投稿に1つだけ。",
-    "link_ratio_by_type": {
-      "message": 1.0,
-      "photo": 1.0,
-      "date": 1.0,
-      "signal": 1.0,
-      "distance": 1.0
-    },
+    "note": "リンクを置くのは D（告知）だけ。A・B・C はリンク無しで回し、送客はプロフィールが担う（GROWTH.md §5）。リンクを置くかどうかは post_forms.json の category.link が決めるので、ここの比率は使わない。utm_content には投稿ごとの追跡コードが入る。これが無いと、どの投稿が効いたかを1本ずつ見られない（GROWTH.md §7）。",
     "base_urls": {
-      "apply": "https://hisrecoveries.com/ask?plan=review&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}"
+      "apply": "https://hisrecoveries.com/ask?plan=first&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}&utm_content={code}"
     }
   },
   "discovery_questions": [
