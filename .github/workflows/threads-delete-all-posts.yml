@@ -51,16 +51,14 @@ jobs:
             exit 1
           fi
 
+      # ユーザーIDはトークンから引くので、必要なのはトークンだけ。
+      # （ThreadsのユーザーIDはアプリごとに別値で、保存すると再認可で壊れる）
       - name: Check secrets
         env:
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
-          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
         run: |
-          MISSING=""
-          [ -z "$THREADS_ACCESS_TOKEN" ] && MISSING="$MISSING THREADS_ACCESS_TOKEN"
-          [ -z "$THREADS_USER_ID" ] && MISSING="$MISSING THREADS_USER_ID"
-          if [ -n "$MISSING" ]; then
-            echo "::error::GitHub Secrets が未設定です:$MISSING"
+          if [ -z "$THREADS_ACCESS_TOKEN" ]; then
+            echo "::error::GitHub Secrets が未設定です: THREADS_ACCESS_TOKEN"
             echo "Settings → Secrets and variables → Actions で設定してください。"
             echo "長命アクセストークンの発行は apps/threads/CLAUDE.md §6 の手順。"
             exit 1
@@ -69,12 +67,13 @@ jobs:
       - name: Delete posts
         env:
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
-          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          CONFIRM: ${{ inputs.confirm }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             python scripts/delete_all_posts.py --dry-run
           else
-            python scripts/delete_all_posts.py --yes
+            # --expect で、トークンの指すアカウントが入力と一致するか再確認する
+            python scripts/delete_all_posts.py --yes --expect "$CONFIRM"
           fi
 
       - name: Upload backup of deleted posts

@@ -95,8 +95,9 @@ CTA    https://hisrecoveries.com/areas/face?utm...
 先にこちらを止める（逆も同じ）。
 
 ### 引き継ぎに必要なこと
-1. `Shouta07/threads` の Secrets（`THREADS_ACCESS_TOKEN` / `THREADS_USER_ID` /
-   `THREADS_APP_SECRET`）を、このリポジトリの Secrets にコピーする（§5）
+1. `Shouta07/threads` の Secrets（`THREADS_ACCESS_TOKEN` / `THREADS_APP_SECRET`）
+   を、このリポジトリの Secrets に入れ直す（§5。値は読み出せないので再発行）。
+   `THREADS_USER_ID` は**入れない**（§5の注を参照）
 2. `threads-token-refresh.yml` を Enable に戻す（60日で切れる）
 3. Vercel の管理ページの環境変数を直す（§4）。
    `GITHUB_REPO` が旧リポジトリを指していると、画面での編集が旧リポジトリに入る
@@ -184,7 +185,7 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 ## 5. 環境変数／シークレット（2系統・別物）
 
 > **現状（2026-10-03 確認）: この系統はまだ1本も投稿していない。**
-> `THREADS_ACCESS_TOKEN` と `THREADS_USER_ID` が未設定で、Actions のログに
+> `THREADS_ACCESS_TOKEN` が未設定で、Actions のログに
 > `THREADS_ACCESS_TOKEN is not set` が出ている。生成して承認キューに積むところ
 > までしか動かない。`history.json` が空で `collect` が毎朝「0 posts」なのも
 > 同じ理由。`threads-token-refresh.yml` も手動で Disable されている。
@@ -195,7 +196,6 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 
 **GitHub Secrets（自動投稿=Actions用）** Settings→Secrets and variables→Actions:
 - `THREADS_ACCESS_TOKEN`（@koikame.jp の長命トークン。**アカウント変更時はここ**）
-- `THREADS_USER_ID`（同アカウントのユーザーID）
 - `THREADS_APP_SECRET`（Metaアプリのシークレット。トークン更新用）
 - `GEMINI_API_KEY`（AI生成。mockなら不要）
 - `GOOGLE_SHEETS_ID` / `GOOGLE_SHEETS_CREDENTIALS_JSON`（任意）
@@ -205,13 +205,19 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 - `GITHUB_TOKEN`（repo書込PAT）/ `GITHUB_REPO`=Shouta07/HisRecoveries /
   `GITHUB_BRANCH`=main / `GITHUB_PATH_PREFIX`=apps/threads
 
+> **`THREADS_USER_ID` は設定しない。** Threads のユーザーIDは**アプリごとに
+> 別の値**になるので、保存すると再認可やアプリ移行のたびに黙って壊れる。
+> 2026-10-03、`threads_delete` を足すため再認可した直後、保存してあったIDで
+> 削除が落ちた（`HTTP 400 code 100 / subcode 33 Object with ID ... does not
+> exist`）。未設定なら `me` を使い、トークンの指すアカウントに自動で当たる。
+
 > 注意: account_id `mens-body-lab` は内部ID。ワークフローは**base**の
 > `THREADS_ACCESS_TOKEN` を渡すので、アカウントを変えても**コード変更は不要**。
 
 ## 6. Threadsアカウントを変更する手順
 
 1. 新アカウントの**長命アクセストークン**を発行（同じMetaアプリに新アカウントを接続）。
-2. **GitHub Secrets** を更新: `THREADS_ACCESS_TOKEN`、`THREADS_USER_ID`、
+2. **GitHub Secrets** を更新: `THREADS_ACCESS_TOKEN`、
    `THREADS_APP_SECRET`（Metaアプリが変わった場合のみ）。
 3. `accounts/mens-body-lab/persona.json` の `threads_handle` を新ハンドルに（表示のみ）。
 4. 動作確認: Actions で threads-post.yml を `dry_run=true, mock=true` 手動実行。

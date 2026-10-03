@@ -1,13 +1,13 @@
 """
-THREADS_USER_ID のアカウント（現在: @koikame.jp）の全投稿を一括削除する。
+トークンが指すアカウント（現在: @koikame.jp）の全投稿を一括削除する。
 
 **取り消せない。** 旧事業（His Recoveries）時代の投稿を消して、タシカメとして
 出し直すときに使う。削除の前に、取得した投稿を手元のJSONに保存する
 （`data/deleted_posts_<時刻>.json`。gitignore 済みのディレクトリ）。
 
 使い方:
-  1. .env に THREADS_ACCESS_TOKEN と THREADS_USER_ID を設定
-     （GitHub Secrets と同じ値。Actions 用とローカル用で別物ではない）
+  1. .env に THREADS_ACCESS_TOKEN を設定（GitHub Secrets と同じ値）
+     ユーザーIDは設定しない。トークンから引く（下の get_user_id を参照）
   2. python scripts/delete_all_posts.py --dry-run  （一覧を見るだけ。消さない）
   3. python scripts/delete_all_posts.py              （実行。yes の入力を求める）
 
@@ -73,7 +73,26 @@ def get_token():
 
 
 def get_user_id():
-    return os.getenv("THREADS_USER_ID", "me")
+    """投稿を消す対象のユーザーIDを、トークン自身に聞いて決める。
+
+    Threads のユーザーIDは**アプリごとに別の値**になる。環境変数に保存した
+    IDは、トークンの発行元アプリが変わると途端に通らなくなり、こう返る:
+
+      HTTP 400 {"error":{"message":"Unsupported get request. Object with ID
+                '...' does not exist, cannot be loaded due to missing
+                permissions, or does not support this operation",
+                "code":100,"error_subcode":33}}
+
+    2026-10-03 に threads_delete を足すため再認可した直後、実際にこれが出た。
+    だから保存値は使わず、毎回 /me から引く。ユーザー名も一緒に出して、
+    消す相手を取り違えていないことを目で確かめられるようにする。
+    """
+    data = api_get("me", {"fields": "id,username"})
+    user_id = data.get("id")
+    if not user_id:
+        print("ERROR: トークンからユーザーIDを取得できませんでした。")
+        sys.exit(1)
+    return user_id, data.get("username", "(不明)")
 
 
 def api_get(endpoint, params=None):
@@ -177,13 +196,13 @@ def fetch_all_posts(user_id):
     return all_posts
 
 
-def _arg_value(name: str, default: int) -> int:
-    """--name N の形で渡された整数を読む。"""
+def _arg_value(name, default, cast=int):
+    """--name VALUE の形で渡された値を読む。読めなければ default。"""
     if name in sys.argv:
         i = sys.argv.index(name)
         if i + 1 < len(sys.argv):
             try:
-                return int(sys.argv[i + 1])
+                return cast(sys.argv[i + 1])
             except ValueError:
                 pass
     return default
@@ -196,9 +215,17 @@ def main():
     assume_yes = "--yes" in sys.argv
     # Threads API の削除は1アカウント1日100件まで。既定をそこに合わせる。
     limit = _arg_value("--limit", 100)
-    user_id = get_user_id()
+    user_id, username = get_user_id()
 
-    print(f"アカウント: {user_id}")
+    # 消す相手の取り違えを、ここでも止める。ユーザーIDはトークンから引くので、
+    # トークンを差し替えると黙って別アカウントを消しに行ってしまう。
+    expect = _arg_value("--expect", "", cast=str)
+    if expect and expect.lstrip("@") != (username or "").lstrip("@"):
+        print(f"ERROR: トークンのアカウント（@{username}）が指定（{expect}）と違います。")
+        print("  消す相手が違う可能性があるので中止しました。")
+        sys.exit(1)
+
+    print(f"アカウント: @{username}")
     print(f"モード: {'DRY RUN（確認のみ）' if dry_run else '本番削除'}")
     print()
 
