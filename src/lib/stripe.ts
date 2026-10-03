@@ -19,7 +19,20 @@ const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
    コードに書かない（テストと本番で違うし、値段を変えると別IDになる）。
    無ければ月額は開かない。開かないだけで、単発は動く。 */
 const PASS_PRICE = process.env.STRIPE_PASS_PRICE_ID;
+
+/* β（先着）の Price ID。
+   β は通常と別の金額なので、Stripe 側でも別の Price になる。
+   無ければ β は開かない（通常価格では売れる）。 */
+const PASS_BETA_PRICE = process.env.STRIPE_PASS_BETA_PRICE_ID;
+
 export const passEnabled = Boolean(KEY && PASS_PRICE);
+/** β価格で売れる状態か。Price が無ければ、枠が残っていても通常価格になる */
+export const passBetaEnabled = Boolean(KEY && PASS_BETA_PRICE);
+
+/** その申し込みに使う Price ID。beta のときだけ β の Price を指す */
+export function passPriceId(beta: boolean): string | undefined {
+  return beta && PASS_BETA_PRICE ? PASS_BETA_PRICE : PASS_PRICE;
+}
 
 export const stripeEnabled = Boolean(KEY);
 
@@ -96,19 +109,23 @@ export type PassCheckoutArgs = {
   idempotencyKey: string;
   /** 2回目以降。前に作った Customer があれば、それを使う */
   customerId?: string;
+  /** β（先着）の価格で申し込むか。Price ID が変わる */
+  beta?: boolean;
 };
 
 export function passCheckoutParams(args: PassCheckoutArgs): Record<string, string | number> {
   const out: Record<string, string | number> = {
     mode: "subscription",
     "line_items[0][quantity]": 1,
-    "line_items[0][price]": PASS_PRICE ?? "",
+    "line_items[0][price]": passPriceId(Boolean(args.beta)) ?? "",
     success_url: args.successUrl,
     cancel_url: args.cancelUrl,
     client_reference_id: args.userToken,
     "metadata[user_token]": args.userToken,
     // 解約の受け皿を、こちらでも持てるようにする
     "subscription_data[metadata][user_token]": args.userToken,
+    // どちらの価格で入ったか。あとで値上げするときに、対象を選ぶ鍵になる。
+    "subscription_data[metadata][beta]": args.beta ? "1" : "0",
     locale: "ja",
   };
   // 2回目以降は、同じ Customer にぶら下げる。
@@ -160,6 +177,23 @@ export async function createCheckout(
   const r = await call<CheckoutSession>(
     "/checkout/sessions",
     checkoutParams(args),
+    args.idempotencyKey,
+  );
+  return { ok: r.ok, session: r.data, error: r.error };
+}
+
+/**
+ * 月額の Checkout を作る。
+ *
+ * passCheckoutParams はあったが、**呼ぶ口が1つも無かった**。
+ * 作ってあるのに誰も押せない状態だったので、ここで繋ぐ。
+ */
+export async function createPassCheckout(
+  args: PassCheckoutArgs,
+): Promise<{ ok: boolean; session?: CheckoutSession; error?: string }> {
+  const r = await call<CheckoutSession>(
+    "/checkout/sessions",
+    passCheckoutParams(args),
     args.idempotencyKey,
   );
   return { ok: r.ok, session: r.data, error: r.error };
@@ -366,6 +400,12 @@ export async function verifyWebhook(
     // 解約のときにも分かるよう、subscription 側にも持たせる。
     if (!pass["subscription_data[metadata][user_token]"]) {
       throw new Error("月額の解約時に、持ち主が分からなくなります");
+    }
+
+    // どちらの価格で入ったかが、あとから分かること。
+    // 分からないと、値上げするときに誰が対象か決められない。
+    if (!("subscription_data[metadata][beta]" in pass)) {
+      throw new Error("月額に、β かどうかの印が入っていません");
     }
 
     // 月額にも、場貸しの項目が入らないこと。
