@@ -2708,3 +2708,83 @@ select
 from subscriptions
 where status in ('active', 'trialing')
   and (current_period_end is null or current_period_end > now());
+
+-- ══════════════════════════════════════════════════
+-- 迷っているところ
+-- ══════════════════════════════════════════════════
+-- 恋亀は答えを出さない。言えるのは、どこで迷っているかまで。
+-- その先は、本人が決めるか、人に聞く。
+--
+-- ── 人に回すかどうかを、AIに決めさせない ────────────
+-- 「これは人に聞いたほうがいい」とAIに言わせると、
+-- 言い方次第でいくらでも回せる。回すたびに人の時間が要る。
+--
+-- 規則で決める（lib/koi/decide.ts）。
+--   相手が実際にどう受け取るか、を含むものは人へ
+--   本人が決められること（いつ送るか、どこへ行くか）は本人へ
+--
+-- 前者は、こちらが答えてはいけないもの（利用規約 第12条）。
+-- 答えられないからこそ、人に聞く意味がある。
+create table if not exists decision_points (
+  id uuid primary key default gen_random_uuid(),
+  case_id uuid not null references relationship_cases(id) on delete cascade,
+  episode_id uuid references episodes(id) on delete set null,
+  voice_session_id uuid references voice_sessions(id) on delete set null,
+  title text not null,
+  description text not null,
+  -- low / medium / high。点数にしない（恋愛が採点に見える）
+  importance text not null default 'low'
+    check (importance in ('low', 'medium', 'high')),
+  -- open / review_requested / reviewed / resolved
+  status text not null default 'open'
+    check (status in ('open', 'review_requested', 'reviewed', 'resolved')),
+  needs_human_review boolean not null default false,
+  -- male_perspective / female_perspective / operator_comment / mixed
+  review_type text
+    check (review_type is null or review_type in
+      ('male_perspective', 'female_perspective', 'operator_comment', 'mixed')),
+  created_at timestamptz default now(),
+  resolved_at timestamptz
+);
+create index if not exists decision_points_case_idx
+  on decision_points (case_id, created_at desc);
+create index if not exists decision_points_open_idx
+  on decision_points (status) where status in ('open', 'review_requested');
+
+-- 人へ回した依頼を、論点にひもづける。
+-- どの迷いに対する回答かが分からないと、結果を回収できない。
+alter table human_requests add column if not exists decision_point_id uuid
+  references decision_points(id) on delete set null;
+alter table human_requests add column if not exists requested_review_type text;
+
+-- 回答が、どちら側の目から見たものか。
+-- AIの要約と混ざらないよう、人の回答には必ず入れる。
+alter table human_responses add column if not exists review_type text
+  check (review_type is null or review_type in
+    ('male_perspective', 'female_perspective', 'operator_comment', 'mixed'));
+alter table human_responses add column if not exists reviewer_gender text
+  check (reviewer_gender is null or reviewer_gender in ('male', 'female'));
+
+-- 運営が見る、対応待ちの一覧。
+-- 100人までは手で回すので、自動の振り分けは作らない。
+create or replace view review_queue as
+select
+  dp.id as decision_point_id,
+  dp.case_id,
+  rc.partner_label,
+  rc.dating_app,
+  dp.title,
+  dp.description,
+  dp.importance,
+  dp.review_type,
+  hr.id as request_id,
+  hr.status as request_status,
+  hr.created_at as requested_at
+from decision_points dp
+join relationship_cases rc on rc.id = dp.case_id
+left join human_requests hr on hr.decision_point_id = dp.id
+where dp.needs_human_review = true
+  and dp.status in ('open', 'review_requested')
+order by
+  case dp.importance when 'high' then 0 when 'medium' then 1 else 2 end,
+  dp.created_at;
