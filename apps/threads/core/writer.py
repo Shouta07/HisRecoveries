@@ -1,11 +1,15 @@
 """
-Writer - Quiet Grooming 投稿生成エージェント (Nagi)
-静かな回復コンテンツを生成する。バズ狙いではなく、
-観察・内省・途中経過を丁寧体で綴る。
+Writer - 投稿生成エージェント
+
+アカウントの中身（語り手・トーン・扱う言葉・行き先）は
+accounts/<id>/persona.json と hypotheses.json が持つ。
+このモジュールは、そこから投稿を組み立てる手順だけを持つ。
+事業の文面をここに直接書かない（書くと、アカウントを入れ替えても
+前の事業の投稿が出続ける）。
 
 フロー:
-1. パターン（観察/途中/哲学/事実 等）を選択
-2. Nagiの口調でリライト
+1. 場面（仮説のslug）を選択
+2. persona のトーンで生成（連投 or 単発）
 3. 自己採点 → 類似度チェック → 検証
 """
 
@@ -143,8 +147,8 @@ def generate_post(
             return source_post
 
     # ── 連投(スレッド)フォーマットのアカウントは専用パスへ ──
-    # gift トラックなど posting.format == "thread" の場合、
-    # 複数投稿(連投)を生成して返す。
+    # posting.format == "thread" の場合、複数投稿(連投)を生成して返す。
+    # mens-body-lab(タシカメ)はここを通る＝ generate_thread が本線。
     if persona.get("posting", {}).get("format") == "thread":
         return generate_thread(
             account_dir, persona=persona, mock=mock, account_id=account_id,
@@ -239,7 +243,9 @@ def generate_post(
 
     for attempt in range(max_retries):
         if mock:
-            raw_text = _generate_mock_post(persona, chosen_pattern, topic)
+            raw_text = _generate_mock_post(
+                persona, chosen_pattern, topic, account_dir=account_dir,
+            )
             buzz_score = random.randint(7, 9)  # mockは常に合格
         else:
             gemini_key = get_account_env("GEMINI_API_KEY", account_id) if account_id else os.getenv("GEMINI_API_KEY", "")
@@ -304,17 +310,15 @@ def generate_post(
         link_intro = ""
 
         if has_link and h_slug and link_config.get("base_urls"):
+            # 行き先は hypotheses.json の link_config.base_urls が持つ。
+            # 仮説の link_key → type と同名のキー → "apply"（既定の入口）の順。
+            # 以前はここで feelings / territories / check / gift を名指しして
+            # いたが、旧事業の導線なので名指しをやめた。
             base_urls = link_config["base_urls"]
-            if h_type == "feeling" and "feelings" in base_urls:
-                link_url = base_urls["feelings"].format(slug=h_slug)
-            elif h_type == "territory" and "territories" in base_urls:
-                link_url = base_urls["territories"].format(slug=h_slug)
-            elif h_type == "gift":
-                # ギフト導線: 診断(/check)を低ハードルな入口にする
-                if "check" in base_urls:
-                    link_url = base_urls["check"].format(slug=h_slug)
-                elif "gift" in base_urls:
-                    link_url = base_urls["gift"].format(slug=h_slug)
+            for key in (hypothesis.get("link_key") if hypothesis else None, h_type, "apply"):
+                if key and key in base_urls:
+                    link_url = base_urls[key].format(slug=h_slug)
+                    break
 
             if link_url:
                 # type別の好奇心ギャップ導入文（A/Bテスト用に記録）
@@ -484,7 +488,7 @@ def generate_source_post(
     return None  # 全リソース消費済み
 
 
-# ─── 連投(スレッド)生成: ギフト・マーケティング用 ──────────────────
+# ─── 連投(スレッド)生成: 稼働中の本線 ─────────────────────────────
 
 
 def _current_time_slot() -> str:
@@ -513,109 +517,159 @@ def _load_thread_templates(account_dir: Path | None) -> dict:
                     return data
             except Exception as e:
                 logger.warning("Failed to load thread_templates.json: %s", e)
-    return _gift_thread_templates()
+    return _default_thread_templates()
 
 
-def _gift_thread_templates() -> dict:
-    """機会別の連投テンプレート（mock用・既定値）。
+def _default_thread_templates() -> dict:
+    """場面別の連投テンプレート（mock用・既定値）。
 
     各値は投稿リスト。CTA投稿には {link} プレースホルダを置く。
-    GIFT_PROMPT.md の仕様・サンプルに準拠（共感→気づき→紹介→CTA→リプ誘発）。
-    通常は accounts/<id>/thread_templates.json が優先される。
+    キーは hypotheses.json の slug（= 場面）に対応する。
+    通常は accounts/<id>/thread_templates.json が優先され、こちらは
+    ファイルが無い/壊れているときの最後の受け皿。
+
+    以前ここには旧事業（His Recoveries の第一印象パッケージを
+    パートナーに贈るギフト訴求）のテンプレートが入っていた。
+    thread_templates.json に場面別のものが入っていても、slug が
+    一致しないときのフォールバックで旧事業の文面が出てしまうため、
+    タシカメの5場面に置き換えてある。
     """
     return {
-        # 誕生日（単発寄りだが連投化）
-        "gift-birthday": [
-            "誕生日に何がほしい？って聞くと、\nうちの人、毎年「特にないなあ」で終わる。",
-            "ほしいモノはもう、だいたい揃ってるんだと思う。\nだから今年は、“自信”を贈ってみることにした。",
-            "1日で第一印象を整える体験があるらしくて。\nカウンセリングして、メイクして、服も一緒に選んでくれる。",
-            "いいなと思ったのは、完全守秘でやってくれるところ。\nこういうの、人に知られたくない人もいるもんね。",
-            "節目に、モノじゃない贈り物を。\nギフトでも申し込めるみたい → {link}",
-            "「特にない」が口ぐせの人に、みんなは何を贈ってますか…？",
+        # 送る前のLINE
+        "message": [
+            "AIには通した。\n誤字もない。\n\nそれでも送信ボタンの前で、\n一回止まる。",
+            "止まるのは、たぶん慎重だから。\n適当な人は止まらない。",
+            "ただ、いくら読み返しても\n「自分がどう読むか」しか分からない。\n受け取る側の目は、自分の中には無い。",
+            "だから、送る前に\n相手と同じ側に立つ人に読んでもらう。\n\n返ってくるのは、実際にどう受け取ったか。\n{link}",
+            "その文面、送る前に止まったことありますか。",
         ],
-        # 記念日・プロポーズ前
-        "gift-anniversary": [
-            "彼、写真に写るのがちょっと苦手みたい。\n本人は言わないけど、なんとなく気づいてた。",
-            "直してほしいわけじゃないの。\nただ、もっと自分を好きでいてほしいだけ。",
-            "だから記念日に、“整える体験”を贈ってみることにした。\nカウンセリングから、メイク、服選びまで1日で。\n第一印象を、自分で再現できる形にしてくれるらしい。",
-            "いいなと思ったのは、完全守秘でやってくれるところ。\nこういうの、人に知られたくない人もいるもんね。",
-            "大事な日の前に、自信をひとつ。\nギフトでも申し込めるみたい → {link}",
-            "みんなは、記念日にパートナーへ何を贈ってますか…？",
+        # 自己紹介文・プロフィール
+        "photo": [
+            "マッチはする。\nでも、そこから続かない。",
+            "写真を変えてみる。\n変わらない。\n\n読まれているのは、その下の文章かもしれない。",
+            "自己紹介文は、書いた本人がいちばん読めない。\n何度も読み返したぶん、\n初めて読む人の目が想像できなくなる。",
+            "出す前に、一度だけ\n知らない人の目を通しておく。\n{link}",
+            "自己紹介文、最後に書き直したのはいつですか。",
         ],
-        # 結婚式（友人として）
-        "gift-wedding": [
-            "親友の結婚式まで、あと2ヶ月。\n「スーツどうしよう」ってこぼしてた。",
-            "たぶん、服だけの話じゃないんだと思う。\n人前に立つ日って、ちょっと緊張するもんね。",
-            "だから、第一印象を整える1日体験を贈ることにした。\nプロがカウンセリングして、メイクも服選びも一緒に。\n当日の“自分の見せ方”を、型にしてくれるらしい。",
-            "誰にも知られず受けられるのも、彼らしくていいなと思って。",
-            "大切な日に、自信をひとつ。\n友人へのギフトでも申し込めるみたい → {link}",
-            "大切な日に立つ友達に、何かしてあげたくなること、ありませんか…？",
+        # 誘うタイミング
+        "date": [
+            "誘うタイミングだけが、ずっと決まらない。",
+            "早いと重い。\n遅いと冷める。\n\nどっちも怖いから、今日も送らない。",
+            "この「まだ早いかな」は、\n何回考えても自分の中では解けない。\n相手側にしか無い情報だから。",
+            "決めるのは自分でいい。\nただ、材料が片側しか無いまま決めている。\n{link}",
+            "誘うタイミング、どうやって決めてますか。",
         ],
-        # 転職・昇進・就活
-        "gift-career": [
-            "転職の面接が続いてて、\n「第一印象って、結局どうにもならないよな」ってぽつり言ってた。",
-            "そんなことないよ、とは言わなかった。\n代わりに、整える体験を贈ってみることにした。",
-            "カウンセリングして、メイクと服選びまで1日で。\n第一印象を、自分で再現できる形にしてくれるらしい。",
-            "誰にも知られず受けられるから、彼も気がねしないみたい。",
-            "新しい場所に立つ前に、自信をひとつ → {link}",
-            "大事な面接の前、パートナーに何かしてあげたことありますか…？",
+        # デートのあと
+        "signal": [
+            "デートは楽しかった。\nと思う。",
+            "帰ってから、\n温度感が読めなくなる。\n\n今日送るか、明日にするか。\nそれだけで30分たつ。",
+            "楽しかったかどうかは、\n自分の記憶からしか分からない。\n相手からどう見えていたかは、別の話。",
+            "次の一手を決める前に、\nもう片方の目を借りておく。\n{link}",
+            "デートのあと、すぐ送る派ですか。",
         ],
-        # 父の日・クリスマス
-        "gift-fathersday": [
-            "今年の父の日、何あげよう？って弟と話してて。\nネクタイも財布も、もう何本目かわからない。",
-            "だから今年は、“自信”を贈ろうって話になった。",
-            "1日で第一印象を整える体験。\nカウンセリングから、メイク、服選びまで。",
-            "誰にも知られず受けられるから、お父さんも構えずに行けそう。",
-            "モノじゃない贈り物を、節目に → {link}",
-            "お父さんへの贈り物、毎年迷いませんか…？",
+        # 距離感・言いにくいこと
+        "distance": [
+            "踏み込みたい。\nでも、踏み込みすぎたくない。",
+            "この距離の話は、\n友達には聞きにくい。\n相手には、もっと聞けない。",
+            "だから、ずっと自分の中だけで回している。",
+            "本人には聞けないことを、\n同じ側に立つ人に聞いてみる。\n\n判定ではなく、どう受け取ったかが返る。\n{link}",
+            "距離感、どこで決めてますか。",
         ],
     }
 
 
-def _build_gift_thread_prompt(persona: dict, occasion_name: str) -> str:
-    """gift連投をAI生成するためのプロンプト（GIFT_PROMPT.md準拠）。"""
+def _build_thread_prompt(
+    persona: dict, scene_name: str, scene_topics: list[str] | None = None,
+) -> str:
+    """連投をAI生成するためのプロンプトを persona.json から組み立てる。
+
+    ここは以前 `_build_gift_thread_prompt` という名前で、旧事業
+    （His Recoveries の「第一印象パッケージ」を妻・彼女にギフトとして
+    勧める連投）の仕様が本文ごと埋め込まれていた。
+
+    稼働中の生成は mock ではなく Gemini なので、persona.json を
+    タシカメに書き換えても、実際に生成されるのは旧事業のギフト訴求
+    だった。アカウントの中身は persona.json が持つ。ここはその
+    組み立てと、Threadsの連投としての形式だけを受け持つ。
+    """
+    ch = persona.get("character", {}) or {}
+    tone = persona.get("tone", {}) or {}
+    brand = persona.get("brand", {}) or {}
+    biz = persona.get("business_context", {}) or {}
+    posting = persona.get("posting", {}) or {}
+    thread_cfg = posting.get("thread", {}) or {}
+
+    name = persona.get("display_name") or brand.get("name") or "このアカウント"
+    min_posts = thread_cfg.get("min_posts", 3)
+    max_posts = thread_cfg.get("max_posts", 6)
+    structure = thread_cfg.get(
+        "structure", "止まる瞬間 → なぜ決まらないか → 誰に聞けば分かるか → CTA → 問い",
+    )
+
+    def block(title: str, items) -> str:
+        items = [str(x).strip() for x in (items or []) if str(x).strip()]
+        if not items:
+            return ""
+        return "\n【" + title + "】\n" + "\n".join("- " + x for x in items) + "\n"
+
+    who = [f"語り手: {ch.get('name') or name}"]
+    if persona.get("role"):
+        who.append(f"立場: {persona['role']}")
+    if (ch.get("first_person") or "").strip():
+        who.append(f"一人称: {ch['first_person']}（これ以外は使わない）")
+    else:
+        who.append("一人称は使わない。個人の独白にしない")
+    if ch.get("background"):
+        who.append(f"背景: {ch['background']}")
+    if persona.get("role_description"):
+        who.append(persona["role_description"])
+
+    facts = [v for k, v in biz.items() if k != "note" and isinstance(v, str)]
+
+    style = [
+        tone.get("style", ""),
+        f"絵文字: {tone.get('emoji_usage', '0〜2個')}",
+        f"ハッシュタグ: {tone.get('hashtag_usage', '0〜1個')}",
+        tone.get("line_breaks", ""),
+        "読む人に反応を求めない（いいね・シェア・拡散の誘導は書かない）",
+        "価格・割引・キャンペーンには触れない",
+    ]
+
+    scene = [f"今回の場面: {scene_name}"]
+    if scene_topics:
+        scene.append("扱う言葉: " + " / ".join(str(t) for t in scene_topics))
+
     return (
-        "あなたは「His Recoveries」のThreads担当コピーライターです。\n"
-        "男性本人ではなく、そのパートナー（妻・彼女）に向けて、男性向けの"
-        "「第一印象パッケージ」を“ギフト”として自然に勧めるThreadsの連投を作ってください。\n\n"
-        "# サービス（事実）\n"
-        "- 第一印象パッケージ＝カウンセリング＋メイク＋服選びを「1日完結」で。"
-        "第一印象を、自分で再現できる型にする体験。\n"
-        "- 完全守秘義務。ギフトとしても申し込める。\n\n"
-        f"# 今回の機会\n{occasion_name}\n\n"
-        "# 口調\n"
-        "- 一人の女性が、自分の言葉でぽつりと話すトーン。広告くさくしない。\n"
-        "- 動機は愛・応援・節目。「彼を直したい」ではなく「もっと自分を好きでいてほしい」。\n"
-        "- 静かで上品。煽らない。\n\n"
-        "# 最重要: 侮辱を絶対に避ける（贈り物=応援であって指摘ではない）\n"
-        "- 「欠点を直す」ではなく「これからの自分への応援」として書く。\n"
-        "- OKな気持ち: 『いつも頑張ってるから』『もっと自信を持つあなたが見たい』"
-        "『これからの自分に』『変わってほしいからではなく応援したいから』。\n"
-        "- NGな入り方: 『あなたのここを直して』『気になってたから』など指摘・否定。\n"
-        "- 本人に主導権があることを示す: 何をするかは本人が選ぶ。\n"
-        "- 守秘を安心材料として必ず添える: 『完全守秘』『何をするかは本人が選べる』"
-        "『贈った側にも内容は知らされない』。これが侮辱回避と安心の核。\n\n"
-        "# その他のルール\n"
-        "- 効果を保証しない。ビフォーアフター誇張禁止。医療的断定（治る・若返る等）禁止。\n"
-        "- 「男はみんな〜」のような一般化をしない。\n"
-        "- 価格・割引には触れない。\n"
-        "- 売りつけない・命令しない。提案と気づきにとどめる。\n\n"
-        "# 常に読まれる書き出し（最重要・READ_DESIGN.md準拠）\n"
-        "- 読まれるかは1投目でほぼ決まる。次のどれかで始める:\n"
-        "  ・セリフ始まり（「」で始めて会話が始まった感を出す）\n"
-        "  ・具体的な一場面（『日曜の夜、洗面所で』のように時・場所を置く）\n"
-        "  ・言われた側の記憶（『疲れてる？って言われた』など他者の一言）\n"
-        "  ・常識の反転（『〇〇だと思ってた。でも違った』）\n"
-        "- 抽象・説明・一般論で始めない。1投目は2行以内。\n"
-        "- 最後の投稿は必ず『開いた問い』で閉じる（返信＝伸びる信号）。\n"
-        "- 淡々とした具体（毎晩2分・1週間）は盛らずに書く。信頼につながる。\n\n"
-        "# 形式\n"
-        "- 3〜6投の連投。1投目は2行以内のフック。\n"
-        "- 流れは 共感 → 気づき → サービス紹介 → CTA → リプ誘発の問い。\n"
-        "- 口語・改行多め。絵文字は0〜2個。ハッシュタグは使わない。\n"
-        "- CTA投稿の末尾に必ず {link} という文字列をそのまま置く（URLは後で差し込む）。\n"
-        "- 各投稿を必ず `1/` `2/` … と番号始まりにして、投稿の区切りにする。\n"
-        "- URLやリンクは自分で書かない（{link} だけ置く）。\n\n"
+        f"あなたはThreadsで「{name}」として投稿するライターです。\n"
+        f"{min_posts}〜{max_posts}投の連投（スレッド）を1本書いてください。\n"
+        + block("今回書く場面", scene)
+        + block("語り手", who)
+        + block("書き方", style)
+        + block("守ること", brand.get("editorial_principles"))
+        + block("大事にしていること", ch.get("values"))
+        + block("扱ってよいトピック", persona.get("allowed_topics"))
+        + block("扱わないトピック", persona.get("forbidden_topics"))
+        + block("絶対に書かないこと", ch.get("never_write_list"))
+        + block("使わない言葉（1つでも使ったら不合格）", ch.get("ng_words"))
+        + block("背景（説明しすぎない）", facts)
+        # business_context には価格が入っている。背景として渡すが、
+        # 投稿に価格を書かせない（persona の forbidden_topics と揃える）。
+        + "- 背景にある金額・プラン名は投稿に書かない\n"
+        + "\n【1投目（ここで読まれるかが決まる）】\n"
+        "- 2行以内。抽象・説明・一般論で始めない\n"
+        "- 次のどれかで始める: 具体的な一場面（時・場所・手元が見える）/ "
+        "言われた一言（「」で始める）/ 常識の反転（『〜だと思ってた。でも』）\n"
+        "\n【連投の流れ】\n"
+        f"- {structure}\n"
+        "- 1投=1メッセージ。詩にしない。実際に会話で言う言葉で書く\n"
+        "- 最後の投稿は開いた問いで閉じる（返信が来る＝伸びる信号）\n"
+        "\n【形式】\n"
+        "- CTA投稿の末尾に必ず {link} という文字列をそのまま置く（URLは後で差し込む）\n"
+        "- URLやリンクは自分で書かない（{link} だけ置く）\n"
+        + ("- {link} は最後のCTA投稿にだけ置く。他の投稿には置かない\n"
+           if thread_cfg.get("url_in_last_only", True) else "")
+        + "- 各投稿を必ず `1/` `2/` … と番号始まりにして、投稿の区切りにする\n"
+        "\n読んだ人が、自分の場面を思い出せれば足ります。正解は渡しません。\n"
         "出力は連投本文のみ。説明や見出しは書かないこと。"
     )
 
@@ -639,10 +693,10 @@ def generate_thread(
     max_retries: int = 3,
     record: bool = True,
 ) -> dict | None:
-    """連投(スレッド)を生成する。giftトラック用。
+    """連投(スレッド)を生成する。これが稼働中の本線。
 
     Returns: {"is_thread": True, "posts": [...], "text": str(結合),
-              "link": url, "hypothesis_id": str, "occasion": str, ...} or None
+              "link": url, "hypothesis_id": str, "scene": str, ...} or None
     """
     if persona is None:
         persona = load_persona(account_dir)
@@ -655,9 +709,10 @@ def generate_thread(
     hconfig = load_hypotheses(account_dir)
     link_config = hconfig.get("link_config", {})
 
-    # 時間帯×読者層の出し分け:
+    # 時間帯×場面の出し分け:
     # persona.posting.slot_type_map = {"morning": [types], "night": [types]}
-    # 朝(9時)=母親層+悩み検索層 / 夜(21時)=パートナー層+緊急層 のように配信対象を変える。
+    # 朝(9時)=出す前のもの(LINE・自己紹介文) / 夜(21時)=会ったあと・誘う前・距離感。
+    # 夜のほうが、手が止まる時間帯。
     slot_map = persona.get("posting", {}).get("slot_type_map", {})
     allowed_types = slot_map.get(_current_time_slot()) if slot_map else None
     hypothesis = select_hypothesis(account_dir, allowed_types=allowed_types)
@@ -667,31 +722,44 @@ def generate_thread(
 
     h_id = hypothesis.get("id", "unknown")
     h_slug = hypothesis.get("slug", h_id)
-    h_type = hypothesis.get("type", "gift")
-    occasion_name = hypothesis.get("name", h_slug)
+    h_type = hypothesis.get("type", h_slug)
+    scene_name = hypothesis.get("name", h_slug)
+    scene_topics = hypothesis.get("topics", [])
 
-    # CTAリンク（type別: areas=/areas、b2b=/partner、その他=/apply）
+    # CTAリンク。行き先は hypotheses.json の link_config.base_urls が持つ。
+    # type と同じ名前のキーがあればそれを使い、無ければ "apply"（既定の入口）。
+    # 以前はここで areas / b2b / gift を名指ししていたが、旧事業の導線なので
+    # 名指しをやめた。行き先を増やすときは base_urls にキーを足すだけで足りる。
     # 仮説に no_link:true があればリンク無し（認知・ファン化投稿。会話を評価する
     # アルゴリズムに合わせ、リンクを置かず返信を誘う）
-    base_urls = link_config.get("base_urls", {})
+    base_urls = {} if hypothesis.get("no_link") else link_config.get("base_urls", {})
     link_url = ""
-    if hypothesis.get("no_link"):
-        base_urls = {}
-    if h_type == "areas" and "areas" in base_urls:
-        link_url = base_urls["areas"].format(slug=h_slug)
-    elif h_type == "b2b" and "partner" in base_urls:
-        link_url = base_urls["partner"].format(slug=h_slug)
-    elif "apply" in base_urls:
-        link_url = base_urls["apply"].format(slug=h_slug)
-    elif "gift" in base_urls:
-        link_url = base_urls["gift"].format(slug=h_slug)
+    for key in (hypothesis.get("link_key"), h_type, "apply"):
+        if key and key in base_urls:
+            link_url = base_urls[key].format(slug=h_slug)
+            break
+
+    def _template_posts() -> list[str]:
+        """テンプレートから連投を組む。slug が無ければ中止（Noneを返す）。
+
+        以前はここで `templates.get("gift-anniversary")` にフォールバック
+        していた。slug が一致しない場面では、旧事業のギフト文面がそのまま
+        投稿される入口になっていたので、落とすようにした。
+        """
+        templates = _load_thread_templates(account_dir)
+        raw_posts = templates.get(h_slug)
+        if not raw_posts:
+            logger.error(
+                "generate_thread: no thread template for slug=%s "
+                "(thread_templates.json に場面を足すか、仮説のslugを合わせる)", h_slug,
+            )
+            return []
+        return [p.replace("{link}", link_url) for p in raw_posts]
 
     # 投稿リスト生成（mock=テンプレート / AI=Gemini）
     posts: list[str] = []
     if mock:
-        templates = _load_thread_templates(account_dir)
-        raw_posts = templates.get(h_slug) or templates.get("gift-anniversary")
-        posts = [p.replace("{link}", link_url) for p in raw_posts]
+        posts = _template_posts()
     else:
         gemini_key = (
             get_account_env("GEMINI_API_KEY", account_id)
@@ -699,11 +767,17 @@ def generate_thread(
         )
         if not gemini_key:
             logger.warning("generate_thread: no GEMINI_API_KEY, falling back to mock template")
-            templates = _load_thread_templates(account_dir)
-            raw_posts = templates.get(h_slug) or templates.get("gift-anniversary")
-            posts = [p.replace("{link}", link_url) for p in raw_posts]
+            posts = _template_posts()
         else:
-            system_prompt = _build_gift_thread_prompt(persona, occasion_name)
+            system_prompt = _build_thread_prompt(persona, scene_name, scene_topics)
+            # 伸びてる投稿の構造（trend_analyzer）があれば参考として渡す
+            try:
+                from core.trend_analyzer import build_writer_context
+                trend_context = build_writer_context(max_patterns=3)
+                if trend_context:
+                    system_prompt += f"\n\n{trend_context}"
+            except Exception as e:
+                logger.debug("Trend analysis context unavailable: %s", e)
             for _ in range(max_retries):
                 raw = _call_gemini(gemini_key, system_prompt, "連投を作成してください。")
                 parsed = _parse_thread_text(raw or "")
@@ -715,11 +789,12 @@ def generate_thread(
                     break
             if not posts:
                 logger.warning("generate_thread: AI parse failed, using mock template")
-                templates = _load_thread_templates(account_dir)
-                raw_posts = templates.get(h_slug) or templates.get("gift-anniversary")
-                posts = [p.replace("{link}", link_url) for p in raw_posts]
+                posts = _template_posts()
 
-    # 各投稿をバリデーション（giftの緩和プロファイルで検証）
+    if not posts:
+        return None
+
+    # 各投稿をバリデーション（アカウント別の緩和プロファイルで検証）
     valid_posts: list[str] = []
     for idx, p in enumerate(posts, start=1):
         is_valid, errors = validate_post(p, persona)
@@ -738,7 +813,7 @@ def generate_thread(
         record_hypothesis_post(account_dir, h_id, "none")
     joined = "\n\n———\n\n".join(valid_posts)
     logger.info(
-        "Generated gift thread (occasion=%s, posts=%d, link=%s)",
+        "Generated thread (scene=%s, posts=%d, link=%s)",
         h_id, len(valid_posts), bool(link_url),
     )
     return {
@@ -751,7 +826,7 @@ def generate_thread(
         "buzz_score": 8,
         "source_type": f"{h_type}_thread",
         "hypothesis_id": h_id,
-        "hypothesis_name": occasion_name,
+        "hypothesis_name": scene_name,
         "has_link": bool(link_url),
         "topic_type": h_type,
         "topic_slug": h_slug,
@@ -878,29 +953,50 @@ def _build_system_prompt(persona: dict, pattern: str) -> str:
 def _build_rewrite_prompt(
     persona: dict, source_text: str, pattern: str, topic: str | None = None,
 ) -> str:
-    """Nagi / Quiet Grooming 用のリライトプロンプトを構築する。
+    """単発投稿のユーザープロンプトを persona.json から組み立てる。
 
-    Nagiは同じ悩みを抱える当事者として語る。アドバイザーではない。
-    二人称「あなた」は使わない。静かな観察として書く。
+    ここは以前「Nagi」という固定のキャラクター（多汗症・ニキビ・ワキガの
+    当事者）に書き下ろされていた。一人称「僕」や、扱うトピックを
+    「清潔感・スキンケア・多汗症…」と名指しする指示が本文に埋まっていて、
+    persona.json を書き換えても生成物は前の事業のままだった。
+
+    言葉の線引きはアカウントが持つ（persona の ng_words / allowed_topics）。
+    ここは「何をどう書き直すか」の形だけを受け持つ。
     """
-    common_rules = (
-        "【絶対ルール】\n"
-        "- 一人称は必ず「僕」を使う\n"
-        "- Nagiとして、自分自身の体験・観察・内省を静かに綴る\n"
-        "- 「あなた」「君」等の二人称は絶対に使わない\n"
-        "- 読者に語りかけない。自分の記録として書く\n"
-        "- 「おすすめです」「ぜひ」等の推奨表現は絶対NG\n"
-        "- 「（ネタ元:」「（参考:」等のメタ情報・出典・注釈は絶対に書かない\n"
-        "- ハッシュタグは0個（絶対に付けない）\n"
-        "- 絵文字は0個（絶対に使わない）\n"
-        "- トピックは清潔感・美容・スキンケア・多汗症・ニキビ・ワキガ・顔の自信・疲労・自信・Presence・自意識\n"
-        "- 200〜450文字で書く。短すぎず、長すぎず\n"
-        "- 1行目は静かに始める。煽りフックは不要\n"
-        "- 禁止ワード: マジで、実は、正直、圧倒的に、絶対、すべき、"
-        "克服しました、治りました、あなたも変われる\n"
-        "- 推奨ワード（自然に使う）: 気づいた、思った、だった、整える、"
-        "向き合う、続けている、静かに\n"
-    )
+    ch = persona.get("character", {}) or {}
+    tone = persona.get("tone", {}) or {}
+    posting = persona.get("posting", {}) or {}
+    first_person = (ch.get("first_person") or "").strip()
+    min_chars = posting.get("min_chars", 30)
+    max_chars = posting.get("max_chars", 450)
+
+    rules = ["【書き方】"]
+    if first_person:
+        rules.append(f"- 一人称は「{first_person}」を使う")
+    else:
+        rules.append("- 一人称は使わない。個人の独白にしない")
+    rules += [
+        f"- {min_chars}〜{max_chars}文字で書く",
+        "- 1行目は具体的な一場面から始める。煽りフックは不要",
+        "- 「（ネタ元:」「（参考:」等のメタ情報・出典・注釈は書かない",
+        f"- 絵文字: {tone.get('emoji_usage', '0個')}",
+        f"- ハッシュタグ: {tone.get('hashtag_usage', '0個')}",
+        "- 読む人に反応を求めない（いいね・シェア・拡散の誘導は書かない）",
+    ]
+    ng = [str(w).strip() for w in (ch.get("ng_words") or []) if str(w).strip()]
+    if ng:
+        rules.append("- 使わない言葉: " + "、".join(ng))
+    recommended = [
+        str(w).strip() for w in (tone.get("recommended_words") or []) if str(w).strip()
+    ]
+    if recommended:
+        rules.append("- 自然に使いたい言葉: " + "、".join(recommended))
+    allowed = [
+        str(t).strip() for t in (persona.get("allowed_topics") or []) if str(t).strip()
+    ]
+    if allowed:
+        rules.append("- 扱うトピック: " + "、".join(allowed))
+    common_rules = "\n".join(rules) + "\n"
 
     if source_text:
         prompt = (
@@ -916,14 +1012,13 @@ def _build_rewrite_prompt(
         )
     elif topic:
         prompt = (
-            f"Nagiとして、以下のテーマで「{pattern}」パターンの投稿を書いてください。\n\n"
+            f"以下のテーマで「{pattern}」パターンの投稿を1本書いてください。\n\n"
             f"テーマ: {topic}\n\n"
             f"{common_rules}"
         )
     else:
         prompt = (
-            f"Nagiとして、肌やからだの悩みについて"
-            f"「{pattern}」パターンの投稿を1つ書いてください。\n\n"
+            f"「{pattern}」パターンの投稿を1本書いてください。\n\n"
             f"{common_rules}"
         )
 
@@ -933,7 +1028,6 @@ def _build_rewrite_prompt(
     prompt += (
         "\n投稿文のみを出力してください。"
         "前置き・説明・注釈・メタ情報は一切不要。本文だけ。"
-        "ハッシュタグも絵文字も付けないこと。"
     )
     return prompt
 
@@ -943,266 +1037,43 @@ def _build_user_prompt(persona: dict, topic: str | None) -> str:
     return _build_rewrite_prompt(persona, "", "観察", topic)
 
 
-def _generate_mock_post(persona: dict, pattern: str, topic: str | None) -> str:
-    """APIを使わずにサンプル投稿を生成（テスト・品質確認用）
+def _generate_mock_post(
+    persona: dict, pattern: str, topic: str | None, account_dir: Path | None = None,
+) -> str:
+    """APIを使わずにサンプル投稿を組む（テスト・品質確認用）。
 
-    Nagi / Quiet Grooming のトーンに合わせたテンプレートを返す。
-    一人称「僕」、丁寧体、絵文字なし、ハッシュタグなし。
-    ※ネタ元・メタ情報は絶対に本文に含めない。
+    以前ここには旧事業（鏡・清潔感・ワキガ・ニキビ跡・ギフト）の文面が
+    約260行、直接書かれていた。アカウントを入れ替えても --mock の出力は
+    前の事業のままになるので、アカウントの素（thread_templates.json）から
+    組むようにした。文面を変えたいときは、コードではなくそのファイルを直す。
+
+    pattern（= 仮説の slug）に一致するテンプレートがあれば、その中の
+    1投を返す。無ければ空文字を返し、呼び出し側のリトライに任せる。
     """
-    char = persona.get("character", {})
-    fp = char.get("first_person", "僕")
+    templates = _load_thread_templates(account_dir) if account_dir else {}
 
-    # His Recoveries 編集プロンプト準拠テンプレート
-    # 場面が見える。意見ではなく景色を置く。説明しすぎない。
-    # 12 slug（feeling 6 + territory 6）× 2-3バリエーション
-    mock_templates = {
-        # ── feeling: mirror（鏡を見るのが嫌）──
-        "mirror": (
-            "歯を磨いているあいだ、\n"
-            "鏡の中央に視線を置けなかった時期がある。\n\n"
-            "自分の顔の、どこか一点を、\n"
-            "毎朝そっと避けていた。"
-        ),
-        "mirror_2": (
-            "朝の洗面所で、\n"
-            "鏡に映る自分と目が合うまでに、\n"
-            "数秒かかっていた時期がある。\n\n"
-            "あの数秒が、一日の重さを決めていた。"
-        ),
-
-        # ── feeling: photo（写真が苦手）──
-        "photo": (
-            "集合写真の中で、\n"
-            "自分だけ少し馴染んでいない気がしていた。\n\n"
-            "それは肌の凹凸というより、\n"
-            "自分が自分の顔をどう見ているかの話だったのかもしれない。"
-        ),
-        "photo_2": (
-            "写真を撮られるとき、\n"
-            "無意識に後列を選んでいた。\n\n"
-            "笑えなかったわけじゃない。\n"
-            "ただ、カメラの前の自分を、\n"
-            "信じきれなかった。"
-        ),
-
-        # ── feeling: cleanliness（清潔感に自信がない）──
-        "cleanliness": (
-            "夏になると、\n"
-            "グレーのシャツを何年も避けていたことを思い出す。\n\n"
-            "脇に滲みが出るのが怖くて、\n"
-            "黒か紺ばかり選んでいた。"
-        ),
-        "cleanliness_2": (
-            "満員電車で、\n"
-            "人との距離が近くなるたびに、\n"
-            "少しだけ息を止めていた時期がある。\n\n"
-            "自分の匂いが気になっていたことに、\n"
-            "ずいぶん後で気づいた。"
-        ),
-
-        # ── feeling: before-meeting（人と会う前）──
-        "before-meeting": (
-            "約束の30分前に着いて、\n"
-            "トイレの鏡で何度も確認していた時期がある。\n\n"
-            "整えても、確信が持てなかった。\n"
-            "でも確認を止められなかった。"
-        ),
-        "before-meeting_2": (
-            "人と会う前の準備が、\n"
-            "年々長くなっている気がする。\n\n"
-            "身だしなみを整えるためというより、\n"
-            "「大丈夫」を自分に言い聞かせる時間が、\n"
-            "必要になっていた。"
-        ),
-
-        # ── feeling: aging（老けた気がする）──
-        "aging": (
-            "同年代と並んだとき、\n"
-            "自分だけ少し上に見える気がしていた。\n\n"
-            "鏡よりも、写真のほうが、ありのままだった。"
-        ),
-        "aging_2": (
-            "久しぶりに会った友人に、\n"
-            "「疲れてる？」と聞かれた。\n\n"
-            "疲れてはいなかった。\n"
-            "ただ、顔がそう見えていた。"
-        ),
-
-        # ── feeling: tired（疲れて見える）──
-        "tired": (
-            "ちゃんと寝たのに、\n"
-            "顔だけが疲れている朝がある。\n\n"
-            "夕方の鏡はもっと容赦がなくて、\n"
-            "そこに映るのは、\n"
-            "自分が思っているより少し古い顔だった。"
-        ),
-        "tired_2": (
-            "「元気そうだね」と言われる日と、\n"
-            "何も言われない日がある。\n\n"
-            "その差が、自分ではわからない。\n"
-            "だから鏡を見る時間が増えた。"
-        ),
-
-        # ── territory: sweat-odor（汗とにおい）──
-        # 好奇心ギャップ型: 理由を匂わせるが、仕組みは言い切らない（続きはサイト）
-        "sweat-odor": (
-            "汗のにおいの強さに、\n"
-            "体質の差があるらしいと知ったのは、ずいぶん後だった。\n\n"
-            "なぜ僕は、洗ってもすぐ戻るのか。\n"
-            "その理由が、長いあいだわからなかった。"
-        ),
-        "sweat-odor_2": (
-            "エレベーターに乗るとき、\n"
-            "少しだけ距離を取る癖がある。\n\n"
-            "誰かに指摘されたわけじゃない。\n"
-            "ただ、自分の汗の匂いが気になり始めてから、\n"
-            "密閉空間が少し怖くなった。"
-        ),
-
-        # ── territory: skin-acne（肌とニキビ跡）──
-        "skin-acne": (
-            "同じようにできたニキビでも、\n"
-            "跡が残るものと、残らないものがあった。\n\n"
-            "その分かれ目が何なのか。\n"
-            "知ったのは、跡が残ってからだった。"
-        ),
-        "skin-acne_2": (
-            "肌の調子が悪い朝は、\n"
-            "鏡の前に立つ時間が、\n"
-            "少しだけ長くなる。\n\n"
-            "確認しているのか、\n"
-            "受け入れようとしているのか、\n"
-            "自分でもわからない。"
-        ),
-
-        # ── territory: hair-loss（薄毛AGA）──
-        "hair-loss": (
-            "シャワーのあと、\n"
-            "排水溝の髪を見る癖がついた時期がある。\n\n"
-            "数えても意味がないと知りつつ、\n"
-            "見ないふりもできなかった。"
-        ),
-        "hair-loss_2": (
-            "薄くなるのが、\n"
-            "なぜ前のほうと、てっぺんからなのか。\n\n"
-            "横や後ろは、あまり変わらない。\n"
-            "その偏りに理由があると知ったとき、\n"
-            "少しだけ、頭の中が静かになった。"
-        ),
-
-        # ── territory: beard-body-hair（髭と体毛）──
-        "beard-body-hair": (
-            "剃ると濃くなる、と信じていた時期がある。\n\n"
-            "本当にそうなのか。\n"
-            "それとも、そう見えているだけなのか。\n\n"
-            "答えを知ったとき、\n"
-            "毎朝の手入れが、少しだけ変わった。"
-        ),
-
-        # ── territory: face-impression（顔の印象）──
-        "face-impression": (
-            "顔の印象は、\n"
-            "造作で決まると思っていた。\n\n"
-            "でも、変えられないものより、\n"
-            "整えられるもののほうが、\n"
-            "印象を動かしているらしい。\n\n"
-            "その境界がどこにあるのか、知りたかった。"
-        ),
-
-        # ── territory: mind-awareness（心と自意識）──
-        "mind-awareness": (
-            "気にする癖は、\n"
-            "弱さではなくて学習だと、\n"
-            "どこかで読んだことがある。\n\n"
-            "一度気になったことは、\n"
-            "気にならなかったころには戻れない。\n\n"
-            "ただ、気にしたまま、\n"
-            "歩き方を変えることはできる。"
-        ),
-        "mind-awareness_2": (
-            "自分の見た目を気にすることを、\n"
-            "「気にしすぎ」と言われた時期がある。\n\n"
-            "でも、気にしている本人にとっては、\n"
-            "それが毎朝のことだった。"
-        ),
-
-        # ── gift: 贈り手（灯）の視点。売らない。気づきから診断へ ──
-        # gift-notice（大切な人の変化に気づいた）
-        "gift-notice": (
-            "彼が、洗面所にいる時間が、\n"
-            "少しだけ長くなった。\n\n"
-            "鏡の前で、何かを確かめている。\n"
-            "気づかないふりをした。"
-        ),
-        "gift-notice_2": (
-            "写真の中の彼が、\n"
-            "少しうつむいて見えた。\n\n"
-            "指摘はしなかった。\n"
-            "ただ、その横顔を、覚えておこうと思った。"
-        ),
-
-        # gift-not-saying（言えずにいる気遣い）
-        "gift-not-saying": (
-            "気になっていることは、\n"
-            "たぶん本人が一番わかっている。\n\n"
-            "だから、何も言わなかった。\n"
-            "ただ、整えるきっかけだけは、\n"
-            "そっと置いておきたかった。"
-        ),
-
-        # gift-quiet-care（押し付けない贈り物）
-        "gift-quiet-care": (
-            "直してほしいわけじゃない。\n\n"
-            "ただ、その人が鏡の前で\n"
-            "少し迷う時間を、\n"
-            "軽くできたらと思っただけ。"
-        ),
-
-        # gift-first-impression（第一印象を整える贈り物）
-        "gift-first-impression": (
-            "第一印象は、\n"
-            "生まれ持った造作で決まると思っていた。\n\n"
-            "でも、変えられないものより、\n"
-            "整えられるものの方が、\n"
-            "相手の印象を動かしているらしい。\n\n"
-            "その人にも、知ってほしかった。"
-        ),
-        "gift-first-impression_2": (
-            "清潔感は、生まれつきだと思っていた。\n\n"
-            "でも、整えられる部分の方が大きいと知ってから、\n"
-            "その人の見え方が、少し変わって見えた。"
-        ),
-
-        # gift-diagnosis（自分を知る時間を贈る）
-        "gift-diagnosis": (
-            "何かを変えたいわけじゃなくて、\n"
-            "今の自分を、責めずに知る。\n\n"
-            "そういう時間を、\n"
-            "贈り物にできたらと思った。"
-        ),
-
-        # gift-occasion（節目に渡す贈り物）
-        "gift-occasion": (
-            "記念日に、物を贈るのもいい。\n\n"
-            "でも今年は、\n"
-            "その人が自分の印象と向き合う時間を、\n"
-            "そっと渡してみようと思う。"
-        ),
-    }
-
-    # パターンに一致するテンプレートを探す（完全一致優先→部分一致→ランダム）
-    text = mock_templates.get(pattern)
-    if not text:
-        for key, template in mock_templates.items():
-            if key in pattern or pattern in key:
-                text = template
+    posts = templates.get(pattern)
+    if not posts:
+        # slug_2 のようなバリエーション名、部分一致も拾う
+        for key, value in templates.items():
+            if key and (key in pattern or pattern in key):
+                posts = value
                 break
-    if not text:
-        text = random.choice(list(mock_templates.values()))
+    if not posts and topic:
+        for key, value in templates.items():
+            if any(topic in p for p in value):
+                posts = value
+                break
+    if not posts:
+        logger.warning(
+            "_generate_mock_post: no template for pattern=%s "
+            "(thread_templates.json に追記してください)", pattern,
+        )
+        return ""
 
-    # Nagi はハッシュタグを一切使わない
-    return text
+    # CTA投稿（{link} を含む）は単発では使わない。本文として読める投稿だけ。
+    body = [p for p in posts if "{link}" not in p] or list(posts)
+    return random.choice(body).replace("{link}", "").strip()
 
 
 def _call_gemini(api_key: str, system_prompt: str, user_prompt: str) -> str | None:

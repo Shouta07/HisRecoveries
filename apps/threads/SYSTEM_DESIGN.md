@@ -1,110 +1,118 @@
-# His Recoveries — 事業仮説探索システム
+# タシカメ — Threads 自動運用システム
 
 ## 概要
 
 | 項目 | 内容 |
 |---|---|
-| アカウント | @hisrecoveries_jp (Nagi) |
-| ブランド | His Recoveries / バイタリティデザイン合同会社 |
-| プロフURL | https://his-recoveries.vercel.app |
-| 目的 | **事業仮説の発見**（フォロワー増ではない） |
-| 現フェーズ | Phase 0: 探索期（8仮説を均等検証） |
+| アカウント | @koikame.jp |
+| プロダクト | タシカメ（送る前に、女性の目を通す） |
+| 運営 | His Recoveries / バイタリティデザイン合同会社 |
+| 行き先 | https://hisrecoveries.com/ask （相談の入口） |
+| 目的 | 手が止まる瞬間に置かれること。5場面のどれが反応されるかを測る |
+| 現フェーズ | explore（5場面を均等検証） |
+| 内部ID | `accounts/mens-body-lab/`（env のキーに使うので変更しない） |
 
-**このシステムはコンテンツ自動化ツールではない。事業仮説探索システムである。**
-
----
-
-## 自動フロー（毎日3回実行）
-
-```
-07:30  Hypothesis Engine → Writer → Validator → Poster → 投稿
-22:30  Hypothesis Engine → Writer → Validator → Poster → 投稿
-09:00  Collector → Threads API → 成果回収 → hypothesis_results.json
-```
+旧構成（His Recoveries＝男性ウェルネス。8仮説 hygiene/aging_anxiety…、
+読者4層 gift/mother/urgent/areas、ペルソナ Nagi）は廃止。
+このドキュメントはその置き換え。
 
 ---
 
-## Hypothesis Engine（8仮説）
+## 自動フロー
 
-| ID | 仮説 |
-|---|---|
-| hygiene | 男性は清潔感に強く反応する |
-| aging_anxiety | 男性は老化不安に強く反応する |
-| confidence | 男性は自信喪失に強く反応する |
-| presence | 男性はPresenceに強く反応する |
-| recovery_story | 男性は回復実例に強く反応する |
-| loneliness | 男性は孤独に強く反応する |
-| self_investment | 男性は自己投資に強く反応する |
-| conditioning | 男性はコンディション維持に強く反応する |
+```
+09:00 JST  場面選択(朝) → Writer(Gemini) → Validator → 承認キュー(approvals.json)
+21:00 JST  場面選択(夜) → Writer(Gemini) → Validator → 承認キュー
+3hおき     承認済みだけを投稿（approvals.json の approved）
+毎朝       import-history + collect（閲覧数などの回収）
+```
 
-### CTA実験（4バリアント）
+**投稿は人間の承認を通る。** `persona.posting.posting_types.automated.immediate_posting_forbidden`
+が true のあいだ、生成は投稿せずキューに積むだけ。
 
-| ID | CTA |
-|---|---|
-| none | CTAなし |
-| profile_nudge | 整え方、プロフにまとめています。 |
-| assessment | 自分の状態を知りたい方へ。プロフから。 |
-| dm_invite | 同じ悩みを抱えていたら、いつでも。 |
+---
 
-### 実験フェーズ
+## 5場面（hypotheses.json）
 
-| フェーズ | 期間 | 内容 |
+| slug | 場面 | 出す時間帯 |
 |---|---|---|
-| explore | 最初の5週 | 8仮説を均等配分 |
-| focus | 6〜10週 | 上位3仮説に集中 |
-| commit | 11週〜 | 最強仮説に全投下 |
+| `message` | 送る前のLINEで止まる | 朝 |
+| `photo` | 自己紹介文が読まれているか | 朝 |
+| `date` | 誘うタイミングが決まらない | 夜 |
+| `signal` | デートのあと、どう動くか | 夜 |
+| `distance` | 距離感で迷う | 夜 |
+
+時間帯の出し分けは `persona.posting.slot_type_map`。
+朝＝出す前のもの、夜＝会ったあと・誘う前・距離感。
+
+CTAは最終投稿に1本だけ。行き先は `/ask?plan=review&c={slug}` で、
+押した人はその場面を選んだ状態で書き始められる。
+
+### 問いかけ投稿（週2回・リンク無し）
+`hypotheses.discovery_questions`。2つに割れる問いで閉じる。正解は書かない。
+
+### 引用リソース（content_sources.json）
+1リソース = 14投稿の在庫。`posting.source_post_ratio`（現在0.5）の確率で
+在庫から単発1本を消費する。在庫切れなら連投にフォールバック。
+仕様は `accounts/mens-body-lab/CONTENT_SOURCES.md`。
 
 ---
 
-## コアモジュール（15ファイル）
+## 書かないこと（validator が機械的に弾く）
+
+- 相手の気持ちの判定（脈あり・脈なし・本命）
+- 効果の保証（モテる・落とす・攻略・成功率・必ず・絶対）
+- 女性の反応の創作（「女性はこう思っています」）← 商品そのものが嘘になる
+- 読む人や相手を見下す書き方（ダサい・痛い・キモい）
+- 価格・割引
+
+線引きは `persona.json` の `character.ng_words` / `never_write_list` が持つ。
+厳格度は `persona["validation"]`。コード側（`core/validator.py`）の既定値は
+旧事業向けなので、アカウント側の設定が優先される。
+
+---
+
+## コアモジュール
 
 | モジュール | 役割 |
 |---|---|
-| `hypothesis.py` | **仮説選択・実験管理・配分制御** |
-| `collector.py` | **投稿成果回収・仮説別集計** |
-| `writer.py` | 仮説起点の投稿生成 |
-| `validator.py` | 17項目品質チェック |
-| `poster.py` | Threads API投稿 |
-| `sheets.py` | Google Sheets連携 |
-| `researcher.py` | トレンド収集 |
-| `fetcher.py` | データ取得 |
-| `analyst.py` | 効果分析 |
-| `supervisor.py` | 安全装置 |
-| `monetize.py` | 無効 |
-| `scheduler.py` | 時間管理 |
-| `daemon.py` | 半自動運用 |
-| `config.py` | 設定管理 |
-| `main.py` | CLI司令塔 |
+| `writer.py` | 生成。`generate_thread` が本線（連投）。プロンプトは persona から組む |
+| `hypothesis.py` | 場面選択・均等配分・フェーズ管理 |
+| `validator.py` | NG表現・文字数・品質チェック |
+| `approvals.py` | 承認キューの状態機械 |
+| `poster.py` | Threads API 投稿（連投は reply_to_id で連結） |
+| `collector.py` | 投稿成果の回収・場面別集計 |
+| `fetcher.py` | Threads API GET |
+| `analyst.py` / `trend_analyzer.py` | 効果分析・伸びた構造の抽出 |
+| `supervisor.py` | KILL_SWITCH・レートリミット |
+| `scheduler.py` / `daemon.py` | 時間管理・半自動運用 |
+| `config.py` / `main.py` | 設定・CLI司令塔 |
+| `monetize.py` | 無効（`monetize.json` の enabled=false） |
+
+**事業の文面をコードに書かない。** 書くと、アカウントを入れ替えても
+前の事業の投稿が出続ける（実際に起きた。`_build_gift_thread_prompt` が
+persona を無視して旧事業のギフト訴求を生成していた）。
 
 ---
 
-## テンプレート（30種）
-
-- 悩み系 8種（清潔感/ワキガ/多汗症/匂い/鏡/スキンケア/皮膚科/季節）
-- モテ・信頼系 3種
-- 写真キャプション系 3種（カフェ/横顔/日常）
-- コミュニティ系 2種（共感/DM）
-- 体験導線系 2種
-- 短文系 6種（一言_清潔感/匂い/鏡/整える/汗/信頼）
-- 問いかけ系 4種（問い_清潔感/匂い/スキンケア/皮膚科）
-- Discovery Questions 6種（ユーザー理解用）
-
----
-
-## GitHub Actions
+## GitHub Actions（monorepo ルートの `.github/workflows/`）
 
 | ワークフロー | スケジュール | 内容 |
 |---|---|---|
-| post.yml | 毎日 07:30 + 22:30 JST | 仮説起点で投稿 |
-| collect.yml | 毎日 09:00 JST | 前日の投稿の数値を回収 |
+| threads-post.yml | 毎日 09:00 / 21:00 JST | 生成 → 承認キュー |
+| threads-post-approved.yml | 3hおき | 承認済みだけ投稿 |
+| threads-collect.yml | 毎朝 | import-history + 数値回収 |
+| threads-token-refresh.yml | 45日周期 | 長命トークンの更新 |
+
+`KILL_SWITCH` ファイルがあると post / post-approved は投稿しない。
 
 ---
 
 ## 技術スタック
 
-- Python 3.10+
+- Python 3.10+（標準ライブラリ中心。python-dotenv / gspread のみ）
 - Threads Graph API v1.0
 - Gemini API（gemini-2.0-flash）
-- Google Sheets API（gspread、接続待ち）
+- Google Sheets API（任意）
 - GitHub Actions
-- pytest 131件パス
+- pytest 211件パス

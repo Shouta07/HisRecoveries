@@ -38,15 +38,16 @@ export type ThreadsPlan = {
   types: PlannedType[];
 };
 
-// 内部タイプ名 → 読者ラベル
+// 内部タイプ名 → 場面ラベル。
+// hypotheses.json の type（= slug）に対応する。
+// 旧事業（gift/mother/urgent/areas/biz/b2b/fan = 読者4層＋事業仮説）のラベルを
+// タシカメの5場面に置き換えた。
 const TYPE_LABELS: Record<string, string> = {
-  gift: "ギフト（妻・彼女）",
-  mother: "母（息子想い）",
-  urgent: "本人（期日）",
-  areas: "本人（悩み検索）",
-  biz: "事業仮説（消費者）",
-  b2b: "施術者巻き込み",
-  fan: "ファン化",
+  message: "送る前のLINE",
+  photo: "自己紹介文・プロフィール",
+  date: "誘うタイミング",
+  signal: "デートのあと",
+  distance: "距離感・言いにくいこと",
 };
 
 export function typeLabel(type: string): string {

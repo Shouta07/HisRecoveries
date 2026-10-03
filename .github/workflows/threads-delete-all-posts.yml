@@ -1,0 +1,72 @@
+name: Threads Delete All Posts (manual)
+
+# アカウントの過去投稿を一括削除する。**取り消せない。**
+# 旧事業（His Recoveries）時代の投稿を消して、タシカメとして出し直すときに使う。
+#
+# スケジュールは無い。手動実行だけ。
+# 既定は dry_run=true（一覧を見るだけ）。実際に消すには
+# dry_run を false にし、confirm に対象ハンドルをそのまま入力する。
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run（一覧を見るだけ。消さない）"
+        default: true
+        type: boolean
+      confirm:
+        description: "本当に消すときだけ、対象ハンドルを入力（@koikame.jp）"
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: apps/threads
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: threads-post      # 投稿系と同時に走らせない
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check confirmation
+        if: ${{ inputs.dry_run == false }}
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "@koikame.jp" ]; then
+            echo "::error::confirm に @koikame.jp を入力してください（入力が一致しないので中止）"
+            exit 1
+          fi
+
+      - name: Delete posts
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python scripts/delete_all_posts.py --dry-run
+          else
+            python scripts/delete_all_posts.py --yes
+          fi
+
+      - name: Upload backup of deleted posts
+        if: ${{ always() && inputs.dry_run == false }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: deleted-posts-backup
+          path: apps/threads/data/deleted_posts_*.json
+          if-no-files-found: warn
+          retention-days: 90

@@ -151,7 +151,7 @@ export default function ThreadsPreviewPage() {
 
         <footer className="mt-10 border-t border-brand-cream/15 pt-4 text-[11px] text-brand-cream/45 leading-[1.8]">
           承認・却下は apps/threads（CLI か admin）。承認後、次の post-approved cron で投稿。
-          リンクは各連投の最後に1本だけ付きます（{"{link}"} = /apply か /areas）。
+          リンクは各連投の最後に1本だけ付きます（{"{link}"} = /ask?c=場面）。
         </footer>
       </div>
     </div>

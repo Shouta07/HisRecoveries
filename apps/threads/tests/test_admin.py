@@ -102,9 +102,12 @@ class TestRendering:
         # 既存アカウントが並ぶ
         assert "mens-body-lab" in html
 
-    def test_templates_page_lists_occasions(self):
+    def test_templates_page_lists_scenes(self):
         html = s.render_templates("mens-body-lab").decode()
-        assert "gift-birthday" in html
+        # 連投テンプレは場面（hypotheses.json の slug）別に並ぶ
+        assert "message" in html
+        assert "distance" in html
+        # CTA投稿には {link} プレースホルダが入っている
         assert "{link}" in html
 
     def test_preview_does_not_pollute_state(self, tmp_path):
@@ -157,8 +160,10 @@ class TestAnalytics:
         assert "5.0%" in html
 
     def test_link_dest_helper(self):
-        assert s._link_dest("https://x/apply?a") == "/apply"
-        assert s._link_dest("https://x/areas/hair") == "/areas"
+        # いまの入口は /ask。旧事業の行き先は「（旧）」付きで集計に残す
+        assert s._link_dest("https://x/ask?plan=review&c=message") == "/ask"
+        assert s._link_dest("https://x/apply?a") == "/apply（旧）"
+        assert s._link_dest("https://x/areas/hair") == "/areas（旧）"
         assert s._link_dest("") == "なし"
 
     def test_search_filters_by_keyword(self, monkeypatch):

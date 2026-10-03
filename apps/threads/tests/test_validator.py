@@ -115,12 +115,28 @@ class TestValidatePost:
         assert is_valid is False
         assert any("文字数不足" in e for e in errors)
 
-    def test_ng_word_dating(self, persona):
+    def test_dating_vocabulary_is_allowed(self, persona):
+        # 恋愛・マチアプは、いまの事業の主題そのもの。
+        # 旧事業では全部禁止していたが、禁止すると何も書けない。
         text = _make_valid_post(250)
         text = text[:200] + "マッチングアプリで出会った" + text[200:]
         is_valid, errors = validate_post(text, persona)
+        assert is_valid is True, errors
+
+    def test_ng_word_comes_from_persona(self):
+        # 言葉の線引きは persona.json の ng_words が持つ
+        p = {
+            "character": {"first_person": "僕", "ng_words": ["脈あり"]},
+            "posting": {"min_chars": 10, "max_chars": 400},
+            "validation": {
+                "require_first_person_boku": False, "require_recommended_words": False,
+                "require_allowed_topics": False, "require_three_stage": False,
+                "check_similarity": False, "max_emoji": 2, "max_hashtags": 1,
+            },
+        }
+        is_valid, errors = validate_post("これって脈ありですか。", p)
         assert is_valid is False
-        assert any("マッチングアプリ" in e for e in errors)
+        assert any("脈あり" in e for e in errors)
 
     def test_ng_word_assertive(self, persona):
         text = _make_valid_post(250).replace("焦らなくていいんだと", "絶対にそうだと")

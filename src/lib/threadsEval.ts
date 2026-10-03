@@ -2,6 +2,12 @@
 // Catches brand-voice regressions BEFORE posting. Pairs the human editor
 // with a fast checklist instead of replacing them. LLM-scoring is left
 // to a follow-up — these rules already catch the common drift.
+//
+// 線引きは apps/threads/accounts/mens-body-lab/persona.json と同じにしてある
+// （タシカメ＝送る前の文面を実在の女性に読んでもらうサービス）。
+// 以前は旧事業（His Recoveries＝男性ウェルネス。一人称「僕」・過去形の独白）の
+// 前提で、一人称と過去形が無いことを info で指摘していた。いまの語り手は
+// 一人称を使わず現在形で書くので、良い投稿のたびに指摘が出る状態だった。
 
 export type EvalLevel = "error" | "warn" | "info";
 export type EvalRule = {
@@ -18,24 +24,31 @@ export type EvalResult = {
   rules: EvalRule[];
 };
 
-// 禁止語 — completion / motivational / aggression / clinical-claim.
+// 禁止語 — judging the other person / outcome promises / aggression / looking down.
 const FORBIDDEN = [
-  // 完了形・断定
-  { re: /(治った|治る|克服した|完治|完全に消えた|消滅した|根治)/g, msg: "完了形/断定（治った・克服した等）は使わない" },
+  // 相手の気持ちの判定（売り物ではない）
+  { re: /(脈あり|脈なし|本命|キープ|女心|女性心理)/g, msg: "相手の気持ちの判定（脈あり・女心等）は扱わない" },
+  // 結果の保証・攻略
+  { re: /(モテ|落とす|落とし方|攻略|成功率|必勝|テクニック|裏技)/g, msg: "結果の保証/攻略系の語彙は使わない" },
+  // 読む人や相手を見下す
+  { re: /(ダサい|痛い|キモい|イタい|地雷|非モテ)/g, msg: "読む人や相手を見下す言葉は使わない" },
   // 励まし・呼びかけ
   { re: /(あなたも|みなさん|あなたへ|頑張ろう|頑張って|乗り越え(よう|ましょう))/g, msg: "励まし/呼びかけ（あなたも・頑張ろう）は使わない" },
-  // モテ・派手系
-  { re: /(モテ|イケメン化|ハイスペ|無双|最強|爆速|速攻)/g, msg: "モテ/派手/煽り系の語彙は使わない" },
-  // 医療断定
-  { re: /(必ず効く|確実に|絶対に|100%|エビデンス通り|科学的に証明)/g, msg: "医療的・絶対的断定は使わない（薬機/景表リスク）" },
-  // 生産性ノリ
-  { re: /(自己肯定感アップ|ライフハック|時短|生産性|テストステロン)/g, msg: "生産性/テストステロン語彙は使わない" },
+  // 断定
+  { re: /(必ず|確実に|絶対に|100%|間違いなく)/g, msg: "断定（必ず・絶対・確実）は使わない" },
+  // 旧事業の名残（第一印象パッケージ・完全守秘のギフト訴求）
+  { re: /(完全守秘|第一印象パッケージ|ギフトでも申し込め)/g, msg: "旧事業（His Recoveries のギフト訴求）の言い方が残っています" },
 ];
 
-// Soft signals — quiet voice cues we EXPECT.
-const PAST_TENSE_HINTS = /(していた|だった|あった|していた頃|していた時期|思っていた|感じていた|していた時)/;
-const FIRST_PERSON_HINTS = /(自分|書き手|私|僕)/;
+// 女性の反応を、こちらで作らない。実在の回答が集まるまで「女性の声」は出さない。
+// それを売っているサービスが、AIの作り話を出したら商品そのものが嘘になる。
+const INVENTED_REACTION = /女性(は|が|って)[^。、]{0,12}(思|感じ|考え|言)/g;
+
+// Soft signals.
+const FIRST_PERSON_HINTS = /(僕|私は|私が|俺)/;
+const OPEN_QUESTION = /(ますか|ですか|どう|どこ|いつ|なに|何)[^。]{0,8}[。？?]?$/;
 const CALL_TO_ACTION_AGGRESSIVE = /(今すぐ|今だけ|限定|お急ぎ|残り)/g;
+const PRICE_RE = /([0-9０-９][0-9０-９,，]*\s*円|無料|半額|割引|キャンペーン)/g;
 
 // Hashtag & emoji — both discouraged.
 const HASHTAG = /#[^\s#]+/g;
@@ -79,6 +92,28 @@ export function evaluateThreadsPost(text: string): EvalResult {
     }
   }
 
+  // Inventing what women think
+  const invented = trimmed.match(INVENTED_REACTION);
+  if (invented) {
+    rules.push({
+      id: "invented-reaction",
+      level: "error",
+      message: "女性の反応を創作しない（実在の回答が集まるまで「女性の声」は書かない）",
+      matches: Array.from(new Set(invented)),
+    });
+  }
+
+  // 価格・割引（persona の forbidden_topics）
+  const price = trimmed.match(PRICE_RE);
+  if (price) {
+    rules.push({
+      id: "price",
+      level: "warn",
+      message: "価格・割引には触れない（投稿では金額を出さない）",
+      matches: Array.from(new Set(price)),
+    });
+  }
+
   // Aggressive CTA
   const aggressive = trimmed.match(CALL_TO_ACTION_AGGRESSIVE);
   if (aggressive) {
@@ -101,30 +136,32 @@ export function evaluateThreadsPost(text: string): EvalResult {
     });
   }
 
-  // Emoji
+  // Emoji — persona は0〜2個まで
   const emojis = trimmed.match(EMOJI);
-  if (emojis && emojis.length > 0) {
+  if (emojis && emojis.length > 2) {
     rules.push({
       id: "emoji",
       level: "warn",
-      message: `絵文字 ${emojis.length} 個 — ブランドの register では原則使わない`,
+      message: `絵文字 ${emojis.length} 個 — 0〜2 個まで`,
       matches: Array.from(new Set(emojis)),
     });
   }
 
-  // First-person / past-tense hints (soft)
-  if (!FIRST_PERSON_HINTS.test(trimmed) && charCount > 60) {
+  // 語り手の手がかり（soft）。一人称は使わない語り手なので、
+  // 「僕/私」が出てきたら当事者の独白に戻っていないか確認する。
+  if (FIRST_PERSON_HINTS.test(trimmed)) {
     rules.push({
-      id: "no-first-person",
+      id: "first-person",
       level: "info",
-      message: "一人称（自分・書き手・私）の手がかりが見つかりません",
+      message: "一人称（僕・私）があります。運営の語り手は一人称を使いません",
     });
   }
-  if (!PAST_TENSE_HINTS.test(trimmed) && charCount > 80) {
+  // 連投の最終投稿は開いた問いで閉じる（返信＝伸びる信号）
+  if (!OPEN_QUESTION.test(trimmed) && charCount > 120) {
     rules.push({
-      id: "no-past-tense",
+      id: "no-open-question",
       level: "info",
-      message: "過去形の手がかりが見つかりません（〜していた・〜だった）",
+      message: "問いで閉じていません（最終投稿は開いた問いで終える）",
     });
   }
 
