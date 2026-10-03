@@ -1,103 +1,192 @@
-# ドメインを移すとき
+# tashikame.app に移す手順
 
-作成 2026-09-30
+更新 2026-10-03
 
-koikame.jp を取得した。**まだ何の住所にするかは決めていない。**
-決めたときに、ここを見れば足りるようにしておく。
-
-サービス名は「タシカメ」のまま。住所と名前は別のもの。
+コード側は済んでいる。残りは設定で、**順番を間違えると取り返しがつかない**。
 
 ---
 
-## いま、どこに住所が書いてあるか
+## 先に知っておくこと
 
-実際に調べた結果。思ったより少ない。
+### いちばん危ないのは、301 を早く入れること
 
-| 場所 | 中身 | 移すとき |
-|---|---|---|
-| `src/lib/site.ts:26` | `process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisrecoveries.com"` | **環境変数で上書きできる。** 既定値も直す |
-| `src/lib/studio.ts:38` | Search Console のリンク（運営画面） | 直す |
-| `apps/threads/.../hypotheses.json` | Threads の CTA | 直す |
-| `apps/threads/.../content_sources.json` | 同上 | 直す |
-| `apps/threads/.../seo_clusters.json` | 同上 | 直す |
-| `next.config.mjs` の `redirects()` | source は `/how` のような相対パス | **直さなくてよい**（住所に依らない） |
-| `src/lib/clusters.ts`（記事55本の本文） | **0件** | 直さなくてよい |
+旧ドメインから新ドメインへ 301 を入れると、**旧ドメインは開けなくなる**。
+新しい側が壊れていても、戻る道が無い。
 
-canonical・OGP・sitemap・robots・feed は、すべて `site.url` を読んでいる。
-つまり **`NEXT_PUBLIC_SITE_URL` を変えれば、そこは全部ついてくる。**
+だから 301 は**いちばん最後**。新しい側を本番で確認してから。
 
-記事の本文に住所が1件も無いのは大きい。本文の書き換えは要らない。
+### 旧ドメインを手放さない
 
----
-
-## 選択肢と、それぞれの代償
-
-### A. サイト全体を移す
-
-記事55本の URL が全部変わる。`/areas/...` の検索評価は、
-301 を返し続けているあいだに新しい住所へ移っていく。
-
-- 旧ドメインを**手放さない**。301 を返す間だけが移行期間になる
-- 完全に移りきるまで数か月かかる。その間に旧ドメインが切れると、そのぶんは戻らない
-- Search Console の「アドレス変更」を使う
-
-### B. 記事だけ koikame.jp
-
-恋亀は集客・IP、タシカメはサービス、という元の線引きのまま。
-
-- 記事 → 相談の導線が、別ドメイン間になる
-- 同じ会社のサイトだと、読む人に分かる作りにする必要がある
-
-### C. サービスだけ koikame.jp（記事は据え置き）
-
-記事55本を触らないので、SEO の資産に一切手を付けずに済む。
-
-- サービス名は「タシカメ」、住所は koikame。関係を一言どこかで説明する
-- 決済まわり（特商法・規約・Stripe への説明）の URL を全部差し替える
-
----
-
-## 手順（どれを選んでも共通）
-
-### 1. 出す前に
-
-- [ ] Vercel にドメインを追加し、DNS を向ける
-- [ ] **旧ドメインを手放さない。** 301 を返し続ける設定にする
-- [ ] `NEXT_PUBLIC_SITE_URL` を新しい住所にする
-- [ ] `site.ts` の既定値も直す（環境変数が無い環境でずれないように）
-- [ ] `studio.ts` の Search Console リンク
-- [ ] Threads の3ファイル（CTA が旧住所のままだと、押した人が301を1回踏む）
-
-### 2. 出したあと
-
-- [ ] **再デプロイする。** `/legal` `/terms` `/privacy` は静的生成なので、
-      環境変数を変えただけでは反映されない
-- [ ] Search Console でアドレス変更を申請
-- [ ] sitemap を新しい住所で送信
-- [ ] OGP カードが新しい住所で出るか、実際に貼って確認
-
-### 3. 決済まわり
-
-- [ ] `docs/STRIPE_REVIEW.md` §16 の URL 一覧
-- [ ] `docs/STRIPE_APPLICATION.md` の URL
-- [ ] Stripe に事業内容を出したあとなら、**住所が変わったことを伝える**
-      （申請時と違うドメインで決済が動いていると、そこを聞かれる）
-- [ ] Checkout の `success_url` / `cancel_url` は `site.url` から作っているので、
-      環境変数を変えれば自動で追従する（`src/app/api/checkout/route.ts`）
-
----
-
-## 気をつけること
-
-**旧ドメインを切らさない。** いちばん取り返しがつかないのがここ。
 301 を返している期間が、そのまま移行期間になる。
 切れた瞬間に、それまでの評価と、外から貼られているリンクが全部死ぬ。
 
-**記事の URL が変わるのは、A だけ。** B と C なら記事は動かない。
-55本のうち46本は前の商売のもので、どれだけ読まれているかを把握していない。
-把握しないまま動かすのは、やめたほうがいい。
+最低1年は持つ。
 
-**サービス名と住所がずれること自体は、珍しくない。**
-ただ Stripe の審査では「誰が何を売っているか」を見るので、
-koikame.jp で「タシカメ」を売るなら、サイト上でその関係が分かるようにしておく。
-フッターに1行あれば足りる。
+### .app は HTTPS でしか開けない
+
+`.app` は HSTS preload されたTLDで、ブラウザが HTTP を拒否する。
+Mixed Content があると、画像1枚でもページが壊れる。
+
+コード側に判定を置いてある（`site.ts`）。
+`http://` や `www.` が正式URLに入ると、公開前に止まる。
+
+---
+
+## コード側で、もう済んでいること
+
+| | |
+|---|---|
+| 正式URLの既定値 | `NEXT_PUBLIC_APP_URL ?? NEXT_PUBLIC_SITE_URL ?? "https://tashikame.app"` |
+| 旧ブランドの削除 | `His Recoveries` は配信物から0件（全ページ実測済み） |
+| `www` の正規化 | `www.tashikame.app` → `tashikame.app` の301（`next.config.mjs`） |
+| Threads の CTA | 3ファイルを新ドメインへ |
+| Search Console のリンク | `site.url` から作る形に |
+| 戻ってこない判定 | 旧ドメイン・`www`・`http`・末尾スラッシュ・旧ブランドで、公開前に止まる |
+
+**canonical・OGP・sitemap・robots・feed・Stripe の戻り先は、全部 `site.url` を読んでいる。**
+環境変数を1つ入れれば、全部ついてくる。
+
+---
+
+## 手順
+
+### 1. ドメインを用意する
+
+- `tashikame.app` を取得（まだなら）
+- `www.tashikame.app` も押さえておく（301で寄せる先として）
+
+### 2. Vercel にドメインを足す
+
+1. Project → Settings → Domains
+2. `tashikame.app` を追加
+3. `www.tashikame.app` も追加
+4. **`tashikame.app` を Primary にする**
+5. 表示される DNS レコードを、ドメイン側に設定
+
+> ここまでで、`https://tashikame.app` が開くようになる。
+> **まだ旧ドメインも開く。** これでいい。
+
+### 3. 環境変数を入れる
+
+Vercel → Settings → Environment Variables
+
+```
+NEXT_PUBLIC_APP_URL = https://tashikame.app
+```
+
+Production / Preview / Development のうち、**Production に入れる**。
+
+### 4. 再デプロイする
+
+**環境変数を入れただけでは反映されない。**
+`/legal` `/terms` `/privacy` などは静的生成なので、ビルドし直さないと古いURLのまま。
+
+Vercel → Deployments → 最新のものを Redeploy。
+
+### 5. 新しい側を、実際に確認する
+
+`https://tashikame.app` を開いて、次を見る。
+
+- [ ] トップが出る
+- [ ] `/plans` `/legal` `/terms` `/privacy` が出る
+- [ ] ページのソースで `rel="canonical"` が `tashikame.app` になっている
+- [ ] `og:url` と `og:site_name` が新しいものになっている
+- [ ] `His Recoveries` がソースに出てこない
+- [ ] `/sitemap.xml` の中身が `tashikame.app` になっている
+- [ ] `/robots.txt` が出る
+- [ ] 画像・CSS が全部 HTTPS（Mixed Content が無い）
+
+**ここが全部通るまで、次へ進まない。**
+
+### 6. Supabase Auth
+
+Supabase → Authentication → URL Configuration
+
+| | |
+|---|---|
+| Site URL | `https://tashikame.app` |
+| Redirect URLs | `https://tashikame.app/**` を追加 |
+
+開発用（`http://localhost:3000/**`）は**消さない**。消すと手元で開発できなくなる。
+
+旧ドメインの Redirect URL は、301 を入れるまで残しておく。
+
+### 7. Stripe
+
+| | |
+|---|---|
+| Webhook | エンドポイントのURLを `https://tashikame.app/api/stripe/webhook` に |
+| Checkout の戻り先 | **設定不要**（`site.url` から作っているので、環境変数で追従する） |
+| Customer Portal の戻り先 | 同上 |
+
+Webhook を付け替えたら、**署名シークレットが変わる**。
+新しい `STRIPE_WEBHOOK_SECRET` を Vercel に入れ直して、再デプロイ。
+
+> Stripe に事業内容を出したあとなら、**住所が変わったことを伝える**。
+> 申請時と違うドメインで決済が動いていると、そこを聞かれる。
+
+### 8. Search Console
+
+1. `tashikame.app` をプロパティとして追加
+2. `sitemap.xml` を送信
+3. **まだ「アドレス変更」は使わない**（301 を入れてから）
+
+### 9. SNS・外部
+
+- Threads のプロフィールのリンク
+- そのほか貼ってあるところ
+
+Threads の投稿内のCTAは、コード側で新ドメインに直してある。
+
+### 10. ここで、はじめて 301 を入れる
+
+**5〜9 が全部済んでから。**
+
+Vercel で `hisrecoveries.com` を `tashikame.app` へリダイレクトする設定にする
+（Vercel の Domains で、Redirect to を指定する）。
+
+入れたら確認する。
+
+- [ ] `https://hisrecoveries.com/` が `https://tashikame.app/` へ 301 で飛ぶ
+- [ ] `https://hisrecoveries.com/articles` が `https://tashikame.app/articles` へ飛ぶ（パスが保たれる）
+- [ ] 301 であること（302 ではない）
+
+### 11. Search Console で「アドレス変更」
+
+301 が動いてから申請する。
+
+### 12. しばらく見る
+
+- Search Console の「カバレッジ」でエラーが増えていないか
+- 旧ドメインの表示回数が減り、新ドメインが増えているか
+
+完全に移りきるまで数か月かかる。**その間に旧ドメインを切らさない。**
+
+---
+
+## 記事55本について
+
+本文に旧ドメインは **0件**。書き換えは要らない。
+
+URL は `/articles` `/areas/...` のまま、ドメインだけ変わる。
+301 でパスが保たれるので、記事の評価は新ドメインへ移っていく。
+
+ただし、**55本のうち46本は前の商売のもの**（AGA・肌・体毛・健康）。
+どれだけ読まれているかを把握しないまま消さないこと。
+消すのは簡単だが、戻せない。
+
+---
+
+## 困ったら
+
+### 新しい側が壊れた
+
+**301 を入れる前なら、旧ドメインがそのまま生きている。**
+環境変数を旧ドメインに戻して再デプロイすれば、元に戻る。
+
+301 を入れたあとなら、まず 301 を外す。
+
+### 検索から消えた
+
+移行直後は一時的に落ちる。301 が正しく動いていれば戻る。
+焦って旧ドメインを切らないこと。

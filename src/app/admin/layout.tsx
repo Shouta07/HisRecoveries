@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: { default: "Admin", template: "%s — His Recoveries Admin" },
+  title: { default: "Admin", template: "%s — タシカメ Admin" },
   robots: { index: false, follow: false },
 };
 

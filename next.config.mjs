@@ -36,6 +36,24 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      /* ══════════════════════════════════════════════
+         www を付けない形に寄せる
+         ══════════════════════════════════════════════
+         正式は tashikame.app。www.tashikame.app は 301 で寄せる。
+         2つの住所で同じ中身が出ると、検索の評価が割れる。
+
+         旧ドメイン（hisrecoveries.com）からの 301 は、
+         ここには書かない。Vercel のドメイン設定側で行う。
+
+         新しいサイトを本番で確認してから入れること。
+         先に入れると、新しい側が壊れていたときに戻れない
+         （旧ドメインを開いても、壊れた新ドメインへ飛ばされる）。 */
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.tashikame.app" }],
+        destination: "https://tashikame.app/:path*",
+        permanent: true,
+      },
       // ── 旧 His Recoveries の商品面を畳んだ（タシカメ1本にする）──
       // 消したページは検索に残っている。404 にすると、そのぶんの
       // 評価がそのまま消える。行き先のある面へ 301 で渡す。
