@@ -79,7 +79,14 @@ function Label({ children }: { children: React.ReactNode }) {
   return <p className="text-[11px] font-black tracking-[0.04em] text-steel">{children}</p>;
 }
 
-export default function ResultCase({ c }: { c: Case }) {
+/**
+ * compact … 出したもの（長い状況）と、そのまま送れる形を出さない。
+ *
+ * トップで恋亀が主役になってから、ここは「3人に聞ける」を見せる節になった。
+ * 深さ（状況を渡すから返ってくるものが変わる）は、恋亀の会話が見せている。
+ * 同じ役を2回やらない。
+ */
+export default function ResultCase({ c, compact = false }: { c: Case; compact?: boolean }) {
   const box = useRef<HTMLDivElement | null>(null);
   // 何段目まで出したか
   const [shown, setShown] = useState(0);
@@ -134,7 +141,7 @@ export default function ResultCase({ c }: { c: Case }) {
           ここまで渡すから、返ってくるものが変わる */}
       <div className={`mt-4 rounded-card bg-sky px-3.5 py-3.5 sm:px-4 ${step(1)}`}>
         <Label>出したもの</Label>
-        {c.context && (
+        {c.context && !compact && (
           <p className="mt-2 text-[12.5px] leading-[1.8] text-steel">{c.context}</p>
         )}
         <p className="mt-2.5 rounded-card bg-brand px-3.5 py-2.5 text-[14px] font-bold leading-[1.7] text-paper">
@@ -172,7 +179,7 @@ export default function ResultCase({ c }: { c: Case }) {
       {/* ── 3. そのまま送れる形 ──────────────────────
           感想だけ返して終わると、次に何をすればいいか分からない。
           直した文そのものと、どこをなぜ変えたかまで返す */}
-      {c.fix && (
+      {c.fix && !compact && (
         <div className={`mt-3 ${step(3)}`}>
           <Label>{c.fix.label}</Label>
           <div className="mt-2 rounded-card border border-brand bg-paper shadow-card">
