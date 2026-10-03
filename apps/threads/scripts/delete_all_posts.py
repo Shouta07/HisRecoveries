@@ -11,6 +11,10 @@ THREADS_USER_ID のアカウント（現在: @koikame.jp）の全投稿を一括
   2. python scripts/delete_all_posts.py --dry-run  （一覧を見るだけ。消さない）
   3. python scripts/delete_all_posts.py              （実行。yes の入力を求める）
 
+トークンが手元に無いときは、GitHub Actions の
+`Threads Delete All Posts (manual)` を手動実行する（Secrets のトークンを使う）。
+その経路では --yes が付くので、確認はワークフロー側の入力で行う。
+
 必要な権限:
   - threads_basic
   - threads_content_publish
@@ -133,6 +137,9 @@ def fetch_all_posts(user_id):
 
 def main():
     dry_run = "--dry-run" in sys.argv
+    # --yes は CI 用。対話の入力が使えない場所で、確認を呼び出し側に委ねる。
+    # 手で実行するときは付けない（yes の入力を求めるのが安全側）。
+    assume_yes = "--yes" in sys.argv
     user_id = get_user_id()
 
     print(f"アカウント: {user_id}")
@@ -174,10 +181,13 @@ def main():
     print()
 
     # 確認
-    confirm = input(f"{len(posts)}件の投稿を全て削除します。よろしいですか？ (yes/no): ")
-    if confirm.lower() != "yes":
-        print("キャンセルしました。")
-        return
+    if assume_yes:
+        print(f"--yes が指定されています。{len(posts)}件を削除します。")
+    else:
+        confirm = input(f"{len(posts)}件の投稿を全て削除します。よろしいですか？ (yes/no): ")
+        if confirm.lower() != "yes":
+            print("キャンセルしました。")
+            return
 
     # 削除実行
     deleted = 0

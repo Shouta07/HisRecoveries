@@ -117,6 +117,7 @@ admin/
   threads-post-approved.yml 承認済みだけを投稿(3hおき)。承認が無ければ何もしない
   threads-collect.yml       毎朝 import-history + collect(数値取得)
   threads-token-refresh.yml 長命トークンの更新(45日周期)
+  threads-delete-all-posts.yml 過去投稿の一括削除(手動のみ・既定dry_run・取り消し不可)
   （いずれも working-directory: apps/threads で実行）
 KILL_SWITCH      このファイルがあると threads-post / post-approved は投稿しない(存在=停止中)
 pyproject.toml   [tool.vercel] entrypoint = "admin.server:Handler"
