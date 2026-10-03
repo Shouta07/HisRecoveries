@@ -30,8 +30,6 @@ import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
 import HeroBoard from "@/components/brand/HeroBoard";
 import MomentsArt from "@/components/brand/MomentsArt";
-import ResultCase from "@/components/brand/ResultCase";
-import { OPEN_CASES } from "@/lib/ask/cases";
 import Yen from "@/components/brand/Yen";
 
 // ══════════════════════════════════════════════════════════════
@@ -829,56 +827,23 @@ export default async function HomePage() {
           絵（public/img/moments.jpg）と部品は消していない。
           相談の例（examples.ts）も残っている。 */}
 
-      {/* ══ 2.4 返ってくるもの ══ */}
-      {/* 売るのはここ。
-          道のりの節は考え方だけにしたので、
-          「実際に何が返ってくるか」はこちらで見せる。
+      {/* ══ 2.4 「返ってくるのは、こういうものです。」を外した ══ */}
+      {/* ══════════════════════════════════════════════
+          見本を1つに絞る
+          ══════════════════════════════════════════════
+          ここには、相談1件ぶんの見本を丸ごと出していた。
+            送る前の文 → 異性3人の返事（長文）→ 決めたこと
+          実測で 1,255px。トップでいちばん高い節だった。
 
-          見出しは「こんな選択を、選ぶ前に。」だった。やめた。
-          すぐ上に「こんな瞬間、ありませんか？」と
-          「段ごとに、こんなことで手が止まります」がある。
-          3つ続けて同じことを言っていて、読む人は同じ節を3回読む。
-          場面を並べるのは上の2つに任せ、ここは下にあるものの名前にする。 */}
-      <Block tint>
-        {/* 「MEN'S EXAMPLE」の肩見出しを外した。
-            理由は2つ。
+          すぐ上に、恋亀との会話の見本がある。
+          読む人は、1画面のうちに作り物の見本を2つ続けて読むことになる。
 
-            1つは、すぐ下の見出しが「返ってくるのは、こういうものです。」で、
-            肩見出しが同じことを英語で言い直しているだけだったこと。
+          「何が返ってくるか」は、料金の節が項目で持っている
+          （plans.ts の includes）。
+          /ask と /trial でも、申し込む直前に同じことを書いている。
 
-            もう1つは、相手の呼び方を「異性」に統一したのに、
-            ここだけ MEN'S と書いてあって、男性だけの面に見えたこと。 */}
-        <h2 className="text-huge font-black text-slate">
-          返ってくるのは、
-          <br className="sm:hidden" />
-          こういうものです。
-        </h2>
-        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
-          実在する{advisorWord()}3人が読んで、どう受け取ったかを返します。決めるのは、あなたです。
-        </p>
-
-        <div className="mt-7">
-          {/* 表で並べると「機能の説明」になる。
-              実際に起きるのは、送る前に止まって、読んでもらって、
-              返ってきて、決める、という順番のある出来事。
-              その順番のまま、やりとりの形で出す */}
-          <ResultCase c={OPEN_CASES[0]} compact />
-        </div>
-
-        <div className="mt-7 max-w-[26em]">
-          <PlanCta
-            plan={DEFAULT_PLAN}
-            from="cases"
-            className="min-h-[58px] w-full rounded-pill bg-brand px-9 text-[16px] !text-paper shadow-card"
-          >
-            {advisorWord()}に確カメる <span aria-hidden className="ml-2">&rarr;</span>
-          </PlanCta>
-        </div>
-
-        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
-          ※ 写真はイメージ、文面と回答は画面の見本です。特定の利用者の体験談ではありません。
-        </p>
-      </Block>
+          部品（ResultCase）と中身（cases.ts の OPEN_CASES）は消していない。
+          /plans と結果の画面が、いまも使っている。 */}
 
       {/* ══ 2.45 「今日、受け付けている人」を外した ══ */}
       {/* ══════════════════════════════════════════════
