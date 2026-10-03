@@ -559,7 +559,19 @@ def _select_category(
 
     重みは persona.posting.slot_category_weights。無ければ ratio のまま。
     """
-    categories = [c for c in forms_config.get("categories", []) if c.get("ratio", 0) > 0]
+    # human_only のカテゴリは、自動生成の対象から外す。
+    #
+    # 「実在異性の反応」は、実際に集まった回答だけで書ける。
+    # 回答が無いのに AI に書かせると、女性の反応の創作になる。
+    # それを売っているサービスが作り話を出したら、商品そのものが嘘になる
+    # （CLAUDE.md §1 の最初の行）。
+    #
+    # 外したぶんの比率は、残りが重みの比で吸う。
+    # 「10%空ける」ではなく「10%ぶん他が増える」。
+    categories = [
+        c for c in forms_config.get("categories", [])
+        if c.get("ratio", 0) > 0 and not c.get("human_only")
+    ]
     if not categories:
         return None
 

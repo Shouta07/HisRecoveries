@@ -105,8 +105,9 @@ class TestRendering:
     def test_templates_page_lists_forms(self):
         html = s.render_templates("mens-body-lab").decode()
         # 投稿の型（post_forms.json の forms）別に並ぶ
-        assert "型2 違和感" in html
-        assert "型3 男女差" in html
+        assert "違和感" in html
+        assert "男女差" in html
+        assert "実用" in html
         # 告知の例には {link} プレースホルダが入っている
         assert "{link}" in html
 

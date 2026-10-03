@@ -59,15 +59,21 @@ class TestGenerateSingle:
         (tmp_path / "history.json").write_text('{"posts": []}', encoding="utf-8")
 
         counts = {}
-        n = 600
+        n = 900
         for _ in range(n):
             r = writer.generate_single(tmp_path, persona=flat, mock=True, record=False)
             counts[r["post_category"]] = counts.get(r["post_category"], 0) + 1
+
+        # 人が書くカテゴリは自動生成に出ないので、その比率を残りが吸う。
+        # 期待値は、自動のぶんだけで割り直した比率。
         forms = json.loads((ACCOUNT / "post_forms.json").read_text(encoding="utf-8"))
-        for c in forms["categories"]:
+        auto = [c for c in forms["categories"] if not c.get("human_only")]
+        total = sum(c["ratio"] for c in auto)
+        for c in auto:
             share = counts.get(c["id"], 0) / n
+            expected = c["ratio"] / total
             # 乱数なのでぴったりにはならない。桁が合っていればよい
-            assert abs(share - c["ratio"]) < 0.08, (c["id"], share, c["ratio"])
+            assert abs(share - expected) < 0.06, (c["id"], share, expected)
 
 
 class TestSlotWeighting:
@@ -84,9 +90,10 @@ class TestSlotWeighting:
             counts[r["post_category"]] = counts.get(r["post_category"], 0) + 1
         return {k: v / n for k, v in counts.items()}
 
-    def test_questions_are_heavier_at_night(self):
+    def test_cases_are_heavier_at_night(self):
+        """手が止まるのは夜。議論になるケース投稿を夜に厚くする。"""
         random.seed(11)
-        assert self._mix("night")["split"] > self._mix("morning")["split"]
+        assert self._mix("night")["case"] > self._mix("morning")["case"]
 
     def test_announcements_only_at_noon(self):
         """朝は読み飛ばされ、夜は売り込みが目立つ。"""
@@ -101,9 +108,12 @@ class TestSlotWeighting:
 
     def test_unknown_slot_falls_back_to_the_plain_ratios(self):
         random.seed(17)
-        mix = self._mix("teatime", n=200)
-        assert set(mix) <= {"empathy", "split", "product", "announce"}
-        assert mix["empathy"] > 0.25
+        forms = json.loads((ACCOUNT / "post_forms.json").read_text(encoding="utf-8"))
+        auto = {c["id"] for c in forms["categories"] if not c.get("human_only")}
+        mix = self._mix("teatime", n=300)
+        assert set(mix) <= auto, set(mix) - auto
+        # 共感がいちばん多いこと（比率30%が、再配分で約33%になる）
+        assert mix["empathy"] == max(mix.values())
 
     def test_link_only_on_announcements(self):
         random.seed(7)
@@ -228,3 +238,56 @@ class TestVariety:
         self._queue(d, "announce", "announce")
         r = writer.generate_single(d, mock=True, record=False, slot="noon")
         assert r is not None
+
+
+class TestHumanOnlyCategories:
+    """実在異性の反応は、自動生成しない。
+
+    実際に集まった回答が無いのに書くと、女性の反応の創作になる。
+    それを売っているサービスが作り話を出したら、商品そのものが嘘になる。
+    """
+
+    def test_never_generated(self):
+        random.seed(31)
+        forms = json.loads((ACCOUNT / "post_forms.json").read_text(encoding="utf-8"))
+        human = {c["id"] for c in forms["categories"] if c.get("human_only")}
+        assert human, "human_only のカテゴリが1つも無い（設定が消えている）"
+
+        seen = {_gen()["post_category"] for _ in range(300)}
+        assert not (seen & human), f"人が書くはずの {seen & human} が自動生成された"
+
+    def test_their_share_is_absorbed_by_the_rest(self):
+        """10%を空けるのではなく、残りが吸う。"""
+        random.seed(37)
+        n = 600
+        got = {}
+        for _ in range(n):
+            c = _gen(slot="noon")["post_category"]
+            got[c] = got.get(c, 0) + 1
+        assert sum(got.values()) == n
+
+
+class TestSlotWeightKeys:
+    """時間帯の重みのキーが、実在のカテゴリと合っていること。
+
+    合っていないと既定の1.0になり、寄せが黙って効かなくなる。
+    カテゴリを 4つ→6つ に組み直したとき、実際に古いIDが残っていた。
+    """
+
+    def test_no_unknown_or_missing_keys(self, persona):
+        forms = json.loads((ACCOUNT / "post_forms.json").read_text(encoding="utf-8"))
+        known = {c["id"] for c in forms["categories"]}
+        auto = {c["id"] for c in forms["categories"] if not c.get("human_only")}
+
+        weights = persona["posting"]["slot_category_weights"]
+        for slot, w in weights.items():
+            if slot.startswith("_"):
+                continue
+            assert not (set(w) - known), f"{slot} に知らないカテゴリ: {set(w) - known}"
+            assert not (auto - set(w)), f"{slot} に重みが無い: {auto - set(w)}"
+
+    def test_every_slot_in_the_schedule_has_weights(self, persona):
+        """投稿枠の数と、重みを定義した時間帯の数が合っていること。"""
+        slots = persona["posting"]["time_slots"]
+        weights = {k for k in persona["posting"]["slot_category_weights"] if not k.startswith("_")}
+        assert len(weights) == len(slots), (weights, slots)
