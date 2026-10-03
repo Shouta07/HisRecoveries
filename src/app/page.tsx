@@ -744,7 +744,37 @@ export default async function HomePage() {
 
             前の絵（components/brand/HeroBoard.tsx）は消した。
             残しておくと、芯が戻ったときに戻される。 */}
-        <HeroDashboard />
+        {/* ══════════════════════════════════════════
+            手が止まっている絵を、見出しの下に戻した
+            ══════════════════════════════════════════
+            1画面目を相手の一覧に替えたとき、この絵も一緒に外した。
+            一覧は「何をする場所か」を見せるが、
+            「それが自分のことだ」とは思わせない。
+
+            絵が先、一覧が後。
+              絵   送る前に手が止まっている（自分のこと）
+              一覧 それが、こう整理される（この製品のこと）
+
+            Before / After の3枚には戻さない。
+            あれは「異性に相談するサービス」の見せ方だった。
+            出すのは1枚だけ。 */}
+        <Wrap className="pt-6">
+          <div className="relative overflow-hidden rounded-card shadow-card">
+            <Slot name="hero" rounded="" position="center 14%" className="h-[160px] w-full sm:h-[220px]" />
+            {/* 絵の上に、迷いの言葉を1つだけ重ねる。
+                3つ並べると、絵ではなく一覧になる */}
+            <p className="absolute bottom-3 left-3 max-w-[16em] rounded-card bg-paper/95 px-3.5 py-2.5 text-[13px] font-bold leading-[1.6] text-slate shadow-card">
+              これ、送っていいのかな…？
+            </p>
+          </div>
+          <p className="mt-2 text-[11px] leading-[1.7] text-steel">
+            ※ 写真はイメージです。
+          </p>
+        </Wrap>
+
+        <div className="mt-6">
+          <HeroDashboard />
+        </div>
 
         {/* ── 中身の無い余白を外した ──────────────────
             ここは Wrap(pb-10 pt-3) + div だけが残っていて、
