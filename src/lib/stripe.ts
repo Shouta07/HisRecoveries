@@ -15,6 +15,12 @@
 const KEY = process.env.STRIPE_SECRET_KEY;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
+/* 月額の Price ID。
+   コードに書かない（テストと本番で違うし、値段を変えると別IDになる）。
+   無ければ月額は開かない。開かないだけで、単発は動く。 */
+const PASS_PRICE = process.env.STRIPE_PASS_PRICE_ID;
+export const passEnabled = Boolean(KEY && PASS_PRICE);
+
 export const stripeEnabled = Boolean(KEY);
 
 const API = "https://api.stripe.com/v1";
@@ -71,6 +77,46 @@ export type CheckoutSession = {
  * consultationToken を metadata と client_reference_id の両方に入れるのは、
  * Webhook でどちらか片方しか来ない形になっても拾えるようにするため。
  */
+/* ══════════════════════════════════════════════════
+   月額（Tashikame Pass）
+   ══════════════════════════════════════════════════
+   単発と、同じ口を使わない。
+
+   単発は price_data で金額をその場で作る。
+   月額は、Stripe 側に作った Price を指す。
+   指さないと、解約や更新の扱いが Stripe 側で揃わない。
+
+   Price ID は環境変数。値段を変えると別のIDになるので、
+   コードに書くと、変えた日に食い違う。 */
+export type PassCheckoutArgs = {
+  /** この人を見分ける鍵。会員登録が無いので、これが持ち主の証 */
+  userToken: string;
+  successUrl: string;
+  cancelUrl: string;
+  idempotencyKey: string;
+  /** 2回目以降。前に作った Customer があれば、それを使う */
+  customerId?: string;
+};
+
+export function passCheckoutParams(args: PassCheckoutArgs): Record<string, string | number> {
+  const out: Record<string, string | number> = {
+    mode: "subscription",
+    "line_items[0][quantity]": 1,
+    "line_items[0][price]": PASS_PRICE ?? "",
+    success_url: args.successUrl,
+    cancel_url: args.cancelUrl,
+    client_reference_id: args.userToken,
+    "metadata[user_token]": args.userToken,
+    // 解約の受け皿を、こちらでも持てるようにする
+    "subscription_data[metadata][user_token]": args.userToken,
+    locale: "ja",
+  };
+  // 2回目以降は、同じ Customer にぶら下げる。
+  // 分かれると、Customer Portal からまとめて管理できなくなる。
+  if (args.customerId) out.customer = args.customerId;
+  return out;
+}
+
 export type CheckoutArgs = {
   yen: number;
   name: string;
@@ -195,6 +241,28 @@ function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
  * 署名を確かめる。
  * 古い通知を投げ直されないよう、時刻のずれも見る（既定5分）。
  */
+/**
+ * 解約・支払い方法の変更を、本人がやれる場所。
+ *
+ * 問い合わせないと解約できない形にしない（§45）。
+ * 作るのは Stripe 側の画面なので、こちらは入口を返すだけ。
+ */
+export async function portalUrl(customerId: string, returnUrl: string): Promise<string | null> {
+  if (!KEY) return null;
+  const body = new URLSearchParams({ customer: customerId, return_url: returnUrl });
+  const r = await fetch(`${API}/billing_portal/sessions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${KEY}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body,
+  });
+  if (!r.ok) return null;
+  const j = (await r.json()) as { url?: string };
+  return j.url ?? null;
+}
+
 export async function verifyWebhook(
   rawBody: string,
   signatureHeader: string | null,
@@ -262,7 +330,62 @@ export async function verifyWebhook(
     throw new Error("Checkout に相談の鍵が入っていません");
   }
   if (sample.mode !== "payment") {
-    throw new Error("都度払いです。subscription にしないでください");
+    throw new Error("単発の口が、subscription になっています");
+  }
+
+  /* ── 月額の口 ────────────────────────────────── */
+  {
+    const pass = passCheckoutParams({
+      userToken: "u".repeat(32),
+      successUrl: "https://example.com/ok",
+      cancelUrl: "https://example.com/ng",
+      idempotencyKey: "k",
+    });
+
+    if (pass.mode !== "subscription") {
+      throw new Error("月額の口が、subscription になっていません");
+    }
+
+    /* 金額をここで作らないこと。
+       price_data で作ると、Stripe 側に Price が無いので
+       解約や更新の扱いが揃わない。必ず Price を指す。 */
+    for (const k of Object.keys(pass)) {
+      if (k.includes("price_data")) {
+        throw new Error("月額が price_data で作られています（Price ID を指してください）");
+      }
+    }
+    if (!("line_items[0][price]" in pass)) {
+      throw new Error("月額が、Price を指していません");
+    }
+
+    // 誰のものかが Webhook 側に届くこと。
+    // 届かないと、払われても誰の月額か分からない。
+    if (!pass.client_reference_id || !pass["metadata[user_token]"]) {
+      throw new Error("月額の口に、持ち主の鍵が入っていません");
+    }
+    // 解約のときにも分かるよう、subscription 側にも持たせる。
+    if (!pass["subscription_data[metadata][user_token]"]) {
+      throw new Error("月額の解約時に、持ち主が分からなくなります");
+    }
+
+    // 月額にも、場貸しの項目が入らないこと。
+    for (const k of Object.keys(pass)) {
+      if (/application_fee|transfer_data|on_behalf_of|stripe_account|destination/.test(k)) {
+        throw new Error(`月額の口に「${k}」が入っています。当社が売主です`);
+      }
+    }
+
+    // 2回目以降は、同じ Customer にぶら下がること。
+    const again = passCheckoutParams({
+      userToken: "u".repeat(32),
+      successUrl: "https://example.com/ok",
+      cancelUrl: "https://example.com/ng",
+      idempotencyKey: "k",
+      customerId: "cus_x",
+    });
+    if (again.customer !== "cus_x") {
+      throw new Error("2回目以降に、同じ Customer を使っていません");
+    }
   }
 
   // ══════════════════════════════════════════════

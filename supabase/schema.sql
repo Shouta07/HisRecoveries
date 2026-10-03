@@ -2665,3 +2665,46 @@ select
 from human_requests hr
 join relationship_cases rc on rc.id = hr.case_id
 group by rc.pass_token, hr.billing_month;
+
+-- ══════════════════════════════════════════════════
+-- 月額（Tashikame Pass）
+-- ══════════════════════════════════════════════════
+-- Webhook を正とする。画面の「成功しました」を信じない。
+-- 戻り道は演出で、本当のことは Stripe から届く。
+create table if not exists subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  -- 会員登録が無いので、これが持ち主の証
+  user_token text unique not null,
+  stripe_customer_id text,
+  stripe_subscription_id text unique,
+  stripe_price_id text,
+  -- trialing / active / past_due / canceled / incomplete / unpaid
+  status text not null default 'incomplete',
+  current_period_start timestamptz,
+  current_period_end timestamptz,
+  -- 期末で止める、を本人が選んだか
+  cancel_at_period_end boolean not null default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+create index if not exists subscriptions_customer_idx
+  on subscriptions (stripe_customer_id);
+
+-- Webhook は同じものが何度も届く。1回だけ効かせる。
+create table if not exists stripe_events (
+  id text primary key,
+  type text not null,
+  received_at timestamptz default now()
+);
+
+-- いま使える人。期限切れを毎回計算しないで済むように
+create or replace view active_passes as
+select
+  user_token,
+  stripe_customer_id,
+  status,
+  current_period_end,
+  cancel_at_period_end
+from subscriptions
+where status in ('active', 'trialing')
+  and (current_period_end is null or current_period_end > now());
