@@ -78,6 +78,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // 仕組み。誰が答えるか・AIを何に使うか。トップから降ろした説明の行き先。
     // 人と話す。受付前だが、順番待ちの入口として検索から来てほしい。
     "/talk",
+    // 体験の入口。決済が開くまで、ここが相談する人の入口になる。
+    // 広告から最初に来る面なので、検索からも辿れるようにしておく。
+    "/trial",
     "/areas/confidence",
     "/disclosure",
     "/privacy",
@@ -85,7 +88,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${site.url}${p}`,
     lastModified: areaDate,
     changeFrequency: "monthly",
-    priority: p === "/ask" ? 0.9 : 0.4,
+    // 相談する人の入口は高く。/trial は決済が開くまでの入口で、
+    // 広告の着地点にもなるので /ask と同じ扱いにする。
+    priority: p === "/ask" || p === "/trial" ? 0.9 : 0.4,
   }));
 
   return [

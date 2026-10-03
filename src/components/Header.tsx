@@ -25,11 +25,27 @@ export default function Header() {
   // 記事サイトのヘッダー（男の改善は、順番で決まる／現在地を測る）が重なると、
   // 何のサービスを使っているのか分からなくなる。
   // 1つ増やすたびにこの行が伸びていたので、一覧にした。
+  // ══════════════════════════════════════════════
+  // 入れ忘れても、何も落ちなかった
+  // ══════════════════════════════════════════════
+  // この一覧は手で書く。足し忘れると、画面の上に
+  //   たしかメディア by タシカメ ／ 編集方針 ／ 確かめる
+  //   タシカメ ／ 体験
+  // とヘッダーが2段で出るが、ビルドは緑のまま通る。
+  //
+  // 実際に3件、入っていなかった。
+  //   /trial         体験の入口（広告の着地点）
+  //   /privacy       /terms と /legal は入っていたのに、ここだけ抜けていた
+  //   /call/[token]  通話中の画面。/r/call/ は入れてあったが、相談者側が抜けていた
+  //
+  // scripts/check-chrome.mjs が、data-brand を持つ面と
+  // この一覧を突き合わせて、抜けていたら公開の前に止める。
   const BRAND_PAGES = [
     "/mine", "/legal", "/talk", "/plans",
     "/reviewers", "/articles", "/terms",
+    "/privacy", "/trial",
   ];
-  const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/"];
+  const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/", "/call/"];
   if (
     BRAND_PAGES.includes(pathname ?? "") ||
     BRAND_PREFIXES.some((x) => pathname?.startsWith(x))

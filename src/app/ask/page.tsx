@@ -35,18 +35,28 @@ export default function AskPage() {
       <div className="min-h-screen bg-paper">
         <div className="mx-auto w-full max-w-[34em] px-5 py-16 sm:px-8">
           <h1 className="text-[22px] font-black leading-[1.5] text-slate">
-            いま、新しい相談を受け付けられません。
+            いま、この画面からは申し込めません。
           </h1>
+          {/* ══════════════════════════════════════════
+              行き止まりにしない
+              ══════════════════════════════════════════
+              ここは前、通話の順番待ち（/talk）へ渡していた。
+              通話は受付前の商品なので、渡していたのは
+              「いつ開くか分からないものの順番待ち」だけだった。
+
+              文章の相談は、決済が無くても手で届けられる。
+              いま実際に届けられるもの（/trial）へ渡す。 */}
           <p className="mt-4 text-[14.5px] leading-[1.9] text-steel">
-            受け付けの準備が終わっていません。整い次第、ここから送れるようになります。
+            受け付けの準備が終わるまでのあいだ、1件だけ体験としてお受けしています。
+            読むのは同じ人たちで、返ってくるものも同じです。
             書いていただいた内容は、まだ何も送られていません。
           </p>
           <div className="mt-8 flex flex-col gap-3">
             <Link
-              href="/talk"
+              href="/trial"
               className="flex min-h-[54px] items-center justify-center rounded-pill bg-brand px-6 text-[15.5px] font-bold text-paper shadow-card"
             >
-              開いたら知らせてもらう
+              体験を申し込む
             </Link>
             <Link
               href="/"

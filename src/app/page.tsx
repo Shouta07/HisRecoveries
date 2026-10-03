@@ -633,6 +633,30 @@ export default async function HomePage() {
             <p className="mt-2 text-[12px] leading-[1.7] text-steel">
               LINE・写真・プロフィール・誘い方に対応。
             </p>
+            {/* ══════════════════════════════════════════
+                はじめての人の道を、ここで分ける
+                ══════════════════════════════════════════
+                上のボタンは /ask へ行き、書いたあとお支払いになる。
+                お支払いの口が開いていないあいだ、その道は
+                「いま申し込めません」で止まる（/ask が先に言う）。
+
+                体験（/trial）は、そのあいだも動く。
+                保存先が無くてもメールに回るので、止まらない。
+
+                ここは静的に作る面なので、開いているかどうかで
+                出し分けない。出し分けると、鍵を入れても
+                作り直すまで画面が変わらない。
+                /trial 側が、自分の開き閉じを実行時に見る。 */}
+            <p className="mt-3 text-[13px] leading-[1.8] text-steel">
+              はじめてなら{" "}
+              <Link
+                href="/trial"
+                className="font-bold text-brand underline decoration-line underline-offset-4"
+              >
+                1件だけ試す
+              </Link>{" "}
+              こともできます。
+            </p>
           </div>
         </Wrap>
 
