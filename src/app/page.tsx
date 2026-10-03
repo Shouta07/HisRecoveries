@@ -10,11 +10,13 @@ import { AB_DEMO } from "@/lib/ask/ab";
 import TalkDemo from "@/components/koi/TalkDemo";
 import KoiFace from "@/components/koi/KoiFace";
 import PersonBoard from "@/components/koi/PersonBoard";
+import Timeline from "@/components/koi/Timeline";
+import { DEMO_TIMELINE } from "@/lib/koi/timelineDemo";
 import { DEMO_BOARD } from "@/lib/koi/boardDemo";
 import { DEMO_AGAIN } from "@/lib/koi/demo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
-import { PASS_YEN, EARLY_YEN, EARLY_SEATS, INCLUDED } from "@/lib/pass/entitle";
+import { PASS_YEN, EARLY_YEN, EARLY_SEATS, earlyOpen, INCLUDED } from "@/lib/pass/entitle";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
 import { VERDICTS } from "@/lib/ask/model";
@@ -822,6 +824,58 @@ export default async function HomePage() {
         </p>
       </Block>
 
+      {/* ══ 1.07 ここまでが残る ══ */}
+      {/* ══════════════════════════════════════════════
+          相談して終わりじゃない
+          ══════════════════════════════════════════════
+          相談だけが並んでいると、相談サービスに見える。
+
+          並べるのは 相談 → 行動 → 結果。
+            2回目に誘うか話した   （相談）
+            誘ってOKをもらった    （行動と結果）
+            NEXT 日程を決める     （次）
+
+          ここが続いているから、次に話すときに
+          「Aさんなんやけど」から始められる。
+          それが月額の理由そのもの。
+
+          判定は lib/koi/timelineDemo.ts。
+          相談だけ／行動だけになったら、公開の前に止まる。 */}
+      <Block>
+        <h2 className="text-huge font-black leading-[1.35] text-slate">
+          相談して、
+          <br className="sm:hidden" />
+          終わりじゃない。
+        </h2>
+        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+          送った。返信が来た。電話した。会った。
+          その結果まで残るから、次の相談がラクになります。
+        </p>
+
+        <div className="mt-7 max-w-[26em] rounded-card border border-line bg-paper p-5 shadow-card">
+          <p className="text-[13px] font-black text-slate">
+            Aさん
+            <span className="ml-2 rounded-pill bg-mist px-2 py-0.5 text-[10.5px] font-bold text-steel">
+              with
+            </span>
+          </p>
+          <div className="mt-4">
+            <Timeline items={DEMO_TIMELINE} />
+          </div>
+        </div>
+
+        <p className="mt-6 max-w-[30em] text-[15px] font-bold leading-[1.85] text-slate">
+          次に話すときは、「Aさんなんやけど」から始められます。
+        </p>
+        <p className="mt-1.5 max-w-[30em] text-[13px] leading-[1.8] text-steel">
+          相手が何人いても、それぞれ別に覚えています。
+        </p>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者の記録ではありません。
+        </p>
+      </Block>
+
       {/* ══ 1.1 恋亀との会話 ══ */}
       {/* ══════════════════════════════════════════════
           説明より先に、会話を見せる
@@ -1182,16 +1236,32 @@ export default async function HomePage() {
 
               安いほうを大きく、通常をその下に小さく。
               取り消し線は引かない。値引きに見せない。 */}
-          <p className="mt-3 text-[30px] font-black leading-none text-slate sm:text-[34px]">
-            <Yen yen={EARLY_YEN} />
-            <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
-          </p>
-          <p className="mt-1.5 text-[12.5px] leading-[1.75] text-steel">
-            はじめの{EARLY_SEATS}人の値段です。
-            まだ出来上がっていないものに、最初から付き合ってもらうぶん。
-            <br />
-            そのあとは <Yen yen={PASS_YEN} />／月 になります。
-          </p>
+          {/* 人数に達したら、はじめの値段ごと消える（earlyOpen）。
+              「先着100名」と書く以上、本当に100名で終わらせないと
+              景表法（有利誤認）に触れる。手で消すと必ず忘れる。 */}
+          {earlyOpen ? (
+            <>
+              <p className="mt-3 flex flex-wrap items-baseline gap-x-2.5 text-[30px] font-black leading-none text-slate sm:text-[34px]">
+                <span>
+                  <Yen yen={EARLY_YEN} />
+                  <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
+                </span>
+                <span className="rounded-pill bg-brand px-2.5 py-1 text-[11px] font-black text-paper">
+                  先着{EARLY_SEATS}名
+                </span>
+              </p>
+              <p className="mt-1.5 text-[12.5px] leading-[1.75] text-steel">
+                まだ出来上がっていないものに、最初から付き合ってもらうぶんの値段です。
+                <br />
+                {EARLY_SEATS}名に達したら <Yen yen={PASS_YEN} />／月 になります。
+              </p>
+            </>
+          ) : (
+            <p className="mt-3 text-[30px] font-black leading-none text-slate sm:text-[34px]">
+              <Yen yen={PASS_YEN} />
+              <span className="ml-1.5 align-middle text-[14px] font-bold text-steel">／月</span>
+            </p>
+          )}
 
           <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4">
             {INCLUDED.map((x) => (

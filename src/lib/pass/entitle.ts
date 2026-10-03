@@ -70,6 +70,26 @@ export const EARLY_YEN = 1980;
 export const EARLY_SEATS = 100;
 
 /**
+ * もう何人が入ったか。
+ *
+ * ══════════════════════════════════════════════════
+ * 「先着100名」と書くなら、100名で終わらせること
+ * ══════════════════════════════════════════════════
+ * 終わらないまま出し続けると、景表法（有利誤認）に触れる。
+ * 「まだ空いている」と思って入った人に対して嘘になる。
+ *
+ * ここを運営が更新する。達したら、値段ごと画面から消える。
+ * 手で消す形にすると、必ず消し忘れる。
+ */
+export const EARLY_TAKEN = Number(process.env.EARLY_TAKEN ?? 0);
+
+/** はじめの値段を、まだ出してよいか */
+export const earlyOpen = EARLY_TAKEN < EARLY_SEATS;
+
+/** 残り何人か。0以下にはしない */
+export const earlyLeft = Math.max(0, EARLY_SEATS - EARLY_TAKEN);
+
+/**
  * 月に、異性3人へ確カメられる回数。
  *
  * 1回は「付与」。使っても使わなくても、こちらは原価を見込んでおく。
@@ -223,7 +243,7 @@ export const INCLUDED: string[] = [
 
   /* 両方の値段で見る。
      安いほうだけが床を割る、が起きる。 */
-  for (const [name, yen] of [["通常", PASS_YEN], ["はじめの100人", EARLY_YEN]] as const) {
+  for (const [name, yen] of [["通常", PASS_YEN], [`はじめの${EARLY_SEATS}人`, EARLY_YEN]] as const) {
     const m = (yen - variable) / yen;
     if (m < PASS_MARGIN_FLOOR) {
       throw new Error(
@@ -237,6 +257,22 @@ export const INCLUDED: string[] = [
   }
   const margin = (PASS_YEN - variable) / PASS_YEN;
   if (margin < PASS_MARGIN_FLOOR) throw new Error("採算の計算が壊れています");
+
+  /* ── 「先着」と書くなら、終わる形にしておくこと ────
+     終わらないまま出し続けると、景表法（有利誤認）に触れる。
+     人数に達したら、値段ごと画面から消えること。 */
+  if (EARLY_TAKEN < 0) throw new Error("入った人数が負になっています");
+  if (EARLY_SEATS <= 0) throw new Error("はじめの人数が0以下です");
+  if (EARLY_TAKEN >= EARLY_SEATS && earlyOpen) {
+    throw new Error("人数に達しているのに、はじめの値段がまだ開いています");
+  }
+  if (earlyOpen && earlyLeft <= 0) {
+    throw new Error("残り0人なのに、はじめの値段が開いています");
+  }
+  // 安いほうが、通常より高くないこと。
+  if (EARLY_YEN >= PASS_YEN) {
+    throw new Error(`はじめの値段（¥${EARLY_YEN}）が、通常（¥${PASS_YEN}）以上です`);
+  }
 
   // 使い放題と書かないこと。書かなければ守れる。
   for (const t of [...INCLUDED, VOICE_OVER, HUMAN_OVER]) {
