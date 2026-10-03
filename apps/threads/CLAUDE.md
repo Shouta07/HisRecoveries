@@ -67,6 +67,40 @@ Threads の役割は「手が止まる瞬間に置かれること」。共感で
 **URLは誘導の1本だけ・必ず最後**）。`persona.posting.source_post_ratio`（現在0.5）の確率で
 在庫から単発1本を消費し、在庫切れなら連投へフォールバック。`writer.generate_source_post` が実装。
 
+## 2.6 前の系統: `Shouta07/threads`（2026-10-03 に停止）
+
+**同じ Threads アカウントに毎日投稿していたのは、このリポジトリではなかった。**
+
+`Shouta07/threads` は、この apps/threads が monorepo に移される前の単独
+リポジトリ。移したあとも**消さずに残っていて、そちらの Actions が生きていた**。
+
+| | Shouta07/threads（旧） | ここ（apps/threads） |
+|---|---|---|
+| post ワークフロー | `post.yml` 09:00/21:00 JST・**522回実行** | `threads-post.yml` 同じ時刻 |
+| Secrets | 入っている（トークン自動更新も稼働） | **未設定** |
+| 承認ゲート | **無し＝直接投稿** | 有り（承認待ちで止まる） |
+| 内容 | 旧事業（gift/mother/urgent/areas） | タシカメの5場面 |
+| 生成 | `post ... --mock` が**ワークフローに固定**＝常にテンプレート | Gemini（キーがあれば） |
+| git push | 403 で失敗 → 履歴が残らず、7月から動いていないように見えた | 成功 |
+
+2026-10-03 13:43 JST の実行で実際に出ていたもの:
+```
+仮説   areas-face（顔の印象（/areasへ））
+CTA    https://hisrecoveries.com/areas/face?utm...
+本文   「目の下のクマ、これ何だろう」——疲れだけじゃない気がしていた。
+結果   3投の連投を実投稿（head=18129975754750497, replies=2/2）
+```
+
+**同じアカウントに2つの系統を向けない。** 旧リポジトリの KILL_SWITCH を消すなら、
+先にこちらを止める（逆も同じ）。
+
+### 引き継ぎに必要なこと
+1. `Shouta07/threads` の Secrets（`THREADS_ACCESS_TOKEN` / `THREADS_USER_ID` /
+   `THREADS_APP_SECRET`）を、このリポジトリの Secrets にコピーする（§5）
+2. `threads-token-refresh.yml` を Enable に戻す（60日で切れる）
+3. Vercel の管理ページの環境変数を直す（§4）。
+   `GITHUB_REPO` が旧リポジトリを指していると、画面での編集が旧リポジトリに入る
+
 ## 2.5 承認ゲート（生成 → 人間の承認 → 投稿）
 
 `persona.posting.posting_types.automated.immediate_posting_forbidden = true` の間、
@@ -118,8 +152,19 @@ admin/
   threads-collect.yml       毎朝 import-history + collect(数値取得)
   threads-token-refresh.yml 長命トークンの更新(45日周期)
   threads-delete-all-posts.yml 過去投稿の一括削除(手動のみ・既定dry_run・取り消し不可)
+  threads-ci.yml            apps/threads の変更で pytest + validate
+                            （以前は apps/threads/.github/workflows/ci.yml にあり、
+                              GitHubはルートしか読まないので一度も走っていなかった）
   （いずれも working-directory: apps/threads で実行）
 KILL_SWITCH      このファイルがあると threads-post / post-approved は投稿しない(存在=停止中)
+
+2026-10-03 に削除したもの（どこにもデプロイされておらず、承認ゲートを
+通らずに投稿する経路だった）:
+  deploy/            VPS用（setup.sh / systemd / crontab。/opt/threads-ceo 前提）
+  Procfile / run.sh  Heroku・Railway用のワーカーと起動スクリプト
+  archive/           さらに前のペルソナ（りょうた｜マチアプ5人同時進行）
+  .github/workflows/ GitHubはルートしか読まないので、一度も走っていなかった
+                     （ci.yml はルートの threads-ci.yml に移した）
 pyproject.toml   [tool.vercel] entrypoint = "admin.server:Handler"
 vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 ```
@@ -128,6 +173,9 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 
 - ローカル: `python -m admin.server` → http://127.0.0.1:8765
 - Vercel: `admin.server:Handler` をサーバーレス配信。**編集＝GitHubへコミット**（GitHubStorage）。
+- **monorepo では `GITHUB_PATH_PREFIX=apps/threads` が要る。** 無いとリポジトリ直下に
+  `accounts/` を新規作成し、編集がどのワークフローにも届かない（実体は apps/threads/accounts）。
+  `GITHUB_REPO` も旧リポジトリ（`Shouta07/threads`）のままだと、編集が旧リポジトリに入る。
 - 機能: ダッシュボード / 連投テンプレ編集 / 設定ファイル編集(JSON検証付) /
   プレビュー生成(record=Falseで状態を汚さない) / 下書きCRUD /
   **閲覧数・分析**(投稿ごとのviews/いいね/返信/RP、場面別集計、キーワード検索、並び替え)。
@@ -135,12 +183,15 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 
 ## 5. 環境変数／シークレット（2系統・別物）
 
-> **現状（2026-10-03 確認）: `THREADS_ACCESS_TOKEN` と `THREADS_USER_ID` が未設定。**
-> Actions のログに `THREADS_ACCESS_TOKEN is not set` が出ており、
-> 投稿・数値回収・過去投稿の削除は、どれも動かない（生成だけが承認キューに積まれる）。
-> `history.json` が空で `collect` が毎朝「0 posts」なのも同じ理由。
-> `threads-token-refresh.yml` も手動で Disable されている。
+> **現状（2026-10-03 確認）: この系統はまだ1本も投稿していない。**
+> `THREADS_ACCESS_TOKEN` と `THREADS_USER_ID` が未設定で、Actions のログに
+> `THREADS_ACCESS_TOKEN is not set` が出ている。生成して承認キューに積むところ
+> までしか動かない。`history.json` が空で `collect` が毎朝「0 posts」なのも
+> 同じ理由。`threads-token-refresh.yml` も手動で Disable されている。
 > 入れる値の作り方は §6。
+
+> **実際に毎日投稿していたのは、別リポジトリ `Shouta07/threads` だった（§2.6）。**
+> 2026-10-03 に KILL_SWITCH を置いて止めた。ここが引き継ぐには Secrets が要る。
 
 **GitHub Secrets（自動投稿=Actions用）** Settings→Secrets and variables→Actions:
 - `THREADS_ACCESS_TOKEN`（@koikame.jp の長命トークン。**アカウント変更時はここ**）
@@ -151,7 +202,8 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 
 **Vercel Environment Variables（管理ページ用）**:
 - `ADMIN_USER` / `ADMIN_PASSWORD`（ログイン）
-- `GITHUB_TOKEN`（repo書込PAT）/ `GITHUB_REPO` / `GITHUB_BRANCH`=main
+- `GITHUB_TOKEN`（repo書込PAT）/ `GITHUB_REPO`=Shouta07/HisRecoveries /
+  `GITHUB_BRANCH`=main / `GITHUB_PATH_PREFIX`=apps/threads
 
 > 注意: account_id `mens-body-lab` は内部ID。ワークフローは**base**の
 > `THREADS_ACCESS_TOKEN` を渡すので、アカウントを変えても**コード変更は不要**。
@@ -176,7 +228,8 @@ vercel.json      admin/server.py に core/accounts を同梱(includeFiles)
 
 ## 8. 現状と次の候補
 
-- **最初にやること: GitHub Secrets（§5）。** トークンが無いあいだ、投稿は1本も出ない。
+- **最初にやること: GitHub Secrets（§5）と、旧系統からの引き継ぎ（§2.6）。**
+  トークンが無いあいだ、ここからの投稿は1本も出ない。
 - 実装済み: タシカメ一本化（生成プロンプトの persona 駆動化、5場面の連投、
   テンプレの {link} 修正、旧実験記録のリセット）、承認ゲート、連投投稿、
   管理ページ（編集・プレビュー・下書き・閲覧数分析＋検索）、過去取込、Vercel対応。

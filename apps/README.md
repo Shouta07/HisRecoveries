@@ -42,5 +42,5 @@ cd apps/threads
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # 値を実際のトークンに
-python -m core.main    # or run.sh
+python -m core.main post mens-body-lab --mock   # 生成→承認キュー
 ```

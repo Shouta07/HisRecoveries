@@ -1,6 +1,6 @@
 {
   "note": "タシカメの /ask（相談の入口）に対応する検索クラスタ。旧事業（His Recoveries の /areas＝薄毛・汗・ニキビ・顔・体毛・自意識）のクラスタを置き換えた。geo_questions = AIや検索に打たれる自然文（＝見出しの素）。投稿は煽らない・断定しない・相手の気持ちを判定しない。slug は hypotheses.json の場面と同じにしてある（CTAの c= に入るため）。",
-  "ask_url": "https://tashikame.app/ask?plan=review&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}",
+  "ask_url": "https://hisrecoveries.com/ask?plan=review&c={slug}&utm_source=threads&utm_medium=social&utm_campaign={slug}",
   "clusters": [
     {
       "slug": "message",

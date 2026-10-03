@@ -1,0 +1,43 @@
+name: Threads CI
+
+# apps/threads の 213件のテストは、これまでどこでも走っていなかった。
+# 定義は apps/threads/.github/workflows/ci.yml にあったが、GitHub は
+# リポジトリ直下の .github/workflows だけを読むので、一度も実行されていない。
+# ルートに移した。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/threads/**"
+      - ".github/workflows/threads-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/threads/**"
+      - ".github/workflows/threads-ci.yml"
+
+defaults:
+  run:
+    working-directory: apps/threads
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install python-dotenv pytest
+
+      - name: Run tests
+        run: python -m pytest tests/ -q
+
+      - name: Validate account config
+        run: python -m core.main validate

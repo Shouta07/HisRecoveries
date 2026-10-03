@@ -248,3 +248,35 @@ class TestJsonGuard:
     def test_bad_json_not_saved(self):
         msg = s.save_edit("mens-body-lab", "hypotheses.json", "{ not valid")
         assert "JSON" in msg and "保存しませんでした" in msg
+
+
+# ── GitHubStorage のパス（monorepo では prefix が要る）────────────────
+class TestGitHubStoragePath:
+    def _storage(self, prefix):
+        from admin.storage import GitHubStorage
+        return GitHubStorage("tok", "Shouta07/HisRecoveries", "main", prefix)
+
+    def test_prefix_is_prepended(self):
+        st = self._storage("apps/threads")
+        assert st._path("accounts", "mens-body-lab", "persona.json") == (
+            "apps/threads/accounts/mens-body-lab/persona.json"
+        )
+        assert st._path("accounts") == "apps/threads/accounts"
+
+    def test_no_prefix_keeps_repo_root(self):
+        # 単独リポジトリ（旧 Shouta07/threads）の形
+        st = self._storage("")
+        assert st._path("accounts", "a", "b.json") == "accounts/a/b.json"
+
+    def test_slashes_are_normalized(self):
+        st = self._storage("/apps/threads/")
+        assert st._path("accounts", "a") == "apps/threads/accounts/a"
+
+    def test_prefix_from_env(self, monkeypatch):
+        from admin import storage
+        monkeypatch.setenv("GITHUB_TOKEN", "tok")
+        monkeypatch.setenv("GITHUB_REPO", "Shouta07/HisRecoveries")
+        monkeypatch.setenv("GITHUB_PATH_PREFIX", "apps/threads")
+        st = storage.get_storage()
+        assert st.backend == "github"
+        assert st._path("accounts") == "apps/threads/accounts"
