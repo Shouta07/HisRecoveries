@@ -2488,3 +2488,27 @@ select
 from relationship_cases rc
 where rc.status = 'active'
 order by rc.updated_at desc;
+
+-- ══════════════════════════════════════════════════
+-- 回答者が、相談者の知り合いだったとき
+-- ══════════════════════════════════════════════════
+-- 完全には防げない。当たったときに何も漏れないことを優先する。
+--
+-- 回答者の画面に常に「知っている人かもしれない」を出す。
+-- 押されたら、その場で終了し、別の回答者へ振り替える。
+--
+-- ── 理由を残さない ────────────────────────────────
+-- なぜ止めたかは記録しない。
+-- 残すと、あとから「誰だったか」を推測する材料になる。
+-- 回答者の安全を守るために、こちらも知らないままにする。
+alter table talks add column if not exists swapped_from uuid references talks(id);
+-- その回のデータを使わない印。構造化もしない。
+alter table talks add column if not exists data_voided boolean not null default false;
+
+-- 使わないと決めた回の文字起こしは、必ず消えていること。
+-- 消し忘れが1件でもあると、残り続ける。
+create or replace view talks_to_purge as
+select id, token, created_at
+from talks
+where (data_voided = true or status = 'no_consent')
+  and transcript is not null;
