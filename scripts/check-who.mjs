@@ -276,47 +276,50 @@ const open = openSideLabels();
 if (open.length > 0) {
   /* ① 1画面目で名乗っていること。
 
-     名乗りの文そのものは page.tsx には書いていない。
-     lib/koi/gate.ts の heroSubLines が持っていて、画面はそれを出す。
-     （恋亀と話せるかどうかで中身が変わるので、1か所にまとめてある）
+     ══════════════════════════════════════════════
+     名乗る場所を、2行目からヘッダーへ移した
+     ══════════════════════════════════════════════
+     前は lib/koi/gate.ts の2行目（heroSubLines）に
+     「男性のマチアプ恋愛を、」と書かせていた。
 
-     だから2段で見る。
-       1画面目の近くで heroSubLines を出していること
-       heroSubLines のほうに、開いている向きが書いてあること
+     そこは、何のサービスかを場面で言う行にした。
+       LINE、電話、デート、その次まで。
+       複数人のマッチ後を、ひとつに。
+     誰に向けてかは、すぐ上のヘッダーが言っている。
+       男性のマチアプ恋愛に、
+       タシカメ
+     1画面目で2回名乗る必要は無い。
 
-     どちらか片方だけだと素通りする。
-     画面が別の文を直書きしても、gate.ts だけ直しても、ここで止まる。 */
-  const NEAR = 1200;
-  const head = lp.slice(hero, hero + 20000).replace(/\s+/g, "");
-  const marks = [...open, "heroSubLines"];
-  const at = marks.map((w) => head.indexOf(w)).filter((i) => i >= 0);
-  const found = at.length > 0 ? Math.min(...at) : -1;
+     だから、見るのはヘッダーの側にする。
+       1 ヘッダーが TAGLINE を出していること
+       2 その TAGLINE に、開いている向きが書いてあること
 
-  if (found < 0 || found > NEAR) {
-    console.error("1画面目に、誰に向けた製品かが書かれていません。");
-    console.error("");
-    console.error(`  いま開いているのは  ${open.join("・")}`);
-    console.error(`  1画面目からの字数  ${found < 0 ? "見つからず" : found}（${NEAR} 字まで）`);
-    console.error("");
-    console.error("片方の向きしか開いていないあいだは、1画面目で名乗ってください。");
-    console.error("名乗らないと、使えない人が読み進めてから気づくことになります。");
-    console.error("（lib/koi/gate.ts の heroSubLines が、その行を持っています）");
-    process.exit(1);
-  }
-
-  /* 名乗りの中身。gate.ts の、恋亀と話せないときの2行目を見る。
-     ここが「複数人のマッチ後を、1つに整理。」のような
-     誰のためか書いていない文に戻ったら、止める。 */
+     2は lib/voice.ts の判定も見ているが、こちらでも見る。
+     あちらは「言葉が正しいか」、ここは「画面に出ているか」。
+     TAGLINE を直しても、ヘッダーから外したら意味が無い。 */
   {
-    const gate = stripComments(await readFile(join(ROOT, "src/lib/koi/gate.ts"), "utf8"));
-    const said = open.some((w) => gate.includes(w));
-    if (!said) {
-      console.error("1画面目の2行目に、誰に向けた製品かが書かれていません。");
+    const head = lp.slice(0, hero).replace(/\s+/g, "");
+    if (!head.includes("{TAGLINE}")) {
+      console.error("ヘッダーが、標語（TAGLINE）を出していません。");
       console.error("");
+      console.error("1画面目で、誰に向けた製品かを名乗る場所がここだけです。");
+      console.error("名乗らないと、使えない人が読み進めてから気づくことになります。");
+      process.exit(1);
+    }
+    const voice = stripComments(await readFile(join(ROOT, "src/lib/voice.ts"), "utf8"));
+    const line = voice.match(/TAGLINE\s*=\s*"([^"]*)"/);
+    if (!line) {
+      console.error("lib/voice.ts に TAGLINE が見つかりません。");
+      console.error("このファイルの判定が、voice.ts の作りに追いつけていません。");
+      process.exit(1);
+    }
+    if (!open.some((w) => line[1].includes(w))) {
+      console.error("標語に、誰に向けた製品かが書かれていません。");
+      console.error("");
+      console.error(`  標語              ${line[1]}`);
       console.error(`  いま開いているのは  ${open.join("・")}`);
       console.error("");
-      console.error("lib/koi/gate.ts の SUB_NOW に書いてください。");
-      console.error("画面はそこから引いているので、ここを直せば1画面目も変わります。");
+      console.error("片方の向きしか開いていないあいだは、ヘッダーで名乗ってください。");
       process.exit(1);
     }
   }
@@ -385,5 +388,5 @@ if (open.length > 0) {
 }
 
 console.log(
-  `who チェック: 直書き0件 — 1画面目で${open.length > 0 ? open.join("・") + "と名乗っています" : "名乗り不要（両方開いています）"} — 相手は恋亀です`,
+  `who チェック: 直書き0件 — ヘッダーで${open.length > 0 ? open.join("・") + "と名乗っています" : "名乗り不要（両方開いています）"} — 相手は恋亀です`,
 );

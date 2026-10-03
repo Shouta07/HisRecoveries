@@ -15,7 +15,7 @@ import { PERIODS, perMonth, perksFor } from "@/lib/pass/periods";
 import { FREE_PEOPLE, FREE_RECORDS } from "@/lib/pass/free";
 import { PAYWALL_NAME, PAYWALL_HEAD, MANAGE_NOTE } from "@/lib/pass/copy";
 import { advisorWord, notYetNote } from "@/lib/who";
-import { HERO_A, HERO_B1, HERO_B2, NAME, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE } from "@/lib/voice";
+import { HERO_A, HERO_B1, HERO_B2, NAME, DEFINITION, HERO_HOW, TAGLINE, TAB_TITLE, TRIAD, TRIAD_LINES } from "@/lib/voice";
 import Reveal from "@/components/brand/Reveal";
 import PlanCta from "@/components/brand/PlanCta";
 import Mark from "@/components/brand/Mark";
@@ -71,16 +71,20 @@ import HeroDashboard from "@/components/koi/HeroDashboard";
 // 構成（スマホで上から）
 // ══════════════════════════════════════════════════════════════
 //    1  マチアプは、マッチしてからが勝負。（＋ 実際の画面）
-//    2  マッチした瞬間から、考えることが増えていく。
-//    3  AIで話す。貼る。次が決まる。
+//    2  マッチした瞬間から、考えることが増えていく。（ひとりの話）
+//    3  話す。貼る。次が決まる。
 //    4  話した1行が、こうなる。
-//    5  次の相談で、最初から説明しなくていい。
-//    6  AIで決めきれないところだけ、人に確カメる。
-//    7  考えるのはAI。確カメるのは人。覚えておくのがタシカメ。
+//    5  毎回、最初から説明しなくていい。
+//    6  AIで決めきれないときだけ、人に確カメる。
+//    7  AIで考える。迷ったら、人に確カメる。その続きは、タシカメが覚えてる。
 //    8  タシカメは、恋愛の何でも屋ではありません。
 //    9  Tashikame Pass
 //   10  よくある質問
 //   11  もう、ひとりで全部覚えなくていい。
+//
+// 2 は箇条書きではなく、ひとりの男性の話にしてある。
+// 「これ俺やん」と思わなかった人は、この製品を買わない。
+// そこがこのページでいちばん大事な節。
 //
 // 料金は後ろに置く。何が残るのかを見る前に金額が出ると、
 // 「高い／安い」の話から始まってしまう。
@@ -439,7 +443,7 @@ export default async function HomePage() {
             AIに話した内容を貼るだけで、誰と／どこまで／次に何するか、が残る。
           </p>
           <p className="mt-2 max-w-[26em] text-[14px] leading-[1.85] text-steel sm:max-w-[38em]">
-            迷ったときは、月{HUMAN_PER_MONTH}回、実在する{advisorWord()}にも確カメられます。
+            迷ったら、月{HUMAN_PER_MONTH}回、実在する{advisorWord()}にも確カメられる。
           </p>
 
           <div className="mt-6 max-w-[22em]">
@@ -500,13 +504,29 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ══ 2. 課題 ══ */}
+      {/* ══ 2. ペインストーリー ══ */}
       {/* ══════════════════════════════════════════════
-          疲れているのは、恋愛にではない
+          箇条書きをやめて、ひとりの話にした
           ══════════════════════════════════════════════
-          並べる4つのうち、3つは相手のこと。
-          4つ目は、AIに毎回いちから説明し直す負担のほう。
-          これが入っていないと、ただの物忘れの話に見える。 */}
+          ここは「Aさん、前回何話した？」のような札を4枚
+          並べていた。言っていることは合っているが、
+          読む人は札を見ているだけで、自分の話だと思わない。
+
+          ひとりの男性の、実際に起きる順番で書く。
+            3人と並行している（アプリ名入り）
+            最初は楽しい
+            人数が増えると、思い出せないことが増える
+            開くたびに、最初から説明し直す
+            返信を考える・誘う時期を考える・動くか待つか考える
+            そして、また次の人
+
+          「これ俺やん」と思わせるのが、この節の全部。
+          思わなかった人は、この製品を買わない。
+
+          ── 疲れの名前を、最後に置く ──────────────
+          先に「判断疲れ」と名前を付けると、
+          読む人は自分の体験を思い出す前に、言葉で納得してしまう。
+          思い出させてから、名前を付ける。 */}
       <Block>
         <H>
           マッチした瞬間から、
@@ -514,7 +534,7 @@ export default async function HomePage() {
           考えることが増えていく。
         </H>
 
-        {/* 悩んでいる絵を、ここに置く。
+        {/* 悩んでいる絵。
             1画面目は「何をする場所か」を見せる場所で、
             「それが自分のことだ」と思わせるのはこちらの節。 */}
         <div className="relative mt-7 overflow-hidden rounded-card shadow-card">
@@ -522,30 +542,86 @@ export default async function HomePage() {
         </div>
         <p className="mt-2 text-[11px] leading-[1.7] text-steel">※ 写真はイメージです。</p>
 
-        <ul className="mt-6 flex max-w-[34em] flex-col gap-2.5">
+        {/* ── いま、3人と並行している ───────────────
+            アプリ名を出す。「複数人」と書くより、
+            with / Pairs / タップル と並ぶほうが自分の画面に見える。 */}
+        <ul className="mt-8 flex max-w-[30em] flex-col gap-1.5">
           {[
-            ["Aさん", "前回、何話した？"],
-            ["Bさん", "電話、誘ったっけ？"],
-            ["Cさん", "次いつ会う？"],
-            ["ChatGPT", "また最初から説明する？"],
-          ].map(([who, say]) => (
-            <li
-              key={who}
-              className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 rounded-soft bg-mist px-4 py-3.5"
-            >
-              <span className="text-[12.5px] font-black text-steel">{who}</span>
-              <span className="text-[15px] font-bold leading-[1.7] text-slate">{say}</span>
+            ["with", "Aさんとマッチ。"],
+            ["Pairs", "Bさんとやりとり中。"],
+            ["タップル", "Cさんとは、土曜に初デート。"],
+          ].map(([app, say]) => (
+            <li key={app} className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+              <span className="rounded-pill bg-mist px-2 py-0.5 text-[11px] font-bold text-steel">
+                {app}
+              </span>
+              <span className="text-[15px] font-bold leading-[1.8] text-slate">{say}</span>
             </li>
           ))}
         </ul>
 
-        <p className="mt-6 max-w-[30em] text-[15.5px] font-bold leading-[1.85] text-slate">
-          恋愛に疲れてるというより、
-          <br className="sm:hidden" />
-          判断と記憶に疲れてる。
+        <p className="mt-6 max-w-[30em] text-[15px] leading-[1.9] text-steel">
+          最初は、楽しい。
+          <br />
+          でも人数が増えると、こうなる。
         </p>
-        <p className="mt-2.5 max-w-[30em] text-[14px] leading-[1.9] text-steel">
-          頭の中だけで、全部覚えておかなくていい。
+
+        {/* ── 思い出せないこと ──────────────────────
+            口に出るときの言い方そのままにする。
+            「記憶の負担」と書いた瞬間に、他人の話になる。 */}
+        <ul className="mt-5 flex max-w-[26em] flex-col gap-2">
+          {[
+            "Aさん、昨日なんの話したっけ？",
+            "Bさん、もう電話誘った？",
+            "Cさん、店まだ決めてない。",
+          ].map((t) => (
+            <li
+              key={t}
+              className="rounded-card rounded-bl-[4px] bg-mist px-4 py-3 text-[15px] font-bold leading-[1.7] text-slate"
+            >
+              {t}
+            </li>
+          ))}
+        </ul>
+
+        {/* ── 開くたびに、説明し直す ────────────────
+            ここがいちばん効く。3つ開いて、3回同じことを言う。
+            短い行を重ねて、繰り返している感じを出す。 */}
+        <div className="mt-8 max-w-[30em]">
+          <p className="flex flex-wrap gap-x-4 gap-y-1 text-[15px] font-bold leading-[1.9] text-slate">
+            <span>LINEを開く。</span>
+            <span>アプリを開く。</span>
+            <span>ChatGPTを開く。</span>
+          </p>
+          <p className="mt-3 text-[14.5px] leading-[1.95] text-steel">
+            そのたびに、
+            <br />
+            「この人とはこういう状況で、前回こうなって……」
+            <br />
+            を、最初から説明する。
+          </p>
+        </div>
+
+        {/* ── そして、また次の人 ────────────────────
+            考えることを3つ並べて、最後に「また次の人」で畳む。
+            終わらないことが伝わればよい。 */}
+        <div className="mt-7 max-w-[30em] border-l-2 border-line pl-4">
+          <p className="text-[14.5px] leading-[2.05] text-steel">
+            返信を考える。
+            <br />
+            誘うタイミングを考える。
+            <br />
+            今日は動くのか、待つのか考える。
+          </p>
+          <p className="mt-2.5 text-[14.5px] font-bold leading-[1.9] text-slate">
+            そして、また次の人。
+          </p>
+        </div>
+
+        <p className="mt-9 max-w-[30em] text-[19px] font-black leading-[1.75] text-slate sm:text-[22px]">
+          恋愛に疲れてるというより、
+          <br />
+          判断と記憶に疲れてる。
         </p>
       </Block>
 
@@ -554,7 +630,18 @@ export default async function HomePage() {
           実際は3つしかない。数を先に見せる。
           3つ目は本人がやることではないので、そこも伝わる。 */}
       <Block tint id="how">
-        <Eyebrow>HOW IT WORKS</Eyebrow>
+        {/* ── 前の節からの、受け ──────────────────────
+            ペインストーリーの直後なので、答えを先に1行で言う。
+            「頭の中だけで管理しない」が、この製品のやること全部。 */}
+        <p className="text-[17px] font-black leading-[1.75] text-brand sm:text-[19px]">
+          だから、マッチ後を
+          <br className="sm:hidden" />
+          頭の中だけで管理しない。
+        </p>
+
+        <div className="mt-7">
+          <Eyebrow>HOW IT WORKS</Eyebrow>
+        </div>
         <div className="mt-1.5">
           <H>
             話す。貼る。
@@ -739,10 +826,16 @@ export default async function HomePage() {
           考え方そのものなので、ここが芯だと分かる場所にする。 */}
       <Block dark>
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+          {/* ── 並べる順番を、使う人の動きに合わせた ────
+              前は AI ／ タシカメ ／ 人 の順で、タシカメが真ん中だった。
+              並列に見えて、3つのうちの1つになっていた。
+
+              実際の動きは AI → 人 → そのあと。
+              タシカメは最後。AIにも人にも無いのは「そのあと」のほう。 */}
           {[
             { who: "AI", can: "考える" },
-            { who: NAME, can: "覚える・整理する・続きをつなぐ", ours: true },
             { who: `実在する${advisorWord()}`, can: "確カメる" },
+            { who: NAME, can: "その続き全部を覚えておく", ours: true },
           ].map((x) => (
             <div
               key={x.who}
@@ -766,12 +859,16 @@ export default async function HomePage() {
           ))}
         </div>
 
+        {/* 3つの持ち場を1つの文にしたもの。
+            折る場所と中身は lib/voice.ts が持つ（TRIAD_LINES）。
+            ここと最後の節で同じものを出すので、書き分けない。 */}
         <p className="mt-8 text-huge font-black text-paper">
-          考えるのはAI。
-          <br />
-          確カメるのは人。
-          <br className="sm:hidden" />
-          覚えておくのが{NAME}。
+          {TRIAD_LINES.map((line, i) => (
+            <span key={line} className="block">
+              {line}
+              {i < TRIAD_LINES.length - 1 && <span className="sr-only"> </span>}
+            </span>
+          ))}
         </p>
       </Block>
 
@@ -794,17 +891,17 @@ export default async function HomePage() {
           ではありません。
         </H>
 
-        <ul className="mt-7 flex max-w-[32em] flex-col gap-2">
+        {/* 札（グレーの箱）を3枚並べていた。
+            やらないことに箱を使うと、やることと同じ重さに見える。
+            行だけにして、高さを 1/3 にした。 */}
+        <ul className="mt-6 flex max-w-[32em] flex-col gap-1.5">
           {[
             "マッチ率やいいねを増やすサービスではありません",
             "脈あり判定も、相手を動かす駆け引きもありません",
             "高額な恋愛コンサルでも、AIチャットの置き換えでもありません",
           ].map((t) => (
-            <li
-              key={t}
-              className="flex items-start gap-2.5 rounded-soft bg-mist px-4 py-3.5 text-[14px] leading-[1.8] text-steel"
-            >
-              <span aria-hidden className="mt-[3px] shrink-0 text-[12px] font-black text-steel">
+            <li key={t} className="flex items-start gap-2.5 text-[14px] leading-[1.85] text-steel">
+              <span aria-hidden className="mt-[2px] shrink-0 text-[12px] font-black text-steel">
                 ×
               </span>
               <span className="min-w-0">{t}</span>
@@ -1033,8 +1130,10 @@ export default async function HomePage() {
               <br />
               全部覚えなくていい。
             </p>
-            <p className="relative mt-4 max-w-[26em] text-[15px] leading-[1.85]">
-              AIで考える。{NAME}が覚える。迷ったら、人に確カメる。
+            {/* 暗い面と同じ文。voice.ts の TRIAD から出す。
+                ここだけ言い方が違うと、締めで別の約束になる。 */}
+            <p className="relative mt-4 max-w-[26em] text-[15.5px] font-bold leading-[1.9]">
+              {TRIAD}
             </p>
             <div className="mt-7">
               <Link

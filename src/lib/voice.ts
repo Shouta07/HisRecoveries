@@ -261,6 +261,37 @@ export const THESIS = `${THESIS_A}${THESIS_B}`;
 export const THESIS_A1 = "恋愛は、";
 export const THESIS_A2 = "小さな選択の積み重ね。";
 
+/* ══════════════════════════════════════════════════
+   3つの持ち場を、1つの文にする
+   ══════════════════════════════════════════════════
+   前はこう書いていた。
+     考えるのはAI。確カメるのは人。覚えておくのがタシカメ。
+
+   3つを並べる形としては正しいが、並列なので
+   「3つのうちの1つ」に見える。タシカメが何番目でもよくなる。
+
+   順番を、使う人の動きに合わせる。
+     AIで考える。             まず、いつも通りAIに相談する
+     迷ったら、人に確カメる。   決めきれないときだけ、人に回る
+     その続きは、タシカメが覚えてる。  そのあと全部が、ここに残る
+
+   「その続き」が効く。AIも人も、一回ずつで終わる。
+   終わったあとを持っているのが、こちらしかない。
+   そこが月額の理由そのもの。
+
+   ── 折る場所 ────────────────────────────────────
+   3つ目が16字あって、携帯（text-huge 26px・本文幅320px）だと
+   12字で折れる。「る。」だけが落ちないよう、こちらで決める。 */
+export const TRIAD_1 = "AIで考える。";
+export const TRIAD_2 = "迷ったら、人に確カメる。";
+export const TRIAD_3A = "その続きは、";
+export const TRIAD_3B = `${NAME}が覚えてる。`;
+export const TRIAD_3 = TRIAD_3A + TRIAD_3B;
+export const TRIAD = `${TRIAD_1}${TRIAD_2}${TRIAD_3}`;
+
+/** 画面はこれを行ごとに出す。折る場所をここで持つ */
+export const TRIAD_LINES = [TRIAD_1, TRIAD_2, TRIAD_3A, TRIAD_3B];
+
 export const ONE_LINER = "選ぶ前に、確かめられる。";
 
 /**
@@ -678,6 +709,42 @@ export function assertWeight(text: string, where: string): string {
   // ぼかした言い方に差し替えられていないこと。
   if (/支援|ソリューション|プラットフォーム|体験を提供/.test(DEFINITION)) {
     throw new Error(`サービスの説明がぼやけています（${DEFINITION}）`);
+  }
+
+  /* ── 3つの持ち場 ──────────────────────────────── */
+  {
+    if (TRIAD_LINES.join("") !== TRIAD) {
+      throw new Error(`3つの持ち場を折る場所が、元の文と合っていません（${TRIAD_LINES.join("")} ≠ ${TRIAD}）`);
+    }
+    /* 携帯で1行に入ること。text-huge は 26px、
+       360px の本文幅は 320px なので全角12字が上限。 */
+    for (const line of TRIAD_LINES) {
+      if (line.length > 12) {
+        throw new Error(`3つの持ち場の行「${line}」が長すぎます（${line.length}字／12字まで）`);
+      }
+    }
+    /* 3つとも名前が出ていること。
+       1つでも抜けると、どれかの持ち場が消える。 */
+    for (const [w, who] of [
+      ["AI", "AI"],
+      ["確カメ", "人"],
+      [NAME, NAME],
+    ] as const) {
+      if (!TRIAD.includes(w)) {
+        throw new Error(`3つの持ち場に、${who}が出ていません（${TRIAD}）`);
+      }
+    }
+    /* タシカメが最後に来ること。
+       途中に置くと「3つのうちの1つ」に見える。
+       持っているのは、AIにも人にも無い「そのあと」のほう。 */
+    if (!TRIAD.endsWith(TRIAD_3)) {
+      throw new Error("3つの持ち場の、最後が「その続き」になっていません");
+    }
+    if (TRIAD.indexOf(NAME) < TRIAD.indexOf("AI")) {
+      throw new Error(`3つの持ち場で、${NAME}がAIより先に出ています（${TRIAD}）`);
+    }
+    assertNever(TRIAD, "3つの持ち場");
+    assertNotScary(TRIAD, "3つの持ち場");
   }
 
   if (THESIS_A1 + THESIS_A2 !== THESIS_A) {
