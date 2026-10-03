@@ -55,6 +55,78 @@
         "source_type": "message_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261001173219082672",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-01T17:32:19.082686",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "文面はもうできてる。\n誤字もない。\nそれでも送信ボタンの前で止まる。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-before-send",
+        "hypothesis_name": "引用リソース src-before-send",
+        "topic_slug": "src-before-send",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
+    },
+    {
+      "id": "20261002043941912789",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-02T04:39:41.912801",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "マッチはする。\nでも、そこから続かない。\n\n———\n\n写真を変えてみる。\n変わらない。\n\n読まれているのは、その下の文章かもしれない。\n\n———\n\n自己紹介文は、書いた本人がいちばん読めない。\n何度も読み返したぶん、\n初めて読む人の目が想像できなくなる。\n\n———\n\n出す前に、一度だけ\n知らない人の目を通しておく。\n\n———\n\n自己紹介文、最後に書き直したのはいつですか。",
+        "posts": [
+          "マッチはする。\nでも、そこから続かない。",
+          "写真を変えてみる。\n変わらない。\n\n読まれているのは、その下の文章かもしれない。",
+          "自己紹介文は、書いた本人がいちばん読めない。\n何度も読み返したぶん、\n初めて読む人の目が想像できなくなる。",
+          "出す前に、一度だけ\n知らない人の目を通しておく。",
+          "自己紹介文、最後に書き直したのはいつですか。"
+        ],
+        "is_thread": true,
+        "link": "https://hisrecoveries.com/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
+        "cta_used": "https://hisrecoveries.com/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
+        "hypothesis_id": "photo",
+        "hypothesis_name": "自己紹介文が読まれているか",
+        "topic_slug": "photo",
+        "buzz_score": 8,
+        "source_type": "photo_thread",
+        "product": null
+      }
+    },
+    {
+      "id": "20261002165133535444",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-02T16:51:33.535465",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "何度読み返しても、分かるのは「自分がどう読むか」だけ。\n受け取る側の目は、自分の中には無い。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-before-send",
+        "hypothesis_name": "引用リソース src-before-send",
+        "topic_slug": "src-before-send",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
