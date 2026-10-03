@@ -9,10 +9,8 @@ import { EXAMPLES, TOPICS } from "@/lib/ask/examples";
 import { AB_DEMO } from "@/lib/ask/ab";
 import TalkDemo from "@/components/koi/TalkDemo";
 import KoiFace from "@/components/koi/KoiFace";
-import PersonBoard from "@/components/koi/PersonBoard";
 import Timeline from "@/components/koi/Timeline";
 import { DEMO_TIMELINE } from "@/lib/koi/timelineDemo";
-import { DEMO_BOARD } from "@/lib/koi/boardDemo";
 import { DEMO_AGAIN } from "@/lib/koi/demo";
 import { heroSub } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
@@ -32,7 +30,7 @@ import MenuButton from "@/components/brand/MenuButton";
 import Flourish from "@/components/brand/Flourish";
 import Slot from "@/components/brand/Slot";
 import type { ImageKey } from "@/lib/images";
-import HeroBoard from "@/components/brand/HeroBoard";
+import HeroDashboard from "@/components/koi/HeroDashboard";
 import MomentsArt from "@/components/brand/MomentsArt";
 import Yen from "@/components/brand/Yen";
 
@@ -704,9 +702,23 @@ export default async function HomePage() {
           </div>
         </Wrap>
 
-        {/* 相談する男性と、読んで返す女性を1枚に入れる。
-            片方だけだと、誰が誰に何をしてもらえるのかが伝わらない。 */}
-        <HeroBoard openIds={openPlanIds()} />
+        {/* ══════════════════════════════════════════
+            1画面目の絵を、入れ替えた
+            ══════════════════════════════════════════
+            ここには Before → 実在する異性に相談 → After の3枚があった。
+
+            見出しとボタンを「整理する」に変えたあとも、
+            すぐ下のこの絵がいちばん大きく
+            「異性に相談するサービス」と言い続けていた。
+            絵のほうが強いので、変えた芯が打ち消されていた。
+
+            実際の画面（相手の一覧）を出す。
+            複数のアプリ、複数の相手、それぞれの次の一手。
+            5秒で「何をする場所か」が分かるのは、言葉よりこちら。
+
+            前の絵（components/brand/HeroBoard.tsx）は消した。
+            残しておくと、芯が戻ったときに戻される。 */}
+        <HeroDashboard />
 
         {/* ── 中身の無い余白を外した ──────────────────
             ここは Wrap(pb-10 pt-3) + div だけが残っていて、
@@ -789,40 +801,27 @@ export default async function HomePage() {
           <br className="sm:hidden" />
           判断に疲れているのかもしれません。
         </p>
-      </Block>
-
-      {/* ══ 1.06 全部ひとつに ══ */}
-      {/* ══════════════════════════════════════════════
-          ここが、このサービスの芯
-          ══════════════════════════════════════════════
-          上で名指しした困りごとに、そのまま answer を返す節。
-
-          文字で説明しない。画面を出す。
-          「誰と」「どのアプリで」「どこまで」「次に何を」が
-          1枚で分かることが、ここで伝わればよい。
-
-          出している部品（PersonBoard）は、実際の画面
-          （/koi/<鍵>）と同じもの。見本の中身だけが違う。
-          別に作ると、売っている画面と見せている画面がずれる。 */}
-      <Block tint>
-        <h2 className="text-huge font-black leading-[1.35] text-slate">
-          複数アプリ、複数人。
-          <br />
-          全部ここに。
-        </h2>
-        <p className="mt-3 max-w-[30em] text-[14.5px] leading-[1.85] text-steel">
+        {/* 畳んだ節から移した1行。
+            上の絵（1画面目の一覧）が答えなので、ここは言葉だけでよい。 */}
+        <p className="mt-3 max-w-[30em] text-[14px] leading-[1.9] text-steel">
           誰に何を送ったか。誰と電話したか。次に誰と会うか。
           頭の中だけで覚えておかなくて大丈夫です。
         </p>
-
-        <div className="mt-7 max-w-[30em]">
-          <PersonBoard cards={DEMO_BOARD} />
-        </div>
-
-        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
-          ※ 画面の見本です。特定の利用者の記録ではありません。
-        </p>
       </Block>
+
+      {/* ══ 1.06 「複数アプリ、複数人。全部ここに。」を畳んだ ══ */}
+      {/* ══════════════════════════════════════════════
+          同じ画面を、2回続けて出していた
+          ══════════════════════════════════════════════
+          1画面目の絵を、Before/After から相手の一覧に替えた。
+          その直後にこの節があり、同じ一覧をもう一度出していた。
+
+          携帯で見ると、2画面続けて同じカードが並ぶ。
+          読む人は「さっき見た」と思って飛ばす。
+
+          一覧は1画面目が持つ。
+          ここで言いたかった1行（頭の中だけで覚えなくていい）は、
+          その上の「判断疲れ」の節の締めに移した。 */}
 
       {/* ══ 1.07 ここまでが残る ══ */}
       {/* ══════════════════════════════════════════════
