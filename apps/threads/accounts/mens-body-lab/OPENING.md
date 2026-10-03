@@ -98,16 +98,34 @@
 
 ## 積み方
 
+**10本はすでに積んである**（2026-10-03。`id` は `opening01`〜`opening10`）。
+承認待ちの状態なので、見てから承認する。
+
 ```
-python -m core.main post mens-body-lab --mock --slot morning
-python -m core.main queue mens-body-lab          # id を確認
+python -m core.main queue mens-body-lab              # 一覧
+python -m core.main approve mens-body-lab opening01  # 1本ずつ
 ```
 
-文面を手で直すなら `approvals.json` の `payload.text` を書き換える。
-**告知（D）の `link` は消さない。** `utm_content` の追跡コードが入っていて、
-これが無いと、どの投稿が効いたかを後から見られない。
+管理ページからでも承認できる。文面を直すなら `approvals.json` の
+`payload.text` を書き換える。
 
-積んだ順に出る（`post-approved` は古いほうから1本ずつ）。
+**告知（10本目）の `link` は消さない。** `utm_content` の追跡コードが
+入っていて、これが無いと、どの投稿が効いたかを後から見られない。
+
+積んだ順に出る（`post-approved` は古いほうから1本ずつ。1日3本）。
+
+### この10本が出きるまで、自動承認は止まる
+
+`payload.opening = true` が付いている投稿が1本でも残っているあいだ、
+`auto_approve_decision` は新しいぶんを自動で通さない
+（`core/approvals.py`）。
+
+自動生成は型をランダムに掛けるので、止めないと
+「告知 → 実演 → 告知」のように並び、**誰もまだ恋亀を知らないうちに
+商品の話が先に来る**。
+
+10本が全部 posted か rejected になれば、この条件はひとりでに消える。
+設定を戻す必要はない。
 
 ---
 

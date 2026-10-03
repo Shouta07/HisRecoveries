@@ -280,3 +280,44 @@ class TestPerRunLimit:
 
         assert main.run_approved_cycle("acct") is True
         assert published == ["post 0", "post 1"]
+
+
+class TestOpeningSequence:
+    """最初の10本が出きるまで、自動承認しない。
+
+    アカウントが空の状態では最初の数本でこの亀が何者かが決まる。
+    自動生成は型をランダムに掛けるので、放っておくと誰もまだ恋亀を
+    知らないうちに商品の話が先に来る。
+    """
+
+    def test_blocks_while_opening_posts_are_waiting(self, tmp_path):
+        i = approvals.enqueue(tmp_path, {"text": "1本目", "opening": True})
+        ok, why = approvals.auto_approve_decision(
+            _persona(), {"post_category": "empathy"}, tmp_path,
+        )
+        assert not ok
+        assert "最初の10本" in why
+
+        # 出きったら、ひとりでに通るようになる
+        approvals.set_status(tmp_path, i, "posted")
+        ok, _ = approvals.auto_approve_decision(
+            _persona(), {"post_category": "empathy"}, tmp_path,
+        )
+        assert ok
+
+    def test_rejecting_an_opening_post_also_clears_it(self, tmp_path):
+        """没にした1本が、永久に自動承認を止めないこと。"""
+        i = approvals.enqueue(tmp_path, {"text": "没", "opening": True})
+        approvals.reject(tmp_path, i)
+        ok, _ = approvals.auto_approve_decision(
+            _persona(), {"post_category": "empathy"}, tmp_path,
+        )
+        assert ok
+
+    def test_ordinary_pending_posts_do_not_block(self, tmp_path):
+        """告知が承認待ちでも、他が止まらないこと。"""
+        approvals.enqueue(tmp_path, {"text": "告知", "post_category": "announce"})
+        ok, _ = approvals.auto_approve_decision(
+            _persona(), {"post_category": "empathy"}, tmp_path,
+        )
+        assert ok

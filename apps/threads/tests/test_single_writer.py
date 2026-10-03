@@ -44,16 +44,24 @@ class TestGenerateSingle:
             ok, errors = validate_post(r["text"], persona)
             assert ok, (errors, r["text"])
 
-    def test_category_mix_follows_ratios_without_slot_weights(self, persona):
-        """時間帯の重みが無ければ、post_forms.json の比率どおりに出る。"""
+    def test_category_mix_follows_ratios_without_slot_weights(self, persona, tmp_path):
+        """時間帯の重みが無ければ、post_forms.json の比率どおりに出る。
+
+        実アカウントではなく写しを使う。承認キューの中身で分布が変わる
+        （直近の型を避けるため）ので、運用中のキューを見ると落ちる。
+        """
         random.seed(5)
         flat = json.loads(json.dumps(persona))
         flat["posting"].pop("slot_category_weights", None)
+        for f in ("post_forms.json", "hypotheses.json", "experiments.json"):
+            (tmp_path / f).write_text((ACCOUNT / f).read_text(encoding="utf-8"), encoding="utf-8")
+        (tmp_path / "approvals.json").write_text('{"items": []}', encoding="utf-8")
+        (tmp_path / "history.json").write_text('{"posts": []}', encoding="utf-8")
 
         counts = {}
         n = 600
         for _ in range(n):
-            r = writer.generate_single(ACCOUNT, persona=flat, mock=True, record=False)
+            r = writer.generate_single(tmp_path, persona=flat, mock=True, record=False)
             counts[r["post_category"]] = counts.get(r["post_category"], 0) + 1
         forms = json.loads((ACCOUNT / "post_forms.json").read_text(encoding="utf-8"))
         for c in forms["categories"]:

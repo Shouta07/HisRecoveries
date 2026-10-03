@@ -115,6 +115,26 @@ def auto_approve_decision(
     if (Path(account_dir) / "KILL_SWITCH").exists():
         return False, "KILL_SWITCH があるので自動承認しない"
 
+    # 最初の10本（accounts/<id>/OPENING.md）が出きるまで、自動承認しない。
+    #
+    # アカウントが空の状態では、最初の数本でこの亀が何者かが決まる。
+    # 自動生成は型をランダムに掛けるので、放っておくと
+    # 「告知 → 実演 → 告知」のように並び、誰もまだ恋亀を知らないうちに
+    # 商品の話が先に来る。
+    #
+    # 印の付いた投稿が1本でも残っているあいだは、新しいぶんを自動で
+    # 通さない。全部 posted / rejected になれば、この条件はひとりでに消える。
+    waiting_opening = [
+        it for it in list_items(account_dir)
+        if (it.get("payload") or {}).get("opening")
+        and it.get("status") in ("pending", "approved")
+    ]
+    if waiting_opening:
+        return False, (
+            f"最初の10本が残っている（あと{len(waiting_opening)}本）。"
+            "出きるまで自動承認しない（OPENING.md）"
+        )
+
     category = payload.get("post_category")
     allowed = cfg.get("categories", [])
     if category not in allowed:
