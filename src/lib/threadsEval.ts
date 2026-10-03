@@ -57,13 +57,40 @@ const INVENTED_REACTION =
 
 // Soft signals.
 const FIRST_PERSON_HINTS = /(僕|私は|私が|俺)/;
-const OPEN_QUESTION = /(ますか|ですか|どう|どこ|いつ|なに|何)[^。]{0,8}[。？?]?$/;
+// 投稿のどこかに問いがあるか。**末尾とは限らない。**
+//
+// 最初は末尾だけを見ていたが、違和感型は言い切りで終わるのが狙いで、
+// 良い例の半分に「問いで閉じていない」が出ていた。
+// 毎回「みんなはどう？」を付けさせると、それこそ定型の煽りになる。
+//
+// 見たいのは「読んだ人が書き込む余地があるか」なので、
+// 問いが文中にあれば足りる。
+const HAS_QUESTION = /(ますか|ですか|どう|どこ|いつ|なに|何|かな|やろ|やろか|ほんま|教えて|おしえて|[？?])/;
 const CALL_TO_ACTION_AGGRESSIVE = /(今すぐ|今だけ|限定|お急ぎ|残り)/g;
 const PRICE_RE = /([0-9０-９][0-9０-９,，]*\s*円|無料|半額|割引|キャンペーン)/g;
 
 // Hashtag & emoji — both discouraged.
 const HASHTAG = /#[^\s#]+/g;
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu;
+
+// ── 1行目が説明から始まっていないか ────────────────
+// 読まれるかは1行目でほぼ決まる（READ_DESIGN.md §3）。
+// Gemini を放っておくと、ここが説明になる。
+//
+// 「具体的か」を判定しようとして HOOK_CONCRETE を書いたが、
+// 「マチアプで一番しんどいの、」のような良い入りを拾えず、
+// 良い例の半分に info が出た。見ない画面になるほうが高くつくので、
+// **確実に悪い形だけ**を見る。
+const HOOK_EXPLAINY = /^(.{0,24}(について|とは|というのは)|最近よく|よくある|多くの人|一般的に)/;
+
+// ── 意見の不在 ─────────────────────────────────────
+// 「人によるよね」で閉じると、誰も反論できないので返信が来ない。
+// 返信を生むのは訂正したくなること。
+//
+// 逆（見立てがあるか）も見ようとしたが、型によっては要らない
+// （実演・人間の反応・告知）。テキストだけでは型が分からないので、
+// 見立ての有無は生成側のプロンプトに任せ、ここは不在だけを見る。
+const FENCE_SITTING = /(人による|どっちもあり|どちらも正解|一概には|場合による)/g;
 
 const URL_RE = /(https?:\/\/[^\s]+)/g;
 const UTM_RE = /utm_source=/i;
@@ -179,13 +206,35 @@ export function evaluateThreadsPost(text: string): EvalResult {
       message: "一人称（僕・私・俺）があります。恋亀は「恋亀」と名乗ります",
     });
   }
-  // 問いで閉じる（返信＝伸びる信号）。恋亀の投稿は短いので、
-  // 連投のときの 120 字ではなく 60 字から見る。
-  if (!OPEN_QUESTION.test(trimmed) && charCount > 60) {
+  // 書き込む余地があるか（返信＝伸びる信号）。
+  if (!HAS_QUESTION.test(trimmed) && charCount > 60) {
     rules.push({
-      id: "no-open-question",
+      id: "no-question",
       level: "info",
-      message: "問いで閉じていません（恋亀の投稿は問いで終える）",
+      message: "問いがどこにもありません（読んだ人が書き込む余地を残す）",
+    });
+  }
+
+  // 1行目。ここで止まらなければ、残りは読まれない。
+  const firstLine = (trimmed.split("\n")[0] ?? "").trim();
+  if (firstLine && HOOK_EXPLAINY.test(firstLine)) {
+    rules.push({
+      id: "explainy-hook",
+      level: "warn",
+      message: "1行目が説明から始まっています（場面・セリフ・数字から入る）",
+      matches: [firstLine],
+    });
+  }
+
+  // 恋亀が意見を持っているか。
+  // 「人によるよね」は意見の不在で、誰も反論できない＝返信が来ない。
+  const fence = trimmed.match(FENCE_SITTING);
+  if (fence) {
+    rules.push({
+      id: "fence-sitting",
+      level: "warn",
+      message: "意見の不在で閉じています（恋亀の見立てを出す。外れていてよい）",
+      matches: Array.from(new Set(fence)),
     });
   }
 

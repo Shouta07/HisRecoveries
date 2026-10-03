@@ -44,18 +44,58 @@ class TestGenerateSingle:
             ok, errors = validate_post(r["text"], persona)
             assert ok, (errors, r["text"])
 
-    def test_category_mix_follows_ratios(self):
+    def test_category_mix_follows_ratios_without_slot_weights(self, persona):
+        """時間帯の重みが無ければ、post_forms.json の比率どおりに出る。"""
         random.seed(5)
+        flat = json.loads(json.dumps(persona))
+        flat["posting"].pop("slot_category_weights", None)
+
         counts = {}
         n = 600
         for _ in range(n):
-            r = _gen()
+            r = writer.generate_single(ACCOUNT, persona=flat, mock=True, record=False)
             counts[r["post_category"]] = counts.get(r["post_category"], 0) + 1
         forms = json.loads((ACCOUNT / "post_forms.json").read_text(encoding="utf-8"))
         for c in forms["categories"]:
             share = counts.get(c["id"], 0) / n
             # 乱数なのでぴったりにはならない。桁が合っていればよい
             assert abs(share - c["ratio"]) < 0.08, (c["id"], share, c["ratio"])
+
+
+class TestSlotWeighting:
+    """時間帯で型を寄せる。
+
+    テーマは縛らない（縛ると夜のテーマが朝に出せなくなって同じ話が続く）が、
+    型は寄せてよい。夜のほうが手が止まるので、返信の来る問いを夜に厚くする。
+    """
+
+    def _mix(self, slot, n=400):
+        counts = {}
+        for _ in range(n):
+            r = _gen(slot=slot)
+            counts[r["post_category"]] = counts.get(r["post_category"], 0) + 1
+        return {k: v / n for k, v in counts.items()}
+
+    def test_questions_are_heavier_at_night(self):
+        random.seed(11)
+        assert self._mix("night")["split"] > self._mix("morning")["split"]
+
+    def test_announcements_only_at_noon(self):
+        """朝は読み飛ばされ、夜は売り込みが目立つ。"""
+        random.seed(13)
+        noon = self._mix("noon").get("announce", 0)
+        assert noon > self._mix("morning").get("announce", 0)
+        assert noon > self._mix("night").get("announce", 0)
+
+    def test_slot_is_recorded(self):
+        """どの枠向けに作ったかが残る。承認画面と履歴で見分けるため。"""
+        assert _gen(slot="noon")["slot"] == "noon"
+
+    def test_unknown_slot_falls_back_to_the_plain_ratios(self):
+        random.seed(17)
+        mix = self._mix("teatime", n=200)
+        assert set(mix) <= {"empathy", "split", "product", "announce"}
+        assert mix["empathy"] > 0.25
 
     def test_link_only_on_announcements(self):
         random.seed(7)

@@ -92,7 +92,7 @@ def _payload_from_result(post_result: dict) -> dict:
         # リンクの utm_content に入れた追跡コード。
         # ここで落とすと、本文のURLにコードが入ったまま、どの投稿のものか
         # 分からなくなる（GROWTH.md §7 の投稿単位の評価ができない）。
-        "post_category", "post_form", "tracking_code",
+        "post_category", "post_form", "tracking_code", "slot",
     )
     payload = {k: post_result.get(k) for k in keys}
     product = post_result.get("product")
@@ -136,6 +136,7 @@ def _publish_payload(
     result["post_category"] = payload.get("post_category")
     result["post_form"] = payload.get("post_form")
     result["tracking_code"] = payload.get("tracking_code")
+    result["slot"] = payload.get("slot")
     result["is_thread"] = is_thread
     if is_thread:
         result["post_count"] = len(thread_posts)
@@ -215,12 +216,16 @@ def run_approved_cycle(
 
 def run_post_cycle(
     account_id: str, dry_run: bool = False, mock: bool = False,
-    approval_required: bool | None = None,
+    approval_required: bool | None = None, slot: str | None = None,
 ) -> bool:
     """1回の投稿サイクルを実行（マネタイズ対応）。
 
     approval_required が True（または persona で immediate_posting_forbidden）なら、
     生成物を投稿せず承認キューに積んで終了する（人間の承認を挟む）。
+
+    slot は「どの枠に出すつもりか」（morning / noon / night）。
+    生成は夜にまとめて走るので、生成時刻から判定すると全部 night になる。
+    型の寄せ方が変わる（persona.posting.slot_category_weights）。
     """
     logger = logging.getLogger(__name__)
 
@@ -304,7 +309,7 @@ def run_post_cycle(
         post_result = writer.generate_post(
             account_dir, topic=topic_text, mock=mock,
             follower_count=follower_count,
-            account_id=account_id,
+            account_id=account_id, slot=slot,
         )
     except Exception as e:
         supervisor.record_error("writer", str(e))
@@ -413,6 +418,7 @@ def run_post_cycle(
     result["post_category"] = post_result.get("post_category")
     result["post_form"] = post_result.get("post_form")
     result["tracking_code"] = post_result.get("tracking_code")
+    result["slot"] = post_result.get("slot")
     result["is_thread"] = post_result.get("is_thread", False)
     if is_thread:
         result["post_count"] = len(thread_posts)
@@ -466,6 +472,7 @@ def cmd_post(args) -> int:
     approval_required = True if getattr(args, "require_approval", False) else None
     success = run_post_cycle(
         args.account, dry_run=dry, mock=mock, approval_required=approval_required,
+        slot=getattr(args, "slot", None),
     )
     return 0 if success else 1
 
@@ -1042,6 +1049,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_post.add_argument("--dry-run", action="store_true", help="実際には投稿しない")
     p_post.add_argument("--require-approval", action="store_true",
                         help="投稿せず承認キューに積む（人間の承認を挟む）")
+    p_post.add_argument(
+        "--slot", choices=["morning", "noon", "night"],
+        help="どの枠に出すつもりか（型の寄せ方が変わる）。"
+             "生成は夜にまとめて走るので、明示しないと全部 night になる",
+    )
     p_post.add_argument("--mock", action="store_true",
                         help="APIキーなしでパイプライン全体をテスト")
     p_post.set_defaults(func=cmd_post)

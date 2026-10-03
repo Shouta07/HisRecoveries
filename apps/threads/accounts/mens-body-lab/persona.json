@@ -133,7 +133,13 @@
     "require_three_stage": false,
     "check_similarity": false,
     "forbid_speaking_for": true,
-    "_check_similarity_note": "validator の類似チェックはプロセス内バッファを見るので、毎回新しいプロセスで走る本番では常に空で、何も検出しない。重複は writer が history.json と突き合わせて見る（generate_single）。"
+    "_check_similarity_note": "validator の類似チェックはプロセス内バッファを見るので、毎回新しいプロセスで走る本番では常に空で、何も検出しない。重複は writer が history.json と突き合わせて見る（generate_single）。",
+    "legacy_ng_sets": [
+      "evangelism",
+      "commercial",
+      "reaction_solicitation"
+    ],
+    "_legacy_ng_sets_note": "旧事業の禁止語のうち、恋亀にも効かせるもの。evangelism（あなたも変われる・簡単に）/ commercial（おすすめです・ぜひ）/ reaction_solicitation（いいねして・拡散して）は、恋亀でも書かない。ryouta（マジで・正直）と casual_buzz（ぶっちゃけ・ガチで）は外した。前のペルソナが使いすぎたから禁止されただけで、恋亀の口調そのもの。assertive（絶対・間違いなく）は character.ng_words 側に同じものがある。"
   },
   "posting": {
     "format": "single",
@@ -177,6 +183,27 @@
         },
         "max_per_run": 1,
         "max_per_run_note": "post-approved 1回につき出す本数。枠が3つあるので1本ずつ。全部出すと、朝8時に3本まとめて出て、枠を分けた意味が無くなる。"
+      }
+    },
+    "slot_category_weights": {
+      "_note": "時間帯でテーマは縛らないが、型は寄せる。夜のほうが手が止まるので、返信の来る問い（B）を夜に厚くする。朝は軽い共感（A）。告知（D）は昼だけ——朝は読み飛ばされ、夜は売り込みが目立つ。値は重みで、合計が1である必要はない。0 にすればその時間帯には出ない。",
+      "morning": {
+        "empathy": 1.6,
+        "split": 0.6,
+        "product": 1.0,
+        "announce": 0.3
+      },
+      "noon": {
+        "empathy": 1.0,
+        "split": 1.0,
+        "product": 1.0,
+        "announce": 2.0
+      },
+      "night": {
+        "empathy": 0.9,
+        "split": 1.8,
+        "product": 1.0,
+        "announce": 0.4
       }
     }
   },

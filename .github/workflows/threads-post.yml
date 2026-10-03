@@ -82,12 +82,20 @@ jobs:
           # 通常運用は --mock なし＝Gemini生成。承認ゲートONのため投稿はされない。
           #
           # 1日3本ぶん積む（persona.posting.frequency_per_day）。
+          #
+          # --slot で「どの枠に出すつもりか」を渡す。生成は夜の1回なので、
+          # 生成時刻から判定すると全部 night になる。枠ごとに型の寄せ方が
+          # 変わる（夜は問いを厚く、告知は昼だけ）。
+          #
           # 1本ずつ別プロセスにするのは、重複チェックが history.json を
           # 見るため。同じプロセスで3回呼ぶと、まだ保存されていない
           # 直前の1本と比べられない。
-          for i in 1 2 3; do
-            echo "--- $i/3 ---"
-            python -m core.main post mens-body-lab $FLAGS
+          #
+          # 積んだ順に出る（post-approved は古いほうから1本ずつ）ので、
+          # morning → noon → night の順で積む。
+          for slot in morning noon night; do
+            echo "--- $slot ---"
+            python -m core.main post mens-body-lab $FLAGS --slot "$slot"
           done
 
       - name: Save queue + history

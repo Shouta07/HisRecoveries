@@ -120,6 +120,7 @@ def generate_post(
     follower_count: int = 0,
     account_id: str = "",
     record: bool = True,
+    slot: str | None = None,
 ) -> dict | None:
     """
     バズ投稿をリライトして投稿文を生成する。
@@ -154,7 +155,7 @@ def generate_post(
     if post_format == "single":
         return generate_single(
             account_dir, persona=persona, mock=mock, account_id=account_id,
-            record=record,
+            record=record, slot=slot,
         )
     if post_format == "thread":
         return generate_thread(
@@ -501,12 +502,22 @@ def generate_source_post(
 def _current_time_slot() -> str:
     """現在のJST時刻から配信スロットを返す。
 
-    4:00〜14:59 JST → "morning"（朝9時の配信を含む）
-    それ以外        → "night"（夜21時の配信を含む）
+    恋亀の枠は 08:00 / 12:30 / 21:00 JST。
+      4:00〜10:59  → "morning"
+     11:00〜16:59  → "noon"
+     それ以外      → "night"
+
+    ただし生成は夜にまとめて走る（threads-post.yml は 22:00 JST の1回で
+    3本積む）ので、**生成時刻で判定すると全部 night になる**。
+    どの枠に出すつもりかは、呼ぶ側が slot で渡す。ここはその既定値。
     """
     from datetime import datetime, timezone, timedelta
     jst_hour = datetime.now(timezone(timedelta(hours=9))).hour
-    return "morning" if 4 <= jst_hour < 15 else "night"
+    if 4 <= jst_hour < 11:
+        return "morning"
+    if 11 <= jst_hour < 17:
+        return "noon"
+    return "night"
 
 
 def _load_post_forms(account_dir: Path | None) -> dict:
@@ -531,15 +542,41 @@ def _load_post_forms(account_dir: Path | None) -> dict:
         return {}
 
 
-def _select_category(forms_config: dict) -> dict | None:
+def _select_category(
+    forms_config: dict, persona: dict | None = None, slot: str | None = None,
+) -> dict | None:
     """A共感40% / B問い30% / C恋亀20% / D告知10% から1つ選ぶ。
 
-    ratio をそのまま重みに使う。比率を変えるときは post_forms.json を触る。
+    比率は post_forms.json の ratio。
+
+    時間帯で寄せる。テーマは縛らない（縛ると夜のテーマが朝に出せなくなって
+    同じ話が続く）が、型は寄せてよい。夜のほうが手が止まるので、返信の来る
+    問い（B）を夜に厚くする。告知（D）は昼だけ——朝は読み飛ばされ、夜は
+    売り込みが目立つ。
+
+    重みは persona.posting.slot_category_weights。無ければ ratio のまま。
     """
     categories = [c for c in forms_config.get("categories", []) if c.get("ratio", 0) > 0]
     if not categories:
         return None
+
     weights = [float(c["ratio"]) for c in categories]
+
+    slot = slot or _current_time_slot()
+    slot_weights = (
+        (persona or {}).get("posting", {}).get("slot_category_weights", {})
+    ).get(slot, {})
+    if slot_weights:
+        weights = [
+            w * float(slot_weights.get(c["id"], 1.0))
+            for c, w in zip(categories, weights)
+        ]
+        if sum(weights) <= 0:
+            logger.warning(
+                "_select_category: %s の重みが全部0。比率のまま出します", slot,
+            )
+            weights = [float(c["ratio"]) for c in categories]
+
     return random.choices(categories, weights=weights, k=1)[0]
 
 
@@ -623,6 +660,50 @@ def _build_single_prompt(
     scene.append(f"ねらい: {category.get('goal', '')}")
     parts.append(block("今回の中身", scene))
 
+    # ── 1行目 ──────────────────────────────────────
+    # 読まれるかは1行目でほぼ決まる（READ_DESIGN.md §3）。
+    # 指示が無いと、AIは説明から書き始める。
+    parts.append(block("1行目", [
+        "具体的な場面・セリフ（「」）・数字のどれかから始める",
+        "説明や前置きから始めない（「〜について」「最近よく聞くのは」）",
+        "1行目だけ読んで、自分のことだと思える長さにする（20字以内が目安）",
+    ]))
+
+    # ── 恋亀の見立て ───────────────────────────────
+    # ここがこの投稿群でいちばん大事。
+    #
+    # 「断定しない」を「意見を持たない」と取ると、
+    # 「人によるよね」で終わる投稿になる。誰も反論できないので返信が来ない。
+    #
+    # 返信を生むのは訂正したくなること。恋亀が外れた見立てを出して、
+    # 人が「いや違う」と言う。その往復がアルゴリズムの最重要指標
+    # （READ_DESIGN.md §0）。
+    #
+    # 相手の気持ちの判定にはならない。恋亀が自分にどう見えたかを
+    # 言っているだけで、prompt.ts の NEVER も「わたしはそう感じる」までは
+    # 許している。
+    if not category.get("link"):
+        parts.append(block("恋亀の見立て", [
+            "恋亀自身にどう見えたかを、必ず1行入れる（「恋亀は②に見えた」）",
+            "見立てには理由を1行つける。理由があるから、違う人が反論できる",
+            "外れていてよい。外れているから訂正が来る",
+            "「人によるよね」「どっちもあるよね」で閉じない。それは意見の不在",
+            "ただし相手の気持ちは当てない。恋亀にどう見えたか、までにする",
+            "最後は、違う意見の人に理由を聞いて閉じる",
+        ]))
+
+    # ── AIっぽさ ───────────────────────────────────
+    # 放っておくと、整った・両論併記の・説明的な文章になる。
+    # 規則違反では落ちないが、いちばん読まれない形。
+    parts.append(block("こう書くと読まれない", [
+        "両論併記（「一方で」「とはいえ」）。恋亀は片方に寄ってよい",
+        "まとめ（「つまり」「大事なのは」）。言い切って終わる",
+        "助言（「〜するといい」「〜してみては」）。恋亀は教えない",
+        "敬語・丁寧語。友達の距離で書く",
+        "整った文。言いよどみ・体言止め・短い行が混ざっているほうが読まれる",
+        "一般論。固有の場面（曜日・時間・回数・セリフ）を1つ入れる",
+    ]))
+
     fmt = [
         f"長さ: {posting.get('min_chars', 20)}〜{posting.get('max_chars', 300)}文字",
         tone.get("line_breaks", "改行多め。1投稿4〜8行"),
@@ -652,6 +733,7 @@ def generate_single(
     account_id: str = "",
     max_retries: int = 3,
     record: bool = True,
+    slot: str | None = None,
 ) -> dict | None:
     """恋亀の単発投稿を1本生成する。posting.format == "single" のときの本線。
 
@@ -669,7 +751,7 @@ def generate_single(
     )
 
     forms_config = _load_post_forms(account_dir)
-    category = _select_category(forms_config)
+    category = _select_category(forms_config, persona, slot)
     if not category:
         logger.error(
             "generate_single: post_forms.json に categories がありません "
@@ -823,6 +905,7 @@ def generate_single(
         "template_type": form_id,
         "post_category": category.get("id"),
         "post_form": form_id,
+        "slot": slot or _current_time_slot(),
         # utm_content に入れた値。history.json から、
         # どの投稿がサイトまで連れてきたかをたどるための鍵。
         "tracking_code": code,

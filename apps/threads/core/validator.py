@@ -87,7 +87,51 @@ _NG_REACTION_SOLICITATION = [
     "いいねして", "シェアして", "コメントで教えて", "フォロー必須", "拡散して",
 ]
 
-# 全NGワードを統合
+# ──────────────────────────────────────────────────────────────
+# 旧事業の一覧は、アカウントが選んで使う
+# ──────────────────────────────────────────────────────────────
+# 上の一覧は、前のペルソナ（Nagi / りょうた）のために作られたもの。
+# それが**アカウントに関係なく全投稿に効いていた**。
+#
+# 恋亀にとっては、これが実害になる。
+#   「マジで」「正直」「ぶっちゃけ」「ガチで」
+# は、恋亀がいちばん使うはずの語で、前のペルソナが使いすぎたから
+# 禁止されただけのもの。落ちた投稿は黙って作り直されるので、
+# 口調が平板になっていることに気づけない。
+#
+# `_NG_DATING` は「アカウント側に任せる」と空にしてあったのに、
+# 他の一覧は手が付いていなかった。同じ扱いにする。
+#
+# persona["validation"]["legacy_ng_sets"] に名前を並べたぶんだけ効く。
+# 書かなければ全部効く（今までと同じ）。
+_NG_SETS: dict[str, list[str]] = {
+    "dating": _NG_DATING,
+    "ryouta": _NG_RYOUTA,                       # マジで / 実は / 正直 / 俺
+    "assertive": _NG_ASSERTIVE,                 # 圧倒的に / 絶対 / すべき
+    "completion": _NG_COMPLETION,               # 克服しました / 完治
+    "complete_denial": _NG_COMPLETE_DENIAL,     # 二度と / 別人になった
+    "evangelism": _NG_EVANGELISM,               # あなたも変われる / 簡単に
+    "commercial": _NG_COMMERCIAL,               # おすすめです / ぜひ
+    "casual_buzz": _NG_CASUAL_BUZZ,             # ぶっちゃけ / ガチで / 神
+    "reaction_solicitation": _NG_REACTION_SOLICITATION,  # いいねして / 拡散して
+}
+
+
+def _legacy_ng_words(persona: dict) -> list[str]:
+    """このアカウントに効かせる、旧事業の禁止語。"""
+    names = persona.get("validation", {}).get("legacy_ng_sets")
+    if names is None:
+        return _ALL_NG_WORDS          # 指定が無ければ今までどおり全部
+    out: list[str] = []
+    for n in names:
+        if n not in _NG_SETS:
+            logger.warning("validation.legacy_ng_sets に知らない名前: %s", n)
+            continue
+        out.extend(_NG_SETS[n])
+    return out
+
+
+# 全NGワードを統合（指定が無いアカウントの既定値）
 _ALL_NG_WORDS: list[str] = (
     _NG_DATING
     + _NG_RYOUTA
@@ -308,14 +352,15 @@ def validate_post(
     # ------------------------------------------------------------------
     # 5. NGワードチェック（Quiet Grooming禁止語彙）
     # ------------------------------------------------------------------
-    for word in _ALL_NG_WORDS:
+    legacy = _legacy_ng_words(persona)
+    for word in legacy:
         if word in text:
             errors.append(f"NG表現を検出: 「{word}」")
 
     # persona 側に追加NGワードがあれば併せてチェック
     extra_ng = persona.get("character", {}).get("ng_words", [])
     for word in extra_ng:
-        if word not in _ALL_NG_WORDS and word in text:
+        if word not in legacy and word in text:
             errors.append(f"NG表現を検出: 「{word}」")
 
     # 異性全体の代弁（validation.forbid_speaking_for が true のときだけ）。
