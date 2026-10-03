@@ -2351,3 +2351,140 @@ from consultations
 where ask is not null
 group by category, ask
 order by category, n desc;
+
+-- ══════════════════════════════════════════════════
+-- 話したことが、勝手に残る
+-- ══════════════════════════════════════════════════
+-- docs/REDESIGN_MEET_CRM.md の設計。
+--
+-- 利用者に管理表を書かせない。相談するだけで、
+-- 相手ごとの状況が残っていくのが商品そのもの。
+--
+-- ── いちばん守ること ──────────────────────────────
+-- AIが出したものを、本体へ直接書き込まない。
+-- talk_updates に置いて、利用者が押してから入れる。
+--
+-- 事実と推測を混ぜない。混ぜると、AIの当て推量が
+-- 「前回こうだった」として次の相談に渡っていく。
+
+-- 相手カードを、段階と予定に対応させる。
+-- 既存の relationship_cases に足すだけ（作り直さない）。
+alter table relationship_cases add column if not exists stage text;
+alter table relationship_cases add column if not exists date_count int not null default 0;
+alter table relationship_cases add column if not exists next_date date;
+alter table relationship_cases add column if not exists next_date_status text;
+alter table relationship_cases add column if not exists last_contact_date date;
+alter table relationship_cases add column if not exists reply_status text;
+-- 相談者自身の気持ち。相手の気持ちではない（列名で分ける）
+alter table relationship_cases add column if not exists user_interest_level int;
+alter table relationship_cases add column if not exists next_action text;
+
+alter table relationship_cases drop constraint if exists relationship_cases_stage_check;
+alter table relationship_cases add constraint relationship_cases_stage_check
+  check (stage is null or stage in (
+    'matched', 'messaging', 'calling',
+    'first_date_scheduled', 'first_date_completed',
+    'second_date_scheduled', 'second_date_completed',
+    'third_date_plus', 'relationship_decision', 'dating', 'ended'
+  ));
+alter table relationship_cases drop constraint if exists relationship_cases_interest_check;
+alter table relationship_cases add constraint relationship_cases_interest_check
+  check (user_interest_level is null or user_interest_level between 1 and 5);
+
+-- ══════════════════════════════════════════════════
+-- 通話1回
+-- ══════════════════════════════════════════════════
+create table if not exists talks (
+  id uuid primary key default gen_random_uuid(),
+  -- 利用者が開く鍵（t + 32文字）。会員登録は無い
+  token text unique not null,
+  case_id uuid references relationship_cases(id) on delete set null,
+  consultation_id uuid references consultations(id),
+  -- 今日、何を聞くか
+  topic text,
+  minutes int not null,
+  -- ══════════════════════════════════════════════
+  -- 録る前に、両方から同意を取る
+  -- ══════════════════════════════════════════════
+  -- 公開しているプライバシー方針は「録音はしません」だった。
+  -- 文字にするなら、方針を直したうえで、毎回ことわる。
+  --
+  -- どちらかが false なら録らない。
+  -- 録らなくても通話はできる（断ったら使えない、にしない）。
+  consent_user boolean not null default false,
+  consent_reviewer boolean not null default false,
+  room_url text,
+  started_at timestamptz,
+  ended_at timestamptz,
+  -- 文字起こし。構造化が済んだら本文を消す。
+  -- 「あとで揉めたときの証拠」ではなく「次回の続きを作る材料」なので、
+  -- 材料として使い終わったら持たない。
+  transcript text,
+  transcript_deleted_at timestamptz,
+  -- scheduled / live / done / failed / no_consent
+  status text not null default 'scheduled',
+  created_at timestamptz default now()
+);
+create index if not exists talks_case_idx on talks (case_id, created_at desc);
+
+-- ══════════════════════════════════════════════════
+-- 事実・気持ち・人の意見・AIの推測を、混ぜないで持つ
+-- ══════════════════════════════════════════════════
+-- 1つの表に列で足すと、どれがどれか分からなくなる。
+-- 分けておくと、画面で出し分けられるし、
+-- 「AIが言っただけのこと」を事実として次へ渡さずに済む。
+create table if not exists case_notes (
+  id uuid primary key default gen_random_uuid(),
+  case_id uuid not null references relationship_cases(id) on delete cascade,
+  talk_id uuid references talks(id) on delete set null,
+  -- fact      起きたこと（会った、返信が来た）。発言の引用が要る
+  -- feeling   相談者自身の気持ち
+  -- opinion   回答者（人）が言ったこと
+  -- inference AIの推測
+  -- action    次にやること
+  kind text not null check (kind in ('fact', 'feeling', 'opinion', 'inference', 'action')),
+  body text not null,
+  -- fact のときは、元の発言。これが無いものは事実として扱わない
+  quote text,
+  -- AIが出したものだけ、どのくらい確からしいか
+  confidence real check (confidence is null or confidence between 0 and 1),
+  -- 利用者が確認したか。推測は確認されるまで「仮」
+  confirmed boolean not null default false,
+  created_at timestamptz default now()
+);
+create index if not exists case_notes_case_idx on case_notes (case_id, created_at desc);
+
+-- ══════════════════════════════════════════════════
+-- AIが出した更新案。押すまで本体に入れない
+-- ══════════════════════════════════════════════════
+create table if not exists talk_updates (
+  id uuid primary key default gen_random_uuid(),
+  talk_id uuid not null references talks(id) on delete cascade,
+  -- lib/talk/shape.ts の形そのまま
+  payload jsonb not null,
+  -- 形が合わなかったときの理由。捨てずに残して、作り直せるようにする
+  rejected_why text,
+  applied_at timestamptz,
+  created_at timestamptz default now()
+);
+create index if not exists talk_updates_talk_idx on talk_updates (talk_id, created_at desc);
+
+-- いまの状況。ホーム画面がこれを読む。
+-- 「案件」「パイプライン」とは呼ばない（画面では「いまの状況」）。
+create or replace view case_board as
+select
+  rc.id,
+  rc.token,
+  rc.partner_label,
+  rc.dating_app,
+  rc.stage,
+  rc.date_count,
+  rc.next_date,
+  rc.next_date_status,
+  rc.reply_status,
+  rc.next_action,
+  rc.updated_at,
+  (select count(*) from talks t where t.case_id = rc.id and t.status = 'done') as talks_done
+from relationship_cases rc
+where rc.status = 'active'
+order by rc.updated_at desc;
