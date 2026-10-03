@@ -31,14 +31,24 @@ Vercel → プロジェクト → Settings → Environment Variables → Product
 |---|---|
 | `STRIPE_SECRET_KEY` | Stripe ダッシュボード → 開発者 → APIキー → シークレットキー |
 | `STRIPE_WEBHOOK_SECRET` | 開発者 → Webhook → エンドポイントを追加 → 署名シークレット |
+| `STRIPE_PASS_PRICE_ID` | 月額を売るときだけ。商品カタログで「Tashikame Pass」を作り、月額 1,980円（JPY・定期）の Price を足して、その Price ID（`price_` で始まる）を入れる |
+
+> `STRIPE_PASS_PRICE_ID` が入っていないあいだ、月額は受付前のまま。
+> 単発（はじめの1件・3人に見せる・3人×5回）は、これが無くても売れる。
+>
+> 月額を開くと、特商法の表記と利用規約に、自動更新・更新日・解約の条件が
+> ひとりでに足される（`passEnabled` を見ている）。
+> 書き換え忘れが起きないよう、食い違ったらビルドが止まる。
 
 **Webhook の宛先**
 
 ```
-https://hisrecoveries.com/api/stripe/webhook
+https://tashikame.app/api/stripe/webhook
 ```
 
 **送ってもらうイベント**
+
+単発だけを売るとき（5つ）
 
 ```
 checkout.session.completed
@@ -47,6 +57,21 @@ payment_intent.payment_failed
 charge.refunded
 checkout.session.expired
 ```
+
+月額も売るとき（上の5つに、これを足して10）
+
+```
+customer.subscription.created
+customer.subscription.updated
+customer.subscription.deleted
+invoice.paid
+invoice.payment_failed
+```
+
+> 実装は `src/app/api/stripe/webhook/route.ts`。
+> 上の5つは switch が、下の5つは月額の分岐（`lib/pass/store.ts` の PASS_EVENTS）が受ける。
+> `checkout.session.completed` は両方に来るので、`mode` で分けている。
+> 足りないと、払われたのに会員にならない状態になる。
 
 `STRIPE_WEBHOOK_SECRET` が無いと、Webhook は全部はじかれます（署名を
 確かめられないため）。両方入れてください。

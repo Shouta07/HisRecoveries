@@ -1273,6 +1273,10 @@ export default async function HomePage() {
                 ["/terms", "利用規約"],
                 ["/privacy", "プライバシー"],
                 ["/articles", "たしかメディア"],
+                /* 連絡先。審査でも、困った人も、まずここを探す。
+                   /legal にも書いてあるが、1枚めくらないと出てこない。
+                   返金やキャンセルの行き先は /legal が持っている。 */
+                [`mailto:${site.company.email}`, "お問い合わせ"],
               ].map(([href, label]) => (
                 <li key={href}>
                   <Link

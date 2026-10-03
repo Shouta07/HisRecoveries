@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
     name: formalName(planId),
     description: `販売者: ${site.company.name} / 提供: オンライン。${
       p.uses ? `${p.uses}回分。` : ""
-    }月額・自動更新はありません。`,
+    }このお申し込みは1回かぎりで、自動更新されません。`,
     consultationToken: c.token,
     successUrl: `${base}/ask/${c.token}?paid=1`,
     cancelUrl: `${base}/ask/${c.token}?canceled=1`,
