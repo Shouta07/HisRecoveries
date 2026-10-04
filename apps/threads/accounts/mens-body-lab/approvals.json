@@ -199,6 +199,28 @@
         "source_type": "photo_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261004160038426568",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-04T16:00:38.426586",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "止まるのは慎重だから。\n雑に送れる人は、そもそも止まらない。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-before-send",
+        "hypothesis_name": "引用リソース src-before-send",
+        "topic_slug": "src-before-send",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
