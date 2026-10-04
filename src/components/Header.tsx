@@ -46,7 +46,7 @@ export default function Header() {
     "/reviewers", "/articles", "/terms",
     "/privacy", "/trial",
   ];
-  const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/", "/call/", "/koi"];
+  const BRAND_PREFIXES = ["/ask", "/r/", "/answerers", "/me/", "/s/", "/call/", "/koi", "/scene"];
   if (
     BRAND_PAGES.includes(pathname ?? "") ||
     BRAND_PREFIXES.some((x) => pathname?.startsWith(x))

@@ -117,6 +117,7 @@ export const metadata: Metadata = {
 };
 
 const NAV = [
+  ["/scene", "この場面、どうする？"],
   ["#how", "使い方"],
   ["#faq", "よくある質問"],
   ["#price", "料金とプラン"],
@@ -779,6 +780,24 @@ export default async function HomePage() {
         >
           {advisorWord()}に読んでもらう <span aria-hidden className="ml-1.5">&rarr;</span>
         </Link>
+
+        {/* ── 無料で触れる、唯一の面 ──────────────────
+            この節は「人の反応が返る」と書いているが、
+            買わないと1つも見られない。
+
+            /scene は、同じことを登録なしで1回やれる面。
+            場面を選ぶと、同じ場面を見た人がどう分かれたかが出る。
+            売り込まない。小さく置くだけ。 */}
+        <p className="mt-4 text-[13px] leading-[1.9] text-steel">
+          どんなものか先に見たい方は{" "}
+          <Link
+            href="/scene"
+            className="font-bold text-brand underline decoration-line underline-offset-4"
+          >
+            この場面、どうする？
+          </Link>
+          {" "}で、登録なしで1回試せます。
+        </p>
       </Block>
 
       {/* ══ 6.5 電話 ══ */}

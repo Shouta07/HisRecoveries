@@ -2907,3 +2907,40 @@ where dp.needs_human_review = true
 order by
   case dp.importance when 'high' then 0 when 'medium' then 1 else 2 end,
   dp.created_at;
+
+-- ══════════════════════════════════════════════════
+-- この場面、あなたならどうする？（/scene）
+-- ══════════════════════════════════════════════════
+-- マッチ後の1場面を出して、どうするかを選んでもらう。
+-- 返すのは正解ではなく、同じ場面を見た人がどう分かれたか。
+--
+-- ── なぜ集めるか ────────────────────────────────
+-- 集客であると同時に、仕入れでもある。
+-- いま回答者は0人で、そのあいだ「月3回、実在する異性に
+-- 確カメられる」は空手形のまま。
+-- ここで答えた人が、そのまま回答者の候補になる。
+--
+-- ── 誰が答えたかは、持たない ────────────────────
+-- 会員登録が無いので、端末が持つ使い捨ての印（voter）だけ。
+-- 名前もメールも年齢も取らない。
+-- 性別だけは要る。分けないと、男性が男性の答えを
+-- 「異性の反応」として読むことになる。
+--
+-- ── 同じ端末から、同じ場面に1回 ──────────────────
+-- 下の一意索引で絞る。
+-- 票を足せる形にしておくと、分布が作れることになる。
+create table if not exists scene_answers (
+  id uuid primary key default gen_random_uuid(),
+  scene_id text not null,
+  choice_id text not null,
+  gender text not null check (gender in ('male', 'female')),
+  -- 端末が持つ使い捨ての印。本人を指さない
+  voter text not null,
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists scene_answers_once
+  on scene_answers (scene_id, voter);
+
+create index if not exists scene_answers_scene_idx
+  on scene_answers (scene_id, gender);
