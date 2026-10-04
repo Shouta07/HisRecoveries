@@ -171,6 +171,34 @@
         "source_type": "content_source",
         "product": null
       }
+    },
+    {
+      "id": "20261004045327774084",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-04T04:53:27.774102",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "マッチはする。\nでも、そこから続かない。\n\n———\n\n写真を変えてみる。\n変わらない。\n\n読まれているのは、その下の文章かもしれない。\n\n———\n\n自己紹介文は、書いた本人がいちばん読めない。\n何度も読み返したぶん、\n初めて読む人の目が想像できなくなる。\n\n———\n\n出す前に、一度だけ\n知らない人の目を通しておく。\nhttps://tashikame.app/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo\n\n———\n\n自己紹介文、最後に書き直したのはいつですか。",
+        "posts": [
+          "マッチはする。\nでも、そこから続かない。",
+          "写真を変えてみる。\n変わらない。\n\n読まれているのは、その下の文章かもしれない。",
+          "自己紹介文は、書いた本人がいちばん読めない。\n何度も読み返したぶん、\n初めて読む人の目が想像できなくなる。",
+          "出す前に、一度だけ\n知らない人の目を通しておく。\nhttps://tashikame.app/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
+          "自己紹介文、最後に書き直したのはいつですか。"
+        ],
+        "is_thread": true,
+        "link": "https://tashikame.app/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=photo&utm_source=threads&utm_medium=social&utm_campaign=photo",
+        "hypothesis_id": "photo",
+        "hypothesis_name": "自己紹介文が読まれているか",
+        "topic_slug": "photo",
+        "buzz_score": 8,
+        "source_type": "photo_thread",
+        "product": null
+      }
     }
   ]
 }
