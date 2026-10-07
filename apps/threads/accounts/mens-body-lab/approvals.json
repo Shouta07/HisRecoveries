@@ -327,6 +327,34 @@
         "source_type": "content_source",
         "product": null
       }
+    },
+    {
+      "id": "20261007045636059407",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-07T04:56:36.059425",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "AIには通した。\n誤字もない。\n\nそれでも送信ボタンの前で、\n一回止まる。\n\n———\n\n止まるのは、たぶん慎重だから。\n適当な人は止まらない。\n\n———\n\nただ、いくら読み返しても\n「自分がどう読むか」しか分からない。\n受け取る側の目は、自分の中には無い。\n\n———\n\nだから、送る前に\n相手と同じ側に立つ人に 読んでもらう。\n\n返ってくるのは、実際にどう受け取ったか。\nhttps://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message\n\n———\n\nその文面、送る前に止まったことありますか。",
+        "posts": [
+          "AIには通した。\n誤字もない。\n\nそれでも送信ボタンの前で、\n一回止まる。",
+          "止まるのは、たぶん慎重だから。\n適当な人は止まらない。",
+          "ただ、いくら読み返しても\n「自分がどう読むか」しか分からない。\n受け取る側の目は、自分の中には無い。",
+          "だから、送る前に\n相手と同じ側に立つ人に 読んでもらう。\n\n返ってくるのは、実際にどう受け取ったか。\nhttps://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
+          "その文面、送る前に止まったことありますか。"
+        ],
+        "is_thread": true,
+        "link": "https://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=message",
+        "hypothesis_id": "message",
+        "hypothesis_name": "送る前のLINEで止まる",
+        "topic_slug": "message",
+        "buzz_score": 8,
+        "source_type": "message_thread",
+        "product": null
+      }
     }
   ]
 }
