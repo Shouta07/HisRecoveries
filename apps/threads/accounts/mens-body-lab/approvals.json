@@ -399,6 +399,34 @@
         "source_type": "content_source",
         "product": null
       }
+    },
+    {
+      "id": "20261008180115822032",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-08T18:01:15.822062",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "誘うタイミングだけが、ずっと決まらない。\n\n———\n\n早いと重い。\n遅いと冷める。\n\nどっちも怖いから、今日も送らない。\n\n———\n\nこの「まだ早いかな」は、\n何回考えても自分の中では解けない。\n相手側にしか無い情報だから。\n\n———\n\n決めるのは自分でいい。\nただ、材料が片側しか無いまま決めている。\nhttps://tashikame.app/ask?plan=review&c=date&utm_source=threads&utm_medium=social&utm_campaign=date\n\n———\n\n誘うタイミング、どうやって決めてますか。",
+        "posts": [
+          "誘うタイミングだけが、ずっと決まらない。",
+          "早いと重い。\n遅いと冷める。\n\nどっちも怖いから、今日も送らない。",
+          "この「まだ早いかな」は、\n何回考えても自分の中では解けない。\n相手側にしか無い情報だから。",
+          "決めるのは自分でいい。\nただ、材料が片側しか無いまま決めている。\nhttps://tashikame.app/ask?plan=review&c=date&utm_source=threads&utm_medium=social&utm_campaign=date",
+          "誘うタイミング、どうやって決めてますか。"
+        ],
+        "is_thread": true,
+        "link": "https://tashikame.app/ask?plan=review&c=date&utm_source=threads&utm_medium=social&utm_campaign=date",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=date&utm_source=threads&utm_medium=social&utm_campaign=date",
+        "hypothesis_id": "date",
+        "hypothesis_name": "誘うタイミングが決まらない",
+        "topic_slug": "date",
+        "buzz_score": 8,
+        "source_type": "date_thread",
+        "product": null
+      }
     }
   ]
 }
