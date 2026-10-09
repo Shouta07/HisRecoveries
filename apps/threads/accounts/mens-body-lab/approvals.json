@@ -455,6 +455,34 @@
         "source_type": "photo_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261009173444645669",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-09T17:34:44.645696",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "踏み込みたい。\nでも、踏み込みすぎたくない。\n\n———\n\nこの距離の話は、\n友達には聞きにくい。\n相手には、もっと聞けない。\n\n———\n\nだから、ずっと自分の中だけで回している。\n\n———\n\n本人には聞けないことを、\n同じ側に立つ人に聞いてみる。\n\n判定ではなく、どう受け取ったかが返る。\nhttps://tashikame.app/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance\n\n———\n\n距離感、どこで決めてますか。",
+        "posts": [
+          "踏み込みたい。\nでも、踏み込みすぎたくない。",
+          "この距離の話は、\n友達には聞きにくい。\n相手には、もっと聞けない。",
+          "だから、ずっと自分の中だけで回している。",
+          "本人には聞けないことを、\n同じ側に立つ人に聞いてみる。\n\n判定ではなく、どう受け取ったかが返る。\nhttps://tashikame.app/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance",
+          "距離感、どこで決めてますか。"
+        ],
+        "is_thread": true,
+        "link": "https://tashikame.app/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=distance&utm_source=threads&utm_medium=social&utm_campaign=distance",
+        "hypothesis_id": "distance",
+        "hypothesis_name": "距離感で迷う",
+        "topic_slug": "distance",
+        "buzz_score": 8,
+        "source_type": "distance_thread",
+        "product": null
+      }
     }
   ]
 }
