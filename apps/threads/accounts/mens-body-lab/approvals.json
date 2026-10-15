@@ -757,6 +757,28 @@
         "source_type": "date_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261015034406554471",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-15T03:44:06.554491",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "送ったあとに読み返して、\n「重かったかな」と思う時間がいちばんきつい。",
+        "posts": null,
+        "is_thread": false,
+        "link": "",
+        "cta_used": null,
+        "hypothesis_id": "src:src-before-send",
+        "hypothesis_name": "引用リソース src-before-send",
+        "topic_slug": "src-before-send",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
