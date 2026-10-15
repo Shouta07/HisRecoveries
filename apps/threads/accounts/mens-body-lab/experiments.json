@@ -5,13 +5,13 @@
     "photo": 6,
     "date": 2,
     "signal": 2,
-    "distance": 1
+    "distance": 2
   },
   "cta_post_counts": {
-    "none": 17
+    "none": 18
   },
-  "total_posts": 17,
+  "total_posts": 18,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-10-14T16:00:07.269794"
+  "last_updated": "2026-10-15T15:48:32.546637"
 }
