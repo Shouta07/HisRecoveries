@@ -1,4 +1,5 @@
 import { CITIES } from "../voice";
+import { codeOf } from "./cities";
 
 /* ══════════════════════════════════════════════════
    旅ごとの記録
@@ -55,6 +56,8 @@ export type TripRow = {
 export type TripCard = {
   id: string;
   city: string;
+  /** BKK / TPE / ICN。切符に見せるための札 */
+  code: string | null;
   /** 11/14〜11/17 */
   dates: string;
   phase: Phase;
@@ -105,6 +108,7 @@ export function toCard(r: TripRow, now = new Date()): TripCard {
   return {
     id: r.id,
     city: r.city,
+    code: codeOf(r.city),
     dates: datesLabel(r.departAt, r.returnAt),
     phase,
     daysToGo: phase === "before" ? toGo : null,
@@ -167,7 +171,7 @@ export function boardLine(cards: TripCard[]): string {
      残り件数や日数を、焦らせる形で出していないか。 */
   {
     const line = boardLine([
-      { id: "x", city: CITIES[0], dates: "11/14〜11/17", phase: "before", daysToGo: 3,
+      { id: "x", city: CITIES[0], code: codeOf(CITIES[0]), dates: "11/14〜11/17", phase: "before", daysToGo: 3,
         done: null, next: "空港→宿の移動手段を決める", records: 2, since: "今日" },
     ]);
     for (const w of ["あと", "まだ", "残り", "急", "早く", "間に合"]) {
@@ -175,6 +179,12 @@ export function boardLine(cards: TripCard[]): string {
         throw new Error(`一覧の1行「${line}」が、急かす言い方になっています`);
       }
     }
+  }
+
+  /* 対応している都市なら、記号が必ず付くこと。
+     付かない都市が画面に出ると、そこだけ切符に見えない。 */
+  for (const c of CITIES) {
+    if (!codeOf(c)) throw new Error(`都市「${c}」に、空港の記号がありません`);
   }
 
   /* やることが無いときに、空で終わらせないこと。

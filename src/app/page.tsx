@@ -5,6 +5,8 @@ import BriefCard from "@/components/koi/BriefCard";
 import { heroSubLines } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import TripBoard from "@/components/trip/TripBoard";
+import TripLog from "@/components/trip/TripLog";
+import { DEMO_LOG } from "@/lib/trip/log";
 import { DEMO_BOARD, TRIP_BRIEF } from "@/lib/trip/demo";
 import {
   TRIP_PASS_YEN, YEAR_PASS_YEN, YEAR_BREAK_EVEN, PASS_TAIL_DAYS,
@@ -521,6 +523,43 @@ export default function HomePage() {
         </div>
 
         <p className="mt-5 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者の記録ではありません。
+        </p>
+      </Block>
+
+      {/* ══ 4.5 記録が積み上がる ══ */}
+      {/* ══════════════════════════════════════════════
+          準備の画面は、放っておくと未完了リストになる
+          ══════════════════════════════════════════════
+          パスポート、保険、eSIM、両替、配車アプリ、空港からの行き方。
+          並べるほど、行くのが面倒になる。
+
+          逆にする。済んだことを、時間の順に積む。
+          「ここまで来た」が見えるから、残りが怖くなくなる。
+
+          残りの数は数えない。数えると、そこが宿題になる。
+          出すのは、済んだ数と、次の1つだけ。
+
+          帰国後の行を必ず入れる。半年後の自分への手紙になるし、
+          行ったばかりの人として答えるときの元にもなる。 */}
+      <Block>
+        <H>
+          ここまで来た、が
+          <br className="sm:hidden" />
+          残っていく。
+        </H>
+        <p className="mt-4 max-w-[30em] text-[14.5px] leading-[1.9] text-steel">
+          やることを並べるのではなく、済んだことを積みます。準備から帰国まで、1本の線でつながります。
+        </p>
+
+        <div className="mt-7 max-w-[28em]">
+          <TripLog log={DEMO_LOG} />
+        </div>
+
+        <p className="mt-5 max-w-[30em] text-[14px] leading-[1.9] text-steel">
+          帰ってきてからの1行は、半年後の自分と、次に行く人のために残ります。
+        </p>
+        <p className="mt-4 text-[12px] leading-[1.8] text-steel">
           ※ 画面の見本です。特定の利用者の記録ではありません。
         </p>
       </Block>
