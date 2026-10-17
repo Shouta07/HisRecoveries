@@ -154,6 +154,37 @@ export function checkoutParams(args: CheckoutArgs): Record<string, string | numb
   };
 }
 
+/**
+ * 旅パス／年パスの Checkout。
+ *
+ * ── 定期購読ではない ────────────────────────────
+ * 旅は終わるものなので、mode は payment。
+ * 自動では続かない。「解約」の操作がそもそも無い。
+ *
+ * 値段はここで決めない。Stripe の Price ID が正。
+ * 金額を params に書くと、画面と Stripe の二重管理になる。
+ */
+export async function createTripCheckout(args: {
+  price: string;
+  kind: "trip" | "year";
+  token: string;
+  successUrl: string;
+  cancelUrl: string;
+}): Promise<{ ok: boolean; url?: string; error?: string }> {
+  const r = await call<{ url?: string }>("/checkout/sessions", {
+    mode: "payment",
+    "line_items[0][quantity]": 1,
+    "line_items[0][price]": args.price,
+    success_url: args.successUrl,
+    cancel_url: args.cancelUrl,
+    client_reference_id: args.token,
+    "metadata[token]": args.token,
+    "metadata[kind]": args.kind,
+    locale: "ja",
+  });
+  return { ok: r.ok, url: r.data?.url, error: r.error };
+}
+
 export async function createCheckout(
   args: CheckoutArgs,
 ): Promise<{ ok: boolean; session?: CheckoutSession; error?: string }> {

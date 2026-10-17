@@ -16,13 +16,7 @@ import type { Metadata, Viewport } from "next";
 // もしブランド書体を戻すなら、fontsource ではなく
 // 「実際に使う文字だけを含むサブセットを1ファイル作って自前で置く」形にすること。
 // fontsource のサブセット分割は、日本語ではこの症状が必ず出る。
-import Header from "@/components/Header";
-import Landed from "@/components/brand/Landed";
-import Tags from "@/components/brand/Tags";
 import Analytics from "@/components/Analytics";
-import SearchProvider from "@/components/search/SearchProvider";
-import { clusters } from "@/lib/clusters";
-import { complexes } from "@/lib/complexes";
 import { site, socialSameAs } from "@/lib/site";
 import "./globals.css";
 
@@ -134,7 +128,7 @@ export default function RootLayout({
 
        「男性ウェルネスメディア」は、男性限定に見える表現でもある。
        サービスは男女どちらでも使える形にしたので、両方外す。 */
-    alternateName: "恋亀",
+    alternateName: "旅亀",
     url: site.url,
     logo: {
       "@type": "ImageObject",
@@ -149,19 +143,18 @@ export default function RootLayout({
     publishingPrinciples: `${site.url}/about`,
     // サイトの主題。プロダクトが変わったので、ここも合わせる。
     // 記事の主題（薄毛・肌など）は、各記事のメタデータ側に残っている。
+    /* サイトの主題。題材が旅に変わったので、ここも入れ替えた。
+       ここが古いままだと、検索エンジンは恋愛相談のサイトとして
+       紐づけ続ける。画面を全部直しても、ここだけ残る。 */
     knowsAbout: [
-      // 「人の視点のマーケットプレイス」を外した。
-      // 場貸しではなく、当社が相談サービスとして売っている。
-      // 公開の構造化データに marketplace と書いてあると、
-      // 実態とも、決済（Stripe）への説明とも食い違う。
-      "オンライン恋愛相談",
-      "匿名の意見収集",
-      "属性を指定した意見の収集",
-      "メッセージの受け取られ方",
-      "プロフィール写真の印象",
-      "デートの誘い方",
-      "人間関係の距離感",
+      "海外一人旅",
+      "はじめての海外一人旅",
+      "出発前の準備",
+      "空港から宿までの移動",
+      "現地での過ごし方",
+      "行った人の実感",
     ],
+
     knowsLanguage: ["ja"],
     areaServed: { "@type": "Country", name: "Japan" },
     contactPoint: {
@@ -189,16 +182,15 @@ export default function RootLayout({
         >
           本文へスキップ
         </a>
-        <SearchProvider allCount={clusters.length}>
-          <Header />
+          
           <main id="main" className="flex-1">
             {children}
           </main>
           {/* 購入率の分母。1来訪につき1回だけ数える */}
-          <Landed />
+          
           {/* 広告と解析のタグ。鍵を入れた分だけ動く */}
-          <Tags />
-        </SearchProvider>
+          
+        
         <Analytics />
       </body>
     </html>

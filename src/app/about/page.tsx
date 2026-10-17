@@ -71,7 +71,7 @@ export default function AboutPage() {
         <li>
           順番が変わったら、変わった記録を残します（
           <Link
-            href="/updates"
+            href="/plans"
             className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
           >
             更新記録
@@ -96,7 +96,7 @@ export default function AboutPage() {
       <p className="mt-12 border-t border-shironezu pt-7 text-[14px] leading-[1.95] text-keshizumi">
         送る前のメッセージや自己紹介文を、実在する{advisorWord()}に読んでもらうほうは
         <Link
-          href="/ask"
+          href="/plans"
           className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
         >
           タシカメ

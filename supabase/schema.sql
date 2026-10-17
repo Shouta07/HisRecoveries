@@ -2907,3 +2907,131 @@ where dp.needs_human_review = true
 order by
   case dp.importance when 'high' then 0 when 'medium' then 1 else 2 end,
   dp.created_at;
+
+-- ══════════════════════════════════════════════════
+-- この場面、あなたならどうする？（/scene）
+-- ══════════════════════════════════════════════════
+-- マッチ後の1場面を出して、どうするかを選んでもらう。
+-- 返すのは正解ではなく、同じ場面を見た人がどう分かれたか。
+--
+-- ── なぜ集めるか ────────────────────────────────
+-- 集客であると同時に、仕入れでもある。
+-- いま回答者は0人で、そのあいだ「月3回、実在する異性に
+-- 確カメられる」は空手形のまま。
+-- ここで答えた人が、そのまま回答者の候補になる。
+--
+-- ── 誰が答えたかは、持たない ────────────────────
+-- 会員登録が無いので、端末が持つ使い捨ての印（voter）だけ。
+-- 名前もメールも年齢も取らない。
+-- 性別だけは要る。分けないと、男性が男性の答えを
+-- 「異性の反応」として読むことになる。
+--
+-- ── 同じ端末から、同じ場面に1回 ──────────────────
+-- 下の一意索引で絞る。
+-- 票を足せる形にしておくと、分布が作れることになる。
+create table if not exists scene_answers (
+  id uuid primary key default gen_random_uuid(),
+  scene_id text not null,
+  choice_id text not null,
+  gender text not null check (gender in ('male', 'female')),
+  -- 端末が持つ使い捨ての印。本人を指さない
+  voter text not null,
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists scene_answers_once
+  on scene_answers (scene_id, voter);
+
+create index if not exists scene_answers_scene_idx
+  on scene_answers (scene_id, gender);
+
+-- ══════════════════════════════════════════════════
+-- 行った人が残したこと（/cities/<都市>）
+-- ══════════════════════════════════════════════════
+-- 帰国後に残った1行が、そのまま次の人への情報になる。
+--
+-- ── こちらは書かない ────────────────────────────
+-- 「各国の情報を発信する」はやらない。
+-- やると、この製品がいちばん否定している側（古いブログ）に回る。
+-- ここに入るのは、実際に行った人が残した文だけ。
+--
+-- ── 書いた人を、商品にしない ────────────────────
+-- 名前も顔も肩書きも持たない。持つのは
+-- 「どの都市か」「旅程のどこか」「帰国から何日か」だけ。
+-- 誰が言ったかで重みを付け始めると、SNSになる。
+--
+-- ── 90日で落ちる ────────────────────────────────
+-- days_ago は日次で更新する。90日を超えたものは画面に出さない
+-- （lib/who.ts の FRESH_DAYS と同じ線）。
+-- 値段も店も変わっているため。消しはしない。
+create table if not exists trip_notes (
+  id uuid primary key default gen_random_uuid(),
+  city text not null,
+  -- 旅程のどこの話か。lib/trip/log.ts の Leg と同じ語彙
+  leg text not null check (leg in ('prep', 'depart', 'there', 'back')),
+  text text not null,
+  -- 帰国から何日たった人の話か
+  days_ago int not null default 0,
+  -- 書いた人の鍵。画面には出さない。重複と通報の追跡だけに使う
+  author_token text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists trip_notes_city_idx
+  on trip_notes (city, days_ago asc);
+
+-- ══════════════════════════════════════════════════
+-- 旅（/tabi）
+-- ══════════════════════════════════════════════════
+-- 記録の単位を、相手から旅に変えた。
+-- マチアプ版の relationship_cases / episodes は使わない。
+-- 流用すると、partner_label や dating_app の意味がずれたまま残る。
+--
+-- ── 会員登録は無い ──────────────────────────────
+-- token（t...）が旅人の鍵。これを知っていることが本人の証拠。
+-- 名前もメールも持たない。
+--
+-- ── 宿名も便名も持たない ────────────────────────
+-- 伏せ字を通す前に届く場所を、そもそも作らない。
+-- 持つのは都市と日程まで。
+create table if not exists trips (
+  id uuid primary key default gen_random_uuid(),
+  -- 旅人の鍵。この人の旅をまとめる
+  token text not null,
+  city text not null,
+  depart_at date not null,
+  return_at date not null,
+  -- 直近で済んだこと
+  done text,
+  -- 次にやること。1つだけ
+  next_action text,
+  -- 次に話すときの「前回どこまで」
+  summary text,
+  status text not null default 'active',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists trips_token_idx
+  on trips (token, depart_at desc);
+
+-- 同じ人が、同じ都市・同じ出発日の旅を2つ作らないようにする。
+-- 貼るたびに「バンコク」が増えると、記録が散らばる。
+create unique index if not exists trips_once
+  on trips (token, city, depart_at);
+
+-- 1回ぶんの記録。旅程のどこかに付く
+create table if not exists trip_records (
+  id uuid primary key default gen_random_uuid(),
+  trip_id uuid not null references trips(id) on delete cascade,
+  record_number int not null,
+  -- lib/trip/log.ts の Leg と同じ語彙
+  leg text not null check (leg in ('prep', 'depart', 'there', 'back')),
+  what text not null,
+  occurred_on date,
+  created_at timestamptz not null default now(),
+  unique (trip_id, record_number)
+);
+
+create index if not exists trip_records_trip_idx
+  on trip_records (trip_id, record_number asc);

@@ -22,7 +22,7 @@ export default function NotFound() {
           トップへ戻る
         </Link>
         <Link
-          href="/articles"
+          href="/"
           className="border-b border-hair-line hover:border-ink transition-colors"
         >
           すべての記録を見る

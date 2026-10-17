@@ -37,7 +37,6 @@
 // これらは advisorWord() に置き換えると、かえって嘘になる。
 
 import { readdir, readFile } from "node:fs/promises";
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = process.cwd();
@@ -78,26 +77,26 @@ const SKIP = [
  * ここは advisorWord() から引く。
  */
 const HARDCODED = [
-  /(女性|男性)に確カメる/,
-  /(女性|男性)に確かめる/,
-  /(女性|男性)\{[^}]*\}人に確かめる/,
-  /* 「◯◯に確カメる」だけでは足りなかった。
-     この形で、3つが残っていた。
-       これ、実際の女性にも聞いてみる？   （恋亀のデモ）
-       送る前に、女性の目で見てもらう。   （商品の説明）
-       実在女性が回答                     （1画面目の印）
-     どれも商品の約束なので、advisorWord() から引く。 */
-  /実在(する|の)?(女性|男性)/,
-  /実際の(女性|男性)/,
-  /(女性|男性)の目(で|を)/,
-  /* さらに、この形でも残っていた。
-       まず1件、女性に読んでもらう。      （商品の売り文句）
-       女性から見た第一印象               （返ってくるものの一覧）
-       審査を通った女性と話しながら       （通話の説明）
-       どの女性でも / こんな女性が読んで  （回答者の面の見出し） */
-  /(女性|男性)(に読んで|から見た|側がそう|と話し)/,
-  /(審査を通った|こんな|どの)(女性|男性)/,
+  /* ══════════════════════════════════════════════
+     誰に聞くのかを、画面に直書きしない
+     ══════════════════════════════════════════════
+     マチアプ版では「女性に確カメる」と「実在する異性にも」が
+     1つの画面に並んでいた。直書きする場所と、who.ts から引く
+     場所が別々にあったので、片方だけ直しても残った。
+
+     旅版で同じことが起きるのは、こういう形。
+       経験者に聞く        ← 誰が答えるのか分からない
+       現地に詳しい人に聞く ← 在住者を呼び込む
+       旅のプロに聞く      ← 別の商売になる
+
+     聞けるのは「直近90日以内に、同じ都市へ、一人で行った日本人」。
+     lib/who.ts の advisorWord() から引くこと。 */
+  /(経験者|詳しい人|旅のプロ|現地の人|在住者|ガイド)に(聞|確カメ|確かめ)/,
+  /(現地|旅)に詳しい/,
+  /旅行のプロ/,
+  /(添乗員|ツアーガイド|コンシェルジュ)/,
 ];
+
 
 /**
  * コメントを、同じ長さの空白に置き換える。
@@ -194,23 +193,12 @@ if (hits.length > 0) {
 
 /* ── 2. 1画面目で、誰に向けた製品かを名乗っていること ── */
 /* ── コメントを外してから測る ──────────────────────
-   前は生のファイルで字数を測っていた。
-
    このファイルは、なぜそうしたかを日本語のコメントで
-   たくさん書いてある。CTAを入れ替えた理由を1つ足しただけで
-   距離が4,273字になり、判定が落ちた。
-
-   画面に出ない字で距離が伸びるのは、測り方が違う。
-   コメントを外した状態で測る。 */
+   たくさん書いてある。画面に出ない字で距離が伸びるのは、
+   測り方が違う。コメントを外した状態で測る。 */
 const lp = stripComments(await readFile(join(ROOT, "src/app/page.tsx"), "utf8"));
 
-/* 1画面目の目印。
-   前は from="hero" のボタンそのものを探していた。
-   第一CTAをただのリンクに変えたとき、目印ごと消えて判定が落ちた。
-   目印は、ボタンではなく1画面目の見出しにする。
-   見出しは、CTAを入れ替えても残る。 */
 const hero = lp.indexOf("{HERO_A}");
-
 if (hero < 0) {
   console.error("トップに1画面目の見出し（HERO_A）が見つかりません。");
   console.error("このファイルの判定が、画面の作りに追いつけていません。");
@@ -218,148 +206,75 @@ if (hero < 0) {
 }
 
 /* ══════════════════════════════════════════════════
-   断りを置く場所を、1画面目から下へ移した
+   旅版で見るもの
    ══════════════════════════════════════════════════
-   前はこう見ていた。
+   マチアプ版は「男性向け」と名乗っているかを見ていた。
+   旅版は性別で絞らないので、その判定は意味を失った。
 
-     1画面目の押す場所のすぐ下（2000字以内）に
-     notYetNote（いま確カメるをお使いいただけるのは…）があること
+   代わりに見るのは3つ。
 
-   狙いは正しかった。1画面目で「使える」と思った人が、
-   買ってから使えないと気づくのを防ぐためのもの。
-
-   ただ、置いた結果がよくなかった。
-   押す場所の真下でいちばん目に入るのが断りで、しかも
-   来た男性にとっては1行も自分の話ではない。
-
-   有料100人までは、男性のマチアプ利用者だけに絞ると決めた。
-   絞るなら、断るより先に名乗るほうが早い。
-
-     1画面目   男性のマチアプ恋愛を、マッチ後からまとめる。
-     断り      よくある質問・フッター・買う場所
-
-   だから、見るものを入れ替える。
-
-     ① 1画面目に、開いている向きが書いてあること（名乗り）
-     ② 断りが、どこかには出ていること（逃げ場をなくさない）
-     ③ 買う場所に、断りがあること（お金が動く前に言う）
-
-   ①が守られていれば、②を1画面目に置く必要はない。
-   両方の向きが開いたら、①も②も要らなくなる（下で外れる）。 */
-
-/* who.ts は TypeScript なので、node からそのままは読み込めない
-   （型の構文があるので import すると落ちる）。
-   読むのは1つの定数だけなので、ファイルの中身から拾う。 */
-function openSideLabels() {
-  const who = readFileSync(join(ROOT, "src/lib/who.ts"), "utf8");
-  const block = who.match(/ASKER_OPEN[^=]*=\s*\{([\s\S]*?)\}/);
-  if (!block) {
-    console.error("lib/who.ts に ASKER_OPEN が見つかりません。");
-    console.error("このファイルの判定が、who.ts の作りに追いつけていません。");
-    process.exit(1);
-  }
-  const label = { male: "男性", female: "女性" };
-  const open = [];
-  for (const [, g, v] of block[1].matchAll(/(male|female)\s*:\s*(true|false)/g)) {
-    if (v === "true") open.push(label[g]);
-  }
-  if (open.length === 0) {
-    console.error("lib/who.ts で、どの向きも開いていません。");
-    process.exit(1);
-  }
-  // 両方開いていたら、名乗る必要は無い
-  return open.length === 2 ? [] : open;
-}
-
-const open = openSideLabels();
-
-if (open.length > 0) {
-  /* ① 1画面目で名乗っていること。
-
-     ══════════════════════════════════════════════
-     名乗る場所を、2行目からヘッダーへ移した
-     ══════════════════════════════════════════════
-     前は lib/koi/gate.ts の2行目（heroSubLines）に
-     「男性のマチアプ恋愛を、」と書かせていた。
-
-     そこは、何のサービスかを場面で言う行にした。
-       LINE、電話、デート、その次まで。
-       複数人のマッチ後を、ひとつに。
-     誰に向けてかは、すぐ上のヘッダーが言っている。
-       男性のマチアプ恋愛に、
-       タシカメ
-     1画面目で2回名乗る必要は無い。
-
-     だから、見るのはヘッダーの側にする。
-       1 ヘッダーが TAGLINE を出していること
-       2 その TAGLINE に、開いている向きが書いてあること
-
-     2は lib/voice.ts の判定も見ているが、こちらでも見る。
-     あちらは「言葉が正しいか」、ここは「画面に出ているか」。
-     TAGLINE を直しても、ヘッダーから外したら意味が無い。 */
-  {
-    const head = lp.slice(0, hero).replace(/\s+/g, "");
-    if (!head.includes("{TAGLINE}")) {
-      console.error("ヘッダーが、標語（TAGLINE）を出していません。");
-      console.error("");
-      console.error("1画面目で、誰に向けた製品かを名乗る場所がここだけです。");
-      console.error("名乗らないと、使えない人が読み進めてから気づくことになります。");
-      process.exit(1);
-    }
-    const voice = stripComments(await readFile(join(ROOT, "src/lib/voice.ts"), "utf8"));
-    const line = voice.match(/TAGLINE\s*=\s*"([^"]*)"/);
-    if (!line) {
-      console.error("lib/voice.ts に TAGLINE が見つかりません。");
-      console.error("このファイルの判定が、voice.ts の作りに追いつけていません。");
-      process.exit(1);
-    }
-    if (!open.some((w) => line[1].includes(w))) {
-      console.error("標語に、誰に向けた製品かが書かれていません。");
-      console.error("");
-      console.error(`  標語              ${line[1]}`);
-      console.error(`  いま開いているのは  ${open.join("・")}`);
-      console.error("");
-      console.error("片方の向きしか開いていないあいだは、ヘッダーで名乗ってください。");
-      process.exit(1);
-    }
-  }
-
-  /* ② 断りが、どこかには出ていること。
-     名乗っただけでは「いつ開くのか」が分からない。 */
-  if (lp.indexOf("notYetNote()") < 0) {
-    console.error("トップに、まだ開いていない向きの断り（notYetNote）がありません。");
+     ① ヘッダーが標語を出していて、そこに一人旅だと書いてあること
+        「海外旅行」だけだと家族旅行にも団体にも読める
+     ② 対応都市が1画面目に出ていること
+        3都市だけなので、来る前に分かる必要がある
+     ③ 確カメるがまだ開いていないなら、断りがどこかに出ていること
+        答える人が0人のまま「聞けます」と書かない */
+{
+  const head = lp.slice(0, hero).replace(/\s+/g, "");
+  if (!head.includes("{TAGLINE}")) {
+    console.error("ヘッダーが、標語（TAGLINE）を出していません。");
     console.error("");
-    console.error("1画面目で名乗るのとは別に、いつ開くのかを書く場所が要ります。");
-    console.error("よくある質問とフッターに置いてください。");
+    console.error("1画面目で、誰に向けた製品かを名乗る場所がここだけです。");
     process.exit(1);
   }
 
-  /* ③ 買う場所にも、断りがあること。
-     買ったあとで「使えなかった」と気づくのが、いちばん悪い。
-     料金の節（id="price"）から、次の節までのあいだを見る。 */
-  const price = lp.indexOf('id="price"');
-  if (price < 0) {
-    console.error("トップに料金の節（id=\"price\"）が見つかりません。");
-    console.error("このファイルの判定が、画面の作りに追いつけていません。");
+  const voice = stripComments(await readFile(join(ROOT, "src/lib/voice.ts"), "utf8"));
+  const tag = voice.match(/TAGLINE\s*=\s*"([^"]*)"/);
+  if (!tag) {
+    console.error("lib/voice.ts に TAGLINE が見つかりません。");
     process.exit(1);
   }
-  const priceEnd = lp.indexOf('id="faq"', price);
-  const inPrice = lp.slice(price, priceEnd > 0 ? priceEnd : price + 20000);
-  if (!inPrice.includes("notYetNote()")) {
-    console.error("買う場所に、まだ開いていない向きの断りがありません。");
+  if (!/一人旅|ひとり旅/.test(tag[1])) {
+    console.error("標語に、一人旅だと書かれていません。");
     console.error("");
-    console.error("本文のどこかにあるだけでは足りません。");
-    console.error("お金が動く前に、その場で言ってください。");
+    console.error(`  標語  ${tag[1]}`);
+    console.error("");
+    console.error("「海外旅行」だけだと、家族旅行にも団体にも読めます。");
+    console.error("答えられるのは、一人で行く人の不安だけです。");
+    process.exit(1);
+  }
+
+  /* ② 対応都市が、1画面目に出ていること。
+     3つだけなので、来てから「自分の行き先が無い」と
+     分かるのでは遅い。 */
+  const NEAR = 2000;
+  const body = lp.slice(hero, hero + 30000).replace(/\s+/g, "");
+  const at = body.indexOf("CITIES");
+  if (at < 0 || at > NEAR) {
+    console.error("1画面目に、対応都市（CITIES）が出ていません。");
+    console.error("");
+    console.error(`  1画面目からの字数  ${at < 0 ? "見つからず" : at}（${NEAR} 字まで）`);
+    console.error("");
+    console.error("対応は3都市だけです。来てから無いと分かるのでは遅いので、");
+    console.error("1画面目で出してください（lib/voice.ts の CITIES）。");
+    process.exit(1);
+  }
+
+  /* ③ 開いていないなら、断りがどこかに出ていること。 */
+  if (!lp.includes("notYetNote()")) {
+    console.error("トップに、確カメるがまだ開いていない断り（notYetNote）がありません。");
+    console.error("");
+    console.error("答える人が0人のまま「聞けます」と書かないでください。");
     process.exit(1);
   }
 }
 
-/* ── 3. 会話の相手が、恋亀であること ───────────────
+/* ── 3. 会話の相手が、旅亀であること ───────────────
    吹き出しの横は、ずっと 🐢 の絵文字だった。
-   絵文字は端末が描くので、こちらの恋亀とは別の亀が出る。
+   絵文字は端末が描くので、こちらの旅亀とは別の亀が出る。
    iPhone・Android・Windows で、それぞれ違う顔の亀になる。
 
-   恋亀はこの製品で唯一ずっと出てくる相手なので、
+   旅亀はこの製品で唯一ずっと出てくる相手なので、
    そこだけは、見る人の端末によらず同じ顔にする。
    components/koi/KoiFace.tsx を使うこと。 */
 {
@@ -388,5 +303,5 @@ if (open.length > 0) {
 }
 
 console.log(
-  `who チェック: 直書き0件 — ヘッダーで${open.length > 0 ? open.join("・") + "と名乗っています" : "名乗り不要（両方開いています）"} — 相手は恋亀です`,
+  "who チェック: 直書き0件 — 1画面目で一人旅と都市を名乗っています — 相手は旅亀です",
 );

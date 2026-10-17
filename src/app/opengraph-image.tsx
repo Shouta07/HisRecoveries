@@ -1,10 +1,10 @@
 import fs from "node:fs";
+import { TRIP_PASS_YEN } from "@/lib/pass/trip";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { ogFont } from "@/lib/ogFont";
 import { site } from "@/lib/site";
 import { NAME, ONE_LINER } from "@/lib/voice";
-import { ENTRY_PLAN, DEFAULT_PLAN, plan as getPlan } from "@/lib/ask/plans";
 import { advisorWord } from "@/lib/who";
 
 // X・Threads・LINE に貼ったときのカード。
@@ -32,8 +32,6 @@ function mark(): string {
 }
 
 export default async function Image() {
-  const entry = getPlan(ENTRY_PLAN);
-  const main = getPlan(DEFAULT_PLAN);
 
   return new ImageResponse(
     (
@@ -67,7 +65,7 @@ export default async function Image() {
             失敗する前に相談する。
           </div>
           <div style={{ fontSize: 30, color: "#5B6676", display: "flex", lineHeight: 1.6 }}>
-            送る前のLINE、アプリの自己紹介文。実在する{advisorWord()}{main.answers}人が読んで、正直に返します。
+            送る前のLINE、アプリの自己紹介文。実在する{advisorWord()}{""}人が読んで、正直に返します。
           </div>
         </div>
 
@@ -83,7 +81,7 @@ export default async function Image() {
           }}
         >
           <div style={{ display: "flex" }}>
-            ¥{entry.yen.toLocaleString()}から / 1回ごと / 匿名
+            ¥{TRIP_PASS_YEN.toLocaleString()} / 旅1回ごと / 登録なし
           </div>
           <div style={{ display: "flex", color: "#2563EB" }}>
             {site.url.replace(/^https?:\/\//, "")}
