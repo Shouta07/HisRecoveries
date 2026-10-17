@@ -8,6 +8,7 @@ import TripLog from "@/components/trip/TripLog";
 import MapWindow from "@/components/trip/MapWindow";
 import { DEMO_LOG } from "@/lib/trip/log";
 import { DEMO_BOARD, TRIP_BRIEF } from "@/lib/trip/demo";
+import { codeOf } from "@/lib/trip/cities";
 import {
   TRIP_PASS_YEN, YEAR_PASS_YEN, YEAR_BREAK_EVEN, PASS_TAIL_DAYS,
   FREE_TRIPS, FREE_RECORDS, INCLUDED,
@@ -368,19 +369,35 @@ export default function HomePage() {
                 増やさない。「行ったばかりの人に聞ける」が売りなので、
                 都市を増やすと、その都市の答える人を集められなくなる。
                 1都市あたり何人いるかが、品質そのもの。 */}
-            <div className="mt-5">
-              <p className="text-[11.5px] font-bold text-steel">対応している都市</p>
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+            {/* ══════════════════════════════════════════
+                発着案内の並びにした
+                ══════════════════════════════════════════
+                前は都市名の札を3つ並べていた。
+                どんなサービスにもある「対応◯◯」の見た目だった。
+
+                空港の案内板と同じ形にする。
+                記号が左、都市名が右、あいだを点線でつなぐ。
+                その人が出発の日に実際に見上げる並び。
+
+                記号は lib/trip/cities.ts から引く。
+                ここで書くと、都市を足した日にずれる。 */}
+            <div className="mt-6">
+              <p className="text-[11px] font-bold tracking-[0.14em] text-steel">対応している都市</p>
+              <ul className="mt-2 flex flex-col">
                 {CITIES.map((c) => (
-                  <span
-                    key={c}
-                    className="rounded-pill border border-line bg-paper px-2.5 py-1 text-[12px] font-bold text-slate"
-                  >
-                    {c}
-                  </span>
+                  <li key={c} className="flex items-baseline gap-2.5 py-1.5">
+                    <span className="w-[3.2em] shrink-0 text-[13px] font-black tracking-[0.16em] text-brand">
+                      {codeOf(c)}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="min-w-0 flex-1 translate-y-[-3px] border-b border-dashed border-line"
+                    />
+                    <span className="shrink-0 text-[14px] font-bold text-slate">{c}</span>
+                  </li>
                 ))}
-                <span className="text-[11.5px] text-steel">いまはこの3つだけです</span>
-              </div>
+              </ul>
+              <p className="mt-1.5 text-[11.5px] text-steel">いまはこの3つだけです</p>
             </div>
           </div>
         </Wrap>

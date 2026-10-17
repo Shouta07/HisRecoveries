@@ -6,9 +6,16 @@
  * ページの主色は青。印だけ accent（既存のトークン）を使う。
  * 新しい色は足していない。使っていなかったものを1か所だけ使う。
  *
- * 理由は2つ。
- *   青のままだと、NEXT（次にやること）と同じ重さに見える
- *   インクの色が違うほうが、押した跡に見える
+ * ── 地を温かくしたので、色を変えた ──────────────
+ * 前は accent（素焼き）で押していた。地が青かったころは、
+ * それで NEXT（青）と見分けがついた。
+ *
+ * 地と主色を旅の側へ取り直したら、主色そのものが素焼きになり、
+ * 「済」と NEXT が同じ色になって見分けが消えた。
+ *
+ * 押した跡は、褪せる。
+ * 済んだことは、いま目を引く必要がない。
+ * NEXT（これからやること）だけが、主色で立っていればいい。
  *
  * 少し傾ける。まっすぐだと、システムが付けた印に見える。
  * 斜めだと、手で押したものに見える。
@@ -25,7 +32,7 @@ export default function Stamp({ children = "済" }: { children?: React.ReactNode
   return (
     <span
       aria-hidden
-      className="mt-[2px] inline-flex h-[17px] shrink-0 self-start -rotate-2 items-center justify-center rounded-[3px] border border-accent px-1.5 text-[10px] font-black leading-none tracking-[0.08em] text-accent"
+      className="mt-[2px] inline-flex h-[17px] shrink-0 self-start -rotate-2 items-center justify-center rounded-[3px] border border-steel/50 px-1.5 text-[10px] font-black leading-none tracking-[0.08em] text-steel"
     >
       {children}
     </span>
