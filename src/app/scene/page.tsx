@@ -27,7 +27,7 @@ import Mark from "@/components/brand/Mark";
 export const metadata: Metadata = {
   title: { absolute: `この場面、あなたならどうする？ — ${NAME}` },
   description:
-    "マッチングアプリでマッチした後の、迷う場面を出します。選ぶと、同じ場面を見た人がどう分かれたかが出ます。正解は出しません。",
+    "海外一人旅の、迷う場面を出します。選ぶと、同じ場面を見た人がどう分かれたかが出ます。正解は出しません。",
   alternates: { canonical: `${site.url}/scene` },
   openGraph: {
     type: "website",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     siteName: NAME,
     title: `この場面、あなたならどうする？ — ${NAME}`,
     description:
-      "マッチした後の、迷う場面。選ぶと、同じ場面を見た人がどう分かれたかが出ます。",
+      "海外一人旅の、迷う場面。選ぶと、同じ場面を見た人がどう分かれたかが出ます。",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: NAME }],
   },
 };
@@ -60,7 +60,7 @@ export default function ScenesPage() {
           あなたならどうする？
         </h1>
         <p className="mt-4 text-[15px] leading-[1.95] text-steel">
-          マッチした後の、迷う場面を出します。選ぶと、同じ場面を見た人がどう分かれたかが出ます。
+          海外一人旅の、迷う場面を出します。選ぶと、同じ場面を見た人がどう分かれたかが出ます。
         </p>
         {/* 先に断る。正解当てだと思って入ってきた人に、入口で言う */}
         <p className="mt-2.5 text-[15px] font-bold leading-[1.9] text-slate">
