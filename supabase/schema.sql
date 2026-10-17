@@ -2979,3 +2979,59 @@ create table if not exists trip_notes (
 
 create index if not exists trip_notes_city_idx
   on trip_notes (city, days_ago asc);
+
+-- ══════════════════════════════════════════════════
+-- 旅（/tabi）
+-- ══════════════════════════════════════════════════
+-- 記録の単位を、相手から旅に変えた。
+-- マチアプ版の relationship_cases / episodes は使わない。
+-- 流用すると、partner_label や dating_app の意味がずれたまま残る。
+--
+-- ── 会員登録は無い ──────────────────────────────
+-- token（t...）が旅人の鍵。これを知っていることが本人の証拠。
+-- 名前もメールも持たない。
+--
+-- ── 宿名も便名も持たない ────────────────────────
+-- 伏せ字を通す前に届く場所を、そもそも作らない。
+-- 持つのは都市と日程まで。
+create table if not exists trips (
+  id uuid primary key default gen_random_uuid(),
+  -- 旅人の鍵。この人の旅をまとめる
+  token text not null,
+  city text not null,
+  depart_at date not null,
+  return_at date not null,
+  -- 直近で済んだこと
+  done text,
+  -- 次にやること。1つだけ
+  next_action text,
+  -- 次に話すときの「前回どこまで」
+  summary text,
+  status text not null default 'active',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists trips_token_idx
+  on trips (token, depart_at desc);
+
+-- 同じ人が、同じ都市・同じ出発日の旅を2つ作らないようにする。
+-- 貼るたびに「バンコク」が増えると、記録が散らばる。
+create unique index if not exists trips_once
+  on trips (token, city, depart_at);
+
+-- 1回ぶんの記録。旅程のどこかに付く
+create table if not exists trip_records (
+  id uuid primary key default gen_random_uuid(),
+  trip_id uuid not null references trips(id) on delete cascade,
+  record_number int not null,
+  -- lib/trip/log.ts の Leg と同じ語彙
+  leg text not null check (leg in ('prep', 'depart', 'there', 'back')),
+  what text not null,
+  occurred_on date,
+  created_at timestamptz not null default now(),
+  unique (trip_id, record_number)
+);
+
+create index if not exists trip_records_trip_idx
+  on trip_records (trip_id, record_number asc);

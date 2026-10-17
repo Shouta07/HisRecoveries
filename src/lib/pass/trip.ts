@@ -1,5 +1,5 @@
-import { PAYMENT_RATE, REFUND_RATE, MISC_COST_YEN, AI_COST_YEN } from "../economics";
-import { PANEL_REWARD, PASS_MARGIN_FLOOR } from "./entitle";
+import { PAYMENT_RATE, REFUND_RATE, MISC_COST_YEN, AI_COST_YEN, ANSWER_REWARD, MARGIN_FLOOR } from "../cost";
+
 import { anyAskOpen } from "../who";
 
 /* ══════════════════════════════════════════════════
@@ -89,14 +89,14 @@ export function tripMargin(asks = ASK_INCLUDED): number {
     TRIP_PASS_YEN * REFUND_RATE +
     MISC_COST_YEN +
     AI_COST_YEN +
-    PANEL_REWARD * asks;
+    ANSWER_REWARD * asks;
   return (TRIP_PASS_YEN - v) / TRIP_PASS_YEN;
 }
 
 /** 確カメるを何回まで含められるか（床を守れる上限） */
 export function maxAsksWithinFloor(): number {
   let n = 0;
-  while (tripMargin(n + 1) >= PASS_MARGIN_FLOOR) n += 1;
+  while (tripMargin(n + 1) >= MARGIN_FLOOR) n += 1;
   return n;
 }
 
@@ -125,9 +125,9 @@ export const INCLUDED: string[] = [
   /* ── 床を割らないこと ────────────────────────── */
   {
     const m = tripMargin();
-    if (m < PASS_MARGIN_FLOOR) {
+    if (m < MARGIN_FLOOR) {
       throw new Error(
-        `旅パスの限界利益率が ${(m * 100).toFixed(1)}% です（${Math.round(PASS_MARGIN_FLOOR * 100)}% 以上）。` +
+        `旅パスの限界利益率が ${(m * 100).toFixed(1)}% です（${Math.round(MARGIN_FLOOR * 100)}% 以上）。` +
           `確カメるを含められるのは ${maxAsksWithinFloor()} 回までです`,
       );
     }

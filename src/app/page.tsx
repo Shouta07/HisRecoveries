@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import BriefCard from "@/components/koi/BriefCard";
-import { heroSubLines } from "@/lib/koi/gate";
+import { heroSubLines } from "@/lib/trip/gate";
 import { passEnabled } from "@/lib/stripe";
 import TripBoard from "@/components/trip/TripBoard";
 import TripLog from "@/components/trip/TripLog";
@@ -304,7 +303,7 @@ export default function HomePage() {
               ))}
             </ul>
             <Link
-              href="/koi"
+              href="/plans"
               className="inline-flex min-h-[42px] shrink-0 items-center justify-center whitespace-nowrap rounded-pill bg-brand px-3.5 text-[13px] font-bold text-paper shadow-card sm:px-5 sm:text-[13.5px]"
             >
               {CTA}
@@ -353,7 +352,7 @@ export default function HomePage() {
 
           <div className="mt-6 max-w-[22em]">
             <Link
-              href="/koi"
+              href="/plans"
               className="flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-8 text-[16.5px] font-bold text-paper shadow-card"
             >
               {CTA} <span aria-hidden className="ml-2">&rarr;</span>
@@ -600,7 +599,15 @@ export default function HomePage() {
         </p>
 
         <div className="mt-7 max-w-[28em]">
-          <BriefCard text={TRIP_BRIEF} demo />
+          {/* 渡す文章そのものを出す。
+              「前回の続きから相談できます」と書いても、
+              どうやって続くのかが分からない。 */}
+          <div className="rounded-card border border-line bg-paper p-4 shadow-card">
+            <p className="text-[11.5px] font-black text-steel">この文章をAIに渡せます</p>
+            <p className="mt-2 whitespace-pre-wrap text-[13px] leading-[1.85] text-slate">
+              {TRIP_BRIEF}
+            </p>
+          </div>
           <div className="mt-3 flex min-h-[52px] items-center justify-center gap-2 rounded-pill bg-brand px-6 text-[15px] font-bold text-paper shadow-card">
             この旅についてAIに相談する
           </div>
@@ -686,10 +693,10 @@ export default function HomePage() {
         </ul>
 
         <Link
-          href="/answerers"
+          href="/plans"
           className="mt-6 inline-flex min-h-[50px] items-center justify-center rounded-pill border border-brand bg-paper px-6 text-[14.5px] font-bold text-brand"
         >
-          答える側について <span aria-hidden className="ml-1.5">&rarr;</span>
+          旅パスを見る <span aria-hidden className="ml-1.5">&rarr;</span>
         </Link>
 
         {/* ══════════════════════════════════════════
@@ -839,7 +846,7 @@ export default function HomePage() {
 
         <div className="mt-6 max-w-[22em]">
           <Link
-            href="/koi"
+            href="/plans"
             className="flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-8 text-[16.5px] font-bold text-paper shadow-card"
           >
             {CTA} <span aria-hidden className="ml-2">&rarr;</span>
@@ -914,7 +921,7 @@ export default function HomePage() {
             </p>
             <div className="mt-7">
               <Link
-                href="/koi"
+                href="/plans"
                 className="flex min-h-[60px] w-full items-center justify-center rounded-pill bg-paper px-9 text-[16.5px] font-bold text-brand-deep sm:w-auto"
               >
                 {CTA} <span aria-hidden className="ml-2">→</span>
@@ -937,7 +944,6 @@ export default function HomePage() {
                 ["/legal", "特定商取引法に基づく表記"],
                 ["/terms", "利用規約"],
                 ["/privacy", "プライバシー"],
-                ["/articles", "たしかメディア"],
                 [`mailto:${site.company.email}`, "お問い合わせ"],
               ].map(([href, label]) => (
                 <li key={href}>

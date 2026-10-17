@@ -30,9 +30,9 @@ import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
 const LOOK = [
-  "src/app", "src/components", "src/lib/ask", "src/lib/responder",
-  // 体験の入口の文。広告から最初に来る面なので、ここも見る。
-  "src/lib/trial.ts",
+  "src/app", "src/components",
+  // 旅の言葉を持つところ。画面に出る文がここから作られる。
+  "src/lib/trip", "src/lib/pass", "src/lib/scene",
 ];
 
 /**
@@ -71,7 +71,6 @@ const CHEAP = [
 const SKIP = [
   "src/lib/voice.ts",
   "src/lib/monetization.ts",
-  "src/lib/clusters.ts",
   "src/lib/threadsEval.ts",
   "src/app/disclosure/page.tsx",
   "src/app/admin/",

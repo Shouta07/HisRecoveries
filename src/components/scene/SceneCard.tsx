@@ -273,7 +273,7 @@ export default function SceneCard({ scene }: { scene: Scene }) {
             どれが正しいかは出しません。実際に受け取る人が、どう分かれたかだけです。
           </p>
           <Link
-            href="/koi"
+            href="/plans"
             className="mt-1 flex min-h-[54px] items-center justify-center rounded-pill bg-brand px-6 text-[15.5px] font-bold text-paper shadow-card"
           >
             自分の場面でやってみる <span aria-hidden className="ml-2">&rarr;</span>

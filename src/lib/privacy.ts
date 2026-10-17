@@ -1,6 +1,10 @@
 import { site } from "./site";
+
+/* 画像の預かりは、旅版では閉じている（IMAGES_BUCKET を置いていない）。
+   数字だけ残して、開いたときに同じ扱いにする。 */
+const SIGNED_TTL = 600;
+const KEEP_DAYS = 30;
 import { NAME } from "./voice";
-import { KEEP_DAYS, SIGNED_TTL } from "./ask/images";
 
 // プライバシー・免責事項。
 //

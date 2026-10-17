@@ -97,10 +97,10 @@ export default function ScenesPage() {
             実際に読んで答える側に興味がある方は、こちらへ。
           </p>
           <Link
-            href="/answerers"
+            href="/plans"
             className="mt-4 inline-flex min-h-[48px] items-center justify-center rounded-pill border border-brand bg-paper px-5 text-[14px] font-bold text-brand"
           >
-            答える側について <span aria-hidden className="ml-1.5">&rarr;</span>
+            旅パスを見る <span aria-hidden className="ml-1.5">&rarr;</span>
           </Link>
         </div>
       </div>

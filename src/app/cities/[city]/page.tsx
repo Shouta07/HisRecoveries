@@ -145,7 +145,7 @@ export default async function CityPage({ params }: { params: { city: string } })
             AIに話した内容を貼るだけで、どこへ／何が終わって／次に何するか、が残ります。
           </p>
           <Link
-            href="/koi"
+            href="/plans"
             className="mt-4 inline-flex min-h-[50px] items-center justify-center rounded-pill bg-brand px-6 text-[14.5px] font-bold text-paper shadow-card"
           >
             無料で始める <span aria-hidden className="ml-1.5">&rarr;</span>
