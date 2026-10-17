@@ -2,181 +2,185 @@
    誰が、誰に聞くのか
    ══════════════════════════════════════════════════
 
-   ── 中立にするだけでは、嘘になる ────────────────
-   「男性なら女性に、女性なら男性に」と書くのは簡単だが、
-   いま確保できている回答者は女性3人、男性0人。
+   ── 旅版で、ここが全部変わった ──────────────────
+   マチアプ版は「相談する人から見た異性」に聞いていた。
+   開いている向き（男性からの相談だけ）を、ここが持っていた。
 
-   コピーだけ中立にすると、女性が申し込んでも
-   女性の回答者に届く。供給の判定は性別を見ていない。
+   旅版は、性別で絞らない。
+   聞く相手を決めるのは、性別ではなく「行ったばかりかどうか」。
 
-   このセッションで何度も直してきたのと同じ種類の間違い。
-     女性1人しか売っていないのに「女性3人」と書いてあった
-     審査を通った人が0人なのに、架空の4人を出していた
+   ── 在住者には聞かない ──────────────────────────
+   いちばん大事な線。
 
-   だから、開いている向きをここで持つ。
-   画面の言葉は、ここを見て変わる。
+   在住者は、その街に慣れている。
+   「あそこは普通に歩けるよ」と言う。それは本当だが、
+   初めて一人で来た人が感じる怖さとは、別の話。
 
-   ── 恋亀は、性別を問わない ──────────────────────
-   恋亀はAIなので、男女どちらでも同じように動く。
-   性別で変わるのは「確カメる」だけ。
+   聞きたいのは「初めて行った人が、実際どうだったか」。
+   だから、直近90日以内に、一人で行った人だけに聞く。
 
-   月額5項目のうち4つは、どちらの人にもそのまま使える。
-   そこを男性向けに書く理由は無い。 */
+   90日より前だと、値段も店も変わっている。
+   一人で行っていないと、不安の質が違う（連れがいた）。
+
+   ── 同性に聞く、は別の軸 ────────────────────────
+   女性の一人旅は、安全への不安が強い。
+   「この宿のエリア、夜ひとりで歩けた？」は、
+   同性に聞きたい人が多い。
+
+   ただし、性別で相手を縛るのではなく、
+   絞り込みの1つとして置く（都市／帰国からの日数／同性）。
+   選ばなければ、性別は問わない。 */
 
 export type Gender = "male" | "female";
-
-/** 相談する人から見て、答えるのは異性 */
-export function opposite(g: Gender): Gender {
-  return g === "male" ? "female" : "male";
-}
 
 export const GENDER_LABEL: Record<Gender, string> = {
   male: "男性",
   female: "女性",
 };
 
+/* ══════════════════════════════════════════════════
+   行ったばかり、の線
+   ══════════════════════════════════════════════════ */
+
+/** 帰国から何日以内の人に聞けるか */
+export const FRESH_DAYS = 90;
+
+/** その人の旅が、まだ「行ったばかり」か */
+export function isFresh(daysSinceReturn: number): boolean {
+  return daysSinceReturn >= 0 && daysSinceReturn <= FRESH_DAYS;
+}
+
 /**
- * いま、どの向きの相談を受けられるか。
+ * 「行ったばかりの人に確カメる」の◯◯。
  *
- * 回答者が実際に集まっている側だけ true。
- * 増えたらここを変える。変えると画面の言葉も変わる。
- *
- * male: true  → 男性からの相談（女性が答える）を受けられる
- * female: true → 女性からの相談（男性が答える）を受けられる
+ * 画面はここから引く。直書きすると、線を変えた日に
+ * そこだけ古いまま残る（マチアプ版で実際に起きた）。
  */
-export const ASKER_OPEN: Record<Gender, boolean> = {
-  male: true,
-  female: false,
-};
+export function advisorWord(): string {
+  return "行ったばかりの人";
+}
 
-/** 両方の向きが開いているか */
-export const bothWaysOpen = ASKER_OPEN.male && ASKER_OPEN.female;
+/** 短く言う場所（ボタン・札）で使う */
+export function advisorShort(): string {
+  return "行った人";
+}
 
-/** いま受けられる向きの、相談する側 */
-export function openAskers(): Gender[] {
-  return (Object.keys(ASKER_OPEN) as Gender[]).filter((g) => ASKER_OPEN[g]);
+/**
+ * 誰に聞けるのかを、1文で書いたもの。
+ *
+ * 「経験者」ではないことを、ここで言い切る。
+ * 誰が答えるのか分からないものに、値段は付かない。
+ */
+export function advisorRule(): string {
+  return `同じ都市に、${FRESH_DAYS}日以内に、一人で行った日本人です。在住の方やガイドの方は入っていません。`;
 }
 
 /* ══════════════════════════════════════════════════
-   画面に出す言葉
+   絞り込み
    ══════════════════════════════════════════════════ */
 
-/**
- * 「実在する◯◯に確カメる」の◯◯。
- *
- * ══════════════════════════════════════════════════
- * 「異性」に決めた
- * ══════════════════════════════════════════════════
- * ここは前、開いている向きから相手の性別を引いていた。
- * 片方しか開いていないなら「女性」、と名乗る形。
- *
- * その結果、1つの画面に2つの言い方が並んだ。
- *   ヘッダーとボタン  女性に確カメる   （page.tsx に直書き）
- *   本文              実在する異性にも （voice.ts の DEFINITION）
- * 直書きと、ここから引く場所が別々にあったので、食い違った。
- *
- * 言い方は「異性」に1つにする。男女どちらが読んでも、
- * 自分のことだと分かる。製品としてもそちらを向いている。
- *
- * ── そのぶん、断りを隠さない ────────────────────
- * 「異性」と書くと、どちらの向きも開いているように読める。
- * いまは男性からの相談しか受けられない（ASKER_OPEN）。
- *
- * だから notYetNote() を、1画面目に出す。
- * 下のほうに置くと、読まずに申し込む人が出る。
- * scripts/check-copy.mjs が、1画面目にあることを見ている。
- */
-export function advisorWord(): string {
-  return "異性";
+export type Filter = {
+  /** どの都市へ行った人か */
+  city: string;
+  /** 帰国から何日以内か。FRESH_DAYS が上限 */
+  withinDays: number;
+  /** 同性にだけ聞くか。未指定なら問わない */
+  sameGenderAs?: Gender;
+};
+
+export function filterLabel(f: Filter): string {
+  const parts = [f.city, `${f.withinDays}日以内に行った人`];
+  if (f.sameGenderAs) parts.push(`${GENDER_LABEL[f.sameGenderAs]}だけ`);
+  return parts.join("・");
 }
 
-/**
- * まだ開いていない向きがあるときの、断り。
- *
- * ══════════════════════════════════════════════════
- * 断りを、謝りにしない
- * ══════════════════════════════════════════════════
- * 前はこう書いていた。
- *   いま確カメるをお使いいただけるのは、男性の方のみです。
- *   女性の方向けは、回答者が揃い次第はじめます。
- *
- * 間違ってはいないが、2つまずい。
- *
- * 1 「確カメる」だけの話に読める。
- *    実際は、いま出しているのは男性向けの製品そのもの。
- *    一部の機能が使えないのではなく、全体がそう。
- *
- * 2 1画面目に置くには長い。2行あって、押す場所の真下で
- *    いちばん目に入るのが断りになっていた。
- *    来た男性にとっては、1行も自分に関係がない。
- *
- * 短くして、前を向いた言い方にする。
- * 置き場所も変えた（1画面目 → よくある質問とフッター）。
- * 1画面目は「男性の」と名乗ることで、同じ役を果たしている。
- */
+/* ══════════════════════════════════════════════════
+   いま、確カメるを開けているか
+   ══════════════════════════════════════════════════
+
+   答える人が0人のあいだは、開かない。
+
+   マチアプ版は「月3回、実在する異性に確カメられる」と
+   書いたまま、回答者が0人だった。買った人が最初に使おうとして
+   止まる形になっていた。同じことを繰り返さない。
+
+   都市ごとに、答える人が MIN_ANSWERERS 人そろって初めて開く。
+   そろうまでは、画面に「受付前」と出す。 */
+
+export const MIN_ANSWERERS = 3;
+
+/** 環境変数で、都市ごとに開ける。例: ASK_OPEN_CITIES="バンコク,台北" */
+const OPEN = (process.env.ASK_OPEN_CITIES ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+export function askOpen(city: string): boolean {
+  return OPEN.includes(city);
+}
+
+export const anyAskOpen = OPEN.length > 0;
+
+/** まだ開いていないときの、断り。開いたらひとりでに消える */
 export function notYetNote(): string | null {
-  if (bothWaysOpen) return null;
-  const closed = (Object.keys(ASKER_OPEN) as Gender[]).filter((g) => !ASKER_OPEN[g]);
-  if (closed.length === 0) return null;
-  const open = openAskers().map((g) => GENDER_LABEL[g]).join("・");
-  const who = closed.map((g) => GENDER_LABEL[g]).join("・");
-  return `現在は${open}向けに提供しています。${who}向けは順次対応予定です。`;
+  if (anyAskOpen) return null;
+  return `確カメるは、${advisorWord()}がそろった都市から順にはじめます。`;
 }
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
   /* 言い方が1つであること。
-     性別で分岐すると、直書きしている場所と必ず食い違う
-     （実際に、ヘッダーは「女性」・本文は「異性」になっていた）。 */
-  if (advisorWord() !== "異性") {
-    throw new Error(`相手の呼び方が「${advisorWord()}」になっています（「異性」に統一しています）`);
+     性別で分岐すると、直書きしている場所と必ず食い違う。 */
+  if (!advisorWord().includes("行った")) {
+    throw new Error(`聞く相手の呼び方が「${advisorWord()}」になっています（行ったばかりの人です）`);
   }
-
-  // 開いていない向きがあるなら、必ず断りが出ること。
-  // 「異性」と書く以上、ここが唯一の歯止めになる。
-  // 出ていないと、使えない人が申し込んでしまう。
-  if (!bothWaysOpen && !notYetNote()) {
-    throw new Error("開いていない向きがあるのに、断りが出ていません");
+  /* 在住者・プロを呼び込まないこと。
+     そこを混ぜると、聞きたかったものと別のものが返る。 */
+  for (const w of ["在住", "ガイド", "添乗", "プロ", "専門家"]) {
+    if (advisorWord().includes(w) || advisorShort().includes(w)) {
+      throw new Error(`聞く相手に「${w}」が入っています。初めて一人で行った人の実感を聞く場所です`);
+    }
   }
-  // 両方開いたら、断りは消えること（残ると嘘になる）。
-  if (bothWaysOpen && notYetNote()) {
-    throw new Error("両方開いているのに、断りが残っています");
-  }
-
-  /* 断りに、誰が使えて誰が使えないかが書いてあること。
-     言い回しを変えたので、言葉そのものではなく中身で見る。 */
-  const note = notYetNote();
-  if (note) {
-    for (const g of openAskers()) {
-      if (!note.includes(GENDER_LABEL[g])) {
-        throw new Error(`断りに、いま使える人（${GENDER_LABEL[g]}）が書かれていません`);
-      }
+  /* 決まりの文に、3つの条件が全部書いてあること。
+     1つでも抜けると、誰が答えるのか分からなくなる。 */
+  {
+    const r = advisorRule();
+    for (const [re, what] of [
+      [/同じ都市/, "どの都市か"],
+      [new RegExp(`${FRESH_DAYS}日`), "いつまでか"],
+      [/一人で/, "一人で行ったか"],
+    ] as const) {
+      if (!re.test(r)) throw new Error(`聞く相手の決まりに、${what}が書かれていません（${r}）`);
     }
-    const closed = (Object.keys(ASKER_OPEN) as Gender[]).filter((g) => !ASKER_OPEN[g]);
-    for (const g of closed) {
-      if (!note.includes(GENDER_LABEL[g])) {
-        throw new Error(`断りに、まだ使えない人（${GENDER_LABEL[g]}）が書かれていません`);
-      }
-    }
-    // あとで開くことが書いてあること。「使えません」で終わらせない。
-    if (!/予定|順次|次第|はじめます/.test(note)) {
-      throw new Error(`断りに、あとで開くことが書かれていません（${note}）`);
-    }
-    /* 1画面目ではなく、よくある質問とフッターに置く長さであること。
-       長いと、置いた場所でいちばん目立つものになる。 */
-    if (note.length > 40) {
-      throw new Error(`断りが長すぎます（${note.length}字／40字まで）`);
+    if (!/在住/.test(r)) {
+      throw new Error(`聞く相手の決まりに、在住者が入っていないことが書かれていません（${r}）`);
     }
   }
 
-  // 少なくとも1つの向きは開いていること。
-  // 全部閉じていたら、確カメるを売っていないことになる。
-  if (openAskers().length === 0) {
-    throw new Error("どの向きも開いていません。確カメるを出せません");
+  /* 線が、ゆるみすぎていないこと。
+     90日を超えると、値段も店も変わっている。
+     短すぎると、答える人が集まらない。 */
+  if (FRESH_DAYS > 120) {
+    throw new Error(`行ったばかりの線が ${FRESH_DAYS} 日です。値段も店も変わっています`);
+  }
+  if (FRESH_DAYS < 30) {
+    throw new Error(`行ったばかりの線が ${FRESH_DAYS} 日です。答える人が集まりません`);
+  }
+  if (isFresh(FRESH_DAYS + 1)) throw new Error("線を越えた人が、行ったばかりになっています");
+  if (!isFresh(0)) throw new Error("帰国した当日の人が、行ったばかりになっていません");
+
+  /* 答える人がそろう前に、開かないこと。
+     ここが1人だと、1人の答えが「行った人の声」として出る。 */
+  if (MIN_ANSWERERS < 3) {
+    throw new Error(`開ける人数が ${MIN_ANSWERERS} 人です。少ない答えを総意として出せません`);
   }
 
-  // 異性であること。同性に聞く形になっていないこと。
-  for (const g of ["male", "female"] as const) {
-    if (opposite(g) === g) throw new Error("異性の求め方が壊れています");
+  /* 開いていないなら、断りが出ること。
+     出ていないと、使えないものを売ることになる。 */
+  if (!anyAskOpen && !notYetNote()) {
+    throw new Error("どの都市も開いていないのに、断りが出ていません");
+  }
+  if (anyAskOpen && notYetNote()) {
+    throw new Error("開いているのに、断りが残っています");
   }
 }

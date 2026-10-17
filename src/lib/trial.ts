@@ -1,5 +1,6 @@
 import { plan as getPlan, ENTRY_PLAN } from "./ask/plans";
-import { ASKER_OPEN, GENDER_LABEL, advisorWord, opposite, type Gender } from "./who";
+import { askOpen, advisorWord, advisorRule } from "./who";
+import { CITIES } from "./voice";
 import { assertNotCheap, assertNotScary } from "./voice";
 
 /* ══════════════════════════════════════════════════
@@ -98,14 +99,22 @@ export const trialOpen = process.env.TRIAL_OPEN !== "0";
 
 export type Intake = "trial" | "waitlist";
 
-/** この性別の人を、体験として受けられるか */
-export function intakeFor(g: Gender): Intake {
-  return ASKER_OPEN[g] ? "trial" : "waitlist";
+/* ── 受けられるかどうかは、都市で決まる ──────────
+   マチアプ版は、相談する人の性別で決めていた
+   （男性からの相談だけ開いていた）。
+
+   旅版は性別で絞らない。決めるのは、その都市に
+   行ったばかりの人がそろっているか（who.ts の askOpen）。
+   バンコクは開いていて台北はまだ、ということが起きる。 */
+
+/** この都市を、体験として受けられるか */
+export function intakeFor(city: string): Intake {
+  return askOpen(city) ? "trial" : "waitlist";
 }
 
 /** 順番待ちになる人に出す言葉。何を待っているのかを書く */
-export function waitlistLine(g: Gender): string {
-  return `${GENDER_LABEL[opposite(g)]}の回答者が揃い次第、こちらからご連絡します。`;
+export function waitlistLine(city: string): string {
+  return `${city}に${advisorWord()}が揃い次第、こちらからご連絡します。`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -206,24 +215,26 @@ export const TRIAL_FALLBACK =
 
   /* 開いている向きは、体験として受けられること。
      ここが waitlist になると、売っている相手を体験から外すことになる。 */
-  for (const g of ["male", "female"] as const) {
-    const want = ASKER_OPEN[g] ? "trial" : "waitlist";
-    if (intakeFor(g) !== want) {
-      throw new Error(`${GENDER_LABEL[g]}の受け方が、開いている向き（who.ts）と食い違っています`);
+  for (const city of CITIES) {
+    const want = askOpen(city) ? "trial" : "waitlist";
+    if (intakeFor(city) !== want) {
+      throw new Error(`${city}の受け方が、開いている都市（who.ts）と食い違っています`);
+    }
+    const line = waitlistLine(city);
+    if (!/揃い次第/.test(line)) {
+      throw new Error(`${city}の順番待ちの文に、何を待つのかが書かれていません`);
+    }
+    // 待つ相手が「行ったばかりの人」であること（在住者やプロにしない）。
+    if (!line.includes(advisorWord())) {
+      throw new Error(`${city}の順番待ちの文で、待つ相手が${advisorWord()}になっていません`);
+    }
+    if (!line.includes(city)) {
+      throw new Error(`${city}の順番待ちの文に、どの都市かが書かれていません`);
     }
   }
-
-  /* 順番待ちの言葉に、何を待っているのかが書いてあること。
-     「お待ちください」だけだと、何がいつ変わるのか分からない。 */
-  for (const g of ["male", "female"] as const) {
-    const line = waitlistLine(g);
-    if (!/回答者が揃い次第/.test(line)) {
-      throw new Error(`${GENDER_LABEL[g]}の順番待ちの文に、何を待つのかが書かれていません`);
-    }
-    // 待つ相手は異性であること（同性に聞く形にしない）。
-    if (!line.includes(GENDER_LABEL[opposite(g)])) {
-      throw new Error(`${GENDER_LABEL[g]}の順番待ちの文で、待つ相手が異性になっていません`);
-    }
+  // 誰が答えるのかの決まりが、読める形であること
+  if (!advisorRule().includes("一人で")) {
+    throw new Error("体験の入口から引く決まりに、一人で行った人だと書かれていません");
   }
 
   /* 書いてもらう量が、長すぎないこと。
