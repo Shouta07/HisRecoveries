@@ -9,6 +9,10 @@ import MapWindow from "@/components/trip/MapWindow";
 import { DEMO_LOG } from "@/lib/trip/log";
 import { DEMO_BOARD, TRIP_BRIEF } from "@/lib/trip/demo";
 import { codeOf } from "@/lib/trip/cities";
+import RouteMap from "@/components/trip/RouteMap";
+import Stamp from "@/components/trip/Stamp";
+import { CHECKS, judge } from "@/lib/trip/checklist";
+import { familyText, lineShareUrl } from "@/lib/trip/share";
 import {
   TRIP_PASS_YEN, YEAR_PASS_YEN, YEAR_BREAK_EVEN, PASS_TAIL_DAYS,
   FREE_TRIPS, FREE_RECORDS, INCLUDED,
@@ -399,6 +403,22 @@ export default function HomePage() {
               </ul>
               <p className="mt-1.5 text-[11.5px] text-steel">いまはこの3つだけです</p>
             </div>
+
+            {/* ══════════════════════════════════════════
+                世界地図にはしない
+                ══════════════════════════════════════════
+                世界地図を描くと、どこへでも行けるように見える。
+                行けるのは3都市。
+
+                地図は「どこへ行こうか」を考えさせる道具でもある。
+                この製品は、行くと決めたあとだけを引き受ける。
+                行き先を選ばせる絵を置くと、看板と食い違う。
+
+                日本と3都市だけを、実際の経度と緯度から描く。
+                余白が広いのは、できないことが多いから。隠さない。 */}
+            <div className="mt-6">
+              <RouteMap />
+            </div>
           </div>
         </Wrap>
 
@@ -599,6 +619,101 @@ export default function HomePage() {
           帰ってきてからの1行は、半年後の自分と、次に行く人のために残ります。
         </p>
         <p className="mt-4 text-[12px] leading-[1.8] text-steel">
+          ※ 画面の見本です。特定の利用者の記録ではありません。
+        </p>
+      </Block>
+
+      {/* ══ 4.7 準備の骨格 ══ */}
+      {/* ══════════════════════════════════════════════
+          チェックリストを、並べない
+          ══════════════════════════════════════════════
+          9個のチェックボックスを並べると、未完了リストになる。
+          初めての一人旅で、空の四角が9個見えると、
+          行くのが面倒になる。
+
+          骨格は持っている（lib/trip/checklist.ts に9つ）。
+          ただし本人には見せない。
+
+          貼られた文から、どれが済んだかを読む。
+          まだのものの中から、旅程の順でいちばん早い1つだけを
+          「次にやること」として出す。
+
+          本人に見えるのは、いつでも1つ。
+          9個あることは、知らなくていい。 */}
+      <Block>
+        <H>
+          チェックリストは、
+          <br className="sm:hidden" />
+          出しません。
+        </H>
+        <p className="mt-4 max-w-[30em] text-[14.5px] leading-[1.9] text-steel">
+          パスポート、宿、eSIM、保険、両替、配車アプリ、空港からの行き方、緊急連絡先、家族への共有。
+          準備することは決まっています。ただ、9個並べると、行くのが面倒になります。
+        </p>
+
+        <div className="mt-7 max-w-[28em]">
+          <p className="text-[11.5px] font-bold tracking-[0.08em] text-steel">貼った文</p>
+          <p className="mt-2 rounded-card rounded-bl-[4px] bg-brand px-4 py-3.5 text-[14.5px] font-bold leading-[1.8] text-paper">
+            宿はスクンビットに取った。eSIMも買った。保険も入った。
+          </p>
+
+          <p aria-hidden className="py-4 text-center text-[22px] font-black text-brand">↓</p>
+
+          {/* 読めたものは記録に積み、残りから1つだけ出す。
+              押させない。聞かない。書いてあるものだけ拾う */}
+          <div className="rounded-card border border-line bg-paper p-5 shadow-card">
+            <ul className="flex flex-col gap-2">
+              {judge("宿はスクンビットに取った。eSIMも買った。保険も入った。").done.map((c) => (
+                <li key={c.id} className="flex items-start gap-2.5">
+                  <Stamp />
+                  <span className="min-w-0 flex-1 text-[13px] leading-[1.6] text-steel">
+                    {c.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-3.5 flex items-start gap-2 border-t border-line pt-3.5">
+              <span
+                aria-hidden
+                className="mt-[2px] shrink-0 text-[10px] font-black tracking-wide text-brand"
+              >
+                NEXT
+              </span>
+              <span className="min-w-0 flex-1 text-[15px] font-bold leading-[1.6] text-slate">
+                {judge("宿はスクンビットに取った。eSIMも買った。保険も入った。").next?.label}
+              </span>
+            </div>
+          </div>
+          <p className="mt-2.5 text-[12px] leading-[1.8] text-steel">
+            残りが何個あるかは、出しません。数えると、そこが宿題になります。
+          </p>
+        </div>
+
+        {/* 家族への共有だけ、文を用意しておく。
+            「親に何て言うか」は、準備でいちばん後回しになるところ */}
+        <div className="mt-8 max-w-[28em] rounded-soft bg-mist px-4 py-4">
+          <p className="text-[13px] font-black text-slate">
+            {CHECKS.find((c) => c.id === "family")?.label}
+          </p>
+          <p className="mt-2 whitespace-pre-wrap text-[13px] leading-[1.85] text-steel">
+            {familyText({ city: "バンコク", departAt: "2026-11-14", returnAt: "2026-11-17" })}
+          </p>
+          <a
+            href={lineShareUrl(
+              familyText({ city: "バンコク", departAt: "2026-11-14", returnAt: "2026-11-17" }),
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3.5 inline-flex min-h-[46px] items-center justify-center rounded-pill border border-brand bg-paper px-5 text-[13.5px] font-bold text-brand"
+          >
+            LINEで送る <span aria-hidden className="ml-1.5">↗</span>
+          </a>
+          <p className="mt-2.5 text-[11.5px] leading-[1.75] text-steel">
+            文はそのまま直せます。宿や便の番号は、こちらからは入れていません。
+          </p>
+        </div>
+
+        <p className="mt-5 text-[12px] leading-[1.8] text-steel">
           ※ 画面の見本です。特定の利用者の記録ではありません。
         </p>
       </Block>
