@@ -2944,3 +2944,38 @@ create unique index if not exists scene_answers_once
 
 create index if not exists scene_answers_scene_idx
   on scene_answers (scene_id, gender);
+
+-- ══════════════════════════════════════════════════
+-- 行った人が残したこと（/cities/<都市>）
+-- ══════════════════════════════════════════════════
+-- 帰国後に残った1行が、そのまま次の人への情報になる。
+--
+-- ── こちらは書かない ────────────────────────────
+-- 「各国の情報を発信する」はやらない。
+-- やると、この製品がいちばん否定している側（古いブログ）に回る。
+-- ここに入るのは、実際に行った人が残した文だけ。
+--
+-- ── 書いた人を、商品にしない ────────────────────
+-- 名前も顔も肩書きも持たない。持つのは
+-- 「どの都市か」「旅程のどこか」「帰国から何日か」だけ。
+-- 誰が言ったかで重みを付け始めると、SNSになる。
+--
+-- ── 90日で落ちる ────────────────────────────────
+-- days_ago は日次で更新する。90日を超えたものは画面に出さない
+-- （lib/who.ts の FRESH_DAYS と同じ線）。
+-- 値段も店も変わっているため。消しはしない。
+create table if not exists trip_notes (
+  id uuid primary key default gen_random_uuid(),
+  city text not null,
+  -- 旅程のどこの話か。lib/trip/log.ts の Leg と同じ語彙
+  leg text not null check (leg in ('prep', 'depart', 'there', 'back')),
+  text text not null,
+  -- 帰国から何日たった人の話か
+  days_ago int not null default 0,
+  -- 書いた人の鍵。画面には出さない。重複と通報の追跡だけに使う
+  author_token text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists trip_notes_city_idx
+  on trip_notes (city, days_ago asc);

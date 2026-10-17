@@ -6,6 +6,7 @@ import { heroSubLines } from "@/lib/koi/gate";
 import { passEnabled } from "@/lib/stripe";
 import TripBoard from "@/components/trip/TripBoard";
 import TripLog from "@/components/trip/TripLog";
+import MapWindow from "@/components/trip/MapWindow";
 import { DEMO_LOG } from "@/lib/trip/log";
 import { DEMO_BOARD, TRIP_BRIEF } from "@/lib/trip/demo";
 import {
@@ -522,6 +523,28 @@ export default function HomePage() {
           <AfterCard />
         </div>
 
+        {/* ══════════════════════════════════════════
+            次の一手に、地図を1枚だけ
+            ══════════════════════════════════════════
+            「空港から宿まで、どう行く」は、
+            初めて一人で行く人のいちばん最初の不安。
+
+            出発地と目的地の2点だけ。経由地は渡せない作りにしてある
+            （lib/trip/map.ts が引数の数ごと止める）。
+            旅程の自動生成はやらないと決めたので、
+            「やらない」と書くだけにせず、形で止める。
+
+            埋め込まずにリンクにした。APIの鍵が要らず、
+            携帯では Google マップのアプリが開く。
+            現地で開くのはアプリのほうなので、そちらが近い。 */}
+        <div className="mt-5 max-w-[28em]">
+          <MapWindow
+            city="バンコク"
+            from={{ label: "スワンナプーム空港" }}
+            to={{ label: "スクンビット" }}
+          />
+        </div>
+
         <p className="mt-5 text-[12px] leading-[1.8] text-steel">
           ※ 画面の見本です。特定の利用者の記録ではありません。
         </p>
@@ -668,6 +691,39 @@ export default function HomePage() {
         >
           答える側について <span aria-hidden className="ml-1.5">&rarr;</span>
         </Link>
+
+        {/* ══════════════════════════════════════════
+            貯まったものを、開くだけ
+            ══════════════════════════════════════════
+            こちらは1行も書かない。
+            「各国の情報を発信する」をやると、この製品が
+            いちばん否定している側（古いブログ、慣れた人のSNS）に回る。
+
+            帰国後に残った1行が、そのまま次の人への情報になる。
+            1次情報で、90日以内で、一人旅の視点。
+            この3つが揃っているものは、ほかに無い。
+
+            まだ誰も残していない都市は、そう出す。
+            埋めるために、こちらで書かない。 */}
+        <div className="mt-9 border-t border-line pt-7">
+          <p className="text-[14.5px] font-black leading-[1.7] text-slate">
+            残ったものは、次に行く人が読めます。
+          </p>
+          <p className="mt-2 max-w-[30em] text-[13.5px] leading-[1.9] text-steel">
+            帰ってきてからの1行が、同じ都市へ行く人のところに届きます。こちらでは書いていません。
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {CITIES.map((c) => (
+              <Link
+                key={c}
+                href={`/cities/${encodeURIComponent(c)}`}
+                className="rounded-pill border border-line bg-paper px-3.5 py-2 text-[13px] font-bold text-slate"
+              >
+                {c}で残ったこと
+              </Link>
+            ))}
+          </div>
+        </div>
       </Block>
 
       {/* ══ 8. 3つの持ち場 ══ */}
