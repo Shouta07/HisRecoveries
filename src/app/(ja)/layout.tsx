@@ -36,15 +36,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${site.name} — ${site.tagline}`,
     description: site.description,
-    creator: site.handle,
-    site: site.handle,
+    /* アカウントがあるときだけ名乗る。
+       無いまま書くと、カードの下に押せない名前が出る。 */
+    ...(site.handle ? { creator: site.handle, site: site.handle } : {}),
     images: ["/opengraph-image"],
   },
+  /* ── 無くなった配信を、head から外した ──────────────
+     全ページの <head> から /feed.xml を RSS として指していたが、
+     その面はもう無い（記事の一覧と一緒に消えた）。
+     購読した人のリーダーには、ずっとエラーが出ていた。 */
   alternates: {
     canonical: site.url,
-    types: {
-      "application/rss+xml": [{ url: `${site.url}/feed.xml`, title: `${site.name} — 新着記事` }],
-    },
   },
   robots: {
     index: true,
@@ -63,7 +65,11 @@ export const metadata: Metadata = {
   },
 };
 export const viewport: Viewport = {
-  themeColor: "#2E4A66",
+  /* 携帯のブラウザーが、画面の上の帯をこの色で塗る。
+     紺のままだったので、画面の色を温かくしたあとも、
+     いちばん上の数ミリだけ前の色が残っていた。
+     tailwind.config.ts の brand-deep と同じ値。 */
+  themeColor: "#8E4330",
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,

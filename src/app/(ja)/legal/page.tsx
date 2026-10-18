@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { LEGAL, missingLegal } from "@/lib/legal";
+import { LEGAL, missingLegal, REFUND_OPEN } from "@/lib/legal";
 import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 
@@ -53,6 +53,25 @@ export default function LegalPage() {
               揃うまで、料金のお支払いは受け付けていません。
               決済そのものを開始できないようにしてあります。
             </p>
+
+            {/* ── 何が決まっていないかを、書いておく ──────────
+                「返品・キャンセルが未記入」だけだと、
+                書き忘れたのか、まだ決めていないのかが分からない。
+
+                決めていないのはこの3点だと出しておけば、
+                読んだ人も、決める人も、同じものを見られる。 */}
+            {REFUND_OPEN.length > 0 && (
+              <>
+                <p className="mt-5 text-[14px] font-bold">
+                  返金について、まだ決まっていないこと
+                </p>
+                <ul className="mt-2.5 space-y-2 border-l-2 border-line pl-4 text-[14px] leading-[1.9] text-steel">
+                  {REFUND_OPEN.map((r) => (
+                    <li key={r}>{r}</li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         )}
 
@@ -71,9 +90,12 @@ export default function LegalPage() {
           ))}
         </dl>
 
+        {/* この1行も、前の商品の説明（条件に合う方へ順次お届け／
+            規定の人数に達した時点で）のまま残っていた。
+            表の中身は lib/legal.ts から引いているのに、
+            表の下に手で書いた1行があり、そこだけ古かった。 */}
         <p className="mt-10 max-w-[34em] text-[13px] leading-[1.9] text-steel">
-          回答は、条件に合う方へ順次お届けします。規定の人数に達した時点で結果をご覧いただけます。
-          個人情報の扱いは{" "}
+          ご相談には、当社の担当者がLINEでお答えします。 個人情報の扱いは{" "}
           <Link href="/privacy" className="underline decoration-line underline-offset-4 hover:text-slate">
             プライバシー・免責事項
           </Link>

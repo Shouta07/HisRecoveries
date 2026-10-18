@@ -35,7 +35,9 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/admin/"],
       })),
     ],
-    sitemap: [`${site.url}/sitemap.xml`, `${site.url}/feed.xml`],
+    /* /feed.xml も並べていたが、その面はもう無い。
+       無いものを sitemap として出すと、毎回取りに来て404になる。 */
+    sitemap: [`${site.url}/sitemap.xml`],
     host: site.url,
   };
 }

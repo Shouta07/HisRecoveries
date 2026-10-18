@@ -17,7 +17,8 @@ import type { Metadata, Viewport } from "next";
 // 「実際に使う文字だけを含むサブセットを1ファイル作って自前で置く」形にすること。
 // fontsource のサブセット分割は、日本語ではこの症状が必ず出る。
 import Analytics from "@/components/Analytics";
-import { site, socialSameAs } from "@/lib/site";
+import { site } from "@/lib/site";
+import { FULL } from "@/lib/voice";
 
 
 
@@ -53,16 +54,13 @@ export default function Shell({
     description: site.description,
     inLanguage: site.language,
     publisher: { "@id": `${site.url}/#publisher` },
-    // トップの絞り込みは ?q= を URL に載せるので、この宣言は実際に動く
-    // （検索結果からサイト内検索に直接入れる可能性を残す）。
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${site.url}/?q={search_term_string}#index`,
-      },
-      "query-input": "required name=search_term_string",
-    },
+    /* ── できない操作を、宣言しない ──────────────────
+       ここに SearchAction があった。?q= でサイト内を絞り込める、
+       という宣言。記事の一覧があったときは本当だった。
+
+       いまのトップは面が1枚で、?q= を読む場所が無い。
+       検索エンジンに「ここで検索できます」と言ったまま、
+       入口が無い状態になっていた。外す。 */
   };
 
   // 出版者。メディアなので Organization ではなく NewsMediaOrganization…ではなく、
@@ -79,7 +77,14 @@ export default function Shell({
 
        「男性ウェルネスメディア」は、男性限定に見える表現でもある。
        サービスは男女どちらでも使える形にしたので、両方外す。 */
-    alternateName: "旅亀",
+    /* ── 使っていない名前を、別名として出さない ──────
+       ここは「別名はこれです」と検索エンジンに伝える欄。
+
+       「旅亀」と書いてあったが、この名前は画面のどこにも出していない。
+       使っていない名前で紐づけても、誰もその名前で探さない。
+
+       出すのは、実際に名乗っている形だけ（voice.ts が持つ）。 */
+    alternateName: FULL,
     url: site.url,
     logo: {
       "@type": "ImageObject",
@@ -87,7 +92,17 @@ export default function Shell({
       width: 256,
       height: 256,
     },
-    sameAs: socialSameAs,
+    /* ── 他の事業のSNSを、ここのものとして出さない ───
+       sameAs に His Recoveries（記事事業）の Threads・X・note・
+       Substack を並べていた。
+
+       sameAs は「この組織の、公式のアカウントです」という宣言。
+       旅の相談を売っている面から、髪や肌の記事を出している
+       アカウントを公式として指していた。別の事業のものなので外す。
+
+       このサービス自身のアカウントは、まだ無い。
+       無いので、何も書かない（site.social には残してある。
+       記事事業の面で使う値で、消すと別の場所が壊れる）。 */
     description: site.description,
     slogan: site.promise,
     foundingDate: "2026",
@@ -110,9 +125,16 @@ export default function Shell({
     areaServed: { "@type": "Country", name: "Japan" },
     contactPoint: {
       "@type": "ContactPoint",
-      contactType: "editorial",
-      email: site.email,
-      availableLanguage: ["Japanese", "English"],
+      /* 記事の編集部ではなく、相談を受ける窓口になった。 */
+      contactType: "customer support",
+      email: site.company.email,
+      /* ── 対応できる言語を、増やして書かない ────────
+         ここは "Japanese", "English" だった。
+         英語と中国語の面はあるが、その言語で相談を受けられるかは
+         まだ確認できていない。だから保証するのは日本語だけ。
+
+         面があることと、その言語で答えられることは別。 */
+      availableLanguage: ["Japanese"],
     },
   };
 

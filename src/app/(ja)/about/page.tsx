@@ -1,108 +1,188 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Mark from "@/components/brand/Mark";
 import { site } from "@/lib/site";
-import { advisorWord } from "@/lib/who";
+import { NAME, FULL, DEFINITION } from "@/lib/voice";
+import { BEEN, BEEN_NOTE, STANCE } from "@/lib/been";
+import { NOT_INCLUDED, REPLY_LINE, WINDOW_LINE } from "@/lib/service";
 
-// 編集方針。
-//
-// もとはトップの中の #about にあった。トップが /app の入口になったので、
-// ここへ出した。消していない。文面も変えていない。
-// 変えたのは置き場所だけで、トップのアンカーを指していたサイト内リンクは
-// すべてここへ向け直してある。
-//
-// ── なぜ残すか ──────────────────────────────
-// 取材がまだ0本の状態で信頼を主張できる根拠は、
-// 「聞いていないことは聞いていないと書く」という書き方そのものしかない。
-// これを畳むと、何も残らない。
+/* ══════════════════════════════════════════════════
+   このサービスについて
+   ══════════════════════════════════════════════════
 
-const MINCHO: React.CSSProperties = {
-  // 明朝をやめた。
-  //
-  // 記事の見出しだけ明朝で、タシカメの画面はゴシック。
-  // 同じサイトの中で書体が変わると、別のサイトに見える。
-  // 検索から来た人は、記事を読んだあとタシカメへ入る。
-  //
-  // 名前（MINCHO）は50か所で使われている。
-  // 名前を変えると50か所を触ることになるので、中身だけ差し替えた。
-  fontFamily: "inherit",
-  fontFeatureSettings: '"palt" 1',
-};
+   ── 前は、別の事業の説明だった ──────────────────
+   商品を入れ替えたあとも、この面だけ記事事業の編集方針が
+   そのまま残っていた（髪・肌・パートナーのこと）。
+
+   しかも本文から /plans へ2回リンクしていた。
+   その面はもう無い。押した人は、どちらも404に落ちていた。
+   色も前の青のままで、トップから来ると別のサイトに見えた。
+
+   ── 畳まずに、書き替えた ────────────────────────
+   前の面が持っていた仕事は「聞いていないことは、聞いていないと書く」
+   だった。取材0本で信頼を主張できる根拠が、書き方しか無かったから。
+
+   商品が変わっても、その仕事は残る。向きだけ変える。
+
+     前  聞いていないことは、聞いていないと書く
+     後  確認できていないことは、確認できていないと書く
+
+   有料の相談で、答えるのは運営者ひとり。
+   読む人がいちばん知りたいのは「この人は誰で、何を知らないのか」。
+   それを1枚にまとめるのが、この面の仕事。
+
+   ── 持ちものから引く ────────────────────────────
+   国の一覧・名乗り・含まないもの・期間・返信は、
+   been.ts と service.ts が持つ。ここでは書き写さない。
+   書き写すと、片方を直した日にここだけ古いまま残る。 */
 
 export const metadata: Metadata = {
-  title: "編集方針 — His Recoveries",
+  title: { absolute: `このサービスについて — ${NAME}` },
   description:
-    "誰が、どういう立場で書いているか。聞いていないことは聞いていないと書きます。やらなくていいことは、やらなくていいと書きます。",
+    "誰が答えるのか。何が確認できていて、何が確認できていないのか。確認できていないことは、確認できていないと書きます。",
   alternates: { canonical: `${site.url}/about` },
 };
 
+/** 確認が取れていないこと。ここに書いたものは、画面のどこにも書かない */
+const UNCONFIRMED = [
+  "どの都市へ行ったか",
+  "いつ行ったか",
+  "何回行ったか",
+  "一人で行ったかどうか",
+  "旅行や語学の資格",
+  "現地の言葉をどれだけ話せるか",
+];
+
 export default function AboutPage() {
   return (
-    <main className="mx-auto max-w-[840px] px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
-      <h1 className="text-[23px] sm:text-[27px]" style={{ ...MINCHO, fontWeight: 700 }}>
-        His Recoveriesについて
-      </h1>
-
-      <div className="mt-8 max-w-[34em] space-y-6 text-[15px] leading-[2.05] text-keshizumi sm:text-[16px]">
-        <p>
-          男性の見た目、体、関係についての改善を、順番として編集しているところです。
-          髪、肌、睡眠、疲れ、体、パートナーとのこと——誰にも相談できないまま
-          検索していることを扱っています。
-        </p>
-        <p>
-          調べても出てくるのは「やったほうがいい」ばかりで、順番も、やらなくていいことも
-          書いてありません。ここでは、
-          <span className="font-bold text-sumi">
-            やらなくていいことは、やらなくていいと書きます。
-          </span>
-          何を先にやって、何を後回しにしていいのかを決められる状態にするのが、仕事です。
-        </p>
-        <p>
-          いまの順番は、公開されている情報と編集部の判断で組んだ暫定版です。
-          取材はこれからです。男性本人、女性、専門家に聞いて、分かったことから順に
-          書き足していきます。順番が変わったら、変わった記録も残します。
-        </p>
-      </div>
-
-      <ul className="mt-9 max-w-[34em] space-y-2.5 text-[15px] leading-[1.95] text-keshizumi">
-        <li>聞いていないことは、聞いていないと書きます。</li>
-        <li>
-          「やったほうがいい」を全部は並べません。いまはやらなくていいものは、そう書きます。
-        </li>
-        <li>
-          順番が変わったら、変わった記録を残します（
-          <Link
-            href="/plans"
-            className="font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
-          >
-            更新記録
+    <div data-brand className="min-h-screen bg-paper pb-20 text-slate sm:pb-0">
+      <header className="border-b border-line">
+        <div className="mx-auto flex w-full max-w-[760px] items-center justify-between gap-4 px-5 py-3.5 sm:px-8">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Mark size={28} />
+            <span className="whitespace-nowrap text-[16px] font-black">{NAME}</span>
           </Link>
-          ）。
-        </li>
-        <li>効果や結果は保証しません。医療的な判断は、医師の領域です。</li>
-        <li>掲載の順番を、報酬額で決めません。</li>
-      </ul>
+          <Link href="/terms" className="text-[13px] text-steel transition-colors hover:text-slate">
+            利用規約
+          </Link>
+        </div>
+      </header>
 
-      <p className="mt-6 max-w-[34em] text-[14px] leading-[1.95] text-ainezu">
-        専門家への取材記事は、まだ0本です。記事の誤りは
-        <a
-          href={`mailto:${site.email}`}
-          className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
-        >
-          {site.email}
-        </a>
-        までお知らせください。
-      </p>
+      <main className="mx-auto w-full max-w-[760px] px-5 pb-20 pt-10 sm:px-8 sm:pt-14">
+        <h1 className="text-big font-black">このサービスについて</h1>
 
-      <p className="mt-12 border-t border-shironezu pt-7 text-[14px] leading-[1.95] text-keshizumi">
-        送る前のメッセージや自己紹介文を、実在する{advisorWord()}に読んでもらうほうは
-        <Link
-          href="/plans"
-          className="mx-1 font-bold text-asagi underline decoration-asagi/40 underline-offset-[4px] hover:decoration-asagi"
-        >
-          タシカメ
-        </Link>
-        です。
-      </p>
-    </main>
+        <p className="mt-7 max-w-[34em] text-[15px] leading-[1.95] text-steel sm:text-[16px]">
+          {DEFINITION}
+        </p>
+
+        {/* ── 答えるのは誰か ───────────────────────────
+            ここを曖昧にしたまま値段を付けない。
+            誰が答えるのか分からないものに、人はお金を払えない。 */}
+        <section className="mt-14">
+          <h2 className="text-[19px] font-black sm:text-[21px]">答えるのは、ひとりです</h2>
+          <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+            {FULL}の相談には、運営者が自分でお返事します。{STANCE}
+          </p>
+          <p className="mt-3 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+            ひとりで受けています。そのため{WINDOW_LINE}という期間を決めていて、
+            {REPLY_LINE}。
+          </p>
+        </section>
+
+        {/* ── 事実として言えること ─────────────────────
+            言えるのは、国・地域に行ったことがある、まで。
+            一覧は been.ts が持つ（15で固定。増やすと公開前に止まる）。 */}
+        <section className="mt-14">
+          <h2 className="text-[19px] font-black sm:text-[21px]">行ったことがある国・地域</h2>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {BEEN.map((b) => (
+              <li
+                key={b}
+                className="rounded-full border border-line bg-mist px-3.5 py-1.5 text-[14px] font-bold"
+              >
+                {b}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 max-w-[34em] text-[14px] leading-[1.95] text-steel">{BEEN_NOTE}</p>
+        </section>
+
+        {/* ── 確認できていないこと ─────────────────────
+            この面の芯。
+            書いていないことは、読む人が勝手に埋める。
+            埋められる前に、こちらから言う。 */}
+        <section className="mt-14">
+          <h2 className="text-[19px] font-black sm:text-[21px]">
+            確認できていないことは、確認できていないと書きます
+          </h2>
+          <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+            上の一覧について、はっきり言えるのは「行ったことがある」ところまでです。
+            次のことは、まだ確認が取れていません。だから、どこにも書いていません。
+          </p>
+          <ul className="mt-5 max-w-[34em] space-y-2.5 border-l-2 border-line pl-5 text-[15px] leading-[1.9] text-steel">
+            {UNCONFIRMED.map((u) => (
+              <li key={u}>{u}</li>
+            ))}
+          </ul>
+          <p className="mt-5 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+            「各国の全域に詳しい」「最新の事情に精通している」とも言いません。
+            行ったことと、詳しいことは別だからです。
+          </p>
+        </section>
+
+        {/* ── 引き受けないこと ─────────────────────────
+            料金の面にも同じものが出る。両方とも service.ts から引く。
+            ここに無いと、/about から入った人だけが知らずに買う。 */}
+        <section className="mt-14">
+          <h2 className="text-[19px] font-black sm:text-[21px]">引き受けないこと</h2>
+          <ul className="mt-5 max-w-[34em] space-y-2.5 text-[15px] leading-[1.9] text-steel">
+            {NOT_INCLUDED.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+          <p className="mt-5 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+            現地で助けが必要なときは、警察・救急・大使館や領事館、
+            ご契約の保険会社にご連絡ください。
+          </p>
+        </section>
+
+        <section className="mt-14 border-t border-line pt-10">
+          <h2 className="text-[19px] font-black sm:text-[21px]">運営</h2>
+          <p className="mt-4 max-w-[34em] text-[15px] leading-[1.95] text-steel">
+            {site.company.name}（{site.company.nameEn}）が運営しています。
+            お問い合わせ・記載の誤りのご指摘は
+            <a
+              href={`mailto:${site.company.email}`}
+              className="mx-1 font-bold text-brand underline decoration-brand/40 underline-offset-[4px] hover:decoration-brand"
+            >
+              {site.company.email}
+            </a>
+            までお願いします。
+          </p>
+          <p className="mt-5 text-[14px] leading-[1.95] text-steel">
+            <Link
+              href="/terms"
+              className="font-bold text-brand underline decoration-brand/40 underline-offset-[4px] hover:decoration-brand"
+            >
+              利用規約
+            </Link>
+            <span className="mx-2 text-line">／</span>
+            <Link
+              href="/legal"
+              className="font-bold text-brand underline decoration-brand/40 underline-offset-[4px] hover:decoration-brand"
+            >
+              特定商取引法に基づく表記
+            </Link>
+            <span className="mx-2 text-line">／</span>
+            <Link
+              href="/privacy"
+              className="font-bold text-brand underline decoration-brand/40 underline-offset-[4px] hover:decoration-brand"
+            >
+              プライバシーポリシー
+            </Link>
+          </p>
+        </section>
+      </main>
+    </div>
   );
 }
