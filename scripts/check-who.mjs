@@ -50,23 +50,21 @@ const LOOK = ["src/app", "src/components", "src/lib"];
 /** 運営だけが見る画面。売り文句ではない */
 const SKIP = [
   "src/app/admin/",
-  // 言い方を決めている場所そのもの
-  "src/lib/who.ts",
+  // 言い方を決めている場所そのもの（been.ts / service.ts）
+
   /* ══════════════════════════════════════════════
-     利用規約は、ここで直さない
+     利用規約を外す理由が、変わった
      ══════════════════════════════════════════════
-     第3条に、こう書いてある。
+     前の理由は「第3条が、委託先の女性の回答者について
+     書いた条項だから」だった。その条項はもう無い。
 
-       当社が業務を委託した成人女性の回答者（以下「回答者」）に対し、
-       当該相談について実際の女性としてどのように受け取るかという
-       反応の提供を依頼します。
+     いまの理由は別。
+     lib/terms.ts が、自分で同じ判定を持っている。
+     「やめた商品の条文が残っていないこと」を見るために、
+     やめた語の一覧を本文中に持っている。
 
-     これは商品の売り文句ではなく、いま実際に誰と業務委託契約を
-     しているかを書いた条項。委託先は実際に女性だけ。
-
-     男性の回答者が入ったときに、この条項をどう書き換えるかは
-     法律の文言の話で、こちらで決めない（［要確認］）。
-     合わせて直すために、ここは判定から外す。 */
+     ここで見ると、止める側が自分で引っかかる。
+     利用規約の中身は、lib/terms.ts の判定が見ている。 */
   "src/lib/terms.ts",
 ];
 
@@ -191,117 +189,317 @@ if (hits.length > 0) {
   process.exit(1);
 }
 
-/* ── 2. 1画面目で、誰に向けた製品かを名乗っていること ── */
-/* ── コメントを外してから測る ──────────────────────
-   このファイルは、なぜそうしたかを日本語のコメントで
-   たくさん書いてある。画面に出ない字で距離が伸びるのは、
-   測り方が違う。コメントを外した状態で測る。 */
-const lp = stripComments(await readFile(join(ROOT, "src/app/page.tsx"), "utf8"));
+/* ══════════════════════════════════════════════════
+   2. 書けないことを、書いていないこと
+   ══════════════════════════════════════════════════
+   確認できているのは「15の国・地域に行ったことがある」まで。
+   都市・時期・回数・一人旅だったか・語学力は未確認。
 
-const hero = lp.indexOf("{HERO_A}");
-if (hero < 0) {
-  console.error("トップに1画面目の見出し（HERO_A）が見つかりません。");
-  console.error("このファイルの判定が、画面の作りに追いつけていません。");
-  process.exit(1);
+   lib/been.ts が、持ちもの側で止める。
+   ここは、画面側で勝手に足していないかを見る。 */
+const lp = stripComments(await readFile(join(ROOT, "src/app/(ja)/page.tsx"), "utf8"));
+
+{
+  /* ── 行った国を、画面に直書きしないこと ──────────
+     一覧は lib/been.ts が持つ。画面で足せる形にすると、
+     未確認の国がそこだけ増える。 */
+  const been = stripComments(await readFile(join(ROOT, "src/lib/been.ts"), "utf8"));
+  const list = been.match(/BEEN[^=]*=\s*\[([\s\S]*?)\]/);
+  if (!list) {
+    console.error("lib/been.ts に、行った国の一覧がありません。");
+    process.exit(1);
+  }
+  const names = [...list[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  if (names.length !== 15) {
+    console.error(`行った国・地域が ${names.length} 個です（確認できているのは15）。`);
+    process.exit(1);
+  }
+  if (!lp.includes("BEEN")) {
+    console.error("トップが、行った国の一覧（BEEN）を出していません。");
+    console.error("");
+    console.error("どこの相談を受けられるかは、買う前に知りたいことです。");
+    process.exit(1);
+  }
+
+  /* ── 詳しい・専門家だと名乗らないこと ────────────
+     行ったことと、詳しいことは別。 */
+  for (const w of ["精通", "熟知", "全域", "最新事情", "専門家です", "プロガイド", "現地在住"]) {
+    if (lp.includes(w)) {
+      console.error(`トップに「${w}」が入っています。`);
+      console.error("");
+      console.error("確認できているのは、行ったことがある、までです。");
+      process.exit(1);
+    }
+  }
+
+  /* ── 複数で待機しているように見せないこと ────────
+     対応するのは運営者1人。 */
+  for (const w of ["専門家が待機", "スタッフが", "チームが", "複数の専門家"]) {
+    if (lp.includes(w)) {
+      console.error(`トップに「${w}」が入っています。対応するのは1人です。`);
+      process.exit(1);
+    }
+  }
 }
 
 /* ══════════════════════════════════════════════════
-   旅版で見るもの
+   3. 「し放題」を、単独で出していないこと
    ══════════════════════════════════════════════════
-   マチアプ版は「男性向け」と名乗っているかを見ていた。
-   旅版は性別で絞らないので、その判定は意味を失った。
+   回数に上限が無いのは本当だが、無条件ではない。
+   期間（出発7日前〜帰国日）と、返信（原則24時間以内）が
+   離れていると、買った人が最初に困る。
 
-   代わりに見るのは3つ。
+   ── 通話を足したので、4つになった ────────────────
+   し放題なのは LINE のテキストだけ。
+   通話は出発前の1回30分で、そこには上限がある。
 
-     ① ヘッダーが標語を出していて、そこに一人旅だと書いてあること
-        「海外旅行」だけだと家族旅行にも団体にも読める
-     ② 対応都市が1画面目に出ていること
-        3都市だけなので、来る前に分かる必要がある
-     ③ 確カメるがまだ開いていないなら、断りがどこかに出ていること
-        答える人が0人のまま「聞けます」と書かない */
+   「オンライン相談つき・相談し放題」と並べて書くと、
+   旅先から掛け放題だと読める。
+   だから通話の条件（MEET_LINE）も、組の中に入れた。
+
+   4つは lib/service.ts が組（UNLIMITED_SET）で持っている。
+   画面が4つとも出しているかを見る。 */
 {
-  const head = lp.slice(0, hero).replace(/\s+/g, "");
-  if (!head.includes("{TAGLINE}")) {
-    console.error("ヘッダーが、標語（TAGLINE）を出していません。");
+  for (const [sym, what] of [
+    ["UNLIMITED_LINE", "回数に上限が無いこと"],
+    ["MEET_LINE", "通話は出発前の1回だけであること"],
+    ["WINDOW_LINE", "使える期間"],
+    ["REPLY_LINE", "返信の目安"],
+  ]) {
+    if (!lp.includes(sym)) {
+      console.error(`トップが、${what}（${sym}）を出していません。`);
+      console.error("");
+      console.error("「相談し放題」は、期間と返信の条件とセットでしか出せません。");
+      console.error("小さい注意書きに隠すと、買った人が最初に困ります。");
+      process.exit(1);
+    }
+  }
+
+  /* すぐ返すと、読ませないこと。
+     「24時間以内」と「24時間対応」は別物。 */
+  for (const w of ["24時間対応", "即レス", "すぐに返信します", "いつでも返信"]) {
+    if (lp.includes(w)) {
+      console.error(`トップに「${w}」が入っています。返すのは原則24時間以内です。`);
+      process.exit(1);
+    }
+  }
+
+  /* 通話を、放題に見せないこと。
+     ここを書かないと、旅先から掛けてくる人が出る。 */
+  for (const w of ["通話し放題", "いつでも通話", "何度でも通話", "ビデオ通話し放題"]) {
+    if (lp.includes(w)) {
+      console.error(`トップに「${w}」が入っています。通話は出発前の1回だけです。`);
+      process.exit(1);
+    }
+  }
+
+  /* 緊急を引き受けると、読ませないこと。
+     ここは命に関わる誤解になる。 */
+  if (!lp.includes("緊急")) {
+    console.error("トップに、緊急時を引き受けないことが書かれていません。");
     console.error("");
-    console.error("1画面目で、誰に向けた製品かを名乗る場所がここだけです。");
+    console.error("助けを呼べる先だと思われると、命に関わります。");
     process.exit(1);
   }
 
-  const voice = stripComments(await readFile(join(ROOT, "src/lib/voice.ts"), "utf8"));
-  const tag = voice.match(/TAGLINE\s*=\s*"([^"]*)"/);
-  if (!tag) {
-    console.error("lib/voice.ts に TAGLINE が見つかりません。");
-    process.exit(1);
-  }
-  if (!/一人旅|ひとり旅/.test(tag[1])) {
-    console.error("標語に、一人旅だと書かれていません。");
-    console.error("");
-    console.error(`  標語  ${tag[1]}`);
-    console.error("");
-    console.error("「海外旅行」だけだと、家族旅行にも団体にも読めます。");
-    console.error("答えられるのは、一人で行く人の不安だけです。");
-    process.exit(1);
-  }
+  /* ══════════════════════════════════════════════
+     4-2. LINEを追加して終わり、にしないこと
+     ══════════════════════════════════════════════
+     いちばん落ちるのはここ。
+     ボタンを押して、友だち追加して、何を書けばいいか
+     分からないまま閉じる。
 
-  /* ② 対応都市が、1画面目に出ていること。
-     3つだけなので、来てから「自分の行き先が無い」と
-     分かるのでは遅い。 */
-  const NEAR = 2000;
-  const body = lp.slice(hero, hero + 30000).replace(/\s+/g, "");
-  const at = body.indexOf("CITIES");
-  if (at < 0 || at > NEAR) {
-    console.error("1画面目に、対応都市（CITIES）が出ていません。");
+     押す前の画面に、送ってもらう4つが出ていること。
+     中身は lib/flow.ts が持つ（ASK_ITEMS）。 */
+  if (!lp.includes("ASK_ITEMS")) {
+    console.error("トップが、LINEで送ってもらう4つ（ASK_ITEMS）を出していません。");
     console.error("");
-    console.error(`  1画面目からの字数  ${at < 0 ? "見つからず" : at}（${NEAR} 字まで）`);
-    console.error("");
-    console.error("対応は3都市だけです。来てから無いと分かるのでは遅いので、");
-    console.error("1画面目で出してください（lib/voice.ts の CITIES）。");
+    console.error("「友だち追加はこちら」だけだと、追加したあとで止まります。");
     process.exit(1);
   }
-
-  /* ③ 開いていないなら、断りがどこかに出ていること。 */
-  if (!lp.includes("notYetNote()")) {
-    console.error("トップに、確カメるがまだ開いていない断り（notYetNote）がありません。");
-    console.error("");
-    console.error("答える人が0人のまま「聞けます」と書かないでください。");
+  /* 流れを書き写していないこと。
+     書き写すと、英語・中国語とずれる。 */
+  if (!lp.includes("FLOW")) {
+    console.error("トップが、使うまでの流れ（lib/flow.ts の FLOW）を出していません。");
     process.exit(1);
   }
 }
 
-/* ── 3. 会話の相手が、旅亀であること ───────────────
-   吹き出しの横は、ずっと 🐢 の絵文字だった。
-   絵文字は端末が描くので、こちらの旅亀とは別の亀が出る。
-   iPhone・Android・Windows で、それぞれ違う顔の亀になる。
+/* ══════════════════════════════════════════════════
+   4. 無いものを、あるように見せていないこと
+   ══════════════════════════════════════════════════
+   LINEのURLも決済のURLも、まだ入っていない。
+   入っていないときに押せる形にすると、どこにも行けない。
 
-   旅亀はこの製品で唯一ずっと出てくる相手なので、
-   そこだけは、見る人の端末によらず同じ顔にする。
-   components/koi/KoiFace.tsx を使うこと。 */
+   画面は lineReady を見て出し分ける。
+
+   ── 委譲先まで追う ──────────────────────────────
+   前は「トップに lineReady と書いてあるか」だけを見ていた。
+
+   ボタンを components/site/LineCta.tsx へ出したら、
+   トップからその語が消えて、判定が落ちた。
+   出し分けは LineCta の中でちゃんとやっているのに。
+
+   判定が、同じことを2か所へ書かせる形になっていた。
+   トップが自分で見ているか、LineCta に任せているか、
+   どちらでもよい。ただし LineCta が見ていること。 */
 {
-  const turtle = [];
-  for (const dir of ["src/app", "src/components"]) {
+  const usesLineCta = lp.includes("LineCta");
+  if (!lp.includes("lineReady") && !usesLineCta) {
+    console.error("トップが、LINEの口が開いているか（lineReady）を見ていません。");
+    console.error("");
+    console.error("URLが無いときに押せる形にすると、押した人がどこにも行けません。");
+    process.exit(1);
+  }
+  if (usesLineCta) {
+    const cta = stripComments(
+      await readFile(join(ROOT, "src/components/site/LineCta.tsx"), "utf8"),
+    );
+    /* ── 読み込んだだけ、を通さない ──────────────────
+       最初は「ファイルに lineReady と書いてあるか」で見ていた。
+
+       分岐を消して確かめたら、素通りした。
+       import の行にその語が残っていたから。
+
+       import を落としてから、分岐しているかを見る。 */
+    const body = cta
+      .split("\n")
+      .filter((l) => !/^\s*import\b/.test(l))
+      .join("\n");
+    if (!/(!\s*lineReady|lineReady\s*[?&]|lineReady\s*===?\s*false)/.test(body)) {
+      console.error("LineCta が、LINEの口が開いているかで分岐していません。");
+      console.error("");
+      console.error("トップはここに任せているので、ここが分岐しないと");
+      console.error("URLが無いときも押せるボタンが出ます。");
+      process.exit(1);
+    }
+    if (!/notReady/.test(body)) {
+      console.error("LineCta に、URLが無いときの出し方（notReady）がありません。");
+      process.exit(1);
+    }
+  }
+  /* 買う前が無料で、相談は支払い後。
+     黙っていると「無料で相談し放題」に見える。 */
+  for (const sym of ["FREE_CHECK_JA", "PAID_START_JA"]) {
+    if (!lp.includes(sym)) {
+      console.error(`トップが、${sym}（無料と有料の境目）を出していません。`);
+      process.exit(1);
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   5. やめた商品の言葉が、残っていないこと
+   ══════════════════════════════════════════════════
+   ── これが無くて、1枚すり抜けた ──────────────────
+   商品を入れ替えたとき、画面7枚の文字は実際に出して確かめた。
+   旧版の語は0件だった。
+
+   それでも src/app/opengraph-image.tsx に、
+   マチアプ版の文がそのまま残っていた。
+
+     大事な相手だから、失敗する前に相談する。
+     送る前のLINE、アプリの自己紹介文。実在する◯◯人が読んで——
+
+   ここは PNG を描く面で、HTML に文字が出ない。
+   だから「画面の文字を確かめる」やり方では、絶対に見つからない。
+   そしてここは、SNSに貼るたびに出る、いちばん見られる絵だった。
+
+   利用規約（lib/terms.ts）も同じで、第1条と第2条だけ直して、
+   第3条から第9条が前の商品の契約のまま残っていた。
+   条文は長いので、読み返すときに後ろまで行かない。
+
+   目で見るのをやめて、全ファイルを機械で見る。
+   絵の中でも、条文の奥でも、同じように見つかる。
+
+   ── コメントは見ない ────────────────────────────
+   直した経緯として、やめた商品の名前を書いてある。
+   それは残したい（なぜ消したかが分からなくなる）。 */
+{
+  /* やめた商品と、やめた仕組みの言葉。
+     画面にも、絵にも、条文にも、出てはいけない。 */
+  const GONE = [
+    // マッチングアプリ版
+    ["マチアプ", "マッチングアプリ版"],
+    ["マッチングアプリ", "マッチングアプリ版"],
+    ["自己紹介文", "マッチングアプリ版（送る前の文章を読む商品）"],
+    ["異性に", "マッチングアプリ版"],
+    ["恋亀", "マッチングアプリ版"],
+    ["確カメる", "マッチングアプリ版・旅パス版"],
+    // 3都市＋90日の回答者を集める版
+    ["行ったばかりの人", "直近90日以内に行った人に聞く版"],
+    ["90日以内", "直近90日以内に行った人に聞く版"],
+    ["旅パス", "旅パス版"],
+    ["年パス", "旅パス版"],
+    ["Tashikame Pass", "月額版"],
+    ["貼るだけ", "AIに貼って記録を残す版"],
+    // 委託先の回答者に相談を配る版
+    ["回答者", "委託先の回答者に相談を配る版"],
+    ["規定の人数", "委託先の回答者に相談を配る版"],
+    // 回数制・声で話す商品
+    ["残回数", "回数制"],
+    ["有効期限", "回数制"],
+    /* ── Google Meet は、ここから外した ────────────────
+       前は「声で話す商品はやめた」ので禁止語だった。
+       いまは出発前の30分が商品に入っているので、書いてよい。
+
+       「音声通話」は残す。
+       前の15分の商品の呼び名で、いまのものは
+       「オンライン相談」か「Google Meet」と呼ぶ。
+       2つの呼び名が混ざると、どちらのことか分からなくなる。 */
+    ["音声通話", "前の15分の通話商品（いまは「オンライン相談」と呼ぶ）"],
+    // 持っていない処理
+    ["自動的に伏せ字", "画像の自動匿名化（その機能は無い）"],
+    // 作らなかった機能
+    ["チェックリスト", "作っていない機能"],
+    ["世界地図", "作っていない機能"],
+  ];
+
+  /* ── 一覧を持っている場所は、見ない ────────────────
+     lib/voice.ts は「この製品が名乗らないもの」の一覧を持っている
+     （NEVER / NOT_OURS）。やめた商品の名前が、配列の中に並ぶ。
+
+     そこを見ると、止める側が自分で引っかかる。
+     check-copy も、同じ理由で voice.ts と service.ts を外している。
+
+     voice.ts の画面に出る文（TAB_TITLE・TAGLINE・DEFINITION）は、
+     voice.ts 自身の判定が「前の題材が残っていないか」を見ている。 */
+  const HOLDS_THE_LIST = ["src/lib/voice.ts", "src/lib/privacy.ts"];
+
+  const hit = [];
+  for (const dir of LOOK) {
     for (const f of await files(dir)) {
-      if (f.endsWith("KoiFace.tsx")) continue; // 経緯を書いてある
+      if (HOLDS_THE_LIST.includes(f)) continue;
       const src = stripComments(await readFile(join(ROOT, f), "utf8"));
       src.split("\n").forEach((line, n) => {
-        if (line.includes("\u{1F422}")) {
-          turtle.push({ f, n: n + 1, line: line.trim().slice(0, 70) });
+        /* 判定そのものの言葉は見ない。
+           やめた語の一覧を持っている場所が、自分で引っかかる。 */
+        if (/throw new Error/.test(line)) return;
+        for (const [w, where] of GONE) {
+          if (line.includes(w)) {
+            hit.push({ f, n: n + 1, w, where, line: line.trim().slice(0, 80) });
+            return;
+          }
         }
       });
     }
   }
-  if (turtle.length > 0) {
-    console.error("会話の相手に、亀の絵文字を使っています。");
+
+  if (hit.length > 0) {
+    console.error("やめた商品の言葉が残っています。");
     console.error("");
-    for (const h of turtle) console.error(`  ${h.f}:${h.n}\n    ${h.line}`);
+    for (const h of hit) {
+      console.error(`  ${h.f}:${h.n}  「${h.w}」（${h.where}）`);
+      console.error(`    ${h.line}`);
+    }
     console.error("");
-    console.error("絵文字は端末が描くので、iPhone・Android・Windows で");
-    console.error("それぞれ違う顔の亀が出ます。");
-    console.error("components/koi/KoiFace.tsx を使ってください。");
+    console.error("打ち消しの文（「◯◯は含みません」）でも引っかかります。");
+    console.error("判定は否定を読めないので、語そのものを使わない言い方にしてください。");
+    console.error("経緯として残したいなら、コメントに書けば見ません。");
     process.exit(1);
   }
 }
 
 console.log(
-  "who チェック: 直書き0件 — 1画面目で一人旅と都市を名乗っています — 相手は旅亀です",
+  "who チェック: 直書き0件 — 行った国15・し放題の条件・無い口の出し分け・やめた商品の語0件",
 );

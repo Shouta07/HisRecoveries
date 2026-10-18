@@ -1,29 +1,50 @@
 import fs from "node:fs";
-import { TRIP_PASS_YEN } from "@/lib/pass/trip";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { ogFont } from "@/lib/ogFont";
 import { site } from "@/lib/site";
-import { NAME, ONE_LINER } from "@/lib/voice";
-import { advisorWord } from "@/lib/who";
+import { NAME, FULL, HERO_A, HERO_B1, HERO_B2 } from "@/lib/voice";
+import { EMERGENCY_LINE, PRICE_LINE, MEET_MINUTES } from "@/lib/service";
 
 // X・Threads・LINE に貼ったときのカード。
 //
 // ── ここは広告そのもの ────────────────────────────
 // 投稿を回すほど、文章よりこのカードのほうが多く見られる。
-// 以前は記事メディアの説明が出ていた（「男性の美容・健康・恋愛を、
-// 編集部が調べて書いています」）ので、商品のリンクを貼っても
-// 何を売っているか分からなかった。
+//
+// ── ここだけ、検査をすり抜けていた ────────────────
+// 商品が変わったとき、画面7枚の文字は実測で確かめた。
+// ここは PNG を描くので、HTML に文字が出ない。
+// だから「古い文が残っていないこと」の確認から漏れて、
+// マチアプ版の文がそのまま残っていた。
+//
+//   大事な相手だから、失敗する前に相談する。
+//   送る前のLINE、アプリの自己紹介文。実在する◯◯人が読んで——
+//
+// リンクを貼るたびに、やめた商品の広告が出ていた。
+// 絵の中の文字は、目で見ないと分からない。
+// 以後は check-who が、持っていない商品の言葉を全ファイルで探す。
 //
 // ── 載せるのは4つだけ ─────────────────────────────
-// 名前 / 何をするものか / 誰が読むのか / いくらから。
-// 実績や人数の主張は載せない（売れてから、実数で書く）。
+// 名前 / 何をするものか / いくら / 含まないもの。
 //
-// 記事の一覧側は src/app/articles/opengraph-image.tsx が持つ。
+// 人数・満足度・口コミは載せない。
+// まだ無いものを、いちばん見られる場所に書かない。
+//
+// 「緊急時は含まない」は、カードにも載せる。
+// ここを省くと、助けを呼べる先だと思って貼られる。
 
-export const alt = `${NAME} — ${ONE_LINER}`;
+export const alt = `${FULL} — ${HERO_A}${HERO_B1}${HERO_B2}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+/* 画面と同じ色を使う。
+   ここだけ前の青が残ると、カードから入った人が
+   別のサイトに来たと感じる（tailwind.config.ts と同じ値）。 */
+const INK = "#22251F";
+const SUB = "#62675C";
+const BRAND = "#1F4B3A";
+const RULE = "#E2DED1";
+const CREAM = "#FAF7EF";
 
 /** マークを埋め込む。satori は URL を取りに行かないので、中身を渡す */
 function mark(): string {
@@ -32,7 +53,6 @@ function mark(): string {
 }
 
 export default async function Image() {
-
   return new ImageResponse(
     (
       <div
@@ -42,8 +62,8 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#FFFFFF",
-          borderTop: "14px solid #2563EB",
+          background: CREAM,
+          borderTop: `14px solid ${BRAND}`,
           padding: "64px 80px 60px",
           fontFamily: "Noto",
         }}
@@ -52,20 +72,28 @@ export default async function Image() {
           {/* マークは画像。ここで丸と点を描き直すと、サイト側と別のものになる */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={mark()} width={56} height={56} alt="" />
-          <div style={{ fontSize: 34, color: "#0F172A", display: "flex", letterSpacing: 2 }}>
-            {NAME}
-          </div>
+          <div style={{ fontSize: 34, color: INK, display: "flex", letterSpacing: 2 }}>{NAME}</div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
-          <div style={{ fontSize: 70, color: "#0F172A", display: "flex", lineHeight: 1.28 }}>
-            大事な相手だから、
-          </div>
-          <div style={{ fontSize: 70, color: "#0F172A", display: "flex", lineHeight: 1.28 }}>
-            失敗する前に相談する。
-          </div>
-          <div style={{ fontSize: 30, color: "#5B6676", display: "flex", lineHeight: 1.6 }}>
-            送る前のLINE、アプリの自己紹介文。実在する{advisorWord()}{""}人が読んで、正直に返します。
+        {/* ── 自分で折る ──────────────────────────────
+            68px で HERO_B1+HERO_B2 を1行に置いたら、
+            satori が幅で折って3行になり、値段と行き先が
+            1200×630 の外へ落ちた。絵なので、はみ出した分は
+            切れて消えるだけで、警告もエラーも出ない。
+
+            voice.ts が折る場所（B1 / B2）を持っているので、
+            そこで折って、3行に収まる大きさにする。
+            実際に書き出して目で見て決めた。 */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {[HERO_A, HERO_B1, HERO_B2].filter(Boolean).map((line) => (
+            <div key={line} style={{ fontSize: 58, color: INK, display: "flex", lineHeight: 1.26 }}>
+              {line}
+            </div>
+          ))}
+          <div
+            style={{ fontSize: 27, color: SUB, display: "flex", lineHeight: 1.55, marginTop: 10 }}
+          >
+            出発前はGoogle Meetで{MEET_MINUTES}分、旅行中はLINEで。{EMERGENCY_LINE}。
           </div>
         </div>
 
@@ -74,16 +102,14 @@ export default async function Image() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            borderTop: "1px solid #E4E9F0",
+            borderTop: `1px solid ${RULE}`,
             paddingTop: 26,
             fontSize: 24,
-            color: "#5B6676",
+            color: SUB,
           }}
         >
-          <div style={{ display: "flex" }}>
-            ¥{TRIP_PASS_YEN.toLocaleString()} / 旅1回ごと / 登録なし
-          </div>
-          <div style={{ display: "flex", color: "#2563EB" }}>
+          <div style={{ display: "flex" }}>{PRICE_LINE}</div>
+          <div style={{ display: "flex", color: BRAND }}>
             {site.url.replace(/^https?:\/\//, "")}
           </div>
         </div>

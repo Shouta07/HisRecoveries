@@ -1,4 +1,4 @@
-import { advisorWord } from "./who";
+
 
 /* ══════════════════════════════════════════════════
    旅のタシカメが名乗る言葉
@@ -43,7 +43,7 @@ export const OPERATOR = "His Recoveries";
  * 何をする（1か所にまとめる）を、全部書く。
  */
 export const DEFINITION =
-  "旅のタシカメは、日本人の海外一人旅の「決めてから帰国まで」を1か所にまとめるサービスです。AIで話した内容を貼るだけで、どこへ／何が終わって／次に何するかが残ります。迷ったときは、行ったばかりの人にも確カメられます。";
+  "旅のタシカメは、初めて海外へ一人で行く人が、実際にその地へ行ったことのある人に相談できるサービスです。出発前にGoogle Meetで30分話し、旅行中はLINEで相談できます。1旅行3,980円（税込）で、対象期間中、LINEでの相談の回数に上限はありません。緊急時の対応は含みません。";
 
 /**
  * 1画面目の見出し。
@@ -56,18 +56,29 @@ export const DEFINITION =
  *   海外一人旅は、決めてからが勝負。
  * 行き先探しも予約比較もやらない、と同時に言っている。
  */
-export const HERO_A = "海外一人旅は、";
-export const HERO_B = "決めてからが勝負。";
+export const HERO_A = "一人旅に、";
+export const HERO_B = "聞ける人がいる。";
 
 /* 見出しの折り返し。
    text-mega は携帯で 30px。390px の本文幅は 350px で、
    全角11字までしか入らない。
-   「勝負。」を独立させる。言い切りが1行になるので、折れたほうが強い。 */
-export const HERO_B1 = "決めてからが";
-export const HERO_B2 = "勝負。";
 
-/** 1画面目で、受け渡しを言う行。検索結果の説明文でも使う */
-export const HERO_HOW = "AIに話した内容から、旅ごとの記録が残ります。";
+   前は3行あったが、看板が短くなったので2行で足りる。
+   HERO_B は折らない（「聞ける人が／いる。」は、折ると弱い）。
+   下線を引く相手でもあるので、1つのまま持つ。 */
+export const HERO_B1 = HERO_B;
+export const HERO_B2 = "";
+
+/**
+ * 1画面目で、受け渡しを言う行。検索結果の説明文でも使う。
+ *
+ * ── 道具の名前を、ここで出す ────────────────────
+ * 「相談できます」だけだと、どうやって話すのかが分からない。
+ * 出発前は Google Meet、旅行中は LINE。
+ * 両方とも申し込みの前に要るものなので、1画面目で言う。
+ */
+export const HERO_HOW =
+  "出発前はGoogle Meetで、あなたの予定や不安を一緒に整理。旅行中も、ちょっと聞きたいことを同じ相手にLINEで相談できます。";
 
 /**
  * 名前の上に置く行。
@@ -89,31 +100,29 @@ export const TAGLINE = "はじめての海外一人旅に、";
  * 画像の中に入るので、短いこと。
  * 「決めてから、帰国まで」が、この製品が引き受ける範囲そのもの。
  */
-export const ONE_LINER = "決めてから、帰国まで。";
+export const ONE_LINER = "聞ける人が、ひとり。";
 
 /**
  * ブラウザのタブと検索結果に出す名乗り。
  *
  * 検索結果は30文字前後で切れる。切れても名前が残る並びにする。
  */
-export const TAB_TITLE = `${FULL}｜海外一人旅、決めてからをまとめる`;
+export const TAB_TITLE = `${FULL}｜初めての海外一人旅を、LINEで相談`;
 
-/**
- * 対応都市。
- *
- * ══════════════════════════════════════════════════
- * 3つだけ。増やさない
- * ══════════════════════════════════════════════════
- * 「行ったばかりの人に聞ける」が売りなので、
- * 都市を増やすと、その都市の答える人を集められなくなる。
- *
- * 1都市あたり何人いるかが品質そのもの。
- * 都市を10個にして各1人より、3個にして各10人のほうが強い。
- *
- * 画面にも、この3つだけを出す（lib/trip/cities.ts が持つ一覧と
- * 突き合わせる。ずれたら公開の前に止まる）。
- */
-export const CITIES = ["バンコク", "台北", "ソウル"] as const;
+/* ══════════════════════════════════════════════════
+   対応都市を、消した
+   ══════════════════════════════════════════════════
+   CITIES = ["バンコク", "台北", "ソウル"] があった。
+
+   「その都市へ行ったばかりの人」を集めて答えてもらう版の
+   持ちもので、集まる人数が品質だったから3つに絞っていた。
+
+   いまは運営者が自分で答える。
+   行ったことがあるのは15の国・地域で、lib/been.ts が持つ。
+   都市は確認できていないので、どこにも書かない。
+
+   突き合わせ先の lib/trip/cities.ts も、もう無い。
+   読んでいる場所は1つも残っていない。 */
 
 /* ══════════════════════════════════════════════════
    3つの持ち場
@@ -131,12 +140,12 @@ export const CITIES = ["バンコク", "台北", "ソウル"] as const;
    ── 折る場所 ────────────────────────────────────
    text-huge は携帯で 26px。360px の本文幅は 320px なので
    全角12字が上限。こちらで決めておく。 */
-export const TRIAD_1 = "AIで旅を考える。";
-export const TRIAD_2A = "迷ったら、";
-export const TRIAD_2B = "行った人に確カメる。";
+export const TRIAD_1 = "調べても、決めきれない。";
+export const TRIAD_2A = "そこだけ、";
+export const TRIAD_2B = "行った人に聞く。";
 export const TRIAD_2 = TRIAD_2A + TRIAD_2B;
-export const TRIAD_3A = "その続きは、";
-export const TRIAD_3B = `${NAME}が覚えてる。`;
+export const TRIAD_3A = "旅先でも、";
+export const TRIAD_3B = "同じトークで。";
 export const TRIAD_3 = TRIAD_3A + TRIAD_3B;
 export const TRIAD = `${TRIAD_1}${TRIAD_2}${TRIAD_3}`;
 
@@ -224,15 +233,22 @@ export function assertNotCheap(text: string, where: string): string {
  *
  * 「経験者」「詳しい人」だけでは、誰が答えるのか分からない。
  * 分からないものに値段は付かない。
- * 聞けるのは「直近90日以内に、同じ都市へ、一人で行った日本人」。
+ *
+ * ── 求める言い方が、前の仕組みのものだった ──────
+ * ここは「行ったばかりの人」と書いてあるかを見ていた（who.ts）。
+ * 同じ都市へ90日以内に行った人を集めて答えてもらう版の言い方。
+ *
+ * いまは当社の担当者が答える。
+ * 言えるのは「実際にその地へ行ったことがある」まで。
+ * 時期（ばかり）は確認できていないので、求めてはいけない。
  */
 export function assertWhoReads(text: string, where: string): string {
   const VAGUE = ["経験者", "詳しい人", "旅のプロ", "現地在住", "ガイド"];
   const hit = VAGUE.find((v) => text.includes(v));
-  if (hit && !text.includes(advisorWord())) {
+  if (hit && !/行ったことのある|行ったことがある|行った人/.test(text)) {
     throw new Error(
       `${where} の「${hit}」が誰を指すのか分かりません。` +
-        `「${advisorWord()}」と書いてください（在住者やプロではありません）`,
+        `「行ったことのある人」と書いてください（在住者やプロではありません）`,
     );
   }
   return text;
@@ -373,10 +389,34 @@ export function assertWeight(text: string, where: string): string {
      そして、行き先探し・予約の言葉が入っていないこと。 */
   {
     const hero = `${HERO_A}${HERO_B}`;
-    if (!/決めて|出発|行くと決め/.test(hero)) {
-      throw new Error(`1画面目の見出しに、決めたあとの話だと書かれていません（${hero}）`);
+    /* 聞ける相手がいる、が看板。
+       ここが「まとめる」「残る」に戻ると、前の製品に戻る。 */
+    if (!/聞ける|相談/.test(hero)) {
+      throw new Error(`1画面目の見出しに、聞けることが書かれていません（${hero}）`);
     }
-    for (const w of ["どこへ行", "行き先選び", "航空券", "宿選び", "おすすめの国"]) {
+    /* ── 1画面目を、組で見る ──────────────────────
+       前はここで、見出しだけを見て「旅行中」が入っているかを
+       確かめていた。看板が短くなって（「一人旅に、聞ける人がいる。」）、
+       旅行中の話は、すぐ下の説明の行へ移った。
+
+       見出しだけを見ると、短くした瞬間に止まる。
+       かといって判定を消すと、出発前だけの商品に戻っていても
+       気づけない。
+
+       1画面目は見出しと説明が組で出るので、組で見る。 */
+    const firstScreen = `${hero}${HERO_HOW}`;
+    if (!/旅先|旅行中|現地/.test(firstScreen)) {
+      throw new Error(`1画面目に、旅行中も使えることが書かれていません（${firstScreen}）`);
+    }
+    /* 道具の名前が、1画面目にあること。
+       出発前は Google Meet、旅行中は LINE。
+       どちらも申し込みの前に要るものなので、下へ隠さない。 */
+    for (const [w, when] of [["Google Meet", "出発前"], ["LINE", "旅行中"]] as const) {
+      if (!firstScreen.includes(w)) {
+        throw new Error(`1画面目に「${w}」（${when}に使うもの）が出ていません`);
+      }
+    }
+    for (const w of ["どこへ行", "行き先選び", "航空券", "宿選び", "おすすめの国", "24時間対応", "即時"]) {
       if (hero.includes(w)) {
         throw new Error(
           `1画面目の見出しに「${w}」が入っています。決める前には広げないでください（${hero}）`,
@@ -395,18 +435,44 @@ export function assertWeight(text: string, where: string): string {
   if (!DEFINITION.endsWith("。")) throw new Error("サービスの説明が文になっていません");
   /* 何をする場所かが書いてあること。
      ここが抜けると、何のサービスか分からない説明に戻る。 */
-  if (!/まとめ|残り|整理/.test(DEFINITION)) {
+  if (!/相談/.test(DEFINITION)) {
     throw new Error(`サービスの説明に、何をする場所かが書かれていません（${DEFINITION}）`);
+  }
+  /* 値段と、回数の条件が書いてあること。
+     検索結果に出る1行で、ここが抜けると
+     「無料で相談できる」と読まれる。 */
+  if (!/円/.test(DEFINITION)) {
+    throw new Error(`サービスの説明に、値段が書かれていません（${DEFINITION}）`);
+  }
+  /* 「上限がありません」を書くなら、緊急を含まないことも書く。
+     ここが対になっていないと、助けを呼べる先だと思われる。 */
+  if (/上限|何度でも|し放題/.test(DEFINITION) && !/緊急/.test(DEFINITION)) {
+    throw new Error(`サービスの説明に、緊急時を含まないことが書かれていません（${DEFINITION}）`);
   }
   /* 人に聞けることを、必ず書くこと。
      そこが「結局AIアプリ」との違いなので、消えると値段の理由が消える。 */
-  if (!DEFINITION.includes("確カメ")) {
-    throw new Error(`サービスの説明に、人に聞けることが書かれていません（${DEFINITION}）`);
+  if (!/行ったことのある人|行った人|経験者/.test(DEFINITION)) {
+    throw new Error(`サービスの説明に、誰に聞けるのかが書かれていません（${DEFINITION}）`);
+  }
+  /* ── 売っているものの半分を、落とさないこと ────────
+     この1行は検索結果とSNSのカードに出る。
+     商品は「出発前の通話30分」と「期間中のLINE」の2つで1つ。
+
+     前は LINE しか書いていなかった。
+     通話を足したあとも書き換え忘れると、
+     いちばん読まれる場所に、商品の半分しか出ない。 */
+  for (const [re, what] of [
+    [/Google Meet/, "出発前に何で話すか"],
+    [/LINE/, "旅行中に何で相談するか"],
+  ] as [RegExp, string][]) {
+    if (!re.test(DEFINITION)) {
+      throw new Error(`サービスの説明に、${what}が書かれていません（${DEFINITION}）`);
+    }
   }
   /* 一人旅だと言い切ること。
      「海外旅行」だけだと、家族旅行にも団体にも読める。
      こちらが答えられるのは一人で行く人の不安だけ。 */
-  if (!/一人旅|ひとり旅/.test(DEFINITION)) {
+  if (!/一人旅|ひとり旅|一人で行く|ひとりで行く/.test(DEFINITION)) {
     throw new Error(`サービスの説明に、一人旅だと書かれていません（${DEFINITION}）`);
   }
   if (/支援|ソリューション|プラットフォーム|体験を提供/.test(DEFINITION)) {
@@ -440,7 +506,9 @@ export function assertWeight(text: string, where: string): string {
   if (!ONE_LINER || ONE_LINER.length > 16) {
     throw new Error(`名乗りの1行が長すぎます（${ONE_LINER.length}文字／16字まで）`);
   }
-  if (!/決めて|帰国|出発/.test(ONE_LINER)) {
+  /* 名乗りの1行。OGP画像と、短い名乗りの場所に出る。
+     引き受ける範囲（聞けること）が言えていること。 */
+  if (!/聞ける|相談/.test(ONE_LINER)) {
     throw new Error(`名乗りの1行に、引き受ける範囲が書かれていません（${ONE_LINER}）`);
   }
   if (TAGLINE.includes(NAME)) {
@@ -465,40 +533,25 @@ export function assertWeight(text: string, where: string): string {
       }
     }
     /* 3つとも出ていること。1つでも抜けると、持ち場が消える。 */
-    for (const [w, who] of [
-      ["AI", "AI"],
-      ["確カメ", "行った人"],
-      [NAME, NAME],
+    /* 3つとも出ていること。
+       調べて決めきれない → そこだけ人に聞く → 旅先でも続く。
+       どれかが抜けると、ただの相談サービスの説明になる。 */
+    for (const [re, what] of [
+      [/調べ/, "自分で調べたこと"],
+      [/聞く|相談/, "人に聞くこと"],
+      [/旅先|旅行中|現地/, "旅行中も続くこと"],
     ] as const) {
-      if (!TRIAD.includes(w)) {
-        throw new Error(`3つの持ち場に、${who}が出ていません（${TRIAD}）`);
+      if (!re.test(TRIAD)) {
+        throw new Error(`3つの持ち場に、${what}が出ていません（${TRIAD}）`);
       }
-    }
-    /* タシカメが最後に来ること。
-       途中に置くと「3つのうちの1つ」に見える。
-       持っているのは、AIにも人にも無い「そのあと」のほう。 */
-    if (!TRIAD.endsWith(TRIAD_3)) {
-      throw new Error("3つの持ち場の、最後が「その続き」になっていません");
-    }
-    if (TRIAD.indexOf(NAME) < TRIAD.indexOf("AI")) {
-      throw new Error(`3つの持ち場で、${NAME}がAIより先に出ています（${TRIAD}）`);
     }
     assertNever(TRIAD, "3つの持ち場");
     assertNotScary(TRIAD, "3つの持ち場");
   }
 
-  /* ── 対応都市 ──────────────────────────────────
-     3つだけ。増やすと、その都市の答える人を集められなくなる。
-     1都市あたり何人いるかが品質そのもの。 */
-  if (CITIES.length !== 3) {
-    throw new Error(
-      `対応都市が ${CITIES.length} 個あります（3つだけ）。` +
-        `増やすと、その都市に行ったばかりの人を集められなくなります`,
-    );
-  }
-  if (new Set(CITIES).size !== CITIES.length) {
-    throw new Error("対応都市が重なっています");
-  }
+  /* 対応都市の判定を消した。都市という単位がもう無い。
+     行ったことがあるのは国・地域で、lib/been.ts が持つ
+     （15で固定。増やすと公開前に止まる）。 */
 
   /* ── やらないことの一覧 ──────────────────────────
      NEVER（画面に置けない言葉）と、食い違わないこと。
@@ -544,7 +597,10 @@ export function assertWeight(text: string, where: string): string {
     [TRIAD, "3つの持ち場"],
     [HERO_HOW, "受け渡しの行"],
   ] as const) {
-    for (const w of ["マチアプ", "マッチングアプリ", "恋亀", "異性", "デート", "婚活"]) {
+    for (const w of ["マチアプ", "マッチングアプリ", "恋亀", "異性", "デート", "婚活",
+      /* 前の版（AIに貼って記録する形）の言葉。
+         残ると、何を売っているのか分からなくなる。 */
+      "貼るだけ", "AIに話した", "旅パス", "年パス", "確カメ"]) {
       if (t.includes(w)) {
         throw new Error(`${where} に、前の題材の言葉「${w}」が残っています（${t}）`);
       }

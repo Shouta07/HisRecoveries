@@ -1,5 +1,4 @@
-import { DEFINITION } from "./voice";
-import { advisorWord } from "./who";
+import { DEFINITION, TAGLINE, ONE_LINER } from "./voice";
 export const site = {
   /* ── 旧ブランドをやめた ──────────────────────────
      ここは長いあいだ "His Recoveries" だった。
@@ -29,8 +28,18 @@ export const site = {
   // 「5人に聞く」は無料のアンケートと同じ形をしている。
   // 同じ形のものに値段を付けると、高く見えるのは当たり前だった。
   // 主語を変える。自分が聞くのではなく、相手側に読まれる。
-  tagline: "決めてから、帰国まで",
-  promise: "ひとりで全部、覚えなくていい。",
+  /* ── 商品が変わったのに、ここだけ残っていた ────────
+     「決めてから、帰国まで」「ひとりで全部、覚えなくていい。」は、
+     記録を預かる版の言い方だった。覚えておく側が、こちらだった。
+
+     いまは覚える道具ではなく、聞ける相手。
+     それでも、この2行はタイトルタグと schema.org に出ていて、
+     検索結果に出る1行は、ずっと前の商品の説明だった。
+
+     画面の文は voice.ts が持ち、判定で守っている。
+     ここで書き写すと、また片方だけ古くなる。あちらから引く。 */
+  tagline: `${TAGLINE}${ONE_LINER}`,
+  promise: ONE_LINER,
   // ── 「3人」をやめた ────────────────────────────
   // ここは検索結果に出る説明文で、サイト全体の schema.org と
   // OGP、記事ページのメタ記述が、すべてこの1行を読んでいる。
@@ -65,7 +74,19 @@ export const site = {
   author: "タシカメ",
   // authorBio を消した。旧事業（第一印象改善・ウェルネス伴走）の説明が
   // 入ったまま残っていたが、読んでいる場所が1つも無かった。
-  handle: "@tashikame_app",
+  /* ── 無いアカウントを、名乗らない ──────────────────
+     "@tashikame_app" とベタ書きしてあった。
+     このサービスの X のアカウントは、まだ作っていない。
+
+     X に貼ると、カードの下に「@tashikame_app」と出る。
+     押すと、無いアカウントに行く。
+
+     環境変数が入ったときだけ出す（入っていなければ出さない）。
+     NEXT_PUBLIC_X_HANDLE="@..." */
+  handle: (() => {
+    const h = process.env.NEXT_PUBLIC_X_HANDLE?.trim();
+    return h && /^@[A-Za-z0-9_]{1,15}$/.test(h) ? h : null;
+  })(),
   email: "contact@vitality-design.jp",
   social: {
     threads: "https://www.threads.com/@hisrecoveries_jp",
@@ -73,15 +94,16 @@ export const site = {
     note: "https://note.com/his_recoveries",
     substack: "https://hisrecoveries.substack.com",
   },
-  // LINE は SaaS モード（LINE Login + LIFF + 詳細診断）の入口。
-  // addFriendUrl が空の間は、UI は「準備中」表示になる（壊れない）。
-  // 値が入った瞬間に Hero / Screen result / Letter から自動で出る。
-  // LINE は公開サイトに貼らない。お支払い後の伴走でのみ使い、その時点で
-  // 個別に友だち追加をご案内する。公開の入口は /reserve（無料相談）に統一。
-  line: {
-    addFriendUrl: "",
-    liffUrl: process.env.NEXT_PUBLIC_LINE_LIFF_URL ?? "",
-  },
+  /* ── LINE の置き場を、2つにしない ──────────────────
+     ここに line.addFriendUrl / line.liffUrl があった。
+     読んでいる場所は1つも無く、どちらも空のまま。
+
+     いまの LINE の口は lib/contact.ts が持つ
+     （NEXT_PUBLIC_LINE_URL。入っていなければ押せる形にしない）。
+
+     空の置き場を残すと、次に設定する人がこちらに入れる。
+     入れても画面は変わらないので、入れたのに出ないと見える。
+     片方だけにする。 */
   locale: "ja_JP",
   language: "ja",
   region: "JP",
@@ -107,14 +129,18 @@ export const site = {
      題材が旅に変わったので、ここも入れ替えた。
      ここが古いままだと、検索エンジンは恋愛相談のサイトとして
      紐づけ続ける。画面を全部直しても、ここだけ残る。 */
+  /* ── 持っていない機能で、検索に出ない ──────────────
+     「バンコク／台北／ソウル 一人旅」と「準備 チェックリスト」が
+     並んでいた。3都市に絞る版と、チェックリストの機能があった版の名残。
+
+     どちらも、いまは無い。
+     無い機能の言葉で来た人は、来た瞬間に帰る。 */
   topics: [
     "海外一人旅 初めて",
-    "一人旅 不安",
-    "バンコク 一人旅",
-    "台北 一人旅",
-    "ソウル 一人旅",
-    "海外旅行 準備 チェックリスト",
-    "行った人に聞く",
+    "海外一人旅 相談",
+    "一人旅 出発前 準備",
+    "旅行 LINE 相談",
+    "行ったことがある人に聞く",
   ],
 } as const;
 
