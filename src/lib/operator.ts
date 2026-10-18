@@ -66,6 +66,35 @@ export const OPERATOR_OPEN: { key: keyof Profile; label: string; why: string }[]
   },
 ];
 
+/* ══════════════════════════════════════════════════
+   旅の写真
+   ══════════════════════════════════════════════════
+   見本には、ピラミッドと九份の写真が「実際に旅した経験」の
+   見出しの下に並んでいた。置いていない。
+
+   素材サイトの写真をそこへ置くと、読む人には
+   本人が撮ったものと区別がつかない。
+   行った証拠として見せているのに、行っていない写真になる。
+
+   空のあいだ、その枠は出ない（線画と地図だけになる）。
+
+   足すときは public/img/trips/ に置いて、ここに書く。
+   置き場所を分けてあるのは、素材サイトの画像が
+   まぎれ込まないようにするため（下の判定が見る）。
+
+   country は been.ts の15のどれか。
+   行っていない国の写真は、公開の前に止まる。 */
+export type TripPhoto = {
+  src: string;
+  /** 何が写っているか。読み上げにも、写真が出ないときにも使う */
+  alt: string;
+  /** どこで撮ったか。been.ts の15のどれか */
+  country: string;
+};
+
+/** 運営者が撮った写真だけ。いまは空 */
+export const TRIP_PHOTOS: TripPhoto[] = [];
+
 export type Profile = {
   callMe: string | null;
   style: string | null;
@@ -133,6 +162,25 @@ export function profileFilled(): { key: keyof Profile; label: string; text: stri
       if (text.includes(w)) {
         throw new Error(`${label} に「${w}」が入っています。対応するのは1人です`);
       }
+    }
+  }
+
+  /* ── 写真は、撮った本人のものだけ ──────────────────
+     置き場所を限ると、素材サイトから落としたものを
+     そのまま並べにくくなる。 */
+  for (const ph of TRIP_PHOTOS) {
+    if (!ph.src.startsWith("/img/trips/")) {
+      throw new Error(
+        `旅の写真が /img/trips/ の外にあります（${ph.src}）。` +
+          `運営者が撮ったものだけを、そこへ置いてください`,
+      );
+    }
+    if (!ph.alt) throw new Error(`旅の写真（${ph.src}）に、説明（alt）がありません`);
+    if (!BEEN.includes(ph.country)) {
+      throw new Error(
+        `旅の写真の撮影地が「${ph.country}」になっていますが、` +
+          `行ったことのある国・地域（lib/been.ts）に入っていません`,
+      );
     }
   }
 

@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 import { ogFont } from "@/lib/ogFont";
 import { site } from "@/lib/site";
 import { NAME, FULL, HERO_A, HERO_B1, HERO_B2 } from "@/lib/voice";
-import { EMERGENCY_LINE, PRICE_LINE } from "@/lib/service";
+import { EMERGENCY_LINE, PRICE_LINE, MEET_MINUTES } from "@/lib/service";
 
 // X・Threads・LINE に貼ったときのカード。
 //
@@ -40,10 +40,11 @@ export const contentType = "image/png";
 /* 画面と同じ色を使う。
    ここだけ前の青が残ると、カードから入った人が
    別のサイトに来たと感じる（tailwind.config.ts と同じ値）。 */
-const INK = "#241F1B";
-const SUB = "#6B6158";
-const BRAND = "#B2543C";
-const RULE = "#E3DACC";
+const INK = "#22251F";
+const SUB = "#62675C";
+const BRAND = "#1F4B3A";
+const RULE = "#E2DED1";
+const CREAM = "#FAF7EF";
 
 /** マークを埋め込む。satori は URL を取りに行かないので、中身を渡す */
 function mark(): string {
@@ -61,7 +62,7 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#FFFFFF",
+          background: CREAM,
           borderTop: `14px solid ${BRAND}`,
           padding: "64px 80px 60px",
           fontFamily: "Noto",
@@ -84,7 +85,7 @@ export default async function Image() {
             そこで折って、3行に収まる大きさにする。
             実際に書き出して目で見て決めた。 */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {[HERO_A, HERO_B1, HERO_B2].map((line) => (
+          {[HERO_A, HERO_B1, HERO_B2].filter(Boolean).map((line) => (
             <div key={line} style={{ fontSize: 58, color: INK, display: "flex", lineHeight: 1.26 }}>
               {line}
             </div>
@@ -92,7 +93,7 @@ export default async function Image() {
           <div
             style={{ fontSize: 27, color: SUB, display: "flex", lineHeight: 1.55, marginTop: 10 }}
           >
-            実際にその地へ行ったことのある人に、LINEで相談できます。{EMERGENCY_LINE}。
+            出発前はGoogle Meetで{MEET_MINUTES}分、旅行中はLINEで。{EMERGENCY_LINE}。
           </div>
         </div>
 

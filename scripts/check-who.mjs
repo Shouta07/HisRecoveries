@@ -331,13 +331,52 @@ const lp = stripComments(await readFile(join(ROOT, "src/app/(ja)/page.tsx"), "ut
    LINEのURLも決済のURLも、まだ入っていない。
    入っていないときに押せる形にすると、どこにも行けない。
 
-   画面は lineReady を見て出し分ける。 */
+   画面は lineReady を見て出し分ける。
+
+   ── 委譲先まで追う ──────────────────────────────
+   前は「トップに lineReady と書いてあるか」だけを見ていた。
+
+   ボタンを components/site/LineCta.tsx へ出したら、
+   トップからその語が消えて、判定が落ちた。
+   出し分けは LineCta の中でちゃんとやっているのに。
+
+   判定が、同じことを2か所へ書かせる形になっていた。
+   トップが自分で見ているか、LineCta に任せているか、
+   どちらでもよい。ただし LineCta が見ていること。 */
 {
-  if (!lp.includes("lineReady")) {
+  const usesLineCta = lp.includes("LineCta");
+  if (!lp.includes("lineReady") && !usesLineCta) {
     console.error("トップが、LINEの口が開いているか（lineReady）を見ていません。");
     console.error("");
     console.error("URLが無いときに押せる形にすると、押した人がどこにも行けません。");
     process.exit(1);
+  }
+  if (usesLineCta) {
+    const cta = stripComments(
+      await readFile(join(ROOT, "src/components/site/LineCta.tsx"), "utf8"),
+    );
+    /* ── 読み込んだだけ、を通さない ──────────────────
+       最初は「ファイルに lineReady と書いてあるか」で見ていた。
+
+       分岐を消して確かめたら、素通りした。
+       import の行にその語が残っていたから。
+
+       import を落としてから、分岐しているかを見る。 */
+    const body = cta
+      .split("\n")
+      .filter((l) => !/^\s*import\b/.test(l))
+      .join("\n");
+    if (!/(!\s*lineReady|lineReady\s*[?&]|lineReady\s*===?\s*false)/.test(body)) {
+      console.error("LineCta が、LINEの口が開いているかで分岐していません。");
+      console.error("");
+      console.error("トップはここに任せているので、ここが分岐しないと");
+      console.error("URLが無いときも押せるボタンが出ます。");
+      process.exit(1);
+    }
+    if (!/notReady/.test(body)) {
+      console.error("LineCta に、URLが無いときの出し方（notReady）がありません。");
+      process.exit(1);
+    }
   }
   /* 買う前が無料で、相談は支払い後。
      黙っていると「無料で相談し放題」に見える。 */

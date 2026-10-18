@@ -5,6 +5,7 @@ import { BUYABLE, type InboundCopy } from "@/lib/inbound";
 import { lineReady, lineUrl, contactEmail, NOT_READY_EN, NOT_READY_ZH } from "@/lib/contact";
 import LangSwitch from "@/components/site/LangSwitch";
 import LineCta from "@/components/site/LineCta";
+import { Underline } from "@/components/art/Line";
 import Mark from "@/components/brand/Mark";
 
 /* 訪日向けの面。英語と中国語で、同じ形を使う。
@@ -28,9 +29,12 @@ import Mark from "@/components/brand/Mark";
 export default function InboundPage({ c }: { c: InboundCopy }) {
   const notReady = c.lang === "en" ? NOT_READY_EN : NOT_READY_ZH;
 
+  /* 地は日本語の面と同じクリーム。
+     白のままだと、言語を切り替えたときに
+     別のサイトへ移ったように見える。 */
   return (
-    <div data-brand className="min-h-screen bg-paper text-slate">
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
+    <div data-brand className="min-h-screen bg-sky text-slate">
+      <header className="sticky top-0 z-40 border-b border-line bg-sky/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-3 px-5 py-3 sm:px-8">
           <Link href={`/${c.lang}`} className="flex min-w-0 items-center gap-2">
             <Mark size={34} />
@@ -100,7 +104,8 @@ export default function InboundPage({ c }: { c: InboundCopy }) {
 
         {/* ── 相談できること ── */}
         <section className="mt-12">
-          <h2 className="text-huge font-black text-slate">{c.askTitle}</h2>
+          <h2 className="text-balance text-huge font-black text-slate">{c.askTitle}</h2>
+          <Underline className="mt-3" />
           <ul className="mt-5 flex flex-col gap-2">
             {c.asks.map((t) => (
               <li
@@ -116,13 +121,15 @@ export default function InboundPage({ c }: { c: InboundCopy }) {
 
         {/* ── 誰が答えるか ── */}
         <section className="mt-12">
-          <h2 className="text-huge font-black text-slate">{c.whoTitle}</h2>
+          <h2 className="text-balance text-huge font-black text-slate">{c.whoTitle}</h2>
+          <Underline className="mt-3" />
           <p className="mt-4 max-w-[34em] text-[14.5px] leading-[1.9] text-steel">{c.who}</p>
         </section>
 
         {/* ── 含まないもの ── */}
         <section className="mt-12">
-          <h2 className="text-huge font-black text-slate">{c.notIncludedTitle}</h2>
+          <h2 className="text-balance text-huge font-black text-slate">{c.notIncludedTitle}</h2>
+          <Underline className="mt-3" />
           <ul className="mt-5 flex flex-col gap-2">
             {c.notIncluded.map((t) => (
               <li key={t} className="flex items-start gap-2.5 text-[13.5px] leading-[1.85] text-steel">
@@ -135,7 +142,8 @@ export default function InboundPage({ c }: { c: InboundCopy }) {
 
         {/* ── 流れ ── */}
         <section className="mt-12">
-          <h2 className="text-huge font-black text-slate">{c.stepsTitle}</h2>
+          <h2 className="text-balance text-huge font-black text-slate">{c.stepsTitle}</h2>
+          <Underline className="mt-3" />
           <ol className="mt-5 flex flex-col gap-2.5">
             {c.steps.map(([head, sub], i) => (
               <li
@@ -159,7 +167,8 @@ export default function InboundPage({ c }: { c: InboundCopy }) {
 
         {/* ── FAQ ── */}
         <section className="mt-12">
-          <h2 className="text-huge font-black text-slate">{c.faqTitle}</h2>
+          <h2 className="text-balance text-huge font-black text-slate">{c.faqTitle}</h2>
+          <Underline className="mt-3" />
           <div className="mt-5 overflow-hidden rounded-card border border-line bg-paper shadow-card">
             {c.faq.map((f, i) => (
               <details key={f.q} className={`group ${i > 0 ? "border-t border-line" : ""}`}>
