@@ -191,81 +191,123 @@ if (hits.length > 0) {
   process.exit(1);
 }
 
-/* ── 2. 1画面目で、誰に向けた製品かを名乗っていること ── */
-/* ── コメントを外してから測る ──────────────────────
-   このファイルは、なぜそうしたかを日本語のコメントで
-   たくさん書いてある。画面に出ない字で距離が伸びるのは、
-   測り方が違う。コメントを外した状態で測る。 */
-const lp = stripComments(await readFile(join(ROOT, "src/app/page.tsx"), "utf8"));
+/* ══════════════════════════════════════════════════
+   2. 書けないことを、書いていないこと
+   ══════════════════════════════════════════════════
+   確認できているのは「15の国・地域に行ったことがある」まで。
+   都市・時期・回数・一人旅だったか・語学力は未確認。
 
-const hero = lp.indexOf("{HERO_A}");
-if (hero < 0) {
-  console.error("トップに1画面目の見出し（HERO_A）が見つかりません。");
-  console.error("このファイルの判定が、画面の作りに追いつけていません。");
-  process.exit(1);
+   lib/been.ts が、持ちもの側で止める。
+   ここは、画面側で勝手に足していないかを見る。 */
+const lp = stripComments(await readFile(join(ROOT, "src/app/(ja)/page.tsx"), "utf8"));
+
+{
+  /* ── 行った国を、画面に直書きしないこと ──────────
+     一覧は lib/been.ts が持つ。画面で足せる形にすると、
+     未確認の国がそこだけ増える。 */
+  const been = stripComments(await readFile(join(ROOT, "src/lib/been.ts"), "utf8"));
+  const list = been.match(/BEEN[^=]*=\s*\[([\s\S]*?)\]/);
+  if (!list) {
+    console.error("lib/been.ts に、行った国の一覧がありません。");
+    process.exit(1);
+  }
+  const names = [...list[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  if (names.length !== 15) {
+    console.error(`行った国・地域が ${names.length} 個です（確認できているのは15）。`);
+    process.exit(1);
+  }
+  if (!lp.includes("BEEN")) {
+    console.error("トップが、行った国の一覧（BEEN）を出していません。");
+    console.error("");
+    console.error("どこの相談を受けられるかは、買う前に知りたいことです。");
+    process.exit(1);
+  }
+
+  /* ── 詳しい・専門家だと名乗らないこと ────────────
+     行ったことと、詳しいことは別。 */
+  for (const w of ["精通", "熟知", "全域", "最新事情", "専門家です", "プロガイド", "現地在住"]) {
+    if (lp.includes(w)) {
+      console.error(`トップに「${w}」が入っています。`);
+      console.error("");
+      console.error("確認できているのは、行ったことがある、までです。");
+      process.exit(1);
+    }
+  }
+
+  /* ── 複数で待機しているように見せないこと ────────
+     対応するのは運営者1人。 */
+  for (const w of ["専門家が待機", "スタッフが", "チームが", "複数の専門家"]) {
+    if (lp.includes(w)) {
+      console.error(`トップに「${w}」が入っています。対応するのは1人です。`);
+      process.exit(1);
+    }
+  }
 }
 
 /* ══════════════════════════════════════════════════
-   旅版で見るもの
+   3. 「し放題」を、単独で出していないこと
    ══════════════════════════════════════════════════
-   マチアプ版は「男性向け」と名乗っているかを見ていた。
-   旅版は性別で絞らないので、その判定は意味を失った。
+   回数に上限が無いのは本当だが、無条件ではない。
+   期間（出発7日前〜帰国日）と、返信（原則24時間以内）が
+   離れていると、買った人が最初に困る。
 
-   代わりに見るのは3つ。
-
-     ① ヘッダーが標語を出していて、そこに一人旅だと書いてあること
-        「海外旅行」だけだと家族旅行にも団体にも読める
-     ② 対応都市が1画面目に出ていること
-        3都市だけなので、来る前に分かる必要がある
-     ③ 確カメるがまだ開いていないなら、断りがどこかに出ていること
-        答える人が0人のまま「聞けます」と書かない */
+   3つは lib/service.ts が組（UNLIMITED_SET）で持っている。
+   画面が3つとも出しているかを見る。 */
 {
-  const head = lp.slice(0, hero).replace(/\s+/g, "");
-  if (!head.includes("{TAGLINE}")) {
-    console.error("ヘッダーが、標語（TAGLINE）を出していません。");
-    console.error("");
-    console.error("1画面目で、誰に向けた製品かを名乗る場所がここだけです。");
-    process.exit(1);
+  for (const [sym, what] of [
+    ["UNLIMITED_LINE", "回数に上限が無いこと"],
+    ["WINDOW_LINE", "使える期間"],
+    ["REPLY_LINE", "返信の目安"],
+  ]) {
+    if (!lp.includes(sym)) {
+      console.error(`トップが、${what}（${sym}）を出していません。`);
+      console.error("");
+      console.error("「相談し放題」は、期間と返信の条件とセットでしか出せません。");
+      console.error("小さい注意書きに隠すと、買った人が最初に困ります。");
+      process.exit(1);
+    }
   }
 
-  const voice = stripComments(await readFile(join(ROOT, "src/lib/voice.ts"), "utf8"));
-  const tag = voice.match(/TAGLINE\s*=\s*"([^"]*)"/);
-  if (!tag) {
-    console.error("lib/voice.ts に TAGLINE が見つかりません。");
-    process.exit(1);
-  }
-  if (!/一人旅|ひとり旅/.test(tag[1])) {
-    console.error("標語に、一人旅だと書かれていません。");
-    console.error("");
-    console.error(`  標語  ${tag[1]}`);
-    console.error("");
-    console.error("「海外旅行」だけだと、家族旅行にも団体にも読めます。");
-    console.error("答えられるのは、一人で行く人の不安だけです。");
-    process.exit(1);
+  /* すぐ返すと、読ませないこと。
+     「24時間以内」と「24時間対応」は別物。 */
+  for (const w of ["24時間対応", "即レス", "すぐに返信します", "いつでも返信"]) {
+    if (lp.includes(w)) {
+      console.error(`トップに「${w}」が入っています。返すのは原則24時間以内です。`);
+      process.exit(1);
+    }
   }
 
-  /* ② 対応都市が、1画面目に出ていること。
-     3つだけなので、来てから「自分の行き先が無い」と
-     分かるのでは遅い。 */
-  const NEAR = 2000;
-  const body = lp.slice(hero, hero + 30000).replace(/\s+/g, "");
-  const at = body.indexOf("CITIES");
-  if (at < 0 || at > NEAR) {
-    console.error("1画面目に、対応都市（CITIES）が出ていません。");
+  /* 緊急を引き受けると、読ませないこと。
+     ここは命に関わる誤解になる。 */
+  if (!lp.includes("緊急")) {
+    console.error("トップに、緊急時を引き受けないことが書かれていません。");
     console.error("");
-    console.error(`  1画面目からの字数  ${at < 0 ? "見つからず" : at}（${NEAR} 字まで）`);
-    console.error("");
-    console.error("対応は3都市だけです。来てから無いと分かるのでは遅いので、");
-    console.error("1画面目で出してください（lib/voice.ts の CITIES）。");
+    console.error("助けを呼べる先だと思われると、命に関わります。");
     process.exit(1);
   }
+}
 
-  /* ③ 開いていないなら、断りがどこかに出ていること。 */
-  if (!lp.includes("notYetNote()")) {
-    console.error("トップに、確カメるがまだ開いていない断り（notYetNote）がありません。");
+/* ══════════════════════════════════════════════════
+   4. 無いものを、あるように見せていないこと
+   ══════════════════════════════════════════════════
+   LINEのURLも決済のURLも、まだ入っていない。
+   入っていないときに押せる形にすると、どこにも行けない。
+
+   画面は lineReady を見て出し分ける。 */
+{
+  if (!lp.includes("lineReady")) {
+    console.error("トップが、LINEの口が開いているか（lineReady）を見ていません。");
     console.error("");
-    console.error("答える人が0人のまま「聞けます」と書かないでください。");
+    console.error("URLが無いときに押せる形にすると、押した人がどこにも行けません。");
     process.exit(1);
+  }
+  /* 買う前が無料で、相談は支払い後。
+     黙っていると「無料で相談し放題」に見える。 */
+  for (const sym of ["FREE_CHECK_JA", "PAID_START_JA"]) {
+    if (!lp.includes(sym)) {
+      console.error(`トップが、${sym}（無料と有料の境目）を出していません。`);
+      process.exit(1);
+    }
   }
 }
 
@@ -303,5 +345,5 @@ if (hero < 0) {
 }
 
 console.log(
-  "who チェック: 直書き0件 — 1画面目で一人旅と都市を名乗っています — 相手は旅亀です",
+  "who チェック: 直書き0件 — 行った国15・し放題の条件・無い口の出し分け、すべて出ています",
 );

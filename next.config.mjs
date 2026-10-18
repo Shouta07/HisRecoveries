@@ -175,9 +175,12 @@ const nextConfig = {
       // /legal は特定商取引法に基づく表記の実ページになった。転送を外す。
       // 課金する以上、この表記に到達できないのは法令上まずい。
       // （/check・/interview・/articles・/ask に続いて5件目の同じ事故）
-      // /en mirror removed — Japanese only for now.
-      { source: "/en", destination: "/", permanent: true },
-      { source: "/en/:slug*", destination: "/", permanent: true },
+      /* ── /en と /zh は、いま本物の面になった ──────
+         ここには前、「/en は廃止」の301が残っていた。
+         訪日向けの面を作ったあとも効いていて、
+         /en を開くと日本語トップへ飛ばされていた。
+
+         消す。作った面を、古い転送が隠していた。 */
       // /assessment folded into the application form.
       { source: "/assessment", destination: "/articles", permanent: true },
       // /partners は「現場のプロの方へ」ページとして復活（リダイレクト解除）。

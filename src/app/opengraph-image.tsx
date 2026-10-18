@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { TRIP_PASS_YEN } from "@/lib/pass/trip";
+import { PRICE_YEN } from "@/lib/service";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { ogFont } from "@/lib/ogFont";
@@ -81,7 +81,7 @@ export default async function Image() {
           }}
         >
           <div style={{ display: "flex" }}>
-            ¥{TRIP_PASS_YEN.toLocaleString()} / 旅1回ごと / 登録なし
+            ¥{PRICE_YEN.toLocaleString()} / 1旅行ごと / LINEで相談
           </div>
           <div style={{ display: "flex", color: "#2563EB" }}>
             {site.url.replace(/^https?:\/\//, "")}

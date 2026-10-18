@@ -1,5 +1,5 @@
 import { site } from "./site";
-import { TRIP_PASS_YEN, YEAR_PASS_YEN, PASS_TAIL_DAYS } from "./pass/trip";
+import { PRICE_YEN, WINDOW_BEFORE_DAYS, MAX_TRIP_DAYS, REPLY_HOURS } from "./service";
 import { passEnabled } from "./stripe";
 
 import { advisorWord } from "./who";
@@ -110,12 +110,12 @@ export const LEGAL: LegalField[] = [
        金額は pass/entitle.ts から引く（画面に手で書かない）。 */
     value: (() => {
       const singles =
-        `旅パス ${TRIP_PASS_YEN.toLocaleString()}円 / 年パス ${YEAR_PASS_YEN.toLocaleString()}円`;
+        `1旅行 ${PRICE_YEN.toLocaleString()}円（税込）`;
       if (!passEnabled) {
         return `${singles}（すべて税込。月額課金・自動更新はありません）`;
       }
       return (
-        `月額 Tashikame Pass ${TRIP_PASS_YEN.toLocaleString()}円／月 ／ ` +
+        `月額 Tashikame Pass ${PRICE_YEN.toLocaleString()}円／月 ／ ` +
         `${singles}（すべて税込）`
       );
     })(),
@@ -194,7 +194,7 @@ export const LEGAL: LegalField[] = [
     // 決済の直前の画面（PurchaseTerms）と、この表記と、
     // 残りを見る画面の3か所に、同じことを出す。
     //
-    // 180日にしてある理由は plans.ts の PASS_TAIL_DAYS。
+    // 180日にしてある理由は plans.ts の MAX_TRIP_DAYS。
     key: "expiry",
     label: "回数の有効期限・中途解約",
     /* 月額を開いたら、ここに自動更新・更新日・解約の期限・
@@ -212,7 +212,7 @@ export const LEGAL: LegalField[] = [
        本番の挙動を1件通して確かめること。 */
     value: (() => {
       const pack =
-        `まとめてお申し込みいただいた回数は、決済確定日から${PASS_TAIL_DAYS}日間ご利用いただけます。` +
+        `まとめてお申し込みいただいた回数は、決済確定日から${MAX_TRIP_DAYS}日間ご利用いただけます。` +
         `有効期限は、お申し込み前の確認画面と、残回数の画面に表示します。` +
         `期限経過後の未使用分の払い戻しはいたしません（当社の責めに帰すべき事由による場合を除きます）。` +
         `未使用の回数について、有効期限内のお申し出があれば、個別にご相談に応じます。`;
@@ -224,7 +224,7 @@ export const LEGAL: LegalField[] = [
       }
       return (
         `【月額（Tashikame Pass）】` +
-        `お申し込み日を起算日として1か月ごとに自動的に更新され、更新日に${TRIP_PASS_YEN.toLocaleString()}円（税込）を請求いたします。` +
+        `お申し込み日を起算日として1か月ごとに自動的に更新され、更新日に${PRICE_YEN.toLocaleString()}円（税込）を請求いたします。` +
         `更新日は、お申し込み画面および会員ページに表示します。` +
         `解約は、会員ページの「プランを管理」からお客様ご自身でお手続きいただけます。お電話やメールでのご連絡は不要です。` +
         `更新日の前日までに解約のお手続きをいただいた場合、次回以降の請求は発生しません。` +

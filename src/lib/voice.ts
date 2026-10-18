@@ -43,7 +43,7 @@ export const OPERATOR = "His Recoveries";
  * 何をする（1か所にまとめる）を、全部書く。
  */
 export const DEFINITION =
-  "旅のタシカメは、日本人の海外一人旅の「決めてから帰国まで」を1か所にまとめるサービスです。AIで話した内容を貼るだけで、どこへ／何が終わって／次に何するかが残ります。迷ったときは、行ったばかりの人にも確カメられます。";
+  "旅のタシカメは、初めて海外へ一人で行く人が、出発前も旅行中も、実際にその地へ行ったことのある人にLINEで相談できるサービスです。1旅行3,980円（税込）で、対象期間中は相談の回数に上限がありません。緊急時の対応は含みません。";
 
 /**
  * 1画面目の見出し。
@@ -56,18 +56,18 @@ export const DEFINITION =
  *   海外一人旅は、決めてからが勝負。
  * 行き先探しも予約比較もやらない、と同時に言っている。
  */
-export const HERO_A = "海外一人旅は、";
-export const HERO_B = "決めてからが勝負。";
+export const HERO_A = "初めての海外一人旅。";
+export const HERO_B = "出発前も、旅先でも、聞ける人がいる。";
 
 /* 見出しの折り返し。
    text-mega は携帯で 30px。390px の本文幅は 350px で、
    全角11字までしか入らない。
    「勝負。」を独立させる。言い切りが1行になるので、折れたほうが強い。 */
-export const HERO_B1 = "決めてからが";
-export const HERO_B2 = "勝負。";
+export const HERO_B1 = "出発前も、旅先でも、";
+export const HERO_B2 = "聞ける人がいる。";
 
 /** 1画面目で、受け渡しを言う行。検索結果の説明文でも使う */
-export const HERO_HOW = "AIに話した内容から、旅ごとの記録が残ります。";
+export const HERO_HOW = "準備の迷いから、現地でのちょっとした疑問まで、LINEで相談できます。";
 
 /**
  * 名前の上に置く行。
@@ -89,14 +89,14 @@ export const TAGLINE = "はじめての海外一人旅に、";
  * 画像の中に入るので、短いこと。
  * 「決めてから、帰国まで」が、この製品が引き受ける範囲そのもの。
  */
-export const ONE_LINER = "決めてから、帰国まで。";
+export const ONE_LINER = "聞ける人が、ひとり。";
 
 /**
  * ブラウザのタブと検索結果に出す名乗り。
  *
  * 検索結果は30文字前後で切れる。切れても名前が残る並びにする。
  */
-export const TAB_TITLE = `${FULL}｜海外一人旅、決めてからをまとめる`;
+export const TAB_TITLE = `${FULL}｜初めての海外一人旅を、LINEで相談`;
 
 /**
  * 対応都市。
@@ -131,12 +131,12 @@ export const CITIES = ["バンコク", "台北", "ソウル"] as const;
    ── 折る場所 ────────────────────────────────────
    text-huge は携帯で 26px。360px の本文幅は 320px なので
    全角12字が上限。こちらで決めておく。 */
-export const TRIAD_1 = "AIで旅を考える。";
-export const TRIAD_2A = "迷ったら、";
-export const TRIAD_2B = "行った人に確カメる。";
+export const TRIAD_1 = "調べても、決めきれない。";
+export const TRIAD_2A = "そこだけ、";
+export const TRIAD_2B = "行った人に聞く。";
 export const TRIAD_2 = TRIAD_2A + TRIAD_2B;
-export const TRIAD_3A = "その続きは、";
-export const TRIAD_3B = `${NAME}が覚えてる。`;
+export const TRIAD_3A = "旅先でも、";
+export const TRIAD_3B = "同じトークで。";
 export const TRIAD_3 = TRIAD_3A + TRIAD_3B;
 export const TRIAD = `${TRIAD_1}${TRIAD_2}${TRIAD_3}`;
 
@@ -373,10 +373,17 @@ export function assertWeight(text: string, where: string): string {
      そして、行き先探し・予約の言葉が入っていないこと。 */
   {
     const hero = `${HERO_A}${HERO_B}`;
-    if (!/決めて|出発|行くと決め/.test(hero)) {
-      throw new Error(`1画面目の見出しに、決めたあとの話だと書かれていません（${hero}）`);
+    /* 聞ける相手がいる、が看板。
+       ここが「まとめる」「残る」に戻ると、前の製品に戻る。 */
+    if (!/聞ける|相談/.test(hero)) {
+      throw new Error(`1画面目の見出しに、聞けることが書かれていません（${hero}）`);
     }
-    for (const w of ["どこへ行", "行き先選び", "航空券", "宿選び", "おすすめの国"]) {
+    /* 出発前だけの話にしないこと。
+       旅行中も使えるのが、この商品の形。 */
+    if (!/旅先|旅行中|現地/.test(hero)) {
+      throw new Error(`1画面目の見出しに、旅行中も使えることが書かれていません（${hero}）`);
+    }
+    for (const w of ["どこへ行", "行き先選び", "航空券", "宿選び", "おすすめの国", "24時間対応", "即時"]) {
       if (hero.includes(w)) {
         throw new Error(
           `1画面目の見出しに「${w}」が入っています。決める前には広げないでください（${hero}）`,
@@ -395,18 +402,29 @@ export function assertWeight(text: string, where: string): string {
   if (!DEFINITION.endsWith("。")) throw new Error("サービスの説明が文になっていません");
   /* 何をする場所かが書いてあること。
      ここが抜けると、何のサービスか分からない説明に戻る。 */
-  if (!/まとめ|残り|整理/.test(DEFINITION)) {
+  if (!/相談/.test(DEFINITION)) {
     throw new Error(`サービスの説明に、何をする場所かが書かれていません（${DEFINITION}）`);
+  }
+  /* 値段と、回数の条件が書いてあること。
+     検索結果に出る1行で、ここが抜けると
+     「無料で相談できる」と読まれる。 */
+  if (!/円/.test(DEFINITION)) {
+    throw new Error(`サービスの説明に、値段が書かれていません（${DEFINITION}）`);
+  }
+  /* 「上限がありません」を書くなら、緊急を含まないことも書く。
+     ここが対になっていないと、助けを呼べる先だと思われる。 */
+  if (/上限|何度でも|し放題/.test(DEFINITION) && !/緊急/.test(DEFINITION)) {
+    throw new Error(`サービスの説明に、緊急時を含まないことが書かれていません（${DEFINITION}）`);
   }
   /* 人に聞けることを、必ず書くこと。
      そこが「結局AIアプリ」との違いなので、消えると値段の理由が消える。 */
-  if (!DEFINITION.includes("確カメ")) {
-    throw new Error(`サービスの説明に、人に聞けることが書かれていません（${DEFINITION}）`);
+  if (!/行ったことのある人|行った人|経験者/.test(DEFINITION)) {
+    throw new Error(`サービスの説明に、誰に聞けるのかが書かれていません（${DEFINITION}）`);
   }
   /* 一人旅だと言い切ること。
      「海外旅行」だけだと、家族旅行にも団体にも読める。
      こちらが答えられるのは一人で行く人の不安だけ。 */
-  if (!/一人旅|ひとり旅/.test(DEFINITION)) {
+  if (!/一人旅|ひとり旅|一人で行く|ひとりで行く/.test(DEFINITION)) {
     throw new Error(`サービスの説明に、一人旅だと書かれていません（${DEFINITION}）`);
   }
   if (/支援|ソリューション|プラットフォーム|体験を提供/.test(DEFINITION)) {
@@ -440,7 +458,9 @@ export function assertWeight(text: string, where: string): string {
   if (!ONE_LINER || ONE_LINER.length > 16) {
     throw new Error(`名乗りの1行が長すぎます（${ONE_LINER.length}文字／16字まで）`);
   }
-  if (!/決めて|帰国|出発/.test(ONE_LINER)) {
+  /* 名乗りの1行。OGP画像と、短い名乗りの場所に出る。
+     引き受ける範囲（聞けること）が言えていること。 */
+  if (!/聞ける|相談/.test(ONE_LINER)) {
     throw new Error(`名乗りの1行に、引き受ける範囲が書かれていません（${ONE_LINER}）`);
   }
   if (TAGLINE.includes(NAME)) {
@@ -465,23 +485,17 @@ export function assertWeight(text: string, where: string): string {
       }
     }
     /* 3つとも出ていること。1つでも抜けると、持ち場が消える。 */
-    for (const [w, who] of [
-      ["AI", "AI"],
-      ["確カメ", "行った人"],
-      [NAME, NAME],
+    /* 3つとも出ていること。
+       調べて決めきれない → そこだけ人に聞く → 旅先でも続く。
+       どれかが抜けると、ただの相談サービスの説明になる。 */
+    for (const [re, what] of [
+      [/調べ/, "自分で調べたこと"],
+      [/聞く|相談/, "人に聞くこと"],
+      [/旅先|旅行中|現地/, "旅行中も続くこと"],
     ] as const) {
-      if (!TRIAD.includes(w)) {
-        throw new Error(`3つの持ち場に、${who}が出ていません（${TRIAD}）`);
+      if (!re.test(TRIAD)) {
+        throw new Error(`3つの持ち場に、${what}が出ていません（${TRIAD}）`);
       }
-    }
-    /* タシカメが最後に来ること。
-       途中に置くと「3つのうちの1つ」に見える。
-       持っているのは、AIにも人にも無い「そのあと」のほう。 */
-    if (!TRIAD.endsWith(TRIAD_3)) {
-      throw new Error("3つの持ち場の、最後が「その続き」になっていません");
-    }
-    if (TRIAD.indexOf(NAME) < TRIAD.indexOf("AI")) {
-      throw new Error(`3つの持ち場で、${NAME}がAIより先に出ています（${TRIAD}）`);
     }
     assertNever(TRIAD, "3つの持ち場");
     assertNotScary(TRIAD, "3つの持ち場");
@@ -544,7 +558,10 @@ export function assertWeight(text: string, where: string): string {
     [TRIAD, "3つの持ち場"],
     [HERO_HOW, "受け渡しの行"],
   ] as const) {
-    for (const w of ["マチアプ", "マッチングアプリ", "恋亀", "異性", "デート", "婚活"]) {
+    for (const w of ["マチアプ", "マッチングアプリ", "恋亀", "異性", "デート", "婚活",
+      /* 前の版（AIに貼って記録する形）の言葉。
+         残ると、何を売っているのか分からなくなる。 */
+      "貼るだけ", "AIに話した", "旅パス", "年パス", "確カメ"]) {
       if (t.includes(w)) {
         throw new Error(`${where} に、前の題材の言葉「${w}」が残っています（${t}）`);
       }
