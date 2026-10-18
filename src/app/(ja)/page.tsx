@@ -2,16 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import {
-  HERO_A, HERO_B1, HERO_B2, NAME, FULL, DEFINITION, HERO_HOW,
-  TAGLINE, TAB_TITLE, TRIAD_LINES,
+  HERO_A, HERO_B, NAME, FULL, DEFINITION, HERO_HOW,
+  TAB_TITLE, TRIAD_LINES,
 } from "@/lib/voice";
 import {
-  PRICE_YEN, PRICE_LINE, UNLIMITED_LINE, WINDOW_LINE, REPLY_LINE,
-  INCLUDED, NOT_INCLUDED, WINDOW_BEFORE_DAYS, MAX_TRIP_DAYS, REPLY_HOURS,
+  PRICE_YEN, PRICE_LINE, PRICE_WHAT, UNLIMITED_LINE, MEET_LINE, WINDOW_LINE, REPLY_LINE,
+  INCLUDED, NOT_INCLUDED, WINDOW_BEFORE_DAYS, MAX_TRIP_DAYS, REPLY_HOURS, MEET_MINUTES,
 } from "@/lib/service";
+import { FLOW, ASK_ITEMS, FREE_UNTIL, PAID_FROM } from "@/lib/flow";
 import { BEEN, STANCE, BEEN_NOTE } from "@/lib/been";
 import { lineReady, lineUrl, NOT_READY_JA, FREE_CHECK_JA, PAID_START_JA } from "@/lib/contact";
 import LangSwitch from "@/components/site/LangSwitch";
+import LineCta from "@/components/site/LineCta";
 import Reveal from "@/components/brand/Reveal";
 import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
@@ -101,15 +103,8 @@ const DURING = [
   "旅先であった出来事を、誰かに話したい",
 ];
 
-/* 使うまでの流れ。買う前の確認が無料で、相談は支払い後。
-   ここを分けて書かないと、無料で相談し放題に見える。 */
-const STEPS: [string, string][] = [
-  ["LINEで送る", "都市・日程・相談したいことを送ってください。ここは無料です。"],
-  ["対応できるか確認します", "行ったことがある地域でも、相談の中身によってはお答えできません。対象の期間もここでお伝えします。"],
-  ["条件に同意して、お支払い", `${PRICE_LINE}。都度払いで、自動更新はありません。`],
-  ["相談が始まります", "出発前から、何度でもどうぞ。"],
-  ["旅行中も、同じトークで", "帰国日まで続きます。"],
-];
+/* 流れは lib/flow.ts が持つ。ここに書き写すと、英語・中国語とずれる。 */
+
 
 const FAQ: { q: string; a: string }[] = [
   {
@@ -122,7 +117,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "何回でも質問できますか？",
-    a: `対象期間中は、回数に上限はありません。ただし、お返事は${REPLY_HOURS}時間以内が目安です。すぐに返す約束ではありません。`,
+    a: `LINEでのテキスト相談は、対象期間中、回数に上限はありません。ただし、お返事は${REPLY_HOURS}時間以内が目安です。すぐに返す約束ではありません。オンライン相談（Google Meet）は、出発前の1回${MEET_MINUTES}分です。`,
   },
   {
     q: "いつからいつまで使えますか？",
@@ -145,12 +140,24 @@ const FAQ: { q: string; a: string }[] = [
     a: "できません。事故・病気・盗難などの救援、現地への駆けつけ、安全の保証は提供していません。緊急のときは、現地の緊急通報、加入している保険会社、大使館・領事館にご連絡ください。",
   },
   {
-    q: "LINE通話はできますか？",
-    a: "いまのところ、テキストのみです。通話・ビデオ相談は含みません。",
+    q: "オンライン相談は、どうやって行いますか？",
+    a: `Google Meetを使います。URLを開くだけで、アプリを入れなくてもブラウザで参加できます。日時はLINEで調整し、決まってからURLを個別にお送りします。出発前の1回${MEET_MINUTES}分です。`,
+  },
+  {
+    q: "旅行中もビデオ通話で相談できますか？",
+    a: `できません。オンライン相談は出発前の1回${MEET_MINUTES}分です。旅行中はLINEのテキストでのご相談になります。話し放題ではありません。`,
+  },
+  {
+    q: "オンライン相談の前に、何か準備は要りますか？",
+    a: "お申し込みの前にLINEでお送りいただいた、行き先・日程・気になっていることに、こちらで目を通しておきます。あらためて資料を作っていただく必要はありません。気になることを箇条書きで足していただけると、その分だけ話が進みます。",
   },
   {
     q: "日程変更やキャンセルの場合はどうなりますか？",
-    a: "お申し込み前にLINEでご相談ください。キャンセル・返金の条件は、特定商取引法に基づく表記に記載しています。",
+    a: "お申し込み前にLINEでご相談ください。キャンセル・返金の条件は、特定商取引法に基づく表記に記載しています。まだ定めていない条件については、そのページに「決まっていないこと」として書き出しています。",
+  },
+  {
+    q: "支払いはどうやって行いますか？",
+    a: "対応できることを確かめたあと、LINEでお支払い用のリンクをお送りします。クレジットカード（Stripe）です。このページから直接ご購入いただく形にはしていません。先に、お答えできる内容かどうかを確かめたいからです。",
   },
 ];
 
@@ -175,21 +182,19 @@ function H({ children }: { children: React.ReactNode }) {
 }
 
 /** 買う前の確認へ行くボタン。URLが無いときは、押せる形にしない */
-function AskCta({ small = false }: { small?: boolean }) {
-  const cls = small
-    ? "inline-flex min-h-[46px] items-center justify-center rounded-pill bg-brand px-5 text-[14px] font-bold text-paper shadow-card"
-    : "flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-8 text-[16.5px] font-bold text-paper shadow-card";
-  if (!lineReady) {
-    return (
-      <p className="rounded-card border border-dashed border-line bg-mist px-4 py-3.5 text-[13.5px] leading-[1.8] text-steel">
-        {NOT_READY_JA}
-      </p>
-    );
-  }
+function AskCta({ where, small = false }: { where: string; small?: boolean }) {
   return (
-    <a href={lineUrl ?? undefined} target="_blank" rel="noopener noreferrer" className={cls}>
-      {CTA} <span aria-hidden className="ml-2">↗</span>
-    </a>
+    <LineCta
+      where={where}
+      label={CTA}
+      notReady={NOT_READY_JA}
+      className={
+        small
+          ? "inline-flex min-h-[46px] items-center justify-center rounded-pill bg-brand px-5 text-[14px] font-bold text-paper shadow-card"
+          : "flex min-h-[56px] w-full items-center justify-center rounded-pill bg-brand px-8 text-[16.5px] font-bold text-paper shadow-card"
+      }
+      notReadyClassName="rounded-card border border-dashed border-line bg-mist px-4 py-3.5 text-[13.5px] leading-[1.8] text-steel"
+    />
   );
 }
 
@@ -199,6 +204,43 @@ function FreePaidNote() {
     <p className="mt-2 text-[12px] leading-[1.75] text-steel">
       {FREE_CHECK_JA}。{PAID_START_JA}。
     </p>
+  );
+}
+
+/* ══════════════════════════════════════════════════
+   LINE で送ってもらう4つ
+   ══════════════════════════════════════════════════
+   ボタンを押す前に、必ず見える場所へ置く。
+
+   いちばん落ちるのはここ。
+   追加して、何を書けばいいか分からなくて、そのまま閉じる。
+
+   「友だち追加はこちら」で終わらせない。
+   追加したあと何をするのかまで、押す前に見せる。 */
+function AskItems() {
+  return (
+    <div className="mt-6 rounded-card border border-line bg-paper p-5">
+      <p className="text-[13.5px] font-black text-slate">LINEで、この4つを送ってください</p>
+      <ol className="mt-3 flex flex-col gap-2.5">
+        {ASK_ITEMS.map((a, i) => (
+          <li key={a.label} className="flex items-start gap-2.5">
+            <span
+              aria-hidden
+              className="mt-[2px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand-tint text-[10.5px] font-black text-brand-deep"
+            >
+              {i + 1}
+            </span>
+            <span className="min-w-0 text-[13.5px] leading-[1.7] text-slate">
+              <span className="font-bold">{a.label}</span>
+              <span className="mt-0.5 block text-[12px] leading-[1.65] text-steel">{a.hint}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-4 border-t border-line pt-3 text-[12px] leading-[1.8] text-steel">
+        航空券の番号や旅程表は要りません。{FREE_UNTIL}。{PAID_FROM}。
+      </p>
+    </div>
   );
 }
 
@@ -221,13 +263,14 @@ export default function HomePage() {
         <Wrap className="flex items-center justify-between gap-3 py-3">
           <Link href="/" className="flex min-w-0 items-center gap-2">
             <Mark size={34} />
-            <span className="min-w-0">
-              <span className="hidden truncate text-[9px] font-bold leading-[1.3] text-steel min-[360px]:block sm:text-[10.5px]">
-                {TAGLINE}
-              </span>
-              <span className="block truncate text-[17.5px] font-black leading-[1.15] text-slate min-[360px]:text-[20px]">
-                {NAME}
-              </span>
+            {/* 名前の上に標語を置いていたが、言語切替と並ぶと
+                幅が足りず「はじめての海外一...」と切れていた。
+                切れた標語は、読めないうえに雑に見える。
+
+                すぐ下の見出しが同じことを言っている
+                （一人旅に、聞ける人がいる。）ので、ここは名前だけにする。 */}
+            <span className="block truncate text-[17.5px] font-black leading-[1.15] text-slate min-[360px]:text-[20px]">
+              {NAME}
             </span>
           </Link>
           <LangSwitch current="ja" />
@@ -240,28 +283,31 @@ export default function HomePage() {
           <h1 className="text-mega font-black text-slate">
             {HERO_A}
             <br />
-            {HERO_B1}
-            <br />
             <span className="relative inline-block">
               <span
                 aria-hidden
                 className="absolute inset-x-0 bottom-[0.06em] h-[0.4em] rounded-[2px] bg-brand/25"
               />
-              <span className="relative">{HERO_B2}</span>
+              <span className="relative">{HERO_B}</span>
             </span>
           </h1>
 
           <p className="mt-4 max-w-[30em] text-[16px] font-bold leading-[1.8] text-slate sm:text-[17.5px]">
-            準備の迷いから、現地でのちょっとした疑問まで。実際にその地へ行ったことのある人に、LINEで相談できます。
+            {HERO_HOW}
           </p>
 
-          {/* 値段と条件は、ここで3つまとめて出す。
-              「し放題」だけを大きく出すと、買った人が最初に困る */}
+          {/* 値段と条件は、ここでまとめて出す。
+              「し放題」だけを大きく出すと、買った人が最初に困る。
+
+              し放題なのは LINE のテキストだけ。
+              通話は1回30分。だから値段のすぐ下に両方を書く */}
           <div className="mt-6 rounded-card border border-line bg-paper p-5 shadow-card">
             <p className="text-[22px] font-black tabular-nums leading-none text-slate sm:text-[26px]">
               {PRICE_LINE}
             </p>
-            <ul className="mt-3 flex flex-col gap-1.5 text-[13.5px] leading-[1.8] text-steel">
+            <p className="mt-2 text-[14px] font-bold leading-[1.6] text-slate">{PRICE_WHAT}</p>
+            <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3 text-[13.5px] leading-[1.8] text-steel">
+              <li>{MEET_LINE}</li>
               <li>{UNLIMITED_LINE}</li>
               <li>{WINDOW_LINE}</li>
               <li>{REPLY_LINE}</li>
@@ -269,11 +315,38 @@ export default function HomePage() {
           </div>
 
           <div className="mt-6 max-w-[24em]">
-            <AskCta />
+            <AskCta where="hero" />
             <FreePaidNote />
           </div>
         </Wrap>
       </section>
+
+      {/* ══ 1.5 誰向けか ══ */}
+      {/* 「旅行者全員」に見せない。
+          広げると、答えられない人を呼ぶ。
+          自分のことだと分かった人だけが進めばいい */}
+      <Block>
+        <H>こういう方に使ってもらっています。</H>
+        <ul className="mt-6 flex flex-col gap-2.5">
+          {[
+            "友人との海外旅行は経験があるけれど、一人では初めて",
+            "航空券は買ったが、準備や到着日の動きに不安がある",
+            "調べた情報を、自分の予定に当てはめて確かめたい",
+            "身近に、その旅先へ行った人がいない",
+          ].map((t) => (
+            <li
+              key={t}
+              className="flex items-start gap-2.5 rounded-card border border-line bg-paper px-4 py-3.5"
+            >
+              <span aria-hidden className="mt-[5px] h-[6px] w-[6px] shrink-0 rounded-full bg-brand" />
+              <span className="min-w-0 text-[14.5px] leading-[1.75] text-slate">{t}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-5 max-w-[32em] text-[13.5px] leading-[1.9] text-steel">
+          行き先と日程が決まっている方を想定しています。どこへ行くかを一緒に選ぶサービスではありません。
+        </p>
+      </Block>
 
       {/* ══ 2. こんなときに聞けます ══ */}
       <Block>
@@ -367,9 +440,11 @@ export default function HomePage() {
           ))}
         </ul>
         <p className="mt-5 max-w-[32em] text-[13.5px] leading-[1.9] text-steel">{BEEN_NOTE}</p>
-        <div className="mt-6 max-w-[24em]">
-          <AskCta small />
-          <FreePaidNote />
+        <div className="max-w-[26em]">
+          <AskItems />
+          <div className="mt-5">
+            <AskCta where="been" small />
+          </div>
         </div>
       </Block>
 
@@ -381,12 +456,13 @@ export default function HomePage() {
             ¥{PRICE_YEN.toLocaleString()}
           </p>
           <p className="mt-1.5 text-[13px] font-bold text-steel">1旅行あたり（税込）</p>
+          <p className="mt-2 text-[14px] font-bold leading-[1.6] text-slate">{PRICE_WHAT}</p>
           <ul className="mt-4 flex flex-col gap-1.5 border-t border-line pt-4 text-[13.5px] leading-[1.8] text-steel">
+            <li>{MEET_LINE}</li>
             <li>{UNLIMITED_LINE}</li>
             <li>{WINDOW_LINE}</li>
             <li>{REPLY_LINE}</li>
             <li>都度払い。自動更新はありません</li>
-            <li>相談はLINEのテキストです</li>
           </ul>
         </div>
 
@@ -426,26 +502,44 @@ export default function HomePage() {
       </Block>
 
       {/* ══ 7. 使うまでの流れ ══ */}
+      {/* ══ 7. 使うまでの流れ ══ */}
+      {/* 無料と有料の境目を、線で見せる。
+          文章で「ここから有料です」と書くより、
+          並びのどこで切り替わるかが見えたほうが早い。
+          中身は lib/flow.ts が1つ持つ（英語・中国語も同じものを使う） */}
       <Block tint id="how">
         <H>使うまでの流れ。</H>
         <ol className="mt-7 flex flex-col gap-2.5">
-          {STEPS.map(([head, sub], i) => (
-            <li
-              key={head}
-              className="flex items-start gap-3 rounded-card border border-line bg-paper px-4 py-4 shadow-card"
-            >
-              <span
-                aria-hidden
-                className="mt-[1px] flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-[13px] font-black text-paper"
-              >
-                {i + 1}
-              </span>
-              <span className="min-w-0">
-                <span className="block text-[15px] font-black leading-[1.5] text-slate">{head}</span>
-                <span className="mt-1 block text-[13px] leading-[1.8] text-steel">{sub}</span>
-              </span>
-            </li>
-          ))}
+          {FLOW.map((s, i) => {
+            const paidStartsHere = !s.free && (FLOW[i - 1]?.free ?? false);
+            return (
+              <li key={s.n}>
+                {paidStartsHere && (
+                  <p className="mb-3 flex items-center gap-3 text-[11.5px] font-black tracking-[0.08em] text-brand">
+                    <span aria-hidden className="h-px flex-1 bg-brand/30" />
+                    ここから有料
+                    <span aria-hidden className="h-px flex-1 bg-brand/30" />
+                  </p>
+                )}
+                <div className="flex items-start gap-3 rounded-card border border-line bg-paper px-4 py-4 shadow-card">
+                  <span
+                    aria-hidden
+                    className={`mt-[1px] flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] font-black ${
+                      s.free ? "bg-mist text-steel" : "bg-brand text-paper"
+                    }`}
+                  >
+                    {s.n}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[15px] font-black leading-[1.5] text-slate">
+                      {s.title}
+                    </span>
+                    <span className="mt-1 block text-[13px] leading-[1.8] text-steel">{s.body}</span>
+                  </span>
+                </div>
+              </li>
+            );
+          })}
         </ol>
       </Block>
 
@@ -484,23 +578,30 @@ export default function HomePage() {
               聞いてください。
             </p>
             <p className="relative mt-4 max-w-[26em] text-[14.5px] leading-[1.9]">
-              都市・日程・相談したいことを送っていただければ、お答えできるかと、対象になる期間をお伝えします。
+              LINEで4つ送っていただければ、お答えできるかと、対象になる期間をお伝えします。
             </p>
+
+            {/* 最後のCTAにも、送る4つを置く。
+                ここまで読んだ人は、上の4つを忘れている */}
+            <ol className="relative mt-5 flex flex-col gap-1.5">
+              {ASK_ITEMS.map((a, i) => (
+                <li key={a.label} className="flex items-start gap-2 text-[13.5px] leading-[1.7]">
+                  <span aria-hidden className="font-black text-paper/70">
+                    {i + 1}
+                  </span>
+                  <span className="min-w-0 font-bold">{a.label}</span>
+                </li>
+              ))}
+            </ol>
+
             <div className="relative mt-6 max-w-[24em]">
-              {lineReady ? (
-                <a
-                  href={lineUrl ?? undefined}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex min-h-[56px] w-full items-center justify-center rounded-pill bg-paper px-8 text-[16px] font-bold text-brand-deep"
-                >
-                  {CTA} <span aria-hidden className="ml-2">↗</span>
-                </a>
-              ) : (
-                <p className="rounded-card border border-dashed border-paper/50 px-4 py-3.5 text-[13.5px] leading-[1.8] text-paper/90">
-                  {NOT_READY_JA}
-                </p>
-              )}
+              <LineCta
+                where="final"
+                label={CTA}
+                notReady={NOT_READY_JA}
+                className="flex min-h-[56px] w-full items-center justify-center rounded-pill bg-paper px-8 text-[16px] font-bold text-brand-deep"
+                notReadyClassName="rounded-card border border-dashed border-paper/50 px-4 py-3.5 text-[13.5px] leading-[1.8] text-paper/90"
+              />
               <p className="mt-2.5 text-[12px] leading-[1.75] text-paper/90">
                 {FREE_CHECK_JA}。{PAID_START_JA}。
               </p>

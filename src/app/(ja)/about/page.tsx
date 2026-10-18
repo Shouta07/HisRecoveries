@@ -4,7 +4,8 @@ import Mark from "@/components/brand/Mark";
 import { site } from "@/lib/site";
 import { NAME, FULL, DEFINITION } from "@/lib/voice";
 import { BEEN, BEEN_NOTE, STANCE } from "@/lib/been";
-import { NOT_INCLUDED, REPLY_LINE, WINDOW_LINE } from "@/lib/service";
+import { NOT_INCLUDED, REPLY_LINE, WINDOW_LINE, MEET_LINE } from "@/lib/service";
+import { profileFilled } from "@/lib/operator";
 
 /* ══════════════════════════════════════════════════
    このサービスについて
@@ -37,7 +38,7 @@ import { NOT_INCLUDED, REPLY_LINE, WINDOW_LINE } from "@/lib/service";
    書き写すと、片方を直した日にここだけ古いまま残る。 */
 
 export const metadata: Metadata = {
-  title: { absolute: `このサービスについて — ${NAME}` },
+  title: { absolute: `答える人について — ${NAME}` },
   description:
     "誰が答えるのか。何が確認できていて、何が確認できていないのか。確認できていないことは、確認できていないと書きます。",
   alternates: { canonical: `${site.url}/about` },
@@ -69,11 +70,34 @@ export default function AboutPage() {
       </header>
 
       <main className="mx-auto w-full max-w-[760px] px-5 pb-20 pt-10 sm:px-8 sm:pt-14">
-        <h1 className="text-big font-black">このサービスについて</h1>
+        <h1 className="text-big font-black">答える人について</h1>
 
         <p className="mt-7 max-w-[34em] text-[15px] leading-[1.95] text-steel sm:text-[16px]">
           {DEFINITION}
         </p>
+
+        {/* ══════════════════════════════════════════
+            運営者が埋めるところ
+            ══════════════════════════════════════════
+            呼び名・旅のスタイル・始めた理由。
+
+            知名度が無い状態で、読む人がいちばん知りたいのはここ。
+            それでも、こちらでは書けない。聞いていないから。
+
+            埋まったものだけが出る（lib/operator.ts）。
+            いまは3つとも空なので、この節ごと出ない。 */}
+        {profileFilled().length > 0 && (
+          <section className="mt-12 flex flex-col gap-7">
+            {profileFilled().map((f) => (
+              <div key={f.key}>
+                <h2 className="text-[17px] font-black sm:text-[19px]">{f.label}</h2>
+                <p className="mt-3 max-w-[34em] whitespace-pre-line text-[15px] leading-[1.95] text-steel">
+                  {f.text}
+                </p>
+              </div>
+            ))}
+          </section>
+        )}
 
         {/* ── 答えるのは誰か ───────────────────────────
             ここを曖昧にしたまま値段を付けない。
@@ -85,7 +109,7 @@ export default function AboutPage() {
           </p>
           <p className="mt-3 max-w-[34em] text-[15px] leading-[1.95] text-steel">
             ひとりで受けています。そのため{WINDOW_LINE}という期間を決めていて、
-            {REPLY_LINE}。
+            {REPLY_LINE}。出発前のオンライン相談は、{MEET_LINE}。
           </p>
         </section>
 

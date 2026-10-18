@@ -11,188 +11,55 @@
  * 計測を足したつもりで何も記録されていない、がいちばん高くつくので、
  * 一覧をここに1本化し、型もサーバの検証もここから導く。
  */
+/* ══════════════════════════════════════════════════
+   送ってよいイベント
+   ══════════════════════════════════════════════════
+
+   ── 大半を消した ────────────────────────────────
+   ここには80個ほど並んでいた。前の商品のもの。
+   診断の各段、回答者の登録、通話の開始と終了、
+   パスの消化、A/B の共有、動画の再生。
+
+   どれも、その仕組みごと無くなっている。
+   送る側のコードも1つを除いて残っていなかったので、
+   「許可されているが、誰も送らないイベント」が79個あった。
+
+   一覧が長いと、何を見て判断しているのかが分からなくなる。
+
+   ── Webで測れるのは、2つだけ ────────────────────
+   いまの流れは、途中から Web の外へ出る。
+
+     Web          ここまでは測れる
+     LINE         測れない（送ったかどうかは、こちらに届いて初めて分かる）
+     Stripe       測れない（管理画面で見る）
+     Google Meet  測れない
+
+   だから Web 側は2つに絞る。
+     site_landed     どの入口から来たか
+     line_cta_click  LINEのボタンが押されたか
+
+   ── クリックを、相談が届いたことにしない ──────────
+   いちばんやってはいけないのがこれ。
+
+   ボタンが押された数と、実際に LINE が届いた数は違う。
+   押して、友だち追加して、何も書かずに閉じる人がいる。
+   そこが落ちているのかどうかを知りたいのに、
+   同じ数字にしてしまうと、永久に分からない。
+
+   だから line_cta_click は「押された」までの意味しか持たない。
+   届いた数は、運営者が手元で数える（docs/運用メモ.md）。
+
+   ── 相談の中身は、送らない ──────────────────────
+   行き先も日程も相談内容も、ここには入れない。
+   送るのは、押された場所（props.where）だけ。 */
 export const CONVERSION_EVENTS = [
-  "affiliate_click", // クリック: アフィリエイト送客
-  "hero_cta_click", // クリック: ヒーロー CTA
-  "article_cta_click", // クリック: 記事下 CTA
-
-  // ── 市場検証（6領域のどれが勝てるかを見極めるための3点計測） ──
-  // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
-
-  // ── ゴール起点 ──
-
-  // ── 診断ファネル（/check）──
-  // 記事 → 診断 → 結果 → 次、の各段を1つずつ計測する。
-  // どこで落ちているか分からないまま投稿を増やしても、率は動かない。
-  // 保存・共有されたリンク（?r=）から結果を開いた。答えてはいない。
-  // check_complete と混ぜると、1回共有されるたびに完了が増えて率が壊れる。
-  // ここが伸びていれば、結果が人に渡っているということ。
-
-  // ── 取材 ──
-  // 街頭ではなく、診断を終えた直後に置いている。
-  // ここが伸びるかどうかで、取材の入口として成立しているかが分かる。
-
-  // ── 行動（RECOVER）──
-  // 追いたいのは「診断した人のうち、何人が実際に動いたか」。
-  // 外したときも送る。送らないと、動いた数が実際より多く出る。
-  // 満足度。1〜4。「やったか」だけでは次に何を勧めるかが決まらない。
-  // 一度使った人が、トップから続きに戻った。
-  // ここが動くかどうかで、再訪が「読み物」ではなく「道具」として
-  // 起きているかが分かる。
-
-  // ── v2（Relationship Companion / /app）──
-  // §22 のKPIに直接対応させる。PVは追わない。
-  // 記録したか、続いているか、どの段階で止まるか。
-  // ── トップページ → /app の導線 ──
-  // 追いたいのは「着地した人のうち、何人が最初の1件を残したか」。
-  // 滞在時間もPVも追わない。
-
-  // 記録の入口と出口を別々に取る。
-  // 始めた数と終えた数が分かれていないと、どこで止まるかが出ない。
-
-  // ── 「女性に聞く」──
-  // 追うのは「着地した人のうち、何人が相談を出し、何人が回答を受け取ったか」。
-  // 滞在時間もPVも追わない。
-  "ask_submitted", // 相談を出した（props: category, plan, ab）
-  "ask_blocked", // 扱えない内容で止まった（props: category）— 何を止めているかを見る
-  "ask_result_viewed", // 結果を開いた（props: answered, of）
-  "respond_opened", // 回答者がリンクを開いた
-  "respond_submitted", // 回答者が回答を出した
-  "helpful_marked", // 相談者が回答に「役に立った」を付けた（props: helpful）
-  "join_submitted", // 回答者として登録した（props: age, attrs＝選んだ属性の数）
-
-  // ── 有料化（Stripe）──
-  // 検証したいのは1点だけ。
-  // 「ChatGPT が無料で使える時代に、実在の人の反応に金を払うか」。
-  // だから無料の利用者数は見ない。見るのは下の5つだけ。
-  //   Checkout開始率  plan_viewed → checkout_started
-  //   決済完了率      checkout_started → purchase_paid
-  //   プラン別購入率  purchase_paid の props.plan の分布
-  //   再購入率        purchase_paid の props.nth が 2 以上の割合
-  //   返金率          purchase_refunded / purchase_paid
-  //
-  // 商品が4つになったので、purchase_paid には
-  //   family         text / call（文章か、声か）
-  //   purchase_type  single / pass（単発か、まとめ買いか）
-  //   credits        何回ぶん付いたか
-  // も入れてある。plan だけだと、
-  // 「単発とパスのどちらが選ばれるか」を、文章と声で比べられない。
-  // 消化率は、これと pass_used の件数を突き合わせて出す。
-  // ── 6分野のどれが勝てるか（記事側の検証）──
-  // すべて props.market に領域ID（impression/hair/skin/face/body-hair/mind）を持たせる。
-  "market_select", // 需要: その悩みがあると選ばれた
-  "market_view", // 関心: その領域の記事を読んだ
-  "market_consult_click", // 意向: その領域の文脈から相談へ進んだ
-
-  // 購入までの分母。1回の来訪につき1回だけ送る（props: path）。
-  // これが無いと、率の分母が広告の管理画面のクリック数しか無くなり、
-  // 「出稿を増やすか止めるか」を自分の数字で決められない。
+  /* どの入口ページから来たか。1回の来訪につき1回（props: path）。
+     都市別ページを足したときに、どこから来ているかを見る。 */
   "site_landed",
-  "plan_viewed", // 料金を見た（props: from＝どこから）
-  "plan_selected", // プランを選び直した（props: plan, from）
-  "checkout_started", // 決済画面へ送った（props: plan）
-  "checkout_blocked", // 決済を開始できなかった（props: plan, why）— 法令・設定の不足を見る
-  "checkout_abandoned", // 決済画面から戻ってきた（props: plan）
-  // 支払い済みの画面に到達した。確定は Webhook 側なので、
-  // ここは「利用者が完了まで進んだ」の意味に限る（props: plan, nth）
-  "purchase_paid",
-  "purchase_refunded", // 返金された（props: plan）
 
-  // ── 届くまで・そのあと ──
-  // いちばん知りたいのは「結果を見た人が、次に何を選ぶか」。
-  // 押し売りにしないぶん、ここが伸びるかどうかで
-  // 次の商品が要るものかどうかが分かる。
-  "live_opened", // 届くまでの画面を開いた（props: plan）
-  "live_completed", // 全員そろうまで見ていた（props: n）
-  "next_step_picked", // 結果のあとに次を選んだ（props: step）
-  // 道のりの段を押して、その場で場面を開いた（props: step）。
-  // ここが伸びてCTAが伸びないなら、見せている場面が弱い。
-  "step_opened",
-  "assist_opened", // うまく書けない、から整理へ入った（props: from）
-  "starter_used", // 書き出しを押して入力欄を埋めた（props: category）
-  "outcome_recorded", // その後どうなったかを教えてもらった（props: outcome）
-  "image_added", // 判断材料に画像を足した（props: n）
-  "images_uploaded", // 画像を置き終えた（props: n）
-  "schedule_view", // 受付の時間割を開いた（props: date）
-  "schedule_date_change", // 時間割の日付を変えた（props: date）
-  "schedule_scrolled", // 時間割を動かした（props: date）
-  "available_slot_click", // 空いている枠を押した（props: at）
-  "safety_report_opened", // 通話中に報告の画面を開いた
-  "safety_report_submitted", // 通報を出した（props: reason）
-  "assist_done", // 整理して質問ができた（props: n＝答えた設問数）
-  "talk_waitlist", // 話す商品の順番待ちに登録した
-  /* 体験の入口（/trial）。決済が開くまで、ここが相談する人の入口になる。
-     見たいのは2つ。
-       どれだけ申し込まれたか（intake: trial / waitlist）
-       保存できずにメールへ回った数（trial_mailto）
-     後者が出ているあいだは、申し込みが取りこぼされている。 */
-  "trial_booked", // 体験を申し込んだ（props: intake）
-  "trial_mailto", // 保存できず、メールで送る側に回った
-  /* 恋亀と話す。見たいのは、つながったかと、記録の動き。
-     話した中身は送らない（ここは計測で、相談の中身ではない）。 */
-  "koi_call_started", // 恋亀とつながった
-  "koi_tool_decided", // 道具の呼び出しを、通した／止めた（props: tool, ok）
-  "koi_card_made", // 話したあと、状況の1枚ができた（props: from）
-  /* ChatGPT で話して持ち帰る道。どこで落ちるかを見る。
-     コピーした数 ＞ 開いた数 ＞ できた数、と減っていく。
-     どの段で落ちているかが分からないと、直しようがない。 */
-  "koi_prompt_copied", // 恋亀の文をコピーした
-  "koi_chatgpt_opened", // ChatGPT を開いた
-  /* 料金の選び方。期間と払い方を分けて選ばせるので、
-     どちらで落ちているかが分からないと直しようがない。 */
-  "price_period_picked", // 期間を選んだ（props: months）
-  "price_pay_picked", // 払い方を選んだ（props: pay）
-  "price_cta_click", // 始めるを押した（props: months, pay）
-  // AIに渡す文章をコピーした。ここが「毎回説明しなくていい」の実体
-  "koi_brief_copied",
-  // 声で話す商品。決済から通話までの、どこで落ちるかを見る。
-  "call_joined", // 通話に入れた（props: plan）
-  "call_ended", // 通話が終わった（props: plan, reason）
-  "call_rated", // 終わったあとの振り返りを出した（props: rating）
-  // 5回パス。買った回数のうち、何回目で離れるかを見る。
-  "pass_used", // 1回ぶんを使った（props: remaining）
-  "pass_empty", // 使い切った画面を見た
-  "responder_available", // 回答者が「今、答えられる」を切り替えた（props: on）
-  // 案件を自分で取った。ここが伸びないなら、配る仕組みが要る。
-  "invite_claimed",
-  // 集まらなかったときに何を選んだか。供給が足りない度合いが出る。
-  "shortfall_picked", // 足りないときの選択（props: choice, got, of）
-
-  // ── 広がり ──
-  // 相談する側は人に言わない（使う瞬間が恥ずかしい瞬間なので）。
-  // 言えるのは A/B の結果だけ。回答する側は言える。
-  // どちらがどれだけ回るかを、別々に見る。
-  "share_created", // A/B の共有リンクを作った
-  "share_sent", // 実際に渡した（props: how）
-  "share_opened", // 共有された側が開いた
-  "invite_opened", // 紹介リンクから回答者の登録を開いた
-  "invite_joined", // 紹介から登録した
-
-  // ── 恋愛プロセスとして続いているか ──
-  // 単発の相談の集合ではなく、同じ相手について続けて使われているか。
-  // ここが伸びないなら、道具箱のままということ。
-  "step_picked", // いまどこで悩んでいるかを選んだ（props: step）
-  "continue_picked", // 前回の続きとして相談した（props: n＝何回目）
-  "thread_started", // 同じ相手としてまとめ始めた
-
-  // ── 紹介動画 ──
-  // トップに置いた動画が、実際に押されているか（props: id）。
-  // 押されないなら、置いている意味が無い（1画面ぶん場所を取っている）。
-  // 押されているのに相談まで進まないなら、直すのは動画の中身。
-  // 再生しただけでは何も読み込まれないので、この数は
-  // 「見た人」ではなく「見ようとした人」の数。
-  "video_played",
-
-  // ══════════════════════════════════════════════
-  // この場面、あなたならどうする？（/scene）
-  // ══════════════════════════════════════════════
-  // 答えた数。この面は集客であると同時に、仕入れでもある
-  // （答えた人が、回答者の候補になる）。
-  //
-  // 見たいのは2つ。
-  //   どの場面が答えられて、どの場面が飛ばされるか
-  //   答えたあと /koi へ進むか（hero_cta_click と並べて見る）
-  "scene_answered",
+  /* LINEのボタンが押された（props: where＝hero / been / pricing / city / final）。
+     押されただけ。相談が届いたことにはしない。 */
+  "line_cta_click",
 ] as const;
 
 export type ConversionEvent = (typeof CONVERSION_EVENTS)[number];
@@ -318,25 +185,19 @@ export function track(event: ConversionEvent, props: Props = {}): void {
     dataLayer?: unknown[];
   };
 
+  /* ── 広告の成果として送る口を、閉じた ──────────────
+     ここで purchase_paid を Google 広告と Meta へ
+     「購入」として送り直していた。
+
+     いまは Web 上で購入が起きない。
+     お支払いは、LINEで対応できることを確かめたあと、
+     個別にお送りするリンクで行う。
+
+     Web 側に購入のイベントが無いので、送る先も要らない。
+     残しておくと、次に誰かが「購入イベントを足そう」と思ったときに、
+     押されただけのクリックを購入として媒体へ送ってしまう。 */
   if (typeof w.gtag === "function") {
     w.gtag("event", event, payload);
-    // 購入だけは、媒体が成果として読める形でもう一度送る。
-    // 独自名のイベントは媒体の最適化に使われない。
-    if (event === "purchase_paid") {
-      const label = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
-      const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
-      if (adsId && label) {
-        w.gtag("event", "conversion", {
-          send_to: `${adsId}/${label}`,
-          value: props.value,
-          currency: "JPY",
-          transaction_id: props.token ?? undefined,
-        });
-      }
-    }
-  }
-  if (event === "purchase_paid" && typeof w.fbq === "function") {
-    w.fbq("track", "Purchase", { value: props.value, currency: "JPY" });
   }
   if (typeof w.plausible === "function") {
     w.plausible(event, { props: payload });

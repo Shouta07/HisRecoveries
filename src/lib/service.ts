@@ -30,6 +30,36 @@ export const MAX_TRIP_DAYS = 7;
 export const REPLY_HOURS = 24;
 
 /* ══════════════════════════════════════════════════
+   出発前の、オンライン相談
+   ══════════════════════════════════════════════════
+   前は「通話は含まない」だった。それを引っくり返した。
+
+   ── なぜ引っくり返したか ────────────────────────
+   文字だけだと、出発前のいちばん重たいところが運べない。
+   「この日程で大丈夫か」は、一問一答にならない。
+   予定を上から順に見ながら、気になるところで止まる話になる。
+
+   それを LINE でやると、往復が20回を超える。
+   こちらも疲れるし、買った人も聞ききれない。
+
+   30分を1回、先に取る。
+
+   ── 話し放題では、ない ──────────────────────────
+   ここがいちばん誤解される。
+
+     含む    出発前に1回30分。日時は LINE で調整する
+     含まない 旅行中のビデオ通話、2回目以降、話し放題
+
+   「オンライン相談つき」とだけ書くと、
+   旅先から掛けられると思われる。回数と長さを必ず一緒に出す。 */
+
+/** 出発前のオンライン相談。1回あたりの分数 */
+export const MEET_MINUTES = 30;
+
+/** 出発前のオンライン相談。回数 */
+export const MEET_COUNT = 1;
+
+/* ══════════════════════════════════════════════════
    含むもの・含まないもの
    ══════════════════════════════════════════════════
    含まないものを、隠さない。
@@ -38,17 +68,27 @@ export const REPLY_HOURS = 24;
    含むものより先には置かない（画面側の並びで守る）。 */
 
 export const INCLUDED = [
-  "出発前の準備について、何度でも相談できます",
-  "旅行中も、同じトークで相談できます",
+  `出発前に、Google Meetで${MEET_COUNT}回${MEET_MINUTES}分お話しします（日時はLINEで調整します）`,
+  "出発前も旅行中も、LINEのテキストで相談できます。対象期間中、回数に上限はありません",
   "調べても決めきれないことを、一緒に整理します",
   "実際に行った人が、何に困って何を準備したかを話せます",
+  /* 前もって読んでおくのは、売り文句ではなく実際の段取り。
+     買う前に4つ送ってもらっているので、通話は説明から始まらない。 */
+  "買う前にお送りいただいた行き先・日程・気になっていることには、通話の前に目を通します",
+  /* ここがこのサービスの形そのもの。
+     出発前に話した相手が、旅行中もそのまま続く。 */
+  "出発前に話した相手が、旅行中もそのまま続けて相談を受けます",
 ] as const;
 
 export const NOT_INCLUDED = [
   "緊急時の対応、現地への駆けつけ",
   "すぐに返す約束（原則24時間以内のお返事です）",
+  /* ここが抜けると「オンライン相談つき」を、
+     旅先から掛け放題だと読む人が出る。 */
+  "旅行中のビデオ通話、2回目以降の通話、話し放題",
   "予約や手配の代行、通訳の代行",
   "旅程をまるごと作ること",
+  "大量の個別調査",
 ] as const;
 
 /* ══════════════════════════════════════════════════
@@ -56,13 +96,30 @@ export const NOT_INCLUDED = [
    ══════════════════════════════════════════════════ */
 
 export const PRICE_LINE = `1旅行 ${PRICE_YEN.toLocaleString()}円（税込）`;
-export const UNLIMITED_LINE = "対象期間中、相談の回数に上限はありません";
+
+/** 値段のすぐ下に置く、中身の1行 */
+export const PRICE_WHAT = `出発前のオンライン相談${MEET_MINUTES}分＋期間中のLINE相談し放題`;
+
+/** 通話の条件。「し放題」と並べるときは、これも一緒に出す */
+export const MEET_LINE = `出発前に、Google Meetで${MEET_COUNT}回${MEET_MINUTES}分（日時はLINEで調整します）`;
+
+export const UNLIMITED_LINE = "対象期間中、LINEでの相談の回数に上限はありません";
 export const WINDOW_LINE = `出発の${WINDOW_BEFORE_DAYS}日前から、帰国日まで（旅行期間は最大${MAX_TRIP_DAYS}日間）`;
 export const REPLY_LINE = `原則${REPLY_HOURS}時間以内にお返事します。主に日本時間の夜に対応しています`;
 export const EMERGENCY_LINE = "緊急時の対応は含みません";
 
-/** 「し放題」を出すときに、必ず一緒に出す3つ */
-export const UNLIMITED_SET = [UNLIMITED_LINE, WINDOW_LINE, REPLY_LINE] as const;
+/* ══════════════════════════════════════════════════
+   「し放題」を出すときに、必ず一緒に出す組
+   ══════════════════════════════════════════════════
+   し放題なのは LINE のテキストだけ。
+   通話は1回30分で、そこは上限がある。
+
+   「オンライン相談つき・相談し放題」と並べて書くと、
+   通話も含めて放題だと読める。だから組に通話の条件を入れた。
+
+   4つで1組。画面がどれか1つを落としたら、公開前に止まる
+   （scripts/check-who.mjs）。 */
+export const UNLIMITED_SET = [UNLIMITED_LINE, MEET_LINE, WINDOW_LINE, REPLY_LINE] as const;
 
 /* ── 公開の前に止めること ───────────────────────── */
 {
@@ -71,8 +128,37 @@ export const UNLIMITED_SET = [UNLIMITED_LINE, WINDOW_LINE, REPLY_LINE] as const;
   /* ── 「し放題」を、単独で出せないようにする ──────
      UNLIMITED_LINE を画面に置くときは、UNLIMITED_SET ごと置く。
      期間と返信の条件が離れると、買った人が最初に困る。 */
-  if (UNLIMITED_SET.length !== 3) {
-    throw new Error("「し放題」と一緒に出す条件が3つありません（回数・期間・返信）");
+  if (UNLIMITED_SET.length !== 4) {
+    throw new Error("「し放題」と一緒に出す条件が4つありません（回数・通話・期間・返信）");
+  }
+
+  /* ── 通話を、放題に見せないこと ────────────────────
+     し放題なのは LINE のテキストだけ。
+     通話は1回30分。そこは必ず数字で言う。 */
+  if (!MEET_LINE.includes(String(MEET_MINUTES)) || !MEET_LINE.includes(String(MEET_COUNT))) {
+    throw new Error(`通話の行に、回数と分数が入っていません（${MEET_LINE}）`);
+  }
+  if (!/調整/.test(MEET_LINE)) {
+    throw new Error(`通話の行に、日時を調整することが書かれていません（${MEET_LINE}）`);
+  }
+  if (!/Google Meet/.test(MEET_LINE)) {
+    throw new Error(`通話の行に、何で話すのかが書かれていません（${MEET_LINE}）`);
+  }
+  if (!UNLIMITED_SET.includes(MEET_LINE)) {
+    throw new Error("「し放題」の組に、通話の条件が入っていません");
+  }
+  /* 旅先から掛けられると思われないこと。
+     ここが抜けると、買った人が旅先で掛けてくる。 */
+  if (!NOT_INCLUDED.some((t) => /話し放題/.test(t))) {
+    throw new Error("含まないものに、話し放題でないことが書かれていません");
+  }
+  if (!NOT_INCLUDED.some((t) => /旅行中のビデオ通話|旅行中の通話/.test(t))) {
+    throw new Error("含まないものに、旅行中の通話を受けないことが書かれていません");
+  }
+  /* 値段のすぐ下の1行に、通話と LINE が両方あること。
+     片方だけだと、買う前にいちばん読まれる行が中身の半分になる。 */
+  if (!PRICE_WHAT.includes(String(MEET_MINUTES)) || !/LINE/.test(PRICE_WHAT)) {
+    throw new Error(`値段の下の行に、通話${MEET_MINUTES}分とLINEの両方がありません（${PRICE_WHAT}）`);
   }
   if (!UNLIMITED_SET.includes(UNLIMITED_LINE)) {
     throw new Error("「し放題」の行が、組の中にありません");

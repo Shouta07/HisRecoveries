@@ -1,4 +1,4 @@
-import { PRICE_YEN, WINDOW_BEFORE_DAYS, MAX_TRIP_DAYS, REPLY_HOURS } from "./service";
+import { PRICE_YEN, WINDOW_BEFORE_DAYS, MAX_TRIP_DAYS, REPLY_HOURS, MEET_MINUTES } from "./service";
 
 /* ══════════════════════════════════════════════════
    日本へ来る人向けの言葉（英語・簡体字）
@@ -44,8 +44,15 @@ export type InboundCopy = {
   lead: string;
   priceLine: string;
   unlimited: string;
+  /** 出発前のオンライン相談。回数と分数を必ず含める */
+  meet: string;
+  /** 値段のすぐ下に置く、中身の1行 */
+  priceWhat: string;
   window: string;
   reply: string;
+  /** LINEで最初に送ってもらう4つ */
+  askItemsTitle: string;
+  askItems: string[];
   askTitle: string;
   asks: string[];
   imageNote: string;
@@ -74,11 +81,20 @@ export const EN: InboundCopy = {
   audience: "This page is for people travelling to Japan. If you live in Japan and are travelling abroad, see the Japanese page.",
   heroA: "Travel solo in Japan.",
   heroB: "Have someone to ask.",
-  lead: "Ask someone who lives in Japan about everyday travel questions — before you arrive, and while you are here. By message, in your own time.",
+  lead: `We talk once on video before you arrive, ${MEET_MINUTES} minutes, and go through your plan together. While you are here, you keep asking the same person by message on LINE.`,
   priceLine: `JPY ${PRICE_YEN.toLocaleString()} per trip, tax included`,
-  unlimited: "No limit on how many times you message during your trip window",
+  priceWhat: `One ${MEET_MINUTES}-minute video call before you arrive, plus unlimited LINE messages during your trip`,
+  unlimited: "No limit on how many LINE messages you send during your trip window",
+  meet: `One video call on Google Meet before you arrive, ${MEET_MINUTES} minutes. We agree a time over LINE first`,
   window: `From ${WINDOW_BEFORE_DAYS} days before you arrive until the day you leave (trips of up to ${MAX_TRIP_DAYS} days)`,
   reply: `Replies within about ${REPLY_HOURS} hours, usually in the evening, Japan time`,
+  askItemsTitle: "Send us these four things on LINE",
+  askItems: [
+    "Where you are going (country and city)",
+    "Your arrival and departure dates",
+    "Whether this is your first time travelling alone",
+    "The one thing you are most unsure about",
+  ],
   askTitle: "What you can ask",
   asks: [
     "What a sign, notice or announcement in Japanese means",
@@ -103,10 +119,13 @@ export const EN: InboundCopy = {
   ],
   stepsTitle: "How it works",
   steps: [
-    ["Message us", "Tell us your cities, dates, what you want to ask, and the language you prefer. This part is free."],
-    ["We check", "We will tell you whether we can help, and which dates would be covered."],
-    ["Agree and pay", `JPY ${PRICE_YEN.toLocaleString()} per trip. One payment, no renewal.`],
-    ["Ask away", "From before you arrive until the day you leave."],
+    ["Add us on LINE and send four things", "Where you are going, your dates, whether this is your first solo trip, and the one thing you are most unsure about. This part is free."],
+    ["We check whether we can help", "We will also confirm which language we can answer in. If we cannot help, we will say so."],
+    ["We tell you what is covered", "What we can answer, your trip window, how fast replies come, and the price."],
+    ["You pay", `JPY ${PRICE_YEN.toLocaleString()} per trip, by card. One payment, no renewal. We send the link over LINE.`],
+    ["We agree a time for the call", "Over LINE. We send the Google Meet link once the time is set."],
+    [`We talk for ${MEET_MINUTES} minutes before you arrive`, "We go through your plan and stop wherever you are unsure."],
+    ["You keep asking over LINE", "From before you arrive until the day you leave, in the same chat."],
   ],
   faqTitle: "Questions",
   faq: [
@@ -159,11 +178,20 @@ export const ZH: InboundCopy = {
   audience: "本页面面向来日本旅行的人。如果您住在日本并要去海外旅行，请看日语页面。",
   heroA: "一个人来日本，",
   heroB: "也有可以问的人。",
-  lead: "出发前和旅行中，都可以向住在日本的人，用消息咨询旅行中的小问题。",
+  lead: `抵达前先通过视频通话聊 ${MEET_MINUTES} 分钟，一起过一遍您的行程。旅行期间，可以继续用 LINE 向同一个人咨询。`,
   priceLine: `每次旅行 ${PRICE_YEN.toLocaleString()} 日元（含税）`,
-  unlimited: "在对应期间内，咨询次数不限",
+  priceWhat: `抵达前 ${MEET_MINUTES} 分钟在线通话，加上旅行期间不限次数的 LINE 咨询`,
+  unlimited: "在对应期间内，LINE 文字咨询的次数不限",
+  meet: `抵达前使用 Google Meet 通话 1 次，${MEET_MINUTES} 分钟。时间先通过 LINE 商定`,
   window: `从抵达前 ${WINDOW_BEFORE_DAYS} 天到离开当天（旅行最长 ${MAX_TRIP_DAYS} 天）`,
   reply: `约 ${REPLY_HOURS} 小时内回复，主要在日本时间的晚上`,
+  askItemsTitle: "请在 LINE 上发送以下四项",
+  askItems: [
+    "目的地（国家和城市）",
+    "抵达日期和离开日期",
+    "是否是第一次独自旅行",
+    "目前最不确定的一件事",
+  ],
   askTitle: "可以咨询的内容",
   asks: [
     "想知道日文的标识、告示或广播是什么意思",
@@ -188,10 +216,13 @@ export const ZH: InboundCopy = {
   ],
   stepsTitle: "使用流程",
   steps: [
-    ["发送消息", "请告知城市、日期、想咨询的内容和希望使用的语言。这一步是免费的。"],
-    ["我们确认", "我们会告知能否提供帮助，以及对应的期间。"],
-    ["同意并付款", `每次旅行 ${PRICE_YEN.toLocaleString()} 日元。一次性付款，不自动续费。`],
-    ["开始咨询", "从抵达前到离开当天。"],
+    ["添加 LINE，发送四项内容", "目的地、日期、是否第一次独自旅行、目前最不确定的一件事。这一步是免费的。"],
+    ["我们确认能否提供帮助", "同时确认可以用哪种语言回复。如果无法提供帮助，我们会直接告知。"],
+    ["我们告知服务范围", "可以回答的内容、对应期间、回复速度和价格。"],
+    ["付款", `每次旅行 ${PRICE_YEN.toLocaleString()} 日元，使用信用卡。一次性付款，不自动续费。付款链接通过 LINE 发送。`],
+    ["商定通话时间", "通过 LINE 商定。时间确定后，我们会发送 Google Meet 的链接。"],
+    [`抵达前通话 ${MEET_MINUTES} 分钟`, "一起看一遍您的行程，在不确定的地方停下来确认。"],
+    ["旅行期间继续用 LINE 咨询", "从抵达前到离开当天，在同一个对话中。"],
   ],
   faqTitle: "常见问题",
   faq: [
@@ -242,9 +273,10 @@ export const INBOUND: Record<Lang, InboundCopy> = { en: EN, zh: ZH };
   for (const c of [EN, ZH]) {
     const all = [
       c.title, c.description, c.audience, c.heroA, c.heroB, c.lead,
-      c.priceLine, c.unlimited, c.window, c.reply, c.who, c.langNote,
+      c.priceLine, c.priceWhat, c.unlimited, c.meet, c.window, c.reply, c.who, c.langNote,
       c.imageNote, c.cta, c.freeCheck, c.paidStart, c.lineNeeded, c.closing,
-      ...c.asks, ...c.notIncluded,
+      c.askItemsTitle,
+      ...c.asks, ...c.askItems, ...c.notIncluded,
       ...c.steps.flat(), ...c.faq.flatMap((f) => [f.q, f.a]),
     ].join(" ");
 
@@ -360,6 +392,56 @@ export const INBOUND: Record<Lang, InboundCopy> = { en: EN, zh: ZH };
     }
     if (!/confirm|确认/i.test(c.langNote)) {
       throw new Error(`${c.lang} に、対応言語を確認中だという断りがありません`);
+    }
+
+    /* ══════════════════════════════════════════════
+       通話を、放題に見せないこと
+       ══════════════════════════════════════════════
+       商品に通話が入った。日本語の面と同じ罠がここにもある。
+
+       「オンライン相談つき・相談し放題」と並ぶと、
+       旅先から掛け放題だと読まれる。
+
+       通話は抵達前の1回30分。
+       回数と分数を、通話の行に必ず書く。 */
+    if (!/Google Meet/.test(c.meet)) {
+      throw new Error(`${c.lang} の通話の行に、何で話すのかが書かれていません（${c.meet}）`);
+    }
+    if (!c.meet.includes(String(MEET_MINUTES))) {
+      throw new Error(`${c.lang} の通話の行に、分数（${MEET_MINUTES}）が入っていません`);
+    }
+    if (!/\b1\b|1 次|once|One /i.test(c.meet)) {
+      throw new Error(`${c.lang} の通話の行に、回数が入っていません（${c.meet}）`);
+    }
+    /* 時間を先に決めることを、書いてあること。
+       書かないと、思い立ったときに掛けられると思われる。 */
+    if (!/agree a time|商定|arrange/i.test(c.meet)) {
+      throw new Error(`${c.lang} の通話の行に、日時を先に決めることが書かれていません`);
+    }
+    /* 値段のすぐ下の1行に、通話と LINE の両方があること。 */
+    if (!c.priceWhat.includes(String(MEET_MINUTES)) || !/LINE/.test(c.priceWhat)) {
+      throw new Error(`${c.lang} の値段の下の行に、通話とLINEの両方がありません（${c.priceWhat}）`);
+    }
+    /* 掛け放題に読める言い方を、使わないこと。 */
+    for (const w of [
+      "unlimited calls", "call anytime", "video call anytime",
+      "通话不限", "随时通话", "不限次数通话",
+    ]) {
+      if (all.toLowerCase().includes(w.toLowerCase())) {
+        throw new Error(`${c.lang} に「${w}」が出ています。通話は抵達前の1回だけです`);
+      }
+    }
+
+    /* ══════════════════════════════════════════════
+       LINE を足して終わり、にしないこと
+       ══════════════════════════════════════════════
+       追加したあと何を書けばいいか分からないと、そこで止まる。
+       送ってもらう4つを、面に出しておく。 */
+    if (c.askItems.length !== 4) {
+      throw new Error(`${c.lang} の「最初に送ってもらうもの」が ${c.askItems.length} 個です（4つ）`);
+    }
+    if (!/LINE/.test(c.askItemsTitle)) {
+      throw new Error(`${c.lang} の4つの見出しに、LINEで送ることが書かれていません`);
     }
 
     /* ── LINE が要ることを、隠さないこと ──────────── */

@@ -4,6 +4,7 @@ import { NAME } from "@/lib/voice";
 import { BUYABLE, type InboundCopy } from "@/lib/inbound";
 import { lineReady, lineUrl, contactEmail, NOT_READY_EN, NOT_READY_ZH } from "@/lib/contact";
 import LangSwitch from "@/components/site/LangSwitch";
+import LineCta from "@/components/site/LineCta";
 import Mark from "@/components/brand/Mark";
 
 /* 訪日向けの面。英語と中国語で、同じ形を使う。
@@ -57,16 +58,41 @@ export default function InboundPage({ c }: { c: InboundCopy }) {
           <p className="text-[20px] font-black leading-tight text-slate sm:text-[23px]">
             {c.priceLine}
           </p>
-          <ul className="mt-3 flex flex-col gap-1.5 text-[13.5px] leading-[1.8] text-steel">
+          {/* 値段のすぐ下に、中身を1行で。
+              通話とLINEの両方を書く。片方だけだと、
+              いちばん読まれる行に商品の半分しか出ない */}
+          <p className="mt-2 text-[14px] font-bold leading-[1.6] text-slate">{c.priceWhat}</p>
+          <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3 text-[13.5px] leading-[1.8] text-steel">
+            <li>{c.meet}</li>
             <li>{c.unlimited}</li>
             <li>{c.window}</li>
             <li>{c.reply}</li>
           </ul>
         </div>
 
+        {/* ── LINEを追加して終わり、にしない ──────────
+            追加したあと何を書けばいいか分からないと、
+            そこで止まる。押す前の画面に、送る4つを置く */}
+        <div className="mt-6 max-w-[26em] rounded-card border border-line bg-paper p-5">
+          <p className="text-[13.5px] font-black text-slate">{c.askItemsTitle}</p>
+          <ol className="mt-3 flex flex-col gap-2">
+            {c.askItems.map((t, i) => (
+              <li key={t} className="flex items-start gap-2.5">
+                <span
+                  aria-hidden
+                  className="mt-[2px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand-tint text-[10.5px] font-black text-brand-deep"
+                >
+                  {i + 1}
+                </span>
+                <span className="min-w-0 text-[13.5px] leading-[1.7] text-slate">{t}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         {/* 対応言語が未確認のあいだは、問い合わせまで */}
-        <div className="mt-6 max-w-[26em]">
-          <Cta c={c} notReady={notReady} />
+        <div className="mt-5 max-w-[26em]">
+          <Cta c={c} notReady={notReady} where="hero" />
         </div>
         <p className="mt-3 max-w-[34em] rounded-soft border border-dashed border-line px-4 py-3 text-[12.5px] leading-[1.8] text-steel">
           {c.langNote}
@@ -155,8 +181,17 @@ export default function InboundPage({ c }: { c: InboundCopy }) {
         {/* ── 最後 ── */}
         <section className="mt-12 rounded-card bg-brand p-6 text-paper shadow-card sm:p-8">
           <p className="text-big font-black leading-[1.5]">{c.closing}</p>
+          {/* ここまで読んだ人は、上の4つを忘れている */}
+          <ol className="mt-5 flex flex-col gap-1.5">
+            {c.askItems.map((t, i) => (
+              <li key={t} className="flex items-start gap-2 text-[13.5px] leading-[1.7]">
+                <span aria-hidden className="font-black text-paper/70">{i + 1}</span>
+                <span className="min-w-0 font-bold">{t}</span>
+              </li>
+            ))}
+          </ol>
           <div className="mt-5 max-w-[26em]">
-            <Cta c={c} notReady={notReady} onBrand />
+            <Cta c={c} notReady={notReady} where="final" onBrand />
           </div>
         </section>
 
@@ -189,26 +224,24 @@ export default function InboundPage({ c }: { c: InboundCopy }) {
 }
 
 /** 問い合わせの口。URLが無いときは、押せる形にしない */
-function Cta({ c, notReady, onBrand = false }: { c: InboundCopy; notReady: string; onBrand?: boolean }) {
+function Cta({
+  c, notReady, where, onBrand = false,
+}: { c: InboundCopy; notReady: string; where: string; onBrand?: boolean }) {
   const base = onBrand
     ? "flex min-h-[54px] w-full items-center justify-center rounded-pill bg-paper px-6 text-[15.5px] font-bold text-brand-deep"
     : "flex min-h-[54px] w-full items-center justify-center rounded-pill bg-brand px-6 text-[15.5px] font-bold text-paper shadow-card";
 
   return (
     <>
-      {lineReady ? (
-        <a href={lineUrl ?? undefined} target="_blank" rel="noopener noreferrer" className={base}>
-          {c.cta} <span aria-hidden className="ml-2">↗</span>
-        </a>
-      ) : (
-        <p
-          className={`rounded-card border border-dashed px-4 py-3.5 text-[13.5px] leading-[1.8] ${
-            onBrand ? "border-paper/50 text-paper/90" : "border-line bg-mist text-steel"
-          }`}
-        >
-          {notReady}
-        </p>
-      )}
+      <LineCta
+        where={`${c.lang}-${where}`}
+        label={c.cta}
+        notReady={notReady}
+        className={base}
+        notReadyClassName={`rounded-card border border-dashed px-4 py-3.5 text-[13.5px] leading-[1.8] ${
+          onBrand ? "border-paper/50 text-paper/90" : "border-line bg-mist text-steel"
+        }`}
+      />
       <p className={`mt-2.5 text-[12px] leading-[1.75] ${onBrand ? "text-paper/90" : "text-steel"}`}>
         {c.freeCheck}. {c.paidStart}.
       </p>

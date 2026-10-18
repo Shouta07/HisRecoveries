@@ -83,76 +83,78 @@ const nextConfig = {
       { source: "/reserve", destination: "/", permanent: true },
       { source: "/apply", destination: "/", permanent: true },
       // 「男の改善、全部の順番」は記事側のまとめだったので記事一覧へ
-      { source: "/order", destination: "/articles", permanent: true },
-      { source: "/skip", destination: "/articles", permanent: true },
+      { source: "/order", destination: "/", permanent: true },
+      { source: "/skip", destination: "/", permanent: true },
       // 診断（Recovery Assessment）と、その選択肢の面
-      { source: "/check", destination: "/articles", permanent: true },
-      { source: "/choices", destination: "/articles", permanent: true },
-      { source: "/choices/:slug*", destination: "/articles", permanent: true },
+      { source: "/check", destination: "/", permanent: true },
+      { source: "/choices", destination: "/", permanent: true },
+      { source: "/choices/:slug*", destination: "/", permanent: true },
       // 記録アプリ（Relationship Companion）
       { source: "/app", destination: "/", permanent: true },
       { source: "/app/:slug*", destination: "/", permanent: true },
       // お便り・提携・調査・取材
       { source: "/letters", destination: "/", permanent: true },
-      { source: "/partner", destination: "/disclosure", permanent: true },
+      { source: "/partner", destination: "/legal", permanent: true },
       { source: "/research", destination: "/about", permanent: true },
       { source: "/interview", destination: "/about", permanent: true },
       // 商品は「第一印象改善プラン（30日 ¥49,800）」の1本のみ。
       // 旧パッケージ／旧2商品（Recover・Refine）ページは全廃し、ホームの価格へ集約する。
-      { source: "/packages", destination: "/#pricing", permanent: true },
-      { source: "/packages/:slug*", destination: "/#pricing", permanent: true },
+      { source: "/packages", destination: "/pricing", permanent: true },
+      { source: "/packages/:slug*", destination: "/pricing", permanent: true },
       // 記事一覧はトップに統合した（/areas/:id 以下の記事はそのまま）
-      { source: "/areas", destination: "/articles", permanent: true },
-      { source: "/situations", destination: "/articles", permanent: true },
+      { source: "/areas", destination: "/", permanent: true },
+      { source: "/situations", destination: "/", permanent: true },
       // 面を減らした（記事に集中する）。削除したページはトップへ。
       { source: "/stages", destination: "/", permanent: true },
       { source: "/stages/:slug*", destination: "/", permanent: true },
       { source: "/business", destination: "/", permanent: true },
       // FAQ は /plan に集約（全件＋FAQPage schema）
-      { source: "/faq", destination: "/#faq", permanent: true },
+      { source: "/faq", destination: "/pricing", permanent: true },
       { source: "/producer", destination: "/", permanent: true },
       // 編集方針は独立ページをやめ、トップの #about に統合
       { source: "/why", destination: "/about", permanent: true },
       { source: "/recover", destination: "/", permanent: true },
       { source: "/refine", destination: "/", permanent: true },
       // /areas は第一印象4領域に特化 → 退避した領域はライブラリ index へ
-      { source: "/areas/sweat", destination: "/articles", permanent: true },
-      { source: "/areas/sweat/:slug*", destination: "/articles", permanent: true },
-      { source: "/areas/self", destination: "/articles", permanent: true },
-      { source: "/areas/self/:slug*", destination: "/articles", permanent: true },
+      { source: "/areas/sweat", destination: "/", permanent: true },
+      { source: "/areas/sweat/:slug*", destination: "/", permanent: true },
+      { source: "/areas/self", destination: "/", permanent: true },
+      { source: "/areas/self/:slug*", destination: "/", permanent: true },
       // オンライン伴走ページは会員ページ(β)に統合（旧コピーがゼロ入力方針と矛盾のため削除）
       { source: "/online", destination: "/", permanent: true },
-      { source: "/mechanism", destination: "/articles", permanent: true },
-      { source: "/mechanism/:slug*", destination: "/articles", permanent: true },
-      { source: "/interviews", destination: "/articles", permanent: true },
-      { source: "/interviews/:slug*", destination: "/articles", permanent: true },
-      // legacy routes also fold into the mechanism library.
-      { source: "/stories", destination: "/articles", permanent: true },
-      { source: "/stories/:slug", destination: "/articles", permanent: true },
-      { source: "/recoveries", destination: "/articles", permanent: true },
-      { source: "/recoveries/:slug*", destination: "/articles", permanent: true },
-      { source: "/territories", destination: "/articles", permanent: true },
-      { source: "/territories/:slug*", destination: "/articles", permanent: true },
+      { source: "/mechanism", destination: "/", permanent: true },
+      { source: "/mechanism/:slug*", destination: "/", permanent: true },
+      { source: "/interviews", destination: "/", permanent: true },
+      { source: "/interviews/:slug*", destination: "/", permanent: true },
+      /* /stories の転送を消した。
+         記事の一覧があったころの名残で /articles へ飛ばしていたが、
+         いまは実体験の記事を /stories/<slug> に置いている。
+         残しておくと、作った面が転送に隠される
+         （/en でも同じことが起きた）。 */
+      { source: "/recoveries", destination: "/", permanent: true },
+      { source: "/recoveries/:slug*", destination: "/", permanent: true },
+      { source: "/territories", destination: "/", permanent: true },
+      { source: "/territories/:slug*", destination: "/", permanent: true },
       // 旧メディア（記事・コンテンツ）を削除 → 仕組みライブラリ or ホームへ
       // :slug* は0個以上にマッチするので /articles 自身も拾ってしまう。
       // 索引を /articles に置いた結果、自分から自分への308が無限に返っていた。
       // 下の階層だけを拾うよう :slug+（1個以上）にする。
-      { source: "/articles/:slug+", destination: "/articles", permanent: true },
-      { source: "/feelings", destination: "/articles", permanent: true },
-      { source: "/feelings/:slug*", destination: "/articles", permanent: true },
-      { source: "/concerns", destination: "/articles", permanent: true },
-      { source: "/concerns/:slug*", destination: "/articles", permanent: true },
-      { source: "/qa", destination: "/articles", permanent: true },
-      { source: "/qa/:slug*", destination: "/articles", permanent: true },
+      { source: "/articles/:slug*", destination: "/", permanent: true },
+      { source: "/feelings", destination: "/", permanent: true },
+      { source: "/feelings/:slug*", destination: "/", permanent: true },
+      { source: "/concerns", destination: "/", permanent: true },
+      { source: "/concerns/:slug*", destination: "/", permanent: true },
+      { source: "/qa", destination: "/", permanent: true },
+      { source: "/qa/:slug*", destination: "/", permanent: true },
       // /ask は実在のページ（女性に聞く）になった。転送を外す。
       // 残すと 308 が返り、プロダクトの入口ごと到達できなくなる。
       // この事故はこのプロジェクトで /check・/interview・/articles に続いて4件目。
-      { source: "/experts", destination: "/articles", permanent: true },
-      { source: "/experts/:slug*", destination: "/articles", permanent: true },
-      { source: "/services", destination: "/articles", permanent: true },
-      { source: "/services/:slug*", destination: "/articles", permanent: true },
-      { source: "/screen", destination: "/articles", permanent: true },
-      { source: "/screen/:slug*", destination: "/articles", permanent: true },
+      { source: "/experts", destination: "/", permanent: true },
+      { source: "/experts/:slug*", destination: "/", permanent: true },
+      { source: "/services", destination: "/", permanent: true },
+      { source: "/services/:slug*", destination: "/", permanent: true },
+      { source: "/screen", destination: "/", permanent: true },
+      { source: "/screen/:slug*", destination: "/", permanent: true },
       // /check は診断ページとして復活させたので、リダイレクトを外した。
       // 旧 308 をブラウザが覚えている場合があるが、実体のあるページが
       // 返るようになれば再クロールで置き換わる。
@@ -182,10 +184,10 @@ const nextConfig = {
 
          消す。作った面を、古い転送が隠していた。 */
       // /assessment folded into the application form.
-      { source: "/assessment", destination: "/articles", permanent: true },
+      { source: "/assessment", destination: "/", permanent: true },
       // /partners は「現場のプロの方へ」ページとして復活（リダイレクト解除）。
       // 旧サブパスのみ集約（:slug+ で1階層以上。:slug* だと /partners 自身にマッチしてループする）。
-      { source: "/partners/:slug*", destination: "/disclosure", permanent: true },
+      { source: "/partners/:slug*", destination: "/legal", permanent: true },
     ];
   },
 };
