@@ -929,6 +929,28 @@
         "source_type": "photo_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261018145503885752",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-18T14:55:03.885773",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "送る前に、相手と同じ側に立つ女性に読んでもらえます。返ってくるのは判定ではなく、実際にどう受け取ったか。\n\nまとめた記事を、ここに置いておく。\nhttps://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=src-before-send",
+        "posts": null,
+        "is_thread": false,
+        "link": "https://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=src-before-send",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=message&utm_source=threads&utm_medium=social&utm_campaign=src-before-send",
+        "hypothesis_id": "src:src-before-send",
+        "hypothesis_name": "引用リソース src-before-send",
+        "topic_slug": "src-before-send",
+        "buzz_score": 8,
+        "source_type": "content_source",
+        "product": null
+      }
     }
   ]
 }
