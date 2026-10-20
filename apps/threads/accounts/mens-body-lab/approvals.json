@@ -1035,6 +1035,34 @@
         "source_type": "photo_thread",
         "product": null
       }
+    },
+    {
+      "id": "20261020155159559422",
+      "account_id": "mens-body-lab",
+      "status": "pending",
+      "created_at": "2026-10-20T15:51:59.559439",
+      "decided_at": null,
+      "decided_by": null,
+      "posted_at": null,
+      "payload": {
+        "text": "デートは楽しかった。\nと思う。\n\n———\n\n帰ってから、\n温度感が読めなくなる。\n\n今日送るか、明日にするか。\nそれだけで30分たつ。\n\n———\n\n楽しかったかどうかは、\n自分の記憶からしか分からない。\n相手からどう見えていたかは、別の話。\n\n———\n\n次の一手を決める前に、\nもう片方の目を借りておく。\nhttps://tashikame.app/ask?plan=review&c=signal&utm_source=threads&utm_medium=social&utm_campaign=signal\n\n———\n\nデートのあと、すぐ送る派ですか。",
+        "posts": [
+          "デートは楽しかった。\nと思う。",
+          "帰ってから、\n温度感が読めなくなる。\n\n今日送るか、明日にするか。\nそれだけで30分たつ。",
+          "楽しかったかどうかは、\n自分の記憶からしか分からない。\n相手からどう見えていたかは、別の話。",
+          "次の一手を決める前に、\nもう片方の目を借りておく。\nhttps://tashikame.app/ask?plan=review&c=signal&utm_source=threads&utm_medium=social&utm_campaign=signal",
+          "デートのあと、すぐ送る派ですか。"
+        ],
+        "is_thread": true,
+        "link": "https://tashikame.app/ask?plan=review&c=signal&utm_source=threads&utm_medium=social&utm_campaign=signal",
+        "cta_used": "https://tashikame.app/ask?plan=review&c=signal&utm_source=threads&utm_medium=social&utm_campaign=signal",
+        "hypothesis_id": "signal",
+        "hypothesis_name": "デートのあと、どう動くか",
+        "topic_slug": "signal",
+        "buzz_score": 8,
+        "source_type": "signal_thread",
+        "product": null
+      }
     }
   ]
 }
