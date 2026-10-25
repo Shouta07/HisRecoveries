@@ -32,7 +32,7 @@ const ROOT = process.cwd();
 const LOOK = [
   "src/app", "src/components",
   // 画面に出る文を作るところ。
-  "src/lib/service.ts", "src/lib/been.ts", "src/lib/contact.ts", "src/lib/inbound.ts",
+  "src/lib/concept.ts", "src/lib/contact.ts",
 ];
 
 /**
@@ -72,9 +72,6 @@ const SKIP = [
   "src/lib/voice.ts",
   /* 禁止語の一覧そのものを持つファイル。
      ここを見ると、一覧に書いてある語で自分が落ちる。 */
-  "src/lib/service.ts",
-  "src/lib/been.ts",
-  "src/lib/inbound.ts",
   "src/lib/monetization.ts",
   "src/lib/threadsEval.ts",
   "src/app/disclosure/page.tsx",

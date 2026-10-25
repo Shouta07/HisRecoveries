@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { NAME } from "@/lib/voice";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { LEGAL, missingLegal, REFUND_OPEN } from "@/lib/legal";
+import { LEGAL, missingLegal, SELLING_FIELDS } from "@/lib/legal";
 import Mark from "@/components/brand/Mark";
 import Tashikame from "@/components/brand/Tashikame";
 
-// 特定商取引法に基づく表記。
+// 事業者情報。
 //
 // 通信販売で対価を受け取るには、この表記が要る（特商法11条）。
 // 揃っていない項目は「準備中」で埋めず、足りないと出す。
@@ -15,7 +15,7 @@ import Tashikame from "@/components/brand/Tashikame";
 export const metadata: Metadata = {
   // 記事側のテンプレート（%s — His Recoveries）を使わない。
   // プロダクトの名乗りはタシカメなので、ここで完結させる。
-  title: { absolute: "特定商取引法に基づく表記 — タシカメ" },
+  title: { absolute: "事業者情報 — タシカメ" },
   alternates: { canonical: `${site.url}/legal` },
   robots: { index: true, follow: true },
 };
@@ -41,37 +41,33 @@ export default function LegalPage() {
       </header>
 
       <main className="mx-auto w-full max-w-[760px] px-5 pb-20 pt-10 sm:px-8 sm:pt-14">
-        <h1 className="text-big font-black">特定商取引法に基づく表記</h1>
+        <h1 className="text-big font-black">事業者情報</h1>
+
+        {/* ── 売っていないことを、表の前に書く ──────────
+            前はここに「この表記はまだ完成していません」の枠が
+            出ていた。特商法の表記として足りない欄を並べる枠。
+
+            いまは売っていないので、足りないのではなく、
+            要らない。要らない理由のほうを書く。 */}
+        <div className="mt-7 rounded-card border-2 border-slate bg-paper p-5 shadow-card">
+          <p className="text-[15px] font-bold">
+            このサイトでは、何も販売していません。
+          </p>
+          <p className="mt-3 text-[14px] leading-[1.9] text-steel">
+            掲載しているのは検討中の構想で、注文の受付、料金の請求、決済のいずれも行っていません。
+            そのため、特定商取引法に基づく表記は掲載していません。
+          </p>
+          <p className="mt-4 border-t border-line pt-3.5 text-[13px] leading-[1.9] text-steel">
+            販売を始めるときは、{SELLING_FIELDS.join("・")}を記載したうえで、
+            改めてご案内します。
+          </p>
+        </div>
 
         {missing.length > 0 && (
-          <div className="mt-7 rounded-card border-2 border-slate bg-paper p-5 shadow-card">
-            <p className="text-[15px] font-bold">
-              この表記はまだ完成していません。
-            </p>
-            <p className="mt-3 text-[14px] leading-[1.9] text-steel">
+          <div className="mt-5 rounded-card border border-line bg-mist p-5">
+            <p className="text-[14px] leading-[1.9] text-steel">
               {missing.map((m) => m.label).join("・")}が未記入です。
-              揃うまで、料金のお支払いは受け付けていません。
-              決済そのものを開始できないようにしてあります。
             </p>
-
-            {/* ── 何が決まっていないかを、書いておく ──────────
-                「返品・キャンセルが未記入」だけだと、
-                書き忘れたのか、まだ決めていないのかが分からない。
-
-                決めていないのはこの3点だと出しておけば、
-                読んだ人も、決める人も、同じものを見られる。 */}
-            {REFUND_OPEN.length > 0 && (
-              <>
-                <p className="mt-5 text-[14px] font-bold">
-                  返金について、まだ決まっていないこと
-                </p>
-                <ul className="mt-2.5 space-y-2 border-l-2 border-line pl-4 text-[14px] leading-[1.9] text-steel">
-                  {REFUND_OPEN.map((r) => (
-                    <li key={r}>{r}</li>
-                  ))}
-                </ul>
-              </>
-            )}
           </div>
         )}
 
@@ -90,18 +86,14 @@ export default function LegalPage() {
           ))}
         </dl>
 
-        {/* この1行も、前の商品の説明（条件に合う方へ順次お届け／
-            規定の人数に達した時点で）のまま残っていた。
-            表の中身は lib/legal.ts から引いているのに、
-            表の下に手で書いた1行があり、そこだけ古かった。 */}
         <p className="mt-10 max-w-[34em] text-[13px] leading-[1.9] text-steel">
-          ご相談には、当社の担当者がLINEでお答えします。 個人情報の扱いは{" "}
+          本サイトの内容と免責については{" "}
+          <Link href="/terms" className="underline decoration-line underline-offset-4 hover:text-slate">
+            利用規約
+          </Link>
+          、個人情報の扱いは{" "}
           <Link href="/privacy" className="underline decoration-line underline-offset-4 hover:text-slate">
             プライバシー・免責事項
-          </Link>
-          、お受けできない相談は{" "}
-          <Link href="/terms" className="underline decoration-line underline-offset-4 hover:text-slate">
-            利用規約（第9条）
           </Link>{" "}
           に書いています。
         </p>

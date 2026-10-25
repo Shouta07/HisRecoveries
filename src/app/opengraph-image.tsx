@@ -3,8 +3,8 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 import { ogFont } from "@/lib/ogFont";
 import { site } from "@/lib/site";
-import { NAME, FULL, HERO_A, HERO_B1, HERO_B2 } from "@/lib/voice";
-import { EMERGENCY_LINE, PRICE_LINE, MEET_MINUTES } from "@/lib/service";
+import { NAME, FULL, HERO_A, HERO_B } from "@/lib/voice";
+import { STATUS_LINE, MVP } from "@/lib/concept";
 
 // X・Threads・LINE に貼ったときのカード。
 //
@@ -33,7 +33,7 @@ import { EMERGENCY_LINE, PRICE_LINE, MEET_MINUTES } from "@/lib/service";
 // 「緊急時は含まない」は、カードにも載せる。
 // ここを省くと、助けを呼べる先だと思って貼られる。
 
-export const alt = `${FULL} — ${HERO_A}${HERO_B1}${HERO_B2}`;
+export const alt = `${FULL} — ${HERO_A}${HERO_B}（${STATUS_LINE}）`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -85,7 +85,7 @@ export default async function Image() {
             そこで折って、3行に収まる大きさにする。
             実際に書き出して目で見て決めた。 */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {[HERO_A, HERO_B1, HERO_B2].filter(Boolean).map((line) => (
+          {[HERO_A, HERO_B].map((line) => (
             <div key={line} style={{ fontSize: 58, color: INK, display: "flex", lineHeight: 1.26 }}>
               {line}
             </div>
@@ -93,7 +93,7 @@ export default async function Image() {
           <div
             style={{ fontSize: 27, color: SUB, display: "flex", lineHeight: 1.55, marginTop: 10 }}
           >
-            出発前はGoogle Meetで{MEET_MINUTES}分、旅行中はLINEで。{EMERGENCY_LINE}。
+            地域を深く知りたい旅行者と、その土地らしさで選ばれたい宿をつなぐ構想。{STATUS_LINE}
           </div>
         </div>
 
@@ -108,7 +108,7 @@ export default async function Image() {
             color: SUB,
           }}
         >
-          <div style={{ display: "flex" }}>{PRICE_LINE}</div>
+          <div style={{ display: "flex" }}>構想段階 ／ まず {MVP.line}</div>
           <div style={{ display: "flex", color: BRAND }}>
             {site.url.replace(/^https?:\/\//, "")}
           </div>
