@@ -13,7 +13,7 @@ import Mark from "@/components/brand/Mark";
 
 export const metadata: Metadata = {
   title: { absolute: `利用規約 — ${NAME}` },
-  description: `${NAME}の利用規約です。契約の相手方、提供内容、お答えする者、対象期間、キャンセルと返金について定めています。`,
+  description: `${NAME}の利用規約です。本サイトの位置づけ、販売していないこと、お問い合わせでお預かりする内容の扱いについて定めています。`,
   alternates: { canonical: `${site.url}/terms` },
   robots: { index: true, follow: true },
 };

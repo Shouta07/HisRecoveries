@@ -95,12 +95,12 @@ const nextConfig = {
       // お便り・提携・調査・取材
       { source: "/letters", destination: "/", permanent: true },
       { source: "/partner", destination: "/legal", permanent: true },
-      { source: "/research", destination: "/about", permanent: true },
-      { source: "/interview", destination: "/about", permanent: true },
+      { source: "/research", destination: "/", permanent: true },
+      { source: "/interview", destination: "/", permanent: true },
       // 商品は「第一印象改善プラン（30日 ¥49,800）」の1本のみ。
       // 旧パッケージ／旧2商品（Recover・Refine）ページは全廃し、ホームの価格へ集約する。
-      { source: "/packages", destination: "/pricing", permanent: true },
-      { source: "/packages/:slug*", destination: "/pricing", permanent: true },
+      { source: "/packages", destination: "/", permanent: true },
+      { source: "/packages/:slug*", destination: "/", permanent: true },
       // 記事一覧はトップに統合した（/areas/:id 以下の記事はそのまま）
       { source: "/areas", destination: "/", permanent: true },
       { source: "/situations", destination: "/", permanent: true },
@@ -109,10 +109,10 @@ const nextConfig = {
       { source: "/stages/:slug*", destination: "/", permanent: true },
       { source: "/business", destination: "/", permanent: true },
       // FAQ は /plan に集約（全件＋FAQPage schema）
-      { source: "/faq", destination: "/pricing", permanent: true },
+      { source: "/faq", destination: "/", permanent: true },
       { source: "/producer", destination: "/", permanent: true },
       // 編集方針は独立ページをやめ、トップの #about に統合
-      { source: "/why", destination: "/about", permanent: true },
+      { source: "/why", destination: "/", permanent: true },
       { source: "/recover", destination: "/", permanent: true },
       { source: "/refine", destination: "/", permanent: true },
       // /areas は第一印象4領域に特化 → 退避した領域はライブラリ index へ
@@ -188,6 +188,19 @@ const nextConfig = {
       // /partners は「現場のプロの方へ」ページとして復活（リダイレクト解除）。
       // 旧サブパスのみ集約（:slug+ で1階層以上。:slug* だと /partners 自身にマッチしてループする）。
       { source: "/partners/:slug*", destination: "/legal", permanent: true },
+      /* ── 相談サービスを畳んだ ────────────────────────
+         3,980円のLINE相談を売っていた面。構想の面に差し替えたので、
+         残っていた入口をトップへ向ける。
+         /en /zh は訪日向けの相談の面で、構想の英語版ではない。
+         英語版が要るかは、構想が固まってから決める。 */
+      { source: "/pricing", destination: "/", permanent: true },
+      { source: "/about", destination: "/", permanent: true },
+      { source: "/cities", destination: "/", permanent: true },
+      { source: "/cities/:slug*", destination: "/", permanent: true },
+      { source: "/stories", destination: "/", permanent: true },
+      { source: "/stories/:slug*", destination: "/", permanent: true },
+      { source: "/en", destination: "/", permanent: true },
+      { source: "/zh", destination: "/", permanent: true },
     ];
   },
 };
