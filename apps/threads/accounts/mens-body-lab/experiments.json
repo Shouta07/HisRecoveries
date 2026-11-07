@@ -2,16 +2,16 @@
   "_note": "旧事業(His Recoveries: gift/mother/urgent/areas/biz/b2b/fan)の記録121本をリセットした。均等配分と探索フェーズの判定がこの数字を見るので、前の事業の投稿数が残っていると、いまの5場面の配分が最初から歪む。",
   "hypothesis_post_counts": {
     "message": 17,
-    "photo": 17,
+    "photo": 18,
     "date": 8,
     "signal": 8,
     "distance": 8
   },
   "cta_post_counts": {
-    "none": 58
+    "none": 59
   },
-  "total_posts": 58,
+  "total_posts": 59,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-11-06T18:32:57.320159"
+  "last_updated": "2026-11-07T05:08:35.720220"
 }
