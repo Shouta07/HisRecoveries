@@ -4,14 +4,14 @@
     "message": 25,
     "photo": 25,
     "date": 13,
-    "signal": 13,
+    "signal": 14,
     "distance": 14
   },
   "cta_post_counts": {
-    "none": 90
+    "none": 91
   },
-  "total_posts": 90,
+  "total_posts": 91,
   "current_phase": "explore",
   "week_number": 1,
-  "last_updated": "2026-11-22T18:43:19.450234"
+  "last_updated": "2026-11-23T06:25:35.849710"
 }
